@@ -42,7 +42,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                 <span class="component-title">Search Subtitles</span>
                                 <span class="component-desc">
                                     <input type="checkbox"
-                                           class="enabler" ${('', ' checked="checked"')[bool(sickrage.srConfig.USE_SUBTITLES)]}
+                                           class="enabler" ${('', ' checked="checked"')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}
                                            id="use_subtitles" name="use_subtitles">
                                 </span>
                             </label>
@@ -57,7 +57,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                 <div class="field-pair">
                                     <label>
                                         <span class="component-title">Subtitle Directory</span>
-                                        <input type="text" value="${sickrage.srConfig.SUBTITLES_DIR}" id="subtitles_dir"
+                                        <input type="text" value="${sickrage.srCore.srConfig.SUBTITLES_DIR}" id="subtitles_dir"
                                                name="subtitles_dir" class="form-control input-sm input350"
                                                autocapitalize="off"/>
                                     </label>
@@ -74,7 +74,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                     <label>
                                         <span class="component-title">Subtitle Find Frequency</span>
                                         <input type="number" name="subtitles_finder_frequency"
-                                               value="${sickrage.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
+                                               value="${sickrage.srCore.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
                                                class="form-control input-sm input75"/>
                                         <span class="component-desc">time in hours between scans (default: 1)</span>
                                     </label>
@@ -84,7 +84,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                         <span class="component-title">Subtitles History</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="subtitles_history"
-                                                   id="subtitles_history" ${('', 'checked="checked"')[bool(sickrage.srConfig.SUBTITLES_HISTORY)]}/>
+                                                   id="subtitles_history" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HISTORY)]}/>
                                             <p>Log downloaded Subtitle on History page?</p>
                                         </span>
                                     </label>
@@ -94,7 +94,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                         <span class="component-title">Subtitles Multi-Language</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="subtitles_multi"
-                                                   id="subtitles_multi" ${('', 'checked="checked"')[bool(sickrage.srConfig.SUBTITLES_MULTI)]}/>
+                                                   id="subtitles_multi" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_MULTI)]}/>
                                             <p>Append language codes to subtitle filenames?</p>
                                         </span>
                                     </label>
@@ -104,7 +104,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                         <span class="component-title">Embedded Subtitles</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="embedded_subtitles_all"
-                                                   id="embedded_subtitles_all" ${('', 'checked="checked"')[bool(sickrage.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
+                                                   id="embedded_subtitles_all" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
                                             <p>Ignore subtitles embedded inside video file?</p>
                                             <p><b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!</p>
                                         </span>
@@ -115,7 +115,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                         <span class="component-title">Hearing Impaired Subtitles</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="subtitles_hearing_impaired"
-                                                   id="subtitles_hearing_impaired" ${('', 'checked="checked"')[bool(sickrage.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
+                                                   id="subtitles_hearing_impaired" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
                                             <p>Download hearing impaired style subtitles?</p>
                                         </span>
                                     </label>
@@ -124,7 +124,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                     <label class="nocheck">
                                         <span class="component-title">Extra Scripts</span>
                                         <input type="text" name="subtitles_extra_scripts"
-                                               value="<% '|'.join(sickrage.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
+                                               value="<% '|'.join(sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
                                                class="form-control input-sm input350" autocapitalize="off"/>
                                     </label>
                                     <label class="nocheck">
@@ -190,9 +190,9 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                     <fieldset class="component-group-list" style="margin-left: 50px; margin-top:36px">
                         <%
                             providerLoginDict = {
-                                'legendastv': {'user': sickrage.srConfig.LEGENDASTV_USER, 'pass': sickrage.srConfig.LEGENDASTV_PASS},
-                                'addic7ed': {'user': sickrage.srConfig.ADDIC7ED_USER, 'pass': sickrage.srConfig.ADDIC7ED_PASS},
-                                'opensubtitles': {'user': sickrage.srConfig.OPENSUBTITLES_USER, 'pass': sickrage.srConfig.OPENSUBTITLES_PASS}}
+                                'legendastv': {'user': sickrage.srCore.srConfig.LEGENDASTV_USER, 'pass': sickrage.srCore.srConfig.LEGENDASTV_PASS},
+                                'addic7ed': {'user': sickrage.srCore.srConfig.ADDIC7ED_USER, 'pass': sickrage.srCore.srConfig.ADDIC7ED_PASS},
+                                'opensubtitles': {'user': sickrage.srCore.srConfig.OPENSUBTITLES_USER, 'pass': sickrage.srCore.srConfig.OPENSUBTITLES_PASS}}
                         %>
                         % for curService in subtitle_searcher.sortedServiceList():
                         <%

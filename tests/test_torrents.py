@@ -23,6 +23,7 @@ from __future__ import unicode_literals
 import unittest
 import urlparse
 
+from sickrage.core import srSession
 from sickrage.core.helpers import bs4_parser
 from tests import SiCKRAGETestDBCase
 

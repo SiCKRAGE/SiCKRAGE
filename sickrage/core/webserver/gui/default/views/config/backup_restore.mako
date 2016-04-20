@@ -14,8 +14,8 @@
 <%block name="content">
     <h1 class="header">${header}</h1>
     <% indexer = 0 %>
-    % if sickrage.srConfig.INDEXER_DEFAULT:
-        <% indexer = sickrage.srConfig.INDEXER_DEFAULT %>
+    % if sickrage.srCore.srConfig.INDEXER_DEFAULT:
+        <% indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT %>
     % endif
 
     <div id="config">

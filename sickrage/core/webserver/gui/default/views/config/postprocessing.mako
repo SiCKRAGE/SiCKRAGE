@@ -29,7 +29,7 @@
                     <fieldset class="component-group-list">
                         <div class="field-pair">
                             <input type="checkbox" name="process_automatically"
-                                   id="process_automatically" ${('', 'checked="checked"')[bool(sickrage.srConfig.PROCESS_AUTOMATICALLY)]}/>
+                                   id="process_automatically" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.PROCESS_AUTOMATICALLY)]}/>
                             <label for="process_automatically">
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">Enable the automatic post processor to scan and process any files in your <i>Post Processing Dir</i>?</span>
@@ -43,7 +43,7 @@
                             <label class="nocheck" for="tv_download_dir">
                                 <span class="component-title">Post Processing Dir</span>
                                 <input type="text" name="tv_download_dir" id="tv_download_dir"
-                                       value="${sickrage.srConfig.TV_DOWNLOAD_DIR}" class="form-control input-sm input350"
+                                       value="${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}" class="form-control input-sm input350"
                                        autocapitalize="off"/>
                             </label>
                             <label class="nocheck">
@@ -62,7 +62,7 @@
                                     <select name="process_method" id="process_method" class="form-control input-sm">
                                         <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
                                         % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
-                                            <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                                            <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
                                         % endfor
                                     </select>
                                 </span>
@@ -80,7 +80,7 @@
                             <label class="nocheck">
                                 <span class="component-title">Auto Post-Processing Frequency</span>
                                 <input type="number" min="10" name="autopostprocessor_frequency"
-                                       id="autopostprocessor_frequency" value="${sickrage.srConfig.AUTOPOSTPROCESSOR_FREQ}"
+                                       id="autopostprocessor_frequency" value="${sickrage.srCore.srConfig.AUTOPOSTPROCESSOR_FREQ}"
                                        class="form-control input-sm input75"/>
                             </label>
                             <label class="nocheck">
@@ -90,7 +90,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="postpone_if_sync_files"
-                                   id="postpone_if_sync_files" ${('', 'checked="checked"')[bool(sickrage.srConfig.POSTPONE_IF_SYNC_FILES)]}/>
+                                   id="postpone_if_sync_files" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.POSTPONE_IF_SYNC_FILES)]}/>
                             <label for="postpone_if_sync_files">
                                 <span class="component-title">Postpone post processing</span>
                                 <span class="component-desc">Wait to process a folder if sync files are present.</span>
@@ -99,7 +99,7 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Sync File Extensions</span>
-                                <input type="text" name="sync_files" id="sync_files" value="${sickrage.srConfig.SYNC_FILES}"
+                                <input type="text" name="sync_files" id="sync_files" value="${sickrage.srCore.srConfig.SYNC_FILES}"
                                        class="form-control input-sm input350" autocapitalize="off"/>
                             </label>
                             <label class="nocheck">
@@ -109,7 +109,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="rename_episodes"
-                                   id="rename_episodes" ${('', 'checked="checked"')[bool(sickrage.srConfig.RENAME_EPISODES)]}/>
+                                   id="rename_episodes" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.RENAME_EPISODES)]}/>
                             <label for="rename_episodes">
                                 <span class="component-title">Rename Episodes</span>
                                 <span class="component-desc">Rename episode using the Episode Naming settings?</span>
@@ -117,7 +117,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="create_missing_show_dirs"
-                                   id="create_missing_show_dirs" ${('', 'checked="checked"')[bool(sickrage.srConfig.CREATE_MISSING_SHOW_DIRS)]}/>
+                                   id="create_missing_show_dirs" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS)]}/>
                             <label for="create_missing_show_dirs">
                                 <span class="component-title">Create missing show directories</span>
                                 <span class="component-desc">Create missing show directories when they get deleted</span>
@@ -125,7 +125,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="add_shows_wo_dir"
-                                   id="add_shows_wo_dir" ${('', 'checked="checked"')[bool(sickrage.srConfig.ADD_SHOWS_WO_DIR)]}/>
+                                   id="add_shows_wo_dir" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR)]}/>
                             <label for="add_shows_wo_dir">
                                 <span class="component-title">Add shows without directory</span>
                                 <span class="component-desc">Add shows without creating a directory (not recommended)</span>
@@ -133,7 +133,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="move_associated_files"
-                                   id="move_associated_files" ${('', 'checked="checked"')[bool(sickrage.srConfig.MOVE_ASSOCIATED_FILES)]}/>
+                                   id="move_associated_files" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES)]}/>
                             <label for="move_associated_files">
                                 <span class="component-title">Move Associated Files</span>
                                 <span class="component-desc">Move srr/srt/sfv/etc files with the episode when processed?</span>
@@ -141,7 +141,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="nfo_rename"
-                                   id="nfo_rename" ${('', 'checked="checked"')[bool(sickrage.srConfig.NFO_RENAME)]}/>
+                                   id="nfo_rename" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NFO_RENAME)]}/>
                             <label for="nfo_rename">
                                 <span class="component-title">Rename .nfo file</span>
                                 <span class="component-desc">Rename the original .nfo file to .nfo-orig to avoid conflicts?</span>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="airdate_episodes"
-                                   id="airdate_episodes" ${('', 'checked="checked"')[bool(sickrage.srConfig.AIRDATE_EPISODES)]}/>
+                                   id="airdate_episodes" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.AIRDATE_EPISODES)]}/>
                             <label for="airdate_episodes">
                                 <span class="component-title">Change File Date</span>
                                 <span class="component-desc">Set last modified filedate to the date that the episode aired?</span>
@@ -165,7 +165,7 @@
                                 <span class="component-desc">
                                     <select name="file_timestamp_timezone" id="file_timestamp_timezone" class="form-control input-sm">
                                         % for curTimezone in ('local','network'):
-                                            <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
+                                            <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
                                         % endfor
                                     </select>
                                 </span>
@@ -177,7 +177,7 @@
                         </div>
                         <div class="field-pair">
                             <input id="unpack" type="checkbox"
-                                   name="unpack" ${('', 'checked="checked"')[bool(sickrage.srConfig.UNPACK)]} />
+                                   name="unpack" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.UNPACK)]} />
                             <label for="unpack">
                                 <span class="component-title">Unpack</span>
                                 <span class="component-desc">Unpack any TV releases in your <i>TV Download Dir</i>?</span>
@@ -189,7 +189,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="del_rar_contents"
-                                   id="del_rar_contents" ${('', 'checked="checked"')[bool(sickrage.srConfig.DELRARCONTENTS)]}/>
+                                   id="del_rar_contents" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DELRARCONTENTS)]}/>
                             <label for="del_rar_contents">
                                 <span class="component-title">Delete RAR contents</span>
                                 <span class="component-desc">Delete content of RAR files, even if Process Method not set to move?</span>
@@ -197,7 +197,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="no_delete"
-                                   id="no_delete" ${('', 'checked="checked"')[bool(sickrage.srConfig.NO_DELETE)]}/>
+                                   id="no_delete" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NO_DELETE)]}/>
                             <label for="no_delete">
                                 <span class="component-title">Don't delete empty folders</span>
                                 <span class="component-desc">Leave empty folders when Post Processing?</span>
@@ -209,7 +209,7 @@
                         </div>
                         <div class="field-pair">
                             <input id="use_failed_downloads" type="checkbox" class="enabler"
-                                   name="use_failed_downloads" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_FAILED_DOWNLOADS)]}/>
+                                   name="use_failed_downloads" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]}/>
                             <label for="use_failed_downloads">
                                 <span class="component-title">Use Failed Downloads</span>
                                 <span class="component-desc">Use Failed Download Handling?</span>
@@ -221,7 +221,7 @@
                         <div id="content_use_failed_downloads">
                             <div class="field-pair">
                                 <input id="delete_failed" type="checkbox"
-                                       name="delete_failed" ${('', 'checked="checked"')[bool(sickrage.srConfig.DELETE_FAILED)]}/>
+                                       name="delete_failed" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
                                 <label for="delete_failed">
                                     <span class="component-title">Delete Failed</span>
                                     <span class="component-desc">Delete files left over from a failed download?</span>
@@ -235,7 +235,7 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Extra Scripts</span>
-                                <input type="text" name="extra_scripts" value="${'|'.join(sickrage.srConfig.EXTRA_SCRIPTS)}"
+                                <input type="text" name="extra_scripts" value="${'|'.join(sickrage.srCore.srConfig.EXTRA_SCRIPTS)}"
                                        class="form-control input-sm input350" autocapitalize="off"/>
                             </label>
                             <label class="nocheck">
@@ -262,12 +262,12 @@
                                         <% is_custom = True %>
                                         % for cur_preset in validator.name_presets:
                                             <% tmp = validator.test_name(cur_preset, anime_type=3) %>
-                                            % if cur_preset == sickrage.srConfig.NAMING_PATTERN:
+                                            % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
                                                 <% is_custom = False %>
                                             % endif
-                                                <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                                <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                         % endfor
-                                        <option id="${sickrage.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
+                                        <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
                                             Custom...
                                         </option>
                                     </select>
@@ -283,7 +283,7 @@
                                     </span>
                                     <span class="component-desc">
                                         <input type="text" name="naming_pattern" id="naming_pattern"
-                                               value="${sickrage.srConfig.NAMING_PATTERN}"
+                                               value="${sickrage.srCore.srConfig.NAMING_PATTERN}"
                                                class="form-control input-sm input350"/>
                                         <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend" class="legend" class="legend" />
                                     </span>
@@ -436,7 +436,7 @@
                                 <span class="component-desc">
                                     <select id="naming_multi_ep" name="naming_multi_ep" class="form-control input-sm">
                                     % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
-                                        <option value="${cur_multi_ep[0]}" ${('', 'selected="selected"')[cur_multi_ep[0] == sickrage.srConfig.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
+                                        <option value="${cur_multi_ep[0]}" ${('', 'selected="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
                                     % endfor
                                     </select>
                                 </span>
@@ -461,7 +461,7 @@
 
                         <div class="field-pair">
                             <input type="checkbox" id="naming_strip_year"
-                                   name="naming_strip_year" ${('', 'checked="checked"')[bool(sickrage.srConfig.NAMING_STRIP_YEAR)]}/>
+                                   name="naming_strip_year" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_STRIP_YEAR)]}/>
                             <label for="naming_strip_year">
                                 <span class="component-title">Strip Show Year</span>
                                 <span class="component-desc">Remove the TV show's year when renaming the file?</span>
@@ -474,7 +474,7 @@
 
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" id="naming_custom_abd"
-                                   name="naming_custom_abd" ${('', 'checked="checked"')[bool(sickrage.srConfig.NAMING_CUSTOM_ABD)]}/>
+                                   name="naming_custom_abd" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ABD)]}/>
                             <label for="naming_custom_abd">
                                 <span class="component-title">Custom Air-By-Date</span>
                                 <span class="component-desc">Name Air-By-Date shows differently than regular shows?</span>
@@ -490,12 +490,12 @@
                                             <% is_abd_custom = True %>
                                             % for cur_preset in validator.name_abd_presets:
                                                 <% tmp = validator.test_name(cur_preset) %>
-                                                % if cur_preset == sickrage.srConfig.NAMING_ABD_PATTERN:
+                                                % if cur_preset == sickrage.srCore.srConfig.NAMING_ABD_PATTERN:
                                                     <% is_abd_custom = False %>
                                                 % endif
-                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srConfig.NAMING_ABD_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_ABD_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                             % endfor
-                                            <option id="${sickrage.srConfig.NAMING_ABD_PATTERN}" ${('', 'selected="selected"')[bool(is_abd_custom)]}>
+                                            <option id="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}" ${('', 'selected="selected"')[bool(is_abd_custom)]}>
                                                 Custom...
                                             </option>
                                         </select>
@@ -511,7 +511,7 @@
                                         </span>
                                         <span class="component-desc">
                                             <input type="text" name="naming_abd_pattern" id="naming_abd_pattern"
-                                                   value="${sickrage.srConfig.NAMING_ABD_PATTERN}"
+                                                   value="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}"
                                                    class="form-control input-sm input350"/>
                                             <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_abd_key" title="Toggle ABD Naming Legend" class="legend" />
                                         </span>
@@ -656,7 +656,7 @@
 
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" id="naming_custom_sports"
-                                   name="naming_custom_sports" ${('', 'checked="checked"')[bool(sickrage.srConfig.NAMING_CUSTOM_SPORTS)]}/>
+                                   name="naming_custom_sports" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_SPORTS)]}/>
                             <label for="naming_custom_sports">
                                 <span class="component-title">Custom Sports</span>
                                 <span class="component-desc">Name Sports shows differently than regular shows?</span>
@@ -672,12 +672,12 @@
                                             <% is_sports_custom = True %>
                                             % for cur_preset in validator.name_sports_presets:
                                                 <% tmp = validator.test_name(cur_preset) %>
-                                                % if cur_preset == sickrage.srConfig.NAMING_SPORTS_PATTERN:
+                                                % if cur_preset == sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN:
                                                     <% is_sports_custom = False %>
                                                 % endif
-                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srConfig.NAMING_SPORTS_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                             % endfor
-                                            <option id="${sickrage.srConfig.NAMING_SPORTS_PATTERN}" ${('', 'selected="selected"')[bool(is_sports_custom)]}>
+                                            <option id="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}" ${('', 'selected="selected"')[bool(is_sports_custom)]}>
                                                 Custom...
                                             </option>
                                         </select>
@@ -693,7 +693,7 @@
                                         </span>
                                         <span class="component-desc">
                                             <input type="text" name="naming_sports_pattern" id="naming_sports_pattern"
-                                                   value="${sickrage.srConfig.NAMING_SPORTS_PATTERN}"
+                                                   value="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}"
                                                    class="form-control input-sm input350"/>
                                             <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_sports_key" title="Toggle Sports Naming Legend" class="legend" />
                                         </span>
@@ -839,7 +839,7 @@
                         <!-- naming_anime_custom -->
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" id="naming_custom_anime"
-                                   name="naming_custom_anime" ${('', 'checked="checked"')[bool(sickrage.srConfig.NAMING_CUSTOM_ANIME)]}/>
+                                   name="naming_custom_anime" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ANIME)]}/>
                             <label for="naming_custom_anime">
                                 <span class="component-title">Custom Anime</span>
                                 <span class="component-desc">Name Anime shows differently than regular shows?</span>
@@ -855,12 +855,12 @@
                                             <% is_anime_custom = True %>
                                             % for cur_preset in validator.name_anime_presets:
                                                 <% tmp = validator.test_name(cur_preset) %>
-                                                % if cur_preset == sickrage.srConfig.NAMING_ANIME_PATTERN:
+                                                % if cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN:
                                                     <% is_anime_custom = False %>
                                                 % endif
-                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[cur_preset == sickrage.srConfig.NAMING_ANIME_PATTERN]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                             % endfor
-                                            <option id="${sickrage.srConfig.NAMING_ANIME_PATTERN}" ${('', 'selected="selected"')[bool(is_anime_custom)]}>
+                                            <option id="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}" ${('', 'selected="selected"')[bool(is_anime_custom)]}>
                                                 Custom...
                                             </option>
                                         </select>
@@ -876,7 +876,7 @@
                                         </span>
                                         <span class="component-desc">
                                             <input type="text" name="naming_anime_pattern" id="naming_anime_pattern"
-                                                   value="${sickrage.srConfig.NAMING_ANIME_PATTERN}"
+                                                   value="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}"
                                                    class="form-control input-sm input350"/>
                                             <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_anime_key" title="Toggle Anime Naming Legend" class="legend" />
                                         </span>
@@ -1010,7 +1010,7 @@
                                     <span class="component-desc">
                                         <select id="naming_anime_multi_ep" name="naming_anime_multi_ep" class="form-control input-sm">
                                         % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
-                                            <option value="${cur_multi_ep[0]}" ${('', 'selected="selected" class="selected"')[cur_multi_ep[0] == sickrage.srConfig.NAMING_ANIME_MULTI_EP]}>${cur_multi_ep[1]}</option>
+                                            <option value="${cur_multi_ep[0]}" ${('', 'selected="selected" class="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_ANIME_MULTI_EP]}>${cur_multi_ep[1]}</option>
                                         % endfor
                                         </select>
                                     </span>
@@ -1035,7 +1035,7 @@
 
                             <div class="field-pair">
                                 <input type="radio" name="naming_anime" id="naming_anime"
-                                       value="1" ${('', 'checked="checked"')[sickrage.srConfig.NAMING_ANIME == 1]}/>
+                                       value="1" ${('', 'checked="checked"')[sickrage.srCore.srConfig.NAMING_ANIME == 1]}/>
                                 <label for="naming_anime">
                                     <span class="component-title">Add Absolute Number</span>
                                     <span class="component-desc">Add the absolute number to the season/episode format?</span>
@@ -1048,7 +1048,7 @@
 
                             <div class="field-pair">
                                 <input type="radio" name="naming_anime" id="naming_anime_only"
-                                       value="2" ${('', 'checked="checked"')[sickrage.srConfig.NAMING_ANIME == 2]}/>
+                                       value="2" ${('', 'checked="checked"')[sickrage.srCore.srConfig.NAMING_ANIME == 2]}/>
                                 <label for="naming_anime_only">
                                     <span class="component-title">Only Absolute Number</span>
                                     <span class="component-desc">Replace season/episode format with absolute number</span>
@@ -1061,7 +1061,7 @@
 
                             <div class="field-pair">
                                 <input type="radio" name="naming_anime" id="naming_anime_none"
-                                       value="3" ${('', 'checked="checked"')[sickrage.srConfig.NAMING_ANIME == 3]}/>
+                                       value="3" ${('', 'checked="checked"')[sickrage.srCore.srConfig.NAMING_ANIME == 3]}/>
                                 <label for="naming_anime_none">
                                     <span class="component-title">No Absolute Number</span>
                                     <span class="component-desc">Dont include the absolute number</span>

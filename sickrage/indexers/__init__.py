@@ -44,12 +44,12 @@ class srIndexerApi(object):
 
     @property
     def api_params(self):
-        if sickrage.srConfig.CACHE_DIR:
-            indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickrage.srConfig.CACHE_DIR,
+        if sickrage.srCore.srConfig.CACHE_DIR:
+            indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickrage.srCore.srConfig.CACHE_DIR,
                                                                                 'indexers',
                                                                                 self.name)
-        if sickrage.srConfig.PROXY_SETTING and sickrage.srConfig.PROXY_INDEXERS:
-            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.srConfig.PROXY_SETTING
+        if sickrage.srCore.srConfig.PROXY_SETTING and sickrage.srCore.srConfig.PROXY_INDEXERS:
+            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.srCore.srConfig.PROXY_SETTING
 
         return indexerConfig[self.indexerID]['api_params']
 
@@ -66,8 +66,7 @@ class srIndexerApi(object):
         Contacts indexer to check for information on shows by showid
 
         :param regShowName: Name of show
-        :param indexer: Which indexer to use
-        :param indexer_id: Which indexer ID to look for
+        :param showid: Which indexer ID to look for
         :param ui: Custom UI for indexer use
         :return:
         """
@@ -83,7 +82,7 @@ class srIndexerApi(object):
         t = self.indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            sickrage.srLogger.debug("Trying to find " + name + " on " + self.name)
+            sickrage.srCore.srLogger.debug("Trying to find " + name + " on " + self.name)
 
             try:
                 search = t[showid] if showid else t[name]

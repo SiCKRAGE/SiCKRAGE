@@ -52,7 +52,7 @@ Set checked shows/episodes to <select name="newStatus" class="form-control form-
     if int(whichStatus) in statusList:
         statusList.remove(int(whichStatus))
 
-    if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED and sickrage.srConfig.USE_FAILED_DOWNLOADS:
+    if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED and sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
         statusList.append(FAILED)
 %>
 

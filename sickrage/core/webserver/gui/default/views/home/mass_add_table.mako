@@ -1,4 +1,4 @@
-<%!
+    <%!
     import sickrage
     from sickrage.core.helpers import anon_url
     from sickrage.indexers import srIndexerApi
@@ -21,8 +21,8 @@
         indexer = 0
         if curDir['existing_info'][0]:
             indexer = curDir['existing_info'][2]
-        elif sickrage.srConfig.INDEXER_DEFAULT > 0:
-            indexer = sickrage.srConfig.INDEXER_DEFAULT
+        elif sickrage.srCore.srConfig.INDEXER_DEFAULT > 0:
+            indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT
     %>
 
     <tr>

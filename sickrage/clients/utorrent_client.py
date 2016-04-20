@@ -47,7 +47,7 @@ class uTorrentAPI(GenericClient):
     def _get_auth(self):
 
         try:
-            self.response = sickrage.srWebSession.get(self.url + 'token.html', verify=False)
+            self.response = sickrage.srCore.srWebSession.get(self.url + 'token.html', verify=False)
             self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
         except Exception:
             return None
@@ -67,9 +67,9 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.srConfig.TORRENT_LABEL
+        label = sickrage.srCore.srConfig.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.srConfig.TORRENT_LABEL_ANIME
+            label = sickrage.srCore.srConfig.TORRENT_LABEL_ANIME
 
         params = {'action': 'setprops',
                   'hash': result.hash,
@@ -104,8 +104,8 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_seed_time(self, result):
 
-        if sickrage.srConfig.TORRENT_SEED_TIME:
-            time = 3600 * float(sickrage.srConfig.TORRENT_SEED_TIME)
+        if sickrage.srCore.srConfig.TORRENT_SEED_TIME:
+            time = 3600 * float(sickrage.srCore.srConfig.TORRENT_SEED_TIME)
             params = {'action': 'setprops',
                       'hash': result.hash,
                       's': 'seed_override',
@@ -133,7 +133,7 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.srConfig.TORRENT_PAUSED:
+        if sickrage.srCore.srConfig.TORRENT_PAUSED:
             params = {'action': 'pause', 'hash': result.hash}
         else:
             params = {'action': 'start', 'hash': result.hash}

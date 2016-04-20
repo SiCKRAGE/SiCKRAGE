@@ -21,6 +21,8 @@ import threading
 import time
 import zlib
 
+from tornado import gen
+
 from aniDBresponses import ResponseResolver
 from sickrage.indexers.adba.aniDBerrors import AniDBBannedError, \
     AniDBMustAuthError, AniDBPacketCorruptedError
@@ -195,7 +197,7 @@ class AniDBLink(threading.Thread):
         age = time.time() - self.lastpacket
         delay = self._delay()
         if age <= delay:
-            time.sleep(delay - age)
+            gen.sleep(delay - age)
 
     def _send(self, command):
         if self.banned:

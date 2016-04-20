@@ -53,7 +53,7 @@ class DelugeDAPI(GenericClient):
         #     label = sickrage.TORRENT_LABEL_ANIME
 
         options = {
-            'add_paused': sickrage.srConfig.TORRENT_PAUSED
+            'add_paused': sickrage.srCore.srConfig.TORRENT_PAUSED
         }
 
         remote_torrent = self.drpc.add_torrent_magnet(result.url, options, result.hash)
@@ -75,7 +75,7 @@ class DelugeDAPI(GenericClient):
             return None
 
         options = {
-            'add_paused': sickrage.srConfig.TORRENT_PAUSED
+            'add_paused': sickrage.srCore.srConfig.TORRENT_PAUSED
         }
 
         remote_torrent = self.drpc.add_torrent_file(result.name + '.torrent', result.content, options, result.hash)
@@ -89,11 +89,11 @@ class DelugeDAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.srConfig.TORRENT_LABEL
+        label = sickrage.srCore.srConfig.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.srConfig.TORRENT_LABEL_ANIME
+            label = sickrage.srCore.srConfig.TORRENT_LABEL_ANIME
         if ' ' in label:
-            sickrage.srLogger.error(self.name + ': Invalid label. Label must not contain a space')
+            sickrage.srCore.srLogger.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -113,14 +113,14 @@ class DelugeDAPI(GenericClient):
 
     def _set_torrent_path(self, result):
 
-        path = sickrage.srConfig.TORRENT_PATH
+        path = sickrage.srCore.srConfig.TORRENT_PATH
         if path:
             return self.drpc.set_torrent_path(result.hash, path)
         return True
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.srConfig.TORRENT_PAUSED:
+        if sickrage.srCore.srConfig.TORRENT_PAUSED:
             return self.drpc.pause_torrent(result.hash)
         return True
 
@@ -261,7 +261,7 @@ class DelugeRPC(object):
         # noinspection PyUnresolvedReferences
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
         if torrent_id['hash']:
-            sickrage.srLogger.debug('DelugeD: Torrent already exists in Deluge')
+            sickrage.srCore.srLogger.debug('DelugeD: Torrent already exists in Deluge')
             return torrent_hash
         return False
 

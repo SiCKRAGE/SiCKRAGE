@@ -77,20 +77,20 @@ class newpctProvider(TorrentProvider):
 
         # Only search if user conditions are true
         if self.onlyspasearch and lang_info != 'es':
-            sickrage.srLogger.debug("Show info is not spanish, skipping provider search")
+            sickrage.srCore.srLogger.debug("Show info is not spanish, skipping provider search")
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
 
             for search_string in search_strings[mode]:
                 self.search_params.update({'q': search_string.strip()})
 
-                sickrage.srLogger.debug(
+                sickrage.srCore.srLogger.debug(
                         "Search URL: %s" % self.urls['search'] + '?' + urlencode(self.search_params))
 
                 try:
-                    data = sickrage.srWebSession.post(self.urls['search'], data=self.search_params, timeout=30).text
+                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=self.search_params, timeout=30).text
                 except Exception:
                     continue
 
@@ -99,7 +99,7 @@ class newpctProvider(TorrentProvider):
                         torrent_tbody = html.find('tbody')
 
                         if len(torrent_tbody) < 1:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         torrent_table = torrent_tbody.findAll('tr')
@@ -119,7 +119,7 @@ class newpctProvider(TorrentProvider):
                                     title = self._processTitle(title_raw)
 
                                     item = title, download_url, size
-                                    sickrage.srLogger.debug("Found result: %s " % title)
+                                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                     items[mode].append(item)
                                     iteration += 1
@@ -128,7 +128,7 @@ class newpctProvider(TorrentProvider):
                                 continue
 
                 except Exception:
-                    sickrage.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             results += items[mode]
 

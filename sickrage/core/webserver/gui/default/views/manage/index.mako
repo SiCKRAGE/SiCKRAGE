@@ -33,14 +33,14 @@
 
             <tfoot>
             <tr>
-                <td rowspan="1" colspan="${(12, 13)[bool(sickrage.srConfig.USE_SUBTITLES)]}" class="align-center alt">
+                <td rowspan="1" colspan="${(12, 13)[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}" class="align-center alt">
                     <input class="btn pull-left" type="button" value="Mass Edit" id="submitMassEdit"/>
                     <input class="btn pull-left" type="button" value="Mass Update" id="submitMassUpdate"/>
                     <input class="btn pull-left" type="button" value="Mass Rescan" id="submitMassRescan"/>
                     <input class="btn pull-left" type="button" value="Mass Rename" id="submitMassRename"/>
                     <input class="btn pull-left" type="button" value="Mass Delete" id="submitMassDelete"/>
                     <input class="btn pull-left" type="button" value="Mass Remove" id="submitMassRemove"/>
-                    % if sickrage.srConfig.USE_SUBTITLES:
+                    % if sickrage.srCore.srConfig.USE_SUBTITLES:
                         <input class="btn pull-left" type="button" value="Mass Subtitle" id="submitMassSubtitle"/>
                     % endif
                 </td>

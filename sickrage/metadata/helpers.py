@@ -92,11 +92,11 @@ def getShowImage(url, imgNum=None):
     if imgNum:
         tempURL = url.split('-')[0] + "-" + str(imgNum) + ".jpg"
 
-    sickrage.srLogger.debug("Fetching image from " + tempURL)
+    sickrage.srCore.srLogger.debug("Fetching image from " + tempURL)
 
-    image_data = sickrage.srWebSession.get(tempURL)
+    image_data = sickrage.srCore.srWebSession.get(tempURL)
     if image_data is None:
-        sickrage.srLogger.warning("There was an error trying to retrieve the image, aborting")
+        sickrage.srCore.srLogger.warning("There was an error trying to retrieve the image, aborting")
         return
 
     return image_data.content
@@ -122,14 +122,14 @@ def getFileMetadata(filename):
             if p.title:
                 titles.append(p.title)
         except:
-            sickrage.srLogger.error('Failed getting title from meta: %s', traceback.format_exc())
+            sickrage.srCore.srLogger.error('Failed getting title from meta: %s', traceback.format_exc())
 
         for video in p.video:
             try:
                 if video.title:
                     titles.append(video.title)
             except:
-                sickrage.srLogger.error('Failed getting title from meta: %s', traceback.format_exc())
+                sickrage.srCore.srLogger.error('Failed getting title from meta: %s', traceback.format_exc())
 
         return {
             'titles': list(set(titles)),
@@ -140,11 +140,11 @@ def getFileMetadata(filename):
             'audio_channels': p.audio[0].channels,
         }
     except enzyme.exceptions.ParseError:
-        sickrage.srLogger.debug('Failed to parse meta for %s', filename)
+        sickrage.srCore.srLogger.debug('Failed to parse meta for %s', filename)
     except enzyme.exceptions.NoParserError:
-        sickrage.srLogger.debug('No parser found for %s', filename)
+        sickrage.srCore.srLogger.debug('No parser found for %s', filename)
     except:
-        sickrage.srLogger.debug('Failed parsing %s', filename)
+        sickrage.srCore.srLogger.debug('Failed parsing %s', filename)
 
     return {}
 
@@ -169,7 +169,7 @@ def qualityFromFileMeta(filename):
             else:
                 data.update(getResolution(filename))
         except:
-            sickrage.srLogger.debug('Error parsing metadata: %s %s', (filename, traceback.format_exc()))
+            sickrage.srCore.srLogger.debug('Error parsing metadata: %s %s', (filename, traceback.format_exc()))
             pass
 
         base_filename = os.path.basename(filename)
@@ -184,6 +184,6 @@ def qualityFromFileMeta(filename):
             quality = (Quality.SDTV, Quality.SDDVD)[
                 re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
 
-        sickrage.srLogger.debug("Quality from file metadata: {}".format(get_quality_string(quality)))
+        sickrage.srCore.srLogger.debug("Quality from file metadata: {}".format(get_quality_string(quality)))
 
     return quality

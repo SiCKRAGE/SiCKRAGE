@@ -33,6 +33,7 @@ from logging.handlers import RotatingFileHandler
 
 #logging.basicConfig()
 import sickrage
+
 from sickrage.core import makeDir
 
 
@@ -133,7 +134,7 @@ class srLogger(logging.getLoggerClass()):
 
             try:
                 record.msg = re.sub(
-                    r"(.*)\b({})\b(.*)".format('|'.join([x for x in sickrage.srConfig.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
+                    r"(.*)\b({})\b(.*)".format('|'.join([x for x in sickrage.srCore.srConfig.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
                     record.msg)
 
                 # needed because Newznab apikey isn't stored as key=value in a section.
@@ -185,7 +186,7 @@ class srLogger(logging.getLoggerClass()):
         issue_id = None
 
         from sickrage.core.classes import ErrorViewer
-        if not (sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
+        if not (sickrage.srCore.srConfig.GIT_USERNAME and sickrage.srCore.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
                 ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
@@ -204,11 +205,11 @@ class srLogger(logging.getLoggerClass()):
 
         self.submitter_running = True
 
-        gh_org = sickrage.srConfig.GIT_ORG or 'SiCKRAGETV'
+        gh_org = sickrage.srCore.srConfig.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
         import github
-        gh = github.Github(login_or_token=sickrage.srConfig.GIT_USERNAME, password=sickrage.srConfig.GIT_PASSWORD,
+        gh = github.Github(login_or_token=sickrage.srCore.srConfig.GIT_USERNAME, password=sickrage.srCore.srConfig.GIT_PASSWORD,
                            user_agent="SiCKRAGE")
 
         try:
@@ -219,7 +220,7 @@ class srLogger(logging.getLoggerClass()):
                 with io.open(self.logFile, 'r') as f:
                     log_data = f.readlines()
 
-            for i in range(1, int(sickrage.srConfig.LOG_NR)):
+            for i in range(1, int(sickrage.srCore.srConfig.LOG_NR)):
                 if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
                     with io.open(self.logFile + ".%i" % i, 'r') as f:
                         log_data += f.readlines()

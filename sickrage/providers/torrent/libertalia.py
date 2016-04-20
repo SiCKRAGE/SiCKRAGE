@@ -57,20 +57,20 @@ class LibertaliaProvider(TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password}
 
         try:
-            response = sickrage.srWebSession.post(self.urls['base_url'] + '/login.php', data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/login.php', data=login_params, timeout=30).text
         except Exception:
-            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('upload.php', response):
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -85,17 +85,17 @@ class LibertaliaProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
                     continue
 
@@ -130,7 +130,7 @@ class LibertaliaProvider(TorrentProvider):
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    sickrage.srLogger.debug("Found result: %s " % title)
+                                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 

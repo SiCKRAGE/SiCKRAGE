@@ -32,7 +32,7 @@ class qbittorrentAPI(GenericClient):
     def _get_auth(self):
 
         try:
-            self.response = sickrage.srWebSession.get(self.host, auth=HTTPDigestAuth(self.username, self.password), verify=False)
+            self.response = sickrage.srCore.srWebSession.get(self.host, auth=HTTPDigestAuth(self.username, self.password), verify=False)
             self.auth = self.response.content
         except Exception:
             return None
@@ -63,7 +63,7 @@ class qbittorrentAPI(GenericClient):
     def _set_torrent_pause(self, result):
 
         self.url = self.host + 'command/resume'
-        if sickrage.srConfig.TORRENT_PAUSED:
+        if sickrage.srCore.srConfig.TORRENT_PAUSED:
             self.url = self.host + 'command/pause'
 
         data = {'hash': result.hash}

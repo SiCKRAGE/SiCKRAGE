@@ -53,17 +53,17 @@ class CpasbienProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + '/recherche/' + search_string.replace('.', '-') + '.html'
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
                     continue
 
@@ -109,12 +109,12 @@ class CpasbienProvider(TorrentProvider):
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

@@ -51,14 +51,14 @@
         % else:
                     <% season_special = 0 %>
         % endif
-        % if not sickrage.srConfig.DISPLAY_SHOW_SPECIALS and season_special:
+        % if not sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS and season_special:
             <% lastSeason = seasonResults.pop(-1) %>
         % endif
         <span class="h2footer displayspecials pull-right">
             % if season_special:
                 Display Specials:
                 <a class="inner"
-                   href="/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srConfig.DISPLAY_SHOW_SPECIALS)]}</a>
+                   href="/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS)]}</a>
             % endif
         </span>
 
@@ -266,7 +266,7 @@
                                  alt="${show.lang}" title="${show.lang}"
                                  onError="this.onerror=null;this.src='/images/flags/unknown.png';"/></td>
                     </tr>
-                    % if sickrage.srConfig.USE_SUBTITLES:
+                    % if sickrage.srCore.srConfig.USE_SUBTITLES:
                         <tr>
                             <td class="showLegend">Subtitles:</td>
                             <td><img src="/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
@@ -276,8 +276,8 @@
                     <tr>
                         <td class="showLegend">Season Folders:</td>
                         <td><img
-                                src="/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srConfig.NAMING_FORCE_FOLDERS)]}"
-                                alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.srConfig.NAMING_FORCE_FOLDERS)]}"
+                                src="/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
+                                alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
                                 width="16" height="16"/></td>
                     </tr>
                     <tr>
@@ -327,7 +327,7 @@
             Change selected episodes to:</br>
             <select id="statusSelect" class="form-control form-control-inline input-sm">
                 <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                % if not sickrage.srConfig.USE_FAILED_DOWNLOADS:
+                % if not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
                     <% availableStatus.remove(FAILED) %>
                 % endif
                 % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
@@ -379,7 +379,7 @@
         % for epResult in episodeResults:
             <%
                 epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
-                if not epStr in epCats or not sickrage.srConfig.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
+                if not epStr in epCats or not sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
                     next
 
                 scene = False
@@ -437,10 +437,10 @@
                         <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
                         <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
                         <th data-sorter="false" class="col-airdate">Airdate</th>
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srConfig.DOWNLOAD_URL)]}>
+                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srCore.srConfig.DOWNLOAD_URL)]}>
                             Download
                         </th>
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srConfig.USE_SUBTITLES)]}>
+                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}>
                             Subtitles
                         </th>
                         <th data-sorter="false" class="col-status">Status</th>
@@ -454,7 +454,7 @@
                             <h3 style="display: inline;"><a
                                     name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[int(epResult["season"]) > 0]}
                             </h3>
-                            % if sickrage.srConfig.DISPLAY_ALL_SEASONS == False:
+                            % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
                                 <button id="showseason-${epResult['season']}" type="button"
                                         class="btn btn-xs pull-right" data-toggle="collapse"
                                         data-target="#collapseSeason-${epResult['season']}">Show Episodes
@@ -502,7 +502,7 @@
                             <h3 style="display: inline;"><a
                                     name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}
                             </h3>
-                            % if sickrage.srConfig.DISPLAY_ALL_SEASONS == False:
+                            % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
                                 <button id="showseason-${epResult['season']}" type="button"
                                         class="btn btn-xs pull-right" data-toggle="collapse"
                                         data-target="#collapseSeason-${epResult['season']}">Show Episodes
@@ -543,7 +543,7 @@
                 </tr>
                 % endif
                 </tbody>
-                % if sickrage.srConfig.DISPLAY_ALL_SEASONS == False:
+                % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
                     <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult['season']}">
                 % else:
 
@@ -635,13 +635,13 @@
                     % endif
                 </td>
                 <td>
-                    % if sickrage.srConfig.DOWNLOAD_URL and epResult['location']:
+                    % if sickrage.srCore.srConfig.DOWNLOAD_URL and epResult['location']:
                     <%
                         filename = epResult['location']
-                        for rootDir in sickrage.srConfig.ROOT_DIRS.split('|'):
+                        for rootDir in sickrage.srCore.srConfig.ROOT_DIRS.split('|'):
                                 if rootDir.startswith('/'):
                                     filename = filename.replace(rootDir, "")
-                        filename = sickrage.srConfig.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
+                        filename = sickrage.srCore.srConfig.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
                     %>
                         <div style="text-align: center;"><a href="${filename}">Download</a></div>
                     % endif
@@ -649,7 +649,7 @@
                 <td class="col-subtitles" align="center">
                     % for sub_lang in [subtitle_searcher.fromietf(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
                     <% flag = sub_lang.opensubtitles %>
-                    % if (not sickrage.srConfig.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
+                    % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
                         <% flag = 'checkbox' %>
                     % endif
                         <img src="/images/subtitles/flags/${flag}.png" width="16" height="11"
@@ -665,7 +665,7 @@
                 % endif
                 <td class="col-search">
                     % if int(epResult["season"]) != 0:
-                        % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.srConfig.USE_FAILED_DOWNLOADS:
+                        % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
                             <a class="epRetry"
                                id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
@@ -680,7 +680,7 @@
                                     title="Manual Search"/></a>
                         % endif
                     % endif
-                    % if sickrage.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult["subtitles"].split(',')):
+                    % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult["subtitles"].split(',')):
                         <a class="epSubtitlesSearch"
                            href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
                                 src="/images/closed_captioning.png" height="16" alt="search subtitles"

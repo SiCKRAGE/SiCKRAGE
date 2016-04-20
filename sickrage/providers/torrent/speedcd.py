@@ -58,13 +58,13 @@ class SpeedCDProvider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -78,11 +78,11 @@ class SpeedCDProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
@@ -90,7 +90,7 @@ class SpeedCDProvider(TorrentProvider):
                                  **self.categories[mode])
 
                 try:
-                    parsedJSON = sickrage.srWebSession.post(self.urls['search'], data=post_data).json()
+                    parsedJSON = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
                     torrents = parsedJSON['Fs'][0]['Cn']['torrents']
                 except Exception:
                     continue
@@ -112,14 +112,14 @@ class SpeedCDProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srLogger.debug(
+                            sickrage.srCore.srLogger.debug(
                                 "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                     title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

@@ -19,12 +19,12 @@
 from __future__ import unicode_literals
 
 import re
-import time
 import traceback
 from urllib import quote_plus
 from xml.parsers.expat import ExpatError
 
 import xmltodict
+from tornado import gen
 
 import sickrage
 from sickrage.core.caches import tv_cache
@@ -67,34 +67,34 @@ class TORRENTZProvider(TorrentProvider):
                 if mode is not 'RSS':
                     search_url += '?q=' + quote_plus(search_string)
 
-                sickrage.srLogger.info(search_url)
+                sickrage.srCore.srLogger.info(search_url)
 
                 try:
-                    data = sickrage.srWebSession.get(search_url).text
+                    data = sickrage.srCore.srWebSession.get(search_url).text
                 except Exception:
-                    sickrage.srLogger.info('Seems to be down right now!')
+                    sickrage.srCore.srLogger.info('Seems to be down right now!')
                     continue
 
                 if not data.startswith("<?xml"):
-                    sickrage.srLogger.debug('Wrong data returned from: ' + search_url)
+                    sickrage.srCore.srLogger.debug('Wrong data returned from: ' + search_url)
                     continue
 
                 if not data.startswith('<?xml'):
-                    sickrage.srLogger.info('Expected xml but got something else, is your mirror failing?')
+                    sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
                     continue
 
                 try:
                     data = xmltodict.parse(data)
                 except ExpatError:
-                    sickrage.srLogger.error(
+                    sickrage.srCore.srLogger.error(
                         "Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                     continue
 
                 if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
-                    sickrage.srLogger.debug("Malformed rss returned or no results, skipping")
+                    sickrage.srCore.srLogger.debug("Malformed rss returned or no results, skipping")
                     continue
 
-                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
                 # https://github.com/martinblech/xmltodict/issues/111
                 entries = data['rss']['channel']['item']
@@ -120,7 +120,7 @@ class TORRENTZProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srLogger.debug(
+                            sickrage.srCore.srLogger.debug(
                                 "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                     title, seeders, leechers))
                         continue

@@ -44,11 +44,11 @@ class FreeMobileNotifier(srNotifiers):
         """
 
         if id is None:
-            id = sickrage.srConfig.FREEMOBILE_ID
+            id = sickrage.srCore.srConfig.FREEMOBILE_ID
         if apiKey is None:
-            apiKey = sickrage.srConfig.FREEMOBILE_APIKEY
+            apiKey = sickrage.srCore.srConfig.FREEMOBILE_APIKEY
 
-        sickrage.srLogger.debug("Free Mobile in use with API KEY: " + apiKey)
+        sickrage.srCore.srLogger.debug("Free Mobile in use with API KEY: " + apiKey)
 
         # build up the URL and parameters
         msg = msg.strip()
@@ -63,43 +63,43 @@ class FreeMobileNotifier(srNotifiers):
             if hasattr(e, 'code'):
                 if e.code == 400:
                     message = "Missing parameter(s)."
-                    sickrage.srLogger.error(message)
+                    sickrage.srCore.srLogger.error(message)
                     return False, message
                 if e.code == 402:
                     message = "Too much SMS sent in a short time."
-                    sickrage.srLogger.error(message)
+                    sickrage.srCore.srLogger.error(message)
                     return False, message
                 if e.code == 403:
                     message = "API service isn't enabled in your account or ID / API key is incorrect."
-                    sickrage.srLogger.error(message)
+                    sickrage.srCore.srLogger.error(message)
                     return False, message
                 if e.code == 500:
                     message = "Server error. Please retry in few moment."
-                    sickrage.srLogger.error(message)
+                    sickrage.srCore.srLogger.error(message)
                     return False, message
         except Exception as e:
             message = "Error while sending SMS: {0}".format(e.message)
-            sickrage.srLogger.error(message)
+            sickrage.srCore.srLogger.error(message)
             return False, message
 
         message = "Free Mobile SMS successful."
-        sickrage.srLogger.info(message)
+        sickrage.srCore.srLogger.info(message)
         return True, message
 
     def _notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
-        if sickrage.srConfig.FREEMOBILE_NOTIFY_ONSNATCH:
+        if sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSNATCH:
             self._notifyFreeMobile(title, ep_name)
 
     def _notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
-        if sickrage.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD:
+        if sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD:
             self._notifyFreeMobile(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
-        if sickrage.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyFreeMobile(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srConfig.USE_FREEMOBILE:
+        if sickrage.srCore.srConfig.USE_FREEMOBILE:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyFreeMobile(title, update_text + new_version)
@@ -115,10 +115,10 @@ class FreeMobileNotifier(srNotifiers):
         force: Enforce sending, for instance for testing
         """
 
-        if not sickrage.srConfig.USE_FREEMOBILE and not force:
-            sickrage.srLogger.debug("Notification for Free Mobile not enabled, skipping this notification")
+        if not sickrage.srCore.srConfig.USE_FREEMOBILE and not force:
+            sickrage.srCore.srLogger.debug("Notification for Free Mobile not enabled, skipping this notification")
             return False, "Disabled"
 
-        sickrage.srLogger.debug("Sending a SMS for " + message)
+        sickrage.srCore.srLogger.debug("Sending a SMS for " + message)
 
         return self._sendFreeMobileSMS(title, message, id, apiKey)

@@ -61,7 +61,7 @@ class Media(object):
         :return: The root folder containing the media
         """
 
-        return os.path.join(sickrage.srConfig.GUI_DIR)
+        return os.path.join(sickrage.srCore.srConfig.GUI_DIR)
 
     def get_media_type(self):
         """

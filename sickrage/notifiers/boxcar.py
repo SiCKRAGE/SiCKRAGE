@@ -74,14 +74,14 @@ class BoxcarNotifier(srNotifiers):
         except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                sickrage.srLogger.error("Boxcar notification failed. Error code: {}".format(e.message))
+                sickrage.srCore.srLogger.error("Boxcar notification failed. Error code: {}".format(e.message))
                 return False
             else:
-                sickrage.srLogger.warning("Boxcar notification failed. Error code: " + str(e.code))
+                sickrage.srCore.srLogger.warning("Boxcar notification failed. Error code: " + str(e.code))
 
             # HTTP status 404 if the provided email address isn't a Boxcar user.
             if e.code == 404:
-                sickrage.srLogger.warning("Username is wrong/not a boxcar email. Boxcar will send an email to it")
+                sickrage.srCore.srLogger.warning("Username is wrong/not a boxcar email. Boxcar will send an email to it")
                 return False
 
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
@@ -89,7 +89,7 @@ class BoxcarNotifier(srNotifiers):
 
                 # If the user has already added your service, we'll return an HTTP status code of 401.
                 if subscribe:
-                    sickrage.srLogger.error("Already subscribed to service")
+                    sickrage.srCore.srLogger.error("Already subscribed to service")
                     # i dont know if this is true or false ... its neither but i also dont know how we got here in the first place
                     return False
 
@@ -97,34 +97,34 @@ class BoxcarNotifier(srNotifiers):
                 else:
                     subscribeNote = self._sendBoxcar(msg, title, email, True)
                     if subscribeNote:
-                        sickrage.srLogger.debug("Subscription send")
+                        sickrage.srCore.srLogger.debug("Subscription send")
                         return True
                     else:
-                        sickrage.srLogger.error("Subscription could not be send")
+                        sickrage.srCore.srLogger.error("Subscription could not be send")
                         return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
             elif e.code == 400:
-                sickrage.srLogger.error("Wrong data sent to boxcar")
+                sickrage.srCore.srLogger.error("Wrong data sent to boxcar")
                 return False
 
-        sickrage.srLogger.info("Boxcar notification successful.")
+        sickrage.srCore.srLogger.info("Boxcar notification successful.")
         return True
 
     def _notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
-        if sickrage.srConfig.BOXCAR_NOTIFY_ONSNATCH:
+        if sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONSNATCH:
             self._notifyBoxcar(title, ep_name)
 
     def _notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
-        if sickrage.srConfig.BOXCAR_NOTIFY_ONDOWNLOAD:
+        if sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONDOWNLOAD:
             self._notifyBoxcar(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
-        if sickrage.srConfig.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srConfig.USE_BOXCAR:
+        if sickrage.srCore.srConfig.USE_BOXCAR:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyBoxcar(title, update_text + new_version)
@@ -139,14 +139,14 @@ class BoxcarNotifier(srNotifiers):
         force: If True then the notification will be sent even if Boxcar is disabled in the config
         """
 
-        if not sickrage.srConfig.USE_BOXCAR and not force:
-            sickrage.srLogger.debug("Notification for Boxcar not enabled, skipping this notification")
+        if not sickrage.srCore.srConfig.USE_BOXCAR and not force:
+            sickrage.srCore.srLogger.debug("Notification for Boxcar not enabled, skipping this notification")
             return False
 
         # if no username was given then use the one from the config
         if not username:
-            username = sickrage.srConfig.BOXCAR_USERNAME
+            username = sickrage.srCore.srConfig.BOXCAR_USERNAME
 
-        sickrage.srLogger.debug("Sending notification for " + message)
+        sickrage.srCore.srLogger.debug("Sending notification for " + message)
 
         return self._sendBoxcar(message, title, username)

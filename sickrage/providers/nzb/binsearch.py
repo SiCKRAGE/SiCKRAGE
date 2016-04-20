@@ -99,7 +99,7 @@ class BinSearchCache(tv_cache.TVCache):
 
                 url += urllib.urlencode(urlArgs)
 
-                sickrage.srLogger.debug("Cache update URL: %s " % url)
+                sickrage.srCore.srLogger.debug("Cache update URL: %s " % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
                     ci = self._parseItem(item)

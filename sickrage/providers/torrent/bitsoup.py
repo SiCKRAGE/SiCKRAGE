@@ -54,7 +54,7 @@ class BitSoupProvider(TorrentProvider):
 
     def _checkAuth(self):
         if not self.username or not self.password:
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -67,13 +67,13 @@ class BitSoupProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -87,16 +87,16 @@ class BitSoupProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 self.search_params['search'] = search_string
 
                 try:
-                    data = sickrage.srWebSession.get(self.urls['search'], self.search_params).text
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], self.search_params).text
                 except Exception:
                     continue
 
@@ -107,7 +107,7 @@ class BitSoupProvider(TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
@@ -131,19 +131,19 @@ class BitSoupProvider(TorrentProvider):
                                 # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
+                                    sickrage.srCore.srLogger.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception:
-                    sickrage.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

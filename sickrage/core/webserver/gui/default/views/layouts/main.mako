@@ -1,4 +1,4 @@
-<%!
+    <%!
     import datetime
     import re
 
@@ -25,9 +25,9 @@
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    % if sickrage.srConfig.THEME_NAME == "dark":
+    % if sickrage.srCore.srConfig.THEME_NAME == "dark":
         <meta name="theme-color" content="#15528F">
-    % elif sickrage.srConfig.THEME_NAME == "light":
+    % elif sickrage.srCore.srConfig.THEME_NAME == "light":
         <meta name="theme-color" content="#333333">
     % endif
     <meta name="msapplication-TileColor" content="#FFFFFF">
@@ -35,22 +35,22 @@
     <meta name="msapplication-config" content="/browserconfig.xml">
     <meta data-var="srPID" data-content="${srPID}">
     <meta data-var="srDefaultPage" data-content="${srDefaultPage}">
-    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srConfig.THEME_NAME == 'dark']}">
-    <meta data-var="anonURL" data-content="${sickrage.srConfig.ANON_REDIRECT}">
-    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.srConfig.ANIME_SPLIT_HOME}">
-    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.srConfig.COMING_EPS_LAYOUT}">
-    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.srConfig.COMING_EPS_SORT}">
-    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.srConfig.DATE_PRESET}">
-    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.srConfig.FILTER_ROW}">
-    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.srConfig.FUZZY_DATING}">
-    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.srConfig.HISTORY_LAYOUT}">
-    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.srConfig.HOME_LAYOUT}">
-    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.srConfig.POSTER_SORTBY}">
-    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.srConfig.POSTER_SORTDIR}">
-    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.srConfig.ROOT_DIRS}">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srConfig.SORT_ARTICLE}">
-    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srConfig.TIME_PRESET}">
-    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srConfig.TRIM_ZERO}">
+    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}">
+    <meta data-var="anonURL" data-content="${sickrage.srCore.srConfig.ANON_REDIRECT}">
+    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.srCore.srConfig.ANIME_SPLIT_HOME}">
+    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.srCore.srConfig.COMING_EPS_LAYOUT}">
+    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.srCore.srConfig.COMING_EPS_SORT}">
+    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.srCore.srConfig.DATE_PRESET}">
+    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.srCore.srConfig.FILTER_ROW}">
+    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.srCore.srConfig.FUZZY_DATING}">
+    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.srCore.srConfig.HISTORY_LAYOUT}">
+    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.srCore.srConfig.HOME_LAYOUT}">
+    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.srCore.srConfig.POSTER_SORTBY}">
+    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.srCore.srConfig.POSTER_SORTDIR}">
+    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.srCore.srConfig.ROOT_DIRS}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.srConfig.SORT_ARTICLE}">
+    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.srConfig.TIME_PRESET}">
+    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.srConfig.TRIM_ZERO}">
     <%block name="metas" />
 
     <link rel="shortcut icon" href="/images/ico/favicon.ico">
@@ -74,7 +74,7 @@
     % else:
         <link rel="stylesheet" type="text/css" href="/css/core.min.css?${srPID}"/>
     % endif
-    <link rel="stylesheet" type="text/css" href="/css/themes/${sickrage.srConfig.THEME_NAME}.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css?${srPID}"/>
     <%block name="css" />
 
     <!--[if lt IE 9]>
@@ -119,9 +119,9 @@
                             <li><a href="/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a></li>
                             <li><a href="/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
                                 Post-Processing</a></li>
-                            % if sickrage.srConfig.SHOWS_RECENT:
+                            % if sickrage.srCore.srConfig.SHOWS_RECENT:
                                 <li role="separator" class="divider"></li>
-                            % for recentShow in sickrage.srConfig.SHOWS_RECENT:
+                            % for recentShow in sickrage.srCore.srConfig.SHOWS_RECENT:
                                 <li><a href="/home/displayShow/?show=${recentShow['indexerid']}"><i
                                         class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a></li>
                             % endfor
@@ -143,26 +143,26 @@
                                 Searches</a></li>
                             <li><a href="/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode Status
                                 Management</a></li>
-                            % if sickrage.srConfig.USE_PLEX and sickrage.srConfig.PLEX_SERVER_HOST != "":
+                            % if sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_SERVER_HOST != "":
                                 <li><a href="/home/updatePLEX/"><i class="menu-icon-backlog-view"></i>&nbsp;Update PLEX</a>
                                 </li>
                             % endif
-                            % if sickrage.srConfig.USE_KODI and sickrage.srConfig.KODI_HOST != "":
+                            % if sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_HOST != "":
                                 <li><a href="/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update KODI</a></li>
                             % endif
-                            % if sickrage.srConfig.USE_EMBY and sickrage.srConfig.EMBY_HOST != "" and sickrage.srConfig.EMBY_APIKEY != "":
+                            % if sickrage.srCore.srConfig.USE_EMBY and sickrage.srCore.srConfig.EMBY_HOST != "" and sickrage.srCore.srConfig.EMBY_APIKEY != "":
                                 <li><a href="/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update Emby</a>
                                 </li>
                             % endif
-                            % if sickrage.srConfig.USE_TORRENTS and sickrage.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srConfig.ENABLE_HTTPS and sickrage.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srConfig.ENABLE_HTTPS and sickrage.srConfig.TORRENT_HOST[:5] == 'http:'):
+                            % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
                                 <li><a href="/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage
                                     Torrents</a></li>
                             % endif
-                            % if sickrage.srConfig.USE_FAILED_DOWNLOADS:
+                            % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
                                 <li><a href="/manage/failedDownloads/"><i class="menu-icon-failed-download"></i>&nbsp;Failed
                                     Downloads</a></li>
                             % endif
-                            % if sickrage.srConfig.USE_SUBTITLES:
+                            % if sickrage.srCore.srConfig.USE_SUBTITLES:
                                 <li><a href="/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed
                                     Subtitle
                                     Management</a></li>
@@ -206,12 +206,12 @@
                     </li>
 
                     <%
-                        if sickrage.srConfig.NEWS_UNREAD:
-                                newsBadge = ' <span class="badge">'+str(sickrage.srConfig.NEWS_UNREAD)+'</span>'
+                        if sickrage.srCore.srConfig.NEWS_UNREAD:
+                                newsBadge = ' <span class="badge">'+str(sickrage.srCore.srConfig.NEWS_UNREAD)+'</span>'
                         else:
                                 newsBadge = ''
 
-                        numCombined = numErrors + numWarnings + sickrage.srConfig.NEWS_UNREAD
+                        numCombined = numErrors + numWarnings + sickrage.srCore.srConfig.NEWS_UNREAD
                         if numCombined:
                                 if numErrors:
                                     toolsBadgeClass = ' btn-danger'
@@ -235,7 +235,7 @@
                             <li><a href="/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                             <li><a href="/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
                             <li><a href="http://sickragetv.herokuapp.com/donate" rel="noreferrer"
-                                   onclick="window.open('${sickrage.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
+                                   onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
                                     class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                             <li role="separator" class="divider"></li>
                             %if numErrors:
@@ -333,9 +333,9 @@
 
                 &nbsp;/&nbsp;<span class="footerhighlight">${ep_total}</span> Episodes Downloaded ${ep_percentage}
                 | Daily Search: <span
-                    class="footerhighlight">${str(sickrage.srScheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
+                    class="footerhighlight">${str(sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
                 | Backlog Search: <span
-                    class="footerhighlight">${str(sickrage.srScheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+                    class="footerhighlight">${str(sickrage.srCore.srScheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
 
                 <div>
                     % if has_resource_module:

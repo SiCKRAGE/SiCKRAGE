@@ -19,12 +19,14 @@
 from __future__ import unicode_literals
 
 from concurrent import futures
+from tornado import gen
+
+
 
 __all__ = ["main_db", "cache_db", "failed_db"]
 
 import os
 import re
-import time
 import sqlite3
 import threading
 from contextlib import contextmanager
@@ -111,9 +113,9 @@ class Transaction(object):
                     result = cursor.fetchall()
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     conn.rollback()
-                    time.sleep(1)
+                    gen.sleep(1)
                 except Exception as e:
-                    sickrage.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
+                    sickrage.srCore.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
                 finally:
                     return result
 
@@ -230,7 +232,7 @@ class Connection(object):
         from itertools import izip
         with futures.ThreadPoolExecutor(len(upserts)) as executor, self.transaction() as tx:
             sqlResults = executor.map(tx.upsert, *izip(*upserts))
-            sickrage.srLogger.db("{} Upserts executed".format(len(upserts)))
+            sickrage.srCore.srLogger.db("{} Upserts executed".format(len(upserts)))
             return sqlResults
 
     def mass_action(self, queries):
@@ -243,7 +245,7 @@ class Connection(object):
 
         with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
             sqlResults = executor.map(tx.query, queries)
-            sickrage.srLogger.db("{} Transactions executed".format(len(queries)))
+            sickrage.srCore.srLogger.db("{} Transactions executed".format(len(queries)))
             return sqlResults
 
     def action(self, query, *args):
@@ -254,9 +256,9 @@ class Connection(object):
         :param query: Query string
         """
 
-        sickrage.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
+        sickrage.srCore.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
-        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
+        with futures.ThreadPoolExecutor(1) as executor, self.transaction() as tx:
             return executor.submit(tx.query, [query, list(*args)]).result()
 
     def upsert(self, tableName, valueDict, keyDict):
@@ -269,7 +271,7 @@ class Connection(object):
         :param keyDict:  columns in table to update
         """
 
-        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
+        with futures.ThreadPoolExecutor(1) as executor, self.transaction() as tx:
             return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
 
     def select(self, query, *args):
@@ -362,17 +364,17 @@ class SchemaUpgrade(Connection):
             name = prettyName(upgradeClass.__name__)
 
             while (True):
-                sickrage.srLogger.debug("Checking {} database structure".format(name))
+                sickrage.srCore.srLogger.debug("Checking {} database structure".format(name))
 
                 try:
                     instance = upgradeClass()
 
                     if not instance.test():
-                        sickrage.srLogger.debug("Database upgrade required: {}".format(name))
+                        sickrage.srCore.srLogger.debug("Database upgrade required: {}".format(name))
                         instance.execute()
-                        sickrage.srLogger.debug("{} upgrade completed".format(name))
+                        sickrage.srCore.srLogger.debug("{} upgrade completed".format(name))
                     else:
-                        sickrage.srLogger.debug("{} upgrade not required".format(name))
+                        sickrage.srCore.srLogger.debug("{} upgrade not required".format(name))
 
                     return True
                 except sqlite3.DatabaseError:
@@ -390,18 +392,18 @@ class SchemaUpgrade(Connection):
         :return: True if restore succeeds, False if it fails
         """
 
-        sickrage.srLogger.info("Restoring database before trying upgrade again")
+        sickrage.srCore.srLogger.info("Restoring database before trying upgrade again")
         if not restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
-            sickrage.srLogger.info("Database restore failed, abort upgrading database")
+            sickrage.srCore.srLogger.info("Database restore failed, abort upgrading database")
             return False
         return True
 
     def backup(self, version):
-        sickrage.srLogger.info("Backing up database before upgrade")
+        sickrage.srCore.srLogger.info("Backing up database before upgrade")
         if not backupVersionedFile(dbFilename(), version):
-            sickrage.srLogger.log_error_and_exit("Database backup failed, abort upgrading database")
+            sickrage.srCore.srLogger.log_error_and_exit("Database backup failed, abort upgrading database")
         else:
-            sickrage.srLogger.info("Proceeding with upgrade")
+            sickrage.srCore.srLogger.info("Proceeding with upgrade")
 
     @classmethod
     def get_subclasses(cls):

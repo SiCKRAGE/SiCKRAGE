@@ -26,7 +26,7 @@
                 <select name="process_method" id="process_method" class="form-control form-control-inline input-sm" >
                 <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
                 % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
-                    <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                    <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
                 % endfor
                 </select>
             </td>
@@ -57,7 +57,7 @@
                 <span style="line-height: 0; font-size: 12px;"><i>&nbsp;(Check it to delete files and folders like auto processing)</i></span>
             </td>
         </tr>
-        % if sickrage.srConfig.USE_FAILED_DOWNLOADS:
+        % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
         <tr>
             <td>
                 <b>Mark download as failed:</b>

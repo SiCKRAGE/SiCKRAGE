@@ -49,7 +49,7 @@ class OmgwtfnzbsProvider(NZBProvider):
     def _checkAuth(self):
 
         if not self.username or not self.api_key:
-            sickrage.srLogger.warning("Invalid api key. Check your settings")
+            sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -68,13 +68,13 @@ class OmgwtfnzbsProvider(NZBProvider):
                 description_text = parsedJSON.get('notice')
 
                 if 'information is incorrect' in parsedJSON.get('notice'):
-                    sickrage.srLogger.warning("Invalid api key. Check your settings")
+                    sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
 
                 elif '0 results matched your terms' in parsedJSON.get('notice'):
                     return True
 
                 else:
-                    sickrage.srLogger.debug("Unknown error: %s" % description_text)
+                    sickrage.srCore.srLogger.debug("Unknown error: %s" % description_text)
                     return False
 
             return True
@@ -104,18 +104,18 @@ class OmgwtfnzbsProvider(NZBProvider):
                   'api': self.api_key,
                   'eng': 1,
                   'catid': '19,20',  # SD,HD
-                  'retention': sickrage.srConfig.USENET_RETENTION,
+                  'retention': sickrage.srCore.srConfig.USENET_RETENTION,
                   'search': search}
 
         if retention or not params['retention']:
             params['retention'] = retention
 
         searchURL = self.urls['search'] % urllib.urlencode(params)
-        sickrage.srLogger.debug("Search string: %s" % params)
-        sickrage.srLogger.debug("Search URL: %s" % searchURL)
+        sickrage.srCore.srLogger.debug("Search string: %s" % params)
+        sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
         try:
-            parsedJSON = sickrage.srWebSession.get(searchURL).json()
+            parsedJSON = sickrage.srCore.srWebSession.get(searchURL).json()
         except Exception:
             return []
 
@@ -124,7 +124,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
             for item in parsedJSON:
                 if 'release' in item and 'getnzb' in item:
-                    sickrage.srLogger.debug("Found result: %s " % item.get('title'))
+                    sickrage.srCore.srLogger.debug("Found result: %s " % item.get('title'))
                     results.append(item)
 
             return results
@@ -184,6 +184,6 @@ class OmgwtfnzbsCache(TVCache):
 
         rss_url = self.provider.urls['rss'] % urllib.urlencode(params)
 
-        sickrage.srLogger.debug("Cache update URL: %s" % rss_url)
+        sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)

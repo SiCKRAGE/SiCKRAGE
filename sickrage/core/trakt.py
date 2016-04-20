@@ -22,9 +22,9 @@
 from __future__ import unicode_literals
 
 import json
-import time
 
 import requests
+from tornado import gen
 
 import sickrage
 
@@ -32,33 +32,33 @@ import sickrage
 
 class TraktAPI():
     def __init__(self, ssl_verify=True, timeout=30):
-        self.session = sickrage.srWebSession
+        self.session = sickrage.srCore.srWebSession
         self.timeout = timeout if timeout else None
-        self.auth_url = sickrage.srConfig.TRAKT_OAUTH_URL
-        self.api_url = sickrage.srConfig.TRAKT_API_URL
+        self.auth_url = sickrage.srCore.srConfig.TRAKT_OAUTH_URL
+        self.api_url = sickrage.srCore.srConfig.TRAKT_API_URL
         self.headers = {
             'Content-Type': 'application/json',
             'trakt-api-version': '2',
-            'trakt-api-key': sickrage.srConfig.TRAKT_API_KEY
+            'trakt-api-key': sickrage.srCore.srConfig.TRAKT_API_KEY
         }
 
     def traktToken(self, trakt_pin=None, refresh=False, count=0):
 
         if count > 3:
-            sickrage.srConfig.TRAKT_ACCESS_TOKEN = ''
+            sickrage.srCore.srConfig.TRAKT_ACCESS_TOKEN = ''
             return False
         elif count > 0:
-            time.sleep(2)
+            gen.sleep(2)
 
         data = {
-            'client_id': sickrage.srConfig.TRAKT_API_KEY,
-            'client_secret': sickrage.srConfig.TRAKT_API_SECRET,
+            'client_id': sickrage.srCore.srConfig.TRAKT_API_KEY,
+            'client_secret': sickrage.srCore.srConfig.TRAKT_API_SECRET,
             'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob'
         }
 
         if refresh:
             data['grant_type'] = 'refresh_token'
-            data['refresh_token'] = sickrage.srConfig.TRAKT_REFRESH_TOKEN
+            data['refresh_token'] = sickrage.srCore.srConfig.TRAKT_REFRESH_TOKEN
         else:
             data['grant_type'] = 'authorization_code'
             if not None == trakt_pin:
@@ -72,9 +72,9 @@ class TraktAPI():
                                  count=count)
 
         if 'access_token' in resp:
-            sickrage.srConfig.TRAKT_ACCESS_TOKEN = resp['access_token']
+            sickrage.srCore.srConfig.TRAKT_ACCESS_TOKEN = resp['access_token']
             if 'refresh_token' in resp:
-                sickrage.srConfig.TRAKT_REFRESH_TOKEN = resp['refresh_token']
+                sickrage.srCore.srConfig.TRAKT_REFRESH_TOKEN = resp['refresh_token']
             return True
         return False
 
@@ -95,11 +95,11 @@ class TraktAPI():
         if None == headers:
             headers = self.headers
 
-        if None == sickrage.srConfig.TRAKT_ACCESS_TOKEN:
-            sickrage.srLogger.warning('You must get a Trakt TOKEN. Check your Trakt settings')
+        if None == sickrage.srCore.srConfig.TRAKT_ACCESS_TOKEN:
+            sickrage.srCore.srLogger.warning('You must get a Trakt TOKEN. Check your Trakt settings')
             return {}
 
-        headers['Authorization'] = 'Bearer ' + sickrage.srConfig.TRAKT_ACCESS_TOKEN
+        headers['Authorization'] = 'Bearer ' + sickrage.srCore.srConfig.TRAKT_ACCESS_TOKEN
 
         try:
             resp = self.session.request(method, url + path,
@@ -108,7 +108,7 @@ class TraktAPI():
                                         data=json.dumps(data) if data else [])
 
             # check for http errors and raise if any are present
-            resp.raise_for_status()
+            #resp.raise_for_status()
 
             # convert response to json
             resp = resp.json()
@@ -116,28 +116,28 @@ class TraktAPI():
             code = getattr(e.response, 'status_code', None)
             if not code:
                 if 'timed out' in e:
-                    sickrage.srLogger.warning(
+                    sickrage.srCore.srLogger.warning(
                         'Timeout connecting to Trakt. Try to increase timeout value in Trakt settings')
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all                    
                 else:
-                    sickrage.srLogger.debug('Could not connect to Trakt. Error: {0}'.format(e.message))
+                    sickrage.srCore.srLogger.debug('Could not connect to Trakt. Error: {0}'.format(e.message))
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
-                sickrage.srLogger.debug('Retrying trakt api request: %s' % path)
+                sickrage.srCore.srLogger.debug('Retrying trakt api request: %s' % path)
                 return self.traktRequest(path, data, headers, url, method)
             elif code == 401:
                 if self.traktToken(refresh=True, count=count):
                     return self.traktRequest(path, data, headers, url, method)
                 else:
-                    sickrage.srLogger.warning('Unauthorized. Please check your Trakt settings')
+                    sickrage.srCore.srLogger.warning('Unauthorized. Please check your Trakt settings')
             elif code in (500, 501, 503, 504, 520, 521, 522):
                 # http://docs.trakt.apiary.io/#introduction/status-codes
-                sickrage.srLogger.debug('Trakt may have some issues and it\'s unavailable. Try again later please')
+                sickrage.srCore.srLogger.debug('Trakt may have some issues and it\'s unavailable. Try again later please')
             elif code == 404:
-                sickrage.srLogger.debug('Trakt error (404) the resource does not exist: %s' % url + path)
+                sickrage.srCore.srLogger.debug('Trakt error (404) the resource does not exist: %s' % url + path)
             else:
-                sickrage.srLogger.error('Could not connect to Trakt. Code error: {0}'.format(code))
+                sickrage.srCore.srLogger.error('Could not connect to Trakt. Code error: {0}'.format(code))
             return {}
 
         # check and confirm trakt call did not fail

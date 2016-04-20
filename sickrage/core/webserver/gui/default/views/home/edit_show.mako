@@ -104,7 +104,7 @@
                                         <span class="component-title">Subtitles</span>
                                         <span class="component-desc">
                                             <input type="checkbox" id="subtitles"
-                                                   name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.srConfig.USE_SUBTITLES == True]} ${('disabled="disabled', '')[bool(sickrage.srConfig.USE_SUBTITLES)]}/> search for subtitles
+                                                   name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.srCore.srConfig.USE_SUBTITLES == True]} ${('disabled="disabled', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/> search for subtitles
                                         </span>
                                     </label>
                                 </div>
@@ -168,7 +168,7 @@
                                         <span class="component-title">Season folders</span>
                                         <span class="component-desc">
                                             <input type="checkbox" id="season_folders"
-                                                   name="flatten_folders" ${('checked="checked"', '')[show.flatten_folders == 1 and not sickrage.srConfig.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.srConfig.NAMING_FORCE_FOLDERS)]}/> group episodes by season folder (uncheck to store in a single folder)
+                                                   name="flatten_folders" ${('checked="checked"', '')[show.flatten_folders == 1 and not sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}/> group episodes by season folder (uncheck to store in a single folder)
                                         </span>
                                     </label>
                                 </div>

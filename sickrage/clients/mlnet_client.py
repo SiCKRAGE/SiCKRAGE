@@ -34,7 +34,7 @@ class mlnetAPI(GenericClient):
     def _get_auth(self):
 
         try:
-            self.response = sickrage.srWebSession.get(self.host, verify=False)
+            self.response = sickrage.srCore.srWebSession.get(self.host, verify=False)
             self.auth = self.response.content
         except Exception:
             return None

@@ -64,13 +64,13 @@ class TransmitTheNetProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.srWebSession.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
         except Exception:
-            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username Incorrect', response) or re.search('Password Incorrect', response):
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -87,15 +87,15 @@ class TransmitTheNetProvider(TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + "?" + urlencode(self.search_params)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
-                    sickrage.srLogger.debug("No data returned from provider")
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -112,7 +112,7 @@ class TransmitTheNetProvider(TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 1:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for torrent_row in torrent_rows:
@@ -135,19 +135,19 @@ class TransmitTheNetProvider(TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
+                                    sickrage.srCore.srLogger.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                     title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

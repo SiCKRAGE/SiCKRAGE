@@ -54,7 +54,7 @@ class ComingEpisodes:
         :return: The list of coming episodes
         """
 
-        paused = sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED or paused
+        paused = sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED or paused
 
         if not isinstance(categories, list):
             categories = categories.split('|')
@@ -64,7 +64,7 @@ class ComingEpisodes:
 
         today = datetime.date.today().toordinal()
         next_week = (datetime.date.today() + datetime.timedelta(days=7)).toordinal()
-        recently = (datetime.date.today() - datetime.timedelta(days=sickrage.srConfig.COMING_EPS_MISSED_RANGE)).toordinal()
+        recently = (datetime.date.today() - datetime.timedelta(days=sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE)).toordinal()
         qualities_list = Quality.DOWNLOADED + \
                          Quality.SNATCHED + \
                          Quality.SNATCHED_BEST + \

@@ -58,13 +58,13 @@ class HDTorrentsProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'uid': self.username,
@@ -72,13 +72,13 @@ class HDTorrentsProvider(TorrentProvider):
                         'submit': 'Confirm'}
 
         try:
-            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('You need cookies enabled to log in.', response):
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -92,7 +92,7 @@ class HDTorrentsProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
@@ -100,14 +100,14 @@ class HDTorrentsProvider(TorrentProvider):
                 else:
                     searchURL = self.urls['rss'] % self.categories
 
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s" % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
                 try:
-                    data = sickrage.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
-                    sickrage.srLogger.debug("No data returned from provider")
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 # Search result page contains some invalid html that prevents html parser from returning all data.
@@ -117,24 +117,24 @@ class HDTorrentsProvider(TorrentProvider):
                     index = data.lower().ind
                     '<table class="mainblockcontenttt"'
                 except ValueError:
-                    sickrage.srLogger.error("Could not find table of torrents mainblockcontenttt")
+                    sickrage.srCore.srLogger.error("Could not find table of torrents mainblockcontenttt")
                     continue
 
                 data = urllib.unquote(data[index:].encode('utf-8')).decode('utf-8').replace('\t', '')
 
                 with bs4_parser(data) as html:
                     if not html:
-                        sickrage.srLogger.debug("No html data parsed from provider")
+                        sickrage.srCore.srLogger.debug("No html data parsed from provider")
                         continue
 
                     empty = html.find('No torrents here')
                     if empty:
-                        sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                         continue
 
                     tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
                     if not tables:
-                        sickrage.srLogger.error("Could not find table of torrents mainblockcontenttt")
+                        sickrage.srCore.srLogger.error("Could not find table of torrents mainblockcontenttt")
                         continue
 
                     torrents = tables.findChildren('tr')
@@ -178,7 +178,7 @@ class HDTorrentsProvider(TorrentProvider):
                                                 size = -1
 
                                 except Exception:
-                                    sickrage.srLogger.error(
+                                    sickrage.srCore.srLogger.error(
                                         "Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
                             if not all([title, download_url]):
@@ -187,14 +187,14 @@ class HDTorrentsProvider(TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
+                                    sickrage.srCore.srLogger.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 

@@ -32,14 +32,13 @@ class QueuePriorities(object):
 
 
 class GenericQueue(object):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self.queue_name = "QUEUE"
         self.lock = threading.Lock()
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
         self._queue = []
-        self._threads = []
 
     @property
     def name(self):
@@ -71,12 +70,12 @@ class GenericQueue(object):
 
     def pause(self):
         """Pauses this queue"""
-        sickrage.srLogger.info("Pausing queue")
+        sickrage.srCore.srLogger.info("Pausing queue")
         self.min_priority = 999999999999
 
     def unpause(self):
         """Unpauses this queue"""
-        sickrage.srLogger.info("Unpausing queue")
+        sickrage.srCore.srLogger.info("Unpausing queue")
         self.min_priority = 0
 
     def add_item(self, item):
@@ -109,27 +108,21 @@ class GenericQueue(object):
                 if self.queue[0].priority < self.min_priority:
                     return
 
-                def execute(item, queue_name):
-                    # set queue name
-                    item.name = "{}-{}".format(queue_name, item.name)
+                # get item
+                item = self.queue.pop(0)
 
-                    # execute queue item
-                    item.run()
+                # update item thread name
+                item.name = "{}-{}".format(self.name, item.name)
 
-                    # queue item finished
-                    item.finish()
-
-                # thread queue item
-                worker = threading.Thread(target=execute, args=(self.queue.pop(0), self.queue_name))
-
-                # start worker
-                worker.start()
+                # execute item
+                item.start()
 
             self.amActive = False
 
 
-class QueueItem(object):
+class QueueItem(threading.Thread):
     def __init__(self, name, action_id=0):
+        super(QueueItem, self).__init__()
         self.lock = threading.Lock()
         self.name = name.replace(" ", "-").upper()
         self.inProgress = False
@@ -139,13 +132,11 @@ class QueueItem(object):
         self.added = None
 
     def run(self):
-        """Implementing classes should call this"""
-
         threading.currentThread().setName(self.name)
         self.inProgress = True
+        super(QueueItem, self).run()
+        self.finish()
 
     def finish(self):
-        """Implementing Classes should call this"""
-
         self.inProgress = False
         threading.currentThread().setName(self.name)

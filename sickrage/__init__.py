@@ -30,13 +30,10 @@ import threading
 import time
 import traceback
 
+from tornado.ioloop import IOLoop
+
 __all__ = [
     'srCore',
-    'srLogger',
-    'srConfig',
-    'srScheduler',
-    'srWebServer',
-    'srWebSession',
     'PROG_DIR',
     'DATA_DIR',
     'DEVELOPER',
@@ -46,11 +43,6 @@ __all__ = [
 
 status = None
 srCore = None
-srLogger = None
-srConfig = None
-srScheduler = None
-srWebServer = None
-srWebSession = None
 
 PROG_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
@@ -215,10 +207,12 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
     atexit.register(lambda: delpid(pidfile))
     io.open(pidfile, 'w+').write("%s\n" % str(os.getpid()))
 
+
 def delpid(pidfile):
     # Removes the PID file
     if pidfile and os.path.exists(pidfile):
         os.remove(pidfile)
+
 
 def pid_exists(pid):
     """Check whether pid exists in the current process table."""
@@ -230,6 +224,7 @@ def pid_exists(pid):
         return False
     else:
         return True
+
 
 def main():
     global srCore, status, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
@@ -334,11 +329,20 @@ def main():
             QUITE = False
             daemonize(PIDFILE)
 
+        # import core
+        from sickrage import core
+        srCore = core.Core()
+
         # main app loop
         while True:
-            from .core import Core
-            srCore = Core()
+            # start core
             srCore.start()
+
+            # start webserver
+            srCore.srWebServer.start()
+
+            # start ioloop event handler
+            IOLoop.instance().start()
     except ImportError as e:
         if DEBUG:
             traceback.print_exc()
@@ -360,6 +364,7 @@ def main():
     finally:
         if srCore:
             srCore.shutdown(status)
+
 
 if __name__ == '__main__':
     main()

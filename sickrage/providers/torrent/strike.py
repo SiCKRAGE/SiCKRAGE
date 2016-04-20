@@ -39,19 +39,19 @@ class STRIKEProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():  # Mode = RSS, Season, Episode
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: " + search_string.strip())
+                    sickrage.srCore.srLogger.debug("Search string: " + search_string.strip())
 
                 searchURL = self.urls['base_url'] + "/api/v2/torrents/search/?category=TV&phrase=" + search_string
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    jdata = sickrage.srWebSession.get(searchURL).json()
+                    jdata = sickrage.srCore.srWebSession.get(searchURL).json()
                 except Exception:
-                    sickrage.srLogger.debug("No data returned from provider")
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     return []
 
                 results = []
@@ -69,13 +69,13 @@ class STRIKEProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srLogger.debug(
+                            sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
 
                     if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     item = title, download_url, size, seeders, leechers
                     items[mode].append(item)

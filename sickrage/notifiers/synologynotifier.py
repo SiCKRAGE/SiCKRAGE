@@ -28,31 +28,31 @@ from sickrage.notifiers import srNotifiers
 
 class synologyNotifier(srNotifiers):
     def _notify_snatch(self, ep_name):
-        if sickrage.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH:
+        if sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH:
             self._send_synologyNotifier(ep_name, notifyStrings[NOTIFY_SNATCH])
 
     def _notify_download(self, ep_name):
-        if sickrage.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD:
+        if sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD:
             self._send_synologyNotifier(ep_name, notifyStrings[NOTIFY_DOWNLOAD])
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._send_synologyNotifier(ep_name + ": " + lang, notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD])
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srConfig.USE_SYNOLOGYNOTIFIER:
+        if sickrage.srCore.srConfig.USE_SYNOLOGYNOTIFIER:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._send_synologyNotifier(update_text + new_version, title)
 
     def _send_synologyNotifier(self, message, title):
         synodsmnotify_cmd = ["/usr/syno/bin/synodsmnotify", "@administrators", title, message]
-        sickrage.srLogger.info("Executing command " + str(synodsmnotify_cmd))
-        sickrage.srLogger.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
+        sickrage.srCore.srLogger.info("Executing command " + str(synodsmnotify_cmd))
+        sickrage.srCore.srLogger.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  cwd=sickrage.PROG_DIR)
             out, err = p.communicate()  # @UnusedVariable
-            sickrage.srLogger.debug("Script result: " + str(out))
+            sickrage.srCore.srLogger.debug("Script result: " + str(out))
         except OSError as e:
-            sickrage.srLogger.info("Unable to run synodsmnotify: {}".format(e.message))
+            sickrage.srCore.srLogger.info("Unable to run synodsmnotify: {}".format(e.message))

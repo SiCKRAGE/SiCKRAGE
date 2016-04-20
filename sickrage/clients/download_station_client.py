@@ -35,7 +35,7 @@ class DownloadStationAPI(GenericClient):
         auth_url = self.host + 'webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=' + self.username + '&passwd=' + self.password + '&session=DownloadStation&format=sid'
 
         try:
-            self.response = sickrage.srWebSession.get(auth_url, verify=False)
+            self.response = sickrage.srCore.srWebSession.get(auth_url, verify=False)
             self.auth = self.response.json()['data']['sid']
         except Exception:
             return None
@@ -53,8 +53,8 @@ class DownloadStationAPI(GenericClient):
             'uri': result.url
         }
 
-        if sickrage.srConfig.TORRENT_PATH:
-            data['destination'] = sickrage.srConfig.TORRENT_PATH
+        if sickrage.srCore.srConfig.TORRENT_PATH:
+            data['destination'] = sickrage.srCore.srConfig.TORRENT_PATH
         self._request(method='post', data=data)
 
         return self.response.json()['success']
@@ -69,8 +69,8 @@ class DownloadStationAPI(GenericClient):
             '_sid': self.auth
         }
 
-        if sickrage.srConfig.TORRENT_PATH:
-            data['destination'] = sickrage.srConfig.TORRENT_PATH
+        if sickrage.srCore.srConfig.TORRENT_PATH:
+            data['destination'] = sickrage.srCore.srConfig.TORRENT_PATH
         files = {'file': (result.name + '.torrent', result.content)}
         self._request(method='post', data=data, files=files)
 

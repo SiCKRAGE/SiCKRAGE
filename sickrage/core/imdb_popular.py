@@ -43,7 +43,7 @@ class imdbPopular(object):
             'year': '%s,%s' % (datetime.date.today().year - 1, datetime.date.today().year + 1)
         }
 
-        self.session = sickrage.srWebSession
+        self.session = sickrage.srCore.srWebSession
 
     def fetch_popular_shows(self):
         """Get popular show information from IMDB"""
@@ -129,7 +129,7 @@ class imdbPopular(object):
         Store cache of image in cache dir
         :param image_url: Source URL
         """
-        path = os.path.abspath(os.path.join(sickrage.srConfig.CACHE_DIR, 'images', 'imdb_popular'))
+        path = os.path.abspath(os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'images', 'imdb_popular'))
 
         if not os.path.exists(path):
             os.makedirs(path)

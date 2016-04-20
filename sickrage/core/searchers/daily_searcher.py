@@ -52,10 +52,10 @@ class srDailySearcher(object):
         threading.currentThread().setName(self.name)
 
         # trim failed download history
-        if sickrage.srConfig.USE_FAILED_DOWNLOADS:
+        if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        sickrage.srLogger.info("Searching for new released episodes ...")
+        sickrage.srCore.srLogger.info("Searching for new released episodes ...")
 
         if tz_updater.load_network_dict():
             curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
@@ -81,7 +81,7 @@ class srDailySearcher(object):
                     continue
 
             except MultipleShowObjectsException:
-                sickrage.srLogger.info("ERROR: expected to find a single show matching " + str(sqlEp['showid']))
+                sickrage.srCore.srLogger.info("ERROR: expected to find a single show matching " + str(sqlEp['showid']))
                 continue
 
             if show.airs and show.network:
@@ -97,11 +97,11 @@ class srDailySearcher(object):
             ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
             with ep.lock:
                 if ep.season == 0:
-                    sickrage.srLogger.info(
+                    sickrage.srCore.srLogger.info(
                             "New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
                     ep.status = SKIPPED
                 else:
-                    sickrage.srLogger.info("New episode %s airs today, setting to default episode status for this show: %s" % (
+                    sickrage.srCore.srLogger.info("New episode %s airs today, setting to default episode status for this show: %s" % (
                         ep.prettyName(), statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
@@ -113,7 +113,7 @@ class srDailySearcher(object):
             main_db.MainDB().mass_upsert(sql_l)
             del sql_l
         else:
-            sickrage.srLogger.info("No new released episodes found ...")
+            sickrage.srCore.srLogger.info("No new released episodes found ...")
 
         # queue episode for daily search
         sickrage.srCore.SEARCHQUEUE.add_item(DailySearchQueueItem())

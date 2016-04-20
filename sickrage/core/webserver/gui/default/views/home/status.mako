@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            % for job in sickrage.srScheduler.get_jobs():
+            % for job in sickrage.srCore.srScheduler.get_jobs():
                 <tr>
                     <td>${job}</td>
                 </tr>
@@ -112,10 +112,10 @@
             </tr>
         </thead>
         <tbody>
-            % if sickrage.srConfig.TV_DOWNLOAD_DIR:
+            % if sickrage.srCore.srConfig.TV_DOWNLOAD_DIR:
             <tr>
                 <td>TV Download Directory</td>
-                <td>${sickrage.srConfig.TV_DOWNLOAD_DIR}</td>
+                <td>${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}</td>
                 % if tvdirFree is not False:
                 <td align="middle">${tvdirFree}</td>
                 % else:

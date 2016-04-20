@@ -52,22 +52,22 @@ class PushoverNotifier(srNotifiers):
         """
 
         if userKey is None:
-            userKey = sickrage.srConfig.PUSHOVER_USERKEY
+            userKey = sickrage.srCore.srConfig.PUSHOVER_USERKEY
 
         if apiKey is None:
-            apiKey = sickrage.srConfig.PUSHOVER_APIKEY
+            apiKey = sickrage.srCore.srConfig.PUSHOVER_APIKEY
 
         if sound is None:
-            sound = sickrage.srConfig.PUSHOVER_SOUND
+            sound = sickrage.srCore.srConfig.PUSHOVER_SOUND
 
-        sickrage.srLogger.debug("Pushover API KEY in use: " + apiKey)
+        sickrage.srCore.srLogger.debug("Pushover API KEY in use: " + apiKey)
 
         # build up the URL and parameters
         msg = msg.strip()
 
         # send the request to pushover
         try:
-            if sickrage.srConfig.PUSHOVER_SOUND != "default":
+            if sickrage.srCore.srConfig.PUSHOVER_SOUND != "default":
                 args = {"token": apiKey,
                         "user": userKey,
                         "title": title.encode('utf-8'),
@@ -88,8 +88,8 @@ class PushoverNotifier(srNotifiers):
                         "expire": 3600,
                         }
 
-            if sickrage.srConfig.PUSHOVER_DEVICE:
-                args["device"] = sickrage.srConfig.PUSHOVER_DEVICE
+            if sickrage.srCore.srConfig.PUSHOVER_DEVICE:
+                args["device"] = sickrage.srCore.srConfig.PUSHOVER_DEVICE
 
             conn = httplib.HTTPSConnection("api.pushover.net:443")
             conn.request("POST", "/1/messages.json",
@@ -98,14 +98,14 @@ class PushoverNotifier(srNotifiers):
         except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                sickrage.srLogger.error("Pushover notification failed.{}".format(e.message))
+                sickrage.srCore.srLogger.error("Pushover notification failed.{}".format(e.message))
                 return False
             else:
-                sickrage.srLogger.error("Pushover notification failed. Error code: " + str(e.code))
+                sickrage.srCore.srLogger.error("Pushover notification failed. Error code: " + str(e.code))
 
             # HTTP status 404 if the provided email address isn't a Pushover user.
             if e.code == 404:
-                sickrage.srLogger.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
+                sickrage.srCore.srLogger.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
                 return False
 
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
@@ -114,39 +114,39 @@ class PushoverNotifier(srNotifiers):
                 # HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
                 if subscribeNote:
-                    sickrage.srLogger.debug("Subscription sent")
+                    sickrage.srCore.srLogger.debug("Subscription sent")
                     return True
                 else:
-                    sickrage.srLogger.error("Subscription could not be sent")
+                    sickrage.srCore.srLogger.error("Subscription could not be sent")
                     return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
             elif e.code == 400:
-                sickrage.srLogger.error("Wrong data sent to pushover")
+                sickrage.srCore.srLogger.error("Wrong data sent to pushover")
                 return False
 
             # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit is 7,500)
             elif e.code == 429:
-                sickrage.srLogger.error("Pushover API message limit reached - try a different API key")
+                sickrage.srCore.srLogger.error("Pushover API message limit reached - try a different API key")
                 return False
 
-        sickrage.srLogger.info("Pushover notification successful.")
+        sickrage.srCore.srLogger.info("Pushover notification successful.")
         return True
 
     def _notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
-        if sickrage.srConfig.PUSHOVER_NOTIFY_ONSNATCH:
+        if sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSNATCH:
             self._notifyPushover(title, ep_name)
 
     def _notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
-        if sickrage.srConfig.PUSHOVER_NOTIFY_ONDOWNLOAD:
+        if sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONDOWNLOAD:
             self._notifyPushover(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
-        if sickrage.srConfig.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srConfig.USE_PUSHOVER:
+        if sickrage.srCore.srConfig.USE_PUSHOVER:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyPushover(title, update_text + new_version)
@@ -163,10 +163,10 @@ class PushoverNotifier(srNotifiers):
         force: Enforce sending, for instance for testing
         """
 
-        if not sickrage.srConfig.USE_PUSHOVER and not force:
-            sickrage.srLogger.debug("Notification for Pushover not enabled, skipping this notification")
+        if not sickrage.srCore.srConfig.USE_PUSHOVER and not force:
+            sickrage.srCore.srLogger.debug("Notification for Pushover not enabled, skipping this notification")
             return False
 
-        sickrage.srLogger.debug("Sending notification for " + message)
+        sickrage.srCore.srLogger.debug("Sending notification for " + message)
 
         return self._sendPushover(message, title, sound=sound, userKey=userKey, apiKey=apiKey)

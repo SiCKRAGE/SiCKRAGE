@@ -21,6 +21,8 @@ import time
 from time import localtime, strftime
 from types import FunctionType, MethodType
 
+from tornado import gen
+
 import sickrage
 from aniDBlink import AniDBLink
 from sickrage.indexers.adba.aniDBcommands import AnimeCommand, AuthCommand, \
@@ -183,7 +185,7 @@ class Connection(threading.Thread):
     def run(self):
         while self.keepAlive:
             self._keep_alive()
-            time.sleep(120)
+            gen.sleep(120)
 
     def auth(self, username, password, nat=None, mtu=None, callback=None):
         """
@@ -198,7 +200,7 @@ class Connection(threading.Thread):
         """
 
         if not all([username, password]):
-            sickrage.srLogger.debug("anidb username and/or password are not set. Aborting anidb lookup.")
+            sickrage.srCore.srLogger.debug("anidb username and/or password are not set. Aborting anidb lookup.")
             return False
 
         authed = self.authed()

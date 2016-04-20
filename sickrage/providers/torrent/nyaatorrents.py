@@ -50,10 +50,10 @@ class NyaaProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s" % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
                 params = {
                     "page": 'rss',
@@ -65,7 +65,7 @@ class NyaaProvider(TorrentProvider):
                     params["term"] = search_string.encode('utf-8')
 
                 searchURL = self.urls['base_url'] + '?' + urllib.urlencode(params)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 summary_regex = ur"(\d+) seeder\(s\), (\d+) leecher\(s\), \d+ download\(s\) - (\d+.?\d* [KMGT]iB)(.*)"
                 s = re.compile(summary_regex, re.DOTALL)
@@ -83,19 +83,19 @@ class NyaaProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srLogger.debug(
+                            sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
 
                     if self.confirmed and not verified and mode is not 'RSS':
-                        sickrage.srLogger.debug(
+                        sickrage.srCore.srLogger.debug(
                                 "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

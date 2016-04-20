@@ -24,31 +24,14 @@ import io
 import os.path
 import sys
 
-# Try importing Python 2 modules using new names
-import sickrage
-
 try:
     import ConfigParser as configparser
     import urllib2
     from urllib import urlencode
 except ImportError:
     import configparser
-    # noinspection PyUnresolvedReferences
     import urllib.request as urllib2
-    # noinspection PyUnresolvedReferences,PyUnresolvedReferences
     from urllib.parse import urlencode
-
-# workaround for broken urllib2 in python 2.6.5: wrong credentials lead to an infinite recursion
-if sys.version_info >= (2, 6, 5) and sys.version_info < (2, 6, 6):
-    class HTTPBasicAuthHandler(urllib2.HTTPBasicAuthHandler):
-        def retry_http_basic_auth(self, host, req, realm):
-            # don't retry if auth failed
-            if req.get_header(self.auth_header, None) is not None:
-                return None
-
-            return urllib2.HTTPBasicAuthHandler.retry_http_basic_auth(self, host, req, realm)
-
-else:
     HTTPBasicAuthHandler = urllib2.HTTPBasicAuthHandler
 
 
@@ -81,22 +64,22 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
             print ("Loading config from " + config_filename + "\n")
 
             with io.open(config_filename, "r") as fp:
-                sickrage.srConfig.readfp(fp)
+                config.readfp(fp)
 
             # Replace default values with config_file values
-            host = sickrage.srConfig.get("sickrage", "host")
-            port = sickrage.srConfig.get("sickrage", "port")
-            username = sickrage.srConfig.get("sickrage", "username")
-            password = sickrage.srConfig.get("sickrage", "password")
+            host = config.get("sickrage", "host")
+            port = config.get("sickrage", "port")
+            username = config.get("sickrage", "username")
+            password = config.get("sickrage", "password")
 
             try:
-                ssl = int(sickrage.srConfig.get("sickrage", "ssl"))
+                ssl = int(config.get("sickrage", "ssl"))
 
             except (configparser.NoOptionError, ValueError):
                 pass
 
             try:
-                web_root = sickrage.srConfig.get("sickrage", "web_root")
+                web_root = config.get("sickrage", "web_root")
                 if not web_root.startswith("/"):
                     web_root = "/" + web_root
 

@@ -61,14 +61,14 @@ class SCCProvider(TorrentProvider):
                         'submit': 'come on in'}
 
         try:
-            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -89,16 +89,16 @@ class SCCProvider(TorrentProvider):
 
         for mode in search_strings.keys():
             if mode is not 'RSS':
-                sickrage.srLogger.debug("Search Mode: %s" % mode)
+                sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[search_mode])
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
                     continue
 
@@ -108,7 +108,7 @@ class SCCProvider(TorrentProvider):
 
                     # Continue only if at least one Release is found
                     if len(torrent_rows) < 2:
-                        sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                         continue
 
                     for result in torrent_table.find_all('tr')[1:]:
@@ -119,7 +119,7 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = sickrage.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
+                                data = sickrage.srCore.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
                                 with bs4_parser(data) as details_html:
                                     title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                             download_url = self.urls['download'] % url['href']
@@ -135,14 +135,14 @@ class SCCProvider(TorrentProvider):
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
-                                sickrage.srLogger.debug(
+                                sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                         title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
                         if mode is not 'RSS':
-                            sickrage.srLogger.debug("Found result: %s " % title)
+                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 

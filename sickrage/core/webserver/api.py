@@ -24,15 +24,12 @@ import datetime
 import os
 import re
 import threading
-import time
 import traceback
 import urllib
 
-from concurrent.futures import ThreadPoolExecutor
-from tornado.concurrent import run_on_executor
+from tornado import gen
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
-from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 import sickrage
@@ -90,16 +87,16 @@ class KeyHandler(RequestHandler):
         api_key = None
 
         try:
-            username = sickrage.srConfig.WEB_USERNAME
-            password = sickrage.srConfig.WEB_PASSWORD
+            username = sickrage.srCore.srConfig.WEB_USERNAME
+            password = sickrage.srCore.srConfig.WEB_PASSWORD
 
             if (self.get_argument('u', None) == username or not username) and \
                     (self.get_argument('p', None) == password or not password):
-                api_key = sickrage.srConfig.API_KEY
+                api_key = sickrage.srCore.srConfig.API_KEY
 
             self.finish({'success': api_key is not None, 'api_key': api_key})
         except Exception:
-            sickrage.srLogger.error('Failed doing key request: %s' % (traceback.format_exc()))
+            sickrage.srCore.srLogger.error('Failed doing key request: %s' % (traceback.format_exc()))
             self.finish({'success': False, 'error': 'Failed returning results'})
 
 
@@ -110,8 +107,6 @@ class ApiHandler(RequestHandler):
 
     def __init__(self, application, request, *args, **kwargs):
         super(ApiHandler, self).__init__(application, request)
-        self.io_loop = IOLoop.instance()
-        self.executor = ThreadPoolExecutor(50)
 
     def initialize(self):
         super(ApiHandler, self).initialize()
@@ -130,7 +125,7 @@ class ApiHandler(RequestHandler):
         }
 
         accessMsg = "API :: " + self.request.remote_ip + " - gave correct API KEY. ACCESS GRANTED"
-        sickrage.srLogger.debug(accessMsg)
+        sickrage.srCore.srLogger.debug(accessMsg)
 
         # set the original call_dispatcher as the local _call_dispatcher
         _call_dispatcher = self.call_dispatcher
@@ -142,9 +137,9 @@ class ApiHandler(RequestHandler):
             del kwargs["profile"]
 
         try:
-            outDict = yield self.async_call(_call_dispatcher, *args, **kwargs)
+            outDict = self.async_call(_call_dispatcher, *args, **kwargs)
         except Exception as e:  # real internal error oohhh nooo :(
-            sickrage.srLogger.error("API :: {}".format(e.message))
+            sickrage.srCore.srLogger.error("API :: {}".format(e.message))
             errorData = {
                 "error_msg": e,
                 "args": args,
@@ -153,18 +148,14 @@ class ApiHandler(RequestHandler):
             outDict = _responds(RESULT_FATAL, errorData,
                                 "SiCKRAGE encountered an internal error! Please report to the Devs")
 
+        outputCallback = outputCallbackDict['default']
         if 'outputType' in outDict:
             outputCallback = outputCallbackDict[outDict['outputType']]
-        else:
-            outputCallback = outputCallbackDict['default']
 
-        try:
-            if not self._finished:
-                self.finish(outputCallback(outDict))
-        except:
-            pass
+        result = outputCallback(outDict)
+        self.finish(result)
 
-    @run_on_executor
+    @coroutine
     def async_call(self, function, *args, **kwargs):
         threading.currentThread().setName("API")
         return recursive_unicode(function(
@@ -184,7 +175,7 @@ class ApiHandler(RequestHandler):
             if callback is not None:
                 out = callback + '(' + out + ');'  # wrap with JSONP call if requested
         except Exception as e:  # if we fail to generate the output fake an error
-            sickrage.srLogger.debug("API :: " + traceback.format_exc())
+            sickrage.srCore.srLogger.debug("API :: " + traceback.format_exc())
             out = '{"result": "%s", "message": "error while composing output: %s"}' % \
                   (result_type_map[RESULT_ERROR], e)
         return out
@@ -199,8 +190,8 @@ class ApiHandler(RequestHandler):
             or calls the TVDBShorthandWrapper when the first args element is a number
             or returns an error that there is no such cmd
         """
-        sickrage.srLogger.debug("API :: all args: '" + str(args) + "'")
-        sickrage.srLogger.debug("API :: all kwargs: '" + str(kwargs) + "'")
+        sickrage.srCore.srLogger.debug("API :: all args: '" + str(args) + "'")
+        sickrage.srCore.srLogger.debug("API :: all kwargs: '" + str(kwargs) + "'")
 
         try:
             cmds = kwargs.pop('cmd', args[0] if len(args) else "").split('|') or []
@@ -215,7 +206,7 @@ class ApiHandler(RequestHandler):
             if len(cmd.split("_")) > 1:  # was a index used for this cmd ?
                 cmd, cmdIndex = cmd.split("_")  # this gives us the clear cmd and the index
 
-            sickrage.srLogger.debug("API :: " + cmd + ": curKwargs " + str(curKwargs))
+            sickrage.srCore.srLogger.debug("API :: " + cmd + ": curKwargs " + str(curKwargs))
             if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo',
                                           'show.getposter')):  # skip these cmd while chaining
                 try:
@@ -434,7 +425,7 @@ class ApiCall(ApiHandler):
         elif arg_type == "ignore":
             pass
         else:
-            sickrage.srLogger.error('API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
+            sickrage.srCore.srLogger.error('API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
 
         if error:
             # this is a real ApiError !!
@@ -580,14 +571,14 @@ def _getQualityMap():
 
 
 def _getRootDirs():
-    if sickrage.srConfig.ROOT_DIRS == "":
+    if sickrage.srCore.srConfig.ROOT_DIRS == "":
         return {}
 
     rootDir = {}
-    root_dirs = sickrage.srConfig.ROOT_DIRS.split('|')
-    default_index = int(sickrage.srConfig.ROOT_DIRS.split('|')[0])
+    root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
+    default_index = int(sickrage.srCore.srConfig.ROOT_DIRS.split('|')[0])
 
-    rootDir["default_index"] = int(sickrage.srConfig.ROOT_DIRS.split('|')[0])
+    rootDir["default_index"] = int(sickrage.srCore.srConfig.ROOT_DIRS.split('|')[0])
     # remove default_index value from list (this fixes the offset)
     root_dirs.pop(0)
 
@@ -680,7 +671,7 @@ class CMD_ComingEpisodes(ApiCall):
                                             **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list",
                                             ComingEpisodes.categories, *args, **kwargs)
-        self.paused, args = self.check_params("paused", bool(sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED), False,
+        self.paused, args = self.check_params("paused", bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED), False,
                                               "bool", [],
                                               *args, **kwargs)
         # super, missing, help
@@ -825,7 +816,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # wait until the queue item tells us whether it worked or not
         while not ep_queue_item.success:  # @UndefinedVariable
-            time.sleep(1)
+            gen.sleep(1)
 
         # return the correct json value
         if ep_queue_item.success:
@@ -917,7 +908,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                         failure = True
                     continue
 
-                if self.status == FAILED and not sickrage.srConfig.USE_FAILED_DOWNLOADS:
+                if self.status == FAILED and not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
                     ep_results.append(_epResult(RESULT_FAILURE, epObj,
                                                 "Refusing to change status to FAILED because failed download handling is disabled"))
                     failure = True
@@ -948,7 +939,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         if start_backlog:
             for season, segment in segments.items():
                 sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
-                sickrage.srLogger.info("API :: Starting backlog for " + showObj.name + " season " + str(
+                sickrage.srCore.srLogger.info("API :: Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"
@@ -1239,8 +1230,8 @@ class CMD_Logs(ApiCall):
         maxLines = 50
 
         levelsFiltered = '|'.join(
-            [x for x in sickrage.srLogger.logLevels.keys() if
-             sickrage.srLogger.logLevels[x] >= int(sickrage.srLogger.logLevels[str(self.min_level).upper()])])
+            [x for x in sickrage.srCore.srLogger.logLevels.keys() if
+             sickrage.srCore.srLogger.logLevels[x] >= int(sickrage.srCore.srLogger.logLevels[str(self.min_level).upper()])])
 
         logRegex = re.compile(
             r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered, ""),
@@ -1248,9 +1239,9 @@ class CMD_Logs(ApiCall):
 
         data = []
         try:
-            if os.path.isfile(sickrage.srConfig.LOG_FILE):
+            if os.path.isfile(sickrage.srCore.srConfig.LOG_FILE):
                 data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(""),
-                                                 "\n".join(next(readFileBuffered(sickrage.srConfig.LOG_FILE,
+                                                 "\n".join(next(readFileBuffered(sickrage.srCore.srConfig.LOG_FILE,
                                                                                  reverse=True)).splitlines()),
                                                  re.S + re.M + re.I)))
                 maxLines -= len(data)
@@ -1295,11 +1286,11 @@ class CMD_PostProcess(ApiCall):
 
     def run(self):
         """ Manually post-process the files in the download folder """
-        if not self.path and not sickrage.srConfig.TV_DOWNLOAD_DIR:
+        if not self.path and not sickrage.srCore.srConfig.TV_DOWNLOAD_DIR:
             return _responds(RESULT_FAILURE, msg="You need to provide a path or set TV Download Dir")
 
         if not self.path:
-            self.path = sickrage.srConfig.TV_DOWNLOAD_DIR
+            self.path = sickrage.srCore.srConfig.TV_DOWNLOAD_DIR
 
         if not self.type:
             self.type = 'manual'
@@ -1363,11 +1354,11 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
 
         root_dirs = []
 
-        if sickrage.srConfig.ROOT_DIRS == "":
+        if sickrage.srCore.srConfig.ROOT_DIRS == "":
             self.default = 1
         else:
-            root_dirs = sickrage.srConfig.ROOT_DIRS.split('|')
-            index = int(sickrage.srConfig.ROOT_DIRS.split('|')[0])
+            root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
+            index = int(sickrage.srCore.srConfig.ROOT_DIRS.split('|')[0])
             root_dirs.pop(0)
             # clean up the list - replace %xx escapes by their single-character equivalent
             root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
@@ -1388,7 +1379,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
         root_dirs_new.insert(0, index)
         root_dirs_new = '|'.join(x for x in root_dirs_new)
 
-        sickrage.srConfig.ROOT_DIRS = root_dirs_new
+        sickrage.srCore.srConfig.ROOT_DIRS = root_dirs_new
         return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directories updated")
 
 
@@ -1453,12 +1444,12 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
 
     def run(self):
         """ Delete a root (parent) directory from SiCKRAGE """
-        if sickrage.srConfig.ROOT_DIRS == "":
+        if sickrage.srCore.srConfig.ROOT_DIRS == "":
             return _responds(RESULT_FAILURE, _getRootDirs(), msg="No root directories detected")
 
         newIndex = 0
         root_dirs_new = []
-        root_dirs = sickrage.srConfig.ROOT_DIRS.split('|')
+        root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
         index = int(root_dirs[0])
         root_dirs.pop(0)
         # clean up the list - replace %xx escapes by their single-character equivalent
@@ -1480,7 +1471,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
             root_dirs_new.insert(0, newIndex)
         root_dirs_new = "|".join(x for x in root_dirs_new)
 
-        sickrage.srConfig.ROOT_DIRS = root_dirs_new
+        sickrage.srCore.srConfig.ROOT_DIRS = root_dirs_new
         # what if the root dir was not found?
         return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directory deleted")
 
@@ -1498,11 +1489,11 @@ class CMD_SiCKRAGEGetDefaults(ApiCall):
     def run(self):
         """ Get SiCKRAGE's user default configuration value """
 
-        anyQualities, bestQualities = _mapQuality(sickrage.srConfig.QUALITY_DEFAULT)
+        anyQualities, bestQualities = _mapQuality(sickrage.srCore.srConfig.QUALITY_DEFAULT)
 
-        data = {"status": statusStrings[sickrage.srConfig.STATUS_DEFAULT].lower(),
-                "flatten_folders": int(sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT), "initial": anyQualities,
-                "archive": bestQualities, "future_show_paused": int(sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED)}
+        data = {"status": statusStrings[sickrage.srCore.srConfig.STATUS_DEFAULT].lower(),
+                "flatten_folders": int(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT), "initial": anyQualities,
+                "archive": bestQualities, "future_show_paused": int(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)}
         return _responds(RESULT_SUCCESS, data)
 
 
@@ -1618,7 +1609,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         # required
         # optional
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
-        self.lang, args = self.check_params("lang", sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
+        self.lang, args = self.check_params("lang", sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
 
@@ -1635,7 +1626,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+                if self.lang and not self.lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS['language'] = self.lang
 
                 lINDEXER_API_PARMS['actors'] = False
@@ -1646,7 +1637,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 try:
                     apiData = t[str(self.name).encode()]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.srLogger.warning("API :: Unable to find show with id " + str(self.indexerid))
+                    sickrage.srCore.srLogger.warning("API :: Unable to find show with id " + str(self.indexerid))
                     continue
 
                 for curSeries in apiData:
@@ -1661,7 +1652,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+                if self.lang and not self.lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS['language'] = self.lang
 
                 lINDEXER_API_PARMS['actors'] = False
@@ -1671,11 +1662,11 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 try:
                     myShow = t[int(self.indexerid)]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.srLogger.warning("API :: Unable to find show with id " + str(self.indexerid))
+                    sickrage.srCore.srLogger.warning("API :: Unable to find show with id " + str(self.indexerid))
                     return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
 
                 if not myShow.data['seriesname']:
-                    sickrage.srLogger.debug(
+                    sickrage.srCore.srLogger.debug(
                         "API :: Found show with indexerid: " + str(
                             self.indexerid) + ", however it contained no show name")
                     return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
@@ -1784,7 +1775,7 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
                 aqualityID.append(quality_map[quality])
 
         if iqualityID or aqualityID:
-            sickrage.srConfig.QUALITY_DEFAULT = Quality.combineQualities(iqualityID, aqualityID)
+            sickrage.srCore.srConfig.QUALITY_DEFAULT = Quality.combineQualities(iqualityID, aqualityID)
 
         if self.status:
             # convert the string status to a int
@@ -1798,13 +1789,13 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
             # only allow the status options we want
             if int(self.status) not in (3, 5, 6, 7):
                 raise ApiError("Status Prohibited")
-            sickrage.srConfig.STATUS_DEFAULT = self.status
+            sickrage.srCore.srConfig.STATUS_DEFAULT = self.status
 
         if self.flatten_folders is not None:
-            sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT = int(self.flatten_folders)
+            sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT = int(self.flatten_folders)
 
         if self.future_show_paused is not None:
-            sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED = int(self.future_show_paused)
+            sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED = int(self.future_show_paused)
 
         return _responds(RESULT_SUCCESS, msg="Saved defaults")
 
@@ -1821,8 +1812,8 @@ class CMD_SiCKRAGEShutdown(ApiCall):
 
     def run(self):
         """ Shutdown SiCKRAGE """
-        if sickrage.srWebServer:
-            sickrage.srWebServer.shutdown()
+        if sickrage.srCore.srWebServer:
+            sickrage.srCore.srWebServer.shutdown()
             return _responds(RESULT_SUCCESS, msg="SiCKRAGE is shutting down...")
         return _responds(RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
 
@@ -1973,9 +1964,9 @@ class CMD_ShowAddExisting(ApiCall):
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
         self.archive_firstmatch, args = self.check_params("archive_firstmatch", None, False, "int", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", bool(
-            sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT),
+            sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
                                                        False, "bool", [], *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", int(sickrage.srConfig.USE_SUBTITLES), False, "int", [],
+        self.subtitles, args = self.check_params("subtitles", int(sickrage.srCore.srConfig.USE_SUBTITLES), False, "int", [],
                                                  args,
                                                  kwargs)
         # super, missing, help
@@ -2017,7 +2008,7 @@ class CMD_ShowAddExisting(ApiCall):
                        'unknown': Quality.UNKNOWN}
 
         # use default quality as a failsafe
-        newQuality = int(sickrage.srConfig.QUALITY_DEFAULT)
+        newQuality = int(sickrage.srCore.srConfig.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
 
@@ -2032,9 +2023,9 @@ class CMD_ShowAddExisting(ApiCall):
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
         sickrage.srCore.SHOWQUEUE.addShow(
-            int(indexer), int(self.indexerid), self.location, default_status=sickrage.srConfig.STATUS_DEFAULT,
+            int(indexer), int(self.indexerid), self.location, default_status=sickrage.srCore.srConfig.STATUS_DEFAULT,
             quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
-            default_status_after=sickrage.srConfig.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
+            default_status_after=sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
         )
 
         return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
@@ -2078,22 +2069,23 @@ class CMD_ShowAddNew(ApiCall):
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", bool(
-            sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT),
+            sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
                                                        False, "bool", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], args,
                                               kwargs)
-        self.lang, args = self.check_params("lang", sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
+        self.lang, args = self.check_params("lang", sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", bool(sickrage.srConfig.USE_SUBTITLES), False, "bool", [],
+        self.subtitles, args = self.check_params("subtitles", bool(sickrage.srCore.srConfig.USE_SUBTITLES), False, "bool", [],
                                                  args,
                                                  kwargs)
-        self.anime, args = self.check_params("anime", bool(sickrage.srConfig.ANIME_DEFAULT), False, "bool", [], *args,
+        self.anime, args = self.check_params("anime", bool(sickrage.srCore.srConfig.ANIME_DEFAULT), False, "bool", [], *args,
                                              **kwargs)
-        self.scene, args = self.check_params("scene", bool(sickrage.srConfig.SCENE_DEFAULT), False, "bool", [], *args,
+        self.scene, args = self.check_params("scene", bool(sickrage.srCore.srConfig.SCENE_DEFAULT), False, "bool", [], *args,
                                              **kwargs)
         self.future_status, args = self.check_params("future_status", None, False, "string",
                                                      ["wanted", "skipped", "ignored"], *args, **kwargs)
-        self.archive_firstmatch, args = self.check_params("archive_firstmatch", bool(sickrage.srConfig.ARCHIVE_DEFAULT),
+        self.archive_firstmatch, args = self.check_params("archive_firstmatch", bool(
+            sickrage.srCore.srConfig.ARCHIVE_DEFAULT),
                                                           False,
                                                           "bool", [], *args, **kwargs)
 
@@ -2107,10 +2099,10 @@ class CMD_ShowAddNew(ApiCall):
             return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in database")
 
         if not self.location:
-            if sickrage.srConfig.ROOT_DIRS != "":
-                root_dirs = sickrage.srConfig.ROOT_DIRS.split('|')
+            if sickrage.srCore.srConfig.ROOT_DIRS != "":
+                root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
                 root_dirs.pop(0)
-                default_index = int(sickrage.srConfig.ROOT_DIRS.split('|')[0])
+                default_index = int(sickrage.srCore.srConfig.ROOT_DIRS.split('|')[0])
                 self.location = root_dirs[default_index]
             else:
                 return _responds(RESULT_FAILURE, msg="Root directory is not set, please provide a location")
@@ -2130,7 +2122,7 @@ class CMD_ShowAddNew(ApiCall):
                        'unknown': Quality.UNKNOWN}
 
         # use default quality as a failsafe
-        newQuality = int(sickrage.srConfig.QUALITY_DEFAULT)
+        newQuality = int(sickrage.srCore.srConfig.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
 
@@ -2145,7 +2137,7 @@ class CMD_ShowAddNew(ApiCall):
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
         # use default status as a failsafe
-        newStatus = sickrage.srConfig.STATUS_DEFAULT
+        newStatus = sickrage.srCore.srConfig.STATUS_DEFAULT
         if self.status:
             # convert the string status to a int
             for status in statusStrings.statusStrings:
@@ -2162,7 +2154,7 @@ class CMD_ShowAddNew(ApiCall):
             newStatus = self.status
 
         # use default status as a failsafe
-        default_ep_status_after = sickrage.srConfig.STATUS_DEFAULT_AFTER
+        default_ep_status_after = sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER
         if self.future_status:
             # convert the string status to a int
             for status in statusStrings.statusStrings:
@@ -2197,12 +2189,12 @@ class CMD_ShowAddNew(ApiCall):
         showPath = os.path.join(self.location, sanitizeFileName(indexerName))
 
         # don't create show dir if config says not to
-        if sickrage.srConfig.ADD_SHOWS_WO_DIR:
-            sickrage.srLogger.info("Skipping initial creation of " + showPath + " due to config.ini setting")
+        if sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR:
+            sickrage.srCore.srLogger.info("Skipping initial creation of " + showPath + " due to config.ini setting")
         else:
             dir_exists = makeDir(showPath)
             if not dir_exists:
-                sickrage.srLogger.error("API :: Unable to create the folder " + showPath + ", can't add the show")
+                sickrage.srCore.srLogger.error("API :: Unable to create the folder " + showPath + ", can't add the show")
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
             else:
@@ -2657,7 +2649,7 @@ class CMD_ShowSetQuality(ApiCall):
                        'unknown': Quality.UNKNOWN}
 
         # use default quality as a failsafe
-        newQuality = int(sickrage.srConfig.QUALITY_DEFAULT)
+        newQuality = int(sickrage.srCore.srConfig.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
 
@@ -2817,7 +2809,7 @@ class CMD_ShowUpdate(ApiCall):
             sickrage.srCore.SHOWQUEUE.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
-            sickrage.srLogger.debug("API::Unable to update show: {0}".format(str(e)))
+            sickrage.srCore.srLogger.debug("API::Unable to update show: {0}".format(str(e)))
             return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 

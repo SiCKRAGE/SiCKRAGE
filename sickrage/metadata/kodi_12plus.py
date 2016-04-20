@@ -105,7 +105,7 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         lINDEXER_API_PARMS['actors'] = True
 
-        if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+        if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
@@ -118,18 +118,18 @@ class KODI_12PlusMetadata(GenericMetadata):
         try:
             myShow = t[int(show_ID)]
         except indexer_shownotfound:
-            sickrage.srLogger.error("Unable to find show with id " + str(show_ID) + " on " + srIndexerApi(
+            sickrage.srCore.srLogger.error("Unable to find show with id " + str(show_ID) + " on " + srIndexerApi(
                 show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
-            sickrage.srLogger.error(
+            sickrage.srCore.srLogger.error(
                 "" + srIndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.srLogger.info("Incomplete info for show with id " + str(show_ID) + " on " + srIndexerApi(
+            sickrage.srCore.srLogger.info("Incomplete info for show with id " + str(show_ID) + " on " + srIndexerApi(
                 show_obj.indexer).name + ", skipping it")
             return False
 
@@ -219,7 +219,7 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         lINDEXER_API_PARMS['actors'] = True
 
-        if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+        if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
         if ep_obj.show.dvdorder != 0:
@@ -231,7 +231,7 @@ class KODI_12PlusMetadata(GenericMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.srLogger.error("Unable to connect to {} while creating meta files - skipping - {}".format(
+            sickrage.srCore.srLogger.error("Unable to connect to {} while creating meta files - skipping - {}".format(
                 srIndexerApi(
                     ep_obj.show.indexer).name, e))
             return
@@ -247,7 +247,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srLogger.info(
+                sickrage.srCore.srLogger.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
                     (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None
@@ -256,10 +256,10 @@ class KODI_12PlusMetadata(GenericMetadata):
                 myEp["firstaired"] = str(datetime.date.fromordinal(1))
 
             if not getattr(myEp, 'episodename', None):
-                sickrage.srLogger.debug("Not generating nfo because the ep has no title")
+                sickrage.srCore.srLogger.debug("Not generating nfo because the ep has no title")
                 return None
 
-            sickrage.srLogger.debug("Creating metadata for episode " + str(ep_obj.season) + "x" + str(ep_obj.episode))
+            sickrage.srCore.srLogger.debug("Creating metadata for episode " + str(ep_obj.season) + "x" + str(ep_obj.episode))
 
             if len(eps_to_write) > 1:
                 episode = SubElement(rootNode, "episodedetails")

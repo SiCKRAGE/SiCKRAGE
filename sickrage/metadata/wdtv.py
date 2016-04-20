@@ -163,10 +163,10 @@ class WDTVMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.srLogger.debug("Unable to find a season dir for season " + str(season))
+            sickrage.srCore.srLogger.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.srLogger.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
+        sickrage.srCore.srLogger.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
 
@@ -187,7 +187,7 @@ class WDTVMetadata(GenericMetadata):
 
             lINDEXER_API_PARMS['actors'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
@@ -198,7 +198,7 @@ class WDTVMetadata(GenericMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.srLogger.error("Unable to connect to " + srIndexerApi(
+            sickrage.srCore.srLogger.error("Unable to connect to " + srIndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e.message))
             return False
 
@@ -210,7 +210,7 @@ class WDTVMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srLogger.info(
+                sickrage.srCore.srLogger.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
                     (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None

@@ -43,7 +43,7 @@ def getSeasonNZBs(name, urlData, season):
     try:
         showXML = ElementTree.parse(urlData)
     except SyntaxError:
-        sickrage.srLogger.error("Unable to parse the XML of " + name + ", not splitting it")
+        sickrage.srCore.srLogger.error("Unable to parse the XML of " + name + ", not splitting it")
         return {}, ''
 
     filename = name.replace(".nzb", "")
@@ -56,7 +56,7 @@ def getSeasonNZBs(name, urlData, season):
     if sceneNameMatch:
         showName, qualitySection, groupName = sceneNameMatch.groups()  # @UnusedVariable
     else:
-        sickrage.srLogger.error("Unable to parse " + name + " into a scene name. If it's a valid one log a bug.")
+        sickrage.srCore.srLogger.error("Unable to parse " + name + " into a scene name. If it's a valid one log a bug.")
         return {}, ''
 
     regex = '(' + re.escape(showName) + '\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
@@ -107,7 +107,7 @@ def saveNZB(nzbName, nzbString):
             nzb_fh.write(nzbString)
 
     except EnvironmentError as e:
-        sickrage.srLogger.error("Unable to save NZB: {}".format(e.message))
+        sickrage.srCore.srLogger.error("Unable to save NZB: {}".format(e.message))
 
 
 def stripNS(element, ns):
@@ -125,9 +125,9 @@ def splitNZBResult(result):
     :param result: search result object
     :return: False upon failure, a list of episode objects otherwise
     """
-    urlData = sickrage.srWebSession.get(result.url, needBytes=True)
+    urlData = sickrage.srCore.srWebSession.get(result.url, needBytes=True)
     if urlData is None:
-        sickrage.srLogger.error("Unable to load url " + result.url + ", can't download season NZB")
+        sickrage.srCore.srLogger.error("Unable to load url " + result.url + ", can't download season NZB")
         return False
 
     # parse the season ep name
@@ -135,10 +135,10 @@ def splitNZBResult(result):
         np = NameParser(False, showObj=result.show)
         parse_result = np.parse(result.name)
     except InvalidNameException:
-        sickrage.srLogger.debug("Unable to parse the filename " + result.name + " into a valid episode")
+        sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.name + " into a valid episode")
         return False
     except InvalidShowException:
-        sickrage.srLogger.debug("Unable to parse the filename " + result.name + " into a valid show")
+        sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.name + " into a valid show")
         return False
 
     # bust it up
@@ -150,35 +150,35 @@ def splitNZBResult(result):
 
     for newNZB in separateNZBs:
 
-        sickrage.srLogger.debug("Split out " + newNZB + " from " + result.name)
+        sickrage.srCore.srLogger.debug("Split out " + newNZB + " from " + result.name)
 
         # parse the name
         try:
             np = NameParser(False, showObj=result.show)
             parse_result = np.parse(newNZB)
         except InvalidNameException:
-            sickrage.srLogger.debug("Unable to parse the filename " + newNZB + " into a valid episode")
+            sickrage.srCore.srLogger.debug("Unable to parse the filename " + newNZB + " into a valid episode")
             return False
         except InvalidShowException:
-            sickrage.srLogger.debug("Unable to parse the filename " + newNZB + " into a valid show")
+            sickrage.srCore.srLogger.debug("Unable to parse the filename " + newNZB + " into a valid show")
             return False
 
         # make sure the result is sane
         if (parse_result.season_number is not None and parse_result.season_number != season) or (
                         parse_result.season_number is None and season != 1):
-            sickrage.srLogger.warning(
+            sickrage.srCore.srLogger.warning(
                     "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
             continue
         elif len(parse_result.episode_numbers) == 0:
-            sickrage.srLogger.warning(
+            sickrage.srCore.srLogger.warning(
                     "Found " + newNZB + " inside " + result.name + " but it doesn't seem to be a valid episode NZB, ignoring it")
             continue
 
         wantEp = True
         for epNo in parse_result.episode_numbers:
             if not result.extraInfo[0].wantEpisode(season, epNo, result.quality):
-                sickrage.srLogger.info("Ignoring result " + newNZB + " because we don't want an episode that is " +
-                                        Quality.qualityStrings[result.quality])
+                sickrage.srCore.srLogger.info("Ignoring result " + newNZB + " because we don't want an episode that is " +
+                                            Quality.qualityStrings[result.quality])
                 wantEp = False
                 break
         if not wantEp:

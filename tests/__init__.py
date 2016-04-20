@@ -31,7 +31,9 @@ import unittest
 from tornado.ioloop import IOLoop
 
 # add sickrage module to python system path
+import sickrage.core
 from sickrage.core import srLogger
+from sickrage.providers import providersDict
 
 PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
 if PROG_DIR not in sys.path:
@@ -40,13 +42,13 @@ if PROG_DIR not in sys.path:
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.caches.name_cache import srNameCache
-from sickrage.core.classes import AttrDict, providersDict
+from sickrage.core.classes import AttrDict
 from sickrage.core.databases import Connection
 from sickrage.core.databases import cache_db
 from sickrage.core.databases import failed_db
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import removetree
-from sickrage.core.srscheduler import srScheduler
+from sickrage.srCore.srScheduler import srScheduler
 from sickrage.core.tv import episode
 from sickrage.indexers import srIndexerApi
 from sickrage.metadata import get_metadata_generator_dict
@@ -100,76 +102,75 @@ SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
 # prepare env functions
 # =================
 def createTestLogFolder():
-    if not os.path.isdir(sickrage.srConfig.LOG_DIR):
-        os.mkdir(sickrage.srConfig.LOG_DIR)
+    if not os.path.isdir(sickrage.srCore.srConfig.LOG_DIR):
+        os.mkdir(sickrage.srCore.srConfig.LOG_DIR)
 
 
 def createTestCacheFolder():
-    if not os.path.isdir(sickrage.srConfig.CACHE_DIR):
-        os.mkdir(sickrage.srConfig.CACHE_DIR)
+    if not os.path.isdir(sickrage.srCore.srConfig.CACHE_DIR):
+        os.mkdir(sickrage.srCore.srConfig.CACHE_DIR)
 
 
 # =================
 # sickrage globals
 # =================
-from sickrage import core
 
 threading.Thread(None, IOLoop.instance().start).start()
-sickrage.srCore = core.srCore(PROG_DIR, TESTDIR)
-sickrage.srConfig(TESTCONFIGNAME)
-sickrage.srConfig.load()
-sickrage.srConfig.SSL_VERIFY = False
-sickrage.srConfig.PROXY_SETTING = ''
+sickrage.srCore = sickrage.srCore(PROG_DIR, TESTDIR)
+sickrage.srCore.srConfig(TESTCONFIGNAME)
+sickrage.srCore.srConfig.load()
+sickrage.srCore.srConfig.SSL_VERIFY = False
+sickrage.srCore.srConfig.PROXY_SETTING = ''
 sickrage.srCore.SHOWLIST = []
 
-sickrage.srConfig.CACHE_DIR = os.path.join(TESTDIR, 'cache')
+sickrage.srCore.srConfig.CACHE_DIR = os.path.join(TESTDIR, 'cache')
 createTestCacheFolder()
 
-sickrage.srConfig.LOG_DIR = os.path.join(TESTDIR, 'Logs')
+sickrage.srCore.srConfig.LOG_DIR = os.path.join(TESTDIR, 'Logs')
 createTestLogFolder()
 
-sickrage.srConfig.IGNORE_WORDS = 'german, french, core2hd, dutch, swedish, reenc, MrLss'
-sickrage.srConfig.QUALITY_DEFAULT = 4  # hdtv
-sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT = 0
+sickrage.srCore.srConfig.IGNORE_WORDS = 'german, french, core2hd, dutch, swedish, reenc, MrLss'
+sickrage.srCore.srConfig.QUALITY_DEFAULT = 4  # hdtv
+sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT = 0
 
-sickrage.srConfig.NAMING_PATTERN = ''
-sickrage.srConfig.NAMING_ABD_PATTERN = ''
-sickrage.srConfig.NAMING_SPORTS_PATTERN = ''
-sickrage.srConfig.NAMING_MULTI_EP = 1
+sickrage.srCore.srConfig.NAMING_PATTERN = ''
+sickrage.srCore.srConfig.NAMING_ABD_PATTERN = ''
+sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN = ''
+sickrage.srCore.srConfig.NAMING_MULTI_EP = 1
 
-sickrage.srConfig.PROVIDER_ORDER = ["sick_beard_index"]
+sickrage.srCore.srConfig.PROVIDER_ORDER = ["sick_beard_index"]
 sickrage.srCore.metadataProviderDict = get_metadata_generator_dict()
-sickrage.srConfig.GUI_NAME = "default"
-sickrage.srConfig.THEME_NAME = "dark"
-sickrage.srConfig.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui',
-                                         sickrage.srConfig.GUI_NAME)
-sickrage.srConfig.TV_DOWNLOAD_DIR = FILEDIR
-sickrage.srConfig.HTTPS_CERT = "server.crt"
-sickrage.srConfig.HTTPS_KEY = "server.key"
-sickrage.srConfig.WEB_USERNAME = "sickrage"
-sickrage.srConfig.WEB_PASSWORD = "sickrage"
-sickrage.srConfig.WEB_COOKIE_SECRET = "sickrage"
-sickrage.srConfig.WEB_ROOT = ""
-sickrage.srWebServer = None
-sickrage.srConfig.CPU_PRESET = "NORMAL"
-sickrage.srConfig.EXTRA_SCRIPTS = []
+sickrage.srCore.srConfig.GUI_NAME = "default"
+sickrage.srCore.srConfig.THEME_NAME = "dark"
+sickrage.srCore.srConfig.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui',
+                                              sickrage.srCore.srConfig.GUI_NAME)
+sickrage.srCore.srConfig.TV_DOWNLOAD_DIR = FILEDIR
+sickrage.srCore.srConfig.HTTPS_CERT = "server.crt"
+sickrage.srCore.srConfig.HTTPS_KEY = "server.key"
+sickrage.srCore.srConfig.WEB_USERNAME = "sickrage"
+sickrage.srCore.srConfig.WEB_PASSWORD = "sickrage"
+sickrage.srCore.srConfig.WEB_COOKIE_SECRET = "sickrage"
+sickrage.srCore.srConfig.WEB_ROOT = ""
+sickrage.srCore.srWebServer = None
+sickrage.srCore.srConfig.CPU_PRESET = "NORMAL"
+sickrage.srCore.srConfig.EXTRA_SCRIPTS = []
 
-sickrage.srConfig.LOG_FILE = os.path.join(sickrage.srConfig.LOG_DIR, 'sickrage.log')
-sickrage.srConfig.LOG_NR = 5
-sickrage.srConfig.LOG_SIZE = 1048576
+sickrage.srCore.srConfig.LOG_FILE = os.path.join(sickrage.srCore.srConfig.LOG_DIR, 'sickrage.log')
+sickrage.srCore.srConfig.LOG_NR = 5
+sickrage.srCore.srConfig.LOG_SIZE = 1048576
 
-sickrage.srLogger = srLogger()
-sickrage.srLogger.logFile = sickrage.srConfig.LOG_FILE
-sickrage.srLogger.logSize = sickrage.srConfig.LOG_SIZE
-sickrage.srLogger.logNr = sickrage.srConfig.LOG_NR
-sickrage.srLogger.fileLogging = sickrage.srConfig.LOG_DIR
-sickrage.srLogger.debugLogging = True
-sickrage.srLogger.start()
+sickrage.srCore.srLogger = srLogger()
+sickrage.srCore.srLogger.logFile = sickrage.srCore.srConfig.LOG_FILE
+sickrage.srCore.srLogger.logSize = sickrage.srCore.srConfig.LOG_SIZE
+sickrage.srCore.srLogger.logNr = sickrage.srCore.srConfig.LOG_NR
+sickrage.srCore.srLogger.fileLogging = sickrage.srCore.srConfig.LOG_DIR
+sickrage.srCore.srLogger.debugLogging = True
+sickrage.srCore.srLogger.start()
 
-sickrage.srConfig.GIT_USERNAME = sickrage.srConfig.check_setting_str('General', 'git_username', '')
-sickrage.srConfig.GIT_PASSWORD = sickrage.srConfig.check_setting_str('General', 'git_password', '')
+sickrage.srCore.srConfig.GIT_USERNAME = sickrage.srCore.srConfig.check_setting_str('General', 'git_username', '')
+sickrage.srCore.srConfig.GIT_PASSWORD = sickrage.srCore.srConfig.check_setting_str('General', 'git_password', '')
 
-sickrage.srScheduler = srScheduler()
+sickrage.srCore.srScheduler = srScheduler()
 
 sickrage.srCore.providersDict = providersDict()
 
@@ -211,7 +212,7 @@ def _dummy_saveConfig(cfgfile=sickrage.CONFIG_FILE):
 
 # this overrides the sickrage save which gets called during a db upgrade
 sickrage.srCore.save_all = _dummy_saveConfig
-sickrage.srConfig.save = _dummy_saveConfig
+sickrage.srCore.srConfig.save = _dummy_saveConfig
 
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep
@@ -363,13 +364,13 @@ def tearDown_test_show_dir():
 
 
 def setUp_test_web_server():
-    sickrage.srWebServer = sickrage.srWebServer()
-    threading.Thread(None, sickrage.srWebServer.start).start()
+    sickrage.srCore.srWebServer = sickrage.srCore.srWebServer()
+    threading.Thread(None, sickrage.srCore.srWebServer.start).start()
 
 
 def tearDown_test_web_server():
-    if sickrage.srWebServer:
-        sickrage.srWebServer.shutdown()
+    if sickrage.srCore.srWebServer:
+        sickrage.srCore.srWebServer.shutdown()
 
 
 def load_tests(loader, tests):

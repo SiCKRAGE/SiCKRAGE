@@ -48,19 +48,19 @@ class BitCannonProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         try:
-            trackers = sickrage.srWebSession.get(self.urls['trackers']).json().get('Trackers')
+            trackers = sickrage.srCore.srWebSession.get(self.urls['trackers']).json().get('Trackers')
         except Exception:
-            sickrage.srLogger.info('Could not get tracker list from BitCannon, aborting search')
+            sickrage.srCore.srLogger.info('Could not get tracker list from BitCannon, aborting search')
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 searchURL = self.urls['search'] + search_string
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srWebSession.get(searchURL).json()
+                    data = sickrage.srCore.srWebSession.get(searchURL).json()
                 except Exception:
                     continue
 
@@ -81,7 +81,7 @@ class BitCannonProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srLogger.debug(
+                            sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
@@ -94,7 +94,7 @@ class BitCannonProvider(TorrentProvider):
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

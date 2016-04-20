@@ -10,7 +10,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            % if sickrage.srConfig.USE_NZBS:
+            % if sickrage.srCore.srConfig.USE_NZBS:
                 % for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
                     SICKRAGE.config.providers.addNewznabProvider(
                             '${providerID}',
@@ -19,11 +19,11 @@
                             '${providerObj.key}',
                             '${providerObj.catIDs}',
                             '${int(providerObj.default)}',
-                            '${("false", "true")[bool(sickrage.srConfig.USE_NZBS)]}');
+                            '${("false", "true")[bool(sickrage.srCore.srConfig.USE_NZBS)]}');
                 % endfor
             % endif
 
-            % if sickrage.srConfig.USE_TORRENTS:
+            % if sickrage.srCore.srConfig.USE_TORRENTS:
                 % for providerID, providerObj in sickrage.srCore.providersDict.torrentrss().items():
                     SICKRAGE.config.providers.addTorrentRssProvider(
                             '${providerID}',
@@ -31,7 +31,7 @@
                             '${providerObj.urls["base_url"]}',
                             '${providerObj.cookies}',
                             '${providerObj.titleTAG}',
-                            '${("false", "true")[bool(sickrage.srConfig.USE_TORRENTS)]}');
+                            '${("false", "true")[bool(sickrage.srCore.srConfig.USE_TORRENTS)]}');
                 % endfor
             % endif
         });
@@ -45,10 +45,10 @@
                     <ul>
                         <li><a href="#core-component-group1">Provider Priorities</a></li>
                         <li><a href="#core-component-group2">Provider Options</a></li>
-                        % if sickrage.srConfig.USE_NZBS:
+                        % if sickrage.srCore.srConfig.USE_NZBS:
                             <li><a href="#core-component-group3">Configure Custom Newznab Providers</a></li>
                         % endif
-                        % if sickrage.srConfig.USE_TORRENTS:
+                        % if sickrage.srCore.srConfig.USE_TORRENTS:
                             <li><a href="#core-component-group4">Configure Custom Torrent Providers</a></li>
                         % endif
                     </ul>
@@ -60,7 +60,7 @@
                             <p>Check off and drag the providers into the order you want them to be used.</p>
                             <p>At least one provider is required but two are recommended.</p>
 
-                            % if not sickrage.srConfig.USE_NZBS or not sickrage.srConfig.USE_TORRENTS:
+                            % if not sickrage.srCore.srConfig.USE_NZBS or not sickrage.srCore.srConfig.USE_TORRENTS:
                                 <blockquote style="margin: 20px 0;">NZB/Torrent providers can be toggled in <b><a
                                         href="/config/search">Search Settings</a></b></blockquote>
                             % else:
@@ -76,7 +76,7 @@
                         <fieldset class="component-group-list">
                             <ul id="provider_order_list">
                                 % for providerID, providerObj in sickrage.srCore.providersDict.sort().items():
-                                    % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider] and sickrage.srConfig.USE_TORRENTS):
+                                    % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srCore.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider] and sickrage.srCore.srConfig.USE_TORRENTS):
                                         <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider])]}"
                                             id="${providerID}">
                                             <input type="checkbox" id="enable_${providerID}"
@@ -679,7 +679,7 @@
                         </fieldset>
                     </div><!-- /component-group2 //-->
 
-                    % if sickrage.srConfig.USE_NZBS:
+                    % if sickrage.srCore.srConfig.USE_NZBS:
                         <div id="core-component-group3" class="component-group">
 
                             <div class="component-group-desc">
@@ -762,7 +762,7 @@
                         </div><!-- /component-group3 //-->
                     % endif
 
-                    % if sickrage.srConfig.USE_TORRENTS:
+                    % if sickrage.srCore.srConfig.USE_TORRENTS:
 
                         <div id="core-component-group4" class="component-group">
 

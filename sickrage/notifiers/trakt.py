@@ -51,9 +51,9 @@ class TraktNotifier(srNotifiers):
         """
 
         trakt_id = srIndexerApi(ep_obj.show.indexer).config['trakt_id']
-        trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
+        trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
 
-        if sickrage.srConfig.USE_TRAKT:
+        if sickrage.srCore.srConfig.USE_TRAKT:
             try:
                 # URL parameters
                 data = {
@@ -71,8 +71,8 @@ class TraktNotifier(srNotifiers):
                 else:
                     data['shows'][0]['ids']['tvrage'] = ep_obj.show.indexerid
 
-                if sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
-                    if sickrage.srConfig.TRAKT_REMOVE_SERIESLIST:
+                if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
+                    if sickrage.srCore.srConfig.TRAKT_REMOVE_SERIESLIST:
                         trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
 
                 # Add Season and Episode + Related Episodes
@@ -81,15 +81,15 @@ class TraktNotifier(srNotifiers):
                 for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
                     data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
 
-                if sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
-                    if sickrage.srConfig.TRAKT_REMOVE_WATCHLIST:
+                if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
+                    if sickrage.srCore.srConfig.TRAKT_REMOVE_WATCHLIST:
                         trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
 
                 # update library
                 trakt_api.traktRequest("sync/collection", data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                sickrage.srLogger.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
 
     def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
@@ -104,9 +104,9 @@ class TraktNotifier(srNotifiers):
         update: type o action add or remove
         """
 
-        trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
+        trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
 
-        if sickrage.srConfig.USE_TRAKT:
+        if sickrage.srCore.srConfig.USE_TRAKT:
 
             data = {}
             try:
@@ -130,7 +130,7 @@ class TraktNotifier(srNotifiers):
                 elif data_show is not None:
                     data.update(data_show)
                 else:
-                    sickrage.srLogger.warning(
+                    sickrage.srCore.srLogger.warning(
                         "there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj")
                     return False
 
@@ -168,7 +168,7 @@ class TraktNotifier(srNotifiers):
                 trakt_api.traktRequest(trakt_url, data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                sickrage.srLogger.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
                 return False
 
         return True
@@ -222,7 +222,7 @@ class TraktNotifier(srNotifiers):
         Returns: True if the request succeeded, False otherwise
         """
         try:
-            trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
+            trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
             trakt_api.validateAccount()
             if blacklist_name and blacklist_name is not None:
                 trakt_lists = trakt_api.traktRequest("users/" + username + "/lists")
@@ -235,5 +235,5 @@ class TraktNotifier(srNotifiers):
             else:
                 return "Test notice sent successfully to Trakt"
         except (traktException, traktAuthException, traktServerBusy) as e:
-            sickrage.srLogger.warning("Could not connect to Trakt service: %s" % e)
+            sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
             return "Test notice failed to Trakt: %s" % e

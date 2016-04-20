@@ -19,10 +19,10 @@
 from __future__ import unicode_literals
 
 import re
-import time
 import traceback
 
 import requests
+from tornado import gen
 
 import sickrage
 from sickrage.core.caches import tv_cache
@@ -59,48 +59,48 @@ class FreshOnTVProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(sickrage.srWebSession.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,
                             'login': 'submit'}
 
             try:
-                response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+                response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
             except Exception:
-                sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+                sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('/logout.php', response):
 
                 try:
-                    if requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['uid'] and \
-                            requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['pass']:
-                        self._uid = requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['uid']
-                        self._hash = requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['pass']
+                    if requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)['uid'] and \
+                            requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)['pass']:
+                        self._uid = requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)['uid']
+                        self._hash = requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)['pass']
 
                         self.cookies = {'uid': self._uid,
                                         'pass': self._hash}
                         return True
                 except Exception:
-                    sickrage.srLogger.warning("Unable to login to provider (cookie)")
+                    sickrage.srCore.srLogger.warning("Unable to login to provider (cookie)")
                     return False
 
             else:
                 if re.search('Username does not exist in the userbase or the account is not confirmed yet.', response):
-                    sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+                    sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
                 if re.search('DDoS protection by CloudFlare', response):
-                    sickrage.srLogger.warning("Unable to login to provider due to CloudFlare DDoS javascript check")
+                    sickrage.srCore.srLogger.warning("Unable to login to provider due to CloudFlare DDoS javascript check")
 
                     return False
 
@@ -115,20 +115,20 @@ class FreshOnTVProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (freeleech, search_string)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
                 max_page_number = 0
 
                 try:
-                    data = sickrage.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
-                    sickrage.srLogger.debug("No data returned from provider")
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -156,7 +156,7 @@ class FreshOnTVProvider(TorrentProvider):
                         if max_page_number > 3 and mode is 'RSS':
                             max_page_number = 3
                 except Exception:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
                     continue
 
                 data_response_list = [data]
@@ -164,11 +164,11 @@ class FreshOnTVProvider(TorrentProvider):
                 # Freshon starts counting pages from zero, even though it displays numbers from 1
                 if max_page_number > 1:
                     for i in range(1, max_page_number):
-                        time.sleep(1)
+                        gen.sleep(1)
                         page_searchURL = searchURL + '&page=' + str(i)
 
                         try:
-                            page_html = sickrage.srWebSession.get(page_searchURL).text
+                            page_html = sickrage.srCore.srWebSession.get(page_searchURL).text
                         except Exception:
                             continue
 
@@ -184,7 +184,7 @@ class FreshOnTVProvider(TorrentProvider):
 
                             # Continue only if a Release is found
                             if len(torrent_rows) == 0:
-                                sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                                 continue
 
                             for individual_torrent in torrent_rows:
@@ -196,7 +196,7 @@ class FreshOnTVProvider(TorrentProvider):
                                 try:
                                     title = individual_torrent.find('a', {'class': 'torrent_name_link'})['title']
                                 except Exception:
-                                    sickrage.srLogger.warning(
+                                    sickrage.srCore.srLogger.warning(
                                         "Unable to parse torrent title. Traceback: %s " % traceback.format_exc())
                                     continue
 
@@ -219,19 +219,19 @@ class FreshOnTVProvider(TorrentProvider):
                                 # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
                                     if mode is not 'RSS':
-                                        sickrage.srLogger.debug(
+                                        sickrage.srCore.srLogger.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    sickrage.srLogger.debug("Found result: %s " % title)
+                                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 
                 except Exception:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

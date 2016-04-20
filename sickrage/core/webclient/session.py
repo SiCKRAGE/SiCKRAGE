@@ -67,10 +67,8 @@ class DBCache(object):
             with closing(shelve.open(self.filename)) as cache:
                 cache.clear()
 
-class srFuturesSession(FuturesSession):
-    def __init__(self):
-        super(srFuturesSession, self).__init__(max_workers=10, session=requests.Session())
 
+class srSession(FuturesSession):
     def request(self, method, url, headers=None, params=None, cache=True, *args, **kwargs):
         url = self.normalize_url(url)
         kwargs.setdefault('params', {}).update(params or {})
@@ -83,43 +81,43 @@ class srFuturesSession(FuturesSession):
 
         # request session ssl verify
         kwargs['verify'] = False
-        if sickrage.srConfig.SSL_VERIFY:
+        if sickrage.srCore.srConfig.SSL_VERIFY:
             try:
                 kwargs['verify'] = certifi.where()
             except:
                 pass
+
         # request session proxies
-        if 'Referer' not in kwargs.get('headers', {}) and sickrage.srConfig.PROXY_SETTING:
-            sickrage.srLogger.debug("Using global proxy: " + sickrage.srConfig.PROXY_SETTING)
-            scheme, address = urllib2.splittype(sickrage.srConfig.PROXY_SETTING)
-            address = ('http://{}'.format(sickrage.srConfig.PROXY_SETTING), sickrage.srConfig.PROXY_SETTING)[scheme]
+        if 'Referer' not in kwargs.get('headers', {}) and sickrage.srCore.srConfig.PROXY_SETTING:
+            sickrage.srCore.srLogger.debug("Using global proxy: " + sickrage.srCore.srConfig.PROXY_SETTING)
+            scheme, address = urllib2.splittype(sickrage.srCore.srConfig.PROXY_SETTING)
+            address = ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING), sickrage.srCore.srConfig.PROXY_SETTING)[scheme]
             kwargs.setdefault('proxies', {}).update({"http": address, "https": address})
             kwargs.setdefault('headers', {}).update({'Referer': address})
 
         try:
             # setup session caching
             if cache:
-                self.session = cachecontrol.CacheControl(
-                    self.session,
-                    cache=DBCache(os.path.join(tempfile.gettempdir(), 'cachecontrol.db')),
-                    heuristic=ExpiresAfter(days=7))
+                cachecontrol.CacheControl(self,
+                                          cache=DBCache(os.path.join(tempfile.gettempdir(), 'cachecontrol.db')),
+                                          heuristic=ExpiresAfter(days=7))
 
             # get result
-            return super(srFuturesSession, self).request(method, url, *args, **kwargs).result()
+            return super(srSession, self).request(method, url, *args, **kwargs).result()
         except (SocketTimeout, TypeError) as e:
-            sickrage.srLogger.warning("Connection timed out (sockets) accessing url %s Error: %r" % (url, e))
+            sickrage.srCore.srLogger.warning("Connection timed out (sockets) accessing url %s Error: %r" % (url, e))
         except requests.exceptions.HTTPError as e:
-            sickrage.srLogger.debug("HTTP error in url %s Error: %r" % (url, e))
+            sickrage.srCore.srLogger.debug("HTTP error in url %s Error: %r" % (url, e))
         except requests.exceptions.ConnectionError as e:
-            sickrage.srLogger.debug("Connection error to url %s Error: %r" % (url, e))
+            sickrage.srCore.srLogger.debug("Connection error to url %s Error: %r" % (url, e))
         except requests.exceptions.Timeout as e:
-            sickrage.srLogger.warning("Connection timed out accessing url %s Error: %r" % (url, e))
+            sickrage.srCore.srLogger.warning("Connection timed out accessing url %s Error: %r" % (url, e))
         except requests.exceptions.ContentDecodingError:
-            sickrage.srLogger.debug("Content-Encoding was gzip, but content was not compressed. url: %s" % url)
-            sickrage.srLogger.debug(traceback.format_exc())
+            sickrage.srCore.srLogger.debug("Content-Encoding was gzip, but content was not compressed. url: %s" % url)
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
         except Exception as e:
-            sickrage.srLogger.debug("Unknown exception in url %s Error: %r" % (url, e))
-            sickrage.srLogger.debug(traceback.format_exc())
+            sickrage.srCore.srLogger.debug("Unknown exception in url %s Error: %r" % (url, e))
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
 
     def download(self, url, filename, **kwargs):
         """

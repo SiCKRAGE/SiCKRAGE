@@ -20,7 +20,7 @@
         </a>
 
         <br><br>
-        % if sickrage.srConfig.USE_TRAKT == True:
+        % if sickrage.srCore.srConfig.USE_TRAKT == True:
             <a href="/home/addShows/trendingShows/" id="btnNewShow" class="btn btn-large">
                 <div class="button">
                     <div class="icon-addtrendingshow"></div>

@@ -54,7 +54,7 @@ class TokyoToshokanProvider(TorrentProvider):
         if self.show and not self.show.is_anime:
             return []
 
-        sickrage.srLogger.debug("Search string: %s " % search_string)
+        sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
         params = {
             "terms": search_string.encode('utf-8'),
@@ -62,10 +62,10 @@ class TokyoToshokanProvider(TorrentProvider):
         }
 
         searchURL = self.urls['base_url'] + '/search.php?' + urllib.urlencode(params)
-        sickrage.srLogger.debug("Search URL: %s" % searchURL)
+        sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
         try:
-            data = sickrage.srWebSession.get(searchURL).text
+            data = sickrage.srCore.srWebSession.get(searchURL).text
         except Exception:
             return []
 
@@ -103,7 +103,7 @@ class TokyoToshokanProvider(TorrentProvider):
                         results.append(item)
 
         except Exception as e:
-            sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+            sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
         # FIXME SORTING
         return results
@@ -123,6 +123,6 @@ class TokyoToshokanCache(tv_cache.TVCache):
 
         url = self.provider.url + 'rss.php?' + urllib.urlencode(params)
 
-        sickrage.srLogger.debug("Cache update URL: %s" % url)
+        sickrage.srCore.srLogger.debug("Cache update URL: %s" % url)
 
         return self.getRSSFeed(url)

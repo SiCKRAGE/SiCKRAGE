@@ -32,14 +32,13 @@ from itertools import izip, cycle
 from configobj import ConfigObj
 
 import sickrage
+from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType
 from sickrage.core.nameparser import validator
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.searchers import backlog_searcher
-from sickrage.core.srscheduler import srIntervalTrigger
-
 
 class srConfig(object):
     def __init__(self):
@@ -471,7 +470,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_CERT) != os.path.normpath(https_cert):
             if makeDir(os.path.dirname(os.path.abspath(https_cert))):
                 self.HTTPS_CERT = os.path.normpath(https_cert)
-                sickrage.srLogger.info("Changed https cert path to " + https_cert)
+                sickrage.srCore.srLogger.info("Changed https cert path to " + https_cert)
             else:
                 return False
 
@@ -491,7 +490,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_KEY) != os.path.normpath(https_key):
             if makeDir(os.path.dirname(os.path.abspath(https_key))):
                 self.HTTPS_KEY = os.path.normpath(https_key)
-                sickrage.srLogger.info("Changed https key path to " + https_key)
+                sickrage.srCore.srLogger.info("Changed https key path to " + https_key)
             else:
                 return False
 
@@ -515,14 +514,14 @@ class srConfig(object):
             self.LOG_DIR = new_log_dir
             self.LOG_FILE = os.path.abspath(os.path.join(self.LOG_DIR, 'sickrage.log'))
 
-            sickrage.srLogger.logFile = self.LOG_FILE
-            sickrage.srLogger.logSize = self.LOG_SIZE
-            sickrage.srLogger.logNr = self.LOG_NR
-            sickrage.srLogger.fileLogging = True
-            sickrage.srLogger.debugLogging = sickrage.DEBUG
-            sickrage.srLogger.start()
+            sickrage.srCore.srLogger.logFile = self.LOG_FILE
+            sickrage.srCore.srLogger.logSize = self.LOG_SIZE
+            sickrage.srCore.srLogger.logNr = self.LOG_NR
+            sickrage.srCore.srLogger.fileLogging = True
+            sickrage.srCore.srLogger.debugLogging = sickrage.DEBUG
+            sickrage.srCore.srLogger.start()
 
-            sickrage.srLogger.info("Initialized new log file in " + self.LOG_DIR)
+            sickrage.srCore.srLogger.info("Initialized new log file in " + self.LOG_DIR)
             if self.WEB_LOG != web_log:
                 self.WEB_LOG = web_log
 
@@ -542,7 +541,7 @@ class srConfig(object):
         if os.path.normpath(self.NZB_DIR) != os.path.normpath(nzb_dir):
             if makeDir(nzb_dir):
                 self.NZB_DIR = os.path.normpath(nzb_dir)
-                sickrage.srLogger.info("Changed NZB folder to " + nzb_dir)
+                sickrage.srCore.srLogger.info("Changed NZB folder to " + nzb_dir)
             else:
                 return False
 
@@ -562,7 +561,7 @@ class srConfig(object):
         if os.path.normpath(self.TORRENT_DIR) != os.path.normpath(torrent_dir):
             if makeDir(torrent_dir):
                 self.TORRENT_DIR = os.path.normpath(torrent_dir)
-                sickrage.srLogger.info("Changed torrent folder to " + torrent_dir)
+                sickrage.srCore.srLogger.info("Changed torrent folder to " + torrent_dir)
             else:
                 return False
 
@@ -582,7 +581,7 @@ class srConfig(object):
         if os.path.normpath(self.TV_DOWNLOAD_DIR) != os.path.normpath(tv_download_dir):
             if makeDir(tv_download_dir):
                 self.TV_DOWNLOAD_DIR = os.path.normpath(tv_download_dir)
-                sickrage.srLogger.info("Changed TV download folder to " + tv_download_dir)
+                sickrage.srCore.srLogger.info("Changed TV download folder to " + tv_download_dir)
             else:
                 return False
 
@@ -600,8 +599,8 @@ class srConfig(object):
         if self.AUTOPOSTPROCESSOR_FREQ < self.MIN_AUTOPOSTPROCESSOR_FREQ:
             self.AUTOPOSTPROCESSOR_FREQ = self.MIN_AUTOPOSTPROCESSOR_FREQ
 
-        sickrage.srScheduler.modify_job('POSTPROCESSOR',
-                                        trigger=srIntervalTrigger(
+        sickrage.srCore.srScheduler.modify_job('POSTPROCESSOR',
+                                             trigger=srIntervalTrigger(
                                             **{'minutes': self.AUTOPOSTPROCESSOR_FREQ,
                                                'min': self.MIN_AUTOPOSTPROCESSOR_FREQ}))
 
@@ -612,8 +611,8 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.DAILY_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_DAILY_SEARCHER_FREQ)
-        sickrage.srScheduler.modify_job('DAILYSEARCHER',
-                                        trigger=srIntervalTrigger(
+        sickrage.srCore.srScheduler.modify_job('DAILYSEARCHER',
+                                             trigger=srIntervalTrigger(
                                             **{'minutes': self.DAILY_SEARCHER_FREQ,
                                                'min': self.MIN_DAILY_SEARCHER_FREQ}))
 
@@ -625,8 +624,8 @@ class srConfig(object):
         """
         self.BACKLOG_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_BACKLOG_SEARCHER_FREQ)
         self.MIN_BACKLOG_SEARCHER_FREQ = backlog_searcher.get_backlog_cycle_time()
-        sickrage.srScheduler.modify_job('BACKLOG',
-                                        trigger=srIntervalTrigger(
+        sickrage.srCore.srScheduler.modify_job('BACKLOG',
+                                             trigger=srIntervalTrigger(
                                             **{'minutes': self.BACKLOG_SEARCHER_FREQ,
                                                'min': self.MIN_BACKLOG_SEARCHER_FREQ}))
 
@@ -637,8 +636,8 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.VERSION_UPDATER_FREQ = self.to_int(freq, default=self.DEFAULT_VERSION_UPDATE_FREQ)
-        sickrage.srScheduler.modify_job('VERSIONUPDATER',
-                                        trigger=srIntervalTrigger(
+        sickrage.srCore.srScheduler.modify_job('VERSIONUPDATER',
+                                             trigger=srIntervalTrigger(
                                             **{'hours': self.VERSION_UPDATER_FREQ,
                                                'min': self.MIN_VERSION_UPDATER_FREQ}))
 
@@ -652,8 +651,8 @@ class srConfig(object):
         if self.SHOWUPDATE_HOUR < 0 or self.SHOWUPDATE_HOUR > 23:
             self.SHOWUPDATE_HOUR = 0
 
-        sickrage.srScheduler.modify_job('SHOWUPDATER',
-                                        trigger=srIntervalTrigger(
+        sickrage.srCore.srScheduler.modify_job('SHOWUPDATER',
+                                             trigger=srIntervalTrigger(
                                             **{'hours': 1,
                                                'start_date': datetime.datetime.now().replace(
                                                    hour=self.SHOWUPDATE_HOUR)}))
@@ -665,8 +664,8 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.SUBTITLE_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
-        sickrage.srScheduler.modify_job('SUBTITLESEARCHER',
-                                        trigger=srIntervalTrigger(
+        sickrage.srCore.srScheduler.modify_job('SUBTITLESEARCHER',
+                                             trigger=srIntervalTrigger(
                                             **{'hours': self.SUBTITLE_SEARCHER_FREQ,
                                                'min': self.MIN_SUBTITLE_SEARCHER_FREQ}))
 
@@ -688,7 +687,7 @@ class srConfig(object):
         :param download_propers: New desired state
         """
         self.DOWNLOAD_PROPERS = self.checkbox_to_value(download_propers)
-        job = sickrage.srScheduler.get_job('PROPERSEARCHER')
+        job = sickrage.srCore.srScheduler.get_job('PROPERSEARCHER')
         (job.pause, job.resume)[self.DOWNLOAD_PROPERS]()
 
     def change_use_trakt(self, use_trakt):
@@ -699,7 +698,7 @@ class srConfig(object):
         :param use_trakt: New desired state
         """
         self.USE_TRAKT = self.checkbox_to_value(use_trakt)
-        job = sickrage.srScheduler.get_job('TRAKTSEARCHER')
+        job = sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER')
         (job.pause, job.resume)[self.USE_TRAKT]()
 
     def change_use_subtitles(self, use_subtitles):
@@ -710,7 +709,7 @@ class srConfig(object):
         :param use_subtitles: New desired state
         """
         self.USE_SUBTITLES = self.checkbox_to_value(use_subtitles)
-        job = sickrage.srScheduler.get_job('SUBTITLESEARCHER')
+        job = sickrage.srCore.srScheduler.get_job('SUBTITLESEARCHER')
         (job.pause, job.resume)[self.USE_SUBTITLES]()
 
     def change_process_automatically(self, process_automatically):
@@ -721,7 +720,7 @@ class srConfig(object):
         :param process_automatically: New desired state
         """
         self.PROCESS_AUTOMATICALLY = self.checkbox_to_value(process_automatically)
-        job = sickrage.srScheduler.get_job('POSTPROCESSOR')
+        job = sickrage.srCore.srScheduler.get_job('POSTPROCESSOR')
         (job.pause, job.resume)[self.PROCESS_AUTOMATICALLY]()
 
     def checkbox_to_value(self, option, value_on=1, value_off=0):
@@ -858,7 +857,7 @@ class srConfig(object):
         my_val = int(my_val)
 
         if not silent:
-            sickrage.srLogger.debug(key + " -> " + str(my_val))
+            sickrage.srCore.srLogger.debug(key + " -> " + str(my_val))
 
         return my_val
 
@@ -870,7 +869,7 @@ class srConfig(object):
         my_val = float(self.CONFIG_OBJ.get(section, {section:key}).get(key, def_val))
 
         if not silent:
-            sickrage.srLogger.debug(section + " -> " + str(my_val))
+            sickrage.srCore.srLogger.debug(section + " -> " + str(my_val))
 
         return my_val
 
@@ -1428,7 +1427,7 @@ class srConfig(object):
         new_config = ConfigObj(sickrage.CONFIG_FILE, indent_type='  ')
         new_config.clear()
 
-        sickrage.srLogger.debug("Saving all settings to disk")
+        sickrage.srCore.srLogger.debug("Saving all settings to disk")
 
         new_config['General'] = {}
         new_config['General']['config_version'] = self.CONFIG_VERSION
@@ -1888,11 +1887,11 @@ class srConfig(object):
                     if _decrypt:
                         section[key] = ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
                                                izip(base64.decodestring(section[key]),
-                                                    cycle(sickrage.srConfig.ENCRYPTION_SECRET)))
+                                                    cycle(sickrage.srCore.srConfig.ENCRYPTION_SECRET)))
                     else:
                         section[key] = base64.encodestring(
                             ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(section[key], cycle(
-                                sickrage.srConfig.ENCRYPTION_SECRET)))).strip()
+                                sickrage.srCore.srConfig.ENCRYPTION_SECRET)))).strip()
             except:
                 pass
 
@@ -1931,7 +1930,7 @@ class ConfigMigrator(srConfig):
         """
 
         if self.config_version > self.expected_config_version:
-            sickrage.srLogger.log_error_and_exit(
+            sickrage.srCore.srLogger.log_error_and_exit(
                 """Your config version (%i) has been incremented past what this version of supports (%i).
                     If you have used other forks or a newer version of  your config file may be unusable due to their modifications.""" %
                 (self.config_version, self.expected_config_version)
@@ -1947,19 +1946,19 @@ class ConfigMigrator(srConfig):
             else:
                 migration_name = ''
 
-            sickrage.srLogger.info("Backing up config before upgrade")
+            sickrage.srCore.srLogger.info("Backing up config before upgrade")
             if not backupVersionedFile(sickrage.CONFIG_FILE, self.config_version):
-                sickrage.srLogger.log_error_and_exit("Config backup failed, abort upgrading config")
+                sickrage.srCore.srLogger.log_error_and_exit("Config backup failed, abort upgrading config")
             else:
-                sickrage.srLogger.info("Proceeding with upgrade")
+                sickrage.srCore.srLogger.info("Proceeding with upgrade")
 
             # do the migration, expect a method named _migrate_v<num>
-            sickrage.srLogger.info("Migrating config up to version " + str(next_version) + migration_name)
+            sickrage.srCore.srLogger.info("Migrating config up to version " + str(next_version) + migration_name)
             getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
 
             # update config version to newest
-            sickrage.srConfig.CONFIG_VERSION = self.config_version
+            sickrage.srCore.srConfig.CONFIG_VERSION = self.config_version
 
         return self.CONFIG_OBJ
 
@@ -1970,14 +1969,14 @@ class ConfigMigrator(srConfig):
         """
 
         self.NAMING_PATTERN = self._name_to_pattern()
-        sickrage.srLogger.info(
+        sickrage.srCore.srLogger.info(
             "Based on your old settings I'm setting your new naming pattern to: " + self.NAMING_PATTERN)
 
         self.NAMING_CUSTOM_ABD = bool(self.check_setting_int('General', 'naming_dates', 0))
 
         if self.NAMING_CUSTOM_ABD:
             self.NAMING_ABD_PATTERN = self._name_to_pattern(True)
-            sickrage.srLogger.info(
+            sickrage.srCore.srLogger.info(
                 "Adding a custom air-by-date naming pattern to your config: " + self.NAMING_ABD_PATTERN)
         else:
             self.NAMING_ABD_PATTERN = validator.name_abd_presets[0]
@@ -2000,17 +1999,17 @@ class ConfigMigrator(srConfig):
                     new_season_format = str(new_season_format).replace('09', '%0S')
                     new_season_format = new_season_format.replace('9', '%S')
 
-                    sickrage.srLogger.info(
+                    sickrage.srCore.srLogger.info(
                         "Changed season folder format from " + old_season_format + " to " + new_season_format + ", prepending it to your naming config")
                     self.NAMING_PATTERN = new_season_format + os.sep + self.NAMING_PATTERN
 
                 except (TypeError, ValueError):
-                    sickrage.srLogger.error("Can't change " + old_season_format + " to new season format")
+                    sickrage.srCore.srLogger.error("Can't change " + old_season_format + " to new season format")
 
         # if no shows had it on then don't flatten any shows and don't put season folders in the config
         else:
 
-            sickrage.srLogger.info(
+            sickrage.srCore.srLogger.info(
                 "No shows were using season folders before so I'm disabling flattening on all shows")
 
             # don't flatten any shows at all
@@ -2103,7 +2102,7 @@ class ConfigMigrator(srConfig):
                 try:
                     name, url, key, enabled = cur_provider_data.split("|")
                 except ValueError:
-                    sickrage.srLogger.error(
+                    sickrage.srCore.srLogger.error(
                         "Skipping Newznab provider string: '" + cur_provider_data + "', incorrect format")
                     continue
 
@@ -2163,7 +2162,7 @@ class ConfigMigrator(srConfig):
             cur_metadata = metadata.split('|')
             # if target has the old number of values, do upgrade
             if len(cur_metadata) == 6:
-                sickrage.srLogger.info("Upgrading " + metadata_name + " metadata, old value: " + metadata)
+                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, old value: " + metadata)
                 cur_metadata.insert(4, '0')
                 cur_metadata.append('0')
                 cur_metadata.append('0')
@@ -2175,18 +2174,18 @@ class ConfigMigrator(srConfig):
                     cur_metadata[4], cur_metadata[3] = cur_metadata[3], '0'
                 # write new format
                 metadata = '|'.join(cur_metadata)
-                sickrage.srLogger.info("Upgrading " + metadata_name + " metadata, new value: " + metadata)
+                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, new value: " + metadata)
 
             elif len(cur_metadata) == 10:
 
                 metadata = '|'.join(cur_metadata)
-                sickrage.srLogger.info("Keeping " + metadata_name + " metadata, value: " + metadata)
+                sickrage.srCore.srLogger.info("Keeping " + metadata_name + " metadata, value: " + metadata)
 
             else:
-                sickrage.srLogger.error(
+                sickrage.srCore.srLogger.error(
                     "Skipping " + metadata_name + " metadata: '" + metadata + "', incorrect format")
                 metadata = '0|0|0|0|0|0|0|0|0|0'
-                sickrage.srLogger.info("Setting " + metadata_name + " metadata, new value: " + metadata)
+                sickrage.srCore.srLogger.info("Setting " + metadata_name + " metadata, new value: " + metadata)
 
             return metadata
 

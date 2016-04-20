@@ -30,7 +30,7 @@ from sickrage.core.webclient import USER_AGENTS
 def getFeed(url, request_headers=None, handlers=None):
     try:
         return feedparser.parse(
-            sickrage.srWebSession.normalize_url(url),
+            sickrage.srCore.srWebSession.normalize_url(url),
             agent=random.choice(USER_AGENTS),
             etag=False,
             modified=False,

@@ -1,16 +1,16 @@
-<%
+    <%
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
     from sickrage.core.searchers import subtitle_searcher
 %>
-% if sickrage.srConfig.USE_SUBTITLES:
+% if sickrage.srCore.srConfig.USE_SUBTITLES:
     <br>
     <div class="field-pair">
         <label for="subtitles" class="clearfix">
             <span class="component-desc">
                  <input type="checkbox" name="subtitles"
-                        id="subtitles" ${('', 'checked="checked"')[bool(sickrage.srConfig.SUBTITLES_DEFAULT)]} />
+                        id="subtitles" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_DEFAULT)]} />
             </span>
             <span class="component-title">Subtitles</span>
         </label>
@@ -20,7 +20,7 @@
     <label for="flatten_folders" class="clearfix">
         <span class="component-desc">
             <input class="cb" type="checkbox" name="flatten_folders"
-                   id="flatten_folders" ${('', 'checked="checked"')[bool(sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT)]}/>
+                   id="flatten_folders" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT)]}/>
         </span>
         <span class="component-title">Flatten Folders</span>
     </label>
@@ -30,7 +30,7 @@
         <label for="anime" class="clearfix">
             <span class="component-desc">
                 <input type="checkbox" name="anime"
-                       id="anime" ${('', 'checked="checked"')[bool(sickrage.srConfig.ANIME_DEFAULT)]} />
+                       id="anime" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ANIME_DEFAULT)]} />
             </span>
             <span class="component-title">Anime</span>
         </label>
@@ -40,7 +40,7 @@
     <label for="scene" class="clearfix">
         <span class="component-desc">
             <input type="checkbox" name="scene"
-                   id="scene" ${('', 'checked="checked"')[bool(sickrage.srConfig.SCENE_DEFAULT)]} />
+                   id="scene" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SCENE_DEFAULT)]} />
         </span>
         <span class="component-title">Scene Numbering</span>
     </label>
@@ -49,7 +49,7 @@
     <label for="archive" class="clearfix">
         <span class="component-desc">
             <input type="checkbox" name="archive"
-                   id="archive" ${('', 'checked="checked"')[bool(sickrage.srConfig.ARCHIVE_DEFAULT)]} />
+                   id="archive" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ARCHIVE_DEFAULT)]} />
         </span>
         <span class="component-title">Archive on first match</span>
     </label>
@@ -59,7 +59,7 @@
         <span class="component-desc">
             <select name="defaultStatus" id="statusSelect" class="form-control form-control-inline input-sm">
                 % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
+                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
                 % endfor
             </select>
         </span>
@@ -72,7 +72,7 @@
             <select name="defaultStatusAfter" id="statusSelectAfter"
                     class="form-control form-control-inline input-sm">
                 % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
+                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
                 % endfor
             </select>
         </span>
@@ -80,7 +80,7 @@
     </label>
 </div>
 
-<% qualities = Quality.splitQuality(sickrage.srConfig.QUALITY_DEFAULT) %>
+<% qualities = Quality.splitQuality(sickrage.srCore.srConfig.QUALITY_DEFAULT) %>
 <% anyQualities = qualities[0] %>
 <% bestQualities = qualities[1] %>
 

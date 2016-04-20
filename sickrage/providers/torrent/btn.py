@@ -25,6 +25,7 @@ import socket
 import time
 
 import jsonrpclib
+from tornado import gen
 
 import sickrage
 from sickrage.core.caches import tv_cache
@@ -51,7 +52,7 @@ class BTNProvider(TorrentProvider):
 
     def _checkAuth(self):
         if not self.api_key:
-            sickrage.srLogger.warning("Invalid api key. Check your settings")
+            sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -61,7 +62,7 @@ class BTNProvider(TorrentProvider):
             return self._checkAuth()
 
         if 'api-error' in parsedJSON:
-            sickrage.srLogger.debug("Incorrect authentication credentials: % s" % parsedJSON['api-error'])
+            sickrage.srCore.srLogger.debug("Incorrect authentication credentials: % s" % parsedJSON['api-error'])
             raise AuthException(
                     "Your authentication credentials for " + self.name + " are incorrect, check your config.")
 
@@ -81,11 +82,11 @@ class BTNProvider(TorrentProvider):
 
         if search_params:
             params.update(search_params)
-            sickrage.srLogger.debug("Search string: %s" % search_params)
+            sickrage.srCore.srLogger.debug("Search string: %s" % search_params)
 
         parsedJSON = self._api_call(apikey, params)
         if not parsedJSON:
-            sickrage.srLogger.debug("No data returned from provider")
+            sickrage.srCore.srLogger.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
@@ -119,7 +120,7 @@ class BTNProvider(TorrentProvider):
                 (title, url) = self._get_title_and_url(torrent_info)
 
                 if title and url:
-                    sickrage.srLogger.debug("Found result: %s " % title)
+                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
                     results.append(torrent_info)
 
         # FIXME SORT RESULTS
@@ -132,29 +133,29 @@ class BTNProvider(TorrentProvider):
 
         try:
             parsedJSON = server.getTorrents(apikey, params, int(results_per_page), int(offset))
-            time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+            gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
         except jsonrpclib.jsonrpc.ProtocolError, error:
             if error.message == 'Call Limit Exceeded':
-                sickrage.srLogger.warning(
+                sickrage.srCore.srLogger.warning(
                         "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
             else:
-                sickrage.srLogger.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
+                sickrage.srCore.srLogger.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
             parsedJSON = {'api-error': error}
             return parsedJSON
 
         except socket.timeout:
-            sickrage.srLogger.warning("Timeout while accessing provider")
+            sickrage.srCore.srLogger.warning("Timeout while accessing provider")
 
         except socket.error, error:
             # Note that sometimes timeouts are thrown as socket errors
-            sickrage.srLogger.warning("Socket error while accessing provider. Error: %s " % error[1])
+            sickrage.srCore.srLogger.warning("Socket error while accessing provider. Error: %s " % error[1])
 
         except Exception, error:
             errorstring = str(error)
             if errorstring.startswith('<') and errorstring.endswith('>'):
                 errorstring = errorstring[1:-1]
-            sickrage.srLogger.warning("Unknown error while accessing provider. Error: %s " % errorstring)
+            sickrage.srCore.srLogger.warning("Unknown error while accessing provider. Error: %s " % errorstring)
 
         return parsedJSON
 
@@ -304,7 +305,7 @@ class BTNCache(tv_cache.TVCache):
 
         # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will need to be done through backlog
         if seconds_since_last_update > 86400:
-            sickrage.srLogger.debug(
+            sickrage.srCore.srLogger.debug(
                     "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
             seconds_since_last_update = 86400
 

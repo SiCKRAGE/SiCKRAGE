@@ -272,20 +272,20 @@ class GenericMetadata(object):
 
     def create_show_metadata(self, show_obj):
         if self.show_metadata and show_obj and not self._has_show_metadata(show_obj):
-            sickrage.srLogger.debug("Metadata provider " + self.name + " creating show metadata for " + show_obj.name)
+            sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating show metadata for " + show_obj.name)
             return self.write_show_file(show_obj)
         return False
 
     def create_episode_metadata(self, ep_obj):
         if self.episode_metadata and ep_obj and not self._has_episode_metadata(ep_obj):
-            sickrage.srLogger.debug(
+            sickrage.srCore.srLogger.debug(
                 "Metadata provider " + self.name + " creating episode metadata for " + ep_obj.prettyName())
             return self.write_ep_file(ep_obj)
         return False
 
     def update_show_indexer_metadata(self, show_obj):
         if self.show_metadata and show_obj and self._has_show_metadata(show_obj):
-            sickrage.srLogger.debug(
+            sickrage.srCore.srLogger.debug(
                 "Metadata provider " + self.name + " updating show indexer info metadata file for " + show_obj.name)
 
             nfo_file_path = self.get_show_file_path(show_obj)
@@ -310,31 +310,31 @@ class GenericMetadata(object):
 
                 return True
             except IOError as e:
-                sickrage.srLogger.error(
+                sickrage.srCore.srLogger.error(
                     "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
                         e.message))
 
     def create_fanart(self, show_obj):
         if self.fanart and show_obj and not self._has_fanart(show_obj):
-            sickrage.srLogger.debug("Metadata provider " + self.name + " creating fanart for " + show_obj.name)
+            sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating fanart for " + show_obj.name)
             return self.save_fanart(show_obj)
         return False
 
     def create_poster(self, show_obj):
         if self.poster and show_obj and not self._has_poster(show_obj):
-            sickrage.srLogger.debug("Metadata provider " + self.name + " creating poster for " + show_obj.name)
+            sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating poster for " + show_obj.name)
             return self.save_poster(show_obj)
         return False
 
     def create_banner(self, show_obj):
         if self.banner and show_obj and not self._has_banner(show_obj):
-            sickrage.srLogger.debug("Metadata provider " + self.name + " creating banner for " + show_obj.name)
+            sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating banner for " + show_obj.name)
             return self.save_banner(show_obj)
         return False
 
     def create_episode_thumb(self, ep_obj):
         if self.episode_thumbnails and ep_obj and not self._has_episode_thumb(ep_obj):
-            sickrage.srLogger.debug(
+            sickrage.srCore.srLogger.debug(
                 "Metadata provider " + self.name + " creating episode thumbnail for " + ep_obj.prettyName())
             return self.save_thumbnail(ep_obj)
         return False
@@ -344,7 +344,7 @@ class GenericMetadata(object):
             result = []
             for season, _ in show_obj.episodes.items():  # @UnusedVariable
                 if not self._has_season_poster(show_obj, season):
-                    sickrage.srLogger.debug(
+                    sickrage.srCore.srLogger.debug(
                         "Metadata provider " + self.name + " creating season posters for " + show_obj.name)
                     result = result + [self.save_season_posters(show_obj, season)]
             return all(result)
@@ -353,7 +353,7 @@ class GenericMetadata(object):
     def create_season_banners(self, show_obj):
         if self.season_banners and show_obj:
             result = []
-            sickrage.srLogger.debug("Metadata provider " + self.name + " creating season banners for " + show_obj.name)
+            sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating season banners for " + show_obj.name)
             for season, _ in show_obj.episodes.items():  # @UnusedVariable
                 if not self._has_season_banner(show_obj, season):
                     result = result + [self.save_season_banners(show_obj, season)]
@@ -362,14 +362,14 @@ class GenericMetadata(object):
 
     def create_season_all_poster(self, show_obj):
         if self.season_all_poster and show_obj and not self._has_season_all_poster(show_obj):
-            sickrage.srLogger.debug(
+            sickrage.srCore.srLogger.debug(
                 "Metadata provider " + self.name + " creating season all poster for " + show_obj.name)
             return self.save_season_all_poster(show_obj)
         return False
 
     def create_season_all_banner(self, show_obj):
         if self.season_all_banner and show_obj and not self._has_season_all_banner(show_obj):
-            sickrage.srLogger.debug(
+            sickrage.srCore.srLogger.debug(
                 "Metadata provider " + self.name + " creating season all banner for " + show_obj.name)
             return self.save_season_all_banner(show_obj)
         return False
@@ -424,18 +424,18 @@ class GenericMetadata(object):
 
         try:
             if not os.path.isdir(nfo_file_dir):
-                sickrage.srLogger.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                sickrage.srCore.srLogger.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
                 chmodAsParent(nfo_file_dir)
 
-            sickrage.srLogger.debug("Writing show nfo file to " + nfo_file_path)
+            sickrage.srCore.srLogger.debug("Writing show nfo file to " + nfo_file_path)
 
             nfo_file = io.open(nfo_file_path, 'wb')
             data.write(nfo_file, encoding='UTF-8')
             nfo_file.close()
             chmodAsParent(nfo_file_path)
         except IOError as e:
-            sickrage.srLogger.error(
+            sickrage.srCore.srLogger.error(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
                     e.message))
             return False
@@ -469,17 +469,17 @@ class GenericMetadata(object):
 
         try:
             if not os.path.isdir(nfo_file_dir):
-                sickrage.srLogger.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                sickrage.srCore.srLogger.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
                 chmodAsParent(nfo_file_dir)
 
-            sickrage.srLogger.debug("Writing episode nfo file to " + nfo_file_path)
+            sickrage.srCore.srLogger.debug("Writing episode nfo file to " + nfo_file_path)
             nfo_file = io.open(nfo_file_path, 'wb')
             data.write(nfo_file, encoding='UTF-8')
             nfo_file.close()
             chmodAsParent(nfo_file_path)
         except IOError as e:
-            sickrage.srLogger.error(
+            sickrage.srCore.srLogger.error(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
                     e.message))
             return False
@@ -498,14 +498,14 @@ class GenericMetadata(object):
         file_path = self.get_episode_thumb_path(ep_obj)
 
         if not file_path:
-            sickrage.srLogger.debug("Unable to find a file path to use for this thumbnail, not generating it")
+            sickrage.srCore.srLogger.debug("Unable to find a file path to use for this thumbnail, not generating it")
             return False
 
         thumb_url = self._get_episode_thumb_url(ep_obj)
 
         # if we can't find one then give up
         if not thumb_url:
-            sickrage.srLogger.debug("No thumb is available for this episode, not creating a thumb")
+            sickrage.srCore.srLogger.debug("No thumb is available for this episode, not creating a thumb")
             return False
 
         thumb_data = getShowImage(thumb_url)
@@ -534,7 +534,7 @@ class GenericMetadata(object):
         fanart_data = self._retrieve_show_image('fanart', show_obj, which)
 
         if not fanart_data:
-            sickrage.srLogger.debug("No fanart image was retrieved, unable to write fanart")
+            sickrage.srCore.srLogger.debug("No fanart image was retrieved, unable to write fanart")
             return False
 
         return self._write_image(fanart_data, fanart_path)
@@ -553,7 +553,7 @@ class GenericMetadata(object):
         poster_data = self._retrieve_show_image('poster', show_obj, which)
 
         if not poster_data:
-            sickrage.srLogger.debug("No show poster image was retrieved, unable to write poster")
+            sickrage.srCore.srLogger.debug("No show poster image was retrieved, unable to write poster")
             return False
 
         return self._write_image(poster_data, poster_path)
@@ -572,7 +572,7 @@ class GenericMetadata(object):
         banner_data = self._retrieve_show_image('banner', show_obj, which)
 
         if not banner_data:
-            sickrage.srLogger.debug("No show banner image was retrieved, unable to write banner")
+            sickrage.srCore.srLogger.debug("No show banner image was retrieved, unable to write banner")
             return False
 
         return self._write_image(banner_data, banner_path)
@@ -607,13 +607,13 @@ class GenericMetadata(object):
             season_poster_file_path = self.get_season_poster_path(show_obj, cur_season)
 
             if not season_poster_file_path:
-                sickrage.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
+                sickrage.srCore.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
                 continue
 
             seasonData = getShowImage(season_url)
 
             if not seasonData:
-                sickrage.srLogger.debug("No season poster data available, skipping this season")
+                sickrage.srCore.srLogger.debug("No season poster data available, skipping this season")
                 continue
 
             result = result + [self._write_image(seasonData, season_poster_file_path)]
@@ -653,13 +653,13 @@ class GenericMetadata(object):
             season_banner_file_path = self.get_season_banner_path(show_obj, cur_season)
 
             if not season_banner_file_path:
-                sickrage.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
+                sickrage.srCore.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
                 continue
 
             seasonData = getShowImage(season_url)
 
             if not seasonData:
-                sickrage.srLogger.debug("No season banner data available, skipping this season")
+                sickrage.srCore.srLogger.debug("No season banner data available, skipping this season")
                 continue
 
             result = result + [self._write_image(seasonData, season_banner_file_path)]
@@ -676,7 +676,7 @@ class GenericMetadata(object):
         poster_data = self._retrieve_show_image('poster', show_obj, which)
 
         if not poster_data:
-            sickrage.srLogger.debug("No show poster image was retrieved, unable to write season all poster")
+            sickrage.srCore.srLogger.debug("No show poster image was retrieved, unable to write season all poster")
             return False
 
         return self._write_image(poster_data, poster_path)
@@ -688,7 +688,7 @@ class GenericMetadata(object):
         banner_data = self._retrieve_show_image('banner', show_obj, which)
 
         if not banner_data:
-            sickrage.srLogger.debug("No show banner image was retrieved, unable to write season all banner")
+            sickrage.srCore.srLogger.debug("No show banner image was retrieved, unable to write season all banner")
             return False
 
         return self._write_image(banner_data, banner_path)
@@ -704,18 +704,18 @@ class GenericMetadata(object):
 
         # don't bother overwriting it
         if os.path.isfile(image_path):
-            sickrage.srLogger.debug("Image already exists, not downloading")
+            sickrage.srCore.srLogger.debug("Image already exists, not downloading")
             return False
 
         image_dir = os.path.dirname(image_path)
 
         if not image_data:
-            sickrage.srLogger.debug("Unable to retrieve image to save in %s, skipping" % image_path)
+            sickrage.srCore.srLogger.debug("Unable to retrieve image to save in %s, skipping" % image_path)
             return False
 
         try:
             if not os.path.isdir(image_dir):
-                sickrage.srLogger.debug("Metadata dir didn't exist, creating it at " + image_dir)
+                sickrage.srCore.srLogger.debug("Metadata dir didn't exist, creating it at " + image_dir)
                 os.makedirs(image_dir)
                 chmodAsParent(image_dir)
 
@@ -724,7 +724,7 @@ class GenericMetadata(object):
             outFile.close()
             chmodAsParent(image_path)
         except IOError as e:
-            sickrage.srLogger.error(
+            sickrage.srCore.srLogger.error(
                 "Unable to write image to " + image_path + " - are you sure the show folder is writable? {}".format(
                     e.message))
             return False
@@ -751,7 +751,7 @@ class GenericMetadata(object):
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
@@ -760,14 +760,14 @@ class GenericMetadata(object):
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
         except (indexer_error, IOError) as e:
-            sickrage.srLogger.warning("Unable to look up show on " + srIndexerApi(
+            sickrage.srCore.srLogger.warning("Unable to look up show on " + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
-            sickrage.srLogger.debug("Indexer " + srIndexerApi(
+            sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
 
         if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
-            sickrage.srLogger.error(
+            sickrage.srCore.srLogger.error(
                 "Invalid image type " + str(image_type) + ", couldn't find it in the " + srIndexerApi(
                     show_obj.indexer).name + " object")
             return None
@@ -824,7 +824,7 @@ class GenericMetadata(object):
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
@@ -833,9 +833,9 @@ class GenericMetadata(object):
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
         except (indexer_error, IOError) as e:
-            sickrage.srLogger.warning("Unable to look up show on " + srIndexerApi(
+            sickrage.srCore.srLogger.warning("Unable to look up show on " + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
-            sickrage.srLogger.debug("Indexer " + srIndexerApi(
+            sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return result
 
@@ -858,7 +858,7 @@ class GenericMetadata(object):
         # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
             if int(seasonsArtObj[seasonArtID]['season']) == season and \
-                            seasonsArtObj[seasonArtID]['language'] == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+                            seasonsArtObj[seasonArtID]['language'] == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -884,15 +884,15 @@ class GenericMetadata(object):
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
         except (indexer_error, IOError) as e:
-            sickrage.srLogger.warning("Unable to look up show on " + srIndexerApi(
+            sickrage.srCore.srLogger.warning("Unable to look up show on " + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
-            sickrage.srLogger.debug("Indexer " + srIndexerApi(
+            sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return result
 
@@ -916,7 +916,7 @@ class GenericMetadata(object):
         # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
             if int(seasonsArtObj[seasonArtID]['season']) == season and \
-                            seasonsArtObj[seasonArtID]['language'] == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+                            seasonsArtObj[seasonArtID]['language'] == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -932,11 +932,11 @@ class GenericMetadata(object):
         metadata_path = os.path.join(folder, self._show_metadata_filename)
 
         if not os.path.isdir(folder) or not os.path.isfile(metadata_path):
-            sickrage.srLogger.debug("Can't load the metadata file from " + metadata_path + ", it doesn't exist")
+            sickrage.srCore.srLogger.debug("Can't load the metadata file from " + metadata_path + ", it doesn't exist")
             return empty_return
 
         try:
-            sickrage.srLogger.debug("Loading show info from sickrage.metadata file in {}".format(folder))
+            sickrage.srCore.srLogger.debug("Loading show info from sickrage.metadata file in {}".format(folder))
         except:
             pass
 
@@ -946,7 +946,7 @@ class GenericMetadata(object):
 
             if showXML.findtext('title') is None or (
                             showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
-                sickrage.srLogger.info("Invalid info in tvshow.nfo (missing name or id): {0:s} {1:s} {2:s}".format(
+                sickrage.srCore.srLogger.info("Invalid info in tvshow.nfo (missing name or id): {0:s} {1:s} {2:s}".format(
                     showXML.findtext('title'), showXML.findtext('tvdbid'), showXML.findtext('id')))
                 return empty_return
 
@@ -957,11 +957,11 @@ class GenericMetadata(object):
             elif showXML.findtext('id') is not None:
                 indexer_id = int(showXML.findtext('id'))
             else:
-                sickrage.srLogger.warning("Empty <id> or <tvdbid> field in NFO, unable to find a ID")
+                sickrage.srCore.srLogger.warning("Empty <id> or <tvdbid> field in NFO, unable to find a ID")
                 return empty_return
 
             if indexer_id is None:
-                sickrage.srLogger.warning("Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
+                sickrage.srCore.srLogger.warning("Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
                 return empty_return
 
             indexer = None
@@ -971,12 +971,12 @@ class GenericMetadata(object):
                     if 'thetvdb.com' in epg_url:
                         indexer = 1
                     elif 'tvrage' in epg_url:
-                        sickrage.srLogger.debug("Invalid Indexer ID (" + str(
+                        sickrage.srCore.srLogger.debug("Invalid Indexer ID (" + str(
                             indexer_id) + "), not using metadata file because it has TVRage info")
                         return empty_return
 
         except Exception as e:
-            sickrage.srLogger.warning(
+            sickrage.srCore.srLogger.warning(
                 "There was an error parsing your existing metadata file: '" + metadata_path + "' error: {}".format(
                     e.message))
             return empty_return
@@ -1000,16 +1000,16 @@ class GenericMetadata(object):
             response = requests.request(method, url, params=params, data=json.dumps(payload)
             if payload else payload, verify=False)
 
-            response.raise_for_status()
+            #response.raise_for_status()
             response.encoding = 'utf-8'
             return response.json()
 
         TMDB._request = _request
 
         # get TMDB configuration info
-        tmdb.API_KEY = sickrage.srConfig.TMDB_API_KEY
+        tmdb.API_KEY = sickrage.srCore.srConfig.TMDB_API_KEY
         config = tmdb.Configuration()
-        response = sickrage.srConfig.info()
+        response = sickrage.srCore.srConfig.info()
         base_url = response['images']['base_url']
         sizes = response['images']['poster_sizes']
 
@@ -1028,7 +1028,7 @@ class GenericMetadata(object):
         except:
             pass
 
-        sickrage.srLogger.info("Could not find any " + img_type + " images on TMDB for " + show.name)
+        sickrage.srCore.srLogger.info("Could not find any " + img_type + " images on TMDB for " + show.name)
 
     @staticmethod
     def _retrieve_show_images_from_fanart(show, img_type, thumb=False):
@@ -1044,7 +1044,7 @@ class GenericMetadata(object):
             indexerid = show.mapIndexers()[1]
             if indexerid:
                 request = fanart.core.Request(
-                    apikey=sickrage.srConfig.FANART_API_KEY,
+                    apikey=sickrage.srCore.srConfig.FANART_API_KEY,
                     id=indexerid,
                     ws=fanart.WS.TV,
                     type=types[img_type],
@@ -1060,7 +1060,7 @@ class GenericMetadata(object):
         except:
             pass
 
-        sickrage.srLogger.info("Could not find any " + img_type + " images on Fanart.tv for " + show.name)
+        sickrage.srCore.srLogger.info("Could not find any " + img_type + " images on Fanart.tv for " + show.name)
 
     @staticmethod
     def validateShow(show, season=None, episode=None):
@@ -1069,7 +1069,7 @@ class GenericMetadata(object):
         try:
             lINDEXER_API_PARMS = srIndexerApi(show.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show.dvdorder != 0:

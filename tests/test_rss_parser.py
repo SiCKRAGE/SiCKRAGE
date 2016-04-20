@@ -22,8 +22,7 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from providers import sortedProviderDict
-
+import sickrage
 from tests import SiCKRAGETestCase
 
 
@@ -39,8 +38,8 @@ def test_get_rss(self, provider):
             self.assertTrue(title and url, "Failed to get title and url from RSS feed for %s" % provider.name)
 
 
-for provider in sortedProviderDict().values():
-    setattr(RSSTest, 'test_rss_%s' % provider.name, lambda self, x=provider: test_get_rss(self, x))
+for providerID, providerObj in sickrage.srCore.providersDict.all():
+    setattr(RSSTest, 'test_rss_%s' % providerObj.name, lambda self, x=providerObj: test_get_rss(self, x))
 
 if __name__ == "__main__":
     print("==================")

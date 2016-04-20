@@ -48,20 +48,20 @@
     </tr>
     <tr>
         <td class="infoTableHeader">SR Cache Dir:</td>
-        <td class="infoTableCell">${sickrage.srConfig.CACHE_DIR}</td>
+        <td class="infoTableCell">${sickrage.srCore.srConfig.CACHE_DIR}</td>
     </tr>
     <tr>
         <td class="infoTableHeader">SR Log Dir:</td>
-        <td class="infoTableCell">${sickrage.srConfig.LOG_DIR}</td>
+        <td class="infoTableCell">${sickrage.srCore.srConfig.LOG_DIR}</td>
     </tr>
     <tr>
         <td class="infoTableHeader">SR Arguments:</td>
         <td class="infoTableCell">${sys.argv[1:]}</td>
     </tr>
-    % if sickrage.srConfig.WEB_ROOT:
+    % if sickrage.srCore.srConfig.WEB_ROOT:
         <tr>
             <td class="infoTableHeader">SR Web Root:</td>
-            <td class="infoTableCell">${sickrage.srConfig.WEB_ROOT}</td>
+            <td class="infoTableCell">${sickrage.srCore.srConfig.WEB_ROOT}</td>
         </tr>
 % endif
     <tr><td class="infoTableHeader">Python Version:</td><td class="infoTableCell">${sys.version[:120]}</td></tr>
