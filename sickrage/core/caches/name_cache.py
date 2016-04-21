@@ -121,15 +121,8 @@ class srNameCache(object):
             sickrage.srCore.srLogger.debug("Building internal name cache for [{}]".format(show.name))
             self.clearCache(show.indexerid)
             for curSeason in [-1] + get_scene_seasons(show.indexerid):
-                for name in list(set(get_scene_exceptions(
-                        show.indexerid, season=curSeason) + [show.name])):
-
-                    name = full_sanitizeSceneName(name)
-                    if name not in self.cache:
-                        self.cache[name] = int(show.indexerid)
+                for name in list(set(get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
+                    self.addNameToCache(name, show.indexerid)
 
             sickrage.srCore.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
                 show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))
-
-        # save name cache to db
-        self.saveNameCacheToDb()
