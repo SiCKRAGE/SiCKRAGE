@@ -14,7 +14,7 @@
 </%block>
 <%block name="content">
     <%
-        if logLevel == sickrage.core.srLogger.logLevels['WARNING']:
+        if logLevel == sickrage.srCore.srLogger.logLevels['WARNING']:
             errors = WarningViewer.errors
             title = 'WARNING logs'
         else:
