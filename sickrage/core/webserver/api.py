@@ -53,7 +53,6 @@ from sickrage.core.searchers import subtitle_searcher
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History
-from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_error, \
@@ -999,7 +998,7 @@ class CMD_SubtitleSearch(ApiCall):
             status = 'No subtitles downloaded'
             response = _responds(RESULT_FAILURE, msg='Unable to find subtitles')
 
-        notifications.message('Subtitles Search', status)
+        sickrage.srCore.srNotifications.message('Subtitles Search', status)
 
         return response
 
@@ -1506,7 +1505,7 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
 
     def run(self):
         messages = []
-        for cur_notification in notifications.get_notifications(self.request.remote_ip):
+        for cur_notification in sickrage.srCore.srNotifications.get_notifications(self.request.remote_ip):
             messages.append({"title": cur_notification.title,
                              "message": cur_notification.message,
                              "type": cur_notification.type})

@@ -71,7 +71,6 @@ from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History as HistoryTool
-from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
@@ -527,25 +526,23 @@ class UI(WebRoot):
 
     @staticmethod
     def add_message():
-        notifications.message('Test 1', 'This is test number 1')
-        notifications.error('Test 2', 'This is test number 2')
+        sickrage.srCore.srNotifications.message('Test 1', 'This is test number 1')
+        sickrage.srCore.srNotifications.error('Test 2', 'This is test number 2')
         return "ok"
 
     def get_messages(self):
         messages = {}
         cur_notification_num = 0
-        for cur_notification in notifications.get_notifications(self.request.remote_ip):
+        for cur_notification in sickrage.srCore.srNotifications.get_notifications(self.request.remote_ip):
             cur_notification_num += 1
             messages['notification-{}'.format(cur_notification_num)] = {
                 'title': cur_notification.title,
-                'message': cur_notification.message,
+                'message': cur_notification.message or "",
                 'type': cur_notification.type
             }
 
-        try:
+        if messages:
             return json_encode(messages)
-        except:
-            pass
 
 
 @Route('/browser(/?.*)')
@@ -852,7 +849,7 @@ class Home(WebRoot):
                 finalResult += 'Test failed for Plex client ... ' + urllib.unquote_plus(curHost)
             finalResult += '<br>' + '\n'
 
-        notifications.message('Tested Plex client(s): ', urllib.unquote_plus(host.replace(',', ', ')))
+        sickrage.srCore.srNotifications.message('Tested Plex client(s): ', urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -876,7 +873,7 @@ class Home(WebRoot):
                 str(curResult).replace(',', ', '))
         finalResult += '<br>' + '\n'
 
-        notifications.message('Tested Plex Media Server host(s): ', urllib.unquote_plus(host.replace(',', ', ')))
+        sickrage.srCore.srNotifications.message('Tested Plex Media Server host(s): ', urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -1069,16 +1066,15 @@ class Home(WebRoot):
             return self.redirect('/home/')
 
         # check for new app updates
+
         if sickrage.srCore.VERSIONUPDATER.check_for_new_version(True):
-            sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
-            notifications.message('New update found for SiCKRAGE, starting auto-updater')
+            sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
             self.update(pid)
         else:
-            sickrage.srCore.srLogger.info("No updates found for SiCKRAGE!")
-            notifications.message('No updates found for SiCKRAGE!')
+            sickrage.srCore.srNotifications.message('No updates found for SiCKRAGE!')
 
         # check for news updates
-        sickrage.srCore.VERSIONUPDATER.check_for_new_news(True)
+        sickrage.srCore.VERSIONUPDATER.check_for_new_news()
 
         return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
@@ -1107,10 +1103,10 @@ class Home(WebRoot):
     def branchCheckout(self, branch):
         if branch and sickrage.srCore.VERSION != branch:
             sickrage.srCore.VERSION = branch
-            notifications.message('Checking out branch: ', branch)
+            sickrage.srCore.srNotifications.message('Checking out branch: ', branch)
             return self.update(sickrage.srCore.PID)
         else:
-            notifications.message('Already on branch: ', branch)
+            sickrage.srCore.srNotifications.message('Already on branch: ', branch)
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def displayShow(self, show=None):
@@ -1338,7 +1334,7 @@ class Home(WebRoot):
                         groups = anime.get_groups()
                     except Exception as e:
                         anidb_failed = True
-                        notifications.error('Unable to retreive Fansub Groups from AniDB.')
+                        sickrage.srCore.srNotifications.error('Unable to retreive Fansub Groups from AniDB.')
                         sickrage.srCore.srLogger.debug(
                             'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(str(e)))
 
@@ -1516,7 +1512,7 @@ class Home(WebRoot):
             return errors
 
         if len(errors) > 0:
-            notifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
+            sickrage.srCore.srNotifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
                                 '<ul>' + '\n'.join(['<li>%s</li>' % error for error in errors]) + "</ul>")
 
         return self.redirect("/home/displayShow?show=" + show)
@@ -1527,7 +1523,7 @@ class Home(WebRoot):
         if error is not None:
             return self._genericMessage('Error', error)
 
-        notifications.message('%s has been %s' % (show.name, ('resumed', 'paused')[show.paused]))
+        sickrage.srCore.srNotifications.message('%s has been %s' % (show.name, ('resumed', 'paused')[show.paused]))
 
         return self.redirect("/home/displayShow?show=%i" % show.indexerid)
 
@@ -1538,7 +1534,7 @@ class Home(WebRoot):
             if error is not None:
                 return self._genericMessage('Error', error)
 
-            notifications.message(
+            sickrage.srCore.srNotifications.message(
                 '%s has been %s %s' %
                 (
                     show.name,
@@ -1561,7 +1557,7 @@ class Home(WebRoot):
 
         # This is a refresh error
         if error is not None:
-            notifications.error('Unable to refresh this show.', error)
+            sickrage.srCore.srNotifications.error('Unable to refresh this show.', error)
 
         sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
@@ -1581,7 +1577,7 @@ class Home(WebRoot):
         try:
             sickrage.srCore.SHOWQUEUE.updateShow(showObj, bool(force))
         except CantUpdateShowException as e:
-            notifications.error("Unable to update this show.", e.message)
+            sickrage.srCore.srNotifications.error("Unable to update this show.", e.message)
 
         # just give it some time
         sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
@@ -1620,9 +1616,9 @@ class Home(WebRoot):
             host = sickrage.srCore.srConfig.KODI_HOST
 
         if sickrage.srCore.notifiersDict.kodi_notifier.update_library(showName=showName):
-            notifications.message("Library update command sent to KODI host(s): " + host)
+            sickrage.srCore.srNotifications.message("Library update command sent to KODI host(s): " + host)
         else:
-            notifications.error("Unable to contact one or more KODI host(s): " + host)
+            sickrage.srCore.srNotifications.error("Unable to contact one or more KODI host(s): " + host)
 
         if showObj:
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
@@ -1631,10 +1627,10 @@ class Home(WebRoot):
 
     def updatePLEX(self):
         if None is sickrage.srCore.notifiersDict.plex_notifier.update_library():
-            notifications.message(
+            sickrage.srCore.srNotifications.message(
                 "Library update command sent to Plex Media Server host: " + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
         else:
-            notifications.error(
+            sickrage.srCore.srNotifications.error(
                 "Unable to contact Plex Media Server host: " + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
         return self.redirect('/home/')
 
@@ -1645,10 +1641,10 @@ class Home(WebRoot):
             showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if sickrage.srCore.notifiersDict.emby_notifier.update_library(showObj):
-            notifications.message(
+            sickrage.srCore.srNotifications.message(
                 "Library update command sent to Emby host: " + sickrage.srCore.srConfig.EMBY_HOST)
         else:
-            notifications.error("Unable to contact Emby host: " + sickrage.srCore.srConfig.EMBY_HOST)
+            sickrage.srCore.srNotifications.error("Unable to contact Emby host: " + sickrage.srCore.srConfig.EMBY_HOST)
 
         if showObj:
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
@@ -1659,7 +1655,7 @@ class Home(WebRoot):
         if not all([show, eps]):
             errMsg = "You must specify a show and at least one episode"
             if direct:
-                notifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error('Error', errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
@@ -1668,7 +1664,7 @@ class Home(WebRoot):
         if not showObj:
             errMsg = "Error", "Show not in show list"
             if direct:
-                notifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error('Error', errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
@@ -1708,7 +1704,7 @@ class Home(WebRoot):
         if not all([show, eps, status]):
             errMsg = "You must specify a show and at least one episode"
             if direct:
-                notifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error('Error', errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
@@ -1716,7 +1712,7 @@ class Home(WebRoot):
         if not statusStrings.has_key(int(status)):
             errMsg = "Invalid status"
             if direct:
-                notifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error('Error', errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
@@ -1726,7 +1722,7 @@ class Home(WebRoot):
         if not showObj:
             errMsg = "Error", "Show not in show list"
             if direct:
-                notifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error('Error', errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
@@ -1829,7 +1825,7 @@ class Home(WebRoot):
             msg += "</ul>"
 
             if segments:
-                notifications.message("Backlog started", msg)
+                sickrage.srCore.srNotifications.message("Backlog started", msg)
         elif int(status) == WANTED and showObj.paused:
             sickrage.srCore.srLogger.info(
                 "Some episodes were set to wanted, but " + showObj.name + " is paused. Not adding to Backlog until show is unpaused")
@@ -1848,7 +1844,7 @@ class Home(WebRoot):
             msg += "</ul>"
 
             if segments:
-                notifications.message("Retry Search started", msg)
+                sickrage.srCore.srNotifications.message("Retry Search started", msg)
 
         if direct:
             return json_encode({'result': 'success'})
@@ -2067,7 +2063,7 @@ class Home(WebRoot):
                 status = 'New subtitles downloaded: %s' % ', '.join([newLang.name for newLang in newLangs])
             else:
                 status = 'No subtitles downloaded'
-            notifications.message(ep_obj.show.name, status)
+            sickrage.srCore.srNotifications.message(ep_obj.show.name, status)
             return json_encode({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
 
         return json_encode({'result': 'failure'})
@@ -2695,7 +2691,7 @@ class HomeAddShows(Home):
                                               default_status_after=sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER,
                                               archive=sickrage.srCore.srConfig.ARCHIVE_DEFAULT)
 
-            notifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
+            sickrage.srCore.srNotifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
         else:
             sickrage.srCore.srLogger.error("There was an error creating the show, no root directory setting found")
             return "No root directories setup, please go back and add one."
@@ -2748,7 +2744,7 @@ class HomeAddShows(Home):
             if len(series_pieces) < 6:
                 sickrage.srCore.srLogger.error(
                     "Unable to add show due to show selection. Not anough arguments: %s" % (repr(series_pieces)))
-                notifications.error("Unknown error. Unable to add show due to problem with show selection.")
+                sickrage.srCore.srNotifications.error("Unknown error. Unable to add show due to problem with show selection.")
                 return self.redirect('/home/addShows/existingShows/')
 
             indexer = int(series_pieces[1])
@@ -2772,7 +2768,7 @@ class HomeAddShows(Home):
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
         if os.path.isdir(show_dir) and not fullShowPath:
-            notifications.error("Unable to add show", "Folder " + show_dir + " exists already")
+            sickrage.srCore.srNotifications.error("Unable to add show", "Folder " + show_dir + " exists already")
             return self.redirect('/home/addShows/existingShows/')
 
         # don't create show dir if config says not to
@@ -2783,7 +2779,7 @@ class HomeAddShows(Home):
             dir_exists = makeDir(show_dir)
             if not dir_exists:
                 sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
-                notifications.error("Unable to add show",
+                sickrage.srCore.srNotifications.error("Unable to add show",
                                     "Unable to create the folder " + show_dir + ", can't add the show")
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")
@@ -2819,7 +2815,7 @@ class HomeAddShows(Home):
         sickrage.srCore.SHOWQUEUE.addShow(indexer, indexer_id, show_dir, int(defaultStatus), newQuality,
                                           flatten_folders, indexerLang, subtitles, anime,
                                           scene, None, blacklist, whitelist, int(defaultStatusAfter), archive)
-        notifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
+        sickrage.srCore.srNotifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
 
         return finishAddShow()
 
@@ -2892,7 +2888,7 @@ class HomeAddShows(Home):
                 num_added += 1
 
         if num_added:
-            notifications.message("Shows Added",
+            sickrage.srCore.srNotifications.message("Shows Added",
                                   "Automatically added " + str(num_added) + " from their existing metadata files")
 
         # if we're done then go home
@@ -3441,7 +3437,7 @@ class Manage(Home, WebRoot):
                     ['<li>%s</li>' % error for error in curErrors]) + "</ul>")
 
         if len(errors) > 0:
-            notifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
+            sickrage.srCore.srNotifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
                                 " ".join(errors))
 
         return self.redirect("/manage/")
@@ -3534,7 +3530,7 @@ class Manage(Home, WebRoot):
                 subtitles.append(showObj.name)
 
         if errors:
-            notifications.error("Errors encountered",
+            sickrage.srCore.srNotifications.error("Errors encountered",
                                 '<br >\n'.join(errors))
 
         messageDetail = ""
@@ -3560,8 +3556,8 @@ class Manage(Home, WebRoot):
             messageDetail += "</li></ul>"
 
         if updates + refreshes + renames + subtitles:
-            notifications.message("The following actions were queued:",
-                                  messageDetail)
+            sickrage.srCore.srNotifications.message("The following actions were queued:",
+                                    messageDetail)
 
         return self.redirect("/manage/")
 
@@ -3654,7 +3650,7 @@ class ManageSearches(Manage):
         result = sickrage.srCore.srScheduler.get_job('BACKLOG').func()
         if result:
             sickrage.srCore.srLogger.info("Backlog search forced")
-            notifications.message('Backlog search started')
+            sickrage.srCore.srNotifications.message('Backlog search started')
 
         return self.redirect("/manage/manageSearches/")
 
@@ -3664,7 +3660,7 @@ class ManageSearches(Manage):
         result = sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').func()
         if result:
             sickrage.srCore.srLogger.info("Daily search forced")
-            notifications.message('Daily search started')
+            sickrage.srCore.srNotifications.message('Daily search started')
 
         return self.redirect("/manage/manageSearches/")
 
@@ -3673,7 +3669,7 @@ class ManageSearches(Manage):
         result = sickrage.srCore.srScheduler.get_job('PROPERSEARCHER').func()
         if result:
             sickrage.srCore.srLogger.info("Find propers search forced")
-            notifications.message('Find propers search started')
+            sickrage.srCore.srNotifications.message('Find propers search started')
 
         return self.redirect("/manage/manageSearches/")
 
@@ -3765,14 +3761,14 @@ class History(WebRoot):
     def clearHistory(self):
         self.historyTool.clear()
 
-        notifications.message('History cleared')
+        sickrage.srCore.srNotifications.message('History cleared')
 
         return self.redirect("/history/")
 
     def trimHistory(self):
         self.historyTool.trim()
 
-        notifications.message('Removed history entries older than 30 days')
+        sickrage.srCore.srNotifications.message('Removed history entries older than 30 days')
 
         return self.redirect("/history/")
 
@@ -3979,10 +3975,10 @@ class ConfigGeneral(Config):
         if len(results) > 0:
             for x in results:
                 sickrage.srCore.srLogger.error(x)
-            notifications.error('Error(s) Saving Configuration',
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/general/")
 
@@ -4145,10 +4141,10 @@ class ConfigSearch(Config):
         if len(results) > 0:
             for x in results:
                 sickrage.srCore.srLogger.error(x)
-            notifications.error('Error(s) Saving Configuration',
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/search/")
 
@@ -4281,10 +4277,10 @@ class ConfigPostProcessing(Config):
         if len(results) > 0:
             for x in results:
                 sickrage.srCore.srLogger.warning(x)
-            notifications.error('Error(s) Saving Configuration',
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/postProcessing/")
 
@@ -4516,10 +4512,10 @@ class ConfigProviders(Config):
         if len(results) > 0:
             for x in results:
                 sickrage.srCore.srLogger.error(x)
-            notifications.error('Error(s) Saving Configuration',
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/providers/")
 
@@ -4808,10 +4804,10 @@ class ConfigNotifications(Config):
         if len(results) > 0:
             for x in results:
                 sickrage.srCore.srLogger.error(x)
-            notifications.error('Error(s) Saving Configuration',
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/notifications/")
 
@@ -4881,10 +4877,10 @@ class ConfigSubtitles(Config):
         if len(results) > 0:
             for x in results:
                 sickrage.srCore.srLogger.error(x)
-            notifications.error('Error(s) Saving Configuration',
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/subtitles/")
 
@@ -4921,10 +4917,10 @@ class ConfigAnime(Config):
         if len(results) > 0:
             for x in results:
                 sickrage.srCore.srLogger.error(x)
-            notifications.error('Error(s) Saving Configuration',
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
 

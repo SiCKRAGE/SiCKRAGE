@@ -35,7 +35,6 @@ from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.trakt import TraktAPI
 from sickrage.core.tv.show import TVShow
-from sickrage.core.ui import notifications
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
@@ -280,7 +279,7 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.srCore.srLogger.error(
                     "Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir,
                                                                                                            index_name))
-                notifications.error("Unable to add show",
+                sickrage.srCore.srNotifications.error("Unable to add show",
                                     "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language".format(
                                         self.showDir, index_name))
                 return self._finishEarly()
@@ -289,7 +288,7 @@ class QueueItemAdd(ShowQueueItem):
             if not len(s):
                 sickrage.srCore.srLogger.error("Show " + str(s['seriesname']) + " is on " + str(
                     srIndexerApi(self.indexer).name) + " but contains no season/episode data.")
-                notifications.error("Unable to add show",
+                sickrage.srCore.srNotifications.error("Unable to add show",
                                     "Show " + str(s['seriesname']) + " is on " + str(srIndexerApi(
                                         self.indexer).name) + " but contains no season/episode data.")
                 return self._finishEarly()
@@ -298,7 +297,7 @@ class QueueItemAdd(ShowQueueItem):
                 "{}: Error while loading information from indexer {}. Error: {}".format(self.indexer_id, index_name,
                                                                                         e.message))
 
-            notifications.error(
+            sickrage.srCore.srNotifications.error(
                 "Unable to add show",
                 "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again.".format(
                     self.showDir, index_name, self.indexer_id)
@@ -366,17 +365,17 @@ class QueueItemAdd(ShowQueueItem):
                 "Unable to add show due to an error with " + srIndexerApi(
                     self.indexer).name + ": {}".format(e.message))
             if self.show:
-                notifications.error(
+                sickrage.srCore.srNotifications.error(
                     "Unable to add " + str(self.show.name) + " due to an error with " + srIndexerApi(
                         self.indexer).name + "")
             else:
-                notifications.error(
+                sickrage.srCore.srNotifications.error(
                     "Unable to add show due to an error with " + srIndexerApi(self.indexer).name + "")
             return self._finishEarly()
 
         except MultipleShowObjectsException:
             sickrage.srCore.srLogger.warning("The show in " + self.showDir + " is already in your show list, skipping")
-            notifications.error('Show skipped', "The show in " + self.showDir + " is already in your show list")
+            sickrage.srCore.srNotifications.error('Show skipped', "The show in " + self.showDir + " is already in your show list")
             return self._finishEarly()
 
         except Exception as e:

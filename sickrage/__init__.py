@@ -329,12 +329,12 @@ def main():
             QUITE = False
             daemonize(PIDFILE)
 
-        # import core
-        from sickrage import core
-        srCore = core.Core()
-
         # main app loop
         while True:
+            # import core
+            from sickrage import core
+            srCore = core.Core()
+
             # start core
             srCore.start()
 

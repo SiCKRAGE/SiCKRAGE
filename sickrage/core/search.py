@@ -37,7 +37,6 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
 from sickrage.core.tv.show.history import FailedHistory, History
-from sickrage.core.ui import notifications
 from sickrage.notifiers import srNotifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
@@ -150,7 +149,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
         FailedHistory.logSnatch(result)
 
-    notifications.message('Episode snatched', result.name)
+    sickrage.srCore.srNotifications.message('Episode snatched', result.name)
 
     History.logSnatch(result)
 

@@ -42,10 +42,9 @@ class Notifications(object):
         title: The title of the notification
         message: The message portion of the notification
         """
-        if message:
-            if isinstance(message, Exception):
-                message = message.message
-            self._messages.append(Notification(title, message, MESSAGE))
+
+        sickrage.srCore.srLogger.info(message or title)
+        self._messages.append(Notification(title, message, MESSAGE))
 
     def error(self, title, message=None):
         """
@@ -54,10 +53,9 @@ class Notifications(object):
         title: The title of the notification
         message: The message portion of the notification
         """
-        if message:
-            if isinstance(message, Exception):
-                message = message.message
-            self._errors.append(Notification(title, message, ERROR))
+
+        sickrage.srCore.srLogger.error(message or title)
+        self._errors.append(Notification(title, message, ERROR))
 
     def get_notifications(self, remote_ip='127.0.0.1'):
         """
@@ -75,10 +73,6 @@ class Notifications(object):
         return [x.see(remote_ip) for x in self._errors + self._messages if x.is_new(remote_ip)]
 
 
-# static notification queue object
-notifications = Notifications()
-
-
 class Notification(object):
     """
     Represents a single notification. Tracks its own timeout and a list of which clients have
@@ -87,20 +81,15 @@ class Notification(object):
 
     def __init__(self, title, message='', type=None, timeout=None):
         self.title = title
+
         self.message = message
+        if isinstance(self.message, Exception):
+            self.message = self.message.message
 
         self._when = datetime.datetime.now()
         self._seen = []
-
-        if type:
-            self.type = type
-        else:
-            self.type = MESSAGE
-
-        if timeout:
-            self._timeout = timeout
-        else:
-            self._timeout = datetime.timedelta(minutes=1)
+        self.type = type or MESSAGE
+        self._timeout = timeout or datetime.timedelta(minutes=1)
 
     def is_new(self, remote_ip='127.0.0.1'):
         """
@@ -123,7 +112,9 @@ class Notification(object):
 
 
 class ProgressIndicator():
-    def __init__(self, percentComplete=0, currentStatus={'title': ''}):
+    def __init__(self, percentComplete=0, currentStatus=None):
+        if currentStatus is None:
+            currentStatus = {'title': ''}
         self.percentComplete = percentComplete
         self.currentStatus = currentStatus
 

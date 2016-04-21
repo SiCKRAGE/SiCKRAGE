@@ -52,6 +52,7 @@ from sickrage.core.searchers.trakt_searcher import srTraktSearcher
 from sickrage.core.srconfig import srConfig
 from sickrage.core.srlogger import srLogger
 from sickrage.core.tv.show import TVShow
+from sickrage.core.ui import Notifications
 from sickrage.core.updaters.show_updater import srShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import srVersionUpdater
@@ -132,6 +133,9 @@ class Core(object):
 
         # generate providers dict
         self.providersDict = providersDict()
+
+        # init notification queue
+        self.srNotifications = Notifications()
 
         # init logger
         self.srLogger = srLogger()

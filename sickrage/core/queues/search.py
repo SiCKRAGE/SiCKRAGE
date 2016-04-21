@@ -29,7 +29,7 @@ from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
 from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
     snatchEpisode
 from sickrage.core.tv.show.history import FailedHistory, History
-from sickrage.core.ui import notifications
+
 
 search_queue_lock = threading.Lock()
 
@@ -187,7 +187,7 @@ class ManualSearchQueueItem(QueueItem):
                 gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
             else:
-                notifications.message('No downloads were found',
+                sickrage.srCore.srNotifications.message('No downloads were found',
                                       "Couldn't find a download for <i>%s</i>" % self.segment.prettyName())
 
                 sickrage.srCore.srLogger.info("Unable to find a download for: [" + self.segment.prettyName() + "]")

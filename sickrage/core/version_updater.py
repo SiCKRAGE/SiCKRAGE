@@ -34,7 +34,6 @@ import github
 
 import sickrage
 from sickrage.core.helpers import backupAll, removetree
-from sickrage.core.ui import notifications
 from sickrage.notifiers import srNotifiers
 
 
@@ -62,15 +61,15 @@ class srVersionUpdater(object):
                 if self.check_for_new_version(force):
                     if sickrage.srCore.srConfig.AUTO_UPDATE:
                         sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
-                        notifications.message('New update found for SiCKRAGE, starting auto-updater')
+                        sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
                         if self.run_backup_if_safe() is True:
                             if self.update():
                                 sickrage.srCore.srLogger.info("Update was successful!")
-                                notifications.message('Update was successful')
+                                sickrage.srCore.srNotifications.message('Update was successful')
                                 sickrage.srCore.shutdown(restart=True)
                             else:
                                 sickrage.srCore.srLogger.info("Update failed!")
-                                notifications.message('Update failed!')
+                                sickrage.srCore.srNotifications.message('Update failed!')
 
                 self.check_for_new_news(force)
         finally:
@@ -82,7 +81,7 @@ class srVersionUpdater(object):
     def _runbackup(self):
         # Do a system backup before update
         sickrage.srCore.srLogger.info("Config backup in progress...")
-        notifications.message('Backup', 'Config backup in progress...')
+        sickrage.srCore.srNotifications.message('Backup', 'Config backup in progress...')
         try:
             backupDir = os.path.join(sickrage.DATA_DIR, 'backup')
             if not os.path.isdir(backupDir):
@@ -90,15 +89,15 @@ class srVersionUpdater(object):
 
             if self._keeplatestbackup(backupDir) and backupAll(backupDir):
                 sickrage.srCore.srLogger.info("Config backup successful, updating...")
-                notifications.message('Backup', 'Config backup successful, updating...')
+                sickrage.srCore.srNotifications.message('Backup', 'Config backup successful, updating...')
                 return True
             else:
                 sickrage.srCore.srLogger.error("Config backup failed, aborting update")
-                notifications.message('Backup', 'Config backup failed, aborting update')
+                sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
                 return False
         except Exception as e:
             sickrage.srCore.srLogger.error('Update: Config backup failed. Error: %s' % e)
-            notifications.message('Backup', 'Config backup failed, aborting update')
+            sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
             return False
 
     @staticmethod
@@ -192,7 +191,7 @@ class srVersionUpdater(object):
             self.updater.set_newest_text()
             return True
 
-    def check_for_new_news(self, force=False):
+    def check_for_new_news(self):
         """
         Checks server for the latest news.
 
@@ -414,7 +413,7 @@ class GitUpdateManager(UpdateManager):
         """
 
         # get all new info from server
-        output, _, exit_status = self._run_git(self._find_working_git, 'fetch ' + self.remote_url)
+        output, _, exit_status = self._run_git(self._find_working_git, 'remote update')
         if not exit_status == 0:
             sickrage.srCore.srLogger.warning("Unable to contact server, can't check for update")
             return
