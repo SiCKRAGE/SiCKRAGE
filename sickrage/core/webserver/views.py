@@ -1066,7 +1066,7 @@ class Home(WebRoot):
             return self.redirect('/home/')
 
         # check for new app updates
-
+        sickrage.srCore.srNotifications.message('Checking for new updates ...')
         if sickrage.srCore.VERSIONUPDATER.check_for_new_version(True):
             sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
             self.update(pid)
