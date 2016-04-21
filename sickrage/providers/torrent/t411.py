@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class T411Provider(TorrentProvider):
     def __init__(self):
-        super(T411Provider, self).__init__("T411",'www.t411.in')
+        super(T411Provider, self).__init__("T411",'www.t411.ch')
 
         self.supportsBacklog = True
 
