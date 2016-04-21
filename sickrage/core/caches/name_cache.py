@@ -35,15 +35,9 @@ class srNameCache(object):
         self.amActive = False
         self.lastUpdate = {}
         self.minTime = sickrage.srCore.srConfig.NAMECACHE_FREQ
-        self.cache = {}
+        self.cache = self.loadNameCacheFromDB()
 
     def run(self, force=False):
-        """
-        Runs the postprocessor
-        :param force: Forces run (reserved for future use)
-        :return: Returns when done without a return state/code
-        """
-
         if self.amActive:
             return
 
@@ -98,6 +92,12 @@ class srNameCache(object):
         for key in toRemove:
             del self.cache[key]
 
+    def loadNameCacheFromDB(self):
+        sqlResults = cache_db.CacheDB(row_type='dict').select(
+            "SELECT indexer_id, name FROM scene_names")
+
+        return dict((row["name"], int(row["indexer_id"])) for row in sqlResults)
+
     def saveNameCacheToDb(self):
         """Commit cache to database file"""
 
@@ -130,3 +130,6 @@ class srNameCache(object):
 
             sickrage.srCore.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
                 show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))
+
+        # save name cache to db
+        self.saveNameCacheToDb()
