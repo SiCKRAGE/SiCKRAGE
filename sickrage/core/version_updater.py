@@ -421,7 +421,6 @@ class GitUpdateManager(UpdateManager):
 
         # get latest commit_hash from remote
         output, _, exit_status = self._run_git(self._find_working_git, 'rev-parse --verify --quiet "@{upstream}"')
-
         if exit_status == 0 and output:
             return output.strip()
 
