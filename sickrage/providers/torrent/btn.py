@@ -25,7 +25,6 @@ import socket
 import time
 
 import jsonrpclib
-from tornado import gen
 
 import sickrage
 from sickrage.core.caches import tv_cache
@@ -126,41 +125,41 @@ class BTNProvider(TorrentProvider):
         # FIXME SORT RESULTS
         return results
 
-    def _api_call(self, apikey, params={}, results_per_page=1000, offset=0):
+    def _api_call(self, apikey, params=None, results_per_page=1000, offset=0):
+        if params is None:
+            params = {}
 
-        server = jsonrpclib.Server(self.urls['base_url'])
         parsedJSON = {}
 
         try:
-            parsedJSON = server.getTorrents(apikey, params, int(results_per_page), int(offset))
-            gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
-
-        except jsonrpclib.jsonrpc.ProtocolError, error:
+            parsedJSON = jsonrpclib.Server(self.urls['base_url']).getTorrents(apikey, params, int(results_per_page), int(offset))
+            time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+        except jsonrpclib.jsonrpc.ProtocolError as error:
             if error.message == 'Call Limit Exceeded':
                 sickrage.srCore.srLogger.warning(
                         "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
             else:
                 sickrage.srCore.srLogger.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
-            parsedJSON = {'api-error': error}
-            return parsedJSON
 
+            parsedJSON = {'api-error': error}
         except socket.timeout:
             sickrage.srCore.srLogger.warning("Timeout while accessing provider")
 
-        except socket.error, error:
+        except socket.error as error:
             # Note that sometimes timeouts are thrown as socket errors
             sickrage.srCore.srLogger.warning("Socket error while accessing provider. Error: %s " % error[1])
 
-        except Exception, error:
+        except Exception as error:
             errorstring = str(error)
             if errorstring.startswith('<') and errorstring.endswith('>'):
                 errorstring = errorstring[1:-1]
+
             sickrage.srCore.srLogger.warning("Unknown error while accessing provider. Error: %s " % errorstring)
 
         return parsedJSON
 
     @staticmethod
-    def _get_title_and_url(parsedJSON):
+    def _get_title_and_url(parsedJSON, **kwargs):
 
         # The BTN API gives a lot of information in response,
         # however SickRage is built mostly around Scene or
@@ -195,7 +194,7 @@ class BTNProvider(TorrentProvider):
         return title, url
 
     @staticmethod
-    def _get_season_search_strings(ep_obj):
+    def _get_season_search_strings(ep_obj, **kwargs):
         search_params = []
         current_params = {'category': 'Season'}
 
@@ -223,7 +222,7 @@ class BTNProvider(TorrentProvider):
         return search_params
 
     @staticmethod
-    def _get_episode_search_strings(ep_obj, add_string=''):
+    def _get_episode_search_strings(ep_obj, add_string='', **kwargs):
 
         if not ep_obj:
             return [{}]

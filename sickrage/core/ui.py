@@ -43,7 +43,6 @@ class Notifications(object):
         message: The message portion of the notification
         """
 
-        sickrage.srCore.srLogger.info(message or title)
         self._messages.append(Notification(title, message, MESSAGE))
 
     def error(self, title, message=None):
@@ -54,7 +53,6 @@ class Notifications(object):
         message: The message portion of the notification
         """
 
-        sickrage.srCore.srLogger.error(message or title)
         self._errors.append(Notification(title, message, ERROR))
 
     def get_notifications(self, remote_ip='127.0.0.1'):

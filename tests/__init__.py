@@ -28,6 +28,7 @@ import sys
 import threading
 import unittest
 
+from apscheduler.schedulers.tornado import TornadoScheduler
 from tornado.ioloop import IOLoop
 
 # add sickrage module to python system path
@@ -48,7 +49,6 @@ from sickrage.core.databases import cache_db
 from sickrage.core.databases import failed_db
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import removetree
-from sickrage.srCore.srScheduler import srScheduler
 from sickrage.core.tv import episode
 from sickrage.indexers import srIndexerApi
 from sickrage.metadata import get_metadata_generator_dict
@@ -116,7 +116,6 @@ def createTestCacheFolder():
 # =================
 
 threading.Thread(None, IOLoop.instance().start).start()
-sickrage.srCore = sickrage.srCore(PROG_DIR, TESTDIR)
 sickrage.srCore.srConfig(TESTCONFIGNAME)
 sickrage.srCore.srConfig.load()
 sickrage.srCore.srConfig.SSL_VERIFY = False
@@ -170,7 +169,7 @@ sickrage.srCore.srLogger.start()
 sickrage.srCore.srConfig.GIT_USERNAME = sickrage.srCore.srConfig.check_setting_str('General', 'git_username', '')
 sickrage.srCore.srConfig.GIT_PASSWORD = sickrage.srCore.srConfig.check_setting_str('General', 'git_password', '')
 
-sickrage.srCore.srScheduler = srScheduler()
+sickrage.srCore.srScheduler = TornadoScheduler()
 
 sickrage.srCore.providersDict = providersDict()
 

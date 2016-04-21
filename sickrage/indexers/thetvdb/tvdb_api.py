@@ -29,7 +29,6 @@ import zipfile
 
 import requests
 import xmltodict
-from tornado import gen
 
 import sickrage
 
@@ -77,7 +76,7 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
                         logger.warning(msg)
                     else:
                         print(msg)
-                    gen.sleep(mdelay)
+                    time.sleep(mdelay)
                     mtries -= 1
                     mdelay *= backoff
             return f(*args, **kwargs)
@@ -503,7 +502,7 @@ class Tvdb:
 
         try:
             if refresh and self.config['apitoken']:
-                jwtResp.update(**sickrage.srWebSession.post(self.config['api'][self.config['apiver']]['refresh'],
+                jwtResp.update(**sickrage.srCore.srWebSession.post(self.config['api'][self.config['apiver']]['refresh'],
                                                             headers={'Content-type': 'application/json'},
                                                             timeout=timeout
                                                             ).json())

@@ -25,8 +25,6 @@ import re
 import threading
 import traceback
 
-from tornado import gen
-
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, SNATCHED_PROPER, \
     cpu_presets
@@ -269,7 +267,7 @@ class srProperSearcher(object):
 
                 # snatch it
                 snatchEpisode(result, SNATCHED_PROPER)
-                gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                datetime.time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
     def _genericName(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()

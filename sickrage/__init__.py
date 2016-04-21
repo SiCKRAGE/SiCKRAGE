@@ -30,8 +30,6 @@ import threading
 import time
 import traceback
 
-from tornado.ioloop import IOLoop
-
 __all__ = [
     'srCore',
     'PROG_DIR',
@@ -329,21 +327,16 @@ def main():
             QUITE = False
             daemonize(PIDFILE)
 
+        # import core
+        from sickrage import core
+
         # main app loop
         while True:
-            # import core
-            from sickrage import core
             srCore = core.Core()
 
             # start core
             srCore.start()
-
-            # start webserver
-            srCore.srWebServer.start()
-
-            # start ioloop event handler
-            IOLoop.instance().start()
-    except ImportError as e:
+    except ImportError:
         if DEBUG:
             traceback.print_exc()
 
@@ -360,6 +353,8 @@ def main():
         pass
     except Exception as e:
         traceback.print_exc()
+        if srCore:
+            srCore.srLogger.debug(traceback.format_exc())
         status = e.message
     finally:
         if srCore:

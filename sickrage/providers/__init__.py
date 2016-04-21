@@ -35,7 +35,6 @@ import xmltodict
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
-from tornado import gen
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -995,7 +994,7 @@ class NewznabProvider(NZBProvider):
             search_url = self.urls['base_url'] + '/api?' + urllib.urlencode(params)
 
             while (datetime.datetime.now() - self.last_search).seconds < 5:
-                gen.sleep(1)
+                datetime.time.sleep(1)
 
             sickrage.srCore.srLogger.debug("Search url: %s" % search_url)
 
@@ -1119,7 +1118,7 @@ class NewznabCache(TVCache):
         rss_url = self.provider.url + 'api?' + urllib.urlencode(params)
 
         while (datetime.datetime.now() - self.last_search).seconds < 5:
-            gen.sleep(1)
+            datetime.time.sleep(1)
 
         sickrage.srCore.srLogger.debug("Cache update URL: %s " % rss_url)
         data = self.getRSSFeed(rss_url)

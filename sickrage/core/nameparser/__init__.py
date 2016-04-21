@@ -22,10 +22,9 @@ from __future__ import unicode_literals
 
 import os
 import re
-import threading
+import time
 
 from dateutil import parser
-from tornado import gen
 
 import sickrage
 from sickrage.core.common import Quality
@@ -51,7 +50,6 @@ class NameParser(object):
         self.showObj = showObj
         self.tryIndexers = tryIndexers
         self.naming_pattern = naming_pattern
-        self.lock = threading.Lock()
 
         if self.showObj and not self.showObj.is_anime:
             self._compile_regexes(self.NORMAL_REGEX)
@@ -369,7 +367,7 @@ class NameParser(object):
                     "Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
-        gen.sleep(1)
+        time.sleep(1)
 
         return bestResult
 
@@ -431,76 +429,75 @@ class NameParser(object):
         return number
 
     def parse(self, name, cache_result=True):
-        with self.lock:
-            if self.naming_pattern:
-                cache_result = False
+        if self.naming_pattern:
+            cache_result = False
 
-            cached = name_parser_cache.get(name)
-            if cached:
-                return cached
+        cached = name_parser_cache.get(name)
+        if cached:
+            return cached
 
-            # break it into parts if there are any (dirname, file name, extension)
-            dir_name, file_name = os.path.split(name)
+        # break it into parts if there are any (dirname, file name, extension)
+        dir_name, file_name = os.path.split(name)
 
-            base_file_name = file_name
-            if self.file_name:
-                base_file_name = remove_extension(file_name)
+        base_file_name = file_name
+        if self.file_name:
+            base_file_name = remove_extension(file_name)
 
-            # set up a result to use
-            final_result = ParseResult(name)
+        # set up a result to use
+        final_result = ParseResult(name)
 
-            # try parsing the file name
-            file_name_result = self._parse_string(base_file_name)
+        # try parsing the file name
+        file_name_result = self._parse_string(base_file_name)
 
-            # use only the direct parent dir
-            dir_name = os.path.basename(dir_name)
+        # use only the direct parent dir
+        dir_name = os.path.basename(dir_name)
 
-            # parse the dirname for extra info if needed
-            dir_name_result = self._parse_string(dir_name)
+        # parse the dirname for extra info if needed
+        dir_name_result = self._parse_string(dir_name)
 
-            # build the ParseResult object
-            final_result.air_date = self._combine_results(file_name_result, dir_name_result, 'air_date')
+        # build the ParseResult object
+        final_result.air_date = self._combine_results(file_name_result, dir_name_result, 'air_date')
 
-            # anime absolute numbers
-            final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result,
-                                                                    'ab_episode_numbers')
+        # anime absolute numbers
+        final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result,
+                                                                'ab_episode_numbers')
 
-            # season and episode numbers
-            final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
-            final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
+        # season and episode numbers
+        final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
+        final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
 
-            # if the dirname has a release group/show name I believe it over the filename
-            final_result.series_name = self._combine_results(dir_name_result, file_name_result, 'series_name')
-            final_result.extra_info = self._combine_results(dir_name_result, file_name_result, 'extra_info')
-            final_result.release_group = self._combine_results(dir_name_result, file_name_result, 'release_group')
-            final_result.version = self._combine_results(dir_name_result, file_name_result, 'version')
+        # if the dirname has a release group/show name I believe it over the filename
+        final_result.series_name = self._combine_results(dir_name_result, file_name_result, 'series_name')
+        final_result.extra_info = self._combine_results(dir_name_result, file_name_result, 'extra_info')
+        final_result.release_group = self._combine_results(dir_name_result, file_name_result, 'release_group')
+        final_result.version = self._combine_results(dir_name_result, file_name_result, 'version')
 
-            final_result.which_regex = []
-            if final_result == file_name_result:
-                final_result.which_regex = file_name_result.which_regex
-            elif final_result == dir_name_result:
-                final_result.which_regex = dir_name_result.which_regex
-            else:
-                if file_name_result:
-                    final_result.which_regex += file_name_result.which_regex
-                if dir_name_result:
-                    final_result.which_regex += dir_name_result.which_regex
+        final_result.which_regex = []
+        if final_result == file_name_result:
+            final_result.which_regex = file_name_result.which_regex
+        elif final_result == dir_name_result:
+            final_result.which_regex = dir_name_result.which_regex
+        else:
+            if file_name_result:
+                final_result.which_regex += file_name_result.which_regex
+            if dir_name_result:
+                final_result.which_regex += dir_name_result.which_regex
 
-            final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
-            final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
+        final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
+        final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-            if not final_result.show:
-                raise InvalidShowException("Unable to parse {}".format(name))
+        if not final_result.show:
+            raise InvalidShowException("Unable to parse {}".format(name))
 
-            # if there's no useful info in it then raise an exception
-            if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
-                raise InvalidNameException("Unable to parse {}".format(name))
+        # if there's no useful info in it then raise an exception
+        if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
+            raise InvalidNameException("Unable to parse {}".format(name))
 
-            if cache_result:
-                name_parser_cache.add(name, final_result)
+        if cache_result:
+            name_parser_cache.add(name, final_result)
 
-            sickrage.srCore.srLogger.debug("Parsed {} into {}".format(name, final_result))
-            return final_result
+        sickrage.srCore.srLogger.debug("Parsed {} into {}".format(name, final_result))
+        return final_result
 
 
 class ParseResult(object):

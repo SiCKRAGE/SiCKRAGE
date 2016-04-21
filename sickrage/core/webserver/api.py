@@ -26,7 +26,6 @@ import re
 import traceback
 import urllib
 
-from tornado import gen
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.web import RequestHandler
@@ -136,7 +135,7 @@ class ApiHandler(RequestHandler):
 
         try:
             outDict = yield self.callback(_call_dispatcher, *args, **kwargs)
-        except Exception as e:  # real internal error oohhh nooo :(
+        except Exception as e:
             sickrage.srCore.srLogger.error("API :: {}".format(e.message))
             errorData = {
                 "error_msg": e,
@@ -812,7 +811,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # wait until the queue item tells us whether it worked or not
         while not ep_queue_item.success:  # @UndefinedVariable
-            gen.sleep(1)
+            datetime.time.sleep(1)
 
         # return the correct json value
         if ep_queue_item.success:

@@ -22,11 +22,10 @@ import base64
 import httplib
 import json
 import socket
+import time
 import urllib
 import urllib2
 from xml.etree import ElementTree
-
-from tornado import gen
 
 import sickrage
 from sickrage.core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
@@ -320,7 +319,7 @@ class KODINotifier(srNotifiers):
                     return False
                 # sleep for a few seconds just to be sure kodi has a chance to finish each directory
                 if len(paths) > 1:
-                    gen.sleep(5)
+                    time.sleep(5)
         # do a full update if requested
         else:
             sickrage.srCore.srLogger.debug("Doing Full Library KODI update on host: " + host)

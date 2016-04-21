@@ -213,7 +213,7 @@ class ShowQueueItem(QueueItem):
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
                  scene, paused, blacklist, whitelist, default_status_after, archive):
-
+        super(QueueItemAdd, self).__init__(ShowQueueActions.ADD, None)
         self.indexer = indexer
         self.indexer_id = indexer_id
         self.showDir = showDir
@@ -229,13 +229,6 @@ class QueueItemAdd(ShowQueueItem):
         self.whitelist = whitelist
         self.default_status_after = default_status_after
         self.archive = archive
-
-        self.show = None
-
-        # this will initialize self.show to None
-        ShowQueueItem.__init__(self, ShowQueueActions.ADD, self.show)
-
-        # Process add show in priority
         self.priority = QueuePriorities.HIGH
 
     @property
@@ -258,6 +251,8 @@ class QueueItemAdd(ShowQueueItem):
             return True
 
     def run(self):
+        super(QueueItemAdd, self).run()
+
         sickrage.srCore.srLogger.info("Started adding show {}".format(self.showDir))
 
         index_name = srIndexerApi(self.indexer).name
@@ -464,7 +459,7 @@ class QueueItemAdd(ShowQueueItem):
 
 class QueueItemRefresh(ShowQueueItem):
     def __init__(self, show=None, force=False):
-        ShowQueueItem.__init__(self, ShowQueueActions.REFRESH, show)
+        super(QueueItemRefresh, self).__init__(ShowQueueActions.REFRESH, show)
 
         # do refreshes first because they're quick
         self.priority = QueuePriorities.NORMAL
@@ -473,6 +468,8 @@ class QueueItemRefresh(ShowQueueItem):
         self.force = force
 
     def run(self):
+        super(QueueItemRefresh, self).run()
+
         sickrage.srCore.srLogger.info("Performing refresh for show: {}".format(self.show.name))
 
         self.show.refreshDir()
@@ -489,9 +486,11 @@ class QueueItemRefresh(ShowQueueItem):
 
 class QueueItemRename(ShowQueueItem):
     def __init__(self, show=None):
-        ShowQueueItem.__init__(self, ShowQueueActions.RENAME, show)
+        super(QueueItemRename, self).__init__(ShowQueueActions.RENAME, show)
 
     def run(self):
+        super(QueueItemRename, self).run()
+
         sickrage.srCore.srLogger.info("Performing renames for show: {}".format(self.show.name))
 
         try:
@@ -528,9 +527,11 @@ class QueueItemRename(ShowQueueItem):
 
 class QueueItemSubtitle(ShowQueueItem):
     def __init__(self, show=None):
-        ShowQueueItem.__init__(self, ShowQueueActions.SUBTITLE, show)
+        super(QueueItemSubtitle, self).__init__(ShowQueueActions.SUBTITLE, show)
 
     def run(self):
+        super(QueueItemSubtitle, self).run()
+
         sickrage.srCore.srLogger.info("Started downloading subtitles for show: {}".format(self.show.name))
         self.show.downloadSubtitles()
         sickrage.srCore.srLogger.info("Finished downloading subtitles for show: {}".format(self.show.name))
@@ -542,6 +543,8 @@ class QueueItemUpdate(ShowQueueItem):
         self.force = False
 
     def run(self):
+        super(QueueItemUpdate, self).run()
+
         sickrage.srCore.srLogger.info("Performing updates for show: {}".format(self.show.name))
 
         sickrage.srCore.srLogger.debug(
@@ -641,6 +644,8 @@ class QueueItemRemove(ShowQueueItem):
         self.full = full
 
     def run(self):
+        super(QueueItemRemove, self).run()
+
         sickrage.srCore.srLogger.info("Removing show: {}".format(self.show.name))
 
         self.show.deleteShow(full=self.full)

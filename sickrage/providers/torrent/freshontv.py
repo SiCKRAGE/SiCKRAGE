@@ -19,10 +19,10 @@
 from __future__ import unicode_literals
 
 import re
+import time
 import traceback
 
 import requests
-from tornado import gen
 
 import sickrage
 from sickrage.core.caches import tv_cache
@@ -164,7 +164,7 @@ class FreshOnTVProvider(TorrentProvider):
                 # Freshon starts counting pages from zero, even though it displays numbers from 1
                 if max_page_number > 1:
                     for i in range(1, max_page_number):
-                        gen.sleep(1)
+                        time.sleep(1)
                         page_searchURL = searchURL + '&page=' + str(i)
 
                         try:

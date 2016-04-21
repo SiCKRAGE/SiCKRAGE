@@ -86,6 +86,7 @@ class GenericQueue(object):
         :return: item
         """
         with self.lock:
+            item.name = "{}-{}".format(self.name, item.name)
             item.added = datetime.now()
             self.queue.append(item)
             return item
@@ -108,21 +109,17 @@ class GenericQueue(object):
                 if self.queue[0].priority < self.min_priority:
                     return
 
-                # get item
-                item = self.queue.pop(0)
-
-                # update item thread name
-                item.name = "{}-{}".format(self.name, item.name)
-
-                # execute item
-                item.start()
+                # execute item in queue
+                threading.Thread(target=self.callback, args=(self.queue.pop(0),)).start()
 
             self.amActive = False
 
+    def callback(self, item):
+        item.run()
+        item.finish()
 
-class QueueItem(threading.Thread):
+class QueueItem(object):
     def __init__(self, name, action_id=0):
-        super(QueueItem, self).__init__()
         self.lock = threading.Lock()
         self.name = name.replace(" ", "-").upper()
         self.inProgress = False
@@ -134,9 +131,6 @@ class QueueItem(threading.Thread):
     def run(self):
         threading.currentThread().setName(self.name)
         self.inProgress = True
-        super(QueueItem, self).run()
-        self.finish()
 
     def finish(self):
-        threading.currentThread().setName(self.name)
         self.inProgress = False

@@ -88,8 +88,8 @@ from sickrage.providers import providersDict
 
 class Core(object):
     def __init__(self):
-        self.STARTED = False
-        self.RESTARTED = False
+        self.ioloop = IOLoop.instance()
+        self.started = False
 
         # process id
         self.PID = os.getpid()
@@ -186,7 +186,7 @@ class Core(object):
         self.ADBA_CONNECTION = None
 
     def start(self):
-        self.STARTED = True
+        self.started = True
         threading.currentThread().setName('CORE')
 
         # load config
@@ -503,10 +503,14 @@ class Core(object):
          self.srScheduler.get_job('POSTPROCESSOR').resume
          )[self.srConfig.PROCESS_AUTOMATICALLY]()
 
-    def shutdown(self, status=None, restart=False):
-        self.RESTARTED = restart
+        # start webserver
+        self.srWebServer.start()
 
-        if self.STARTED:
+        # start ioloop event handler
+        self.ioloop.start()
+
+    def shutdown(self, status=None, restart=False):
+        if self.started:
             if restart:
                 self.srLogger.info('SiCKRAGE IS PERFORMING A RESTART!')
             else:
@@ -543,7 +547,7 @@ class Core(object):
             sys.exit(status)
 
         # stop ioloop event handler
-        IOLoop.current().stop()
+        self.ioloop.stop()
 
     def save_all(self):
         # write all shows

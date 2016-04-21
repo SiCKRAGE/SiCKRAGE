@@ -19,9 +19,6 @@
 from __future__ import unicode_literals
 
 from concurrent import futures
-from tornado import gen
-
-
 
 __all__ = ["main_db", "cache_db", "failed_db"]
 
@@ -113,7 +110,7 @@ class Transaction(object):
                     result = cursor.fetchall()
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     conn.rollback()
-                    gen.sleep(1)
+                    sqlite3.time.sleep(1)
                 except Exception as e:
                     sickrage.srCore.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
                 finally:

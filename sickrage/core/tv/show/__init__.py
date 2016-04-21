@@ -1315,7 +1315,11 @@ class TVShow(object):
             return False
 
         # load from dir
-        self.loadEpisodesFromDir()
+        try:
+            self.loadEpisodesFromDir()
+        except Exception as e:
+            sickrage.srCore.srLogger.error("Error searching dir for episodes: {}".format(e.message))
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         # run through all locations from DB, check that they exist
         sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Loading all episodes with a location from the database")

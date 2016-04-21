@@ -19,9 +19,8 @@
 from __future__ import unicode_literals
 
 import threading
+import time
 import traceback
-
-from tornado import gen
 
 import sickrage
 from sickrage.core.common import cpu_presets
@@ -41,6 +40,10 @@ MANUAL_SEARCH = 40
 MANUAL_SEARCH_HISTORY = []
 MANUAL_SEARCH_HISTORY_SIZE = 100
 
+def fifo(myList, item, maxSize=100):
+    if len(myList) >= maxSize:
+        myList.pop(0)
+    myList.append(item)
 
 class srSearchQueue(GenericQueue):
     def __init__(self):
@@ -138,11 +141,12 @@ class srSearchQueue(GenericQueue):
 
 class DailySearchQueueItem(QueueItem):
     def __init__(self):
-        QueueItem.__init__(self, 'Daily Search', DAILY_SEARCH)
+        super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
         self.success = False
         self.started = False
 
     def run(self):
+        super(DailySearchQueueItem, self).run()
         self.started = True
 
         try:
@@ -155,7 +159,7 @@ class DailySearchQueueItem(QueueItem):
                     self.success = snatchEpisode(result)
 
                     # give the CPU a break
-                    gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
             else:
                 sickrage.srCore.srLogger.info("No needed episodes found")
         except Exception:
@@ -163,7 +167,7 @@ class DailySearchQueueItem(QueueItem):
 
 class ManualSearchQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
-        QueueItem.__init__(self, 'Manual Search', MANUAL_SEARCH)
+        super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
         self.name = 'MANUAL-' + str(show.indexerid)
         self.show = show
         self.segment = segment
@@ -173,6 +177,7 @@ class ManualSearchQueueItem(QueueItem):
         self.downCurQuality = downCurQuality
 
     def run(self):
+        super(ManualSearchQueueItem, self).run()
         self.started = True
 
         try:
@@ -184,7 +189,7 @@ class ManualSearchQueueItem(QueueItem):
                 self.success = snatchEpisode(searchResult[0])
 
                 # give the CPU a break
-                gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
             else:
                 sickrage.srCore.srNotifications.message('No downloads were found',
@@ -200,7 +205,7 @@ class ManualSearchQueueItem(QueueItem):
 
 class BacklogQueueItem(QueueItem):
     def __init__(self, show, segment):
-        QueueItem.__init__(self, 'Backlog', BACKLOG_SEARCH)
+        super(BacklogQueueItem, self).__init__('Backlog', BACKLOG_SEARCH)
         self.show = show
         self.name = 'BACKLOG-' + str(show.indexerid)
         self.success = False
@@ -209,6 +214,7 @@ class BacklogQueueItem(QueueItem):
         self.priority = QueuePriorities.LOW
 
     def run(self):
+        super(BacklogQueueItem, self).run()
         self.started = True
 
         if not self.show.paused:
@@ -222,7 +228,7 @@ class BacklogQueueItem(QueueItem):
                         snatchEpisode(result)
 
                         # give the CPU a break
-                        gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                        time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
                 else:
                     sickrage.srCore.srLogger.info("No needed episodes found during backlog search for: [" + self.show.name + "]")
             except Exception:
@@ -230,7 +236,7 @@ class BacklogQueueItem(QueueItem):
 
 class FailedQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
-        QueueItem.__init__(self, 'Retry', FAILED_SEARCH)
+        super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
         self.show = show
         self.name = 'RETRY-' + str(show.indexerid)
         self.success = False
@@ -240,6 +246,7 @@ class FailedQueueItem(QueueItem):
         self.downCurQuality = downCurQuality
 
     def run(self):
+        super(FailedQueueItem, self).run()
         self.started = True
 
         try:
@@ -265,14 +272,9 @@ class FailedQueueItem(QueueItem):
                     snatchEpisode(result)
 
                     # give the CPU a break
-                    gen.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
         except Exception:
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
-
-def fifo(myList, item, maxSize=100):
-    if len(myList) >= maxSize:
-        myList.pop(0)
-    myList.append(item)

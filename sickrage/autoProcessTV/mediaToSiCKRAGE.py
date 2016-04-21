@@ -25,8 +25,7 @@ import io
 import logging
 import os
 import sys
-
-from tornado import gen
+import time
 
 import sickrage
 
@@ -44,7 +43,7 @@ except IOError as e:
     print ("Could not find/read SiCKRAGE config.ini: " + str(e))
     print (
     'Possibly wrong mediaToSiCKRAGE.py location. Ensure the file is in the autoProcessTV subdir of your SiCKRAGE installation')
-    gen.sleep(3)
+    time.sleep(3)
     sys.exit(1)
 
 scriptlogger = logging.getLogger('mediaToSiCKRAGE')
@@ -60,7 +59,7 @@ try:
     handler = logging.FileHandler(logfile)
 except:
     print ('Unable to open/create the log file at ' + logfile)
-    gen.sleep(3)
+    time.sleep(3)
     sys.exit()
 
 handler.setFormatter(formatter)
@@ -73,7 +72,7 @@ def utorrent():
     if len(sys.argv) < 2:
         scriptlogger.error('No folder supplied - is this being called from uTorrent?')
         print ("No folder supplied - is this being called from uTorrent?")
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     dirName = sys.argv[1]
@@ -93,7 +92,7 @@ def deluge():
     if len(sys.argv) < 4:
         scriptlogger.error('No folder supplied - is this being called from Deluge?')
         print ("No folder supplied - is this being called from Deluge?")
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     dirName = sys.argv[3]
@@ -114,7 +113,7 @@ def blackhole():
         if len(sys.argv) < 2:
             scriptlogger.error('No folder supplied - Your client should invoke the script with a Dir and a Relese Name')
             print ("No folder supplied - Your client should invoke the script with a Dir and a Relese Name")
-            gen.sleep(3)
+            time.sleep(3)
             sys.exit()
 
         dirName = sys.argv[1]
@@ -171,13 +170,13 @@ def main():
     if not use_torrents:
         scriptlogger.error('Enable Use Torrent on SiCKRAGE to use this Script. Aborting!')
         print ('Enable Use Torrent on SiCKRAGE to use this Script. Aborting!')
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     if not torrent_method in ['utorrent', 'transmission', 'deluge', 'blackhole']:
         scriptlogger.error('Unknown Torrent Method. Aborting!')
         print ('Unknown Torrent Method. Aborting!')
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     dirName, nzbName = eval(locals()['torrent_method'])()
@@ -185,13 +184,13 @@ def main():
     if dirName is None:
         scriptlogger.error('MediaToSiCKRAGE script need a dir to be run. Aborting!')
         print ('MediaToSiCKRAGE script need a dir to be run. Aborting!')
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     if not os.path.isdir(dirName):
         scriptlogger.error('Folder ' + dirName + ' does not exist. Aborting AutoPostProcess.')
         print ('Folder ' + dirName + ' does not exist. Aborting AutoPostProcess.')
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     if nzbName and os.path.isdir(os.path.join(dirName, nzbName)):
@@ -222,19 +221,19 @@ def main():
         response = sickrage.srCore.srWebSession.get(url, auth=(username, password), params=params, verify=False)
     except Exception as e:
         scriptlogger.error(': Unknown exception raised when opening url: ' + str(e))
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     if response.status_code == 401:
         scriptlogger.error('Invalid SiCKRAGE Username or Password, check your config')
         print('Invalid SiCKRAGE Username or Password, check your config')
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
     if response.status_code == 200:
         scriptlogger.info('Script ' + __file__ + ' Succesfull')
         print('Script ' + __file__ + ' Succesfull')
-        gen.sleep(3)
+        time.sleep(3)
         sys.exit()
 
 
