@@ -444,10 +444,8 @@ class GitUpdateManager(UpdateManager):
             sickrage.srCore.srLogger.debug("Branch checkout: " + self._find_installed_version() + "->" + self.version)
             return True
 
-        self._find_installed_version()
         try:
-            if self.version != self.get_newest_version:
-                return True
+            return (False, True)[self.version != self.get_newest_version]
         except Exception as e:
             sickrage.srCore.srLogger.warning("Unable to contact server, can't check for update: " + repr(e))
             return False
@@ -537,10 +535,7 @@ class SourceUpdateManager(UpdateManager):
 
     def need_update(self):
         try:
-            git_version = self.get_newest_version
-            if self.version != git_version:
-                sickrage.srCore.srLogger.debug("Source Version checkout: {} -> {}".format(self.version, git_version))
-                return True
+            return (False, True)[self.version != self.get_newest_version]
         except Exception as e:
             sickrage.srCore.srLogger.warning("Unable to contact server, can't check for update: " + repr(e))
             return False

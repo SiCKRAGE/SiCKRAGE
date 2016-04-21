@@ -1068,7 +1068,16 @@ class Home(WebRoot):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/home/')
 
-        sickrage.srCore.VERSIONUPDATER.check_for_new_version(True)
+        # check for new app updates
+        if sickrage.srCore.VERSIONUPDATER.check_for_new_version(True):
+            sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
+            notifications.message('New update found for SiCKRAGE, starting auto-updater')
+            self.update(pid)
+        else:
+            sickrage.srCore.srLogger.info("No updates found for SiCKRAGE!")
+            notifications.message('No updates found for SiCKRAGE!')
+
+        # check for news updates
         sickrage.srCore.VERSIONUPDATER.check_for_new_news(True)
 
         return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
