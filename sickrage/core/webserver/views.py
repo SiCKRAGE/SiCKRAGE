@@ -32,7 +32,7 @@ from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine, sleep
-from tornado.web import HTTPError, RequestHandler, authenticated
+from tornado.web import RequestHandler, authenticated
 
 import sickrage
 from sickrage.clients import getClientIstance
@@ -209,11 +209,8 @@ class LoginHandler(BaseHandler):
 
     @coroutine
     def prepare(self, *args, **kwargs):
-        try:
-            result = yield self.callback(self.checkAuth)
-            self.finish(result)
-        except Exception:
-            raise HTTPError(404)
+        result = yield self.callback(self.checkAuth)
+        self.finish(result)
 
     def checkAuth(self):
         try:
@@ -667,9 +664,7 @@ class Home(WebRoot):
         return show_stat, max_download_count
 
     def is_alive(self, *args, **kwargs):
-        if 'callback' in kwargs and '_' in kwargs:
-            callback, _ = kwargs['callback'], kwargs['_']
-        else:
+        if not 'callback' in kwargs:
             return "Error: Unsupported Request. Send jsonp request with 'callback' variable in the query string."
 
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -677,10 +672,8 @@ class Home(WebRoot):
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
-        if sickrage.srCore.STARTED:
-            return callback + '(' + json_encode({"msg": str(sickrage.srCore.PID)}) + ');'
-        else:
-            return callback + '(' + json_encode({"msg": "nope"}) + ');'
+        if sickrage.srCore.srWebServer.started:
+            return "%s({'msg':%s})" % (kwargs['callback'], str(sickrage.srCore.PID))
 
     @staticmethod
     def haveKODI():
@@ -1051,7 +1044,7 @@ class Home(WebRoot):
 
     def restart(self, pid=None):
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
-        self.io_loop.add_timeout(datetime.timedelta(seconds=5), lambda: sickrage.srCore.shutdown(restart=True))
+        sickrage.srCore.shutdown(restart=True)
         return self.render(
             "/home/restart.mako",
             title="Home",

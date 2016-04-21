@@ -30,6 +30,7 @@ import threading
 import traceback
 
 from apscheduler.schedulers.tornado import TornadoScheduler
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
@@ -511,6 +512,9 @@ class Core(object):
             else:
                 self.srLogger.info('SiCKRAGE IS PERFORMING A SHUTDOWN!')
 
+            # shutdown/restart webserver
+            self.srWebServer.shutdown()
+
             # shutdown scheduler
             self.srLogger.info("Shutting down scheduler jobs and queues")
             self.srScheduler.shutdown()
@@ -521,9 +525,6 @@ class Core(object):
 
             # save all settings
             self.save_all()
-
-            # shutdown/restart webserver
-            self.srWebServer.shutdown()
 
             if restart:
                 self.srLogger.info('SiCKRAGE IS RESTARTING!')
@@ -540,6 +541,9 @@ class Core(object):
         # system exit with status
         if not restart:
             sys.exit(status)
+
+        # stop ioloop event handler
+        IOLoop.current().stop()
 
     def save_all(self):
         # write all shows

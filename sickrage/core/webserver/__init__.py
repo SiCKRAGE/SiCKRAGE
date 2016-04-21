@@ -26,7 +26,6 @@ import threading
 import webbrowser
 
 from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
@@ -203,4 +202,3 @@ class srWebServer(object):
         if self.started:
             self.server.stop()
             self.started = False
-            IOLoop.current().stop()

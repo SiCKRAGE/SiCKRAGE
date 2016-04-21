@@ -2303,11 +2303,10 @@ jQuery(document).ready(function ($) {
             restart: function (srPID) {
                 var currentPid = srPID;
                 var checkIsAlive = setInterval(function () {
-                    $.get('/home/is_alive/', function (data) {
-                        if (data.msg.toLowerCase() === 'nope') {
-                            // if it's still initializing then just wait and try again
-                            $('#restart_message').show();
-                        } else {
+                    $.ajax({
+                        url: '/home/is_alive/',
+                        dataType: 'jsonp',
+                        success: function (data) {
                             // if this is before we've even shut down then just try again later
                             if (currentPid === '' || data.msg === currentPid) {
                                 $('#shut_down_loading').hide();
@@ -2322,8 +2321,11 @@ jQuery(document).ready(function ($) {
                                     window.location = '/' + SICKRAGE.srDefaultPage + '/';
                                 }, 5000);
                             }
+                        },
+                        error: function() {
+                            $('#restart_message').show();
                         }
-                    }, 'jsonp');
+                    });
                 }, 100);
             },
 
