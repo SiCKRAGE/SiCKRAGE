@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 
 import os
 import re
+import threading
 
 from dateutil import parser
 from tornado import gen
@@ -46,12 +47,11 @@ class NameParser(object):
     ANIME_REGEX = 2
 
     def __init__(self, file_name=True, showObj=None, tryIndexers=False, naming_pattern=False):
-
         self.file_name = file_name
         self.showObj = showObj
         self.tryIndexers = tryIndexers
-
         self.naming_pattern = naming_pattern
+        self.lock = threading.Lock()
 
         if self.showObj and not self.showObj.is_anime:
             self._compile_regexes(self.NORMAL_REGEX)
@@ -79,7 +79,8 @@ class NameParser(object):
 
             # try indexers
             if not showObj and tryIndexers:
-                showObj = findCertainShow(sickrage.srCore.SHOWLIST, srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+                showObj = findCertainShow(sickrage.srCore.SHOWLIST,
+                                          srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
 
             # try scene exceptions
             if not showObj:
@@ -91,7 +92,8 @@ class NameParser(object):
             if showObj and not fromCache:
                 sickrage.srCore.NAMECACHE.addNameToCache(name, showObj.indexerid)
         except Exception as e:
-            sickrage.srCore.srLogger.debug("Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
+            sickrage.srCore.srLogger.debug(
+                "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
         return showObj
 
@@ -129,9 +131,9 @@ class NameParser(object):
             for cur_pattern_num, (cur_pattern_name, cur_pattern) in enumerate(regexItem):
                 try:
                     cur_regex = re.compile(cur_pattern, re.VERBOSE | re.IGNORECASE)
-                except re.error, errormsg:
+                except re.error as errormsg:
                     sickrage.srCore.srLogger.info(
-                            "WARNING: Invalid episode_pattern using %s regexs, %s. %s" % (
+                        "WARNING: Invalid episode_pattern using %s regexs, %s. %s" % (
                             dbg_str, errormsg, cur_pattern))
                 else:
                     self.compiled_regexes.append((cur_pattern_num, cur_pattern_name, cur_regex))
@@ -257,8 +259,8 @@ class NameParser(object):
                 from sickrage.core.databases import main_db
                 airdate = bestResult.air_date.toordinal()
                 sql_result = main_db.MainDB().select(
-                        "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
-                        [bestResult.show.indexerid, bestResult.show.indexer, airdate])
+                    "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
+                    [bestResult.show.indexerid, bestResult.show.indexer, airdate])
 
                 season_number = None
                 episode_numbers = []
@@ -282,12 +284,12 @@ class NameParser(object):
                         episode_numbers = [int(epObj["episodenumber"])]
                     except indexer_episodenotfound:
                         sickrage.srCore.srLogger.warning(
-                                "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")
+                            "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")
                         episode_numbers = []
                     except indexer_error as e:
                         sickrage.srCore.srLogger.warning(
-                                "Unable to contact " + srIndexerApi(bestResult.show.indexer).name + ": {}".format(
-                                        e))
+                            "Unable to contact " + srIndexerApi(bestResult.show.indexer).name + ": {}".format(
+                                e))
                         episode_numbers = []
 
                 for epNo in episode_numbers:
@@ -344,7 +346,7 @@ class NameParser(object):
                 raise InvalidNameException("Scene numbering results episodes from "
                                            "seasons %s, (i.e. more than one) and "
                                            "sickrage does not support this.  "
-                                           "Sorry." % (new_season_numbers))
+                                           "Sorry." % new_season_numbers)
 
             # I guess it's possible that we'd have duplicate episodes too, so lets
             # eliminate them
@@ -363,7 +365,8 @@ class NameParser(object):
                 bestResult.season_number = new_season_numbers[0]
 
             if bestResult.show.is_scene:
-                sickrage.srCore.srLogger.debug("Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
+                sickrage.srCore.srLogger.debug(
+                    "Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
         gen.sleep(1)
@@ -428,75 +431,76 @@ class NameParser(object):
         return number
 
     def parse(self, name, cache_result=True):
-        if self.naming_pattern:
-            cache_result = False
+        with self.lock:
+            if self.naming_pattern:
+                cache_result = False
 
-        cached = name_parser_cache.get(name)
-        if cached:
-            return cached
+            cached = name_parser_cache.get(name)
+            if cached:
+                return cached
 
-        # break it into parts if there are any (dirname, file name, extension)
-        dir_name, file_name = os.path.split(name)
+            # break it into parts if there are any (dirname, file name, extension)
+            dir_name, file_name = os.path.split(name)
 
-        if self.file_name:
-            base_file_name = remove_extension(file_name)
-        else:
             base_file_name = file_name
+            if self.file_name:
+                base_file_name = remove_extension(file_name)
 
-        # set up a result to use
-        final_result = ParseResult(name)
+            # set up a result to use
+            final_result = ParseResult(name)
 
-        # try parsing the file name
-        file_name_result = self._parse_string(base_file_name)
+            # try parsing the file name
+            file_name_result = self._parse_string(base_file_name)
 
-        # use only the direct parent dir
-        dir_name = os.path.basename(dir_name)
+            # use only the direct parent dir
+            dir_name = os.path.basename(dir_name)
 
-        # parse the dirname for extra info if needed
-        dir_name_result = self._parse_string(dir_name)
+            # parse the dirname for extra info if needed
+            dir_name_result = self._parse_string(dir_name)
 
-        # build the ParseResult object
-        final_result.air_date = self._combine_results(file_name_result, dir_name_result, 'air_date')
+            # build the ParseResult object
+            final_result.air_date = self._combine_results(file_name_result, dir_name_result, 'air_date')
 
-        # anime absolute numbers
-        final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result, 'ab_episode_numbers')
+            # anime absolute numbers
+            final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result,
+                                                                    'ab_episode_numbers')
 
-        # season and episode numbers
-        final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
-        final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
+            # season and episode numbers
+            final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
+            final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
 
-        # if the dirname has a release group/show name I believe it over the filename
-        final_result.series_name = self._combine_results(dir_name_result, file_name_result, 'series_name')
-        final_result.extra_info = self._combine_results(dir_name_result, file_name_result, 'extra_info')
-        final_result.release_group = self._combine_results(dir_name_result, file_name_result, 'release_group')
-        final_result.version = self._combine_results(dir_name_result, file_name_result, 'version')
+            # if the dirname has a release group/show name I believe it over the filename
+            final_result.series_name = self._combine_results(dir_name_result, file_name_result, 'series_name')
+            final_result.extra_info = self._combine_results(dir_name_result, file_name_result, 'extra_info')
+            final_result.release_group = self._combine_results(dir_name_result, file_name_result, 'release_group')
+            final_result.version = self._combine_results(dir_name_result, file_name_result, 'version')
 
-        final_result.which_regex = []
-        if final_result == file_name_result:
-            final_result.which_regex = file_name_result.which_regex
-        elif final_result == dir_name_result:
-            final_result.which_regex = dir_name_result.which_regex
-        else:
-            if file_name_result:
-                final_result.which_regex += file_name_result.which_regex
-            if dir_name_result:
-                final_result.which_regex += dir_name_result.which_regex
+            final_result.which_regex = []
+            if final_result == file_name_result:
+                final_result.which_regex = file_name_result.which_regex
+            elif final_result == dir_name_result:
+                final_result.which_regex = dir_name_result.which_regex
+            else:
+                if file_name_result:
+                    final_result.which_regex += file_name_result.which_regex
+                if dir_name_result:
+                    final_result.which_regex += dir_name_result.which_regex
 
-        final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
-        final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
+            final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
+            final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if not final_result.show:
-            raise InvalidShowException("Unable to parse {}".format(name))
+            if not final_result.show:
+                raise InvalidShowException("Unable to parse {}".format(name))
 
-        # if there's no useful info in it then raise an exception
-        if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
-            raise InvalidNameException("Unable to parse {}".format(name))
+            # if there's no useful info in it then raise an exception
+            if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
+                raise InvalidNameException("Unable to parse {}".format(name))
 
-        if cache_result:
-            name_parser_cache.add(name, final_result)
+            if cache_result:
+                name_parser_cache.add(name, final_result)
 
-        sickrage.srCore.srLogger.debug("Parsed {} into {}".format(name, final_result))
-        return final_result
+            sickrage.srCore.srLogger.debug("Parsed {} into {}".format(name, final_result))
+            return final_result
 
 
 class ParseResult(object):
@@ -632,8 +636,8 @@ name_parser_cache = NameParserCache()
 
 
 class InvalidNameException(Exception):
-    "The given release name is not valid"
+    """The given release name is not valid"""
 
 
 class InvalidShowException(Exception):
-    "The given show name is not valid"
+    """The given show name is not valid"""

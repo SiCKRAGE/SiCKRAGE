@@ -66,6 +66,7 @@ Thumbs.db
 # GruntJS Files #
 ######################
 Gruntfile.js
+/.sass-cache
 
 # NodeJS Files #
 ######################

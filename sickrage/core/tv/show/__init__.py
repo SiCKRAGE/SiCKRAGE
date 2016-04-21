@@ -37,15 +37,18 @@ import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
-from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, UNAIRED, \
+from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
+    UNAIRED, \
     ARCHIVED, \
     statusStrings, Overview, FAILED, SNATCHED_BEST
 from sickrage.core.databases import main_db
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException
-from sickrage.core.exceptions import MultipleShowObjectsException, ShowDirectoryNotFoundException, ShowNotFoundException, \
+from sickrage.core.exceptions import MultipleShowObjectsException, ShowDirectoryNotFoundException, \
+    ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, safe_getattr
+from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, \
+    safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_config import INDEXER_TVRAGE
@@ -637,7 +640,7 @@ class TVShow(object):
         # get file list
         mediaFiles = listMediaFiles(self.location)
         sickrage.srCore.srLogger.debug("%s: Found files: %s" %
-                                     (self.indexerid, mediaFiles))
+                                       (self.indexerid, mediaFiles))
 
         # create TVEpisodes from each media file (if possible)
         sql_l = []
@@ -998,17 +1001,13 @@ class TVShow(object):
 
             # Get TMDb_info from database
             sqlResults = main_db.MainDB().select("SELECT * FROM tmdb_info WHERE indexer_id = ?", [self.indexerid])
-            if len(sqlResults) == 0:
-                sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Unable to find TMDb show info in the database")
-            else:
+            if len(sqlResults):
                 self._tmdb_info = dict(zip(sqlResults[0].keys(), sqlResults[0])) or self.tmdb_info
                 foundNFO = True
 
             # Get IMDb_info from database
             sqlResults = main_db.MainDB().select("SELECT * FROM imdb_info WHERE indexer_id = ?", [self.indexerid])
-            if len(sqlResults) == 0:
-                sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Unable to find IMDb show info in the database")
-            else:
+            if len(sqlResults):
                 self._imdb_info = dict(zip(sqlResults[0].keys(), sqlResults[0])) or self.imdb_info
                 foundNFO = True
 
@@ -1059,7 +1058,8 @@ class TVShow(object):
                 pass
 
             try:
-                self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)).split('-')[0])
+                self.startyear = tryInt(
+                    str(safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)).split('-')[0])
             except:
                 pass
 
@@ -1158,6 +1158,7 @@ class TVShow(object):
                      'last_air_date': ''}
 
         tmdbsimple.API_KEY = sickrage.srCore.srConfig.TMDB_API_KEY
+
         def _request(self, method, path, params=None, payload=None):
             url = self._get_complete_url(path)
             params = self._get_params(params)
@@ -1166,7 +1167,7 @@ class TVShow(object):
             response = requests.request(method, url, params=params, data=json.dumps(payload)
             if payload else payload, verify=False)
 
-            #response.raise_for_status()
+            # response.raise_for_status()
             response.encoding = 'utf-8'
             return response.json()
 
@@ -1286,8 +1287,8 @@ class TVShow(object):
                     removetree(self.location)
 
                 sickrage.srCore.srLogger.info('%s show folder %s' %
-                                            (('Deleted', 'Trashed')[sickrage.srCore.srConfig.TRASH_REMOVE_SHOW],
-                                        self.location))
+                                              (('Deleted', 'Trashed')[sickrage.srCore.srConfig.TRASH_REMOVE_SHOW],
+                                               self.location))
 
             except ShowDirectoryNotFoundException:
                 sickrage.srCore.srLogger.warning(
@@ -1499,9 +1500,9 @@ class TVShow(object):
         # if the quality isn't one we want under any circumstances then just say no
         anyQualities, bestQualities = Quality.splitQuality(self.quality)
         sickrage.srCore.srLogger.debug("Any,Best = [ %s ] [ %s ] Found = [ %s ]" %
-                                     (self.qualitiesToString(anyQualities),
-                                 self.qualitiesToString(bestQualities),
-                                 self.qualitiesToString([quality])))
+                                       (self.qualitiesToString(anyQualities),
+                                        self.qualitiesToString(bestQualities),
+                                        self.qualitiesToString([quality])))
 
         if quality not in anyQualities + bestQualities or quality is UNKNOWN:
             sickrage.srCore.srLogger.debug("Don't want this quality, ignoring found episode")

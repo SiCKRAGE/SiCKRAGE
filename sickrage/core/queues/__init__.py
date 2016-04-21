@@ -138,5 +138,5 @@ class QueueItem(threading.Thread):
         self.finish()
 
     def finish(self):
-        self.inProgress = False
         threading.currentThread().setName(self.name)
+        self.inProgress = False
