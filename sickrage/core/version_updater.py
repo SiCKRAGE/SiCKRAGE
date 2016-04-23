@@ -484,7 +484,7 @@ class GitUpdateManager(UpdateManager):
     @property
     def current_branch(self):
         branch, _, exit_status = self._run_git(self._find_working_git, 'rev-parse --abbrev-ref HEAD')
-        return ("", branch)[exit_status == 0 and branch]
+        return ("", branch)[exit_status == 0 and len(branch)]
 
     @property
     def remote_branches(self):
@@ -497,7 +497,7 @@ class GitUpdateManager(UpdateManager):
     @property
     def remote_url(self):
         url, _, exit_status = self._run_git(self._find_working_git, 'config --get remote.origin.url')
-        return ("", url)[exit_status == 0 and url]
+        return ("", url)[exit_status == 0 and len(url)]
 
 class SourceUpdateManager(UpdateManager):
     def __init__(self):
