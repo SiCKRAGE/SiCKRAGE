@@ -1112,7 +1112,16 @@ class Home(WebRoot):
     def branchCheckout(self, branch):
         if branch and sickrage.srCore.VERSIONUPDATER.updater.current_branch != branch:
             sickrage.srCore.srNotifications.message('Checking out branch: ', branch)
-            return sickrage.srCore.VERSIONUPDATER.updater.checkout_branch(branch)
+            if sickrage.srCore.VERSIONUPDATER.updater.checkout_branch(branch):
+                sickrage.srCore.shutdown(restart=True)
+                return self.render(
+                    "/home/restart.mako",
+                    title="Home",
+                    header="Restarting SiCKRAGE",
+                    topmenu="home",
+                    controller='home',
+                    action='restart'
+                )
         else:
             sickrage.srCore.srNotifications.message('Already on branch: ', branch)
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
