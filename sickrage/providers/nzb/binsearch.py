@@ -62,23 +62,18 @@ class BinSearchCache(tv_cache.TVCache):
         Returns: A tuple containing two strings representing title and URL respectively
         """
 
-        title = item.get('description')
-        if title:
-            title = '' + title
-            if self.descTitleStart.match(title):
-                title = self.descTitleStart.sub('', title)
-                title = self.descTitleEnd.sub('', title)
-                title = title.replace('+', '.')
-            else:
-                # just use the entire title, looks hard/impossible to parse
-                title = item.get('title')
-                if title:
-                    for titleCleaner in self.titleCleaners:
-                        title = titleCleaner.sub('', title)
+        title = item.get('description', '')
+        if self.descTitleStart.match(title):
+            title = self.descTitleStart.sub('', title)
+            title = self.descTitleEnd.sub('', title)
+            title = title.replace('+', '.')
+        else:
+            # just use the entire title, looks hard/impossible to parse
+            title = item.get('title', '')
+            for titleCleaner in self.titleCleaners:
+                title = titleCleaner.sub('', title)
 
-        url = item.get('link')
-        if url:
-            url = url.replace('&amp;', '&')
+        url = item.get('link', '').replace('&amp;', '&')
 
         return (title, url)
 

@@ -127,14 +127,9 @@ class ExtraTorrentProvider(TorrentProvider):
     def _magnet_from_details(self, link):
         try:
             details = sickrage.srCore.srWebSession.get(link).text
+            return re.search(r'href="(magnet.*?)"', details).group(1) or ''
         except Exception:
             return ''
-
-        match = re.search(r'href="(magnet.*?)"', details)
-        if not match:
-            return ''
-
-        return match.group(1)
 
     def seedRatio(self):
         return self.ratio

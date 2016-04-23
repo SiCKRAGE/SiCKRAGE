@@ -23,6 +23,7 @@ from urllib import urlencode
 
 import sickrage
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -79,14 +80,14 @@ class ThePirateBayProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 matches = re.compile(self.re_title_url, re.DOTALL).finditer(data)
                 for torrent in matches:
                     title = torrent.group('title')
                     download_url = torrent.group('url')
-                    # id = int(torrent.group('id'))
-                    size = self._convertSize(torrent.group('size'))
+                    size = convert_size(torrent.group('size'))
                     seeders = int(torrent.group('seeders'))
                     leechers = int(torrent.group('leechers'))
 
@@ -120,20 +121,6 @@ class ThePirateBayProvider(TorrentProvider):
             results += items[mode]
 
         return results
-
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split('&nbsp;')
-        size = float(size)
-        if modifier in 'KiB':
-            size *= 1024
-        elif modifier in 'MiB':
-            size *= 1024 ** 2
-        elif modifier in 'GiB':
-            size *= 1024 ** 3
-        elif modifier in 'TiB':
-            size *= 1024 ** 4
-        return size
 
     def seedRatio(self):
         return self.ratio

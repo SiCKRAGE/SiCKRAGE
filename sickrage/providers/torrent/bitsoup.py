@@ -98,6 +98,7 @@ class BitSoupProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(self.urls['search'], self.search_params).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -141,7 +142,6 @@ class BitSoupProvider(TorrentProvider):
                                 sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
-
                 except Exception:
                     sickrage.srCore.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 

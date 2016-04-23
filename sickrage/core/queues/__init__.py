@@ -22,6 +22,11 @@ from __future__ import unicode_literals
 import threading
 from datetime import datetime
 
+try:
+    from futures import ThreadPoolExecutor, thread
+except ImportError:
+    from concurrent.futures import ThreadPoolExecutor, thread
+
 import sickrage
 
 
@@ -38,6 +43,7 @@ class GenericQueue(object):
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
+        self.executor = ThreadPoolExecutor(5)
         self._queue = []
 
     @property
@@ -110,13 +116,19 @@ class GenericQueue(object):
                     return
 
                 # execute item in queue
-                threading.Thread(target=self.callback, args=(self.queue.pop(0),)).start()
+                while len(self.queue):
+                    self.executor.submit(self.callback, self.queue.pop(0))
 
             self.amActive = False
 
     def callback(self, item):
+        threading.currentThread().setName(self.name)
         item.run()
         item.finish()
+
+    def shutdown(self):
+        self.executor._threads.clear()
+        thread._threads_queues.clear()
 
 class QueueItem(object):
     def __init__(self, name, action_id=0):

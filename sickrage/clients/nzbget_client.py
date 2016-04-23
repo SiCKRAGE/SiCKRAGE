@@ -114,10 +114,10 @@ class NZBGet(object):
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
                 else:
                     if nzb.resultType == "nzb":
-                        data = sickrage.srCore.srWebSession.get(nzb.url)
-                        if data is None:
+                        try:
+                            nzbcontent64 = standard_b64encode(sickrage.srCore.srWebSession.get(nzb.url).text)
+                        except Exception:
                             return False
-                        nzbcontent64 = standard_b64encode(data)
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
             elif nzbget_version == 12:
                 if nzbcontent64 is not None:

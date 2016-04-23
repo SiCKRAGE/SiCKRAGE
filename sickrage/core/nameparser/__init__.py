@@ -578,26 +578,26 @@ class ParseResult(object):
     def __str__(self):
         to_return = ""
         if self.series_name is not None:
-            to_return += '[SHOW: {}]'.format(self.series_name)
+            to_return += 'SHOW:[{}]'.format(self.series_name)
         if self.season_number is not None:
-            to_return += ' [SEASON: {}]'.format(str(self.season_number).zfill(2))
+            to_return += ' SEASON:[{}]'.format(str(self.season_number).zfill(2))
         if self.episode_numbers and len(self.episode_numbers):
             for ep_num in self.episode_numbers:
-                to_return += ' [EPISODE: {}]'.format(str(ep_num).zfill(2))
+                to_return += ' EPISODE:[{}]'.format(str(ep_num).zfill(2))
 
         if self.is_air_by_date:
-            to_return += ' [AIRDATE: {}]'.format(self.air_date)
+            to_return += ' AIRDATE:[{}]'.format(self.air_date)
         if self.ab_episode_numbers:
-            to_return += ' [ABS: {}]'.format(self.ab_episode_numbers)
+            to_return += ' ABS:[{}]'.format(self.ab_episode_numbers)
         if self.version and self.is_anime is True:
-            to_return += ' [ANIME VER: {}]'.format(self.version)
+            to_return += ' ANIME VER:[{}]'.format(self.version)
 
         if self.release_group:
-            to_return += ' [GROUP: {}]'.format(self.release_group)
+            to_return += ' GROUP:[{}]'.format(self.release_group)
 
-        to_return += ' [ABD: {}]'.format(self.is_air_by_date)
-        to_return += ' [ANIME: {}]'.format(self.is_anime)
-        to_return += ' [REGEX: {}]'.format(''.join(self.which_regex))
+        to_return += ' ABD:[{}]'.format(self.is_air_by_date)
+        to_return += ' ANIME:[{}]'.format(self.is_anime)
+        to_return += ' REGEX:[{}]'.format(''.join(self.which_regex))
 
         return to_return
 

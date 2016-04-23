@@ -18,7 +18,10 @@
 
 from __future__ import unicode_literals
 
-from concurrent import futures
+try:
+    from futures import ThreadPoolExecutor
+except ImportError:
+    from concurrent.futures import ThreadPoolExecutor
 
 __all__ = ["main_db", "cache_db", "failed_db"]
 
@@ -31,6 +34,7 @@ from collections import defaultdict
 
 import sickrage
 from sickrage.core.helpers import backupVersionedFile, restoreVersionedFile
+
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
@@ -50,6 +54,7 @@ def dbFilename(filename=None, suffix=None):
     if suffix:
         filename = filename + ".{}".format(suffix)
     return os.path.join(sickrage.DATA_DIR, filename)
+
 
 class UniRow(sqlite3.Row):
     def __init__(self, *args, **kwargs):
@@ -116,7 +121,6 @@ class Transaction(object):
                 finally:
                     return result
 
-
     def upsert(self, tableName, valueDict, keyDict):
         """
         Update values, or if no updates done, insert values
@@ -131,7 +135,7 @@ class Transaction(object):
             genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
             query = ["UPDATE [" + tableName + "] SET " + ", ".join(
                 genParams(valueDict)) + " WHERE " + " AND ".join(genParams(keyDict)),
-                               valueDict.values() + keyDict.values()]
+                     valueDict.values() + keyDict.values()]
 
             cursor.execute(*query)
             if not conn.total_changes:
@@ -143,6 +147,7 @@ class Transaction(object):
 
             return (False, True)[conn.total_changes > 0]
 
+
 class Connection(object):
     def __init__(self, filename=None, suffix=None, row_type=None, timeout=None):
         self.filename = dbFilename(filename, suffix)
@@ -153,6 +158,7 @@ class Connection(object):
         self._tx_stacks = defaultdict(list)
         self.last_id = 0
         self.timeout = timeout or 20
+        self.executor = ThreadPoolExecutor(max_workers=5)
 
     @contextmanager
     def _conn(self):
@@ -170,7 +176,6 @@ class Connection(object):
                 yield self._connections[thread_id]
             finally:
                 self._connections[thread_id].commit()
-
 
     @contextmanager
     def _conn_cursor(self):
@@ -226,9 +231,12 @@ class Connection(object):
         :return: list of results
         """
 
-        from itertools import izip
-        with futures.ThreadPoolExecutor(len(upserts)) as executor, self.transaction() as tx:
-            sqlResults = executor.map(tx.upsert, *izip(*upserts))
+        with self.transaction() as tx:
+            sqlResults = []
+
+            while len(upserts):
+                sqlResults += [self.executor.submit(tx.upsert, *upserts.pop(0)).result()]
+
             sickrage.srCore.srLogger.db("{} Upserts executed".format(len(upserts)))
             return sqlResults
 
@@ -240,8 +248,11 @@ class Connection(object):
         :return: list of results
         """
 
-        with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
-            sqlResults = executor.map(tx.query, queries)
+        with self.transaction() as tx:
+            sqlResults = []
+            while len(queries):
+                sqlResults += [self.executor.submit(tx.query, queries.pop(0)).result()]
+
             sickrage.srCore.srLogger.db("{} Transactions executed".format(len(queries)))
             return sqlResults
 
@@ -255,8 +266,8 @@ class Connection(object):
 
         sickrage.srCore.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
-        with futures.ThreadPoolExecutor(1) as executor, self.transaction() as tx:
-            return executor.submit(tx.query, [query, list(*args)]).result()
+        with self.transaction() as tx:
+            return self.executor.submit(tx.query, [query, list(*args)]).result()
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -268,8 +279,8 @@ class Connection(object):
         :param keyDict:  columns in table to update
         """
 
-        with futures.ThreadPoolExecutor(1) as executor, self.transaction() as tx:
-            return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
+        with self.transaction() as tx:
+            return self.executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
 
     def select(self, query, *args):
         """
@@ -346,7 +357,6 @@ class Connection(object):
 
     def incDBVersion(self):
         self.action("UPDATE db_version SET db_version = db_version + 1")
-
 
 class SchemaUpgrade(Connection):
     def __init__(self, filename=None, suffix=None, row_type=None):

@@ -25,7 +25,7 @@ from urllib import urlencode
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -114,7 +114,7 @@ class newpctProvider(TorrentProvider):
 
                                     download_url = torrent_row.get('href')
                                     title_raw = torrent_row.get('title')
-                                    size = self._convertSize(torrent_size.text)
+                                    size = convert_size(torrent_size.text)
 
                                     title = self._processTitle(title_raw)
 
@@ -133,20 +133,6 @@ class newpctProvider(TorrentProvider):
             results += items[mode]
 
         return results
-
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split(' ')
-        size = float(size)
-        if modifier in 'KB':
-            size = size * 1024
-        elif modifier in 'MB':
-            size = size * 1024 ** 2
-        elif modifier in 'GB':
-            size = size * 1024 ** 3
-        elif modifier in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
 
     @staticmethod
     def _processTitle(title):

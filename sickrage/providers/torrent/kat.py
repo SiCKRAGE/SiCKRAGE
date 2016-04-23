@@ -27,6 +27,7 @@ import xmltodict
 
 import sickrage
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -116,11 +117,9 @@ class KATProvider(TorrentProvider):
                             seeders = int(item['torrent:seeds'])
                             leechers = int(item['torrent:peers'])
                             verified = bool(int(item['torrent:verified']) or 0)
-                            size = int(item['torrent:contentLength'])
+                            size = convert_size(item['torrent:contentLength'])
 
                             info_hash = item['torrent:infoHash']
-                            # link = item['link']
-
                         except (AttributeError, TypeError, KeyError):
                             continue
 

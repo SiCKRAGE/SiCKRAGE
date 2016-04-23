@@ -164,8 +164,6 @@ class TVCache(object):
         if title and url:
             title = self._translateTitle(title)
             url = self._translateLinkURL(url)
-
-            sickrage.srCore.srLogger.debug("Attempting to add item to cache: " + title)
             return self._addCacheEntry(title, url)
 
         else:
@@ -251,15 +249,12 @@ class TVCache(object):
             try:
                 myParser = NameParser(showObj=showObj)
                 parse_result = myParser.parse(name)
-            except InvalidNameException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + name + " into a valid episode")
-                return None
-            except InvalidShowException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + name + " into a valid show")
-                return None
+            except (InvalidShowException, InvalidNameException):
+                sickrage.srCore.srLogger.debug("RSS ITEM:[{}] IGNORED!".format(name))
+                return
 
             if not parse_result or not parse_result.series_name:
-                return None
+                return
 
         # if we made it this far then lets add the parsed result to cache for usager later on
         season = parse_result.season_number if parse_result.season_number else 1
@@ -281,7 +276,7 @@ class TVCache(object):
             # get version
             version = parse_result.version
 
-            sickrage.srCore.srLogger.debug("Added RSS item: [" + name + "] to cache: [" + self.providerID + "]")
+            sickrage.srCore.srLogger.debug("RSS ITEM:[{}] ADDED!".format(name))
 
             return [
                 "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",

@@ -52,7 +52,7 @@ class STRIKEProvider(TorrentProvider):
                     jdata = sickrage.srCore.srWebSession.get(searchURL).json()
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    return []
+                    continue
 
                 results = []
 

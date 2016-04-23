@@ -24,7 +24,7 @@ import urllib
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -100,6 +100,7 @@ class PretomeProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -137,7 +138,7 @@ class PretomeProvider(TorrentProvider):
                                 # Need size for failed downloads handling
                                 if size is None:
                                     if re.match(r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[7].text):
-                                        size = self._convertSize(cells[7].text)
+                                        size = convert_size(cells[7].text)
                                         if not size:
                                             size = -1
 
@@ -173,22 +174,6 @@ class PretomeProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-    @staticmethod
-    def _convertSize(sizeString):
-        size = sizeString[:-2]
-        modifier = sizeString[-2:]
-        size = float(size)
-        if modifier in 'KB':
-            size = size * 1024
-        elif modifier in 'MB':
-            size = size * 1024 ** 2
-        elif modifier in 'GB':
-            size = size * 1024 ** 3
-        elif modifier in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
-
 
 class PretomeCache(tv_cache.TVCache):
     def __init__(self, provider_obj):

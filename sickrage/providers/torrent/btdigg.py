@@ -58,7 +58,7 @@ class BTDIGGProvider(TorrentProvider):
                     jdata = sickrage.srCore.srWebSession.get(searchURL).json()
                 except Exception:
                     sickrage.srCore.srLogger.info("No data returned to be parsed!!!")
-                    return []
+                    continue
 
                 for torrent in jdata:
                     if not torrent['ff']:

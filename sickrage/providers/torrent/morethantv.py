@@ -26,7 +26,7 @@ import requests
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -113,6 +113,7 @@ class MoreThanTVProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -150,7 +151,7 @@ class MoreThanTVProvider(TorrentProvider):
 
                                 size = -1
                                 if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]', cells[4].contents[0]):
-                                    size = self._convertSize(cells[4].text.strip())
+                                    size = convert_size(cells[4].text.strip())
 
                             except (AttributeError, TypeError):
                                 continue
@@ -184,24 +185,6 @@ class MoreThanTVProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-    @staticmethod
-    def _convertSize(sizeString):
-        size = sizeString[:-2].strip()
-        modifier = sizeString[-2:].upper()
-        try:
-            size = float(size)
-            if modifier in 'KB':
-                size = size * 1024
-            elif modifier in 'MB':
-                size = size * 1024 ** 2
-            elif modifier in 'GB':
-                size = size * 1024 ** 3
-            elif modifier in 'TB':
-                size = size * 1024 ** 4
-        except Exception:
-            size = -1
-        return int(size)
 
 
 class MoreThanTVCache(tv_cache.TVCache):

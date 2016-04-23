@@ -23,6 +23,7 @@ import urllib
 
 import sickrage
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -78,7 +79,7 @@ class NyaaProvider(TorrentProvider):
                         continue
 
                     seeders, leechers, size, verified = s.findall(curItem['summary'])[0]
-                    size = self._convertSize(size)
+                    size = convert_size(size)
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
@@ -105,20 +106,6 @@ class NyaaProvider(TorrentProvider):
             results += items[mode]
 
         return results
-
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split(' ')
-        size = float(size)
-        if modifier in 'KiB':
-            size = size * 1024
-        elif modifier in 'MiB':
-            size = size * 1024 ** 2
-        elif modifier in 'GiB':
-            size = size * 1024 ** 3
-        elif modifier in 'TiB':
-            size = size * 1024 ** 4
-        return int(size)
 
     def seedRatio(self):
         return self.ratio

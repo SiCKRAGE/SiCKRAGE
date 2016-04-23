@@ -27,7 +27,7 @@ import requests
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -142,7 +142,7 @@ class HDSpaceProvider(TorrentProvider):
                         download_url = self.urls['base_url'] + dl_href
                         seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
                         leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
-                        size = re.match(r'.*?([0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+).*', str(result), re.DOTALL).group(1)
+                        size = convert_size(result)
 
                         if not all([title, download_url]):
                             continue
@@ -173,20 +173,6 @@ class HDSpaceProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split(' ')
-        size = float(size)
-        if modifier in 'KB':
-            size *= 1024
-        elif modifier in 'MB':
-            size *= 1024 ** 2
-        elif modifier in 'GB':
-            size *= 1024 ** 3
-        elif modifier in 'TB':
-            size *= 1024 ** 4
-        return int(size)
 
 
 class HDSpaceCache(tv_cache.TVCache):

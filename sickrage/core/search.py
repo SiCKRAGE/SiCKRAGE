@@ -105,13 +105,14 @@ def snatchEpisode(result, endStatus=SNATCHED):
         for curEp in result.episodes:
             if date.today() - curEp.airdate <= timedelta(days=7):
                 result.priority = 1
+
     if re.search(r'(^|[\. _-])(proper|repack)([\. _-]|$)', result.name, re.I) is not None:
         endStatus = SNATCHED_PROPER
 
     if result.url.startswith('magnet') or result.url.endswith('torrent'):
         result.resultType = 'torrent'
 
-    # NZBs can be sent straight to SAB or saved to disk
+    dlResult = False
     if result.resultType in ("nzb", "nzbdata"):
         if sickrage.srCore.srConfig.NZB_METHOD == "blackhole":
             dlResult = _downloadResult(result)
@@ -122,27 +123,26 @@ def snatchEpisode(result, endStatus=SNATCHED):
             dlResult = NZBGet.sendNZB(result, is_proper)
         else:
             sickrage.srCore.srLogger.error("Unknown NZB action specified in config: " + sickrage.srCore.srConfig.NZB_METHOD)
-            dlResult = False
-
-    # TORRENTs can be sent to clients or saved to disk
     elif result.resultType == "torrent":
-        # torrents are saved to disk when blackhole mode
         if sickrage.srCore.srConfig.TORRENT_METHOD == "blackhole":
             dlResult = _downloadResult(result)
         else:
-            if not result.content and not result.url.startswith('magnet'):
-                result.content = sickrage.srCore.srWebSession.get(result.url, needBytes=True)
+            if not all([result.content, result.url.startswith('magnet:')]):
+                result.content = sickrage.srCore.srWebSession.get(result.url).content
 
-            if result.content or result.url.startswith('magnet'):
+            if any([result.content, result.url.startswith('magnet:')]):
+                # add public trackers to magnet url for non-private torrent providers
+                if not result.provider.private and result.url.startswith('magnet:'):
+                    result.url += '&tr='.join([x.strip() for x in sickrage.srCore.srConfig.TORRENT_TRACKERS.split(',') if x.strip()])
+
                 client = getClientIstance(sickrage.srCore.srConfig.TORRENT_METHOD)()
                 dlResult = client.sendTORRENT(result)
             else:
                 sickrage.srCore.srLogger.warning("Torrent file content is empty")
-                dlResult = False
     else:
         sickrage.srCore.srLogger.error("Unknown result type, unable to download it (%r)" % result.resultType)
-        dlResult = False
 
+    # no download results found
     if not dlResult:
         return False
 

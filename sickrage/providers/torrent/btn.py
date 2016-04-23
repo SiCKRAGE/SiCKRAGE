@@ -184,7 +184,7 @@ class BTNProvider(TorrentProvider):
             if title:
                 title = title.replace(' ', '.')
 
-        url = None
+        url = ''
         if 'DownloadURL' in parsedJSON:
             url = parsedJSON['DownloadURL']
             if url:

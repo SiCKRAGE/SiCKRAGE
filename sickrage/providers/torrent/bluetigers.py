@@ -99,6 +99,7 @@ class BLUETIGERSProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:

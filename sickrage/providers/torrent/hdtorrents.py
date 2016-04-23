@@ -27,7 +27,7 @@ import requests
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -173,7 +173,7 @@ class HDTorrentsProvider(TorrentProvider):
                                     # Need size for failed downloads handling
                                     if size is None:
                                         if re.match(r'[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cell.text):
-                                            size = self._convertSize(cell.text)
+                                            size = convert_size(cell.text)
                                             if not size:
                                                 size = -1
 
@@ -210,20 +210,6 @@ class HDTorrentsProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split(' ')
-        size = float(size)
-        if modifier in 'KB':
-            size *= 1024
-        elif modifier in 'MB':
-            size *= 1024 ** 2
-        elif modifier in 'GB':
-            size *= 1024 ** 3
-        elif modifier in 'TB':
-            size *= 1024 ** 4
-        return int(size)
 
 
 class HDTorrentsCache(tv_cache.TVCache):

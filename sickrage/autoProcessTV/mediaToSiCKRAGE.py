@@ -221,19 +221,15 @@ def main():
         response = sickrage.srCore.srWebSession.get(url, auth=(username, password), params=params, verify=False)
     except Exception as e:
         scriptlogger.error(': Unknown exception raised when opening url: ' + str(e))
-        time.sleep(3)
-        sys.exit()
+        sys.exit('Unknown exception raised when opening url: ' + str(e))
 
     if response.status_code == 401:
         scriptlogger.error('Invalid SiCKRAGE Username or Password, check your config')
-        print('Invalid SiCKRAGE Username or Password, check your config')
-        time.sleep(3)
-        sys.exit()
+        sys.exit('Invalid SiCKRAGE Username or Password, check your config')
 
     if response.status_code == 200:
         scriptlogger.info('Script ' + __file__ + ' Succesfull')
         print('Script ' + __file__ + ' Succesfull')
-        time.sleep(3)
         sys.exit()
 
 

@@ -182,7 +182,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     if not postpone:
         result.output += logHelper("PostProcessing Path: %s" % path, sickrage.srCore.srLogger.INFO)
-        result.output += logHelper("PostProcessing Dirs: [%s]" % dirs, sickrage.srCore.srLogger.DEBUG)
+        result.output += logHelper("PostProcessing Dirs: [%s]" % ", ".join(dirs), sickrage.srCore.srLogger.DEBUG)
 
         rarFiles = [x for x in files if isRarFile(x)]
         rarContent = unRAR(path, rarFiles, force, result)

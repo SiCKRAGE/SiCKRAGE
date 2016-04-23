@@ -1503,10 +1503,11 @@ class TVShow(object):
 
         # if the quality isn't one we want under any circumstances then just say no
         anyQualities, bestQualities = Quality.splitQuality(self.quality)
-        sickrage.srCore.srLogger.debug("Any,Best = [ %s ] [ %s ] Found = [ %s ]" %
-                                       (self.qualitiesToString(anyQualities),
-                                        self.qualitiesToString(bestQualities),
-                                        self.qualitiesToString([quality])))
+        sickrage.srCore.srLogger.debug("Any, Best = [{}] [{}] Found = [{}]".format(
+            self.qualitiesToString(anyQualities),
+            self.qualitiesToString(bestQualities),
+            self.qualitiesToString([quality]))
+        )
 
         if quality not in anyQualities + bestQualities or quality is UNKNOWN:
             sickrage.srCore.srLogger.debug("Don't want this quality, ignoring found episode")

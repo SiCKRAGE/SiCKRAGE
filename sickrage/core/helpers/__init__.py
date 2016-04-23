@@ -41,7 +41,8 @@ mediaExtensions = [
 
 subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 
-def get_remote_md5_sum(url, max_file_size=100*1024*1024):
+
+def get_remote_md5_sum(url, max_file_size=100 * 1024 * 1024):
     remote = urllib2.urlopen(url)
     hash = hashlib.md5()
 
@@ -56,6 +57,7 @@ def get_remote_md5_sum(url, max_file_size=100*1024*1024):
         hash.update(data)
 
     return hash.hexdigest()
+
 
 def safe_getattr(object, name, default=None):
     try:
@@ -397,6 +399,7 @@ def makeDir(path):
             return False
     return True
 
+
 def listMediaFiles(path):
     """
     Get a list of files possibly containing media in a path
@@ -485,7 +488,7 @@ def hardlinkFile(srcFile, destFile):
         fixSetGroupID(destFile)
     except Exception as e:
         sickrage.srCore.srLogger.warning("Failed to create hardlink of %s at %s. Error: %r. Copying instead"
-                                       % (srcFile, destFile, e))
+                                         % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -520,7 +523,7 @@ def moveAndSymlinkFile(srcFile, destFile):
         symlink(destFile, srcFile)
     except Exception as e:
         sickrage.srCore.srLogger.warning("Failed to create symlink of %s at %s. Error: %r. Copying instead"
-                                       % (srcFile, destFile, e))
+                                         % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -683,7 +686,8 @@ def chmodAsParent(childPath):
     parentPath = os.path.dirname(childPath)
 
     if not parentPath:
-        sickrage.srCore.srLogger.debug("No parent path provided in " + childPath + ", unable to get permissions from it")
+        sickrage.srCore.srLogger.debug(
+            "No parent path provided in " + childPath + ", unable to get permissions from it")
         return
 
     childPath = os.path.join(parentPath, os.path.basename(childPath))
@@ -706,7 +710,8 @@ def chmodAsParent(childPath):
     user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
     if user_id != 0 and user_id != childPath_owner:
-        sickrage.srCore.srLogger.debug("Not running as root or owner of " + childPath + ", not trying to set permissions")
+        sickrage.srCore.srLogger.debug(
+            "Not running as root or owner of " + childPath + ", not trying to set permissions")
         return
 
     try:
@@ -1023,6 +1028,7 @@ def real_path(path):
     """
     return os.path.normpath(os.path.normcase(os.path.realpath(path)))
 
+
 def makeZip(fileList, archive):
     """
     Create a ZIP of files
@@ -1062,7 +1068,7 @@ def extractZip(archive, targetDir):
 
             # copy file (taken from zipfile's extract)
             source = zip_file.open(member)
-            target = file(os.path.join(targetDir, filename), "wb")
+            target = io.open(os.path.join(targetDir, filename), "wb")
             shutil.copyfileobj(source, target)
             source.close()
             target.close()
@@ -1161,12 +1167,13 @@ def touchFile(fname, atime=None):
 
     if atime is not None:
         try:
-            with file(fname, 'a'):
+            with io.open(fname, 'a'):
                 os.utime(fname, (atime, atime))
                 return True
         except OSError as e:
             if e.errno == errno.ENOSYS:
-                sickrage.srCore.srLogger.debug("File air date stamping not available on your OS. Please disable setting")
+                sickrage.srCore.srLogger.debug(
+                    "File air date stamping not available on your OS. Please disable setting")
             elif e.errno == errno.EACCES:
                 sickrage.srCore.srLogger.error(
                     "File air date stamping failed(Permission denied). Check permissions for file: %s" % fname)
@@ -1174,6 +1181,7 @@ def touchFile(fname, atime=None):
                 sickrage.srCore.srLogger.error("File air date stamping failed. The error is: %r" % e)
 
     return False
+
 
 def get_size(start_path='.'):
     """
@@ -1301,7 +1309,8 @@ def verify_freespace(src, dest, oldfile=None):
         return True
     else:
         sickrage.srCore.srLogger.warning("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
-                                       % (neededspace, pretty_filesize(neededspace), diskfree, pretty_filesize(diskfree)))
+                                         % (neededspace, pretty_filesize(neededspace), diskfree,
+                                            pretty_filesize(diskfree)))
         return False
 
 
@@ -1459,12 +1468,12 @@ def restoreVersionedFile(backup_file, version):
 
     try:
         sickrage.srCore.srLogger.debug("Trying to backup %s to %s.r%s before restoring backup"
-                                     % (new_file, new_file, version))
+                                       % (new_file, new_file, version))
 
         shutil.move(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         sickrage.srCore.srLogger.warning("Error while trying to backup file %s before proceeding with restore: %r"
-                                       % (restore_file, e))
+                                         % (restore_file, e))
         return False
 
     while not os.path.isfile(new_file):
@@ -1585,3 +1594,17 @@ def scrub(obj):
         for i in reversed(range(len(obj))):
             scrub(obj[i])
             del obj[i]
+
+
+def convert_size(size, default=0):
+    units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    size_regex = re.compile(r'([\d+.]+)\s?({})?'.format('|'.join(units)), re.I)
+
+    try:
+        size, unit = float(size_regex.search(size).group(1) or -1), size_regex.search(size).group(2) or 'B'
+    except Exception:
+        return default
+
+    size *= 1024 ** units.index(unit.upper())
+
+    return max(long(size), 0)

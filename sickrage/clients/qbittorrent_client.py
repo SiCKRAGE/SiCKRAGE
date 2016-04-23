@@ -33,7 +33,7 @@ class qbittorrentAPI(GenericClient):
 
         try:
             self.response = sickrage.srCore.srWebSession.get(self.host, auth=HTTPDigestAuth(self.username, self.password), verify=False)
-            self.auth = self.response.content
+            self.auth = self.response.text
         except Exception:
             return None
 

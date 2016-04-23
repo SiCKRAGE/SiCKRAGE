@@ -152,7 +152,7 @@ class RarbgProvider(TorrentProvider):
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
                         try:
-                            data = sickrage.srCore.srWebSession.get(searchURL + self.urlOptions['token'].format(token=self.token)).content
+                            data = sickrage.srCore.srWebSession.get(searchURL + self.urlOptions['token'].format(token=self.token)).text
                         except Exception:
                             sickrage.srCore.srLogger.debug("No data returned from provider")
                             raise StopIteration

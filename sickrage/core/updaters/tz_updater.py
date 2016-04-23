@@ -36,13 +36,16 @@ sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 # update the network timezone table
 def update_network_dict():
     """Update timezone information from SR repositories"""
-
     url = 'http://sickragetv.github.io/network_timezones/network_timezones.txt'
-    url_data = sickrage.srCore.srWebSession.get(url)
-    if not url_data:
+
+    # pre-load network timezones from database
+    load_network_dict()
+
+    try:
+        url_data = sickrage.srCore.srWebSession.get(url).text
+    except Exception:
         sickrage.srCore.srLogger.warning(
             'Updating network timezones failed, this can happen from time to time. URL: %s' % url)
-        load_network_dict()
         return
 
     d = {}

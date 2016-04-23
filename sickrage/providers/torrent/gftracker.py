@@ -26,7 +26,7 @@ import requests
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -109,6 +109,7 @@ class GFTrackerProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL, cookies=self.cookies).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -140,7 +141,7 @@ class GFTrackerProvider(TorrentProvider):
 
                                 size = -1
                                 if re.match(r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
-                                    size = self._convertSize(torrent_size.rstrip())
+                                    size = convert_size(torrent_size.rstrip())
 
                             except (AttributeError, TypeError):
                                 continue
@@ -174,25 +175,6 @@ class GFTrackerProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-    @staticmethod
-    def _convertSize(sizeString):
-        size = sizeString[:-2].strip()
-        modifier = sizeString[-2:].upper()
-        try:
-            size = float(size)
-            if modifier in 'KB':
-                size = size * 1024
-            elif modifier in 'MB':
-                size = size * 1024 ** 2
-            elif modifier in 'GB':
-                size = size * 1024 ** 3
-            elif modifier in 'TB':
-                size = size * 1024 ** 4
-        except Exception:
-            size = -1
-        return int(size)
-
 
 class GFTrackerCache(tv_cache.TVCache):
     def __init__(self, provider_obj):

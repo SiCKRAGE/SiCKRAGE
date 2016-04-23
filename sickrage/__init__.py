@@ -43,7 +43,6 @@ status = None
 srCore = None
 
 PROG_DIR = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
 
 SYS_ENCODING = None
 DEBUG = None
@@ -52,6 +51,7 @@ DEVELOPER = None
 DAEMONIZE = None
 NOLAUNCH = None
 QUITE = None
+DATA_DIR = None
 CONFIG_FILE = None
 PIDFILE = None
 
@@ -265,10 +265,10 @@ def main():
                             action='store_true',
                             help='Enable debugging')
         parser.add_argument('--datadir',
-                            default=DATA_DIR,
+                            default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage')),
                             help='Overrides data folder for database, configfile, cache, logfiles (full path)')
         parser.add_argument('--config',
-                            default='config.ini',
+                            default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage', 'config.ini')),
                             help='Overrides config filename (full path including filename)')
         parser.add_argument('--pidfile',
                             default='sickrage.pid',
@@ -283,7 +283,7 @@ def main():
         QUITE = args.quite
 
         # Override default/configured port
-        WEB_PORT = args.port
+        WEB_PORT = int(args.port)
 
         # Launch browser
         NOLAUNCH = args.nolaunch
@@ -332,9 +332,8 @@ def main():
 
         # main app loop
         while True:
-            srCore = core.Core()
-
             # start core
+            srCore = core.Core()
             srCore.start()
     except ImportError:
         if DEBUG:

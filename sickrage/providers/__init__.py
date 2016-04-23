@@ -52,7 +52,6 @@ from sickrage.core.nameparser import InvalidNameException, InvalidShowException,
 from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
-
 class GenericProvider(object):
     def __init__(self, name, url):
         self.name = name
@@ -166,8 +165,9 @@ class GenericProvider(object):
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            if sickrage.srCore.srWebSession.download(url, filename, headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'})[
-                url.startswith('http')]):
+            if sickrage.srCore.srWebSession.download(url, filename,
+                                                     headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'})[
+                                                         url.startswith('http')]):
 
                 if self._verify_download(filename):
                     sickrage.srCore.srLogger.info("Saved result to " + filename)
@@ -234,13 +234,8 @@ class GenericProvider(object):
         Returns: A tuple containing two strings representing title and URL respectively
         """
 
-        title = item.get('title', '')
-        if title:
-            title = '' + title.replace(' ', '.')
-
-        url = item.get('link', '')
-        if url:
-            url = url.replace('&amp;', '&').replace('%26tr%3D', '&tr=')
+        title = item.get('title', '').replace(' ', '.')
+        url = item.get('link', '').replace('&amp;', '&').replace('%26tr%3D', '&tr=')
 
         return title, url
 
@@ -411,14 +406,10 @@ class GenericProvider(object):
                     break
 
             if not wantEp:
-                sickrage.srCore.srLogger.info(
-                    "Ignoring result " + title + " because we don't want an episode that is " +
-                    Quality.qualityStrings[
-                        quality])
-
+                sickrage.srCore.srLogger.info("RESULT:[{}] QUALITY:[{}] IGNORED!".format(title, Quality.qualityStrings[quality]))
                 continue
 
-            sickrage.srCore.srLogger.debug("Found result " + title + " at " + url)
+            sickrage.srCore.srLogger.debug("FOUND RESULT:[{}] URL:[{}]".format(title, url))
 
             # make a result object
             epObj = []
@@ -534,26 +525,22 @@ class TorrentProvider(GenericProvider):
         return self.type + '.png'
 
     def _get_title_and_url(self, item):
-        title = None
-        download_url = None
-
+        title, download_url = '', ''
         if isinstance(item, (dict, FeedParserDict)):
             title = item.get('title', '')
-            download_url = item.get('url', '')
-            if not download_url:
-                download_url = item.get('link', '')
+            download_url = item.get('url', item.get('link', ''))
         elif isinstance(item, (list, tuple)) and len(item) > 1:
             title = item[0]
             download_url = item[1]
 
         # Temp global block `DIAMOND` releases
-        if title and title.endswith('DIAMOND'):
+        if title.endswith('DIAMOND'):
             sickrage.srCore.srLogger.info('Skipping DIAMOND release for mass fake releases.')
             title = download_url = 'FAKERELEASE'
-        elif title:
+        else:
             title = self._clean_title_from_provider(title)
-        if download_url:
-            download_url = download_url.replace('&amp;', '&')
+
+        download_url = download_url.replace('&amp;', '&')
 
         return title, download_url
 
@@ -604,7 +591,7 @@ class TorrentProvider(GenericProvider):
                 ep_string += "%02d" % int(ep_obj.scene_absolute_number)
             else:
                 ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                    'episodenumber': ep_obj.scene_episode}
+                                                                           'episodenumber': ep_obj.scene_episode}
             if add_string:
                 ep_string = ep_string + ' %s' % add_string
 
@@ -722,9 +709,8 @@ class TorrentRssProvider(TorrentProvider):
 
     def _get_title_and_url(self, item):
 
-        title = item.get(self.titleTAG)
-        if title:
-            title = self._clean_title_from_provider(title)
+        title = item.get(self.titleTAG, '')
+        title = self._clean_title_from_provider(title)
 
         attempt_list = [lambda: item.get('torrent_magneturi'),
 
@@ -732,7 +718,7 @@ class TorrentRssProvider(TorrentProvider):
 
                         lambda: item.get('link')]
 
-        url = None
+        url = ''
         for cur_attempt in attempt_list:
             try:
                 url = cur_attempt()
@@ -773,7 +759,10 @@ class TorrentRssProvider(TorrentProvider):
                     requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
                                                          dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
 
-                torrent_file = sickrage.srCore.srWebSession.get(url)
+                try:
+                    torrent_file = sickrage.srCore.srWebSession.get(url).text
+                except Exception:
+                    return False, 'Unable to get torrent from url'
 
                 try:
                     bencode.bdecode(torrent_file)
@@ -1033,7 +1022,7 @@ class NewznabProvider(NZBProvider):
                 offset = int(params['offset'])
                 # if there are more items available then the amount given in one call, grab some more
                 sickrage.srCore.srLogger.debug('%d' % (total - offset) + ' more items to be fetched from provider.' +
-                                        'Fetching another %d' % int(params['limit']) + ' items.')
+                                               'Fetching another %d' % int(params['limit']) + ' items.')
             else:
                 sickrage.srCore.srLogger.debug('No more searches needed')
                 break
@@ -1140,7 +1129,6 @@ class NewznabCache(TVCache):
 
         tvrageid = 0
 
-        sickrage.srCore.srLogger.debug("Attempting to add item from RSS to cache: %s" % title)
         return self._addCacheEntry(title, url, indexer_id=tvrageid)
 
 

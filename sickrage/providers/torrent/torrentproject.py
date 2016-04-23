@@ -56,12 +56,14 @@ class TORRENTPROJECTProvider(TorrentProvider):
 
                 try:
                     torrents = sickrage.srCore.srWebSession.get(searchURL).json()
-                    if not ("total_found" in torrents and int(torrents["total_found"]) > 0):
-                        continue
-                    del torrents["total_found"]
+                    if not (int(torrents.get("total_found", 0)) > 0):
+                        raise
                 except Exception:
-                    sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
+
+                if "total_found" in torrents:
+                    del torrents["total_found"]
 
                 results = []
                 for i in torrents:
@@ -75,19 +77,8 @@ class TORRENTPROJECTProvider(TorrentProvider):
                         continue
 
                     t_hash = torrents[i]["torrent_hash"]
+                    download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title
                     size = int(torrents[i]["torrent_size"])
-
-                    try:
-                        assert seeders < 10
-                        assert mode is not 'RSS'
-                        sickrage.srCore.srLogger.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
-                        trackerUrl = self.urls['base_url'] + "/" + t_hash + "/trackers_json"
-                        jdata = sickrage.srCore.srWebSession.get(trackerUrl).json()
-                        assert jdata is not "maintenance"
-                        download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "".join(
-                            ["&tr=" + s for s in jdata])
-                    except Exception:
-                        download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
 
                     if not all([title, download_url]):
                         continue

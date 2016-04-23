@@ -94,12 +94,10 @@ def getShowImage(url, imgNum=None):
 
     sickrage.srCore.srLogger.debug("Fetching image from " + tempURL)
 
-    image_data = sickrage.srCore.srWebSession.get(tempURL)
-    if image_data is None:
+    try:
+        return sickrage.srCore.srWebSession.get(tempURL).content
+    except Exception:
         sickrage.srCore.srLogger.warning("There was an error trying to retrieve the image, aborting")
-        return
-
-    return image_data.content
 
 def getFileMetadata(filename):
     import enzyme

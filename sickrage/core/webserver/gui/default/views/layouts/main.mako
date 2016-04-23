@@ -243,7 +243,7 @@
                                         class="badge btn-danger">${numErrors}</span></a></li>
                             %endif
                             %if numWarnings:
-                                <li><a href="/logs/?level=${sickrage.srLogger.WARNING}"><i
+                                <li><a href="/logs/?level=${sickrage.srCore.srLogger.WARNING}"><i
                                         class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span
                                         class="badge btn-warning">${numWarnings}</span></a></li>
                             %endif

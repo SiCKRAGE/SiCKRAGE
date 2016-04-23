@@ -40,6 +40,7 @@ from sickrage.core.nameparser import validator
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.searchers import backlog_searcher
 
+
 class srConfig(object):
     def __init__(self):
         self.CONFIG_VERSION = 9
@@ -73,12 +74,6 @@ class srConfig(object):
         self.SHOWUPDATER = None
         self.SHOWQUEUE = None
         self.SEARCHQUEUE = None
-        self.NAMECACHE = None
-        self.DAILYSEARCHER = None
-        self.BACKLOGSEARCHER = None
-        self.PROPERSEARCHER = None
-        self.TRAKTSEARCHER = None
-        self.SUBTITLESEARCHER = None
         self.VERSION_NOTIFY = False
         self.AUTO_UPDATE = False
         self.NOTIFY_ON_UPDATE = False
@@ -229,6 +224,13 @@ class srConfig(object):
         self.TORRENT_VERIFY_CERT = False
         self.TORRENT_RPCURL = None
         self.TORRENT_AUTH_TYPE = None
+        self.TORRENT_TRACKERS = "udp://coppersurfer.tk:6969/announce," \
+                                "udp://open.demonii.com:1337," \
+                                "udp://exodus.desync.com:6969," \
+                                "udp://9.rarbg.me:2710/announce," \
+                                "udp://glotorrents.pw:6969/announce," \
+                                "udp://tracker.openbittorrent.com:80/announce," \
+                                "udp://9.rarbg.to:2710/announce"
         self.USE_KODI = False
         self.KODI_ALWAYS_ON = True
         self.KODI_NOTIFY_ONSNATCH = False
@@ -600,9 +602,9 @@ class srConfig(object):
             self.AUTOPOSTPROCESSOR_FREQ = self.MIN_AUTOPOSTPROCESSOR_FREQ
 
         sickrage.srCore.srScheduler.modify_job('POSTPROCESSOR',
-                                             trigger=srIntervalTrigger(
-                                            **{'minutes': self.AUTOPOSTPROCESSOR_FREQ,
-                                               'min': self.MIN_AUTOPOSTPROCESSOR_FREQ}))
+                                               trigger=srIntervalTrigger(
+                                                   **{'minutes': self.AUTOPOSTPROCESSOR_FREQ,
+                                                      'min': self.MIN_AUTOPOSTPROCESSOR_FREQ}))
 
     def change_daily_searcher_freq(self, freq):
         """
@@ -612,9 +614,9 @@ class srConfig(object):
         """
         self.DAILY_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_DAILY_SEARCHER_FREQ)
         sickrage.srCore.srScheduler.modify_job('DAILYSEARCHER',
-                                             trigger=srIntervalTrigger(
-                                            **{'minutes': self.DAILY_SEARCHER_FREQ,
-                                               'min': self.MIN_DAILY_SEARCHER_FREQ}))
+                                               trigger=srIntervalTrigger(
+                                                   **{'minutes': self.DAILY_SEARCHER_FREQ,
+                                                      'min': self.MIN_DAILY_SEARCHER_FREQ}))
 
     def change_backlog_searcher_freq(self, freq):
         """
@@ -625,9 +627,9 @@ class srConfig(object):
         self.BACKLOG_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_BACKLOG_SEARCHER_FREQ)
         self.MIN_BACKLOG_SEARCHER_FREQ = backlog_searcher.get_backlog_cycle_time()
         sickrage.srCore.srScheduler.modify_job('BACKLOG',
-                                             trigger=srIntervalTrigger(
-                                            **{'minutes': self.BACKLOG_SEARCHER_FREQ,
-                                               'min': self.MIN_BACKLOG_SEARCHER_FREQ}))
+                                               trigger=srIntervalTrigger(
+                                                   **{'minutes': self.BACKLOG_SEARCHER_FREQ,
+                                                      'min': self.MIN_BACKLOG_SEARCHER_FREQ}))
 
     def change_updater_freq(self, freq):
         """
@@ -637,9 +639,9 @@ class srConfig(object):
         """
         self.VERSION_UPDATER_FREQ = self.to_int(freq, default=self.DEFAULT_VERSION_UPDATE_FREQ)
         sickrage.srCore.srScheduler.modify_job('VERSIONUPDATER',
-                                             trigger=srIntervalTrigger(
-                                            **{'hours': self.VERSION_UPDATER_FREQ,
-                                               'min': self.MIN_VERSION_UPDATER_FREQ}))
+                                               trigger=srIntervalTrigger(
+                                                   **{'hours': self.VERSION_UPDATER_FREQ,
+                                                      'min': self.MIN_VERSION_UPDATER_FREQ}))
 
     def change_showupdate_hour(self, freq):
         """
@@ -652,10 +654,10 @@ class srConfig(object):
             self.SHOWUPDATE_HOUR = 0
 
         sickrage.srCore.srScheduler.modify_job('SHOWUPDATER',
-                                             trigger=srIntervalTrigger(
-                                            **{'hours': 1,
-                                               'start_date': datetime.datetime.now().replace(
-                                                   hour=self.SHOWUPDATE_HOUR)}))
+                                               trigger=srIntervalTrigger(
+                                                   **{'hours': 1,
+                                                      'start_date': datetime.datetime.now().replace(
+                                                          hour=self.SHOWUPDATE_HOUR)}))
 
     def change_subtitle_searcher_freq(self, freq):
         """
@@ -665,9 +667,9 @@ class srConfig(object):
         """
         self.SUBTITLE_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
         sickrage.srCore.srScheduler.modify_job('SUBTITLESEARCHER',
-                                             trigger=srIntervalTrigger(
-                                            **{'hours': self.SUBTITLE_SEARCHER_FREQ,
-                                               'min': self.MIN_SUBTITLE_SEARCHER_FREQ}))
+                                               trigger=srIntervalTrigger(
+                                                   **{'hours': self.SUBTITLE_SEARCHER_FREQ,
+                                                      'min': self.MIN_SUBTITLE_SEARCHER_FREQ}))
 
     def change_version_notify(self, version_notify):
         """
@@ -848,7 +850,7 @@ class srConfig(object):
     ################################################################################
 
     def check_setting_int(self, section, key, def_val, silent=True):
-        my_val = self.CONFIG_OBJ.get(section, {section:key}).get(key, def_val)
+        my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
         if str(my_val).lower() == "true":
             my_val = 1
         elif str(my_val).lower() == "false":
@@ -866,7 +868,7 @@ class srConfig(object):
     ################################################################################
 
     def check_setting_float(self, section, key, def_val, silent=True):
-        my_val = float(self.CONFIG_OBJ.get(section, {section:key}).get(key, def_val))
+        my_val = float(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
 
         if not silent:
             sickrage.srCore.srLogger.debug(section + " -> " + str(my_val))
@@ -878,7 +880,7 @@ class srConfig(object):
     ################################################################################
 
     def check_setting_str(self, section, key, def_val="", silent=True):
-        my_val = self.CONFIG_OBJ.get(section, {section:key}).get(key, def_val)
+        my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
         if my_val:
             censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
             if censored_regex.search(key) or (section, key) in self.CENSORED_ITEMS:
@@ -1119,6 +1121,7 @@ class srConfig(object):
         self.TORRENT_VERIFY_CERT = bool(self.check_setting_int('TORRENT', 'torrent_verify_cert', 0))
         self.TORRENT_RPCURL = self.check_setting_str('TORRENT', 'torrent_rpcurl', 'transmission')
         self.TORRENT_AUTH_TYPE = self.check_setting_str('TORRENT', 'torrent_auth_type', '')
+        self.TORRENT_TRACKERS = self.check_setting_str('TORRENT', 'torrent_trackers', self.TORRENT_TRACKERS)
 
         self.USE_KODI = bool(self.check_setting_int('KODI', 'use_kodi', 0))
         self.KODI_ALWAYS_ON = bool(self.check_setting_int('KODI', 'kodi_always_on', 1))
@@ -1415,7 +1418,7 @@ class srConfig(object):
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             providerSettings = self.check_setting_str('Providers', providerID) or {}
-            for k,v in providerSettings.items():
+            for k, v in providerSettings.items():
                 providerSettings[k] = autoType(v)
 
             providerObj.__dict__.update(providerSettings)
@@ -1618,6 +1621,7 @@ class srConfig(object):
         new_config['TORRENT']['torrent_verify_cert'] = int(self.TORRENT_VERIFY_CERT)
         new_config['TORRENT']['torrent_rpcurl'] = self.TORRENT_RPCURL
         new_config['TORRENT']['torrent_auth_type'] = self.TORRENT_AUTH_TYPE
+        new_config['TORRENT']['torrent_trackers'] = self.TORRENT_TRACKERS
 
         new_config['KODI'] = {}
         new_config['KODI']['use_kodi'] = int(self.USE_KODI)

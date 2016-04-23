@@ -62,6 +62,7 @@ class BitCannonProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).json()
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 for item in data:

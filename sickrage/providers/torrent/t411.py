@@ -105,6 +105,7 @@ class T411Provider(TorrentProvider):
                     try:
                         data = sickrage.srCore.srWebSession.get(searchURL, auth=T411Auth(self.token)).json()
                     except Exception:
+                        sickrage.srCore.srLogger.debug("No data returned from provider")
                         continue
 
                     try:

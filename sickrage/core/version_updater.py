@@ -200,12 +200,10 @@ class srVersionUpdater(object):
         force: ignored
         """
 
-
         # Grab a copy of the news
         try:
-            resp = sickrage.srCore.srWebSession.get(sickrage.srCore.srConfig.NEWS_URL)
-            news = ("", resp.text)[resp.ok]
-        except:
+            news = sickrage.srCore.srWebSession.get(sickrage.srCore.srConfig.NEWS_URL).text
+        except Exception:
             news = ""
 
         if news:
@@ -540,12 +538,13 @@ class SourceUpdateManager(UpdateManager):
 
     def _check_for_new_version(self):
         git_version_url = "http://www.sickrage.ca/version.txt"
-        resp = sickrage.srCore.srWebSession.get(git_version_url)
-        git_version = (self._find_installed_version(), resp.text)[resp.ok]
-        return git_version
+
+        try:
+            return sickrage.srCore.srWebSession.get(git_version_url).text
+        except Exception:
+            return self._find_installed_version()
 
     def set_newest_text(self):
-
         # if we're up to date then don't set this
         sickrage.srCore.NEWEST_VERSION_STRING = None
 
@@ -590,7 +589,8 @@ class SourceUpdateManager(UpdateManager):
                 return False
 
             if not tarfile.is_tarfile(tar_download_path):
-                sickrage.srCore.srLogger.error("Retrieved version from " + tar_download_url + " is corrupt, can't update")
+                sickrage.srCore.srLogger.error(
+                    "Retrieved version from " + tar_download_url + " is corrupt, can't update")
                 return False
 
             # extract to sr-update dir
@@ -668,7 +668,8 @@ class PipUpdateManager(UpdateManager):
         try:
             pypi_version = self.get_newest_version
             if self._find_installed_version() != pypi_version:
-                sickrage.srCore.srLogger.debug("Version upgrade: " + self._find_installed_version() + "->" + pypi_version)
+                sickrage.srCore.srLogger.debug(
+                    "Version upgrade: " + self._find_installed_version() + "->" + pypi_version)
                 return True
         except Exception as e:
             sickrage.srCore.srLogger.warning("Unable to contact PyPi, can't check for update: " + repr(e))

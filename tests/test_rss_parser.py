@@ -29,7 +29,7 @@ from tests import SiCKRAGETestCase
 class RSSTest(SiCKRAGETestCase): pass
 
 def test_get_rss(self, provider):
-    result = provider.cache.getRSSFeed(provider.url)
+    result = provider.cache.getRSSFeed(provider.urls['base_url'])
     if result:
         self.assertTrue(isinstance(result['feed'], dict))
         self.assertTrue(isinstance(result['entries'], list))
@@ -38,7 +38,7 @@ def test_get_rss(self, provider):
             self.assertTrue(title and url, "Failed to get title and url from RSS feed for %s" % provider.name)
 
 
-for providerID, providerObj in sickrage.srCore.providersDict.all():
+for providerID, providerObj in sickrage.srCore.providersDict.all().items():
     setattr(RSSTest, 'test_rss_%s' % providerObj.name, lambda self, x=providerObj: test_get_rss(self, x))
 
 if __name__ == "__main__":

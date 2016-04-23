@@ -103,6 +103,18 @@
 
                             <div class="field-pair">
                                 <label>
+                                    <span class="component-title">Torrent Trackers</span>
+                                    <span class="component-desc">
+                                        <input type="text" name="torrent_trackers" value="${sickrage.srCore.srConfig.TORRENT_TRACKERS}" class="form-control input-sm input350" autocapitalize="off" />
+                                        <div class="clear-left">Trackers that will be added to magnets without trackers<br>
+                                        separate trackers with a comma, e.g. "tracker1,tracker2,tracker3"
+                                        </div>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="field-pair">
+                                <label>
                                     <span class="component-title">Ignore words</span>
                                 <span class="component-desc">
                                     <input type="text" name="ignore_words" value="${sickrage.srCore.srConfig.IGNORE_WORDS}"

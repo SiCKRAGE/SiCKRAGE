@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import datetime
 import os
 import re
+import threading
 import time
 import traceback
 import urllib
@@ -30,9 +31,15 @@ from UnRAR2 import RarFile
 from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
+from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.web import RequestHandler, authenticated
+
+try:
+    from futures import ThreadPoolExecutor
+except ImportError:
+    from concurrent.futures import ThreadPoolExecutor
 
 import sickrage
 from sickrage.clients import getClientIstance
@@ -96,6 +103,9 @@ class BaseHandler(RequestHandler):
 
         # start time
         self.startTime = time.time()
+
+    def initialize(self):
+        self.executor = ThreadPoolExecutor(max_workers=10)
 
     def write_error(self, status_code, **kwargs):
         # handle 404 http errors
@@ -181,8 +191,9 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
-    @coroutine
+    @run_on_executor
     def callback(self, function, **kwargs):
+        threading.currentThread().setName('WEB')
         return recursive_unicode(function(
             **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
                     recursive_unicode(kwargs.items())])
@@ -193,8 +204,8 @@ class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
 
-    @authenticated
     @coroutine
+    @authenticated
     def prepare(self, *args, **kwargs):
         # route -> method obj
         method = getattr(self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
@@ -1038,11 +1049,16 @@ class Home(WebRoot):
         )
 
     def shutdown(self, pid=None):
-        # shutdown sickrage core
+        if str(pid) != str(sickrage.srCore.PID):
+            return self.redirect('/home/')
+
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
         sickrage.srCore.shutdown()
 
     def restart(self, pid=None):
+        if str(pid) != str(sickrage.srCore.PID):
+            return self.redirect('/home/')
+
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
         sickrage.srCore.shutdown(restart=True)
         return self.render(
@@ -2221,7 +2237,7 @@ class changelog(WebRoot):
 
     def index(self):
         try:
-            changes = sickrage.srCore.srWebSession.get(sickrage.srCore.srConfig.CHANGES_URL)
+            changes = sickrage.srCore.srWebSession.get(sickrage.srCore.srConfig.CHANGES_URL).text
         except Exception:
             sickrage.srCore.srLogger.debug('Could not load changes from repo, giving a link!')
             changes = 'Could not load changes from the repo. [Click here for CHANGES.md]({})'.format(
@@ -4059,7 +4075,7 @@ class ConfigSearch(Config):
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
                    torrent_rpcurl=None, torrent_auth_type=None, ignore_words=None, require_words=None,
-                   ignored_subs_list=None):
+                   ignored_subs_list=None, torrent_trackers=None):
 
         results = []
 
@@ -4080,6 +4096,7 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.TORRENT_METHOD = torrent_method
         sickrage.srCore.srConfig.USENET_RETENTION = sickrage.srCore.srConfig.to_int(usenet_retention, default=500)
 
+        sickrage.srCore.srConfig.TORRENT_TRACKERS = torrent_trackers if torrent_trackers else ""
         sickrage.srCore.srConfig.IGNORE_WORDS = ignore_words if ignore_words else ""
         sickrage.srCore.srConfig.REQUIRE_WORDS = require_words if require_words else ""
         sickrage.srCore.srConfig.IGNORED_SUBS_LIST = ignored_subs_list if ignored_subs_list else ""

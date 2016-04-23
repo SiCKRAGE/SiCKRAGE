@@ -23,7 +23,7 @@ import re
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -103,6 +103,7 @@ class IPTorrentsProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -128,7 +129,7 @@ class IPTorrentsProvider(TorrentProvider):
                             try:
                                 title = result.find_all('td')[1].find('a').text
                                 download_url = self.urls['base_url'] + result.find_all('td')[3].find('a')['href']
-                                size = self._convertSize(result.find_all('td')[5].text)
+                                size = convert_size(result.find_all('td')[5].text)
                                 seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).text)
                                 leechers = int(result.find('td', attrs={'class': 'ac t_leechers'}).text)
                             except (AttributeError, TypeError, KeyError):
@@ -163,20 +164,6 @@ class IPTorrentsProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split(' ')
-        size = float(size)
-        if modifier in 'KB':
-            size = size * 1024
-        elif modifier in 'MB':
-            size = size * 1024 ** 2
-        elif modifier in 'GB':
-            size = size * 1024 ** 3
-        elif modifier in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
 
 
 class IPTorrentsCache(tv_cache.TVCache):

@@ -18,6 +18,21 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
 from __future__ import unicode_literals
 
 import os.path
@@ -36,23 +51,23 @@ DEBUG = VERBOSE = False
 simple_test_cases = {
     'standard': {
         'Mr.Show.Name.S01E02.Source.Quality.Etc-Group': ParseResult(None, 'Mr Show Name', 1, [2],
-                                                                           'Source.Quality.Etc', 'Group'),
+                                                                    'Source.Quality.Etc', 'Group'),
         'Show.Name.S01E02': ParseResult(None, 'Show Name', 1, [2]),
         'Show Name - S01E02 - My Ep Name': ParseResult(None, 'Show Name', 1, [2], 'My Ep Name'),
         'Show.1.0.Name.S01.E03.My.Ep.Name-Group': ParseResult(None, 'Show 1.0 Name', 1, [3],
-                                                                              'My.Ep.Name',
-                                                                     'Group'),
+                                                              'My.Ep.Name',
+                                                              'Group'),
         'Show.Name.S01E02E03.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', 1, [2, 3],
-                                                                           'Source.Quality.Etc', 'Group'),
+                                                                    'Source.Quality.Etc', 'Group'),
         'Mr. Show Name - S01E02-03 - My Ep Name': ParseResult(None, 'Mr. Show Name', 1, [2, 3],
-                                                                              'My Ep Name'),
+                                                              'My Ep Name'),
         'Show.Name.S01.E02.E03': ParseResult(None, 'Show Name', 1, [2, 3]),
         'Show.Name-0.2010.S01E02.Source.Quality.Etc-Group': ParseResult(None, 'Show Name-0 2010', 1,
-                                                                                        [2],
-                                                                               'Source.Quality.Etc', 'Group'),
+                                                                        [2],
+                                                                        'Source.Quality.Etc', 'Group'),
         'S01E02 Ep Name': ParseResult(None, None, 1, [2], 'Ep Name'),
         'Show Name - S06E01 - 2009-12-20 - Ep Name': ParseResult(None, 'Show Name', 6, [1],
-                                                                        '2009-12-20 - Ep Name'),
+                                                                 '2009-12-20 - Ep Name'),
         'Show Name - S06E01 - -30-': ParseResult(None, 'Show Name', 6, [1], '30-'),
         'Show-Name-S06E01-720p': ParseResult(None, 'Show-Name', 6, [1], '720p'),
         'Show-Name-S06E01-1080i': ParseResult(None, 'Show-Name', 6, [1], '1080i'),
@@ -62,15 +77,15 @@ simple_test_cases = {
 
     'fov': {
         'Show_Name.1x02.Source_Quality_Etc-Group': ParseResult(None, 'Show Name', 1, [2],
-                                                                               'Source_Quality_Etc',
-                                                                      'Group'),
+                                                               'Source_Quality_Etc',
+                                                               'Group'),
         'Show Name 1x02': ParseResult(None, 'Show Name', 1, [2]),
         'Show Name 1x02 x264 Test': ParseResult(None, 'Show Name', 1, [2], 'x264 Test'),
         'Show Name - 1x02 - My Ep Name': ParseResult(None, 'Show Name', 1, [2], 'My Ep Name'),
         'Show_Name.1x02x03x04.Source_Quality_Etc-Group': ParseResult(None, 'Show Name', 1, [2, 3, 4],
-                                                                            'Source_Quality_Etc', 'Group'),
+                                                                     'Source_Quality_Etc', 'Group'),
         'Show Name - 1x02-03-04 - My Ep Name': ParseResult(None, 'Show Name', 1, [2, 3, 4],
-                                                                           'My Ep Name'),
+                                                           'My Ep Name'),
         '1x02 Ep Name': ParseResult(None, None, 1, [2], 'Ep Name'),
         'Show-Name-1x02-720p': ParseResult(None, 'Show-Name', 1, [2], '720p'),
         'Show-Name-1x02-1080i': ParseResult(None, 'Show-Name', 1, [2], '1080i'),
@@ -80,31 +95,31 @@ simple_test_cases = {
 
     'standard_repeat': {
         'Show.Name.S01E02.S01E03.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', 1, [2, 3],
-                                                                               'Source.Quality.Etc', 'Group'),
+                                                                        'Source.Quality.Etc', 'Group'),
         'Show.Name.S01E02.S01E03': ParseResult(None, 'Show Name', 1, [2, 3]),
         'Show Name - S01E02 - S01E03 - S01E04 - Ep Name': ParseResult(None, 'Show Name', 1, [2, 3, 4],
-                                                                             'Ep Name'),
+                                                                      'Ep Name'),
         'Show.Name.S01E02.S01E03.WEB-DL': ParseResult(None, 'Show Name', 1, [2, 3], 'WEB-DL')
     },
 
     'fov_repeat': {
         'Show.Name.1x02.1x03.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', 1, [2, 3],
-                                                                           'Source.Quality.Etc', 'Group'),
+                                                                    'Source.Quality.Etc', 'Group'),
         'Show.Name.1x02.1x03': ParseResult(None, 'Show Name', 1, [2, 3]),
         'Show Name - 1x02 - 1x03 - 1x04 - Ep Name': ParseResult(None, 'Show Name', 1, [2, 3, 4],
-                                                                                'Ep Name'),
+                                                                'Ep Name'),
         'Show.Name.1x02.1x03.WEB-DL': ParseResult(None, 'Show Name', 1, [2, 3], 'WEB-DL')
     },
 
     'bare': {
         'Show.Name.102.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', 1, [2],
-                                                                              'Source.Quality.Etc',
-                                                                     'Group'),
+                                                              'Source.Quality.Etc',
+                                                              'Group'),
         'show.name.2010.123.source.quality.etc-group': ParseResult(None, 'show name 2010', 1, [23],
-                                                                          'source.quality.etc', 'group'),
+                                                                   'source.quality.etc', 'group'),
         'show.name.2010.222.123.source.quality.etc-group': ParseResult(None, 'show name 2010.222', 1,
                                                                        [23],
-                                                                              'source.quality.etc', 'group'),
+                                                                       'source.quality.etc', 'group'),
         'Show.Name.102': ParseResult(None, 'Show Name', 1, [2]),
         'the.event.401.hdtv-group': ParseResult(None, 'the event', 4, [1], 'hdtv', 'group'),
         'show.name.2010.special.hdtv-blah': None,
@@ -120,48 +135,48 @@ simple_test_cases = {
         'Show Name - 01 - Ep Name': ParseResult(None, 'Show Name', None, [1], 'Ep Name'),
         '01 - Ep Name': ParseResult(None, None, None, [1], 'Ep Name'),
         'Show Name - 01 - Ep Name - WEB-DL': ParseResult(None, 'Show Name', None, [1],
-                                                                         'Ep Name - WEB-DL')
+                                                         'Ep Name - WEB-DL')
     },
 
     'no_season_general': {
         'Show.Name.E23.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [23],
-                                                                     'Source.Quality.Etc', 'Group'),
+                                                              'Source.Quality.Etc', 'Group'),
         'Show Name - Episode 01 - Ep Name': ParseResult(None, 'Show Name', None, [1], 'Ep Name'),
         'Show.Name.Part.3.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [3],
-                                                                        'Source.Quality.Etc', 'Group'),
+                                                                 'Source.Quality.Etc', 'Group'),
         'Show.Name.Part.1.and.Part.2.Blah-Group': ParseResult(None, 'Show Name', None, [1, 2], 'Blah',
-                                                                              'Group'),
+                                                              'Group'),
         'Show.Name.Part.IV.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [4],
-                                                                         'Source.Quality.Etc', 'Group'),
+                                                                  'Source.Quality.Etc', 'Group'),
         'Deconstructed.E07.1080i.HDTV.DD5.1.MPEG2-TrollHD': ParseResult(None, 'Deconstructed', None,
                                                                         [7],
-                                                                               '1080i.HDTV.DD5.1.MPEG2', 'TrollHD'),
+                                                                        '1080i.HDTV.DD5.1.MPEG2', 'TrollHD'),
         'Show.Name.E23.WEB-DL': ParseResult(None, 'Show Name', None, [23], 'WEB-DL'),
     },
 
     'no_season_multi_ep': {
         'Show.Name.E23-24.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [23, 24],
-                                                                        'Source.Quality.Etc', 'Group'),
+                                                                 'Source.Quality.Etc', 'Group'),
         'Show Name - Episode 01-02 - Ep Name': ParseResult(None, 'Show Name', None, [1, 2], 'Ep Name'),
         'Show.Name.E23-24.WEB-DL': ParseResult(None, 'Show Name', None, [23, 24], 'WEB-DL')
     },
 
     'season_only': {
         'Show.Name.S02.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', 2, [],
-                                                                              'Source.Quality.Etc',
-                                                                     'Group'),
+                                                              'Source.Quality.Etc',
+                                                              'Group'),
         'Show Name Season 2': ParseResult(None, 'Show Name', 2),
         'Season 02': ParseResult(None, None, 2)
     },
 
     'scene_date_format': {
         'Show.Name.2010.11.23.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [],
-                                                                            'Source.Quality.Etc', 'Group',
+                                                                     'Source.Quality.Etc', 'Group',
                                                                      date(2010, 11, 23)),
         'Show Name - 2010.11.23': ParseResult(None, 'Show Name', air_date=date(2010, 11, 23)),
         'Show.Name.2010.23.11.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [],
-                                                                            'Source.Quality.Etc', 'Group',
-                                                                                     date(2010, 11, 23)),
+                                                                     'Source.Quality.Etc', 'Group',
+                                                                     date(2010, 11, 23)),
         'Show Name - 2010-11-23 - Ep Name': ParseResult(None, 'Show Name', extra_info='Ep Name',
                                                         air_date=date(2010, 11, 23)),
         '2010-11-23 - Ep Name': ParseResult(None, extra_info='Ep Name',
@@ -185,9 +200,9 @@ combination_test_cases = [
      ['standard']),
 
     (
-    '/home/drop/storage/TV/Terminator The Sarah Connor Chronicles/Season 2/S02E06 The Tower is Tall, But the Fall is Short.mkv',
-    ParseResult(None, None, 2, [6], 'The Tower is Tall, But the Fall is Short'),
-    ['standard']),
+        '/home/drop/storage/TV/Terminator The Sarah Connor Chronicles/Season 2/S02E06 The Tower is Tall, But the Fall is Short.mkv',
+        ParseResult(None, None, 2, [6], 'The Tower is Tall, But the Fall is Short'),
+        ['standard']),
 
     (r'/Test/TV/Jimmy Fallon/Season 2/Jimmy Fallon - 2010-12-15 - blah.avi',
      ParseResult(None, 'Jimmy Fallon', extra_info='blah', air_date=date(2010, 12, 15)),
@@ -209,12 +224,12 @@ combination_test_cases = [
 unicode_test_cases = [
     ('The.Big.Bang.Theory.2x07.The.Panty.Pi\xf1ata.Polarization.720p.HDTV.x264.AC3-SHELDON.mkv',
      ParseResult(None, 'The.Big.Bang.Theory', 2, [7],
-                                 'The.Panty.Pi\xf1ata.Polarization.720p.HDTV.x264.AC3',
-                        'SHELDON')),
+                 'The.Panty.Pi\xf1ata.Polarization.720p.HDTV.x264.AC3',
+                 'SHELDON')),
     ('The.Big.Bang.Theory.2x07.The.Panty.Pi\xc3\xb1ata.Polarization.720p.HDTV.x264.AC3-SHELDON.mkv',
      ParseResult(None, 'The.Big.Bang.Theory', 2, [7],
-                                 'The.Panty.Pi\xc3\xb1ata.Polarization.720p.HDTV.x264.AC3',
-                        'SHELDON'))
+                 'The.Panty.Pi\xc3\xb1ata.Polarization.720p.HDTV.x264.AC3',
+                 'SHELDON'))
 ]
 
 failure_cases = ['7sins-jfcs01e09-720p-bluray-x264']
@@ -252,7 +267,7 @@ class FailureCaseTests(SiCKRAGETestDBCase):
             return True
 
         if VERBOSE:
-            print 'Actual: ', parse_result.which_regex, parse_result
+            print('Actual: ', parse_result.which_regex, parse_result)
         return False
 
     def test_failures(self):
@@ -264,8 +279,8 @@ class ComboTests(SiCKRAGETestDBCase):
     def _test_combo(self, name, result, which_regexes):
 
         if VERBOSE:
-            print
-            print 'Testing', name
+            print()
+            print('Testing', name)
 
         np = NameParser(True)
 
@@ -275,8 +290,8 @@ class ComboTests(SiCKRAGETestDBCase):
             return False
 
         if DEBUG:
-            print test_result, test_result.which_regex
-            print result, which_regexes
+            print(test_result, test_result.which_regex)
+            print(result, which_regexes)
 
         self.assertEqual(test_result, result)
         for cur_regex in which_regexes:
@@ -300,8 +315,7 @@ class BasicTests(SiCKRAGETestDBCase):
 
     def _test_names(self, np, section, transform=None, verbose=False):
         if VERBOSE or verbose:
-            print
-            print 'Running', section, 'tests'
+            print('Running', section, 'tests')
         for cur_test_base in simple_test_cases[section]:
             if transform:
                 cur_test = transform(cur_test_base)
@@ -309,7 +323,7 @@ class BasicTests(SiCKRAGETestDBCase):
             else:
                 cur_test = cur_test_base
             if VERBOSE or verbose:
-                print 'Testing', cur_test
+                print('Testing', cur_test)
 
             result = simple_test_cases[section][cur_test_base]
 
@@ -323,10 +337,10 @@ class BasicTests(SiCKRAGETestDBCase):
                 test_result = np.parse(cur_test)
 
             if DEBUG or verbose:
-                print 'air_by_date:', test_result.is_air_by_date, 'air_date:', test_result.air_date
-                print 'anime:', test_result.is_anime, 'ab_episode_numbers:', test_result.ab_episode_numbers
-                print test_result
-                print result
+                print('air_by_date:', test_result.is_air_by_date, 'air_date:', test_result.air_date)
+                print('anime:', test_result.is_anime, 'ab_episode_numbers:', test_result.ab_episode_numbers)
+                print(test_result)
+                print(result)
             self.assertEqual(test_result.which_regex, [section])
             self.assertEqual(str(test_result), str(result))
 
@@ -423,8 +437,8 @@ class BasicTests(SiCKRAGETestDBCase):
 
 
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - NAME PARSER TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - NAME PARSER TESTS")
+    print("==================")
+    print("######################################################################")
     unittest.main()

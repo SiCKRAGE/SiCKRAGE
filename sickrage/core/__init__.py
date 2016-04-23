@@ -511,6 +511,8 @@ class Core(object):
 
     def shutdown(self, status=None, restart=False):
         if self.started:
+            self.started = False
+
             if restart:
                 self.srLogger.info('SiCKRAGE IS PERFORMING A RESTART!')
             else:
@@ -520,8 +522,15 @@ class Core(object):
             self.srWebServer.shutdown()
 
             # shutdown scheduler
-            self.srLogger.info("Shutting down scheduler jobs and queues")
+            self.srLogger.info("Shutting down scheduler")
             self.srScheduler.shutdown()
+
+            # shutdown queues
+            self.srLogger.info("Shutting down queues")
+            if self.SHOWQUEUE:
+                self.SHOWQUEUE.shutdown()
+            if self.SEARCHQUEUE:
+                self.SEARCHQUEUE.shutdown()
 
             if sickrage.srCore.ADBA_CONNECTION:
                 self.srLogger.info("Logging out ANIDB connection")

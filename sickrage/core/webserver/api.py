@@ -23,12 +23,19 @@ import collections
 import datetime
 import os
 import re
+import threading
 import traceback
 import urllib
 
+from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.web import RequestHandler
+
+try:
+    from futures import ThreadPoolExecutor
+except ImportError:
+    from concurrent.futures import ThreadPoolExecutor
 
 import sickrage
 from sickrage.core.caches import image_cache
@@ -106,7 +113,7 @@ class ApiHandler(RequestHandler):
         super(ApiHandler, self).__init__(application, request)
 
     def initialize(self):
-        super(ApiHandler, self).initialize()
+        self.executor = ThreadPoolExecutor(max_workers=5)
 
     @coroutine
     def prepare(self, *args, **kwargs):
@@ -151,8 +158,9 @@ class ApiHandler(RequestHandler):
 
         self.finish(outputCallback(outDict))
 
-    @coroutine
+    @run_on_executor
     def callback(self, function, *args, **kwargs):
+        threading.currentThread().setName('API')
         return recursive_unicode(function(
             **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
                     recursive_unicode(kwargs.items())])

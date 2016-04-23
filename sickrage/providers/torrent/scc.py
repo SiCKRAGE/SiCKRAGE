@@ -24,7 +24,7 @@ import urllib
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -100,6 +100,7 @@ class SCCProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 with bs4_parser(data) as html:
@@ -125,7 +126,7 @@ class SCCProvider(TorrentProvider):
                             download_url = self.urls['download'] % url['href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
-                            size = self._convertSize(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
+                            size = convert_size(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
                         except Exception:
                             continue
 
@@ -155,20 +156,6 @@ class SCCProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-    @staticmethod
-    def _convertSize(size):
-        size, base = size.split()
-        size = float(size)
-        if base in 'KB':
-            size = size * 1024
-        elif base in 'MB':
-            size = size * 1024 ** 2
-        elif base in 'GB':
-            size = size * 1024 ** 3
-        elif base in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
 
 
 class SCCCache(tv_cache.TVCache):
