@@ -1110,10 +1110,9 @@ class Home(WebRoot):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def branchCheckout(self, branch):
-        if branch and sickrage.srCore.VERSION != branch:
-            sickrage.srCore.VERSION = branch
+        if branch and sickrage.srCore.VERSIONUPDATER.updater.current_branch != branch:
             sickrage.srCore.srNotifications.message('Checking out branch: ', branch)
-            return self.update(sickrage.srCore.PID)
+            return sickrage.srCore.VERSIONUPDATER.updater.checkout_branch(branch)
         else:
             sickrage.srCore.srNotifications.message('Already on branch: ', branch)
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')

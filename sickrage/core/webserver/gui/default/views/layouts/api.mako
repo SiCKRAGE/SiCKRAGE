@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SickRage - VERSION:[${sickrage.srCore.VERSION}] - ${title}</title>
+    <title>SickRage - VERSION:[${sickrage.srCore.VERSIONUPDATER.updater.version}] - ${title}</title>
 
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">

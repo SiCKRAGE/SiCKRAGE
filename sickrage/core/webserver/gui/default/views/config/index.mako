@@ -13,7 +13,7 @@
     <tr>
         <td class="infoTableHeader">SR Version: </td>
         <td class="infoTableCell">
-            ${sickrage.srCore.VERSION}<br>
+            ${sickrage.srCore.VERSIONUPDATER.updater.version}<br>
         </td>
     </tr>
 

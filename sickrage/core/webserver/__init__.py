@@ -192,7 +192,7 @@ class srWebServer(object):
 
         sickrage.srCore.srLogger.info(
             "SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]"
-                .format(sickrage.srCore.VERSION,
+                .format(sickrage.srCore.VERSIONUPDATER.updater.version,
                         sickrage.CONFIG_FILE,
                         ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
                         get_lan_ip(), sickrage.srCore.srConfig.WEB_PORT)

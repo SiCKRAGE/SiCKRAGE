@@ -1601,7 +1601,7 @@ def convert_size(size, default=0):
     size_regex = re.compile(r'([\d+.]+)\s?({})?'.format('|'.join(units)), re.I)
 
     try:
-        size, unit = float(size_regex.search(size).group(1) or -1), size_regex.search(size).group(2) or 'B'
+        size, unit = float(size_regex.search(str(size)).group(1) or -1), size_regex.search(str(size)).group(2) or 'B'
     except Exception:
         return default
 

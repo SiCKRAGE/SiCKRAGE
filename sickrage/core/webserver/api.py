@@ -1319,7 +1319,7 @@ class CMD_SiCKRAGE(ApiCall):
 
     def run(self):
         """ Get miscellaneous information about SiCKRAGE """
-        data = {"app_version": sickrage.srCore.VERSION, "api_version": self.version,
+        data = {"app_version": sickrage.srCore.VERSIONUPDATER.updater.version, "api_version": self.version,
                 "api_commands": sorted(self.api_calls.keys())}
         return _responds(RESULT_SUCCESS, data)
 

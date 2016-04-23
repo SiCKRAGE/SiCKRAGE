@@ -33,22 +33,30 @@ class srNameCache(object):
     def __init__(self, *args, **kwargs):
         self.name = "NAMECACHE"
         self.amActive = False
+        self.minTime = 10
         self.lastUpdate = {}
-        self.minTime = sickrage.srCore.srConfig.NAMECACHE_FREQ
-        self.cache = self.loadNameCacheFromDB()
+        self.cache = {}
 
     def run(self, force=False):
         if self.amActive:
             return
 
+        # set active
         self.amActive = True
 
         # set thread name
         threading.currentThread().setName(self.name)
 
+        # set minimum time limit
+        self.minTime = sickrage.srCore.srConfig.NAMECACHE_FREQ
+
+        # init cache
+        self.cache = self.loadNameCacheFromDB()
+
         # build name cache
         self.buildNameCache()
 
+        # unset active
         self.amActive = False
 
     def shouldUpdate(self, show):

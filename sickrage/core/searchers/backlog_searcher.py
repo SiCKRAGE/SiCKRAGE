@@ -33,7 +33,7 @@ class srBacklogSearcher(object):
         self.name = "BACKLOG"
         self.lock = threading.Lock()
         self._lastBacklog = None
-        self.cycleTime = sickrage.srCore.srConfig.BACKLOG_SEARCHER_FREQ / 60 / 24
+        self.cycleTime = 21 / 60 / 24
         self.amActive = False
         self.amPaused = False
         self.amWaiting = False
@@ -45,6 +45,9 @@ class srBacklogSearcher(object):
 
         # set thread name
         threading.currentThread().setName(self.name)
+
+        # set cycle time
+        self.cycleTime = sickrage.srCore.srConfig.BACKLOG_SEARCHER_FREQ / 60 / 24
 
         try:
             self.searchBacklog()

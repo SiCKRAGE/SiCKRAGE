@@ -261,7 +261,7 @@ class srLogger(logging.getLoggerClass()):
                     message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
                 except Exception:
                     message += "Locale: unknown" + "\n"
-                message += "Version: **" + sickrage.srCore.VERSION + "**\n"
+                message += "Version: **" + sickrage.srCore.VERSIONUPDATER.updater.version + "**\n"
                 if hasattr(gist, 'html_url'):
                     message += "Link to Log: " + gist.html_url + "\n"
                 else:

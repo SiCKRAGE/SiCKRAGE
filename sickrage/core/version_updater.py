@@ -388,21 +388,12 @@ class GitUpdateManager(UpdateManager):
         """
 
         output, _, exit_status = self._run_git(self._find_working_git, 'rev-parse HEAD')  # @UnusedVariable
-
         if exit_status == 0 and output:
             cur_commit_hash = output.strip()
             if not re.match('^[a-z0-9]+$', cur_commit_hash):
                 sickrage.srCore.srLogger.error("Output doesn't look like a hash, not using it")
                 return False
             return cur_commit_hash
-
-    def _find_installed_branch(self):
-        branch_info, _, exit_status = self._run_git(self._find_working_git,
-                                                    'symbolic-ref -q HEAD')  # @UnusedVariable
-        if exit_status == 0 and branch_info:
-            return branch_info.strip().replace('refs/heads/', '', 1).strip()
-
-        return "master"
 
     def _check_for_new_version(self):
         """
@@ -435,11 +426,6 @@ class GitUpdateManager(UpdateManager):
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
     def need_update(self):
-
-        if self.version != self._find_installed_version():
-            sickrage.srCore.srLogger.debug("Branch checkout: " + self._find_installed_version() + "->" + self.version)
-            return True
-
         try:
             return (False, True)[self.version != self.get_newest_version]
         except Exception as e:
@@ -457,28 +443,13 @@ class GitUpdateManager(UpdateManager):
             # self.clean() # This is removing user data and backups
             self.reset()
 
-        if self.version == self._find_installed_version():
-            _, _, exit_status = self._run_git(self._find_working_git, 'pull -f origin ' + self.version)
-        else:
-            _, _, exit_status = self._run_git(self._find_working_git, 'checkout -f ' + self.version)
-
+        _, _, exit_status = self._run_git(self._find_working_git, 'pull -f origin ' + self.current_branch)
         if exit_status == 0:
-            _, _, exit_status = self._run_git(self._find_working_git, 'submodule update --init --recursive')
+            if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
+                srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
+            return True
 
-            if exit_status == 0:
-                self._find_installed_version()
-
-                # Notify update successful
-                if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
-                    srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
-
-                return True
-
-            else:
-                return False
-
-        else:
-            return False
+        return False
 
     def clean(self):
         """
@@ -486,8 +457,7 @@ class GitUpdateManager(UpdateManager):
         on the call's success.
         """
         _, _, exit_status = self._run_git(self._find_working_git, 'clean -df ""')
-        if exit_status == 0:
-            return True
+        return (False, True)[exit_status == 0]
 
     def reset(self):
         """
@@ -495,23 +465,39 @@ class GitUpdateManager(UpdateManager):
         on the call's success.
         """
         _, _, exit_status = self._run_git(self._find_working_git, 'reset --hard')
-        if exit_status == 0:
-            return True
+        return (False, True)[exit_status == 0]
+
+    def checkout_branch(self, branch):
+        if branch in self.remote_branches:
+            sickrage.srCore.srLogger.debug("Branch checkout: " + self._find_installed_version() + "->" + branch)
+
+            # remove untracked files and performs a hard reset on git branch to avoid update issues
+            if sickrage.srCore.srConfig.GIT_RESET:
+                self.reset()
+
+            _, _, exit_status = self._run_git(self._find_working_git, 'checkout -f ' + self.version)
+            if exit_status == 0:
+                return True
+
+        return False
+
+    @property
+    def current_branch(self):
+        branch, _, exit_status = self._run_git(self._find_working_git, 'rev-parse --abbrev-ref HEAD')
+        return ("", branch)[exit_status == 0 and branch]
 
     @property
     def remote_branches(self):
         branches, _, exit_status = self._run_git(self._find_working_git, 'ls-remote --heads origin')
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
+
         return []
 
     @property
     def remote_url(self):
         url, _, exit_status = self._run_git(self._find_working_git, 'config --get remote.origin.url')
-        if exit_status == 0 and url:
-            return url
-        return ""
-
+        return ("", url)[exit_status == 0 and url]
 
 class SourceUpdateManager(UpdateManager):
     def __init__(self):
@@ -699,7 +685,7 @@ class PipUpdateManager(UpdateManager):
         # if we're up to date then don't set this
         sickrage.srCore.NEWEST_VERSION_STRING = None
 
-        if not sickrage.srCore.VERSION:
+        if self.version:
             sickrage.srCore.srLogger.debug("Unknown current version number, don't know if we should update or not")
 
             newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set."

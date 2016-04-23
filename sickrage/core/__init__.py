@@ -153,44 +153,48 @@ class Core(object):
         # init web client session
         self.srWebSession = srSession()
 
-        # sickrage version
-        self.VERSION = None
-        self.NEWEST_VERSION = None
-        self.NEWEST_VERSION_STRING = None
-
-        # show list
-        self.SHOWLIST = []
-
-        # updater
-        self.VERSIONUPDATER = None
-
         # name cache
-        self.NAMECACHE = None
+        self.NAMECACHE = srNameCache()
 
         # queues
-        self.SHOWUPDATER = None
-        self.SHOWQUEUE = None
-        self.SEARCHQUEUE = None
+        self.SHOWQUEUE = srShowQueue()
+        self.SEARCHQUEUE = srSearchQueue()
+
+        # updaters
+        self.VERSIONUPDATER = srVersionUpdater()
+        self.SHOWUPDATER = srShowUpdater()
 
         # searchers
-        self.DAILYSEARCHER = None
-        self.BACKLOGSEARCHER = None
-        self.PROPERSEARCHER = None
-        self.TRAKTSEARCHER = None
-        self.SUBTITLESEARCHER = None
+        self.DAILYSEARCHER = srDailySearcher()
+        self.BACKLOGSEARCHER = srBacklogSearcher()
+        self.PROPERSEARCHER = srProperSearcher()
+        self.TRAKTSEARCHER = srTraktSearcher()
+        self.SUBTITLESEARCHER = srSubtitleSearcher()
 
         # auto postprocessor
-        self.AUTOPOSTPROCESSOR = None
+        self.AUTOPOSTPROCESSOR = srPostProcessor()
+
+        # sickrage version
+        self.NEWEST_VERSION = None
+        self.NEWEST_VERSION_STRING = None
 
         # anidb connection
         self.ADBA_CONNECTION = None
 
+        # show list
+        self.SHOWLIST = []
+
     def start(self):
         self.started = True
+
+        # thread name
         threading.currentThread().setName('CORE')
 
         # load config
         self.srConfig.load()
+
+        # set socket timeout
+        socket.setdefaulttimeout(self.srConfig.SOCKET_TIMEOUT)
 
         # setup logger settings
         self.srLogger.logSize = self.srConfig.LOG_SIZE
@@ -205,35 +209,6 @@ class Core(object):
 
         # start logger
         self.srLogger.start()
-
-        # set socket timeout
-        socket.setdefaulttimeout(self.srConfig.SOCKET_TIMEOUT)
-
-        # init version updater
-        self.VERSIONUPDATER = srVersionUpdater()
-
-        # init updater and get current version
-        self.VERSION = self.VERSIONUPDATER.updater.version
-
-        # init caches
-        self.NAMECACHE = srNameCache()
-
-        # init show updater
-        self.SHOWUPDATER = srShowUpdater()
-
-        # init queues
-        self.SHOWQUEUE = srShowQueue()
-        self.SEARCHQUEUE = srSearchQueue()
-
-        # init searchers
-        self.DAILYSEARCHER = srDailySearcher()
-        self.BACKLOGSEARCHER = srBacklogSearcher()
-        self.PROPERSEARCHER = srProperSearcher()
-        self.TRAKTSEARCHER = srTraktSearcher()
-        self.SUBTITLESEARCHER = srSubtitleSearcher()
-
-        # init postprocessor
-        self.AUTOPOSTPROCESSOR = srPostProcessor()
 
         # migrate old database file names to new ones
         if not os.path.exists(main_db.MainDB().filename) and os.path.exists("sickbeard.db"):
@@ -377,7 +352,7 @@ class Core(object):
         # add show queue job
         self.srScheduler.add_job(
             self.SHOWQUEUE.run,
-            srIntervalTrigger(**{'seconds': 3}),
+            srIntervalTrigger(**{'seconds': 5}),
             name="SHOWQUEUE",
             id="SHOWQUEUE"
         )
@@ -385,7 +360,7 @@ class Core(object):
         # add search queue job
         self.srScheduler.add_job(
             self.SEARCHQUEUE.run,
-            srIntervalTrigger(**{'seconds': 1}),
+            srIntervalTrigger(**{'seconds': 5}),
             name="SEARCHQUEUE",
             id="SEARCHQUEUE"
         )
