@@ -15,7 +15,7 @@
             <div class="buttontext">
                 <h3>Add New Show</h3>
                 <p>For shows that you haven't downloaded yet, this option finds a show on theTVDB.com, creates a
-                    directory for it's episodes, and adds it to sickrage.srConfig.</p>
+                    directory for it's episodes and adds it.</p>
             </div>
         </a>
 
@@ -28,8 +28,7 @@
                 <div class="buttontext">
                     <h3>Add Trending Show</h3>
                     <p>For shows that you haven't downloaded yet, this option lets you choose from a list of current
-                        trending shows with ratings to add, creates a directory for its episodes, and adds it to
-                        sickrage.srConfig.</p>
+                        trending shows with ratings to add, creates a directory for its episodes and adds it.</p>
                 </div>
             </a>
 
@@ -42,8 +41,7 @@
                 <div class="buttontext">
                     <h3>Add Recommended Shows</h3>
                     <p>For shows that you haven't downloaded yet, this option recommends shows to add based on your
-                        Trakt.tv show library, creates a directory for its episodes, and adds it to
-                        sickrage.srConfig.</p>
+                        Trakt.tv show library, creates a directory for its episodes and adds it</p>
                 </div>
             </a>
 

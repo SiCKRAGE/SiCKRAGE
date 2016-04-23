@@ -30,7 +30,7 @@
                     <div id="core-component-group1" class="component-group clearfix">
                         <div class="component-group-desc">
                             <h3>Backup</h3>
-                            <p><b>Backup your main database file and sickrage.srConfig.</b></p>
+                            <p><b>Backup your main database file and config</b></p>
                         </div>
 
                         <fieldset class="component-group-list">
@@ -54,7 +54,7 @@
                     <div id="core-component-group2" class="component-group clearfix">
                         <div class="component-group-desc">
                             <h3>Restore</h3>
-                            <p><b>Restore your main database file and sickrage.srConfig.</b></p>
+                            <p><b>Restore your main database file and config</b></p>
                         </div>
 
                         <fieldset class="component-group-list">

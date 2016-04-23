@@ -22,22 +22,22 @@
     <meta name="msapplication-config" content="/browserconfig.xml">
 
     <meta data-var="srPID" data-content="${srPID}">
-    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srConfig.THEME_NAME == 'dark']}">
-    <meta data-var="anonURL" data-content="${sickrage.srConfig.ANON_REDIRECT}">
-    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.srConfig.ANIME_SPLIT_HOME}">
-    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.srConfig.COMING_EPS_LAYOUT}">
-    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.srConfig.COMING_EPS_SORT}">
-    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.srConfig.DATE_PRESET}">
-    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.srConfig.FILTER_ROW}">
-    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.srConfig.FUZZY_DATING}">
-    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.srConfig.HISTORY_LAYOUT}">
-    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.srConfig.HOME_LAYOUT}">
-    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.srConfig.POSTER_SORTBY}">
-    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.srConfig.POSTER_SORTDIR}">
-    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.srConfig.ROOT_DIRS}">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srConfig.SORT_ARTICLE}">
-    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srConfig.TIME_PRESET}">
-    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srConfig.TRIM_ZERO}">
+    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}">
+    <meta data-var="anonURL" data-content="${sickrage.srCore.srConfig.ANON_REDIRECT}">
+    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.srCore.srConfig.ANIME_SPLIT_HOME}">
+    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.srCore.srConfig.COMING_EPS_LAYOUT}">
+    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.srCore.srConfig.COMING_EPS_SORT}">
+    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.srCore.srConfig.DATE_PRESET}">
+    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.srCore.srConfig.FILTER_ROW}">
+    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.srCore.srConfig.FUZZY_DATING}">
+    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.srCore.srConfig.HISTORY_LAYOUT}">
+    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.srCore.srConfig.HOME_LAYOUT}">
+    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.srCore.srConfig.POSTER_SORTBY}">
+    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.srCore.srConfig.POSTER_SORTDIR}">
+    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.srCore.srConfig.ROOT_DIRS}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.srConfig.SORT_ARTICLE}">
+    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.srConfig.TIME_PRESET}">
+    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.srConfig.TRIM_ZERO}">
     <%block name="metas" />
 
     <link rel="shortcut icon" href="/images/ico/favicon.ico">
@@ -104,7 +104,7 @@
                 <li><a href="/home/">Back to SickRage</a></li>
                 <li class="hidden-xs">
                     <a href="https://github.com/SiCKRAGETV/SiCKRAGE/wiki/Donations" rel="noreferrer"
-                       onclick="window.open('${sickrage.srConfig.ANON_REDIRECT}' + this.href); return false;">
+                       onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;">
                         <img src="/images/donate.jpg" alt="[donate]" class="navbaricon"/>
                     </a>
                 </li>

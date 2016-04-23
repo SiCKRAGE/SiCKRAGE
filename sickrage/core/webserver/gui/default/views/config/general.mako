@@ -637,7 +637,7 @@
                                 <span class="component-desc">
                                     <input type="checkbox" name="encryption_version"
                                            id="encryption_version" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ENCRYPTION_VERSION)]}/>
-                                    <p>in the <code>sickrage.srConfig.ini</code> file.</p>
+                                    <p>in the <code>${sickrage.CONFIG_FILE}</code> file.</p>
                                 </span>
                                     </label>
                                 </div>

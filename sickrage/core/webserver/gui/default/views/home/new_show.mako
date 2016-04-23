@@ -11,9 +11,9 @@
             <h1>Find a show</h1>
             <section data-step="0">
                 <div class="form-group">
-                    <input type="hidden" id="indexer_timeout" value="${sickrage.srConfig.INDEXER_TIMEOUT}"/>
+                    <input type="hidden" id="indexer_timeout" value="${sickrage.srCore.srConfig.INDEXER_TIMEOUT}"/>
                     <input type="hidden" id="indexerLang" name="indexerLang"
-                           value="${sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE}"/>
+                           value="${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE}"/>
 
                     % if use_provided_info:
                         Show retrieved from existing metadata:

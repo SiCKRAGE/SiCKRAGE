@@ -15,7 +15,7 @@
     <div id="container">
         % if not trending_shows:
             <div class="trakt_show" style="width:100%; margin-top:20px">
-                <p class="red-text">Trakt API did not return any results, please check your sickrage.srConfig.
+                <p class="red-text">Trakt API did not return any results, please check your config settings.
             </div>
         % else:
             % for cur_show in trending_shows:
