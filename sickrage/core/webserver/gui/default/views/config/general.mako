@@ -757,7 +757,7 @@
                                             class="form-control form-control-inline input-sm pull-left">
                                         % if git_branch:
                                             % for cur_branch in git_branch:
-                                                % if sickrage.DEVELOPER == 1:
+                                                % if sickrage.DEVELOPER:
                                                     <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                                 % elif cur_branch in ['master', 'develop']:
                                                     <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
