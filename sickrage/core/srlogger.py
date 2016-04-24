@@ -31,13 +31,13 @@ import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
-#logging.basicConfig()
+# logging.basicConfig()
 import sickrage
 
 from sickrage.core import makeDir
 
-
 class srLogger(logging.getLoggerClass()):
+    logging.captureWarnings(True)
     logging.getLogger().addHandler(logging.NullHandler())
 
     def __init__(self, name="sickrage"):
@@ -134,7 +134,8 @@ class srLogger(logging.getLoggerClass()):
 
             try:
                 record.msg = re.sub(
-                    r"(.*)\b({})\b(.*)".format('|'.join([x for x in sickrage.srCore.srConfig.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
+                    r"(.*)\b({})\b(.*)".format(
+                        '|'.join([x for x in sickrage.srCore.srConfig.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
                     record.msg)
 
                 # needed because Newznab apikey isn't stored as key=value in a section.
@@ -186,7 +187,8 @@ class srLogger(logging.getLoggerClass()):
         issue_id = None
 
         from sickrage.core.classes import ErrorViewer
-        if not (sickrage.srCore.srConfig.GIT_USERNAME and sickrage.srCore.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
+        if not (
+                    sickrage.srCore.srConfig.GIT_USERNAME and sickrage.srCore.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
                 ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
@@ -209,7 +211,8 @@ class srLogger(logging.getLoggerClass()):
         gh_repo = 'sickrage-issues'
 
         import github
-        gh = github.Github(login_or_token=sickrage.srCore.srConfig.GIT_USERNAME, password=sickrage.srCore.srConfig.GIT_PASSWORD,
+        gh = github.Github(login_or_token=sickrage.srCore.srConfig.GIT_USERNAME,
+                           password=sickrage.srCore.srConfig.GIT_PASSWORD,
                            user_agent="SiCKRAGE")
 
         try:

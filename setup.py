@@ -2,6 +2,8 @@ import io
 import os
 import shutil
 
+from pip.download import PipSession
+from pip.req import parse_requirements
 from setuptools import setup, Command
 
 # Get the version number
@@ -27,22 +29,35 @@ class CleanCommand(Command):
         shutil.rmtree(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage.egg-info'), ignore_errors=True)
 
 
+def requirements():
+    return [str(r.req) for r in parse_requirements(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'requirements.txt'),
+        session=PipSession())]
+
+
 setup(
-        cmdclass={'clean': CleanCommand},
-        name='sickrage',
-        version=version,
-        description='Automatic Video Library Manager for TV Shows',
-        author='echel0n',
-        author_email='sickrage.tv@gmail.com',
-        url='https://github.com/SiCKRAGETV/SickRage',
-        keywords=['sickrage', 'sickragetv', 'tv', 'torrent', 'nzb', 'video'],
-        packages=["sickrage"],
-        include_package_data=True,
-        zip_safe=False,
-        test_suite='tests',
-        entry_points={
-            "console_scripts": [
-                "sickrage=sickrage:main",
-            ]
-        }, requires=['configobj']
+    cmdclass={'clean': CleanCommand},
+    name='sickrage',
+    version=version,
+    description='Automatic Video Library Manager for TV Shows',
+    author='echel0n',
+    author_email='sickrage.tv@gmail.com',
+    url='https://github.com/SiCKRAGETV/SickRage',
+    keywords=['sickrage', 'sickragetv', 'tv', 'torrent', 'nzb', 'video'],
+    packages=["sickrage"],
+    extras_require={"pip": ["pip"]},
+    tests_require=['pip'],
+    requires=['pip'],
+    install_requires=requirements(),
+    include_package_data=True,
+    platforms='any',
+    zip_safe=False,
+    test_suite='tests',
+    entry_points={
+        "console_scripts": [
+            "sickrage=sickrage:main",
+        ]
+    }
 )
+
+

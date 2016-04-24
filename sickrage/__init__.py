@@ -24,6 +24,7 @@ import argparse
 import codecs
 import io
 import locale
+import logging
 import os
 import sys
 import threading
@@ -119,47 +120,10 @@ def install_pip():
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, file_name] + ([], ['--user'])[all([isElevatedUser(), not isVirtualEnv()])])
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
-
-
-def install_requirements(upgrade=False):
-    from pip.commands.install import InstallCommand, InstallationError
-
-    requirements = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))]
-    options = InstallCommand().parse_args([])[0]
-    options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
-    options.requirements = requirements
-    options.cache_dir = None
-    options.upgrade = upgrade
-    options.quiet = 1
-    options.pre = True
-
-    # install/upgrade all requirements for sickrage
-    print("Installing SiCKRAGE requirement packages, please stand by ...")
-
-    attempts = 0
-    while attempts < 3:
-        try:
-            options.ignore_dependencies = True
-            InstallCommand().run(options, [])
-
-            if not upgrade and attempts < 1:
-                options.ignore_dependencies = False
-                InstallCommand().run(options, [])
-
-            # finished
-            return
-        except InstallationError:
-            options.ignore_installed = True
-            attempts += 1
-        except Exception as e:
-            attempts += 1
-
-    # failed to install requirements
-    sys.exit(traceback.print_exc())
 
 
 def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
@@ -224,6 +188,42 @@ def pid_exists(pid):
         return True
 
 
+def install_requirements(restart=False):
+    logging.captureWarnings(True)
+
+    # install pip package manager
+    install_pip()
+
+    from pip.commands.install import InstallCommand
+    from pip.download import PipSession
+    from pip.req import parse_requirements
+
+    # print("Installing SiCKRAGE requirement packages")
+    # pip.main(['install', '-r', '{}'.format(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'))] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
+
+    for r in parse_requirements(
+            os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'),
+            session=PipSession()):
+
+        req_options, req_args = InstallCommand().parse_args([r.req.project_name])
+        req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
+        req_options.cache_dir = None
+        req_options.upgrade = True
+        req_options.quiet = 1
+
+        try:
+            print("Checking SiCKRAGE requirements package: {}".format(r.req.project_name))
+            req_options.ignore_dependencies = True
+            InstallCommand().run(req_options, req_args)
+            req_options.ignore_dependencies = False
+            InstallCommand().run(req_options, req_args)
+        except Exception:
+            continue
+
+    # restart sickrage silently
+    if restart:
+        os.execl(sys.executable, sys.executable, *sys.argv)
+
 def main():
     global srCore, status, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
@@ -276,8 +276,16 @@ def main():
         parser.add_argument('--nolaunch',
                             action='store_true',
                             help='Suppress launching web browser on startup')
+        parser.add_argument('--requirements',
+                            action='store_true',
+                            help='Installs requirements and exits')
 
         args = parser.parse_args()
+
+        # install requirements
+        if args.requirements:
+            install_requirements()
+            sys.exit()
 
         # Quite
         QUITE = args.quite
@@ -340,14 +348,8 @@ def main():
             traceback.print_exc()
 
         if not DEVELOPER:
-            # install pip package manager
-            install_pip()
-
             # install required packages
-            install_requirements()
-
-            # restart sickrage silently
-            os.execl(sys.executable, sys.executable, *sys.argv)
+            install_requirements(restart=True)
     except KeyboardInterrupt:
         pass
     except Exception as e:
