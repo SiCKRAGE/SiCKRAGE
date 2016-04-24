@@ -111,6 +111,7 @@ class srConfig(object):
         self.INDEXER_DEFAULT_LANGUAGE = None
         self.EP_DEFAULT_DELETED_STATUS = None
         self.LAUNCH_BROWSER = False
+        self.SHOWUPDATE_STALE = True
         self.CACHE_DIR = None
         self.ROOT_DIRS = None
         self.CPU_PRESET = None
@@ -633,7 +634,7 @@ class srConfig(object):
 
     def change_updater_freq(self, freq):
         """
-        Change frequency of daily updater thread
+        Change frequency of version updater thread
     
         :param freq: New frequency
         """
@@ -1046,6 +1047,7 @@ class srConfig(object):
                                                             self.DEFAULT_BACKLOG_SEARCHER_FREQ)
         self.VERSION_UPDATER_FREQ = self.check_setting_int('General', 'update_frequency',
                                                            self.DEFAULT_VERSION_UPDATE_FREQ)
+        self.SHOWUPDATE_STALE = bool(self.check_setting_int('General', 'showupdate_stale', 1))
         self.SHOWUPDATE_HOUR = self.check_setting_int('General', 'showupdate_hour',
                                                       self.DEFAULT_SHOWUPDATE_HOUR)
         self.BACKLOG_DAYS = self.check_setting_int('General', 'backlog_days', 7)
@@ -1477,6 +1479,7 @@ class srConfig(object):
         new_config['General']['backlog_frequency'] = int(self.BACKLOG_SEARCHER_FREQ)
         new_config['General']['update_frequency'] = int(self.VERSION_UPDATER_FREQ)
         new_config['General']['showupdate_hour'] = int(self.SHOWUPDATE_HOUR)
+        new_config['General']['showupdate_stale'] = int(self.SHOWUPDATE_STALE)
         new_config['General']['download_propers'] = int(self.DOWNLOAD_PROPERS)
         new_config['General']['randomize_providers'] = int(self.RANDOMIZE_PROVIDERS)
         new_config['General']['check_propers_interval'] = self.PROPER_SEARCHER_INTERVAL

@@ -210,6 +210,7 @@ class ShowQueueItem(QueueItem):
     def isLoading(self):
         return False
 
+
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
                  scene, paused, blacklist, whitelist, default_status_after, archive):
@@ -275,8 +276,8 @@ class QueueItemAdd(ShowQueueItem):
                     "Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir,
                                                                                                            index_name))
                 sickrage.srCore.srNotifications.error("Unable to add show",
-                                    "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language".format(
-                                        self.showDir, index_name))
+                                                      "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language".format(
+                                                          self.showDir, index_name))
                 return self._finishEarly()
 
             # if the show has no episodes/seasons
@@ -284,8 +285,8 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.srCore.srLogger.error("Show " + str(s['seriesname']) + " is on " + str(
                     srIndexerApi(self.indexer).name) + " but contains no season/episode data.")
                 sickrage.srCore.srNotifications.error("Unable to add show",
-                                    "Show " + str(s['seriesname']) + " is on " + str(srIndexerApi(
-                                        self.indexer).name) + " but contains no season/episode data.")
+                                                      "Show " + str(s['seriesname']) + " is on " + str(srIndexerApi(
+                                                          self.indexer).name) + " but contains no season/episode data.")
                 return self._finishEarly()
         except Exception as e:
             sickrage.srCore.srLogger.error(
@@ -370,7 +371,8 @@ class QueueItemAdd(ShowQueueItem):
 
         except MultipleShowObjectsException:
             sickrage.srCore.srLogger.warning("The show in " + self.showDir + " is already in your show list, skipping")
-            sickrage.srCore.srNotifications.error('Show skipped', "The show in " + self.showDir + " is already in your show list")
+            sickrage.srCore.srNotifications.error('Show skipped',
+                                                  "The show in " + self.showDir + " is already in your show list")
             return self._finishEarly()
 
         except Exception as e:
@@ -547,22 +549,21 @@ class QueueItemUpdate(ShowQueueItem):
 
         sickrage.srCore.srLogger.info("Performing updates for show: {}".format(self.show.name))
 
-        sickrage.srCore.srLogger.debug(
-            "Retrieving show info from " + srIndexerApi(self.show.indexer).name + "")
         try:
+            sickrage.srCore.srLogger.debug("Retrieving show info from " + srIndexerApi(self.show.indexer).name + "")
             self.show.loadFromIndexer(cache=not self.force)
         except indexer_error as e:
             sickrage.srCore.srLogger.warning(
-                "Unable to contact " + srIndexerApi(self.show.indexer).name + ", aborting: {}".format(
-                    e))
+                "Unable to contact " + srIndexerApi(self.show.indexer).name + ", aborting: {}".format(e))
             return
         except indexer_attributenotfound as e:
-            sickrage.srCore.srLogger.error("Data retrieved from " + srIndexerApi(
-                self.show.indexer).name + " was incomplete, aborting: {}".format(e.message))
+            sickrage.srCore.srLogger.error(
+                "Data retrieved from " + srIndexerApi(self.show.indexer).name + " was incomplete, aborting: {}".format(
+                    e.message))
             return
 
-        sickrage.srCore.srLogger.debug("Retrieving show info from TMDb")
         try:
+            sickrage.srCore.srLogger.debug("Retrieving show info from TMDb")
             self.show.loadTMDbInfo()
         except Exception as e:
             sickrage.srCore.srLogger.error("Error loading TMDb info: {}".format(e.message))
@@ -654,6 +655,7 @@ class QueueItemRemove(ShowQueueItem):
             try:
                 sickrage.srCore.TRAKTSEARCHER.removeShowFromTraktLibrary(self.show)
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
+                sickrage.srCore.srLogger.warning(
+                    "Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
 
         sickrage.srCore.srLogger.info("Finished removing show: {}".format(self.show.name))

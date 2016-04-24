@@ -120,7 +120,7 @@ class ProgressIndicator():
 class ProgressIndicators():
     _pi = {'massUpdate': [],
            'massAdd': [],
-           'dailyUpdate': []
+           'dailyShowUpdates': []
            }
 
     @staticmethod

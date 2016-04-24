@@ -85,15 +85,27 @@
                                 </span>
                                     </label>
                                 </div>
+
                                 <div class="field-pair">
                                     <label for="showupdate_hour">
-                                        <span class="component-title">When to update shows</span>
-                                <span class="component-desc">
-                                    <input type="text" name="showupdate_hour" id="showupdate_hour"
-                                           value="${sickrage.srCore.srConfig.SHOWUPDATE_HOUR}"
-                                           class="form-control input-sm input75"/>
-                                    <p>with information such as next air dates, show ended, etc. Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)</p>
-                                </span>
+                                        <span class="component-title">Daily show updates start time</span>
+                                        <span class="component-desc">
+                                            <input type="text" name="showupdate_hour" id="showupdate_hour"
+                                                   value="${sickrage.srCore.srConfig.SHOWUPDATE_HOUR}"
+                                                   class="form-control input-sm input75"/>
+                                            <p>with information such as next air dates, show ended, etc. Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)</p>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="field-pair">
+                                    <label for="showupdate_hour">
+                                        <span class="component-title">Daily show updates stale shows</span>
+                                        <span class="component-desc">
+                                            <input type="checkbox" name="showupdate_stale"
+                                                   id="showupdate_stale" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SHOWUPDATE_STALE)]}/>
+                                            <p>should ended shows last updated less then 90 days get updated and refreshed automatically ?</p>
+                                        </span>
                                     </label>
                                 </div>
 
@@ -118,7 +130,8 @@
                                     <label for="log_dir">
                                         <span class="component-title">Log file folder location</span>
                                 <span class="component-desc">
-                                    <input type="text" name="log_dir" id="log_dir" value="${sickrage.srCore.srConfig.LOG_DIR}"
+                                    <input type="text" name="log_dir" id="log_dir"
+                                           value="${sickrage.srCore.srConfig.LOG_DIR}"
                                            class="form-control input-sm input350" autocapitalize="off"/>
                                 </span>
                                     </label>
@@ -128,7 +141,8 @@
                                     <label for="log_nr">
                                         <span class="component-title">Number of Log files saved</span>
                                 <span class="component-desc">
-                                    <input type="text" name="log_nr" id="log_nr" value="${sickrage.srCore.srConfig.LOG_NR}"
+                                    <input type="text" name="log_nr" id="log_nr"
+                                           value="${sickrage.srCore.srConfig.LOG_NR}"
                                            class="form-control input-sm input75"/>
                                     <p>number of log files saved when rotating logs (default: 5) (REQUIRES RESTART)</p>
                                 </span>
@@ -435,7 +449,8 @@
                                     <label for="api_key">
                                         <span class="component-title">API key</span>
                                 <span class="component-desc">
-                                    <input type="text" name="api_key" id="api_key" value="${sickrage.srCore.srConfig.API_KEY}"
+                                    <input type="text" name="api_key" id="api_key"
+                                           value="${sickrage.srCore.srConfig.API_KEY}"
                                            class="form-control input-sm input300" readonly="readonly"/>
                                     <input class="btn btn-inline" type="button" id="generate_new_apikey"
                                            value="Generate">
@@ -589,7 +604,8 @@
                                     <label>
                                         <span class="component-title">Anonymous redirect</span>
                                 <span class="component-desc">
-                                    <input type="text" name="anon_redirect" value="${sickrage.srCore.srConfig.ANON_REDIRECT}"
+                                    <input type="text" name="anon_redirect"
+                                           value="${sickrage.srCore.srConfig.ANON_REDIRECT}"
                                            class="form-control input-sm input300" autocapitalize="off"/>
                                     <div class="clear-left"><p>backlink protection via anonymizer service, must end in "?"</p></div>
                                 </span>
@@ -671,7 +687,8 @@
                                     <label>
                                         <span class="component-title">Proxy host</span>
                                 <span class="component-desc">
-                                    <input type="text" name="proxy_setting" value="${sickrage.srCore.srConfig.PROXY_SETTING}"
+                                    <input type="text" name="proxy_setting"
+                                           value="${sickrage.srCore.srConfig.PROXY_SETTING}"
                                            class="form-control input-sm input300" autocapitalize="off"/>
                                     <div class="clear-left"><p>blank to disable or proxy to use when connecting to providers</p></div>
                                 </span>
