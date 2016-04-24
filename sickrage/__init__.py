@@ -194,31 +194,34 @@ def install_requirements(restart=False):
     # install pip package manager
     install_pip()
 
-    from pip.commands.install import InstallCommand
-    from pip.download import PipSession
-    from pip.req import parse_requirements
+    import pip
+    print("Installing SiCKRAGE requirement packages, please stand by ...")
+    pip.main(['install', '-q', '--no-cache-dir', '-U', '-r',
+              '{}'.format(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'))
+              ] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
 
-    # print("Installing SiCKRAGE requirement packages")
-    # pip.main(['install', '-r', '{}'.format(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'))] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
-
-    for r in parse_requirements(
-            os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'),
-            session=PipSession()):
-
-        req_options, req_args = InstallCommand().parse_args([r.req.project_name])
-        req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
-        req_options.cache_dir = None
-        req_options.upgrade = True
-        req_options.quiet = 1
-
-        try:
-            print("Checking SiCKRAGE requirements package: {}".format(r.req.project_name))
-            req_options.ignore_dependencies = True
-            InstallCommand().run(req_options, req_args)
-            req_options.ignore_dependencies = False
-            InstallCommand().run(req_options, req_args)
-        except Exception:
-            continue
+    # from pip.commands.install import InstallCommand
+    # from pip.download import PipSession
+    # from pip.req import parse_requirements
+    #
+    # for r in parse_requirements(
+    #         os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'),
+    #         session=PipSession()):
+    #
+    #     req_options, req_args = InstallCommand().parse_args([r.req.project_name])
+    #     req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
+    #     req_options.cache_dir = None
+    #     req_options.upgrade = True
+    #     req_options.quiet = 1
+    #
+    #     try:
+    #         print("Checking SiCKRAGE requirements package: {}".format(r.req.project_name))
+    #         req_options.ignore_dependencies = True
+    #         InstallCommand().run(req_options, req_args)
+    #         req_options.ignore_dependencies = False
+    #         InstallCommand().run(req_options, req_args)
+    #     except Exception:
+    #         continue
 
     # restart sickrage silently
     if restart:
