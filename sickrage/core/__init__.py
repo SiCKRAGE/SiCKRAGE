@@ -88,7 +88,6 @@ from sickrage.providers import providersDict
 
 class Core(object):
     def __init__(self):
-        self.ioloop = IOLoop.instance()
         self.started = False
 
         # process id
@@ -482,7 +481,7 @@ class Core(object):
         self.srWebServer.start()
 
         # start ioloop event handler
-        self.ioloop.start()
+        IOLoop.instance().start()
 
     def shutdown(self, status=None, restart=False):
         if self.started:
@@ -531,7 +530,7 @@ class Core(object):
             sys.exit(status)
 
         # stop ioloop event handler
-        self.ioloop.stop()
+        IOLoop.current().stop()
 
     def save_all(self):
         # write all shows
@@ -561,4 +560,3 @@ class Core(object):
                 self.srLogger.error(
                     "There was an error creating the show in {}: {}".format(sqlShow["location"], e.message))
                 self.srLogger.debug(traceback.format_exc())
-                continue

@@ -2300,29 +2300,27 @@ jQuery(document).ready(function ($) {
 
             },
 
-            restart: function (srPID) {
-                var currentPid = srPID;
+            restart: function () {
                 var checkIsAlive = setInterval(function () {
                     $.ajax({
                         url: '/home/is_alive/',
                         dataType: 'jsonp',
+                        jsonp: 'srcallback',
                         success: function (data) {
                             // if this is before we've even shut down then just try again later
-                            if (currentPid === '' || data.msg === currentPid) {
+                            if (SICKRAGE.srPID === '' || data.msg === SICKRAGE.srPID) {
                                 $('#shut_down_loading').hide();
                                 $('#shut_down_success').show();
-                                currentPid = data.msg;
-                            } else {
                                 clearInterval(checkIsAlive);
                                 $('#restart_loading').hide();
                                 $('#restart_success').show();
-                                $('#refresh_message').show();
                                 setTimeout(function () {
-                                    window.location = '/' + SICKRAGE.srDefaultPage + '/';
-                                }, 5000);
+                                     $('#refresh_message').show();
+                                     window.location = '/' + SICKRAGE.srDefaultPage + '/';
+                                 }, 25000);
                             }
                         },
-                        error: function() {
+                        error: function (error) {
                             $('#restart_message').show();
                         }
                     });

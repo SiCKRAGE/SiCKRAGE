@@ -34,6 +34,7 @@ from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
+from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, authenticated
 
 try:
@@ -105,6 +106,7 @@ class BaseHandler(RequestHandler):
         self.startTime = time.time()
 
     def initialize(self):
+        self.io_loop = IOLoop.current()
         self.executor = ThreadPoolExecutor(max_workers=10)
 
     def write_error(self, status_code, **kwargs):
@@ -676,16 +678,15 @@ class Home(WebRoot):
         return show_stat, max_download_count
 
     def is_alive(self, *args, **kwargs):
-        if not 'callback' in kwargs:
-            return "Error: Unsupported Request. Send jsonp request with 'callback' variable in the query string."
+        if not all([kwargs.get('srcallback'), kwargs.get('_')]):
+            return "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'text/javascript')
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
-        if sickrage.srCore.srWebServer.started:
-            return "%s({'msg':%s})" % (kwargs['callback'], str(sickrage.srCore.PID))
+        return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.srCore.PID))
 
     @staticmethod
     def haveKODI():
@@ -1063,8 +1064,8 @@ class Home(WebRoot):
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
 
-        sickrage.srCore.ioloop.add_timeout(
-            datetime.timedelta(seconds=5),
+        self.io_loop.add_timeout(
+            datetime.timedelta(seconds=10),
             lambda: sickrage.srCore.shutdown(restart=True))
 
         return self.render(

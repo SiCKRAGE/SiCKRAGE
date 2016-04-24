@@ -475,7 +475,7 @@ class GitUpdateManager(UpdateManager):
             if sickrage.srCore.srConfig.GIT_RESET:
                 self.reset()
 
-            _, _, exit_status = self._run_git(self._find_working_git, 'checkout -f ' + self.version)
+            _, _, exit_status = self._run_git(self._find_working_git, 'checkout -f ' + branch)
             if exit_status == 0:
                 return True
 
