@@ -23,6 +23,7 @@ from __future__ import print_function, unicode_literals, with_statement
 import argparse
 import codecs
 import io
+import itertools
 import locale
 import logging
 import os
@@ -62,6 +63,28 @@ time.strptime("2012", "%Y")
 # set thread name
 threading.currentThread().setName('MAIN')
 
+class Spinner(object):
+    spinner_cycle = itertools.cycle(['-', '/', '|', '\\'])
+
+    def __init__(self, msg=""):
+        self.stop_running = threading.Event()
+        self.spin_thread = threading.Thread(target=self.init_spin)
+        self.msg = msg
+
+    def start(self):
+        self.spin_thread.start()
+
+    def stop(self):
+        self.stop_running.set()
+        self.spin_thread.join()
+
+    def init_spin(self):
+        sys.stdout.write(str(self.msg))
+        while not self.stop_running.is_set():
+            sys.stdout.write(str(self.spinner_cycle.next()))
+            sys.stdout.flush()
+            time.sleep(0.25)
+            sys.stdout.write(str('\b'))
 
 def print_logo():
     from pyfiglet import print_figlet
@@ -195,10 +218,12 @@ def install_requirements(restart=False):
     install_pip()
 
     import pip
-    print("Installing SiCKRAGE requirement packages, please stand by ...")
+    spinner = Spinner("Installing SiCKRAGE requirement packages ")
+    spinner.start()
     pip.main(['install', '-q', '--no-cache-dir', '-U', '-r',
               '{}'.format(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'))
               ] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
+    spinner.stop()
 
     # from pip.commands.install import InstallCommand
     # from pip.download import PipSession
