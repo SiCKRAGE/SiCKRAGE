@@ -1,25 +1,26 @@
 # SR Travis-CI Files #
 ######################
 .travis.yml
-.travis
+/.travis
 
 # SR Markdown Files  #
 ######################
 contributing.md
 readme.md
+README.txt
 
 #  SR User Related   #
 ######################
 *.db*
 *.ini
 autoProcessTV.cfg
-server.crt
-server.key
-cache
-Logs
-data
-restore
-backup*
+/server.crt
+/server.key
+/backup*
+/cache
+/Logs
+/data
+/restore
 
 #  SR Test Related   #
 ######################
@@ -40,30 +41,40 @@ backup*
 *.tmproj
 *.tmproject
 *.sw?
-Session.vim
-.ropeproject/*
-.idea
 *.ipr
-.settings/*
 .pypirc
-dist
-build
+Session.vim
 sickrage.egg-info
+/.idea
+/.ropeproject/*
+/.settings/*
+/dist
+/build
 
 # OS generated files #
 ######################
-.Spotlight-V100
-.Trashes
-.DS_Store
 desktop.ini
 ehthumbs.db
 Thumbs.db
-.directory
-*~
 *.torrent
+*~
+.Spotlight-V100
+/.Trashes
+/.directory
+/.DS_Store
+
+# GruntJS Files #
+######################
+Gruntfile.js
+/.sass-cache
+
+# NodeJS Files #
+######################
+package.json
+/node_modules
 
 # Bower #
 ######################
-bower_components
-node_modules
 _bower.js
+bower.json
+/bower_components
