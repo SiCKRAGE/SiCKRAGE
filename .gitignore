@@ -1,13 +1,18 @@
+# SR Vagrant Files #
+######################
+/.vagrant
+/Vagrantfile
+
 # SR Travis-CI Files #
 ######################
-.travis.yml
+/.travis.yml
 /.travis
 
 # SR Markdown Files  #
 ######################
-contributing.md
-readme.md
-README.txt
+/contributing.md
+/readme.md
+/README.txt
 
 #  SR User Related   #
 ######################
@@ -65,16 +70,16 @@ Thumbs.db
 
 # GruntJS Files #
 ######################
-Gruntfile.js
+/Gruntfile.js
 /.sass-cache
 
 # NodeJS Files #
 ######################
-package.json
+/package.json
 /node_modules
 
 # Bower #
 ######################
 _bower.js
-bower.json
+/bower.json
 /bower_components

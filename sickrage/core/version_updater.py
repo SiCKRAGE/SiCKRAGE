@@ -707,7 +707,7 @@ class PipUpdateManager(UpdateManager):
 
         from pip.commands.install import InstallCommand
         options = InstallCommand().parse_args([])[0]
-        options.use_user_site = all([not sickrage.isElevatedUser(), not sickrage.isVirtualEnv()])
+        options.use_user_site = any([not sickrage.isElevatedUser(), sickrage.isVirtualEnv()])
         options.cache_dir = None
         options.upgrade = True
         options.quiet = 1

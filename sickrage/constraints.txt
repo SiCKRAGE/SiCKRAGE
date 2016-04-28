@@ -1,0 +1,2 @@
+requests[security]>=2.9.1
+guessit==1.0.3

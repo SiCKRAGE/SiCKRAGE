@@ -23,7 +23,6 @@ from __future__ import print_function, unicode_literals, with_statement
 import argparse
 import codecs
 import io
-import itertools
 import locale
 import logging
 import os
@@ -63,28 +62,6 @@ time.strptime("2012", "%Y")
 # set thread name
 threading.currentThread().setName('MAIN')
 
-class Spinner(object):
-    spinner_cycle = itertools.cycle(['-', '/', '|', '\\'])
-
-    def __init__(self, msg=""):
-        self.stop_running = threading.Event()
-        self.spin_thread = threading.Thread(target=self.init_spin)
-        self.msg = msg
-
-    def start(self):
-        self.spin_thread.start()
-
-    def stop(self):
-        self.stop_running.set()
-        self.spin_thread.join()
-
-    def init_spin(self):
-        sys.stdout.write(str(self.msg))
-        while not self.stop_running.is_set():
-            sys.stdout.write(str(self.spinner_cycle.next()))
-            sys.stdout.flush()
-            time.sleep(0.25)
-            sys.stdout.write(str('\b'))
 
 def print_logo():
     from pyfiglet import print_figlet
@@ -143,7 +120,7 @@ def install_pip():
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, file_name] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[any([not isElevatedUser(), isVirtualEnv()])])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
@@ -211,46 +188,46 @@ def pid_exists(pid):
         return True
 
 
-def install_requirements(restart=False):
+def install_requirements(upgrade=False, restart=False):
+    # disable install insecure warnings
     logging.captureWarnings(True)
 
     # install pip package manager
     install_pip()
 
-    import pip
-    spinner = Spinner("Installing SiCKRAGE requirement packages ")
-    spinner.start()
-    pip.main(['install', '-q', '--no-cache-dir', '-U', '-r',
-              '{}'.format(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'))
-              ] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
-    spinner.stop()
+    from pip.commands.install import InstallCommand
+    from pip.download import PipSession
+    from pip.req import parse_requirements
 
-    # from pip.commands.install import InstallCommand
-    # from pip.download import PipSession
-    # from pip.req import parse_requirements
-    #
-    # for r in parse_requirements(
-    #         os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'),
-    #         session=PipSession()):
-    #
-    #     req_options, req_args = InstallCommand().parse_args([r.req.project_name])
-    #     req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
-    #     req_options.cache_dir = None
-    #     req_options.upgrade = True
-    #     req_options.quiet = 1
-    #
-    #     try:
-    #         print("Checking SiCKRAGE requirements package: {}".format(r.req.project_name))
-    #         req_options.ignore_dependencies = True
-    #         InstallCommand().run(req_options, req_args)
-    #         req_options.ignore_dependencies = False
-    #         InstallCommand().run(req_options, req_args)
-    #     except Exception:
-    #         continue
+    requirements = parse_requirements(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'),
+        session=PipSession())
+
+    for r in requirements:
+        req_options, req_args = InstallCommand().parse_args([r.req.project_name])
+        req_options.use_user_site = any([not isElevatedUser(), isVirtualEnv()])
+        req_options.constraints = [os.path.join(os.path.abspath(os.path.dirname(__file__)), 'constraints.txt')]
+        req_options.cache_dir = None
+        req_options.upgrade = True
+        req_options.quiet = 1
+
+        try:
+            if r.installed_version:
+                print("Upgrading SiCKRAGE requirements package: {}".format(r.req.project_name))
+            else:
+                print("Installing SiCKRAGE requirements package: {}".format(r.req.project_name))
+
+            req_options.ignore_dependencies = True
+            InstallCommand().run(req_options, req_args)
+            req_options.ignore_dependencies = False
+            InstallCommand().run(req_options, req_args)
+        except Exception as e:
+            continue
 
     # restart sickrage silently
     if restart:
         os.execl(sys.executable, sys.executable, *sys.argv)
+
 
 def main():
     global srCore, status, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
@@ -304,16 +281,8 @@ def main():
         parser.add_argument('--nolaunch',
                             action='store_true',
                             help='Suppress launching web browser on startup')
-        parser.add_argument('--requirements',
-                            action='store_true',
-                            help='Installs requirements and exits')
 
         args = parser.parse_args()
-
-        # install requirements
-        if args.requirements:
-            install_requirements()
-            sys.exit()
 
         # Quite
         QUITE = args.quite
@@ -371,13 +340,13 @@ def main():
             # start core
             srCore = core.Core()
             srCore.start()
-    except ImportError:
+    except ImportError as e:
         if DEBUG:
             traceback.print_exc()
 
         if not DEVELOPER:
             # install required packages
-            install_requirements(restart=True)
+            install_requirements(upgrade=True, restart=True)
     except KeyboardInterrupt:
         pass
     except Exception as e:

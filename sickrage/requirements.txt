@@ -23,7 +23,7 @@ FormEncode
 future
 futures
 gntp
-guessit==1.0.3
+guessit
 hachoir-core
 hachoir-metadata
 hachoir-parser
@@ -51,7 +51,7 @@ python-twitter
 pytz
 pyxdg
 PyYAML
-requests[security]==2.9.1
+requests[security]
 requests-oauthlib
 requests-futures
 rtorrent-python
