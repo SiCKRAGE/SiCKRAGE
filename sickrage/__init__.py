@@ -157,12 +157,9 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         # Redirect standard file descriptors
         sys.stdout.flush()
         sys.stderr.flush()
-        si = io.open(stdin, 'r')
-        so = io.open(stdout, 'a+')
-        se = io.open(stderr, 'a+')
-        os.dup2(si.fileno(), sys.stdin.fileno())
-        os.dup2(so.fileno(), sys.stdout.fileno())
-        os.dup2(se.fileno(), sys.stderr.fileno())
+        os.dup2(io.open(stdin, 'r').fileno(), sys.stdin.fileno())
+        os.dup2(io.open(stdout, 'a+').fileno(), sys.stdout.fileno())
+        os.dup2(io.open(stderr, 'a+').fileno(), sys.stderr.fileno())
 
     # Write the PID file
     import atexit
@@ -189,7 +186,7 @@ def pid_exists(pid):
 
 
 def install_requirements(upgrade=False, restart=False):
-    # disable install insecure warnings
+    logging.basicConfig()
     logging.captureWarnings(True)
 
     # install pip package manager
@@ -210,17 +207,16 @@ def install_requirements(upgrade=False, restart=False):
         req_options.cache_dir = None
         req_options.upgrade = True
         req_options.quiet = 1
+        req_options.verbose = 1
 
         try:
-            if r.installed_version:
-                print("Upgrading SiCKRAGE requirements package: {}".format(r.req.project_name))
-            else:
+            if not r.installed_version:
                 print("Installing SiCKRAGE requirements package: {}".format(r.req.project_name))
-
-            req_options.ignore_dependencies = True
-            InstallCommand().run(req_options, req_args)
-            req_options.ignore_dependencies = False
-            InstallCommand().run(req_options, req_args)
+                sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
+                req_options.ignore_dependencies = True
+                InstallCommand().run(req_options, req_args)
+                req_options.ignore_dependencies = False
+                InstallCommand().run(req_options, req_args)
         except Exception as e:
             continue
 
