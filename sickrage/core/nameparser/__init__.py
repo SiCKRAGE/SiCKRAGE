@@ -166,29 +166,33 @@ class NameParser(object):
 
             if 'season_num' in named_groups:
                 tmp_season = int(match.group('season_num'))
+
                 if cur_regex_name == 'bare' and tmp_season in (19, 20):
                     continue
+
                 result.season_number = tmp_season
                 result.score += 1
 
             if 'ep_num' in named_groups:
                 ep_num = self._convert_number(match.group('ep_num'))
+                result.score += 1
+
                 if 'extra_ep_num' in named_groups and match.group('extra_ep_num'):
                     result.episode_numbers = range(ep_num, self._convert_number(match.group('extra_ep_num')) + 1)
                     result.score += 1
                 else:
                     result.episode_numbers = [ep_num]
-                result.score += 1
 
             if 'ep_ab_num' in named_groups:
                 ep_ab_num = self._convert_number(match.group('ep_ab_num'))
+                result.score += 1
+
                 if 'extra_ab_ep_num' in named_groups and match.group('extra_ab_ep_num'):
                     result.ab_episode_numbers = range(ep_ab_num,
                                                       self._convert_number(match.group('extra_ab_ep_num')) + 1)
                     result.score += 1
                 else:
                     result.ab_episode_numbers = [ep_ab_num]
-                result.score += 1
 
             if 'air_date' in named_groups:
                 air_date = match.group('air_date')
