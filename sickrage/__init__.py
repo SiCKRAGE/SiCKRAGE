@@ -218,6 +218,7 @@ def install_requirements(upgrade=False, restart=False):
             req_options.ignore_dependencies = False
             InstallCommand().run(req_options, req_args)
         except Exception as e:
+            print(e.message)
             continue
 
     # restart sickrage silently
