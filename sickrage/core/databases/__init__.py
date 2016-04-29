@@ -219,7 +219,7 @@ class Connection(object):
         """
         try:
             if self.hasTable('db_version'):
-                return self.select("SELECT db_version FROM db_version")
+                return self.select("SELECT db_version FROM db_version")[0]["db_version"]
         except:
             return 0
 
@@ -352,8 +352,8 @@ class Connection(object):
         :param type: Column type to add
         :param default: Default value for column
         """
-        self.action("ALTER TABLE [%s] ADD %s %s" % (table, column, type))
-        self.action("UPDATE [%s] SET %s = ?" % (table, column), default)
+        self.action("ALTER TABLE [{}] ADD {} {}".format(table, column, type))
+        self.action("UPDATE [{}] SET {} = ?".format(table, column), [default])
 
     def incDBVersion(self):
         self.action("UPDATE db_version SET db_version = db_version + 1")
