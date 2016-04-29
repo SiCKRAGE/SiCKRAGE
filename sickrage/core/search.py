@@ -24,6 +24,7 @@ import os
 import re
 import threading
 import traceback
+
 from datetime import date, timedelta
 
 import sickrage
@@ -127,7 +128,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         if sickrage.srCore.srConfig.TORRENT_METHOD == "blackhole":
             dlResult = _downloadResult(result)
         else:
-            if not all([result.content, result.url.startswith('magnet:')]):
+            if all([not result.content, not result.url.startswith('magnet:')]):
                 result.content = sickrage.srCore.srWebSession.get(result.url).content
 
             if any([result.content, result.url.startswith('magnet:')]):
