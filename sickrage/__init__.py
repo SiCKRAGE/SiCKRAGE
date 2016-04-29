@@ -210,13 +210,13 @@ def install_requirements(upgrade=False, restart=False):
         req_options.verbose = 1
 
         try:
+            print("Installing/Upgrading SiCKRAGE requirements package: {}".format(r.req.project_name))
+            sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
             if not r.installed_version:
-                print("Installing SiCKRAGE requirements package: {}".format(r.req.project_name))
-                sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
                 req_options.ignore_dependencies = True
                 InstallCommand().run(req_options, req_args)
-                req_options.ignore_dependencies = False
-                InstallCommand().run(req_options, req_args)
+            req_options.ignore_dependencies = False
+            InstallCommand().run(req_options, req_args)
         except Exception as e:
             continue
 
