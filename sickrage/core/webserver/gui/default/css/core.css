@@ -1,7 +1,6 @@
 /* =======================================================================
-DEFAULTS
-========================================================================== */
-
+    DEFAULTS
+    ========================================================================== */
 #ui-content {
     display: block;
     width: 960px;
@@ -62,16 +61,6 @@ DEFAULTS
     font-family: inherit;
     font-size: 1em;
 }
-
-/*
-.ui-widget-content {
-    background: #dcdcdc url("../images/ui/ui-bg_highlight-soft_75_dcdcdc_1x100.png") 50% top repeat-x;
-}
-
-.ui-widget-header {
-    background: #ffffff url("../images/ui/ui-bg_flat_0_ffffff_40x100.png") 50% 50% repeat-x;
-}
-*/
 
 .ui-state-default,
 .ui-widget-content .ui-state-default,
@@ -141,12 +130,6 @@ DEFAULTS
 .ui-widget-overlay {
     background: #aaaaaa url("../images/ui/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x;
 }
-
-/*
-.ui-widget-shadow {
-    background: #000000 url("../images/ui/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
-}
-*/
 
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
     color: #140F06;
@@ -224,16 +207,14 @@ DEFAULTS
     float: left;
 }
 
-@media (max-width: 767px) {
-    [class^="menu-icon-"], [class*=" menu-icon-"] {
-        background: url("../images/menu/menu-icons-white.png");
-        height: 16px;
-        width: 16px;
-        display: inline-block;
-        position: relative;
-        top: 2px;
-        float: left;
-    }
+[class^="menu-icon-"], [class*=" menu-icon-"] {
+    background: url("../images/menu/menu-icons-white.png");
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    float: left;
 }
 
 .menu-icon-addshow {
@@ -360,8 +341,8 @@ DEFAULTS
 }
 
 /* =======================================================================
-root_dirs.mako
-========================================================================== */
+    root_dirs.mako
+    ========================================================================== */
 .rootdir-selectbox,
 .rootdir-selectbox #rootDirs,
 .rootdir-controls {
@@ -377,9 +358,8 @@ root_dirs.mako
 }
 
 /* =======================================================================
-index.mako
-========================================================================== */
-
+    index.mako
+    ========================================================================== */
 .imgbanner .banner {
     border: 1px solid #ccc;
     overflow: hidden;
@@ -668,9 +648,8 @@ td.tvShow a:hover {
 }
 
 /* =======================================================================
-add_shows.mako
-========================================================================== */
-
+    add_shows.mako
+    ========================================================================== */
 #addShowPortal {
     width: 700px;
     padding: 10px 0;
@@ -728,9 +707,8 @@ div.buttontext p {
 }
 
 /* =======================================================================
-new_show.mako
-========================================================================== */
-
+    new_show.mako
+    ========================================================================== */
 #addShowForm, #recommendedShowsForm {
     width: 800px;
     margin-left: auto;
@@ -759,9 +737,8 @@ new_show.mako
 }
 
 /* =======================================================================
-add_existing_shows.mako
-========================================================================== */
-
+    add_existing_shows.mako
+    ========================================================================== */
 .existingtabs {
     padding: 1em 1.4em;
 }
@@ -790,9 +767,8 @@ ul#rootDirStaticList li input[type="checkbox"] {
 }
 
 /* =======================================================================
-trending_shows.mako
-========================================================================== */
-
+    trending_shows.mako
+    ========================================================================== */
 .traktShowTitleIcons {
     float: right;
     padding-right: 4px;
@@ -835,9 +811,8 @@ trending_shows.mako
 }
 
 /* =======================================================================
-postprocess.mako
-========================================================================== */
-
+    postprocess.mako
+    ========================================================================== */
 #postProcess {
     width: 800px;
     padding-top: 10px;
@@ -846,9 +821,8 @@ postprocess.mako
 }
 
 /* =======================================================================
-index.mako
-========================================================================== */
-
+    index.mako
+    ========================================================================== */
 #posterCol {
     float: left;
     margin-right: 10px;
@@ -1222,7 +1196,6 @@ td.col-search {
 /* =======================================================================
 schedule.mako
 ========================================================================== */
-
 .key {
     margin-bottom: 20px;
 }
@@ -1410,9 +1383,8 @@ h2.day, h2.network {
 }
 
 /* =======================================================================
-config*.mako
-========================================================================== */
-
+    config*.mako
+    ========================================================================== */
 .component-group {
     padding: 15px 15px 25px;
     border-bottom: 1px dotted #ccc;
@@ -1588,7 +1560,6 @@ select .selected {
 /* =======================================================================
 postprocessing.mako
 ========================================================================== */
-
 #config div.example {
     padding: 10px;
     background-color: #efefef;
@@ -1632,7 +1603,6 @@ postprocessing.mako
 /* =======================================================================
 notifications.mako
 ========================================================================== */
-
 div.metadata_options_wrapper {
     float: left;
     width: 190px;
@@ -1691,7 +1661,6 @@ div.metadataDiv .disabled {
 /* =======================================================================
 manage*.mako
 ========================================================================== */
-
 .manageTable th {
     white-space: normal;
     line-height: 24px;
@@ -1748,7 +1717,6 @@ a.whitelink {
 /* =======================================================================
 Global
 ========================================================================== */
-
 span.path {
     padding: 3px 6px;
     color: #8b0000;
@@ -1918,7 +1886,6 @@ div.blackwhitelist.anidb, div.blackwhitelist.manual {
 /* =======================================================================
 bootstrap Overrides
 ========================================================================== */
-
 body {
     padding-top: 60px;
     overflow-y: scroll;
@@ -2025,30 +1992,28 @@ input, textarea, select, .uneditable-input {
     padding-left: 8px;
 }
 
-@media (max-width: 767px) {
-    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-        color: #dddddd;
-    }
+.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #dddddd;
+}
 
-    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-        color: #ffffff;
-        background-color: transparent;
-    }
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ffffff;
+    background-color: transparent;
+}
 
-    .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-        color: #ffffff;
-        background-color: #333333;
-    }
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ffffff;
+    background-color: #333333;
+}
 
-    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
-    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
-    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
-        color: #cccccc;
-        background-color: transparent;
-    }
+.navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
+.navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+.navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+    color: #cccccc;
+    background-color: transparent;
 }
 
 .navbar-default .navbar-link {
@@ -2441,17 +2406,15 @@ fieldset[disabled] .navbar-default .btn-link:focus {
     border-radius: 3px;
 }
 
-@media (min-width: 768px) {
-    .navbar .nav > li > .dropdown-menu:after {
-        position: absolute;
-        top: -6px;
-        right: 12px;
-        display: inline-block;
-        border-right: 6px solid transparent;
-        border-bottom: 6px solid #F5F1E4;
-        border-left: 6px solid transparent;
-        content: "";
-    }
+.navbar .nav > li > .dropdown-menu:after {
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #F5F1E4;
+    border-left: 6px solid transparent;
+    content: "";
 }
 
 label {
@@ -2470,7 +2433,6 @@ pre {
 /* =======================================================================
 input sizing (for config pages)
 ========================================================================== */
-
 #config select {
     min-width: 0;
     width: auto;
@@ -2520,7 +2482,6 @@ input sizing (for config pages)
 /* =======================================================================
 browser.css overrides
 ========================================================================== */
-
 #fileBrowserDialog {
     overflow-y: auto;
 }
@@ -2605,7 +2566,6 @@ jquery-steps.css
 /* =======================================================================
 tablesorter.css
 ========================================================================== */
-
 .tablesorter {
     width: 100%;
     margin-right: auto;
@@ -2726,7 +2686,6 @@ thead.tablesorter-stickyHeader {
 /* =======================================================================
 token-input.css
 ========================================================================== */
-
 ul.token-input-list {
     overflow: hidden;
     height: auto !important;
@@ -2885,7 +2844,6 @@ span.token-input-delete-token {
 /* =======================================================================
 jquery.confirm.css
 ========================================================================== */
-
 #confirmOverlay {
     width: 100%;
     height: 100%;
@@ -2980,7 +2938,6 @@ jquery.confirm.css
 /* =======================================================================
 pnotify.css
 ========================================================================== */
-
 .ui-pnotify-sticker {
     margin-top: -12px;
 }
@@ -2993,7 +2950,6 @@ pnotify.css
 /* =======================================================================
 login.css
 ========================================================================== */
-
 .login {
     display: block;
 }
@@ -3015,16 +2971,14 @@ login.css
     margin: -200px 0 0 -200px;
 }
 
-@media all and (max-width: 480px) {
-    .login form {
-        padding: 0;
-        height: 300px;
-        width: 90%;
-        position: absolute;
-        left: 5%;
-        top: 10px;
-        margin: 0;
-    }
+.login form {
+    padding: 0;
+    height: 300px;
+    width: 90%;
+    position: absolute;
+    left: 5%;
+    top: 10px;
+    margin: 0;
 }
 
 .login .ctrlHolder {
@@ -3063,7 +3017,6 @@ login.css
 /* =======================================================================
 IMDB Popular
 ========================================================================== */
-
 .popularShow {
     margin-bottom: 30px;
 }
@@ -3166,23 +3119,6 @@ File Browser
     background: none;
     background-color: #0A246A;
     color: #ffffff;
-}
-
-@media print {
-    /* Remove the top padding because we don't print the top bar */
-    body {
-        padding-top: 0;
-    }
-
-    /* Hide URLs */
-    a[href]:after {
-        content: none !important;
-    }
-
-    #content {
-        margin-left: 0;
-        margin-right: 0;
-    }
 }
 
 /* =======================================================================

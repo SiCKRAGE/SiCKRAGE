@@ -15,7 +15,7 @@
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
 
-    <div id="HomeLayout" class="pull-right hidden-print" style="margin-top: -40px;">
+    <div id="HomeLayout" class="pull-left hidden-print" style="margin-top: -50px;">
         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
             <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
         % endif
@@ -35,9 +35,10 @@
                 </option>
             </select>
             % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-            Search:
+            <span>
                 <input class="search form-control form-control-inline input-sm input200" type="search" data-column="2" placeholder="Search Show Name">
                 <button type="button" class="resetsorting btn btn-inline">Reset Search</button>
+            </span>
             % endif
         </span>
 
