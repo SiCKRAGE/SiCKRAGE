@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import glob
 import json
 import os
@@ -28,6 +27,7 @@ import stat
 import threading
 import traceback
 
+import datetime
 import imdbpie
 import requests
 import send2trash
@@ -1318,7 +1318,7 @@ class TVShow(object):
         try:
             self.loadEpisodesFromDir()
         except Exception as e:
-            sickrage.srCore.srLogger.error("Error searching dir for episodes: {}".format(e.message))
+            sickrage.srCore.srLogger.debug("Error searching dir for episodes: {}".format(e.message))
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         # run through all locations from DB, check that they exist

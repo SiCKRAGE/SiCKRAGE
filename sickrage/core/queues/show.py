@@ -418,8 +418,9 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             self.show.loadEpisodesFromDir()
-        except Exception:
-            pass
+        except Exception as e:
+            sickrage.srCore.srLogger.debug("Error searching dir for episodes: {}".format(e.message))
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if self.show.default_ep_status == WANTED:
