@@ -36,10 +36,8 @@ sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 # update the network timezone table
 def update_network_dict():
     """Update timezone information from SR repositories"""
-    url = 'http://sickragetv.github.io/network_timezones/network_timezones.txt'
 
-    # pre-load network timezones from database
-    load_network_dict()
+    url = 'http://sickragetv.github.io/network_timezones/network_timezones.txt'
 
     try:
         url_data = sickrage.srCore.srWebSession.get(url).text
@@ -58,7 +56,7 @@ def update_network_dict():
     except (IOError, OSError):
         pass
 
-    network_timezones = dict(cache_db.CacheDB().select('SELECT * FROM network_timezones;'))
+    network_timezones = load_network_dict()
 
     queries = []
     for network, timezone in d.items():
@@ -89,15 +87,12 @@ def load_network_dict():
     """
     try:
         cur_network_list = cache_db.CacheDB().select('SELECT * FROM network_timezones;')
-        if not cur_network_list:
-            update_network_dict()
-            cur_network_list = cache_db.CacheDB().select('SELECT * FROM network_timezones;')
-        d = dict(cur_network_list)
+        if cur_network_list:
+            return dict(cur_network_list)
     except Exception:
-        d = {}
+        pass
 
-    return d
-
+    return {}
 
 # get timezone of a network or return default timezone
 def get_network_timezone(network, _network_dict):
