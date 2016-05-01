@@ -22,6 +22,7 @@ import functools
 import getpass
 import json
 import os
+import pickle
 import tempfile
 import time
 import zipfile
@@ -38,7 +39,8 @@ except ImportError:
     gzip = None
 
 from tvdb_ui import BaseUI
-from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
+from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound,
+                             tvdb_attributenotfound)
 
 
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
@@ -85,47 +87,45 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
     return deco_retry
 
 
-class ShowCache(object):
-    def __init__(self):
-        self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, '{}.db'.format(__name__.split('.')[-1])))
-        self.cache = {}
+class ShowCache(dict):
+    def __init__(self, filename, maxsize=100):
+        super(ShowCache, self).__init__()
+        self.filename = filename
+        self.maxsize = maxsize
+        self._stack = []
+
+    def load(self):
         if os.path.isfile(self.filename):
-            self.cache = json.load(open(self.filename, 'rb'))
+            return pickle.load(open(self.filename, 'rb'))
+        return self
 
-    def __getattr__(self, item):
-        if item in self.cache:
-            return self.cache[item]
-        raise AttributeError
-
-    def __getitem__(self, item):
-        if item in self.cache:
-            return dict.__getitem__(self.cache, item)
-        raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(item)))
+    def save(self):
+        pickle.dump(self, open(self.filename, 'wb'))
 
     def __setitem__(self, key, value):
-        self.cache.setdefault(key, value)
-        json.dump(self.cache, open(self.filename, 'wb'))
-
-    def deleteShow(self, key):
-        if key in self.cache:
-            del self.cache[key]
-            json.dump(self.cache, open(self.filename, 'wb'))
-
-    def clearShows(self):
-        self.cache.clear()
-        json.dump(self.cache, open(self.filename, 'wb'))
-
-    def __eq__(self, other):
-        return other in self.cache
+        self._stack.append(key)
+        if len(self._stack) >= self.maxsize:
+            for o in self._stack[:-self.maxsize]:
+                del self[o]
+            self._stack = self._stack[-self.maxsize:]
+        super(ShowCache, self).__setitem__(key, value)
 
 
 class Show(dict):
     """Holds a dict of seasons, and show data.
     """
 
-    def __init__(self):
-        super(Show, self).__init__()
+    def __init__(self, **kwargs):
+        super(Show, self).__init__(**kwargs)
         self.data = {}
+
+    # pickle freindly.
+    def __getstate__(self):
+        return self.__dict__
+
+    # pickle freindly.
+    def __setstate__(self, d):
+        self.__dict__.update(d)
 
     def __repr__(self):
         return "<Show {} (containing {} seasons)>".format(
@@ -192,11 +192,8 @@ class Show(dict):
 
 
 class Season(dict):
-    def __init__(self, show=None, **kwargs):
-        """The show attribute points to the parent show
-        """
-        super(Season, self).__init__(**kwargs)
-        self.show = show
+    def __init__(self):
+        super(Season, self).__init__()
 
     def __repr__(self):
         return "<Season instance (containing {} episodes)>".format(
@@ -229,11 +226,8 @@ class Season(dict):
 
 
 class Episode(dict):
-    def __init__(self, season=None, **kwargs):
-        """The season attribute points to the parent season
-        """
-        super(Episode, self).__init__(**kwargs)
-        self.season = season
+    def __init__(self):
+        super(Episode, self).__init__()
 
     def __repr__(self):
         seasno = int(self.get('seasonnumber', 0))
@@ -382,7 +376,7 @@ class Tvdb:
         if headers is None:
             headers = {}
 
-        self.shows = ShowCache()
+        self.shows = ShowCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'))).load()
 
         self.config = {}
 
@@ -624,31 +618,20 @@ class Tvdb:
         tvdb.__dict__ should have a key "1" before we auto-create it
         """
 
-        try:
-            self.shows[sid]
-        except:
+        if sid not in self.shows:
             self.shows[sid] = Show()
-
-        try:
-            self.shows[sid][seas]
-        except:
-            self.shows[sid][seas] = Season(show=self.shows[sid])
-
-        try:
-            self.shows[sid][seas][ep]
-        except:
-            self.shows[sid][seas][ep] = Episode(season=self.shows[sid][seas])
-
+        if seas not in self.shows[sid]:
+            self.shows[sid][seas] = Season()
+        if ep not in self.shows[sid][seas]:
+            self.shows[sid][seas][ep] = Episode()
         self.shows[sid][seas][ep][attrib] = value
 
     def _setShowData(self, sid, key, value):
         """Sets self.shows[sid] to a new Show instance, or sets the data
         """
-        try:
-            self.shows[sid]
-        except:
-            self.shows[sid] = Show()
 
+        if sid not in self.shows:
+            self.shows[sid] = Show()
         self.shows[sid].data[key] = value
 
     def _cleanData(self, data):
@@ -772,6 +755,9 @@ class Tvdb:
 
         self._setShowData(sid, "_banners", banners)
 
+        # save persistent data
+        self.shows.save()
+
     def _parseActors(self, sid):
         """Parsers actors XML, from
         http://thetvdb.com/api/[APIKEY]/series/[SERIES ID]/actors.xml
@@ -818,7 +804,11 @@ class Tvdb:
 
                 curActor[k] = v
             cur_actors.append(curActor)
+
         self._setShowData(sid, '_actors', cur_actors)
+
+        # save persistent data
+        self.shows.save()
 
     def _getShowData(self, sid, language, getEpInfo=False):
         """Takes a series ID, gets the epInfo URL and parses the TVDB
@@ -927,7 +917,10 @@ class Tvdb:
 
                         self._setItem(sid, seas_no, ep_no, k, v)
 
-        return self.shows[sid]
+        # save persistent data
+        self.shows.save()
+
+        return self.shows[int(sid)]
 
     def __getitem__(self, key):
         """
@@ -935,20 +928,13 @@ class Tvdb:
         """
 
         if isinstance(key, (int, long)):
-            try:
+            if key in self.shows:
                 return self.shows[key]
-            except:
-                return self._getShowData(key, self.config['language'], True)
+            return self._getShowData(key, self.config['language'], True)
 
         selected_series = self._getSeries(key)
         if isinstance(selected_series, dict):
             selected_series = [selected_series]
-
-        # store show data
-        try:
-            [[self._setShowData(show['id'], k, v) for k, v in show.items()] for show in selected_series]
-        except Exception as e:
-            pass
 
         # return show data
         return selected_series
