@@ -16,19 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
 import functools
 import getpass
 import json
 import os
-import shelve
 import tempfile
 import time
 import zipfile
 
-import dill
 import imdbpie
 import requests
 import xmltodict
@@ -89,31 +86,39 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
     return deco_retry
 
 
-class ShowContainer(shelve.DbfilenameShelf):
-    """Simple dict that holds a series of Show instances
-    """
+class ShowCache(object):
+    def __init__(self):
+        self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, '{}.db'.format(__name__.split('.')[-1])))
+        self.cache = {}
+        if os.path.isfile(self.filename):
+            self.cache = json.load(open(self.filename, 'rb'))
 
-    def __init__(self, *args, **kwargs):
-        shelve.DbfilenameShelf.__init__(self, *args, **kwargs)
-        self._stack = []
-        self._lastgc = time.time()
-
-    def __setitem__(self, key, value):
-        self._stack.append(key)
-
-        # keep only the 100th latest results
-        if time.time() - self._lastgc > 20:
-            for o in self._stack[:-100]:
-                del self[o]
-
-            self._stack = self._stack[-100:]
-
-            self._lastgc = time.time()
-
-            shelve.DbfilenameShelf.__setitem__(self, str(key), value)
+    def __getattr__(self, item):
+        if item in self.cache:
+            return self.cache[item]
+        raise AttributeError
 
     def __getitem__(self, item):
-        return shelve.DbfilenameShelf.__getitem__(self, str(item))
+        if item in self.cache:
+            return dict.__getitem__(self.cache, item)
+        raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(item)))
+
+    def __setitem__(self, key, value):
+        self.cache.setdefault(key, value)
+        json.dump(self.cache, open(self.filename, 'wb'))
+
+    def deleteShow(self, key):
+        if key in self.cache:
+            del self.cache[key]
+            json.dump(self.cache, open(self.filename, 'wb'))
+
+    def clearShows(self):
+        self.cache.clear()
+        json.dump(self.cache, open(self.filename, 'wb'))
+
+    def __eq__(self, other):
+        return other in self.cache
+
 
 class Show(dict):
     """Holds a dict of seasons, and show data.
@@ -378,11 +383,7 @@ class Tvdb:
         if headers is None:
             headers = {}
 
-        # shows container
-        self.shows = ShowContainer(
-            os.path.abspath(os.path.join(sickrage.DATA_DIR, '{}.db'.format(__name__.lower()))),
-            writeback=True
-        )
+        self.shows = ShowCache()
 
         self.config = {}
 
@@ -623,19 +624,32 @@ class Tvdb:
         calls __getitem__ on tvdb[1], there is no way to check if
         tvdb.__dict__ should have a key "1" before we auto-create it
         """
-        if sid not in self.shows:
+
+        try:
+            self.shows[sid]
+        except:
             self.shows[sid] = Show()
-        if seas not in self.shows[sid]:
+
+        try:
+            self.shows[sid][seas]
+        except:
             self.shows[sid][seas] = Season(show=self.shows[sid])
-        if ep not in self.shows[sid][seas]:
+
+        try:
+            self.shows[sid][seas][ep]
+        except:
             self.shows[sid][seas][ep] = Episode(season=self.shows[sid][seas])
+
         self.shows[sid][seas][ep][attrib] = value
 
     def _setShowData(self, sid, key, value):
         """Sets self.shows[sid] to a new Show instance, or sets the data
         """
-        if sid not in self.shows:
+        try:
+            self.shows[sid]
+        except:
             self.shows[sid] = Show()
+
         self.shows[sid].data[key] = value
 
     def _cleanData(self, data):
@@ -926,16 +940,22 @@ class Tvdb:
         """
 
         if isinstance(key, (int, long)):
-            return self.shows.get(key, self._getShowData(key, self.config['language'], True))
+            try:
+                return self.shows[key]
+            except:
+                return self._getShowData(key, self.config['language'], True)
 
-        self.config['searchterm'] = key
         selected_series = self._getSeries(key)
         if isinstance(selected_series, dict):
             selected_series = [selected_series]
 
         # store show data
-        [[self._setShowData(show['id'], k, v) for k, v in show.items()] for show in selected_series]
+        try:
+            [[self._setShowData(show['id'], k, v) for k, v in show.items()] for show in selected_series]
+        except Exception as e:
+            pass
 
+        # return show data
         return selected_series
 
     def __repr__(self):
