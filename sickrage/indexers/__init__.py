@@ -20,6 +20,9 @@ from __future__ import unicode_literals
 
 import os
 import re
+import shelve
+
+import dill
 
 import sickrage
 from sickrage.core.classes import ShowListUI
@@ -30,9 +33,10 @@ from sickrage.indexers.indexer_config import indexerConfig
 class srIndexerApi(object):
     def __init__(self, indexerID=1):
         self.indexerID = indexerID
+        self.module = indexerConfig[self.indexerID]['module']
 
     def indexer(self, *args, **kwargs):
-        return indexerConfig[self.indexerID]['module'](*args, **kwargs)
+        return self.module(*args, **kwargs)
 
     @property
     def config(self):

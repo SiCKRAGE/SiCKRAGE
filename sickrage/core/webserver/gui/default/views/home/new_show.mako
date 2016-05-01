@@ -12,14 +12,14 @@
             <section data-step="0">
                 <div class="form-group">
                     <input type="hidden" id="indexer_timeout" value="${sickrage.srCore.srConfig.INDEXER_TIMEOUT}"/>
-                    <input type="hidden" id="indexerLang" name="indexerLang"
-                           value="${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE}"/>
 
                     % if use_provided_info:
                         Show retrieved from existing metadata:
                         <a href="${anon_url(srIndexerApi(provided_indexer).config['show_url'], provided_indexer_id)}">
                             ${provided_indexer_name}
                         </a>
+                        <input type="hidden" id="indexerLang" name="indexerLang"
+                               value="${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE}"/>
                         <input type="hidden" id="whichSeries" name="whichSeries"
                                value="${provided_indexer_id}"/>
                         <input type="hidden" id="providedIndexer" name="providedIndexer"
@@ -38,6 +38,15 @@
                                         ${indexers[indexer]}
                                     </option>
                                 % endfor
+                            </select>
+                        </label>
+                        <br/>
+                        <label for="indexerLang">
+                            <select name="indexerLang" id="indexerLang"
+                                    class="form-control form-control-inline input-sm bfh-languages"
+                                    data-blank="false"
+                                    data-language="${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE}"
+                                    data-available="${','.join(srIndexerApi().config['valid_languages'])}">
                             </select>
                         </label>
                         <br/>

@@ -26,6 +26,7 @@ import time
 import traceback
 import urllib
 
+import imdbpie
 import markdown2
 from UnRAR2 import RarFile
 from dateutil import tz
@@ -36,6 +37,8 @@ from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, authenticated
+
+from sickrage.indexers.indexer_exceptions import indexer_shownotfound
 
 try:
     from futures import ThreadPoolExecutor
@@ -2332,8 +2335,9 @@ class HomeAddShows(Home):
 
             sickrage.srCore.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
                 search_term, srIndexerApi(indexer).name))
+
             try:
-                # add search results
+                # search via seriesname
                 results.setdefault(indexer, []).extend(t[search_term])
             except Exception:
                 continue

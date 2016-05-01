@@ -991,7 +991,6 @@ class GenericMetadata(object):
                  'poster_thumb': 'poster_path',
                  'banner_thumb': None}
 
-        from tmdbsimple.base import TMDB
         def _request(self, method, path, params=None, payload=None):
             url = self._get_complete_url(path)
             params = self._get_params(params)
@@ -1004,12 +1003,12 @@ class GenericMetadata(object):
             response.encoding = 'utf-8'
             return response.json()
 
+        from tmdbsimple.base import TMDB
         TMDB._request = _request
 
         # get TMDB configuration info
         tmdb.API_KEY = sickrage.srCore.srConfig.TMDB_API_KEY
-        config = tmdb.Configuration()
-        response = sickrage.srCore.srConfig.info()
+        response = tmdb.Configuration().info()
         base_url = response['images']['base_url']
         sizes = response['images']['poster_sizes']
 
@@ -1017,6 +1016,8 @@ class GenericMetadata(object):
             return float("inf") if x == 'original' else int(x[1:])
 
         max_size = max(sizes, key=size_str_to_int)
+
+        sickrage.srCore.srLogger.debug("Searching for any " + img_type + " images on TMDB for " + show.name)
 
         try:
             search = tmdb.Search()
@@ -1028,7 +1029,7 @@ class GenericMetadata(object):
         except:
             pass
 
-        sickrage.srCore.srLogger.info("Could not find any " + img_type + " images on TMDB for " + show.name)
+        sickrage.srCore.srLogger.debug("Could not find any " + img_type + " images on TMDB for " + show.name)
 
     @staticmethod
     def _retrieve_show_images_from_fanart(show, img_type, thumb=False):
@@ -1039,6 +1040,8 @@ class GenericMetadata(object):
             'banner_thumb': fanart.TYPE.TV.BANNER,
             'fanart': fanart.TYPE.TV.BACKGROUND,
         }
+
+        sickrage.srCore.srLogger.debug("Searching for any " + img_type + " images on Fanart.tv for " + show.name)
 
         try:
             indexerid = show.mapIndexers()[1]
@@ -1060,7 +1063,7 @@ class GenericMetadata(object):
         except:
             pass
 
-        sickrage.srCore.srLogger.info("Could not find any " + img_type + " images on Fanart.tv for " + show.name)
+        sickrage.srCore.srLogger.debug("Could not find any " + img_type + " images on Fanart.tv for " + show.name)
 
     @staticmethod
     def validateShow(show, season=None, episode=None):

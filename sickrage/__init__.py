@@ -157,9 +157,12 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         # Redirect standard file descriptors
         sys.stdout.flush()
         sys.stderr.flush()
-        os.dup2(io.open(stdin, 'r').fileno(), sys.stdin.fileno())
-        os.dup2(io.open(stdout, 'a+').fileno(), sys.stdout.fileno())
-        os.dup2(io.open(stderr, 'a+').fileno(), sys.stderr.fileno())
+        si = file(stdin, 'r')
+        so = file(stdout, 'a+')
+        se = file(stderr, 'a+', 0)
+        os.dup2(si.fileno(), sys.stdin.fileno())
+        os.dup2(so.fileno(), sys.stdout.fileno())
+        os.dup2(se.fileno(), sys.stderr.fileno())
 
     # Write the PID file
     import atexit

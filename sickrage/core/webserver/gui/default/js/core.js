@@ -2396,7 +2396,7 @@ jQuery(document).ready(function ($) {
                         url: '/home/addShows/searchIndexersForShowName',
                         data: {
                             'search_term': $('#nameToSearch').val().trim(),
-                            'lang': $('#indexerLangSelect').val(),
+                            'lang': $('#indexerLang').val(),
                             'indexer': $('#providedIndexer').val()
                         },
                         timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
@@ -2410,7 +2410,7 @@ jQuery(document).ready(function ($) {
                             var checked = '';
 
                             if (data.results.length === 0) {
-                                resultStr += '<b>No results found, try a different search.</b>';
+                                resultStr += '<b>No results found, try a different search or language.</b>';
                             } else {
                                 $.each(data.results, function (index, obj) {
                                     if (firstResult) {

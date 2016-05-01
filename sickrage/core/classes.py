@@ -143,36 +143,25 @@ class AllShowsListUI(object):
         self.config = config
         self.log = log
 
-    def selectSeries(self, allSeries):
+    def selectSeries(self, allSeries, series):
         searchResults = []
         seriesnames = []
 
         # get all available shows
-        try:
-            if 'searchterm' in self.config:
-                searchterm = self.config['searchterm']
-                # try to pick a show that's in my show list
-                for curShow in allSeries:
-                    if curShow in searchResults:
-                        continue
+        for curShow in allSeries:
+            try:
+                if not curShow['seriesname'] or curShow in searchResults:
+                    continue
 
-                    if 'seriesname' in curShow:
-                        seriesnames.append(curShow['seriesname'])
-                    if 'aliasnames' in curShow:
-                        seriesnames.extend(curShow['aliasnames'].split('|'))
+                if 'firstaired' not in curShow:
+                    curShow['firstaired'] = datetime.datetime.now().strftime("%Y-%m-%d")
+                    curShow['firstaired'] = re.sub("([-]0{2})+", "", curShow['firstaired'])
+                    fixDate = parser.parse(curShow['firstaired'], fuzzy=True).date()
+                    curShow['firstaired'] = fixDate.strftime(dateFormat)
 
-                    for name in seriesnames:
-                        if searchterm.lower() in name.lower():
-                            if 'firstaired' not in curShow:
-                                curShow['firstaired'] = datetime.date.fromordinal(1).strftime("%Y-%m-%d")
-                                curShow['firstaired'] = re.sub("([-]0{2})+", "", curShow['firstaired'])
-                                fixDate = parser.parse(curShow['firstaired'], fuzzy=True).date()
-                                curShow['firstaired'] = fixDate.strftime(dateFormat)
-
-                            if curShow not in searchResults:
-                                searchResults += [curShow]
-        except:
-            pass
+                searchResults += [curShow]
+            except Exception as e:
+                continue
 
         return searchResults
 
