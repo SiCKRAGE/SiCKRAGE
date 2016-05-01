@@ -38,8 +38,7 @@ except ImportError:
     gzip = None
 
 from tvdb_ui import BaseUI
-from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_showincomplete,
-                             tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
+from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
 
 
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
@@ -889,50 +888,46 @@ class Tvdb:
 
             if not epsEt:
                 sickrage.srCore.srLogger.debug('Series results incomplete')
-                raise tvdb_showincomplete(
-                    "Show search returned incomplete results (cannot find complete show on theTVDB)")
 
-            if 'episode' not in epsEt:
-                return False
+            if epsEt and 'episode' in epsEt:
+                episodes = epsEt['episode']
+                if not isinstance(episodes, list):
+                    episodes = [episodes]
 
-            episodes = epsEt['episode']
-            if not isinstance(episodes, list):
-                episodes = [episodes]
+                for cur_ep in episodes:
+                    if self.config['dvdorder']:
+                        sickrage.srCore.srLogger.debug('Using DVD ordering.')
+                        use_dvd = cur_ep['dvd_season'] is not None and cur_ep['dvd_episodenumber'] is not None
+                    else:
+                        use_dvd = False
 
-            for cur_ep in episodes:
-                if self.config['dvdorder']:
-                    sickrage.srCore.srLogger.debug('Using DVD ordering.')
-                    use_dvd = cur_ep['dvd_season'] is not None and cur_ep['dvd_episodenumber'] is not None
-                else:
-                    use_dvd = False
+                    if use_dvd:
+                        seasnum, epno = cur_ep['dvd_season'], cur_ep['dvd_episodenumber']
+                    else:
+                        seasnum, epno = cur_ep['seasonnumber'], cur_ep['episodenumber']
 
-                if use_dvd:
-                    seasnum, epno = cur_ep['dvd_season'], cur_ep['dvd_episodenumber']
-                else:
-                    seasnum, epno = cur_ep['seasonnumber'], cur_ep['episodenumber']
+                    if seasnum is None or epno is None:
+                        sickrage.srCore.srLogger.warning(
+                            "An episode has incomplete season/episode number (season: %r, episode: %r)".format(
+                                seasnum, epno))
+                        continue  # Skip to next episode
 
-                if seasnum is None or epno is None:
-                    sickrage.srCore.srLogger.warning(
-                        "An episode has incomplete season/episode number (season: %r, episode: %r)".format(
-                            seasnum, epno))
-                    continue  # Skip to next episode
+                    # float() is because https://github.com/dbr/tvnamer/issues/95 - should probably be fixed in TVDB data
+                    seas_no = int(float(seasnum))
+                    ep_no = int(float(epno))
 
-                # float() is because https://github.com/dbr/tvnamer/issues/95 - should probably be fixed in TVDB data
-                seas_no = int(float(seasnum))
-                ep_no = int(float(epno))
+                    for k, v in cur_ep.items():
+                        k = k.lower()
 
-                for k, v in cur_ep.items():
-                    k = k.lower()
+                        if v is not None:
+                            if k == 'filename':
+                                v = self.config['api'][self.config['apiver']]['artworkPrefix'].format(v)
+                            else:
+                                v = self._cleanData(v)
 
-                    if v is not None:
-                        if k == 'filename':
-                            v = self.config['api'][self.config['apiver']]['artworkPrefix'].format(v)
-                        else:
-                            v = self._cleanData(v)
+                        self._setItem(sid, seas_no, ep_no, k, v)
 
-                    self._setItem(sid, seas_no, ep_no, k, v)
-
-        return True
+        return self.shows[sid]
 
     def __getitem__(self, key):
         """
