@@ -173,8 +173,7 @@
 }
 
 #content {
-    width: 95%;
-    min-width: 875px;
+    width: 100%;
     padding: 15px;
     margin-left: auto;
     margin-right: auto;
@@ -1918,7 +1917,7 @@ input, textarea, select, .uneditable-input {
 }
 
 .navbar-brand {
-    padding: 0px;
+    padding: 5px;
 }
 
 /* navbar styling */
