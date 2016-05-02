@@ -208,7 +208,6 @@ def install_requirements(upgrade=False, restart=False):
         req_options.use_user_site = any([not isElevatedUser(), isVirtualEnv()])
         req_options.constraints = [os.path.join(os.path.abspath(os.path.dirname(__file__)), 'constraints.txt')]
         req_options.cache_dir = None
-        req_options.upgrade = True
         req_options.quiet = 1
         req_options.verbose = 1
 
@@ -216,8 +215,10 @@ def install_requirements(upgrade=False, restart=False):
             print("Installing/Upgrading SiCKRAGE requirements package: {}".format(r.req.project_name))
             sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
             if not r.installed_version:
+                req_options.upgrade = True
                 req_options.ignore_dependencies = True
                 InstallCommand().run(req_options, req_args)
+            req_options.upgrade = False
             req_options.ignore_dependencies = False
             InstallCommand().run(req_options, req_args)
         except Exception as e:
