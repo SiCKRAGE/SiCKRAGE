@@ -201,10 +201,30 @@ module.exports = function (grunt) {
                 'sickrage/core/webserver/gui/default/js/**/*.js',
                 '!sickrage/core/webserver/gui/default/js/**/*.min.js'
             ]
+        },
+        changelog: {
+            sample: {
+                options: {
+                    fileHeader: '# Changelog',
+                    dest: 'changelog.md',
+                    logArguments: [
+                        '--pretty=* %h - %ad: %s',
+                        '--no-merges',
+                        '--date=short'
+                    ],
+                    template: '{{> features}}',
+                    featureRegex: /^(.*)$/gim,
+                    partials: {
+                        features: '{{#if features}}{{#each features}}{{> feature}}{{/each}}{{else}}{{> empty}}{{/if}}\n',
+                        feature: '- {{this}} {{this.date}}\n'
+                    }
+                }
+            }
         }
     });
 
-    grunt.registerTask('default', [
+    grunt.registerTask(
+        'default', [
             'clean',
             'bower',
             'bower_concat',

@@ -1,0 +1,21 @@
+- * 9bd21fc - 2016-05-01: More responsive-ui fixes applied 
+- * a31ee71 - 2016-05-01: Added check to determin if config settings have been loaded or not so we don&#x27;t attempt saving them if not required. 
+- * 4239c9e - 2016-05-01: Fixed issues with show updates/refreshes both auto and forced, enforced to skip grabbing info from DB to ensure new data takes properly and repairs damaged shows/episodes. 
+- * b053953 - 2016-05-01: Corrected code issues with new indexer persistent show cache, works now! 
+- * e74e982 - 2016-05-01: Updated WebUI via Grunt 
+- * 0d2e6e0 - 2016-05-01: Fixed redundant loading of network timezone data from database. 
+- * 2b3eb60 - 2016-05-01: Corrected standard_absolute regex 
+- * b2010b8 - 2016-05-01: Fixed boolean issue with theTVDB showcache 
+- * 2668d7e - 2016-04-30: Fixed theTVDB persistent show cache, code was borked. 
+- * 717f469 - 2016-04-30: Added persistant show data cache for theTVDB indexer. Added back language selector for adding new shows. Shows not found on theTVDB by seriesname get searched by imdbId automatically. Fixed metadata issue with TMDB provider and retrieval of images. 
+- * 28641dc - 2016-04-29: Corrected exception messaging handling for refreshing shows from folders. 
+- * f73c439 - 2016-04-29: Updated donation link in templates. 
+- * 40942e5 - 2016-04-29: Added new &quot;standard absolute&quot; regex to name parser 
+- * 1c81a44 - 2016-04-29: Added exception handling to print error messages during requirements installations. 
+- * 4ca63b4 - 2016-04-29: Fixed responsive mobile layout. Removed unrequired error message. 
+- * 1866bfa - 2016-04-29: Fixed issue with snatching torrent magnet links. 
+- * f5a81d7 - 2016-04-29: Fixed several issues with database operations including upgrading of database versions. 
+- * f3897a7 - 2016-04-29: Small correction to requirements installation function code. 
+- * d5b3d69 - 2016-04-29: Fixed issues with sys.stdout during installation of requirements. 
+- * 3c5d7c4 - 2016-04-27: Added constraints file for pip requirement installs and upgrades to ensure certain packages maintain there required version. 
+
