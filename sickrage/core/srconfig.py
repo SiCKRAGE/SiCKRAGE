@@ -43,10 +43,12 @@ from sickrage.core.searchers import backlog_searcher
 
 class srConfig(object):
     def __init__(self):
+        self.loaded = False
+
+        self.CONFIG_OBJ = None
         self.CONFIG_VERSION = 9
         self.ENCRYPTION_VERSION = 0
-        self.ENCRYPTION_SECRET = None
-        self.CONFIG_OBJ = None
+        self.ENCRYPTION_SECRET = ""
 
         self.CENSORED_ITEMS = {}
 
@@ -67,29 +69,26 @@ class srConfig(object):
         self.NAMING_SEP_TYPE = (" - ", " ")
         self.NAMING_SEP_TYPE_TEXT = (" - ", "space")
 
-        self.LOG_DIR = None
-        self.LOG_FILE = None
+        self.LOG_DIR = ""
+        self.LOG_FILE = ""
         self.LOG_SIZE = 1048576
         self.LOG_NR = 5
-        self.SHOWUPDATER = None
-        self.SHOWQUEUE = None
-        self.SEARCHQUEUE = None
         self.VERSION_NOTIFY = False
         self.AUTO_UPDATE = False
         self.NOTIFY_ON_UPDATE = False
         self.GIT_RESET = True
-        self.GIT_USERNAME = None
-        self.GIT_PASSWORD = None
-        self.GIT_PATH = None
+        self.GIT_USERNAME = ""
+        self.GIT_PASSWORD = ""
+        self.GIT_PATH = ""
         self.GIT_AUTOISSUES = False
         self.GIT_NEWVER = False
         self.NEWS_URL = 'http://sickragetv.github.io/news/news.md'
         self.CHANGES_URL = 'http://sickragetv.github.io/news/changes.md'
-        self.NEWS_LAST_READ = None
-        self.NEWS_LATEST = None
+        self.NEWS_LAST_READ = ""
+        self.NEWS_LATEST = ""
         self.NEWS_UNREAD = False
-        self.SOCKET_TIMEOUT = None
-        self.WEB_HOST = None
+        self.SOCKET_TIMEOUT = 30
+        self.WEB_HOST = ""
         self.WEB_PORT = None
         self.WEB_LOG = False
         self.WEB_ROOT = None
@@ -457,6 +456,446 @@ class srConfig(object):
 
         self.DEFAULT_SHOWUPDATE_HOUR = 3
         self.SHOWUPDATE_HOUR = None
+
+    def defaults(self):
+        sickrage.srCore.srLogger.debug("Loading default config values")
+
+        # default config object
+        defaults = ConfigObj()
+        defaults.clear()
+
+        defaults['General'] = {}
+        defaults['General']['config_version'] = self.CONFIG_VERSION
+        defaults['General']['encryption_version'] = int(self.ENCRYPTION_VERSION)
+        defaults['General']['encryption_secret'] = self.ENCRYPTION_SECRET
+        defaults['General']['git_autoissues'] = int(self.GIT_AUTOISSUES)
+        defaults['General']['git_username'] = self.GIT_USERNAME
+        defaults['General']['git_password'] = self.GIT_PASSWORD
+        defaults['General']['git_reset'] = int(self.GIT_RESET)
+        defaults['General']['git_newver'] = int(self.GIT_NEWVER)
+        defaults['General']['log_dir'] = os.path.abspath(
+            os.path.join(sickrage.DATA_DIR, self.LOG_DIR or 'Logs'))
+        defaults['General']['log_nr'] = int(self.LOG_NR)
+        defaults['General']['log_size'] = int(self.LOG_SIZE)
+        defaults['General']['socket_timeout'] = self.SOCKET_TIMEOUT
+        defaults['General']['web_port'] = self.WEB_PORT
+        defaults['General']['web_host'] = self.WEB_HOST
+        defaults['General']['web_ipv6'] = int(self.WEB_IPV6)
+        defaults['General']['web_log'] = int(self.WEB_LOG)
+        defaults['General']['web_root'] = self.WEB_ROOT
+        defaults['General']['web_username'] = self.WEB_USERNAME
+        defaults['General']['web_password'] = self.WEB_PASSWORD
+        defaults['General']['web_cookie_secret'] = self.WEB_COOKIE_SECRET
+        defaults['General']['web_use_gzip'] = int(self.WEB_USE_GZIP)
+        defaults['General']['ssl_verify'] = int(self.SSL_VERIFY)
+        defaults['General']['download_url'] = self.DOWNLOAD_URL
+        defaults['General']['localhost_ip'] = self.LOCALHOST_IP
+        defaults['General']['cpu_preset'] = self.CPU_PRESET
+        defaults['General']['anon_redirect'] = self.ANON_REDIRECT
+        defaults['General']['api_key'] = self.API_KEY
+        defaults['General']['debug'] = int(sickrage.DEBUG)
+        defaults['General']['default_page'] = self.DEFAULT_PAGE
+        defaults['General']['enable_https'] = int(self.ENABLE_HTTPS)
+        defaults['General']['https_cert'] = self.HTTPS_CERT
+        defaults['General']['https_key'] = self.HTTPS_KEY
+        defaults['General']['handle_reverse_proxy'] = int(self.HANDLE_REVERSE_PROXY)
+        defaults['General']['use_nzbs'] = int(self.USE_NZBS)
+        defaults['General']['use_torrents'] = int(self.USE_TORRENTS)
+        defaults['General']['nzb_method'] = self.NZB_METHOD
+        defaults['General']['torrent_method'] = self.TORRENT_METHOD
+        defaults['General']['usenet_retention'] = int(self.USENET_RETENTION)
+        defaults['General']['autopostprocessor_frequency'] = int(self.AUTOPOSTPROCESSOR_FREQ)
+        defaults['General']['dailysearch_frequency'] = int(self.DAILY_SEARCHER_FREQ)
+        defaults['General']['backlog_frequency'] = int(self.BACKLOG_SEARCHER_FREQ)
+        defaults['General']['update_frequency'] = int(self.VERSION_UPDATER_FREQ)
+        defaults['General']['showupdate_hour'] = int(self.SHOWUPDATE_HOUR)
+        defaults['General']['showupdate_stale'] = int(self.SHOWUPDATE_STALE)
+        defaults['General']['download_propers'] = int(self.DOWNLOAD_PROPERS)
+        defaults['General']['randomize_providers'] = int(self.RANDOMIZE_PROVIDERS)
+        defaults['General']['check_propers_interval'] = self.PROPER_SEARCHER_INTERVAL
+        defaults['General']['allow_high_priority'] = int(self.ALLOW_HIGH_PRIORITY)
+        defaults['General']['skip_removed_files'] = int(self.SKIP_REMOVED_FILES)
+        defaults['General']['quality_default'] = int(self.QUALITY_DEFAULT)
+        defaults['General']['status_default'] = int(self.STATUS_DEFAULT)
+        defaults['General']['status_default_after'] = int(self.STATUS_DEFAULT_AFTER)
+        defaults['General']['flatten_folders_default'] = int(self.FLATTEN_FOLDERS_DEFAULT)
+        defaults['General']['indexer_default'] = int(self.INDEXER_DEFAULT)
+        defaults['General']['indexer_timeout'] = int(self.INDEXER_TIMEOUT)
+        defaults['General']['anime_default'] = int(self.ANIME_DEFAULT)
+        defaults['General']['scene_default'] = int(self.SCENE_DEFAULT)
+        defaults['General']['archive_default'] = int(self.ARCHIVE_DEFAULT)
+        defaults['General']['version_notify'] = int(self.VERSION_NOTIFY)
+        defaults['General']['auto_update'] = int(self.AUTO_UPDATE)
+        defaults['General']['notify_on_update'] = int(self.NOTIFY_ON_UPDATE)
+        defaults['General']['naming_strip_year'] = int(self.NAMING_STRIP_YEAR)
+        defaults['General']['naming_pattern'] = self.NAMING_PATTERN
+        defaults['General']['naming_custom_abd'] = int(self.NAMING_CUSTOM_ABD)
+        defaults['General']['naming_abd_pattern'] = self.NAMING_ABD_PATTERN
+        defaults['General']['naming_custom_sports'] = int(self.NAMING_CUSTOM_SPORTS)
+        defaults['General']['naming_sports_pattern'] = self.NAMING_SPORTS_PATTERN
+        defaults['General']['naming_custom_anime'] = int(self.NAMING_CUSTOM_ANIME)
+        defaults['General']['naming_anime_pattern'] = self.NAMING_ANIME_PATTERN
+        defaults['General']['naming_multi_ep'] = int(self.NAMING_MULTI_EP)
+        defaults['General']['naming_anime_multi_ep'] = int(self.NAMING_ANIME_MULTI_EP)
+        defaults['General']['naming_anime'] = int(self.NAMING_ANIME)
+        defaults['General']['indexerDefaultLang'] = self.INDEXER_DEFAULT_LANGUAGE
+        defaults['General']['ep_default_deleted_status'] = int(self.EP_DEFAULT_DELETED_STATUS)
+        defaults['General']['launch_browser'] = int(self.LAUNCH_BROWSER)
+        defaults['General']['trash_remove_show'] = int(self.TRASH_REMOVE_SHOW)
+        defaults['General']['trash_rotate_logs'] = int(self.TRASH_ROTATE_LOGS)
+        defaults['General']['sort_article'] = int(self.SORT_ARTICLE)
+        defaults['General']['proxy_setting'] = self.PROXY_SETTING
+        defaults['General']['proxy_indexers'] = int(self.PROXY_INDEXERS)
+        defaults['General']['use_listview'] = int(self.USE_LISTVIEW)
+        defaults['General']['metadata_kodi'] = self.METADATA_KODI
+        defaults['General']['metadata_kodi_12plus'] = self.METADATA_KODI_12PLUS
+        defaults['General']['metadata_mediabrowser'] = self.METADATA_MEDIABROWSER
+        defaults['General']['metadata_ps3'] = self.METADATA_PS3
+        defaults['General']['metadata_wdtv'] = self.METADATA_WDTV
+        defaults['General']['metadata_tivo'] = self.METADATA_TIVO
+        defaults['General']['metadata_mede8er'] = self.METADATA_MEDE8ER
+        defaults['General']['backlog_days'] = int(self.BACKLOG_DAYS)
+        defaults['General']['cache_dir'] = self.CACHE_DIR
+        defaults['General']['root_dirs'] = self.ROOT_DIRS
+        defaults['General']['tv_download_dir'] = self.TV_DOWNLOAD_DIR
+        defaults['General']['keep_processed_dir'] = int(self.KEEP_PROCESSED_DIR)
+        defaults['General']['process_method'] = self.PROCESS_METHOD
+        defaults['General']['del_rar_contents'] = int(self.DELRARCONTENTS)
+        defaults['General']['move_associated_files'] = int(self.MOVE_ASSOCIATED_FILES)
+        defaults['General']['sync_files'] = self.SYNC_FILES
+        defaults['General']['postpone_if_sync_files'] = int(self.POSTPONE_IF_SYNC_FILES)
+        defaults['General']['nfo_rename'] = int(self.NFO_RENAME)
+        defaults['General']['process_automatically'] = int(self.PROCESS_AUTOMATICALLY)
+        defaults['General']['no_delete'] = int(self.NO_DELETE)
+        defaults['General']['unpack'] = int(self.UNPACK)
+        defaults['General']['rename_episodes'] = int(self.RENAME_EPISODES)
+        defaults['General']['airdate_episodes'] = int(self.AIRDATE_EPISODES)
+        defaults['General']['file_timestamp_timezone'] = self.FILE_TIMESTAMP_TIMEZONE
+        defaults['General']['create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
+        defaults['General']['add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
+        defaults['General']['extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
+        defaults['General']['git_path'] = self.GIT_PATH
+        defaults['General']['ignore_words'] = self.IGNORE_WORDS
+        defaults['General']['require_words'] = self.REQUIRE_WORDS
+        defaults['General']['ignored_subs_list'] = self.IGNORED_SUBS_LIST
+        defaults['General']['calendar_unprotected'] = int(self.CALENDAR_UNPROTECTED)
+        defaults['General']['calendar_icons'] = int(self.CALENDAR_ICONS)
+        defaults['General']['no_restart'] = int(self.NO_RESTART)
+        defaults['General']['developer'] = int(sickrage.DEVELOPER)
+        defaults['General']['display_all_seasons'] = int(self.DISPLAY_ALL_SEASONS)
+        defaults['General']['news_last_read'] = self.NEWS_LAST_READ
+
+        defaults['GUI'] = {}
+        defaults['GUI']['gui_name'] = self.GUI_NAME
+        defaults['GUI']['theme_name'] = self.THEME_NAME
+        defaults['GUI']['home_layout'] = self.HOME_LAYOUT
+        defaults['GUI']['history_layout'] = self.HISTORY_LAYOUT
+        defaults['GUI']['history_limit'] = self.HISTORY_LIMIT
+        defaults['GUI']['display_show_specials'] = int(self.DISPLAY_SHOW_SPECIALS)
+        defaults['GUI']['coming_eps_layout'] = self.COMING_EPS_LAYOUT
+        defaults['GUI']['coming_eps_display_paused'] = int(self.COMING_EPS_DISPLAY_PAUSED)
+        defaults['GUI']['coming_eps_sort'] = self.COMING_EPS_SORT
+        defaults['GUI']['coming_eps_missed_range'] = int(self.COMING_EPS_MISSED_RANGE)
+        defaults['GUI']['fuzzy_dating'] = int(self.FUZZY_DATING)
+        defaults['GUI']['trim_zero'] = int(self.TRIM_ZERO)
+        defaults['GUI']['date_preset'] = self.DATE_PRESET
+        defaults['GUI']['time_preset'] = self.TIME_PRESET_W_SECONDS
+        defaults['GUI']['timezone_display'] = self.TIMEZONE_DISPLAY
+        defaults['GUI']['poster_sortby'] = self.POSTER_SORTBY
+        defaults['GUI']['poster_sortdir'] = self.POSTER_SORTDIR
+        defaults['GUI']['filter_row'] = int(self.FILTER_ROW)
+
+        defaults['Blackhole'] = {}
+        defaults['Blackhole']['nzb_dir'] = self.NZB_DIR
+        defaults['Blackhole']['torrent_dir'] = self.TORRENT_DIR
+
+        defaults['NZBs'] = {}
+        defaults['NZBs']['nzbs'] = int(self.NZBS)
+        defaults['NZBs']['nzbs_uid'] = self.NZBS_UID
+        defaults['NZBs']['nzbs_hash'] = self.NZBS_HASH
+
+        defaults['Newzbin'] = {}
+        defaults['Newzbin']['newzbin'] = int(self.NEWZBIN)
+        defaults['Newzbin']['newzbin_username'] = self.NEWZBIN_USERNAME
+        defaults['Newzbin']['newzbin_password'] = self.NEWZBIN_PASSWORD
+
+        defaults['SABnzbd'] = {}
+        defaults['SABnzbd']['sab_username'] = self.SAB_USERNAME
+        defaults['SABnzbd']['sab_password'] = self.SAB_PASSWORD
+        defaults['SABnzbd']['sab_apikey'] = self.SAB_APIKEY
+        defaults['SABnzbd']['sab_category'] = self.SAB_CATEGORY
+        defaults['SABnzbd']['sab_category_backlog'] = self.SAB_CATEGORY_BACKLOG
+        defaults['SABnzbd']['sab_category_anime'] = self.SAB_CATEGORY_ANIME
+        defaults['SABnzbd']['sab_category_anime_backlog'] = self.SAB_CATEGORY_ANIME_BACKLOG
+        defaults['SABnzbd']['sab_host'] = self.SAB_HOST
+        defaults['SABnzbd']['sab_forced'] = int(self.SAB_FORCED)
+
+        defaults['NZBget'] = {}
+        defaults['NZBget']['nzbget_username'] = self.NZBGET_USERNAME
+        defaults['NZBget']['nzbget_password'] = self.NZBGET_PASSWORD
+        defaults['NZBget']['nzbget_category'] = self.NZBGET_CATEGORY
+        defaults['NZBget']['nzbget_category_backlog'] = self.NZBGET_CATEGORY_BACKLOG
+        defaults['NZBget']['nzbget_category_anime'] = self.NZBGET_CATEGORY_ANIME
+        defaults['NZBget']['nzbget_category_anime_backlog'] = self.NZBGET_CATEGORY_ANIME_BACKLOG
+        defaults['NZBget']['nzbget_host'] = self.NZBGET_HOST
+        defaults['NZBget']['nzbget_use_https'] = int(self.NZBGET_USE_HTTPS)
+        defaults['NZBget']['nzbget_priority'] = self.NZBGET_PRIORITY
+
+        defaults['TORRENT'] = {}
+        defaults['TORRENT']['torrent_username'] = self.TORRENT_USERNAME
+        defaults['TORRENT']['torrent_password'] = self.TORRENT_PASSWORD
+        defaults['TORRENT']['torrent_host'] = self.TORRENT_HOST
+        defaults['TORRENT']['torrent_path'] = self.TORRENT_PATH
+        defaults['TORRENT']['torrent_seed_time'] = int(self.TORRENT_SEED_TIME)
+        defaults['TORRENT']['torrent_paused'] = int(self.TORRENT_PAUSED)
+        defaults['TORRENT']['torrent_high_bandwidth'] = int(self.TORRENT_HIGH_BANDWIDTH)
+        defaults['TORRENT']['torrent_label'] = self.TORRENT_LABEL
+        defaults['TORRENT']['torrent_label_anime'] = self.TORRENT_LABEL_ANIME
+        defaults['TORRENT']['torrent_verify_cert'] = int(self.TORRENT_VERIFY_CERT)
+        defaults['TORRENT']['torrent_rpcurl'] = self.TORRENT_RPCURL
+        defaults['TORRENT']['torrent_auth_type'] = self.TORRENT_AUTH_TYPE
+        defaults['TORRENT']['torrent_trackers'] = self.TORRENT_TRACKERS
+
+        defaults['KODI'] = {}
+        defaults['KODI']['use_kodi'] = int(self.USE_KODI)
+        defaults['KODI']['kodi_always_on'] = int(self.KODI_ALWAYS_ON)
+        defaults['KODI']['kodi_notify_onsnatch'] = int(self.KODI_NOTIFY_ONSNATCH)
+        defaults['KODI']['kodi_notify_ondownload'] = int(self.KODI_NOTIFY_ONDOWNLOAD)
+        defaults['KODI']['kodi_notify_onsubtitledownload'] = int(self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['KODI']['kodi_update_library'] = int(self.KODI_UPDATE_LIBRARY)
+        defaults['KODI']['kodi_update_full'] = int(self.KODI_UPDATE_FULL)
+        defaults['KODI']['kodi_update_onlyfirst'] = int(self.KODI_UPDATE_ONLYFIRST)
+        defaults['KODI']['kodi_host'] = self.KODI_HOST
+        defaults['KODI']['kodi_username'] = self.KODI_USERNAME
+        defaults['KODI']['kodi_password'] = self.KODI_PASSWORD
+
+        defaults['Plex'] = {}
+        defaults['Plex']['use_plex'] = int(self.USE_PLEX)
+        defaults['Plex']['plex_notify_onsnatch'] = int(self.PLEX_NOTIFY_ONSNATCH)
+        defaults['Plex']['plex_notify_ondownload'] = int(self.PLEX_NOTIFY_ONDOWNLOAD)
+        defaults['Plex']['plex_notify_onsubtitledownload'] = int(self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Plex']['plex_update_library'] = int(self.PLEX_UPDATE_LIBRARY)
+        defaults['Plex']['plex_server_host'] = self.PLEX_SERVER_HOST
+        defaults['Plex']['plex_server_token'] = self.PLEX_SERVER_TOKEN
+        defaults['Plex']['plex_host'] = self.PLEX_HOST
+        defaults['Plex']['plex_username'] = self.PLEX_USERNAME
+        defaults['Plex']['plex_password'] = self.PLEX_PASSWORD
+
+        defaults['Emby'] = {}
+        defaults['Emby']['use_emby'] = int(self.USE_EMBY)
+        defaults['Emby']['emby_host'] = self.EMBY_HOST
+        defaults['Emby']['emby_apikey'] = self.EMBY_APIKEY
+
+        defaults['Growl'] = {}
+        defaults['Growl']['use_growl'] = int(self.USE_GROWL)
+        defaults['Growl']['growl_notify_onsnatch'] = int(self.GROWL_NOTIFY_ONSNATCH)
+        defaults['Growl']['growl_notify_ondownload'] = int(self.GROWL_NOTIFY_ONDOWNLOAD)
+        defaults['Growl']['growl_notify_onsubtitledownload'] = int(self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Growl']['growl_host'] = self.GROWL_HOST
+        defaults['Growl']['growl_password'] = self.GROWL_PASSWORD
+
+        defaults['FreeMobile'] = {}
+        defaults['FreeMobile']['use_freemobile'] = int(self.USE_FREEMOBILE)
+        defaults['FreeMobile']['freemobile_notify_onsnatch'] = int(self.FREEMOBILE_NOTIFY_ONSNATCH)
+        defaults['FreeMobile']['freemobile_notify_ondownload'] = int(self.FREEMOBILE_NOTIFY_ONDOWNLOAD)
+        defaults['FreeMobile']['freemobile_notify_onsubtitledownload'] = int(
+            self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['FreeMobile']['freemobile_id'] = self.FREEMOBILE_ID
+        defaults['FreeMobile']['freemobile_apikey'] = self.FREEMOBILE_APIKEY
+
+        defaults['Prowl'] = {}
+        defaults['Prowl']['use_prowl'] = int(self.USE_PROWL)
+        defaults['Prowl']['prowl_notify_onsnatch'] = int(self.PROWL_NOTIFY_ONSNATCH)
+        defaults['Prowl']['prowl_notify_ondownload'] = int(self.PROWL_NOTIFY_ONDOWNLOAD)
+        defaults['Prowl']['prowl_notify_onsubtitledownload'] = int(self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Prowl']['prowl_api'] = self.PROWL_API
+        defaults['Prowl']['prowl_priority'] = self.PROWL_PRIORITY
+
+        defaults['Twitter'] = {}
+        defaults['Twitter']['use_twitter'] = int(self.USE_TWITTER)
+        defaults['Twitter']['twitter_notify_onsnatch'] = int(self.TWITTER_NOTIFY_ONSNATCH)
+        defaults['Twitter']['twitter_notify_ondownload'] = int(self.TWITTER_NOTIFY_ONDOWNLOAD)
+        defaults['Twitter']['twitter_notify_onsubtitledownload'] = int(
+            self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Twitter']['twitter_username'] = self.TWITTER_USERNAME
+        defaults['Twitter']['twitter_password'] = self.TWITTER_PASSWORD
+        defaults['Twitter']['twitter_prefix'] = self.TWITTER_PREFIX
+        defaults['Twitter']['twitter_dmto'] = self.TWITTER_DMTO
+        defaults['Twitter']['twitter_usedm'] = int(self.TWITTER_USEDM)
+
+        defaults['Boxcar'] = {}
+        defaults['Boxcar']['use_boxcar'] = int(self.USE_BOXCAR)
+        defaults['Boxcar']['boxcar_notify_onsnatch'] = int(self.BOXCAR_NOTIFY_ONSNATCH)
+        defaults['Boxcar']['boxcar_notify_ondownload'] = int(self.BOXCAR_NOTIFY_ONDOWNLOAD)
+        defaults['Boxcar']['boxcar_notify_onsubtitledownload'] = int(self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Boxcar']['boxcar_username'] = self.BOXCAR_USERNAME
+
+        defaults['Boxcar2'] = {}
+        defaults['Boxcar2']['use_boxcar2'] = int(self.USE_BOXCAR2)
+        defaults['Boxcar2']['boxcar2_notify_onsnatch'] = int(self.BOXCAR2_NOTIFY_ONSNATCH)
+        defaults['Boxcar2']['boxcar2_notify_ondownload'] = int(self.BOXCAR2_NOTIFY_ONDOWNLOAD)
+        defaults['Boxcar2']['boxcar2_notify_onsubtitledownload'] = int(
+            self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Boxcar2']['boxcar2_accesstoken'] = self.BOXCAR2_ACCESSTOKEN
+
+        defaults['Pushover'] = {}
+        defaults['Pushover']['use_pushover'] = int(self.USE_PUSHOVER)
+        defaults['Pushover']['pushover_notify_onsnatch'] = int(self.PUSHOVER_NOTIFY_ONSNATCH)
+        defaults['Pushover']['pushover_notify_ondownload'] = int(self.PUSHOVER_NOTIFY_ONDOWNLOAD)
+        defaults['Pushover']['pushover_notify_onsubtitledownload'] = int(
+            self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Pushover']['pushover_userkey'] = self.PUSHOVER_USERKEY
+        defaults['Pushover']['pushover_apikey'] = self.PUSHOVER_APIKEY
+        defaults['Pushover']['pushover_device'] = self.PUSHOVER_DEVICE
+        defaults['Pushover']['pushover_sound'] = self.PUSHOVER_SOUND
+
+        defaults['Libnotify'] = {}
+        defaults['Libnotify']['use_libnotify'] = int(self.USE_LIBNOTIFY)
+        defaults['Libnotify']['libnotify_notify_onsnatch'] = int(self.LIBNOTIFY_NOTIFY_ONSNATCH)
+        defaults['Libnotify']['libnotify_notify_ondownload'] = int(self.LIBNOTIFY_NOTIFY_ONDOWNLOAD)
+        defaults['Libnotify']['libnotify_notify_onsubtitledownload'] = int(
+            self.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD)
+
+        defaults['NMJ'] = {}
+        defaults['NMJ']['use_nmj'] = int(self.USE_NMJ)
+        defaults['NMJ']['nmj_host'] = self.NMJ_HOST
+        defaults['NMJ']['nmj_database'] = self.NMJ_DATABASE
+        defaults['NMJ']['nmj_mount'] = self.NMJ_MOUNT
+
+        defaults['NMJv2'] = {}
+        defaults['NMJv2']['use_nmjv2'] = int(self.USE_NMJv2)
+        defaults['NMJv2']['nmjv2_host'] = self.NMJv2_HOST
+        defaults['NMJv2']['nmjv2_database'] = self.NMJv2_DATABASE
+        defaults['NMJv2']['nmjv2_dbloc'] = self.NMJv2_DBLOC
+
+        defaults['Synology'] = {}
+        defaults['Synology']['use_synoindex'] = int(self.USE_SYNOINDEX)
+
+        defaults['SynologyNotifier'] = {}
+        defaults['SynologyNotifier']['use_synologynotifier'] = int(self.USE_SYNOLOGYNOTIFIER)
+        defaults['SynologyNotifier']['synologynotifier_notify_onsnatch'] = int(
+            self.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH)
+        defaults['SynologyNotifier']['synologynotifier_notify_ondownload'] = int(
+            self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD)
+        defaults['SynologyNotifier']['synologynotifier_notify_onsubtitledownload'] = int(
+            self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD)
+
+        defaults['theTVDB'] = {}
+        defaults['theTVDB']['thetvdb_apitoken'] = self.THETVDB_APITOKEN
+
+        defaults['Trakt'] = {}
+        defaults['Trakt']['use_trakt'] = int(self.USE_TRAKT)
+        defaults['Trakt']['trakt_username'] = self.TRAKT_USERNAME
+        defaults['Trakt']['trakt_access_token'] = self.TRAKT_ACCESS_TOKEN
+        defaults['Trakt']['trakt_refresh_token'] = self.TRAKT_REFRESH_TOKEN
+        defaults['Trakt']['trakt_remove_watchlist'] = int(self.TRAKT_REMOVE_WATCHLIST)
+        defaults['Trakt']['trakt_remove_serieslist'] = int(self.TRAKT_REMOVE_SERIESLIST)
+        defaults['Trakt']['trakt_remove_show_from_sickrage'] = int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE)
+        defaults['Trakt']['trakt_sync_watchlist'] = int(self.TRAKT_SYNC_WATCHLIST)
+        defaults['Trakt']['trakt_method_add'] = int(self.TRAKT_METHOD_ADD)
+        defaults['Trakt']['trakt_start_paused'] = int(self.TRAKT_START_PAUSED)
+        defaults['Trakt']['trakt_use_recommended'] = int(self.TRAKT_USE_RECOMMENDED)
+        defaults['Trakt']['trakt_sync'] = int(self.TRAKT_SYNC)
+        defaults['Trakt']['trakt_sync_remove'] = int(self.TRAKT_SYNC_REMOVE)
+        defaults['Trakt']['trakt_default_indexer'] = int(self.TRAKT_DEFAULT_INDEXER)
+        defaults['Trakt']['trakt_timeout'] = int(self.TRAKT_TIMEOUT)
+        defaults['Trakt']['trakt_blacklist_name'] = self.TRAKT_BLACKLIST_NAME
+
+        defaults['pyTivo'] = {}
+        defaults['pyTivo']['use_pytivo'] = int(self.USE_PYTIVO)
+        defaults['pyTivo']['pytivo_notify_onsnatch'] = int(self.PYTIVO_NOTIFY_ONSNATCH)
+        defaults['pyTivo']['pytivo_notify_ondownload'] = int(self.PYTIVO_NOTIFY_ONDOWNLOAD)
+        defaults['pyTivo']['pytivo_notify_onsubtitledownload'] = int(self.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['pyTivo']['pyTivo_update_library'] = int(self.PYTIVO_UPDATE_LIBRARY)
+        defaults['pyTivo']['pytivo_host'] = self.PYTIVO_HOST
+        defaults['pyTivo']['pytivo_share_name'] = self.PYTIVO_SHARE_NAME
+        defaults['pyTivo']['pytivo_tivo_name'] = self.PYTIVO_TIVO_NAME
+
+        defaults['NMA'] = {}
+        defaults['NMA']['use_nma'] = int(self.USE_NMA)
+        defaults['NMA']['nma_notify_onsnatch'] = int(self.NMA_NOTIFY_ONSNATCH)
+        defaults['NMA']['nma_notify_ondownload'] = int(self.NMA_NOTIFY_ONDOWNLOAD)
+        defaults['NMA']['nma_notify_onsubtitledownload'] = int(self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['NMA']['nma_api'] = self.NMA_API
+        defaults['NMA']['nma_priority'] = self.NMA_PRIORITY
+
+        defaults['Pushalot'] = {}
+        defaults['Pushalot']['use_pushalot'] = int(self.USE_PUSHALOT)
+        defaults['Pushalot']['pushalot_notify_onsnatch'] = int(self.PUSHALOT_NOTIFY_ONSNATCH)
+        defaults['Pushalot']['pushalot_notify_ondownload'] = int(self.PUSHALOT_NOTIFY_ONDOWNLOAD)
+        defaults['Pushalot']['pushalot_notify_onsubtitledownload'] = int(
+            self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Pushalot']['pushalot_authorizationtoken'] = self.PUSHALOT_AUTHORIZATIONTOKEN
+
+        defaults['Pushbullet'] = {}
+        defaults['Pushbullet']['use_pushbullet'] = int(self.USE_PUSHBULLET)
+        defaults['Pushbullet']['pushbullet_notify_onsnatch'] = int(self.PUSHBULLET_NOTIFY_ONSNATCH)
+        defaults['Pushbullet']['pushbullet_notify_ondownload'] = int(self.PUSHBULLET_NOTIFY_ONDOWNLOAD)
+        defaults['Pushbullet']['pushbullet_notify_onsubtitledownload'] = int(
+            self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Pushbullet']['pushbullet_api'] = self.PUSHBULLET_API
+        defaults['Pushbullet']['pushbullet_device'] = self.PUSHBULLET_DEVICE
+
+        defaults['Email'] = {}
+        defaults['Email']['use_email'] = int(self.USE_EMAIL)
+        defaults['Email']['email_notify_onsnatch'] = int(self.EMAIL_NOTIFY_ONSNATCH)
+        defaults['Email']['email_notify_ondownload'] = int(self.EMAIL_NOTIFY_ONDOWNLOAD)
+        defaults['Email']['email_notify_onsubtitledownload'] = int(self.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD)
+        defaults['Email']['email_host'] = self.EMAIL_HOST
+        defaults['Email']['email_port'] = int(self.EMAIL_PORT)
+        defaults['Email']['email_tls'] = int(self.EMAIL_TLS)
+        defaults['Email']['email_user'] = self.EMAIL_USER
+        defaults['Email']['email_password'] = self.EMAIL_PASSWORD
+        defaults['Email']['email_from'] = self.EMAIL_FROM
+        defaults['Email']['email_list'] = self.EMAIL_LIST
+
+        defaults['Subtitles'] = {}
+        defaults['Subtitles']['use_subtitles'] = int(self.USE_SUBTITLES)
+        defaults['Subtitles']['subtitles_languages'] = ','.join(self.SUBTITLES_LANGUAGES)
+        defaults['Subtitles']['subtitles_services_list'] = ','.join(self.SUBTITLES_SERVICES_LIST)
+        defaults['Subtitles']['subtitles_services_enabled'] = '|'.join(
+            [str(x) for x in self.SUBTITLES_SERVICES_ENABLED])
+        defaults['Subtitles']['subtitles_dir'] = self.SUBTITLES_DIR
+        defaults['Subtitles']['subtitles_default'] = int(self.SUBTITLES_DEFAULT)
+        defaults['Subtitles']['subtitles_history'] = int(self.SUBTITLES_HISTORY)
+        defaults['Subtitles']['embedded_subtitles_all'] = int(self.EMBEDDED_SUBTITLES_ALL)
+        defaults['Subtitles']['subtitles_hearing_impaired'] = int(self.SUBTITLES_HEARING_IMPAIRED)
+        defaults['Subtitles']['subtitles_finder_frequency'] = int(self.SUBTITLE_SEARCHER_FREQ)
+        defaults['Subtitles']['subtitles_multi'] = int(self.SUBTITLES_MULTI)
+        defaults['Subtitles']['subtitles_extra_scripts'] = '|'.join(self.SUBTITLES_EXTRA_SCRIPTS)
+        defaults['Subtitles']['addic7ed_username'] = self.ADDIC7ED_USER
+        defaults['Subtitles']['addic7ed_password'] = self.ADDIC7ED_PASS
+        defaults['Subtitles']['legendastv_username'] = self.LEGENDASTV_USER
+        defaults['Subtitles']['legendastv_password'] = self.LEGENDASTV_PASS
+        defaults['Subtitles']['opensubtitles_username'] = self.OPENSUBTITLES_USER
+        defaults['Subtitles']['opensubtitles_password'] = self.OPENSUBTITLES_PASS
+
+        defaults['FailedDownloads'] = {}
+        defaults['FailedDownloads']['use_failed_downloads'] = int(self.USE_FAILED_DOWNLOADS)
+        defaults['FailedDownloads']['delete_failed'] = int(self.DELETE_FAILED)
+
+        defaults['ANIDB'] = {}
+        defaults['ANIDB']['use_anidb'] = int(self.USE_ANIDB)
+        defaults['ANIDB']['anidb_username'] = self.ANIDB_USERNAME
+        defaults['ANIDB']['anidb_password'] = self.ANIDB_PASSWORD
+        defaults['ANIDB']['anidb_use_mylist'] = int(self.ANIDB_USE_MYLIST)
+
+        defaults['ANIME'] = {}
+        defaults['ANIME']['anime_split_home'] = int(self.ANIME_SPLIT_HOME)
+
+        defaults['Providers'] = {}
+        defaults['Providers']['providers_order'] = sickrage.srCore.providersDict.provider_order
+
+        provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
+                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
+                         'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
+                         'passkey', 'pin']
+
+        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+            defaults['Providers'][providerID] = dict(
+                [(x, providerObj.__dict__[x]) for x in provider_keys if x in providerObj.__dict__])
+
+        return defaults
 
     def change_https_cert(self, https_cert):
         """
@@ -1425,10 +1864,17 @@ class srConfig(object):
 
             providerObj.__dict__.update(providerSettings)
 
+        # mark config settings loaded
+        self.loaded = True
+
         # save config settings
         self.save()
 
     def save(self):
+        # dont bother saving settings if there not loaded
+        if not self.loaded:
+            return
+
         new_config = ConfigObj(sickrage.CONFIG_FILE, indent_type='  ')
         new_config.clear()
 
@@ -1525,8 +1971,8 @@ class srConfig(object):
         new_config['General']['metadata_tivo'] = self.METADATA_TIVO
         new_config['General']['metadata_mede8er'] = self.METADATA_MEDE8ER
         new_config['General']['backlog_days'] = int(self.BACKLOG_DAYS)
-        new_config['General']['cache_dir'] = self.CACHE_DIR or 'cache'
-        new_config['General']['root_dirs'] = self.ROOT_DIRS or ''
+        new_config['General']['cache_dir'] = self.CACHE_DIR
+        new_config['General']['root_dirs'] = self.ROOT_DIRS
         new_config['General']['tv_download_dir'] = self.TV_DOWNLOAD_DIR
         new_config['General']['keep_processed_dir'] = int(self.KEEP_PROCESSED_DIR)
         new_config['General']['process_method'] = self.PROCESS_METHOD
@@ -1868,8 +2314,6 @@ class srConfig(object):
         # encrypt settings
         new_config.walk(self.encrypt)
         new_config.write()
-
-        return new_config
 
     def encrypt(self, section, key, _decrypt=False):
         """
