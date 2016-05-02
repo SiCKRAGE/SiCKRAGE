@@ -32,7 +32,7 @@ Automatic Video Library Manager for TV Shows. It watches for new episodes of you
 - [FAQ](https://github.com/SiCKRAGETV/SickRage/wiki/Frequently-Asked-Questions)
 - [Wiki](https://github.com/SiCKRAGETV/SickRage/wiki)
 - [Supported providers](https://github.com/SiCKRAGETV/sickrage-issues/wiki/SickRage-Search-Providers)
-- [News/Changes](http://github.com/SiCKRAGETV/sickrage-news)
+- [Changes](http://github.com/SiCKRAGETV/SickRage/changelog.md)
 
 #### Important
 Before using this with your existing database (sickbeard.db or sickrage.db) please make a backup copy of it and delete any other database files such as cache.db and failed.db if present, We HIGHLY recommend starting out with no database files at all to make this a fresh start but the choice is at your own risk
