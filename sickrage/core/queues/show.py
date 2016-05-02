@@ -583,11 +583,11 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         # get episode list from DB
-        DBEpList = self.show.loadEpisodesFromDB() if not self.force else {}
+        DBEpList = self.show.loadEpisodesFromDB(scanOnly=True) if not self.force else {}
 
         # get episode list from TVDB
         try:
-            IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force)
+            IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force, scanOnly=True)
         except indexer_exception as e:
             sickrage.srCore.srLogger.error("Unable to get info from " + srIndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e.message))
@@ -597,11 +597,11 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.srCore.srLogger.error("No data returned from " + srIndexerApi(
                 self.show.indexer).name + ", unable to update this show")
         else:
-            # for each ep we found on the Indexer delete it from the DB list
+            # for each ep we found on the Indexer not in the DB list add to DB
             sql_l = []
             for curSeason in IndexerEpList:
                 for curEpisode in set(IndexerEpList[curSeason]).difference(DBEpList.get(curSeason, {})):
-                    sql_q = self.show.getEpisode(curSeason, curEpisode).saveToDB(False)
+                    sql_q = self.show.getEpisode(curSeason, curEpisode, forceIndexer=True).saveToDB(False)
                     if sql_q:
                         sql_l.append(sql_q)
 

@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import glob
 import json
 import os
@@ -27,7 +28,6 @@ import stat
 import threading
 import traceback
 
-import datetime
 import imdbpie
 import requests
 import send2trash
@@ -475,7 +475,7 @@ class TVShow(object):
 
         return ep_list
 
-    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, forceUpdate=False):
+    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, forceIndexer=False):
 
         # if we get an anime get the real season and episode
         if self.is_anime and absolute_number and not season and not episode:
@@ -509,9 +509,9 @@ class TVShow(object):
             from sickrage.core.tv.episode import TVEpisode
 
             if file:
-                ep = TVEpisode(self, season, episode, file)
+                ep = TVEpisode(self, season, episode, file=file, forceIndexer=forceIndexer)
             else:
-                ep = TVEpisode(self, season, episode)
+                ep = TVEpisode(self, season, episode, forceIndexer=forceIndexer)
 
             if ep is not None:
                 self.episodes[season][episode] = ep
@@ -691,7 +691,7 @@ class TVShow(object):
             main_db.MainDB().mass_upsert(sql_l)
             del sql_l  # cleanup
 
-    def loadEpisodesFromDB(self):
+    def loadEpisodesFromDB(self, scanOnly=False):
         scannedEps = {}
 
         sickrage.srCore.srLogger.debug("{}: Loading all episodes for show".format(self.indexerid))
@@ -709,12 +709,13 @@ class TVShow(object):
                 scannedEps[curSeason] = {}
 
             try:
-                sickrage.srCore.srLogger.debug(
-                    "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
+                if not scanOnly:
+                    sickrage.srCore.srLogger.debug(
+                        "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
-                curEp = self.getEpisode(curSeason, curEpisode)
-                if not curEp:
-                    raise EpisodeNotFoundException
+                    curEp = self.getEpisode(curSeason, curEpisode)
+                    if not curEp:
+                        raise EpisodeNotFoundException
 
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
@@ -724,7 +725,7 @@ class TVShow(object):
         sickrage.srCore.srLogger.debug("{}: Finished loading all episodes for show".format(self.indexerid))
         return scannedEps
 
-    def loadEpisodesFromIndexer(self, cache=True):
+    def loadEpisodesFromIndexer(self, cache=True, scanOnly=False):
         scannedEps = {}
 
         lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
@@ -754,17 +755,18 @@ class TVShow(object):
                     continue
 
                 try:
-                    curEp = self.getEpisode(season, episode)
-                    if not curEp:
-                        raise EpisodeNotFoundException
-
-                    with curEp.lock:
+                    if not scanOnly:
                         sickrage.srCore.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
                             self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
 
-                        sql_q = curEp.saveToDB(False)
-                        if sql_q:
-                            sql_l.append(sql_q)
+                        curEp = self.getEpisode(season, episode)
+                        if not curEp:
+                            raise EpisodeNotFoundException
+
+                        with curEp.lock:
+                            sql_q = curEp.saveToDB(False)
+                            if sql_q:
+                                sql_l.append(sql_q)
 
                     scannedEps[season][episode] = True
                 except EpisodeNotFoundException:
@@ -1411,7 +1413,7 @@ class TVShow(object):
         if not self.dirty and not forceSave:
             return
 
-        sickrage.srCore.srLogger.debug("%i: Saving to database: %s" % (self.indexerid, self.name))
+        sickrage.srCore.srLogger.debug("%i: Saving show to database: %s" % (self.indexerid, self.name))
 
         controlValueDict = {"indexer_id": self.indexerid}
         newValueDict = {"indexer": self.indexer,

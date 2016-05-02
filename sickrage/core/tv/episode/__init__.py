@@ -45,7 +45,7 @@ from sickrage.notifiers import srNotifiers
 
 
 class TVEpisode(object):
-    def __init__(self, show, season, episode, file=""):
+    def __init__(self, show, season, episode, file="", forceIndexer=False):
         self.lock = threading.Lock()
         self.dirty = True
 
@@ -79,7 +79,7 @@ class TVEpisode(object):
         self.checkForMetaFiles()
         self.wantedQuality = []
 
-        self.populateEpisode(self.season, self.episode)
+        self.populateEpisode(self.season, self.episode, forceIndexer=forceIndexer)
 
     @property
     def name(self):
@@ -353,20 +353,21 @@ class TVEpisode(object):
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
-    def populateEpisode(self, season, episode):
-        # try loading episode from database
-        if self.loadFromDB(season, episode):
-            return True
+    def populateEpisode(self, season, episode, forceIndexer=False):
+        if not forceIndexer:
+            # try loading episode from database
+            if self.loadFromDB(season, episode):
+                return True
 
-        # try loading episode from NFO files
-        if os.path.isfile(self.location):
-            try:
-                self.loadFromNFO(self.location)
-                if self.hasnfo:
-                    return True
-            except NoNFOException:
-                sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
-                    self.show.indexerid, season or 0, episode or 0))
+            # try loading episode from NFO files
+            if os.path.isfile(self.location):
+                try:
+                    self.loadFromNFO(self.location)
+                    if self.hasnfo:
+                        return True
+                except NoNFOException:
+                    sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
+                        self.show.indexerid, season or 0, episode or 0))
 
         # try loading episode from sickrage.indexers
         try:
@@ -753,6 +754,8 @@ class TVEpisode(object):
             sickrage.srCore.srLogger.debug(
                 "{}: Not saving episode to db - record is not dirty".format(self.show.indexerid))
             return
+
+        sickrage.srCore.srLogger.debug("%i: Saving episode to database: %s" % (self.show.indexerid, self.name))
 
         # set filesize of episode
         if self.location and os.path.isfile(self.location):
