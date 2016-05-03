@@ -63,6 +63,9 @@ time.strptime("2012", "%Y")
 threading.currentThread().setName('MAIN')
 
 
+logging.captureWarnings(True)
+
+
 def print_logo():
     from pyfiglet import print_figlet
     print_figlet('SiCKRAGE', font='doom')
@@ -120,7 +123,7 @@ def install_pip():
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, file_name] + ([], ['--user'])[any([not isElevatedUser(), isVirtualEnv()])])
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
@@ -189,9 +192,6 @@ def pid_exists(pid):
 
 
 def install_requirements(upgrade=False, restart=False):
-    logging.basicConfig()
-    logging.captureWarnings(True)
-
     # install pip package manager
     install_pip()
 
@@ -205,7 +205,7 @@ def install_requirements(upgrade=False, restart=False):
 
     for r in requirements:
         req_options, req_args = InstallCommand().parse_args([r.req.project_name])
-        req_options.use_user_site = any([not isElevatedUser(), isVirtualEnv()])
+        req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
         req_options.constraints = [os.path.join(os.path.abspath(os.path.dirname(__file__)), 'constraints.txt')]
         req_options.cache_dir = None
         req_options.quiet = 1
@@ -222,7 +222,6 @@ def install_requirements(upgrade=False, restart=False):
             req_options.ignore_dependencies = False
             InstallCommand().run(req_options, req_args)
         except Exception as e:
-            print(e.message)
             continue
 
     # restart sickrage silently

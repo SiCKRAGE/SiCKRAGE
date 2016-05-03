@@ -48,7 +48,8 @@ setup(
     extras_require={"pip": ["pip"]},
     tests_require=['pip'],
     requires=['pip'],
-    install_requires=requirements(),
+    install_requires=['-c {}'.format(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'requirements.txt'))] + requirements(),
     include_package_data=True,
     platforms='any',
     zip_safe=False,
@@ -59,5 +60,3 @@ setup(
         ]
     }
 )
-
-
