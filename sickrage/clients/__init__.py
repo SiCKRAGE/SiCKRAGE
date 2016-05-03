@@ -36,7 +36,8 @@ __all__ = [
     'download_station',
     'rtorrent',
     'qbittorrent',
-    'mlnet'
+    'mlnet',
+    'putio'
 ]
 
 # Mapping error status codes to official W3C names
@@ -123,7 +124,8 @@ default_host = {
     'download_station': 'http://localhost:5000',
     'rtorrent': 'scgi://localhost:5000',
     'qbittorrent': 'http://localhost:8080',
-    'mlnet': 'http://localhost:4080'
+    'mlnet': 'http://localhost:4080',
+    'putio': 'http://localhost:8080'
 }
 
 
@@ -142,7 +144,7 @@ def getClientModule(name):
     name = name.lower()
     prefix = "sickrage.clients."
 
-    return __import__(prefix + name + '_client', fromlist=__all__)
+    return __import__(prefix + name, fromlist=__all__)
 
 
 def getClientIstance(name):

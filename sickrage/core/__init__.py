@@ -297,10 +297,16 @@ class Core(object):
         if self.srConfig.NZB_METHOD not in ('blackhole', 'sabnzbd', 'nzbget'):
             self.srConfig.NZB_METHOD = 'blackhole'
 
-        if self.srConfig.TORRENT_METHOD not in (
-                'blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent',
-                'qbittorrent', 'mlnet'):
-            self.srConfig.TORRENT_METHOD = 'blackhole'
+        if self.srConfig.TORRENT_METHOD not in ('blackhole',
+                                                'utorrent',
+                                                'transmission',
+                                                'deluge',
+                                                'deluged',
+                                                'download_station',
+                                                'rtorrent',
+                                                'qbittorrent',
+                                                'mlnet',
+                                                'putio'): self.srConfig.TORRENT_METHOD = 'blackhole'
 
         if self.srConfig.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
             self.srConfig.PROPER_SEARCHER_INTERVAL = 'daily'

@@ -20,9 +20,8 @@ from __future__ import unicode_literals
 
 import traceback
 
-from rtorrent import RTorrent
-
 import sickrage
+from rtorrent import RTorrent
 from sickrage.clients import GenericClient
 
 

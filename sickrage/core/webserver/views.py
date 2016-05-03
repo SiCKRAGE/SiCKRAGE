@@ -26,7 +26,6 @@ import time
 import traceback
 import urllib
 
-import imdbpie
 import markdown2
 from UnRAR2 import RarFile
 from dateutil import tz
@@ -38,8 +37,6 @@ from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, authenticated
 
-from sickrage.indexers.indexer_exceptions import indexer_shownotfound
-
 try:
     from futures import ThreadPoolExecutor
 except ImportError:
@@ -47,7 +44,7 @@ except ImportError:
 
 import sickrage
 from sickrage.clients import getClientIstance
-from sickrage.clients.sabnzbd_client import SabNZBd
+from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
 from sickrage.core.classes import ErrorViewer, AllShowsListUI
@@ -3799,7 +3796,7 @@ class Config(WebRoot):
         menu = [
             {'title': 'General', 'path': '/config/general/', 'icon': 'ui-icon ui-icon-gear'},
             {'title': 'Backup/Restore', 'path': '/config/backuprestore/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': 'Search Settings', 'path': '/config/search/', 'icon': 'ui-icon ui-icon-search'},
+            {'title': 'Search Clients', 'path': '/config/search/', 'icon': 'ui-icon ui-icon-search'},
             {'title': 'Search Providers', 'path': '/config/providers/', 'icon': 'ui-icon ui-icon-search'},
             {'title': 'Subtitles Settings', 'path': '/config/subtitles/', 'icon': 'ui-icon ui-icon-comment'},
             {'title': 'Post Processing', 'path': '/config/postProcessing/', 'icon': 'ui-icon ui-icon-folder-open'},
@@ -4063,7 +4060,7 @@ class ConfigSearch(Config):
             "/config/search.mako",
             submenu=self.ConfigMenu(),
             title='Config - Episode Search',
-            header='Search Settings',
+            header='Search Clients',
             topmenu='config',
             controller='config',
             action='search'

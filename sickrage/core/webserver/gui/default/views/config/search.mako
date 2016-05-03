@@ -11,16 +11,16 @@
 
                 <div id="ui-components">
                     <ul>
-                        <li><a href="#core-component-group1">Episode Search</a></li>
-                        <li><a href="#core-component-group2">NZB Search</a></li>
-                        <li><a href="#core-component-group3">Torrent Search</a></li>
+                        <li><a href="#core-component-group1">Search Settings</a></li>
+                        <li><a href="#core-component-group2">NZB Clients</a></li>
+                        <li><a href="#core-component-group3">Torrent Clients</a></li>
                     </ul>
 
 
                     <div id="core-component-group1" class="component-group">
 
                         <div class="component-group-desc">
-                            <h3>Episode Search</h3>
+                            <h3>Search Settings</h3>
                             <p>How to manage searching with <a href="/config/providers">providers</a>.</p>
                         </div>
 
@@ -201,19 +201,19 @@
                     <div id="core-component-group2" class="component-group">
 
                         <div class="component-group-desc">
-                            <h3>NZB Search</h3>
-                            <p>How to handle NZB search results.</p>
+                            <h3>NZB Clients</h3>
+                            <p>How to handle NZB search results for clients.</p>
                         </div>
 
                         <fieldset class="component-group-list">
 
                             <div class="field-pair">
                                 <label for="use_nzbs">
-                                    <span class="component-title">Search NZBs</span>
+                                    <span class="component-title">Enable NZB searches</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="use_nzbs" class="enabler"
                                            id="use_nzbs" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_NZBS)]}/>
-                                    <p>enable NZB search providers</p></span>
+                                </span>
                                 </label>
                             </div>
 
@@ -509,19 +509,18 @@
                     <div id="core-component-group3" class="component-group">
 
                         <div class="component-group-desc">
-                            <h3>Torrent Search</h3>
-                            <p>How to handle Torrent search results.</p>
+                            <h3>Torrent Clients</h3>
+                            <p>How to handle Torrent search results for clients.</p>
                         </div>
 
                         <fieldset class="component-group-list">
 
                             <div class="field-pair">
                                 <label for="use_torrents">
-                                    <span class="component-title">Search torrents</span>
+                                    <span class="component-title">Enable torrent searches</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="use_torrents" class="enabler"
                                                id="use_torrents" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_TORRENTS)]}/>
-                                        <p>enable torrent search providers</p>
                                     </span>
                                 </label>
                             </div>
@@ -532,8 +531,8 @@
                                         <span class="component-title">Send .torrent files to:</span>
                                         <span class="component-desc">
                                         <select name="torrent_method" id="torrent_method" class="form-control input-sm">
-                                            <% torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge (via WebUI)", 'deluged': "Deluge (via Daemon)", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'mlnet': "MLDonkey"} %>
-                                            % for curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent', 'mlnet'):
+                                            <% torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge (via WebUI)", 'deluged': "Deluge (via Daemon)", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'mlnet': "MLDonkey", 'putio': "Putio"} %>
+                                            % for curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent', 'mlnet', 'putio'):
                                                 <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TORRENT_METHOD == curAction]}>${torrent_method_text[curAction]}</option>
                                             % endfor
                                         </select>

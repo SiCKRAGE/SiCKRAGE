@@ -25,19 +25,17 @@ import random
 import shelve
 import tempfile
 import threading
-import traceback
 import urllib2
-from _socket import timeout as SocketTimeout
 from contextlib import closing
 
 import cachecontrol
 import certifi
-import requests
 from cachecontrol.heuristics import ExpiresAfter
 from requests_futures.sessions import FuturesSession
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
+from sickrage.core.webclient.exceptions import handle_exception
 from sickrage.core.webclient.useragents import USER_AGENTS
 
 
@@ -69,6 +67,7 @@ class DBCache(object):
 
 
 class srSession(FuturesSession):
+    @handle_exception
     def request(self, method, url, headers=None, params=None, cache=True, *args, **kwargs):
         url = self.normalize_url(url)
         kwargs.setdefault('params', {}).update(params or {})
@@ -95,29 +94,16 @@ class srSession(FuturesSession):
             kwargs.setdefault('proxies', {}).update({"http": address, "https": address})
             kwargs.setdefault('headers', {}).update({'Referer': address})
 
-        try:
-            # setup session caching
-            if cache:
-                cachecontrol.CacheControl(self,
-                                          cache=DBCache(os.path.join(tempfile.gettempdir(), 'cachecontrol.db')),
-                                          heuristic=ExpiresAfter(days=7))
+        # setup session caching
+        if cache:
+            cachecontrol.CacheControl(self,
+                                      cache=DBCache(os.path.join(tempfile.gettempdir(), 'cachecontrol.db')),
+                                      heuristic=ExpiresAfter(days=7))
 
-            # get result
-            return super(srSession, self).request(method, url, *args, **kwargs).result()
-        except (SocketTimeout, TypeError) as e:
-            sickrage.srCore.srLogger.warning("Connection timed out (sockets) accessing url %s Error: %r" % (url, e))
-        except requests.exceptions.HTTPError as e:
-            sickrage.srCore.srLogger.debug("HTTP error in url %s Error: %r" % (url, e))
-        except requests.exceptions.ConnectionError as e:
-            sickrage.srCore.srLogger.debug("Connection error to url %s Error: %r" % (url, e))
-        except requests.exceptions.Timeout as e:
-            sickrage.srCore.srLogger.warning("Connection timed out accessing url %s Error: %r" % (url, e))
-        except requests.exceptions.ContentDecodingError:
-            sickrage.srCore.srLogger.debug("Content-Encoding was gzip, but content was not compressed. url: %s" % url)
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
-        except Exception as e:
-            sickrage.srCore.srLogger.debug("Unknown exception in url %s Error: %r" % (url, e))
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
+        # get result
+        response = super(srSession, self).request(method, url, *args, **kwargs).result()
+        response.raise_for_status()
+        return response
 
     def download(self, url, filename, **kwargs):
         """

@@ -62,7 +62,7 @@
 
                             % if not sickrage.srCore.srConfig.USE_NZBS or not sickrage.srCore.srConfig.USE_TORRENTS:
                                 <blockquote style="margin: 20px 0;">NZB/Torrent providers can be toggled in <b><a
-                                        href="/config/search">Search Settings</a></b></blockquote>
+                                        href="/config/search">Search Clients</a></b></blockquote>
                             % else:
                                 <br>
                             % endif

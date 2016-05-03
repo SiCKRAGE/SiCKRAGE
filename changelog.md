@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f30490 - 2016-05-01: FIXED: Requirements installation now recursive 
+- * 3b90e3b - 2016-05-02: FEATURE: Added new Putio torrent search client FEATURE: Added request web client exception decorator for handling of requests exceptions properly 
+- * f1919a1 - 2016-05-01: FIXED: Requirements installation now recursive 
 - * 8aa69f5 - 2016-05-01: Updated readme.md 
 - * 7d0a498 - 2016-05-01: Added changelog generator 
 - * 9bd21fc - 2016-05-01: More responsive-ui fixes applied 

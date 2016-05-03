@@ -24,13 +24,12 @@ import os
 import re
 import threading
 import traceback
-
 from datetime import date, timedelta
 
 import sickrage
 from sickrage.clients import getClientIstance
-from sickrage.clients.nzbget_client import NZBGet
-from sickrage.clients.sabnzbd_client import SabNZBd
+from sickrage.clients.nzbget import NZBGet
+from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT
 from sickrage.core.databases import main_db

@@ -2315,9 +2315,9 @@ jQuery(document).ready(function ($) {
                                 $('#restart_loading').hide();
                                 $('#restart_success').show();
                                 setTimeout(function () {
-                                     $('#refresh_message').show();
-                                     window.location = '/' + SICKRAGE.srDefaultPage + '/';
-                                 }, 25000);
+                                    $('#refresh_message').show();
+                                    window.location = '/' + SICKRAGE.srDefaultPage + '/';
+                                }, 25000);
                             }
                         },
                         error: function (error) {
@@ -2894,6 +2894,17 @@ jQuery(document).ready(function ($) {
                             $('#torrent_label_anime_option').hide();
                             $('#torrent_paused_option').hide();
                             $('#host_desc_torrent').text('URL to your MLDonkey (e.g. http://localhost:4080)');
+                        } else if (selectedProvider.toLowerCase() === 'putio') {
+                            client = 'putio';
+                            $('#torrent_path_option').hide();
+                            $('#torrent_label_option').hide();
+                            $('#torrent_verify_cert_option').hide();
+                            $('#torrent_verify_deluge').hide();
+                            $('#torrent_verify_rtorrent').hide();
+                            $('#torrent_label_anime_option').hide();
+                            $('#torrent_paused_option').hide();
+                            $('#torrent_host_option').hide();
+                            $('#host_desc_torrent').text('URL to your putio client (e.g. http://localhost:8080)');
                         }
                         $('#host_title').text(client + host);
                         $('#username_title').text(client + username);

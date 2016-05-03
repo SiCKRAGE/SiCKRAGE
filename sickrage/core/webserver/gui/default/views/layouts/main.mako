@@ -191,7 +191,7 @@
                             <li><a href="/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup &amp;
                                 Restore</a>
                             </li>
-                            <li><a href="/config/search/"><i class="menu-icon-config"></i>&nbsp;Search Settings</a></li>
+                            <li><a href="/config/search/"><i class="menu-icon-config"></i>&nbsp;Search Clients</a></li>
                             <li><a href="/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search Providers</a>
                             </li>
                             <li><a href="/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
