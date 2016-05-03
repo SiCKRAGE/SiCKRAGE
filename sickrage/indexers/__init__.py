@@ -20,14 +20,11 @@ from __future__ import unicode_literals
 
 import os
 import re
-import shelve
-
-import dill
 
 import sickrage
 from sickrage.core.classes import ShowListUI
 from sickrage.core.helpers import findCertainShow
-from sickrage.indexers.indexer_config import indexerConfig
+from sickrage.indexers.config import indexerConfig
 
 
 class srIndexerApi(object):

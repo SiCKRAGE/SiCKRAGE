@@ -84,7 +84,7 @@ class MainDB(Connection):
 
         def convert_tvrage_to_tvdb(self):
             sickrage.srCore.srLogger.debug("Checking for shows with tvrage id's, since tvrage is gone")
-            from sickrage.indexers.indexer_config import INDEXER_TVRAGE, INDEXER_TVDB
+            from sickrage.indexers.config import INDEXER_TVRAGE, INDEXER_TVDB
 
             sqlResults = self.select(
                     "SELECT indexer_id, show_name, location FROM tv_shows WHERE indexer = {}".format(INDEXER_TVRAGE))

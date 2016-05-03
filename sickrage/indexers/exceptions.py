@@ -20,7 +20,7 @@
 
 from __future__ import unicode_literals
 
-from thetvdb.tvdb_exceptions import tvdb_attributenotfound, \
+from thetvdb.exceptions import tvdb_attributenotfound, \
     tvdb_episodenotfound, tvdb_error, tvdb_exception, tvdb_seasonnotfound, \
     tvdb_showincomplete, tvdb_shownotfound, tvdb_userabort
 

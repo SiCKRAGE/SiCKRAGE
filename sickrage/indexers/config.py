@@ -20,7 +20,7 @@
 
 from __future__ import unicode_literals
 
-from thetvdb.tvdb_api import Tvdb
+from thetvdb.api import Tvdb
 
 INDEXER_TVDB = 1
 INDEXER_TVRAGE = 2  # Must keep

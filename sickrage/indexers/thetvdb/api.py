@@ -38,9 +38,9 @@ try:
 except ImportError:
     gzip = None
 
-from tvdb_ui import BaseUI
-from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound,
-                             tvdb_attributenotfound)
+from ui import BaseUI
+from exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound,
+                        tvdb_attributenotfound)
 
 
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
