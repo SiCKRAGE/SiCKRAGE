@@ -23,7 +23,7 @@ import datetime
 import threading
 
 import sickrage
-from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
+from sickrage.core.common import UNAIRED, SKIPPED, statusStrings, WANTED
 from sickrage.core.databases import main_db
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import findCertainShow
@@ -51,26 +51,24 @@ class srDailySearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
+
         # trim failed download history
         if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
         sickrage.srCore.srLogger.info("Searching for new released episodes ...")
 
+        curDate = (datetime.date.today() + datetime.timedelta(days=2)).toordinal()
         if tz_updater.load_network_dict():
             curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
-        else:
-            curDate = (datetime.date.today() + datetime.timedelta(days=2)).toordinal()
 
         curTime = datetime.datetime.now(tz_updater.sr_timezone)
-
         sqlResults = main_db.MainDB().select(
-                "SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? AND airdate > 1)",
-                [UNAIRED, curDate])
+            "SELECT * FROM tv_episodes WHERE status in (?,?) AND season > 0 AND (airdate <= ? AND airdate > 1)",
+            [UNAIRED, WANTED, curDate])
 
-        sql_l = []
         show = None
-
+        sql_l = []
         for sqlEp in sqlResults:
             try:
                 if not show or int(sqlEp["showid"]) != show.indexerid:
@@ -86,7 +84,7 @@ class srDailySearcher(object):
 
             if show.airs and show.network:
                 # This is how you assure it is always converted to local time
-                air_time = tz_updater.parse_date_time(sqlEp['airdate'], show.airs, show.network).astimezone(tz_updater.sr_timezone)
+                air_time = tz_updater.parse_date_time(sqlEp['airdate'], show.airs, show.network, dateOnly=True).astimezone(tz_updater.sr_timezone)
 
                 # filter out any episodes that haven't started airing yet,
                 # but set them to the default status while they are airing
@@ -98,7 +96,7 @@ class srDailySearcher(object):
             with ep.lock:
                 if ep.season == 0:
                     sickrage.srCore.srLogger.info(
-                            "New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
+                        "New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
                     ep.status = SKIPPED
                 else:
                     sickrage.srCore.srLogger.info("New episode %s airs today, setting to default episode status for this show: %s" % (
