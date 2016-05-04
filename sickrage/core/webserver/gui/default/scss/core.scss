@@ -2483,22 +2483,9 @@ login.css
   font-weight: normal; }
 
 .login form {
-  padding: 0;
-  height: 300px;
-  width: 400px;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  margin: -200px 0 0 -200px; }
-
-.login form {
-  padding: 0;
-  height: 300px;
-  width: 90%;
-  position: absolute;
-  left: 5%;
-  top: 10px;
-  margin: 0; }
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto; }
 
 .login .ctrlHolder {
   padding: 0;
