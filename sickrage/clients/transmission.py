@@ -49,7 +49,7 @@ class TransmissionAPI(GenericClient):
                                                           verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
 
         # get auth session header
-        self.auth = self.response.headers['x-transmission-session-id'] if self.response else None
+        self.auth = self.response.headers['x-transmission-session-id'] if self.response is not None else None
         if not self.auth:
             return
 
