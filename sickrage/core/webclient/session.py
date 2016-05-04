@@ -68,7 +68,7 @@ class DBCache(object):
 
 class srSession(FuturesSession):
     @handle_exception
-    def request(self, method, url, headers=None, params=None, cache=True, raise_exception=True, *args, **kwargs):
+    def request(self, method, url, headers=None, params=None, cache=True, raise_exceptions=True, *args, **kwargs):
         url = self.normalize_url(url)
         kwargs.setdefault('params', {}).update(params or {})
         kwargs.setdefault('headers', {}).update(headers or {})
@@ -102,7 +102,7 @@ class srSession(FuturesSession):
 
         # get result
         response = super(srSession, self).request(method, url, *args, **kwargs).result()
-        if raise_exception:
+        if raise_exceptions:
             response.raise_for_status()
         return response
 
