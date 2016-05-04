@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3b90e3b - 2016-05-02: FEATURE: Added new Putio torrent search client FEATURE: Added request web client exception decorator for handling of requests exceptions properly 
+- * 5bf6fc9 - 2016-05-03: FIXED: Detects VirtualEnv properly during pip and requirements installations FIXED: More detailed constraints file used to ensure requirements installations go smoother FIXED: InsecurePlatformWarning messages during requirements installs now surpressed 
+- * 874eda1 - 2016-05-02: FEATURE: Added new Putio torrent search client FEATURE: Added request web client exception decorator for handling of requests exceptions properly 
 - * f1919a1 - 2016-05-01: FIXED: Requirements installation now recursive 
 - * 8aa69f5 - 2016-05-01: Updated readme.md 
 - * 7d0a498 - 2016-05-01: Added changelog generator 

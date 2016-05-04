@@ -115,10 +115,16 @@ class srLogger(logging.getLoggerClass()):
             console.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
             self.addHandler(console)
 
-        # rotating log file handler
+        # rotating log file handlers
         if self.logFile and makeDir(os.path.dirname(self.logFile)):
             rfh = RotatingFileHandler(
                 filename=self.logFile,
+                maxBytes=self.logSize,
+                backupCount=self.logNr
+            )
+
+            rfh_errors = RotatingFileHandler(
+                filename=self.logFile.replace('.log', '.error.log'),
                 maxBytes=self.logSize,
                 backupCount=self.logNr
             )
@@ -127,6 +133,11 @@ class srLogger(logging.getLoggerClass()):
                 logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
             rfh.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
             self.addHandler(rfh)
+
+            rfh_errors.setFormatter(
+                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
+            rfh_errors.setLevel(self.logLevels['ERROR'])
+            self.addHandler(rfh_errors)
 
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
         if (False, True)[name in self.allowedLoggers]:

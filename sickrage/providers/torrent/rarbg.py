@@ -25,7 +25,7 @@ import traceback
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.indexers.indexer_config import INDEXER_TVDB
+from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
 
 class RarbgProvider(TorrentProvider):

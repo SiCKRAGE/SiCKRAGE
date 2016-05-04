@@ -1,5 +1,3 @@
-
-
 # Author: Mr_Orange <mr_orange@hotmail.it>
 # URL: http://github.com/SiCKRAGETV/SickRage/
 #
@@ -21,7 +19,6 @@
 from __future__ import unicode_literals
 
 import json
-import re
 from base64 import b64encode
 
 import sickrage
@@ -45,15 +42,17 @@ class TransmissionAPI(GenericClient):
         self.url = self.host + self.rpcurl + '/rpc'
 
     def _get_auth(self):
-        try:
-            self.response = sickrage.srCore.srWebSession.post(self.url,
-                                                            data=json.dumps({'method': 'session-get',}).encode('utf-8'),
-                                                            timeout=120,
-                                                            verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+        self.response = sickrage.srCore.srWebSession.post(self.url,
+                                                          data=json.dumps({'method': 'session-get',}),
+                                                          timeout=120,
+                                                          auth=(self.username, self.password),
+                                                          raise_exceptions=False,
+                                                          verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
 
-            self.auth = re.search(r'X-Transmission-Session-Id:\s*(\w+)', self.response.text).group(1)
-        except Exception:
-            return None
+        # get auth session header
+        self.auth = self.response.headers['x-transmission-session-id'] if self.response is not None else None
+        if not self.auth:
+            return
 
         # Validating Transmission authorization
         self._request(method='post',

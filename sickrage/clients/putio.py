@@ -30,8 +30,8 @@ class PutioAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
         super(PutioAPI, self).__init__('putio', host, username, password)
 
-        self.client_id = 2392  # sickrage-ng
-        self.redirect_uri = 'https://sickrage.ca'
+        self.client_id = "48901323822-2nplbq4cc2sibf942v3lf1kqr0vl67gp.apps.googleusercontent.com"
+        self.redirect_uri = 'https://auth.sickrage.ca/auth/google/callback'
         self.url = 'https://api.put.io/login'
 
     def _get_auth(self):

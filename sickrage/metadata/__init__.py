@@ -34,7 +34,7 @@ import sickrage
 from helpers import getShowImage
 from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension
 from sickrage.indexers import srIndexerApi
-from sickrage.indexers.indexer_exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
+from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 
 __all__ = ['metadata_helpers.py', 'kodi', 'kodi_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
 

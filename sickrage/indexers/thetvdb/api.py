@@ -38,9 +38,9 @@ try:
 except ImportError:
     gzip = None
 
-from tvdb_ui import BaseUI
-from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound,
-                             tvdb_attributenotfound)
+from ui import BaseUI
+from exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound,
+                        tvdb_attributenotfound)
 
 
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
@@ -530,8 +530,6 @@ class Tvdb:
 
     @retry(tvdb_error)
     def _loadUrl(self, url, params=None, language=None):
-        resp = None
-
         try:
             # get api v2 token
             if self.config['apiver'] == 2:
@@ -548,14 +546,17 @@ class Tvdb:
                                                     cache=self.config['cache_enabled'],
                                                     headers=self.config['headers'],
                                                     params=params,
+                                                    raise_exceptions=False,
                                                     timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT)
+            # handle requests exceptions
+            resp.raise_for_status()
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
                 self.getToken(True)
-                raise tvdb_error("Session token expired, retrieving new token(401 error)")
+                raise tvdb_error("HTTP Error {}: Session token expired, retrieving new token".format(e.errno))
             elif e.response.status_code == 404:
-                return
-            raise tvdb_error("HTTP error {} while loading URL {}".format(e.errno, url))
+                return tvdb_error("HTTP Error {}: Show not found".format(e.errno))
+            raise tvdb_error("HTTP Error {}: while loading URL {}".format(e.errno, url))
         except requests.exceptions.ConnectionError as e:
             raise tvdb_error("Connection error {} while loading URL {}".format(e.message, url))
         except requests.exceptions.Timeout as e:

@@ -113,7 +113,7 @@ def get_network_timezone(network, _network_dict):
 
 
 # parse date and time string into local time
-def parse_date_time(d, t, network):
+def parse_date_time(d, t, network, dateOnly=False):
     """
     Parse date and time string into local time
     :param d: date string
@@ -145,7 +145,7 @@ def parse_date_time(d, t, network):
 
     result = datetime.fromordinal(max(tryInt(d), 1))
 
-    return result.replace(hour=hr, minute=m, tzinfo=network_tz)
+    return result.replace(hour=hr, minute=m, tzinfo=network_tz) if not dateOnly else result.replace(tzinfo=network_tz)
 
 
 def test_timeformat(t):

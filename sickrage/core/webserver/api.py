@@ -62,7 +62,7 @@ from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers import srIndexerApi
-from sickrage.indexers.indexer_exceptions import indexer_error, \
+from sickrage.indexers.exceptions import indexer_error, \
     indexer_showincomplete, indexer_shownotfound
 
 indexer_ids = ["indexerid", "tvdbid"]

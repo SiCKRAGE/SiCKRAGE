@@ -382,7 +382,13 @@ def searchForNeededEpisodes():
     def perform_searches():
         for providerID, providerObj in sickrage.srCore.providersDict.sort(
                 randomize=sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS).items():
-            if not providerObj.isEnabled:
+
+            # check provider type and provider is enabled
+            if not sickrage.srCore.srConfig.USE_NZBS and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
+                continue
+            elif not sickrage.srCore.srConfig.USE_TORRENTS and providerObj.type in [TorrentProvider.type, TorrentRssProvider.type]:
+                continue
+            elif not providerObj.isEnabled:
                 continue
 
             threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
@@ -451,14 +457,12 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
         for providerID, providerObj in sickrage.srCore.providersDict.sort(
                 randomize=sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS).items():
 
-            if not providerObj.isEnabled:
+            # check provider type and provider is enabled
+            if not sickrage.srCore.srConfig.USE_NZBS and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
                 continue
-
-            if not sickrage.srCore.srConfig.USE_NZBS and providerObj.type in [NZBProvider.type,
-                                                                            NewznabProvider.type]:
+            elif not sickrage.srCore.srConfig.USE_TORRENTS and providerObj.type in [TorrentProvider.type, TorrentRssProvider.type]:
                 continue
-            elif not sickrage.srCore.srConfig.USE_TORRENTS and providerObj.type in [TorrentProvider.type,
-                                                                                  TorrentRssProvider.type]:
+            elif not providerObj.isEnabled:
                 continue
 
             if providerObj.anime_only and not show.is_anime:
