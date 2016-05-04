@@ -45,10 +45,8 @@ def handle_exception(func):
 
             sickrage.srCore.srLogger.error("SSL Error: {}".format(e))
             sickrage.srCore.srLogger.debug(traceback.format_exc())
-            #raise Exception
         except requests.exceptions.RequestException as e:
             sickrage.srCore.srLogger.error("Request failed: {}".format(e))
             sickrage.srCore.srLogger.debug(traceback.format_exc())
-            #raise Exception
 
     return handle
