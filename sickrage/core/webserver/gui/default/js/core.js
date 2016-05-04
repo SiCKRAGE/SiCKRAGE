@@ -2642,7 +2642,6 @@ jQuery(document).ready(function ($) {
                 $('#branchCheckout').click(function () {
                     window.location.href = '/home/branchCheckout?branch=' + $("#branchVersion").val();
                 });
-
             },
 
             subtitles: {

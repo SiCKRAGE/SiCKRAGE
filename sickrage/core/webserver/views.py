@@ -3869,21 +3869,18 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.save()
 
     def saveGeneral(self, log_dir=None, log_nr=5, log_size=1048576, web_port=None, web_log=None,
-                    encryption_version=None, web_ipv6=None,
-                    trash_remove_show=None, trash_rotate_logs=None, update_frequency=None, skip_removed_files=None,
-                    indexerDefaultLang='en', ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3,
-                    web_username=None,
-                    api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
-                    web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
-                    handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
-                    proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
-                    calendar_unprotected=None, calendar_icons=None, debug=None, ssl_verify=None, no_restart=None,
-                    coming_eps_missed_range=None,
-                    filter_row=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None,
-                    time_preset=None,
+                    encryption_version=None, web_ipv6=None, trash_remove_show=None, trash_rotate_logs=None,
+                    update_frequency=None, skip_removed_files=None, indexerDefaultLang='en',
+                    ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3, web_username=None,
+                    api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL', web_password=None,
+                    version_notify=None, enable_https=None, https_cert=None, https_key=None, handle_reverse_proxy=None,
+                    sort_article=None, auto_update=None, notify_on_update=None, proxy_setting=None, proxy_indexers=None,
+                    anon_redirect=None, git_path=None, git_remote=None, calendar_unprotected=None, calendar_icons=None,
+                    debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None, filter_row=None,
+                    fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None,
-                    display_all_seasons=None):
+                    display_all_seasons=None, showupdate_stale=None, **kwargs):
 
         results = []
 
@@ -3897,7 +3894,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.change_version_notify(sickrage.srCore.srConfig.checkbox_to_value(version_notify))
         sickrage.srCore.srConfig.AUTO_UPDATE = sickrage.srCore.srConfig.checkbox_to_value(auto_update)
         sickrage.srCore.srConfig.NOTIFY_ON_UPDATE = sickrage.srCore.srConfig.checkbox_to_value(notify_on_update)
-        # sickrage.LOG_DIR is set in sickrage.CONFIG.change_log_dir()
+        sickrage.srCore.srConfig.SHOWUPDATE_STALE = sickrage.srCore.srConfig.checkbox_to_value(showupdate_stale)
         sickrage.srCore.srConfig.LOG_NR = log_nr
         sickrage.srCore.srConfig.LOG_SIZE = log_size
 
