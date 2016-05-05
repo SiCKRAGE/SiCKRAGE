@@ -31,7 +31,6 @@ from UnRAR2 import RarFile
 from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
-from tornado.auth import GoogleOAuth2Mixin
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
@@ -257,31 +256,6 @@ class LoginHandler(BaseHandler):
             sickrage.srCore.srLogger.debug(
                 'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
-
-
-class GoogleOAuth2LoginHandler(BaseHandler, GoogleOAuth2Mixin):
-    @coroutine
-    def prepare(self, *args, **kwargs):
-        result = yield self.callback(self.checkAuth)
-        self.finish(result)
-
-    def checkAuth(self):
-        if self.get_argument('code', False):
-            user = self.get_authenticated_user(
-                redirect_uri='https://auth.sickrage.ca/auth/google/callback',
-                code=self.get_argument('code'))
-
-            self.set_secure_cookie('user', json_encode(user))
-
-            sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
-            return self.redirect(self.get_argument("next", "/"))
-        else:
-            return self.authorize_redirect(
-                redirect_uri='https://auth.sickrage.ca/auth/google/callback',
-                client_id='48901323822-2nplbq4cc2sibf942v3lf1kqr0vl67gp.apps.googleusercontent.com',
-                scope=['profile', 'email'],
-                response_type='code',
-                extra_params={'approval_prompt': 'auto'})
 
 
 class LogoutHandler(BaseHandler):
