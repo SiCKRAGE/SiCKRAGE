@@ -97,6 +97,7 @@ class srConfig(object):
         self.WEB_IPV6 = False
         self.WEB_COOKIE_SECRET = None
         self.WEB_USE_GZIP = True
+        self.GOOGLE_OAUTH2 = False
         self.HANDLE_REVERSE_PROXY = False
         self.PROXY_SETTING = None
         self.PROXY_INDEXERS = True
@@ -1394,6 +1395,8 @@ class srConfig(object):
         )
         self.WEB_USE_GZIP = bool(self.check_setting_int('General', 'web_use_gzip', 1))
 
+        self.GOOGLE_OAUTH2 = bool(self.check_setting_int('General', 'google_oauth2', self.GOOGLE_OAUTH2))
+
         self.SSL_VERIFY = bool(self.check_setting_int('General', 'ssl_verify', 1))
         self.LAUNCH_BROWSER = bool(self.check_setting_int('General', 'launch_browser', 1))
         self.INDEXER_DEFAULT_LANGUAGE = self.check_setting_str('General', 'indexerDefaultLang', 'en')
@@ -1903,6 +1906,7 @@ class srConfig(object):
         new_config['General']['web_password'] = self.WEB_PASSWORD
         new_config['General']['web_cookie_secret'] = self.WEB_COOKIE_SECRET
         new_config['General']['web_use_gzip'] = int(self.WEB_USE_GZIP)
+        new_config['General']['google_oauth2'] = int(self.GOOGLE_OAUTH2)
         new_config['General']['ssl_verify'] = int(self.SSL_VERIFY)
         new_config['General']['download_url'] = self.DOWNLOAD_URL
         new_config['General']['localhost_ip'] = self.LOCALHOST_IP

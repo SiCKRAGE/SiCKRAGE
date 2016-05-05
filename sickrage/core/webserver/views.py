@@ -31,6 +31,7 @@ from UnRAR2 import RarFile
 from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
+from tornado.auth import GoogleOAuth2Mixin
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
@@ -256,6 +257,31 @@ class LoginHandler(BaseHandler):
             sickrage.srCore.srLogger.debug(
                 'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
+
+
+class GoogleOAuth2LoginHandler(BaseHandler, GoogleOAuth2Mixin):
+    @coroutine
+    def prepare(self, *args, **kwargs):
+        result = yield self.callback(self.checkAuth)
+        self.finish(result)
+
+    def checkAuth(self):
+        if self.get_argument('code', False):
+            user = self.get_authenticated_user(
+                redirect_uri='https://auth.sickrage.ca/auth/google/callback',
+                code=self.get_argument('code'))
+
+            self.set_secure_cookie('user', json_encode(user))
+
+            sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
+            return self.redirect(self.get_argument("next", "/"))
+        else:
+            return self.authorize_redirect(
+                redirect_uri='https://auth.sickrage.ca/auth/google/callback',
+                client_id='48901323822-2nplbq4cc2sibf942v3lf1kqr0vl67gp.apps.googleusercontent.com',
+                scope=['profile', 'email'],
+                response_type='code',
+                extra_params={'approval_prompt': 'auto'})
 
 
 class LogoutHandler(BaseHandler):
@@ -3880,7 +3906,7 @@ class ConfigGeneral(Config):
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None,
-                    display_all_seasons=None, showupdate_stale=None, **kwargs):
+                    display_all_seasons=None, showupdate_stale=None, google_oauth2=None, **kwargs):
 
         results = []
 
@@ -3897,6 +3923,8 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.SHOWUPDATE_STALE = sickrage.srCore.srConfig.checkbox_to_value(showupdate_stale)
         sickrage.srCore.srConfig.LOG_NR = log_nr
         sickrage.srCore.srConfig.LOG_SIZE = log_size
+
+        sickrage.srCore.srConfig.GOOGLE_OAUTH2 = sickrage.srCore.srConfig.checkbox_to_value(google_oauth2)
 
         sickrage.srCore.srConfig.TRASH_REMOVE_SHOW = sickrage.srCore.srConfig.checkbox_to_value(trash_remove_show)
         sickrage.srCore.srConfig.TRASH_ROTATE_LOGS = sickrage.srCore.srConfig.checkbox_to_value(trash_rotate_logs)
@@ -3984,7 +4012,7 @@ class ConfigGeneral(Config):
             sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                                   '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('[GENERAL] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/general/")
 
@@ -4151,7 +4179,7 @@ class ConfigSearch(Config):
             sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                                   '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('[SEARCH] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/search/")
 
@@ -4287,7 +4315,8 @@ class ConfigPostProcessing(Config):
             sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                                   '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('[POST-PROCESSING] Configuration Saved',
+                                                    os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/postProcessing/")
 
@@ -4522,7 +4551,8 @@ class ConfigProviders(Config):
             sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                                   '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('[PROVIDERS] Configuration Saved',
+                                                    os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/providers/")
 
@@ -4814,7 +4844,8 @@ class ConfigNotifications(Config):
             sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                                   '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('[NOTIFICATIONS] Configuration Saved',
+                                                    os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/notifications/")
 
@@ -4887,7 +4918,8 @@ class ConfigSubtitles(Config):
             sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                                   '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('[SUBTITLES] Configuration Saved',
+                                                    os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/subtitles/")
 
@@ -4927,7 +4959,7 @@ class ConfigAnime(Config):
             sickrage.srCore.srNotifications.error('Error(s) Saving Configuration',
                                                   '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message('[ANIME] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
 

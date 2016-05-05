@@ -333,7 +333,7 @@ def wantedEpisodes(show, fromDate):
     anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
     allQualities = list(set(anyQualities + bestQualities))
 
-    sickrage.srCore.srLogger.debug("Seeing if we need anything from " + show.name)
+    sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
     sqlResults = main_db.MainDB().select(
         "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 AND airdate > ?",
@@ -342,6 +342,7 @@ def wantedEpisodes(show, fromDate):
     # check through the list of statuses to see if we want any
     wanted = []
     for result in sqlResults:
+        sickrage.srCore.srLogger.debug("Found {} episode(s) needed for {}".format(len(sqlResults), show.name))
         curCompositeStatus = int(result["status"] or -1)
         curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 

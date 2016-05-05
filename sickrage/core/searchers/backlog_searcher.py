@@ -149,7 +149,7 @@ class srBacklogSearcher(object):
 
         anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
 
-        sickrage.srCore.srLogger.debug("Seeing if we need anything from {show_name}".format(show_name=show.name))
+        sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
         sqlResults = main_db.MainDB().select(
             "SELECT status, season, episode FROM tv_episodes WHERE season > 0 AND airdate > ? AND showid = ?",

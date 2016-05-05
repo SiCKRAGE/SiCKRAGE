@@ -32,7 +32,7 @@ import sickrage
 from sickrage.core.helpers import create_https_certificates, generateApiKey, get_lan_ip
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
-from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler, GoogleOAuth2LoginHandler
 
 
 def launch_browser(protocol=None, host=None, startport=None):
@@ -118,6 +118,7 @@ class srWebServer(object):
                                )
 
         # Main Handlers
+        auth_handler = (LoginHandler, GoogleOAuth2LoginHandler)[sickrage.srCore.srConfig.GOOGLE_OAUTH2]
         self.app.add_handlers('.*$', [
             # webapi handler
             (r'%s(/?.*)' % self.api_root, ApiHandler),
@@ -130,7 +131,7 @@ class srWebServer(object):
              {"url": sickrage.srCore.srConfig.WEB_ROOT + '/apibuilder/'}),
 
             # webui login/logout handlers
-            (r'%s/login(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LoginHandler),
+            (r'%s/login(/?)' % sickrage.srCore.srConfig.WEB_ROOT, auth_handler),
             (r'%s/logout(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LogoutHandler),
 
             # webui handlers

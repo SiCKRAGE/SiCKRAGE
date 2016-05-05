@@ -511,13 +511,24 @@
                                 </div>
 
                                 <div class="field-pair">
+                                    <label for="google_oauth2">
+                                        <span class="component-title">Google OAuth2</span>
+                                        <span class="component-desc">
+                                            <input type="checkbox" name="google_oauth2"
+                                                   id="google_oauth2" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.GOOGLE_OAUTH2)]}/>
+                                            <p>use Google OAuth2 for logins instead of username/password</p>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="field-pair">
                                     <label for="web_ipv6">
                                         <span class="component-title">Listen on IPv6</span>
-                                <span class="component-desc">
-                                    <input type="checkbox" name="web_ipv6"
-                                           id="web_ipv6" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.WEB_IPV6)]}/>
-                                    <p>attempt binding to any available IPv6 address</p>
-                                </span>
+                                        <span class="component-desc">
+                                            <input type="checkbox" name="web_ipv6"
+                                                   id="web_ipv6" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.WEB_IPV6)]}/>
+                                            <p>attempt binding to any available IPv6 address</p>
+                                        </span>
                                     </label>
                                 </div>
 
