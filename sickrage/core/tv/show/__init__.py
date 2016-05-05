@@ -1087,14 +1087,17 @@ class TVShow(object):
 
         i = imdbpie.Imdb()
         if not self.imdbid:
-            self.imdbid = i.search_for_title(self.name).imdb_id or self.imdbid
+            try:
+                self.imdbid = i.search_for_title(self.name).imdb_id
+            except:
+                pass
 
         if self.imdbid:
             sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Loading show info from IMDb")
 
             imdbTv = i.get_title_by_id(self.imdbid)
 
-            for key in [x for x in imdb_info.keys() if x.replace('_', ' ') in imdbTv.keys()]:
+            for key in [x for x in imdb_info.keys() if x.replace('_', ' ') in imdbTv]:
                 # Store only the first value for string type
                 if isinstance(imdb_info[key], basestring) and isinstance(imdbTv.get(key.replace('_', ' ')), list):
                     imdb_info[key] = imdbTv.get(key.replace('_', ' '))[0]
@@ -1191,9 +1194,10 @@ class TVShow(object):
                     tmdb_info[key] = tmdbInfo.get(key) or ''
 
             # Filter only the value
-            tmdb_info['episode_run_time'] = re.search(
-                r'\d+', str(tmdb_info['episode_run_time'])
-            ).group(0) or self.runtime
+            try:
+                tmdb_info['episode_run_time'] = re.search(r'\d+', str(tmdb_info['episode_run_time'])).group(0)
+            except AttributeError:
+                tmdb_info['episode_run_time'] = self.runtime
 
             tmdb_info['akas'] = tmdbInfo.get('alternaive_titles', [])
             tmdb_info['akas'] = '|'.join([x['name'] for x in tmdb_info['akas']]) or ''
