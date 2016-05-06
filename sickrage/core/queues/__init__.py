@@ -99,7 +99,8 @@ class srQueue(PriorityQueue):
                 with ThreadPoolExecutor(len(self.queue)) as executor:
                     # shutdown queue if stop signal issued
                     if self.stop.isSet():
-                        executor.shutdown()
+                        executor._threads.clear()
+                        thread._threads_queues.clear()
                         break
 
                     executor.submit(self.callback, self.get()[1])
