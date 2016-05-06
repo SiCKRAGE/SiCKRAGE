@@ -96,7 +96,12 @@ class ShowCache(dict):
 
     def load(self):
         if os.path.isfile(self.filename):
-            return pickle.load(open(self.filename, 'rb'))
+            try:
+                return pickle.load(open(self.filename, 'rb'))
+            except:
+                os.remove(self.filename)
+                return pickle.load(open(self.filename, 'rb'))
+
         return self
 
     def save(self):

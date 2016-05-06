@@ -84,24 +84,25 @@ class srQueue(PriorityQueue):
         :param force: Force queue processing (currently not implemented)
         """
 
-        with self.lock:
-            if self.amActive:
-                return
+        if self.amActive:
+            return
 
+        with self.lock:
             self.amActive = True
 
             # if there's something in the queue then run it in a thread and take it out of the queue
-            if not self.empty():
+            while not self.empty():
                 if self.queue[0][0] < self.min_priority:
                     return
 
                 # execute item in queue
                 with ThreadPoolExecutor(len(self.queue)) as executor:
+                    # shutdown queue if stop signal issued
                     if self.stop.isSet():
-                        executor._threads.clear()
-                        thread._threads_queues.clear()
-                    else:
-                        executor.submit(self.callback, self.get()[1])
+                        executor.shutdown()
+                        break
+
+                    executor.submit(self.callback, self.get()[1])
 
             self.amActive = False
 

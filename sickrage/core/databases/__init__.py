@@ -118,7 +118,7 @@ class Transaction(object):
                     result = cursor.fetchall()
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     conn.rollback()
-                    sqlite3.time.sleep(1)
+                    sleep(1)
                 except Exception as e:
                     sickrage.srCore.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
                 finally:
@@ -235,10 +235,7 @@ class Connection(object):
 
         q = Queue()
         with ThreadPoolExecutor(max_workers=len(upserts)) as executor, self.transaction() as tx:
-            [executor.submit(tx.upsert, *upsert).add_done_callback(lambda f: q.put(f.result())) for upsert in upserts]
-
-        # allow queue to fill
-        sleep(1)
+            [q.put(executor.submit(tx.upsert, *upsert).result()) for upsert in upserts]
 
         sqlResults = []
         while not q.empty():
@@ -258,10 +255,7 @@ class Connection(object):
 
         q = Queue()
         with ThreadPoolExecutor(max_workers=len(queries)) as executor, self.transaction() as tx:
-            [executor.submit(tx.query, query).add_done_callback(lambda f: q.put(f.result())) for query in queries]
-
-        # allow queue to fill
-        sleep(1)
+            [q.put(executor.submit(tx.query, query).result()) for query in queries]
 
         sqlResults = []
         while not q.empty():
