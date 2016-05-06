@@ -1,5 +1,24 @@
 # Changelog
 
+- * 13b9977 - 2016-05-06: FIXED: Queue was not properly looping through tasks, corrected by adding a while statement FIXED: Corrupted indexer show cache files caused indexer to throw exception and fail to complete tasks 
+- * 31334ab - 2016-05-05: REVAMPED: Queue system now subclasses builtin PriorityQueue to help with multi-threading and properly offload tasks to thread executor FIXED: Database transactions are now tasked by a queue system which resolves data being lost during db calls 
+- * 3a69945 - 2016-05-05: FIXED: Object comparison used when trying to compare boolean against text incorrectly in provider modules, caused issues with updating cache from RSS feeds 
+- * c69a161 - 2016-05-05: FIXED: Show episode file locations were not being set due to missing code runs 
+- * 9e208da - 2016-05-05: FIXED: Error loading IMDb and TMDb info caused by lack of exception handling and checking of attributes 
+- * cc235d9 - 2016-05-04: FIXED: Thread names for searches were not being properly set 
+- * 2f61a1b - 2016-05-04: FEATURE: Added Google OAuth2 to be used instead of username/password if wanted 
+- * 9418082 - 2016-05-04: FIXED: General settings during save was missing new stale shows variable causing settings not to be saved. 
+- * 310f701 - 2016-05-04: UPDATED: Changed Put.io client-id and redirect-uri UPDATED: Grunt JS tasks run 
+- * ae35575 - 2016-05-04: FEATURE: Added a rotating error log file handler to seperate errors logs into there own file for easier capture 
+- * fa6a00d - 2016-05-04: FIXED: Web client exception handling now logs via exception not error 
+- * 6fd09bb - 2016-05-04: FIXED: Transmission client was not sending username and password into web client sessions, code was left out during upgrades by mistake 
+- * 6fd10db - 2016-05-03: FIXED: When disabling torrent or nzb functionality for searches but not disabling individual providers under those categories the non-disabled providers were still being used for searches even if the main classification of them was disabled 
+- * b0a313c - 2016-05-03: FIXED: Small code correction for boolean logic during transmission client authentication 
+- * c5a6d08 - 2016-05-03: FIXED: Custom requests exception handling added for theTVDB indexer to resolved premature exception handling from primary requests exception handler 
+- * d293d32 - 2016-05-03: FIXED: Requests exceptional handler can optionally be turned off to allow custom handling of certain exceptions FIXED: Transmission authentication issues caused by premature requests exception handling resolved by custom exception handling code 
+- * c46fbc6 - 2016-05-03: FIXED: Daily searches now set shows airing on the day of the performed search to wanted instead of including hours and mintues as a deciding factor FIXED: Womble nzb provider urls corrected FEATURE: Network Timezone datetime parser now allows for results being returned as dates not just datetime 
+- * d13fb3d - 2016-05-03: REFACTORED: Renamed files pertaining to indexers 
+- * 580b217 - 2016-05-03: FIXED: Detects VirtualEnv properly during pip and requirements installations FIXED: More detailed constraints file used to ensure requirements installations go smoother FIXED: InsecurePlatformWarning messages during requirements installs now surpressed 
 - * 5bf6fc9 - 2016-05-03: FIXED: Detects VirtualEnv properly during pip and requirements installations FIXED: More detailed constraints file used to ensure requirements installations go smoother FIXED: InsecurePlatformWarning messages during requirements installs now surpressed 
 - * 874eda1 - 2016-05-02: FEATURE: Added new Putio torrent search client FEATURE: Added request web client exception decorator for handling of requests exceptions properly 
 - * f1919a1 - 2016-05-01: FIXED: Requirements installation now recursive 
@@ -24,5 +43,4 @@
 - * f5a81d7 - 2016-04-29: Fixed several issues with database operations including upgrading of database versions. 
 - * f3897a7 - 2016-04-29: Small correction to requirements installation function code. 
 - * d5b3d69 - 2016-04-29: Fixed issues with sys.stdout during installation of requirements. 
-- * 3c5d7c4 - 2016-04-27: Added constraints file for pip requirement installs and upgrades to ensure certain packages maintain there required version. 
 
