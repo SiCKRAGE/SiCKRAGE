@@ -31,7 +31,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, ShowDirectoryNotFoundException
 from sickrage.core.helpers import scrub
-from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
+from sickrage.core.queues import srQueue, QueueItem, QueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.trakt import TraktAPI
 from sickrage.core.tv.show import TVShow
@@ -40,13 +40,13 @@ from sickrage.indexers.exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
 
 
-class srShowQueue(GenericQueue):
+class srShowQueue(srQueue):
     def __init__(self):
-        super(srShowQueue, self).__init__()
+        srQueue.__init__(self)
         self.queue_name = "SHOWQUEUE"
 
     def run(self, force=False):
-        super(srShowQueue, self).run(force)
+        srQueue.run(self, force)
 
     @property
     def loadingShowList(self):
@@ -56,11 +56,11 @@ class srShowQueue(GenericQueue):
         if not show:
             return False
 
-        return show.indexerid in [x.show.indexerid if x.show else 0 for x in self.queue if x.action_id in actions]
+        return show.indexerid in [x.show.indexerid if x.show else 0 for p,x in self.queue if x.action_id in actions]
 
     def _isBeingSomethinged(self, show, actions):
-        return not (not (self.currentItem is not None) or not (show == self.currentItem.show)) and \
-               self.currentItem.action_id in actions
+        return not (not (self.currentItem is not None) or not (
+            show == self.currentItem.show)) and self.currentItem.action_id in actions
 
     def isInUpdateQueue(self, show):
         return self._isInQueue(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
@@ -90,7 +90,7 @@ class srShowQueue(GenericQueue):
         return self._isBeingSomethinged(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
-        return [x for x in self.queue + [self.currentItem] if not (not x or not x.isLoading)]
+        return [x for p, x in self.queue + [(0, self.currentItem)] if not (not x or not x.isLoading)]
 
     def updateShow(self, show, force=False):
 
@@ -107,9 +107,9 @@ class srShowQueue(GenericQueue):
                 str(show.name) + " is in the process of being updated, can't update again until it's done.")
 
         if force:
-            return self.add_item(QueueItemForceUpdate(show))
+            return self.put(QueueItemForceUpdate(show))
 
-        return self.add_item(QueueItemUpdate(show))
+        return self.put(QueueItemUpdate(show))
 
     def refreshShow(self, show, force=False):
 
@@ -122,24 +122,36 @@ class srShowQueue(GenericQueue):
             return
 
         sickrage.srCore.srLogger.debug("Queueing show refresh for " + show.name)
-        return self.add_item(QueueItemRefresh(show, force=force))
+
+        return self.put(QueueItemRefresh(show, force=force))
 
     def renameShowEpisodes(self, show, force=False):
-        return self.add_item(QueueItemRename(show))
+        return self.put(QueueItemRename(show))
 
     def downloadSubtitles(self, show, force=False):
-        return self.add_item(QueueItemSubtitle(show))
+        return self.put(QueueItemSubtitle(show))
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                 lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None,
                 default_status_after=None, archive=None):
 
-        if lang is None:
-            lang = sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
+        lang = sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE if lang is None else lang
 
-        return self.add_item(QueueItemAdd(indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang,
-                                          subtitles, anime, scene, paused, blacklist, whitelist, default_status_after,
-                                          archive))
+        return self.put(QueueItemAdd(indexer,
+                                     indexer_id,
+                                     showDir,
+                                     default_status,
+                                     quality,
+                                     flatten_folders,
+                                     lang,
+                                     subtitles,
+                                     anime,
+                                     scene,
+                                     paused,
+                                     blacklist,
+                                     whitelist,
+                                     default_status_after,
+                                     archive))
 
     def removeShow(self, show, full=False):
         if self._isInQueue(show, (ShowQueueActions.REMOVE,)):
@@ -148,11 +160,11 @@ class srShowQueue(GenericQueue):
             raise CantRemoveShowException
 
         # remove other queued actions for this show.
-        for x in self.queue:
+        for p, x in self.queue:
             if show.indexerid == x.show.indexerid and x != self.currentItem:
                 self.queue.remove(x)
 
-        return self.add_item(QueueItemRemove(show=show, full=full))
+        return self.put(QueueItemRemove(show=show, full=full))
 
 
 class ShowQueueActions(object):

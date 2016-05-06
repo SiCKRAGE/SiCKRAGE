@@ -20,7 +20,7 @@
 from __future__ import unicode_literals
 
 import threading
-from Queue import Queue
+from Queue import PriorityQueue
 from datetime import datetime
 
 try:
@@ -37,43 +37,35 @@ class QueuePriorities(object):
     HIGH = 30
 
 
-class GenericQueue(object):
-    def __init__(self):
+class srQueue(PriorityQueue):
+    def __init__(self, maxsize=0):
+        PriorityQueue.__init__(self, maxsize)
         self.queue_name = "QUEUE"
         self.lock = threading.Lock()
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
-        self._queue = []
         self.stop = threading.Event()
 
     @property
     def name(self):
         return self.queue_name
 
-    def _get_queue(self):
-        # sort by priority
-        def sorter(x, y):
-            """
-            Sorts by priority descending then time ascending
-            """
-            if x.priority == y.priority:
-                if y.added == x.added:
-                    return 0
-                elif y.added < x.added:
-                    return 1
-                elif y.added > x.added:
-                    return -1
-            else:
-                return y.priority - x.priority
 
-        self._queue.sort(cmp=sorter)
-        return self._queue
+    def get(self, block=True, timeout=None):
+        return PriorityQueue.get(self, block, timeout)
 
-    def _set_queue(self, item):
-        self._queue.append(item)
+    def put(self, item, block=True, timeout=None):
+        """
+        Adds an item to this queue
 
-    queue = property(_get_queue, _set_queue)
+        :param item: Queue object to add
+        :return: item
+        """
+        item.name = "{}-{}".format(self.name, item.name)
+        item.added = datetime.now()
+        PriorityQueue.put(self, (item.priority, item), block, timeout)
+        return item
 
     def pause(self):
         """Pauses this queue"""
@@ -84,19 +76,6 @@ class GenericQueue(object):
         """Unpauses this queue"""
         sickrage.srCore.srLogger.info("Unpausing queue")
         self.min_priority = 0
-
-    def add_item(self, item):
-        """
-        Adds an item to this queue
-
-        :param item: Queue object to add
-        :return: item
-        """
-        with self.lock:
-            item.name = "{}-{}".format(self.name, item.name)
-            item.added = datetime.now()
-            self.queue.append(item)
-            return item
 
     def run(self, force=False):
         """
@@ -112,18 +91,17 @@ class GenericQueue(object):
             self.amActive = True
 
             # if there's something in the queue then run it in a thread and take it out of the queue
-            if len(self.queue) > 0:
-                if self.queue[0].priority < self.min_priority:
+            if not self.empty():
+                if self.queue[0][0] < self.min_priority:
                     return
 
                 # execute item in queue
-                q = Queue()
                 with ThreadPoolExecutor(len(self.queue)) as executor:
                     if self.stop.isSet():
                         executor._threads.clear()
                         thread._threads_queues.clear()
                     else:
-                        executor.submit(self.callback, self.queue.pop(0))
+                        executor.submit(self.callback, self.get()[1])
 
             self.amActive = False
 

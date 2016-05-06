@@ -113,7 +113,7 @@ class srBacklogSearcher(object):
 
             for season, segment in segments.items():
                 self.currentSearchInfo = {'title': curShow.name + " Season " + str(season)}
-                sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(curShow, segment))  # @UndefinedVariable
+                sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(curShow, segment))  # @UndefinedVariable
             else:
                 sickrage.srCore.srLogger.debug("Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name))
 

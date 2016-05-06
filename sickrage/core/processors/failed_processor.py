@@ -74,7 +74,7 @@ class FailedProcessor(object):
         sickrage.srCore.srLogger.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
-            sickrage.srCore.SEARCHQUEUE.add_item(
+            sickrage.srCore.SEARCHQUEUE.put(
                 FailedQueueItem(parsed.show, [parsed.show.getEpisode(parsed.season_number, episode)]))
 
         return True

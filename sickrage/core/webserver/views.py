@@ -1825,7 +1825,7 @@ class Home(WebRoot):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(showObj, segment))
+                sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))
 
                 msg += "<li>Season " + str(season) + "</li>"
                 sickrage.srCore.srLogger.info("Sending backlog for " + showObj.name + " season " + str(
@@ -1844,7 +1844,7 @@ class Home(WebRoot):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.srCore.SEARCHQUEUE.add_item(FailedQueueItem(showObj, segment))
+                sickrage.srCore.SEARCHQUEUE.put(FailedQueueItem(showObj, segment))
 
                 msg += "<li>Season " + str(season) + "</li>"
                 sickrage.srCore.srLogger.info("Retrying Search for " + showObj.name + " season " + str(
@@ -1966,7 +1966,7 @@ class Home(WebRoot):
             # make a queue item for it and put it on the queue
             ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(downCurQuality)))
 
-            sickrage.srCore.SEARCHQUEUE.add_item(ep_queue_item)
+            sickrage.srCore.SEARCHQUEUE.put(ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
         return json_encode({'result': 'failure'})
@@ -2166,7 +2166,7 @@ class Home(WebRoot):
             # make a queue item for it and put it on the queue
             ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(downCurQuality)))
 
-            sickrage.srCore.SEARCHQUEUE.add_item(ep_queue_item)
+            sickrage.srCore.SEARCHQUEUE.put(ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
         return json_encode({'result': 'failure'})

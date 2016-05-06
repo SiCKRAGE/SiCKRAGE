@@ -50,7 +50,7 @@ def setEpisodeToWanted(show, s, e):
             epObj.status = WANTED
             epObj.saveToDB()
 
-        sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(show, [epObj]))
+        sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(show, [epObj]))
 
         sickrage.srCore.srLogger.info(
                 "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (

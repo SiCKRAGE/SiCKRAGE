@@ -114,6 +114,6 @@ class srDailySearcher(object):
             sickrage.srCore.srLogger.info("No new released episodes found ...")
 
         # queue episode for daily search
-        sickrage.srCore.SEARCHQUEUE.add_item(DailySearchQueueItem())
+        sickrage.srCore.SEARCHQUEUE.put(DailySearchQueueItem())
 
         self.amActive = False

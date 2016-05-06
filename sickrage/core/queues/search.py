@@ -24,7 +24,7 @@ import traceback
 
 import sickrage
 from sickrage.core.common import cpu_presets
-from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
+from sickrage.core.queues import srQueue, QueueItem, QueuePriorities
 from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
     snatchEpisode
 from sickrage.core.tv.show.history import FailedHistory, History
@@ -45,35 +45,35 @@ def fifo(myList, item, maxSize=100):
         myList.pop(0)
     myList.append(item)
 
-class srSearchQueue(GenericQueue):
+class srSearchQueue(srQueue):
     def __init__(self):
-        super(srSearchQueue, self).__init__()
+        srQueue.__init__(self)
         self.queue_name = "SEARCHQUEUE"
 
     def run(self, force=False):
-        super(srSearchQueue, self).run(force)
+        srQueue.run(self, force)
 
     def is_in_queue(self, show, segment):
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, BacklogQueueItem) and cur_item.show == show and cur_item.segment == segment:
                 return True
         return False
 
     def is_ep_in_queue(self, segment):
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.segment == segment:
                 return True
         return False
 
     def is_show_in_queue(self, show):
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexerid == show:
                 return True
         return False
 
     def get_all_ep_from_queue(self, show):
         ep_obj_list = []
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
                 ep_obj_list.append(cur_item)
         return ep_obj_list
@@ -97,20 +97,20 @@ class srSearchQueue(GenericQueue):
         return False
 
     def is_backlog_in_progress(self):
-        for cur_item in self.queue + [self.currentItem]:
+        for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
         return False
 
     def is_dailysearch_in_progress(self):
-        for cur_item in self.queue + [self.currentItem]:
+        for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
         return False
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, DailySearchQueueItem):
                 length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):
@@ -121,20 +121,25 @@ class srSearchQueue(GenericQueue):
                 length['failed'] += 1
         return length
 
-    def add_item(self, item):
+    @property
+    def queue(self):
+        return self.queue
+
+    @queue.setter
+    def queue(self, item):
         if not len(sickrage.srCore.providersDict.enabled()):
             sickrage.srCore.srLogger.warning("Search Failed, No NZB/Torrent providers enabled")
             return
 
         if isinstance(item, DailySearchQueueItem):
             # daily searches
-            GenericQueue.add_item(self, item)
+            self.put(item)
         elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show, item.segment):
             # backlog searches
-            GenericQueue.add_item(self, item)
+            self.put(item)
         elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.segment):
             # manual and failed searches
-            GenericQueue.add_item(self, item)
+            self.put(item)
         else:
             sickrage.srCore.srLogger.debug("Not adding item, it's already in the queue")
 

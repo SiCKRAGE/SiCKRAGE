@@ -816,7 +816,7 @@ class CMD_EpisodeSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = sickrage.srCore.SEARCHQUEUE.add_item(
+        ep_queue_item = sickrage.srCore.SEARCHQUEUE.put(
             ManualSearchQueueItem(showObj, epObj))  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
@@ -943,7 +943,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, segment in segments.items():
-                sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
+                sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
                 sickrage.srCore.srLogger.info("API :: Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
 
