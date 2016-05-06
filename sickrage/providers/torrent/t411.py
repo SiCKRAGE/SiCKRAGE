@@ -93,12 +93,12 @@ class T411Provider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURLS = \
                     ([self.urls['search'] % (search_string, u) for u in self.subcategories], [self.urls['rss']])[
-                        mode is 'RSS']
+                        mode == 'RSS']
                 for searchURL in searchURLS:
                     sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
@@ -109,18 +109,18 @@ class T411Provider(TorrentProvider):
                         continue
 
                     try:
-                        if 'torrents' not in data and mode is not 'RSS':
+                        if 'torrents' not in data and mode != 'RSS':
                             sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
-                        torrents = data['torrents'] if mode is not 'RSS' else data
+                        torrents = data['torrents'] if mode != 'RSS' else data
 
                         if not torrents:
                             sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for torrent in torrents:
-                            if mode is 'RSS' and int(torrent['category']) not in self.subcategories:
+                            if mode == 'RSS' and int(torrent['category']) not in self.subcategories:
                                 continue
 
                             try:
@@ -137,19 +137,19 @@ class T411Provider(TorrentProvider):
 
                                 # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
-                                    if mode is not 'RSS':
+                                    if mode != 'RSS':
                                         sickrage.srCore.srLogger.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                                     continue
 
-                                if self.confirmed and not verified and mode is not 'RSS':
+                                if self.confirmed and not verified and mode != 'RSS':
                                     sickrage.srCore.srLogger.debug(
                                         "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
-                                if mode is not 'RSS':
+                                if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)

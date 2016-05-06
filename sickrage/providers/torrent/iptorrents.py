@@ -92,12 +92,12 @@ class IPTorrentsProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 # URL with 50 tv-show results, or max 150 if adjusted in IPTorrents profile
                 searchURL = self.urls['search'] % (self.categories, freeleech, search_string)
-                searchURL += ';o=seeders' if mode is not 'RSS' else ''
+                searchURL += ';o=seeders' if mode != 'RSS' else ''
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
@@ -140,14 +140,14 @@ class IPTorrentsProvider(TorrentProvider):
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
+                                if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
+                            if mode != 'RSS':
                                 sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)

@@ -65,7 +65,7 @@ class PushbulletNotifier(srNotifiers):
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None):
 
-        if not (sickrage.srCore.srConfig.USE_PUSHBULLET or event is 'Test' or event is None):
+        if not (sickrage.srCore.srConfig.USE_PUSHBULLET or event.lower() == 'test' or event is None):
             return False
 
         pushbullet_api = pushbullet_api or sickrage.srCore.srConfig.PUSHBULLET_API

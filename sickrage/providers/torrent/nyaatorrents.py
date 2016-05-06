@@ -53,7 +53,7 @@ class NyaaProvider(TorrentProvider):
         for mode in search_strings.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
                 params = {
@@ -62,7 +62,7 @@ class NyaaProvider(TorrentProvider):
                     "sort": 2,  # Sort Descending By Seeders
                     "order": 1
                 }
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     params["term"] = search_string.encode('utf-8')
 
                 searchURL = self.urls['base_url'] + '?' + urllib.urlencode(params)
@@ -83,19 +83,19 @@ class NyaaProvider(TorrentProvider):
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
+                        if mode != 'RSS':
                             sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
 
-                    if self.confirmed and not verified and mode is not 'RSS':
+                    if self.confirmed and not verified and mode != 'RSS':
                         sickrage.srCore.srLogger.debug(
                                 "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                         continue
 
                     item = title, download_url, size, seeders, leechers
-                    if mode is not 'RSS':
+                    if mode != 'RSS':
                         sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)

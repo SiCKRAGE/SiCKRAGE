@@ -23,6 +23,7 @@ import datetime
 import os
 import re
 import threading
+from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
 import sickrage
@@ -355,35 +356,32 @@ class TVEpisode(object):
 
     def populateEpisode(self, season, episode, forceIndexer=False):
         # populating methods
-        methods = {
-            'db': lambda: self.loadFromDB(season, episode),
-            'nfo': lambda: self.loadFromNFO(self.location),
-            'indexer': lambda: self.loadFromIndexer(season, episode)
-        }
+        methods = OrderedDict([('db', lambda: self.loadFromDB(season, episode)),
+                               ('nfo', lambda: self.loadFromNFO(self.location)),
+                               ('indexer', lambda: self.loadFromIndexer(season, episode))])
 
         # attempt populating episode
+        success = []
         for method, func in methods.items():
-            success = False
-
             if method == 'db':
                 # populate episode from database
-                success = func()
+                success += [func()]
             elif method == 'nfo':
                 # populate episode from nfo files
                 try:
-                    success = func()
+                    success += [func()]
                 except NoNFOException:
                     sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
                         self.show.indexerid, season or 0, episode or 0))
             elif method == 'indexer':
                 # populate episode from indexers
                 try:
-                    success = func()
+                    success += [func()]
                 except EpisodeDeletedException:
                     self.deleteEpisode()
 
             # confirm if we successfully populated the episode
-            if success:
+            if any(success):
                 if method != 'indexer' and forceIndexer: continue
                 return True
 
@@ -746,7 +744,7 @@ class TVEpisode(object):
             sickrage.srCore.srLogger.debug("Deleting myself from Trakt")
             sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
 
-        if full:
+        if full and os.path.isfile(self.location):
             sickrage.srCore.srLogger.info('Attempt to delete episode file %s' % self.location)
             try:
                 os.remove(self.location)

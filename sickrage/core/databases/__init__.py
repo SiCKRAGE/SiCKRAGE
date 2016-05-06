@@ -18,6 +18,9 @@
 
 from __future__ import unicode_literals
 
+from Queue import Queue
+from time import sleep
+
 try:
     from futures import ThreadPoolExecutor
 except ImportError:
@@ -158,7 +161,6 @@ class Connection(object):
         self._tx_stacks = defaultdict(list)
         self.last_id = 0
         self.timeout = timeout or 20
-        self.executor = ThreadPoolExecutor(max_workers=5)
 
     @contextmanager
     def _conn(self):
@@ -231,14 +233,20 @@ class Connection(object):
         :return: list of results
         """
 
-        with self.transaction() as tx:
-            sqlResults = []
+        q = Queue()
+        with ThreadPoolExecutor(max_workers=len(upserts)) as executor, self.transaction() as tx:
+            [executor.submit(tx.upsert, *upsert).add_done_callback(lambda f: q.put(f.result())) for upsert in upserts]
 
-            while len(upserts):
-                sqlResults += [self.executor.submit(tx.upsert, *upserts.pop(0)).result()]
+        # allow queue to fill
+        sleep(1)
 
-            sickrage.srCore.srLogger.db("{} Upserts executed".format(len(upserts)))
-            return sqlResults
+        sqlResults = []
+        while not q.empty():
+            sqlResults += [q.get()]
+
+        sickrage.srCore.srLogger.db("{} Upserts executed".format(len(sqlResults)))
+
+        return sqlResults
 
     def mass_action(self, queries):
         """
@@ -248,13 +256,19 @@ class Connection(object):
         :return: list of results
         """
 
-        with self.transaction() as tx:
-            sqlResults = []
-            while len(queries):
-                sqlResults += [self.executor.submit(tx.query, queries.pop(0)).result()]
+        q = Queue()
+        with ThreadPoolExecutor(max_workers=len(queries)) as executor, self.transaction() as tx:
+            [executor.submit(tx.query, query).add_done_callback(lambda f: q.put(f.result())) for query in queries]
 
-            sickrage.srCore.srLogger.db("{} Transactions executed".format(len(queries)))
-            return sqlResults
+        # allow queue to fill
+        sleep(1)
+
+        sqlResults = []
+        while not q.empty():
+            sqlResults += [q.get()]
+
+        sickrage.srCore.srLogger.db("{} Transactions executed".format(len(sqlResults)))
+        return sqlResults
 
     def action(self, query, *args):
         """
@@ -266,8 +280,8 @@ class Connection(object):
 
         sickrage.srCore.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
-        with self.transaction() as tx:
-            return self.executor.submit(tx.query, [query, list(*args)]).result()
+        with ThreadPoolExecutor(max_workers=1) as executor, self.transaction() as tx:
+            return executor.submit(tx.query, [query, list(*args)]).result()
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -279,8 +293,8 @@ class Connection(object):
         :param keyDict:  columns in table to update
         """
 
-        with self.transaction() as tx:
-            return self.executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
+        with ThreadPoolExecutor(max_workers=1) as executor, self.transaction() as tx:
+            return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
 
     def select(self, query, *args):
         """
@@ -357,6 +371,7 @@ class Connection(object):
 
     def incDBVersion(self):
         self.action("UPDATE db_version SET db_version = db_version + 1")
+
 
 class SchemaUpgrade(Connection):
     def __init__(self, filename=None, suffix=None, row_type=None):

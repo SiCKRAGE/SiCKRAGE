@@ -118,7 +118,7 @@ class FreshOnTVProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (freeleech, search_string)
@@ -153,7 +153,7 @@ class FreshOnTVProvider(TorrentProvider):
                         if max_page_number > 15:
                             max_page_number = 15
                         # limit RSS search
-                        if max_page_number > 3 and mode is 'RSS':
+                        if max_page_number > 3 and mode == 'RSS':
                             max_page_number = 3
                 except Exception:
                     sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
@@ -218,14 +218,14 @@ class FreshOnTVProvider(TorrentProvider):
 
                                 # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
-                                    if mode is not 'RSS':
+                                    if mode != 'RSS':
                                         sickrage.srCore.srLogger.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
-                                if mode is not 'RSS':
+                                if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)

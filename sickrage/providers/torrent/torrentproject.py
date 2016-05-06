@@ -46,7 +46,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
         for mode in search_strings.keys():  # Mode = RSS, Season, Episode
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + "?s=%s&out=json&filter=2101&num=150" % quote_plus(
@@ -71,7 +71,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                     seeders = tryInt(torrents[i]["seeds"], 1)
                     leechers = tryInt(torrents[i]["leechs"], 0)
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
+                        if mode != 'RSS':
                             sickrage.srCore.srLogger.debug(
                                 "Torrent doesn't meet minimum seeds & leechers not selecting : %s" % title)
                         continue
@@ -85,7 +85,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
 
                     item = title, download_url, size, seeders, leechers
 
-                    if mode is not 'RSS':
+                    if mode != 'RSS':
                         sickrage.srCore.srLogger.debug("Found result: %s" % title)
 
                     items[mode].append(item)

@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 import threading
+from Queue import Queue
 from datetime import datetime
 
 try:
@@ -43,8 +44,8 @@ class GenericQueue(object):
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
-        self.executor = ThreadPoolExecutor(5)
         self._queue = []
+        self.stop = threading.Event()
 
     @property
     def name(self):
@@ -116,8 +117,13 @@ class GenericQueue(object):
                     return
 
                 # execute item in queue
-                while len(self.queue):
-                    self.executor.submit(self.callback, self.queue.pop(0))
+                q = Queue()
+                with ThreadPoolExecutor(len(self.queue)) as executor:
+                    if self.stop.isSet():
+                        executor._threads.clear()
+                        thread._threads_queues.clear()
+                    else:
+                        executor.submit(self.callback, self.queue.pop(0))
 
             self.amActive = False
 
@@ -127,8 +133,8 @@ class GenericQueue(object):
         item.finish()
 
     def shutdown(self):
-        self.executor._threads.clear()
-        thread._threads_queues.clear()
+        self.stop.set()
+
 
 class QueueItem(object):
     def __init__(self, name, action_id=0):

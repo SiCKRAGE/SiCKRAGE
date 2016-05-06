@@ -56,7 +56,7 @@ class CpasbienProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + '/recherche/' + search_string.replace('.', '-') + '.html'
@@ -109,7 +109,7 @@ class CpasbienProvider(TorrentProvider):
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
+                            if mode != 'RSS':
                                 sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)

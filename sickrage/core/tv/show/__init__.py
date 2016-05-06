@@ -520,8 +520,8 @@ class TVShow(object):
 
     def should_update(self, update_date=datetime.date.today()):
 
-        # if show is not 'Ended' always update (status 'Continuing')
-        if self.status == 'Continuing':
+        # if show status 'Ended' always update (status 'Continuing')
+        if self.status.lower() == 'continuing':
             return True
 
         # run logic against the current show latest aired and next unaired data to see if we should bypass 'Ended' status
@@ -691,10 +691,10 @@ class TVShow(object):
             main_db.MainDB().mass_upsert(sql_l)
             del sql_l  # cleanup
 
-    def loadEpisodesFromDB(self, scanOnly=False):
+    def loadEpisodesFromDB(self):
         scannedEps = {}
 
-        sickrage.srCore.srLogger.debug("{}: Loading all episodes for show".format(self.indexerid))
+        sickrage.srCore.srLogger.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
         sql = "SELECT * FROM tv_episodes WHERE showid = ?"
         sqlResults = main_db.MainDB().select(sql, [self.indexerid])
@@ -709,13 +709,12 @@ class TVShow(object):
                 scannedEps[curSeason] = {}
 
             try:
-                if not scanOnly:
-                    sickrage.srCore.srLogger.debug(
-                        "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
+                sickrage.srCore.srLogger.debug(
+                    "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
-                    curEp = self.getEpisode(curSeason, curEpisode)
-                    if not curEp:
-                        raise EpisodeNotFoundException
+                curEp = self.getEpisode(curSeason, curEpisode)
+                if not curEp:
+                    raise EpisodeNotFoundException
 
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
@@ -725,7 +724,7 @@ class TVShow(object):
         sickrage.srCore.srLogger.debug("{}: Finished loading all episodes for show".format(self.indexerid))
         return scannedEps
 
-    def loadEpisodesFromIndexer(self, cache=True, scanOnly=False):
+    def loadEpisodesFromIndexer(self, cache=True):
         scannedEps = {}
 
         lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
@@ -755,18 +754,17 @@ class TVShow(object):
                     continue
 
                 try:
-                    if not scanOnly:
-                        sickrage.srCore.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                            self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
+                    sickrage.srCore.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
+                        self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
 
-                        curEp = self.getEpisode(season, episode)
-                        if not curEp:
-                            raise EpisodeNotFoundException
+                    curEp = self.getEpisode(season, episode)
+                    if not curEp:
+                        raise EpisodeNotFoundException
 
-                        with curEp.lock:
-                            sql_q = curEp.saveToDB(False)
-                            if sql_q:
-                                sql_l.append(sql_q)
+                    with curEp.lock:
+                        sql_q = curEp.saveToDB(False)
+                        if sql_q:
+                            sql_l.append(sql_q)
 
                     scannedEps[season][episode] = True
                 except EpisodeNotFoundException:

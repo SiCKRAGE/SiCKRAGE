@@ -583,11 +583,11 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         # get episode list from DB
-        DBEpList = self.show.loadEpisodesFromDB(scanOnly=True) if not self.force else {}
+        DBEpList = self.show.loadEpisodesFromDB() if not self.force else {}
 
         # get episode list from TVDB
         try:
-            IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force, scanOnly=True)
+            IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force)
         except indexer_exception as e:
             sickrage.srCore.srLogger.error("Unable to get info from " + srIndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e.message))

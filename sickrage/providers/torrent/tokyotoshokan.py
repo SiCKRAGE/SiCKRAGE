@@ -95,7 +95,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
                         # Filter unseeded torrent
                         # if seeders < self.minseed or leechers < self.minleech:
-                        #    if mode is not 'RSS':
+                        #    if mode != 'RSS':
                         #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                         #    continue
 

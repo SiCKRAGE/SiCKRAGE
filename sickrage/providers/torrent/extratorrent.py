@@ -57,11 +57,11 @@ class ExtraTorrentProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 try:
-                    self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
+                    self.search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string})
 
                     try:
                         data = sickrage.srCore.srWebSession.get(self.urls['rss'], params=self.search_params).text
@@ -102,14 +102,14 @@ class ExtraTorrentProvider(TorrentProvider):
 
                             # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
-                            if mode is not 'RSS':
+                            if mode != 'RSS':
                                 sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                         title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
-                        if mode is not 'RSS':
+                        if mode != 'RSS':
                             sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                         items[mode].append(item)

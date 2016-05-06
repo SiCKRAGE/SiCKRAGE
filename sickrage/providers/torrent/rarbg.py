@@ -109,10 +109,10 @@ class RarbgProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                if mode is 'RSS':
+                if mode == 'RSS':
                     searchURL = self.urls['listing'] + self.defaultOptions
                 elif mode == 'Season':
                     if ep_indexer == INDEXER_TVDB:
@@ -219,7 +219,7 @@ class RarbgProvider(TorrentProvider):
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
+                            if mode != 'RSS':
                                 sickrage.srCore.srLogger.debug("Found result: %s " % title)
                             items[mode].append(item)
 
