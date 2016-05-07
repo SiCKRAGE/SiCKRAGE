@@ -1,5 +1,8 @@
 # Changelog
 
+- * 6c82baf - 2016-05-07: FIXED: Disabled same-thread checks for databases to fix issues with more then one thread opening the database files FIXED: Config migrations where storing values inside class but never returning them back to config object FEATURE: Metadata providers now can optionally be enabled or disabled from post-processing config settings UPDATE: Performed grunt tasks to update js core files 
+- * 553cd75 - 2016-05-06: FIXED: Issue with shutdowns and queues resolved. 
+- * ef60c54 - 2016-05-06: Updated changelog 
 - * 13b9977 - 2016-05-06: FIXED: Queue was not properly looping through tasks, corrected by adding a while statement FIXED: Corrupted indexer show cache files caused indexer to throw exception and fail to complete tasks 
 - * 31334ab - 2016-05-05: REVAMPED: Queue system now subclasses builtin PriorityQueue to help with multi-threading and properly offload tasks to thread executor FIXED: Database transactions are now tasked by a queue system which resolves data being lost during db calls 
 - * 3a69945 - 2016-05-05: FIXED: Object comparison used when trying to compare boolean against text incorrectly in provider modules, caused issues with updating cache from RSS feeds 
@@ -34,13 +37,4 @@
 - * b2010b8 - 2016-05-01: Fixed boolean issue with theTVDB showcache 
 - * 2668d7e - 2016-04-30: Fixed theTVDB persistent show cache, code was borked. 
 - * 717f469 - 2016-04-30: Added persistant show data cache for theTVDB indexer. Added back language selector for adding new shows. Shows not found on theTVDB by seriesname get searched by imdbId automatically. Fixed metadata issue with TMDB provider and retrieval of images. 
-- * 28641dc - 2016-04-29: Corrected exception messaging handling for refreshing shows from folders. 
-- * f73c439 - 2016-04-29: Updated donation link in templates. 
-- * 40942e5 - 2016-04-29: Added new &quot;standard absolute&quot; regex to name parser 
-- * 1c81a44 - 2016-04-29: Added exception handling to print error messages during requirements installations. 
-- * 4ca63b4 - 2016-04-29: Fixed responsive mobile layout. Removed unrequired error message. 
-- * 1866bfa - 2016-04-29: Fixed issue with snatching torrent magnet links. 
-- * f5a81d7 - 2016-04-29: Fixed several issues with database operations including upgrading of database versions. 
-- * f3897a7 - 2016-04-29: Small correction to requirements installation function code. 
-- * d5b3d69 - 2016-04-29: Fixed issues with sys.stdout during installation of requirements. 
 
