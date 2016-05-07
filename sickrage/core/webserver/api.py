@@ -24,6 +24,7 @@ import datetime
 import os
 import re
 import threading
+import time
 import traceback
 import urllib
 
@@ -821,7 +822,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # wait until the queue item tells us whether it worked or not
         while not ep_queue_item.success:  # @UndefinedVariable
-            datetime.time.sleep(1)
+            time.sleep(1)
 
         # return the correct json value
         if ep_queue_item.success:

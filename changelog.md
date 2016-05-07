@@ -1,5 +1,7 @@
 # Changelog
 
+- * 0f9f97b - 2016-05-07: FIXED: References to sleep in some modules where incorrectly specified 
+- * 40c8042 - 2016-05-07: UPDATED:  Changelog 
 - * 6c82baf - 2016-05-07: FIXED: Disabled same-thread checks for databases to fix issues with more then one thread opening the database files FIXED: Config migrations where storing values inside class but never returning them back to config object FEATURE: Metadata providers now can optionally be enabled or disabled from post-processing config settings UPDATE: Performed grunt tasks to update js core files 
 - * 553cd75 - 2016-05-06: FIXED: Issue with shutdowns and queues resolved. 
 - * ef60c54 - 2016-05-06: Updated changelog 

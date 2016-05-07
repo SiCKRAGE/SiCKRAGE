@@ -25,6 +25,7 @@ import itertools
 import os
 import random
 import re
+import time
 import urllib
 from base64 import b16encode, b32decode
 from collections import OrderedDict
@@ -983,7 +984,7 @@ class NewznabProvider(NZBProvider):
             search_url = self.urls['base_url'] + '/api?' + urllib.urlencode(params)
 
             while (datetime.datetime.now() - self.last_search).seconds < 5:
-                datetime.time.sleep(1)
+                time.sleep(1)
 
             sickrage.srCore.srLogger.debug("Search url: %s" % search_url)
 
@@ -1107,7 +1108,7 @@ class NewznabCache(TVCache):
         rss_url = self.provider.url + 'api?' + urllib.urlencode(params)
 
         while (datetime.datetime.now() - self.last_search).seconds < 5:
-            datetime.time.sleep(1)
+            time.sleep(1)
 
         sickrage.srCore.srLogger.debug("Cache update URL: %s " % rss_url)
         data = self.getRSSFeed(rss_url)

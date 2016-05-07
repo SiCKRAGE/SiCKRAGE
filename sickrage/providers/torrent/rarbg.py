@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import datetime
 import json
 import re
+import time
 import traceback
 
 import sickrage
@@ -147,7 +148,7 @@ class RarbgProvider(TorrentProvider):
                         time_out = 0
                         while (datetime.datetime.now() < self.next_request) and time_out <= 15:
                             time_out = time_out + 1
-                            datetime.time.sleep(1)
+                            time.sleep(1)
 
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
@@ -169,7 +170,7 @@ class RarbgProvider(TorrentProvider):
                         if re.search('Too many requests per minute. Please try again later!', data):
                             sickrage.srCore.srLogger.warning("Too many requests per minute")
                             retry = retry - 1
-                            datetime.time.sleep(10)
+                            time.sleep(10)
                             continue
                         if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
                             sickrage.srCore.srLogger.warning(

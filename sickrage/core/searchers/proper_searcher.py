@@ -23,6 +23,7 @@ import datetime
 import operator
 import re
 import threading
+import time
 import traceback
 
 import sickrage
@@ -278,7 +279,7 @@ class srProperSearcher(object):
 
                 # snatch it
                 snatchEpisode(result, SNATCHED_PROPER)
-                datetime.time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
     def _genericName(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()
