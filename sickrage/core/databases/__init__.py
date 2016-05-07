@@ -168,7 +168,7 @@ class Connection(object):
             thread_id = threading.current_thread().ident
 
             if thread_id not in self._connections:
-                with sqlite3.connect(self.filename, timeout=self.timeout) as conn:
+                with sqlite3.connect(self.filename, timeout=self.timeout, check_same_thread=False) as conn:
                     conn.row_factory = (self._dict_factory, self.row_type)[self.row_type != 'dict']
                     conn.execute("PRAGMA journal_mode=WAL")
                     self._connections[thread_id] = conn

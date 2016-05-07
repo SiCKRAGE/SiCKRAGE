@@ -85,12 +85,21 @@ class GenericMetadata(object):
     - season all banner
     """
 
-    def __init__(self, show_metadata=False, episode_metadata=False, fanart=False,
-                 poster=False, banner=False, episode_thumbnails=False,
-                 season_posters=False, season_banners=False,
-                 season_all_poster=False, season_all_banner=False):
+    def __init__(self,
+                 show_metadata=False,
+                 episode_metadata=False,
+                 fanart=False,
+                 poster=False,
+                 banner=False,
+                 episode_thumbnails=False,
+                 season_posters=False,
+                 season_banners=False,
+                 season_all_poster=False,
+                 season_all_banner=False,
+                 enabled=False):
 
         self.name = "Generic"
+        self.enabled = enabled
 
         self._ep_nfo_extension = "nfo"
         self._show_metadata_filename = "tvshow.nfo"
@@ -114,9 +123,18 @@ class GenericMetadata(object):
         self.season_all_banner = season_all_banner
 
     def get_config(self):
-        config_list = [self.show_metadata, self.episode_metadata, self.fanart, self.poster, self.banner,
-                       self.episode_thumbnails, self.season_posters, self.season_banners, self.season_all_poster,
-                       self.season_all_banner]
+        config_list = [self.show_metadata,
+                       self.episode_metadata,
+                       self.fanart,
+                       self.poster,
+                       self.banner,
+                       self.episode_thumbnails,
+                       self.season_posters,
+                       self.season_banners,
+                       self.season_all_poster,
+                       self.season_all_banner,
+                       self.enabled]
+
         return '|'.join([str(int(x)) for x in config_list])
 
     def get_id(self):
@@ -140,6 +158,7 @@ class GenericMetadata(object):
         self.season_banners = config_list[7]
         self.season_all_poster = config_list[8]
         self.season_all_banner = config_list[9]
+        self.enabled = config_list[10]
 
     @staticmethod
     def _check_exists(location):

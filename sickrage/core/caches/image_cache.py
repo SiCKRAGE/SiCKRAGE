@@ -279,6 +279,9 @@ class ImageCache(object):
         if need_images[self.POSTER] or need_images[self.BANNER] or need_images[self.FANART]:
             try:
                 for cur_provider in sickrage.srCore.metadataProviderDict.values():
+                    if not cur_provider.enabled:
+                        continue
+
                     sickrage.srCore.srLogger.debug("Checking if we can use the show image from the " + cur_provider.name + " metadata")
                     if os.path.isfile(cur_provider.get_poster_path(show_obj)):
                         cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))

@@ -46,7 +46,7 @@ class srConfig(object):
         self.loaded = False
 
         self.CONFIG_OBJ = None
-        self.CONFIG_VERSION = 9
+        self.CONFIG_VERSION = 10
         self.ENCRYPTION_VERSION = 0
         self.ENCRYPTION_SECRET = ""
 
@@ -191,8 +191,6 @@ class srConfig(object):
         self.NZBS_UID = None
         self.NZBS_HASH = None
         self.OMGWTFNZBS = False
-        self.OMGWTFNZBS_USERNAME = None
-        self.OMGWTFNZBS_APIKEY = None
         self.NEWZBIN = False
         self.NEWZBIN_USERNAME = None
         self.NEWZBIN_PASSWORD = None
@@ -1341,13 +1339,16 @@ class srConfig(object):
                 raise SystemExit(
                     "Config file root dir '" + os.path.dirname(sickrage.CONFIG_FILE) + "' must be writeable.")
 
-        # load and migrate config
-        self.CONFIG_OBJ = ConfigMigrator(ConfigObj(sickrage.CONFIG_FILE)).migrate_config()
+        # load config
+        self.CONFIG_OBJ = ConfigObj(sickrage.CONFIG_FILE)
 
         # decrypt settings
         self.ENCRYPTION_VERSION = self.check_setting_int('General', 'encryption_version', 0)
         self.ENCRYPTION_SECRET = self.check_setting_str('General', 'encryption_secret', generateCookieSecret())
         self.CONFIG_OBJ.walk(self.decrypt)
+
+        # migrate config
+        self.CONFIG_OBJ = ConfigMigrator(self.CONFIG_OBJ).migrate_config()
 
         sickrage.DEBUG = sickrage.DEBUG or bool(self.check_setting_int('General', 'debug', 0))
         sickrage.DEVELOPER = sickrage.DEVELOPER or bool(self.check_setting_int('General', 'developer', 0))
@@ -1571,8 +1572,7 @@ class srConfig(object):
         self.KODI_ALWAYS_ON = bool(self.check_setting_int('KODI', 'kodi_always_on', 1))
         self.KODI_NOTIFY_ONSNATCH = bool(self.check_setting_int('KODI', 'kodi_notify_onsnatch', 0))
         self.KODI_NOTIFY_ONDOWNLOAD = bool(self.check_setting_int('KODI', 'kodi_notify_ondownload', 0))
-        self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-            self.check_setting_int('KODI', 'kodi_notify_onsubtitledownload', 0))
+        self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = bool(self.check_setting_int('KODI', 'kodi_notify_onsubtitledownload', 0))
         self.KODI_UPDATE_LIBRARY = bool(self.check_setting_int('KODI', 'kodi_update_library', 0))
         self.KODI_UPDATE_FULL = bool(self.check_setting_int('KODI', 'kodi_update_full', 0))
         self.KODI_UPDATE_ONLYFIRST = bool(self.check_setting_int('KODI', 'kodi_update_onlyfirst', 0))
@@ -1829,16 +1829,13 @@ class srConfig(object):
 
         self.ANIME_SPLIT_HOME = bool(self.check_setting_int('ANIME', 'anime_split_home', 0))
 
-        self.METADATA_KODI = self.check_setting_str('General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_KODI_12PLUS = self.check_setting_str('General', 'metadata_kodi_12plus',
-                                                           '0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_MEDIABROWSER = self.check_setting_str('General', 'metadata_mediabrowser',
-                                                            '0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_PS3 = self.check_setting_str('General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_WDTV = self.check_setting_str('General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_TIVO = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_MEDE8ER = self.check_setting_str('General', 'metadata_mede8er',
-                                                       '0|0|0|0|0|0|0|0|0|0')
+        self.METADATA_KODI = self.check_setting_str('General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0|0')
+        self.METADATA_KODI_12PLUS = self.check_setting_str('General', 'metadata_kodi_12plus', '0|0|0|0|0|0|0|0|0|0|0')
+        self.METADATA_MEDIABROWSER = self.check_setting_str('General', 'metadata_mediabrowser', '0|0|0|0|0|0|0|0|0|0|0')
+        self.METADATA_PS3 = self.check_setting_str('General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0|0')
+        self.METADATA_WDTV = self.check_setting_str('General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0|0')
+        self.METADATA_TIVO = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0|0')
+        self.METADATA_MEDE8ER = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
 
         self.HOME_LAYOUT = self.check_setting_str('GUI', 'home_layout', 'poster')
         self.HISTORY_LAYOUT = self.check_setting_str('GUI', 'history_layout', 'detailed')
@@ -2355,13 +2352,13 @@ class srConfig(object):
 
 
 class ConfigMigrator(srConfig):
-    def __init__(self, config_obj):
+    def __init__(self, configobj):
         """
         Initializes a config migrator that can take the config from the version indicated in the config
         file up to the latest version
         """
         super(ConfigMigrator, self).__init__()
-        self.CONFIG_OBJ = config_obj
+        self.CONFIG_OBJ = configobj
 
         # check the version of the config
         self.config_version = self.check_setting_int('General', 'config_version', self.CONFIG_VERSION)
@@ -2376,7 +2373,8 @@ class ConfigMigrator(srConfig):
             6: 'Convert from XBMC to new KODI variables',
             7: 'Use version 2 for password encryption',
             8: 'Convert config provider settings to new provider object database style',
-            9: 'Rename slick gui template name to default'
+            9: 'Rename slick gui template name to default',
+            10: 'Metadata update'
         }
 
     def migrate_config(self):
@@ -2409,11 +2407,11 @@ class ConfigMigrator(srConfig):
 
             # do the migration, expect a method named _migrate_v<num>
             sickrage.srCore.srLogger.info("Migrating config up to version " + str(next_version) + migration_name)
-            getattr(self, '_migrate_v' + str(next_version))()
+            self.CONFIG_OBJ = getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
 
             # update config version to newest
-            sickrage.srCore.srConfig.CONFIG_VERSION = self.config_version
+            self.CONFIG_VERSION = self.config_version
 
         return self.CONFIG_OBJ
 
@@ -2423,20 +2421,79 @@ class ConfigMigrator(srConfig):
         Reads in the old naming settings from your config and generates a new config template from them.
         """
 
-        self.NAMING_PATTERN = self._name_to_pattern()
+        def _name_to_pattern(abd=False):
+
+            # get the old settings from the file
+            use_periods = bool(self.check_setting_int('General', 'naming_use_periods', 0))
+            ep_type = self.check_setting_int('General', 'NAMING_EP_TYPE', 0)
+            sep_type = self.check_setting_int('General', 'NAMING_SEP_TYPE', 0)
+            use_quality = bool(self.check_setting_int('General', 'naming_quality', 0))
+
+            use_show_name = bool(self.check_setting_int('General', 'naming_show_name', 1))
+            use_ep_name = bool(self.check_setting_int('General', 'naming_ep_name', 1))
+
+            # make the presets into templates
+            naming_ep_type = ("%Sx%0E",
+                              "s%0Se%0E",
+                              "S%0SE%0E",
+                              "%0Sx%0E")
+            naming_sep_type = (" - ", " ")
+
+            # set up our data to use
+            if use_periods:
+                show_name = '%S.N'
+                ep_name = '%E.N'
+                ep_quality = '%Q.N'
+                abd_string = '%A.D'
+            else:
+                show_name = '%SN'
+                ep_name = '%EN'
+                ep_quality = '%QN'
+                abd_string = '%A-D'
+
+            if abd:
+                ep_string = abd_string
+            else:
+                ep_string = naming_ep_type[ep_type]
+
+            finalName = ""
+
+            # start with the show name
+            if use_show_name:
+                finalName += show_name + naming_sep_type[sep_type]
+
+            # add the season/ep stuff
+            finalName += ep_string
+
+            # add the episode name
+            if use_ep_name:
+                finalName += naming_sep_type[sep_type] + ep_name
+
+            # add the quality
+            if use_quality:
+                finalName += naming_sep_type[sep_type] + ep_quality
+
+            if use_periods:
+                finalName = re.sub(r"\s+", ".", finalName)
+
+            return finalName
+
+        self.CONFIG_OBJ['General']['naming_pattern'] = _name_to_pattern()
         sickrage.srCore.srLogger.info(
-            "Based on your old settings I'm setting your new naming pattern to: " + self.NAMING_PATTERN)
+            "Based on your old settings I'm setting your new naming pattern to: " + self.CONFIG_OBJ['General'][
+                'naming_pattern'])
 
-        self.NAMING_CUSTOM_ABD = bool(self.check_setting_int('General', 'naming_dates', 0))
+        self.CONFIG_OBJ['General']['naming_custom_abd'] = bool(self.check_setting_int('General', 'naming_dates', 0))
 
-        if self.NAMING_CUSTOM_ABD:
-            self.NAMING_ABD_PATTERN = self._name_to_pattern(True)
+        if self.CONFIG_OBJ['General']['naming_custom_abd']:
+            self.CONFIG_OBJ['General']['naming_abd_pattern'] = _name_to_pattern(True)
             sickrage.srCore.srLogger.info(
-                "Adding a custom air-by-date naming pattern to your config: " + self.NAMING_ABD_PATTERN)
+                "Adding a custom air-by-date naming pattern to your config: " + self.CONFIG_OBJ['General'][
+                    'naming_abd_pattern'])
         else:
-            self.NAMING_ABD_PATTERN = validator.name_abd_presets[0]
+            self.CONFIG_OBJ['General']['naming_abd_pattern'] = validator.name_abd_presets[0]
 
-        self.NAMING_MULTI_EP = int(
+        self.CONFIG_OBJ['General']['naming_multi_ep'] = int(
             self.check_setting_int('General', 'NAMING_MULTI_EP_TYPE', 1))
 
         # see if any of their shows used season folders
@@ -2456,7 +2513,8 @@ class ConfigMigrator(srConfig):
 
                     sickrage.srCore.srLogger.info(
                         "Changed season folder format from " + old_season_format + " to " + new_season_format + ", prepending it to your naming config")
-                    self.NAMING_PATTERN = new_season_format + os.sep + self.NAMING_PATTERN
+                    self.CONFIG_OBJ['General']['naming_pattern'] = new_season_format + os.sep + \
+                                                                   self.CONFIG_OBJ['General']['naming_pattern']
 
                 except (TypeError, ValueError):
                     sickrage.srCore.srLogger.error("Can't change " + old_season_format + " to new season format")
@@ -2470,78 +2528,17 @@ class ConfigMigrator(srConfig):
             # don't flatten any shows at all
             main_db.MainDB().action("UPDATE tv_shows SET flatten_folders = 0")
 
-        self.NAMING_FORCE_FOLDERS = check_force_season_folders()
+        self.CONFIG_OBJ['General']['naming_force_folders'] = check_force_season_folders()
 
-    def _name_to_pattern(self, abd=False):
-
-        # get the old settings from the file
-        use_periods = bool(self.check_setting_int('General', 'naming_use_periods', 0))
-        ep_type = self.check_setting_int('General', 'NAMING_EP_TYPE', 0)
-        sep_type = self.check_setting_int('General', 'NAMING_SEP_TYPE', 0)
-        use_quality = bool(self.check_setting_int('General', 'naming_quality', 0))
-
-        use_show_name = bool(self.check_setting_int('General', 'naming_show_name', 1))
-        use_ep_name = bool(self.check_setting_int('General', 'naming_ep_name', 1))
-
-        # make the presets into templates
-        naming_ep_type = ("%Sx%0E",
-                          "s%0Se%0E",
-                          "S%0SE%0E",
-                          "%0Sx%0E")
-        naming_sep_type = (" - ", " ")
-
-        # set up our data to use
-        if use_periods:
-            show_name = '%S.N'
-            ep_name = '%E.N'
-            ep_quality = '%Q.N'
-            abd_string = '%A.D'
-        else:
-            show_name = '%SN'
-            ep_name = '%EN'
-            ep_quality = '%QN'
-            abd_string = '%A-D'
-
-        if abd:
-            ep_string = abd_string
-        else:
-            ep_string = naming_ep_type[ep_type]
-
-        finalName = ""
-
-        # start with the show name
-        if use_show_name:
-            finalName += show_name + naming_sep_type[sep_type]
-
-        # add the season/ep stuff
-        finalName += ep_string
-
-        # add the episode name
-        if use_ep_name:
-            finalName += naming_sep_type[sep_type] + ep_name
-
-        # add the quality
-        if use_quality:
-            finalName += naming_sep_type[sep_type] + ep_quality
-
-        if use_periods:
-            finalName = re.sub(r"\s+", ".", finalName)
-
-        return finalName
+        return self.CONFIG_OBJ
 
     # Migration v2: Dummy migration to sync backup number with config version number
     def _migrate_v2(self):
-        return
+        return self.CONFIG_OBJ
 
-    # Migration v2: Rename omgwtfnzb variables
+    # Migration v3: Dummy migration to sync backup number with config version number
     def _migrate_v3(self):
-        """
-        Reads in the old naming settings from your config and generates a new config template from them.
-        """
-        # get the old settings from the file and store them in the new variable names
-        self.OMGWTFNZBS_USERNAME = self.check_setting_str('omgwtfnzbs', 'omgwtfnzbs_uid',
-                                                          '')
-        self.OMGWTFNZBS_APIKEY = self.check_setting_str('omgwtfnzbs', 'omgwtfnzbs_key', '')
+        return self.CONFIG_OBJ
 
     # Migration v4: Add default newznab catIDs
     def _migrate_v4(self):
@@ -2572,7 +2569,9 @@ class ConfigMigrator(srConfig):
                 cur_provider_data_list = [name, url, key, catIDs, enabled]
                 new_newznab_data.append("|".join(cur_provider_data_list))
 
-            self.NEWZNAB_DATA = "!!!".join(new_newznab_data)
+            self.CONFIG_OBJ['Newznab']['newznab_data'] = "!!!".join(new_newznab_data)
+
+        return self.CONFIG_OBJ
 
     # Migration v5: Metadata upgrade
     def _migrate_v5(self):
@@ -2644,41 +2643,48 @@ class ConfigMigrator(srConfig):
 
             return metadata
 
-        self.METADATA_XBMC = _migrate_metadata(metadata_xbmc, 'XBMC', use_banner)
-        self.METADATA_XBMC_12PLUS = _migrate_metadata(metadata_xbmc_12plus, 'XBMC 12+', use_banner)
-        self.METADATA_MEDIABROWSER = _migrate_metadata(metadata_mediabrowser, 'MediaBrowser', use_banner)
-        self.METADATA_PS3 = _migrate_metadata(metadata_ps3, 'PS3', use_banner)
-        self.METADATA_WDTV = _migrate_metadata(metadata_wdtv, 'WDTV', use_banner)
-        self.METADATA_TIVO = _migrate_metadata(metadata_tivo, 'TIVO', use_banner)
-        self.METADATA_MEDE8ER = _migrate_metadata(metadata_mede8er, 'Mede8er', use_banner)
+        self.CONFIG_OBJ['General']['metadata_xbmc'] = _migrate_metadata(metadata_xbmc, 'XBMC', use_banner)
+        self.CONFIG_OBJ['General']['metadata_xbmc_12plus'] = _migrate_metadata(metadata_xbmc_12plus, 'XBMC 12+',
+                                                                               use_banner)
+        self.CONFIG_OBJ['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser, 'MediaBrowser',
+                                                                                use_banner)
+        self.CONFIG_OBJ['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3, 'PS3', use_banner)
+        self.CONFIG_OBJ['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv, 'WDTV', use_banner)
+        self.CONFIG_OBJ['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo, 'TIVO', use_banner)
+        self.CONFIG_OBJ['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er, 'Mede8er', use_banner)
+
+        return self.CONFIG_OBJ
 
     # Migration v6: Convert from XBMC to KODI variables
     def _migrate_v6(self):
-        self.USE_KODI = bool(self.check_setting_int('XBMC', 'use_xbmc', 0))
-        self.KODI_ALWAYS_ON = bool(self.check_setting_int('XBMC', 'xbmc_always_on', 1))
-        self.KODI_NOTIFY_ONSNATCH = bool(
+        self.CONFIG_OBJ['KODI']['use_kodi'] = bool(self.check_setting_int('XBMC', 'use_xbmc', 0))
+        self.CONFIG_OBJ['KODI']['kodi_always_on'] = bool(self.check_setting_int('XBMC', 'xbmc_always_on', 1))
+        self.CONFIG_OBJ['KODI']['kodi_notify_onsnatch'] = bool(
             self.check_setting_int('XBMC', 'xbmc_notify_onsnatch', 0))
-        self.KODI_NOTIFY_ONDOWNLOAD = bool(
+        self.CONFIG_OBJ['KODI']['kodi_notify_ondownload'] = bool(
             self.check_setting_int('XBMC', 'xbmc_notify_ondownload', 0))
-        self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
+        self.CONFIG_OBJ['KODI']['kodi_notify_onsubtitledownload'] = bool(
             self.check_setting_int('XBMC', 'xbmc_notify_onsubtitledownload', 0))
-        self.KODI_UPDATE_LIBRARY = bool(
+        self.CONFIG_OBJ['KODI']['kodi_update_library'] = bool(
             self.check_setting_int('XBMC', 'xbmc_update_library', 0))
-        self.KODI_UPDATE_FULL = bool(self.check_setting_int('XBMC', 'xbmc_update_full', 0))
-        self.KODI_UPDATE_ONLYFIRST = bool(
+        self.CONFIG_OBJ['KODI']['kodi_update_full'] = bool(self.check_setting_int('XBMC', 'xbmc_update_full', 0))
+        self.CONFIG_OBJ['KODI']['kodi_update_onlyfirst'] = bool(
             self.check_setting_int('XBMC', 'xbmc_update_onlyfirst', 0))
-        self.KODI_HOST = self.check_setting_str('XBMC', 'xbmc_host', '')
-        self.KODI_USERNAME = self.check_setting_str('XBMC', 'xbmc_username', '')
-        self.KODI_PASSWORD = self.check_setting_str('XBMC', 'xbmc_password', '')
-        self.METADATA_KODI = self.check_setting_str('General', 'metadata_xbmc',
-                                                    '0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_KODI_12PLUS = self.check_setting_str('General',
-                                                           'metadata_xbmc_12plus',
-                                                           '0|0|0|0|0|0|0|0|0|0')
+        self.CONFIG_OBJ['KODI']['kodi_host'] = self.check_setting_str('XBMC', 'xbmc_host', '')
+        self.CONFIG_OBJ['KODI']['kodi_username'] = self.check_setting_str('XBMC', 'xbmc_username', '')
+        self.CONFIG_OBJ['KODI']['kodi_password'] = self.check_setting_str('XBMC', 'xbmc_password', '')
+        self.CONFIG_OBJ['General']['metadata_kodi'] = self.check_setting_str('General', 'metadata_xbmc',
+                                                                             '0|0|0|0|0|0|0|0|0|0')
+        self.CONFIG_OBJ['General']['metadata_kodi_12plus'] = self.check_setting_str('General',
+                                                                                    'metadata_xbmc_12plus',
+                                                                                    '0|0|0|0|0|0|0|0|0|0')
+
+        return self.CONFIG_OBJ
 
     # Migration v7: Use version 2 for password encryption
     def _migrate_v7(self):
-        self.ENCRYPTION_VERSION = 2
+        self.CONFIG_OBJ['General']['encryption_version'] = 2
+        return self.CONFIG_OBJ
 
     # Migration v8: Convert config provider settings to new provider object database style
     def _migrate_v8(self):
@@ -2808,7 +2814,73 @@ class ConfigMigrator(srConfig):
                 providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
                                                                          providerID + '_enable_backlog',
                                                                          providerObj.supportsBacklog))
+        return self.CONFIG_OBJ
 
     # Migration v9: Rename gui template name from slick to default
     def _migrate_v9(self):
         self.CONFIG_OBJ['GUI']['gui_name'] = 'default'
+        return self.CONFIG_OBJ
+
+    # Migration v10: Metadata upgrade
+    def _migrate_v10(self):
+        """
+        Updates metadata values to the new format
+        Quick overview of what the upgrade does:
+
+        new | old | description (new)
+        ----+-----+--------------------
+          1 |  1  | show metadata
+          2 |  2  | episode metadata
+          3 |  3  | show fanart
+          4 |  4  | show poster
+          5 |  5  | show banner
+          6 |  6  | episode thumb
+          7 |  7  | season poster
+          8 |  8  | season banner
+          9 |  9  | season all poster
+         10 |  10 | season all banner
+         11 |  -  | enabled
+
+        Note that the ini places start at 1 while the list index starts at 0.
+        old format: 0|0|0|0|0|0|0|0|0|0 -- 10 places
+        new format: 0|0|0|0|0|0|0|0|0|0|0 -- 11 places
+        """
+
+        metadata_kodi = self.check_setting_str('General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_kodi_12plus = self.check_setting_str('General', 'metadata_kodi_12plus', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_mediabrowser = self.check_setting_str('General', 'metadata_mediabrowser', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_ps3 = self.check_setting_str('General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_wdtv = self.check_setting_str('General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_tivo = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_mede8er = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
+
+        def _migrate_metadata(metadata, metadata_name):
+            cur_metadata = metadata.split('|')
+
+            # if target has the old number of values, do upgrade
+            if len(cur_metadata) == 10:
+                # write new format
+                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, old value: " + metadata)
+                cur_metadata.append('0')
+                metadata = '|'.join(cur_metadata)
+                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, new value: " + metadata)
+            elif len(cur_metadata) == 11:
+                metadata = '|'.join(cur_metadata)
+                sickrage.srCore.srLogger.info("Keeping " + metadata_name + " metadata, value: " + metadata)
+            else:
+                sickrage.srCore.srLogger.error(
+                    "Skipping " + metadata_name + " metadata: '" + metadata + "', incorrect format")
+                metadata = '0|0|0|0|0|0|0|0|0|0|0'
+                sickrage.srCore.srLogger.info("Setting " + metadata_name + " metadata, new value: " + metadata)
+
+            return metadata
+
+        self.CONFIG_OBJ['General']['metadata_kodi'] = _migrate_metadata(metadata_kodi, 'KODI')
+        self.CONFIG_OBJ['General']['metadata_kodi_12plus'] = _migrate_metadata(metadata_kodi_12plus, 'KODI 12+')
+        self.CONFIG_OBJ['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser, 'MediaBrowser')
+        self.CONFIG_OBJ['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3, 'PS3')
+        self.CONFIG_OBJ['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv, 'WDTV')
+        self.CONFIG_OBJ['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo, 'TIVO')
+        self.CONFIG_OBJ['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er, 'Mede8er')
+
+        return self.CONFIG_OBJ

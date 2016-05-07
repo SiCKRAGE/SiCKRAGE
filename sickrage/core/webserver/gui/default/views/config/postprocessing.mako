@@ -1106,7 +1106,10 @@
                         % for (cur_name, cur_generator) in m_dict.items():
                         <% cur_metadata_inst = sickrage.srCore.metadataProviderDict[cur_generator.name] %>
                         <% cur_id = cur_generator.get_id() %>
-                        <div class="metadataDiv" id="${cur_id}">
+                        <div class="metadataDiv container-fluid" id="${cur_id}">
+                            <div>
+                                <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_metadata_inst.enabled)]}/>&nbsp;Enabled</label>
+                            </div>
                             <div class="metadata_options_wrapper">
                                 <h4>Create:</h4>
                                 <div class="metadata_options">
@@ -1124,7 +1127,7 @@
                             </div>
                             <div class="metadata_example_wrapper">
                                 <h4>Results:</h4>
-                                <div class="metadata_example">
+                                <div class="metadata_example panel panel-default">
                                     <label for="${cur_id}_show_metadata"><span id="${cur_id}_eg_show_metadata">${cur_metadata_inst.eg_show_metadata}</span></label>
                                     <label for="${cur_id}_episode_metadata"><span id="${cur_id}_eg_episode_metadata">${cur_metadata_inst.eg_episode_metadata}</span></label>
                                     <label for="${cur_id}_fanart"><span id="${cur_id}_eg_fanart">${cur_metadata_inst.eg_fanart}</span></label>

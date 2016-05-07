@@ -3403,6 +3403,7 @@ jQuery(document).ready(function ($) {
                         var season_banners = $("#" + generator_name + "_season_banners").prop('checked');
                         var season_all_poster = $("#" + generator_name + "_season_all_poster").prop('checked');
                         var season_all_banner = $("#" + generator_name + "_season_all_banner").prop('checked');
+                        var enabled = $("#" + generator_name + "_enabled").prop('checked');
 
                         config_arr.push(show_metadata ? '1' : '0');
                         config_arr.push(episode_metadata ? '1' : '0');
@@ -3414,6 +3415,7 @@ jQuery(document).ready(function ($) {
                         config_arr.push(season_banners ? '1' : '0');
                         config_arr.push(season_all_poster ? '1' : '0');
                         config_arr.push(season_all_banner ? '1' : '0');
+                        config_arr.push(enabled ? '1' : '0');
 
                         var cur_num = 0;
                         for (var i = 0; i < config_arr.length; i++) {
