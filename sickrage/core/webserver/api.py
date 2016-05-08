@@ -116,7 +116,7 @@ class ApiHandler(RequestHandler):
 
     def initialize(self):
         self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(max_workers=5)
+        self.executor = ThreadPoolExecutor(max_workers=10)
 
     @coroutine
     def prepare(self, *args, **kwargs):
@@ -321,25 +321,29 @@ class ApiCall(ApiHandler):
 
             if paramType in self._help:
                 for paramName in paramDict:
-                    if not paramName in self._help[paramType]:
-                        self._help.setdefault(paramType, {})[paramName] = {}
-                    if paramDict[paramName]["allowedValues"]:
-                        self._help.setdefault(paramType, {})[paramName]["allowedValues"] = paramDict[paramName][
-                            "allowedValues"]
-                    else:
-                        self._help.setdefault(paramType, {})[paramName]["allowedValues"] = "see desc"
-                    self._help.setdefault(paramType, {})[paramName]["defaultValue"] = paramDict[paramName][
-                        "defaultValue"]
-                    self._help.setdefault(paramType, {})[paramName]["type"] = paramDict[paramName]["type"]
+                    if paramName not in self._help[paramType]:
+                        self._help[paramType][paramName] = {}
 
+                    if isinstance(paramDict[paramName], dict) and paramDict[paramName].setdefault("allowedValues"):
+                        self._help[paramType][paramName].setdefault("allowedValues",
+                                                                    paramDict[paramName]["allowedValues"])
+                    else:
+                        self._help[paramType][paramName].setdefault("allowedValues", "see desc")
+
+                    if isinstance(paramDict[paramName], dict):
+                        self._help[paramType][paramName].setdefault("defaultValue",
+                                                                    paramDict[paramName].setdefault("defaultValue"))
+                        self._help[paramType][paramName].setdefault("type", paramDict[paramName].setdefault("type"))
             elif paramDict:
                 for paramName in paramDict:
-                    self._help.setdefault(paramType, {})[paramName] = paramDict[paramName]
+                    self._help[paramType] = {}.setdefault(paramName, paramDict[paramName])
             else:
                 self._help[paramType] = {}
+
         msg = "No description available"
         if "desc" in self._help:
             msg = self._help["desc"]
+
         return _responds(RESULT_SUCCESS, self._help, msg)
 
     def return_missing(self):
@@ -378,19 +382,16 @@ class ApiCall(ApiHandler):
             missing = False
 
         if required:
-            if self._missing:
-                self._requiredParams.update(key)
-            else:
-                self._requiredParams = {key: {"allowedValues": allowedValues,
-                                              "defaultValue": orgDefault,
-                                              "type": arg_type}}
+            self._requiredParams = {}.setdefault(key, {"allowedValues": allowedValues,
+                                                       "defaultValue": orgDefault,
+                                                       "type": arg_type})
 
             if missing and key not in self._missing:
                 self._missing.append(key)
         else:
-            self._optionalParams[key] = {"allowedValues": allowedValues,
-                                         "defaultValue": orgDefault,
-                                         "type": arg_type}
+            self._optionalParams = {}.setdefault(key, {"allowedValues": allowedValues,
+                                                       "defaultValue": orgDefault,
+                                                       "type": arg_type})
 
         if default:
             default = self._check_param_type(default, key, arg_type)
@@ -431,7 +432,8 @@ class ApiCall(ApiHandler):
         elif arg_type == "ignore":
             pass
         else:
-            sickrage.srCore.srLogger.error('API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
+            sickrage.srCore.srLogger.error(
+                'API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
 
         if error:
             # this is a real ApiError !!
@@ -1237,7 +1239,8 @@ class CMD_Logs(ApiCall):
 
         levelsFiltered = '|'.join(
             [x for x in sickrage.srCore.srLogger.logLevels.keys() if
-             sickrage.srCore.srLogger.logLevels[x] >= int(sickrage.srCore.srLogger.logLevels[str(self.min_level).upper()])])
+             sickrage.srCore.srLogger.logLevels[x] >= int(
+                 sickrage.srCore.srLogger.logLevels[str(self.min_level).upper()])])
 
         logRegex = re.compile(
             r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered, ""),
@@ -1972,7 +1975,8 @@ class CMD_ShowAddExisting(ApiCall):
         self.flatten_folders, args = self.check_params("flatten_folders", bool(
             sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
                                                        False, "bool", [], *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", int(sickrage.srCore.srConfig.USE_SUBTITLES), False, "int", [],
+        self.subtitles, args = self.check_params("subtitles", int(sickrage.srCore.srConfig.USE_SUBTITLES), False, "int",
+                                                 [],
                                                  args,
                                                  kwargs)
         # super, missing, help
@@ -2065,35 +2069,103 @@ class CMD_ShowAddNew(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         self.valid_languages = srIndexerApi().config['langabbv_to_id']
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid",
+                                                 None,
+                                                 True,
+                                                 "int",
+                                                 [],
+                                                 *args,
+                                                 **kwargs)
         # optional
-        self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
-        self.initial, args = self.check_params("initial", None, False, "list",
+        self.location, args = self.check_params("location",
+                                                None,
+                                                False,
+                                                "string",
+                                                [],
+                                                *args,
+                                                **kwargs)
+
+        self.initial, args = self.check_params("initial",
+                                               None,
+                                               False,
+                                               "list",
                                                ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
-                                                "fullhdwebdl", "hdbluray", "fullhdbluray", "unknown"], *args, **kwargs)
-        self.archive, args = self.check_params("archive", None, False, "list",
-                                               ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
-                                                "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
-        self.flatten_folders, args = self.check_params("flatten_folders", bool(
-            sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
-                                                       False, "bool", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], args,
-                                              kwargs)
-        self.lang, args = self.check_params("lang", sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
-                                            self.valid_languages.keys(), *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", bool(sickrage.srCore.srConfig.USE_SUBTITLES), False, "bool", [],
-                                                 args,
-                                                 kwargs)
-        self.anime, args = self.check_params("anime", bool(sickrage.srCore.srConfig.ANIME_DEFAULT), False, "bool", [], *args,
+                                                "fullhdwebdl", "hdbluray", "fullhdbluray", "unknown"],
+                                               *args,
+                                               **kwargs)
+
+        self.archive, args = self.check_params("archive",
+                                               None,
+                                               False,
+                                               "list",
+                                               ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl", "fullhdwebdl",
+                                                "hdbluray", "fullhdbluray"],
+                                               *args,
+                                               **kwargs)
+
+        self.flatten_folders, args = self.check_params("flatten_folders",
+                                                       bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
+                                                       False,
+                                                       "bool",
+                                                       [],
+                                                       *args,
+                                                       **kwargs)
+
+        self.status, args = self.check_params("status",
+                                              None,
+                                              False,
+                                              "string",
+                                              ["wanted", "skipped", "ignored"],
+                                              *args,
+                                              **kwargs)
+
+        self.lang, args = self.check_params("lang",
+                                            sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE,
+                                            False,
+                                            "string",
+                                            self.valid_languages.keys(),
+                                            *args,
+                                            **kwargs)
+
+        self.subtitles, args = self.check_params("subtitles",
+                                                 bool(sickrage.srCore.srConfig.USE_SUBTITLES),
+                                                 False,
+                                                 "bool",
+                                                 [],
+                                                 *args,
+                                                 **kwargs)
+
+        self.anime, args = self.check_params("anime",
+                                             bool(sickrage.srCore.srConfig.ANIME_DEFAULT),
+                                             False,
+                                             "bool",
+                                             [],
+                                             *args,
                                              **kwargs)
-        self.scene, args = self.check_params("scene", bool(sickrage.srCore.srConfig.SCENE_DEFAULT), False, "bool", [], *args,
+
+        self.scene, args = self.check_params("scene",
+                                             bool(sickrage.srCore.srConfig.SCENE_DEFAULT),
+                                             False,
+                                             "bool",
+                                             [],
+                                             *args,
                                              **kwargs)
-        self.future_status, args = self.check_params("future_status", None, False, "string",
-                                                     ["wanted", "skipped", "ignored"], *args, **kwargs)
-        self.archive_firstmatch, args = self.check_params("archive_firstmatch", bool(
-            sickrage.srCore.srConfig.ARCHIVE_DEFAULT),
+
+        self.future_status, args = self.check_params("future_status",
+                                                     None,
+                                                     False,
+                                                     "string",
+                                                     ["wanted", "skipped", "ignored"],
+                                                     *args,
+                                                     **kwargs)
+
+        self.archive_firstmatch, args = self.check_params("archive_firstmatch",
+                                                          bool(sickrage.srCore.srConfig.ARCHIVE_DEFAULT),
                                                           False,
-                                                          "bool", [], *args, **kwargs)
+                                                          "bool",
+                                                          [],
+                                                          *args,
+                                                          **kwargs)
 
         # super, missing, help
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
@@ -2200,7 +2272,8 @@ class CMD_ShowAddNew(ApiCall):
         else:
             dir_exists = makeDir(showPath)
             if not dir_exists:
-                sickrage.srCore.srLogger.error("API :: Unable to create the folder " + showPath + ", can't add the show")
+                sickrage.srCore.srLogger.error(
+                    "API :: Unable to create the folder " + showPath + ", can't add the show")
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
             else:

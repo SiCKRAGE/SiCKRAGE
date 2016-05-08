@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2afd78f - 2016-05-08: FIXED: Added space between regex names displayed via nameparser FIXED: When setting location on either show or episode it now displays a message detailing as to which location was infact set FIXED: Core JS code for mass_update and mass_edit templates was incorrectly placed resulting in certain JS features to not work correctly 
+- * 68524cd - 2016-05-08: FIXED: API Builder was not properly referencing help for api calls, added application and request values to template attributes 
+- * 9d32ac0 - 2016-05-08: FIXED: Added space between regex names displayed via nameparser FIXED: When setting location on either show or episode it now displays a message detailing as to which location was infact set FIXED: Core JS code for mass_update and mass_edit templates was incorrectly placed resulting in certain JS features to not work correctly 
 - * b5caac0 - 2016-05-08: FIXED: Expand/Collaspe button for episode status manager 
 - * 082c883 - 2016-05-07: FIXED: Queue was to slow with previous shutdown implementation so added a new improved stop event 
 - * 7a80c07 - 2016-05-07: FIXED: Shutdown issue caused by executor thread pools not terminating properly FIXED: Executor pools for queues are now limited to 10 tasks at a time to help with resources FIXED: Removed standard absolute regex, not very accurate 
@@ -38,6 +39,4 @@
 - * 9bd21fc - 2016-05-01: More responsive-ui fixes applied 
 - * a31ee71 - 2016-05-01: Added check to determin if config settings have been loaded or not so we don&#x27;t attempt saving them if not required. 
 - * 4239c9e - 2016-05-01: Fixed issues with show updates/refreshes both auto and forced, enforced to skip grabbing info from DB to ensure new data takes properly and repairs damaged shows/episodes. 
-- * b053953 - 2016-05-01: Corrected code issues with new indexer persistent show cache, works now! 
-- * e74e982 - 2016-05-01: Updated WebUI via Grunt 
 

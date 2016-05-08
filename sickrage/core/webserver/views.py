@@ -175,7 +175,9 @@ class BaseHandler(RequestHandler):
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
-            'makoStartTime': time.time()
+            'makoStartTime': time.time(),
+            'application': self.application,
+            'request': self.request
         }
 
         template_kwargs.update(self.get_template_namespace())

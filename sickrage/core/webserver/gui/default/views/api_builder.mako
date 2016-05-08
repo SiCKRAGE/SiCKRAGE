@@ -5,22 +5,22 @@
 %>
 
 <%block name="metas">
-    <meta data-var="commands" data-content="${ApiHandler.api_calls.keys()}">
+    <meta data-var="commands" data-content="${ApiHandler(application, request).api_calls.keys()}">
     <meta data-var="episodes" data-content="${episodes}">
 </%block>
 
 <%block name="content">
     <div id="content">
         <div class="panel-group" id="commands_list">
-            % for command in ApiHandler.api_calls.keys():
+            % for cmd, func in ApiHandler(application, request).api_calls.items():
             <%
-                command_id = command.replace('.', '-')
-                help = ApiHandler.api_calls[command]((), {'help': 1}).run()
+                command_id = cmd.replace('.', '-')
+                help = func(application, request, **{'help':1}).run()
             %>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#commands_list" href="#command-${command_id}">${command}</a>
+                        <a data-toggle="collapse" data-parent="#commands_list" href="#command-${command_id}">${cmd}</a>
                     </h4>
                 </div>
                 <div class="panel-collapse collapse" id="command-${command_id}">
@@ -48,7 +48,7 @@
 
                         <h4>Playground</h4>
 
-                        URL: <kbd id="command-${command_id}-base-url">/api/${apikey}/?cmd=${command}</kbd><br>
+                        URL: <kbd id="command-${command_id}-base-url">/api/${apikey}/?cmd=${cmd}</kbd><br>
 
                         % if help['data']['requiredParameters']:
                             Required parameters: ${display_parameters_playground(help['data']['requiredParameters'], True, command_id)}<br>
@@ -118,7 +118,7 @@
             %>
 
             % if isinstance(allowed_values, list):
-                <select class="form-control"${('', ' multiple="multiple"')[type == 'list']} name="${parameter}" data-command="${command}">
+                <select class="form-control"${('', ' multiple="multiple"')[type == 'list']} name="${parameter}" data-command="${cmd}">
                     <option>${parameter}</option>
 
                     % if allowed_values == [0, 1]:
@@ -131,7 +131,7 @@
                     % endif
                 </select>
             % elif parameter == 'indexerid':
-                <select class="form-control" name="${parameter}" data-action="update-seasons" data-command="${command}">
+                <select class="form-control" name="${parameter}" data-action="update-seasons" data-command="${cmd}">
                     <option>${parameter}</option>
 
                     % for show in shows:
@@ -140,18 +140,18 @@
                 </select>
 
                 % if 'season' in parameters:
-                <select class="form-control hidden" name="season" data-action="update-episodes" data-command="${command}">
+                <select class="form-control hidden" name="season" data-action="update-episodes" data-command="${cmd}">
                     <option>season</option>
                 </select>
                 % endif
 
                 % if 'episode' in parameters:
-                <select class="form-control hidden" name="episode" data-command="${command}">
+                <select class="form-control hidden" name="episode" data-command="${cmd}">
                     <option>episode</option>
                 </select>
                 % endif
             % elif parameter == 'tvdbid':
-                <select class="form-control" name="${parameter}" data-command="${command}">
+                <select class="form-control" name="${parameter}" data-command="${cmd}">
                     <option>${parameter}</option>
 
                     % for show in shows:
@@ -160,10 +160,10 @@
                 </select>
             % elif type == 'int':
                 % if parameter not in ('episode', 'season'):
-                <input class="form-control" name="${parameter}" placeholder="${parameter}" type="number" data-command="${command}" />
+                <input class="form-control" name="${parameter}" placeholder="${parameter}" type="number" data-command="${cmd}" />
                 % endif
             % elif type == 'string':
-                <input class="form-control" name="${parameter}" placeholder="${parameter}" type="text" data-command="${command}" />
+                <input class="form-control" name="${parameter}" placeholder="${parameter}" type="text" data-command="${cmd}" />
             % endif
         % endfor
         </div>
