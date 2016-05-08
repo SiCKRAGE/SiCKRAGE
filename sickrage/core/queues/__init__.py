@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import threading
 from Queue import PriorityQueue
 from datetime import datetime
+from time import sleep
 
 try:
     from futures import ThreadPoolExecutor, thread
@@ -45,7 +46,7 @@ class srQueue(PriorityQueue):
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
-        self.stop = threading.Event()
+        self.executor = ThreadPoolExecutor(10)
 
     @property
     def name(self):
@@ -87,23 +88,19 @@ class srQueue(PriorityQueue):
         if self.amActive:
             return
 
-        with self.lock:
-            self.amActive = True
+        self.amActive = True
 
-            # if there's something in the queue then run it in a thread and take it out of the queue
+        # if there's something in the queue then run it in a thread and take it out of the queue
+        with self.lock:
             while not self.empty():
                 if self.queue[0][0] < self.min_priority:
                     return
 
                 # execute item in queue
-                with ThreadPoolExecutor(1) as executor:
-                    # shutdown queue if stop signal issued
-                    if self.stop.isSet():
-                        executor._threads.clear()
-                        thread._threads_queues.clear()
-                        return
+                self.executor.submit(self.callback)
 
-                    executor.submit(self.callback)
+                # sleep cpu
+                sleep(1)
 
             self.amActive = False
 
@@ -114,7 +111,9 @@ class srQueue(PriorityQueue):
         item.finish()
 
     def shutdown(self):
-        self.stop.set()
+        self.executor._threads.clear()
+        thread._threads_queues.clear()
+        self.executor.shutdown()
 
 
 class QueueItem(object):
