@@ -1,6 +1,7 @@
 # Changelog
 
-- * 44bae6f - 2016-05-07: FIXED: Shutdown issue caused by executor thread pools not terminating properly FIXED: Executor pools for queues are now limited to 10 tasks at a time to help with resources FIXED: Removed standard absolute regex, not very accurate 
+- * bd9794a - 2016-05-07: FIXED: Queue was to slow with previous shutdown implementation so added a new improved stop event 
+- * 7a80c07 - 2016-05-07: FIXED: Shutdown issue caused by executor thread pools not terminating properly FIXED: Executor pools for queues are now limited to 10 tasks at a time to help with resources FIXED: Removed standard absolute regex, not very accurate 
 - * e7e7340 - 2016-05-07: FIXED: Incorrect filename specified for constraints if performing a install via setup.py 
 - * dedb2e8 - 2016-05-07: FIXED: Added worker queues to database mass queries and mass upserts to better handle multi-threading, also moved connection commits to transaction context and we delete threaded connection object once done with it to help solve too many open connections to the database files. 
 - * ba14b9d - 2016-05-07: FIXED: References to sleep in some modules where incorrectly specified 
