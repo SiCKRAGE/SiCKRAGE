@@ -49,7 +49,7 @@ setup(
     tests_require=['pip'],
     requires=['pip'],
     install_requires=['-c {}'.format(
-        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'requirements.txt'))] + requirements(),
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'constraints.txt'))] + requirements(),
     include_package_data=True,
     platforms='any',
     zip_safe=False,

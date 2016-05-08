@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0c5623f - 2016-05-07: FIXED: Added worker queues to database mass queries and mass upserts to better handle multi-threading, also moved connection commits to transaction context and we delete threaded connection object once done with it to help solve too many open connections to the database files. 
+- * e821539 - 2016-05-07: FIXED: Incorrect filename specified for constraints if performing a install via setup.py 
+- * dedb2e8 - 2016-05-07: FIXED: Added worker queues to database mass queries and mass upserts to better handle multi-threading, also moved connection commits to transaction context and we delete threaded connection object once done with it to help solve too many open connections to the database files. 
 - * ba14b9d - 2016-05-07: FIXED: References to sleep in some modules where incorrectly specified 
 - * 40c8042 - 2016-05-07: UPDATED:  Changelog 
 - * 6c82baf - 2016-05-07: FIXED: Disabled same-thread checks for databases to fix issues with more then one thread opening the database files FIXED: Config migrations where storing values inside class but never returning them back to config object FEATURE: Metadata providers now can optionally be enabled or disabled from post-processing config settings UPDATE: Performed grunt tasks to update js core files 
