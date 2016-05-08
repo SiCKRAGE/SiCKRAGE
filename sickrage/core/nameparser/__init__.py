@@ -601,7 +601,7 @@ class ParseResult(object):
 
         to_return += ' ABD:[{}]'.format(self.is_air_by_date)
         to_return += ' ANIME:[{}]'.format(self.is_anime)
-        to_return += ' REGEX:[{}]'.format(''.join(self.which_regex))
+        to_return += ' REGEX:[{}]'.format(' '.join(self.which_regex))
 
         return to_return
 

@@ -891,7 +891,7 @@ jQuery(document).ready(function ($) {
                 }
 
                 var path, callback, ls = false;
-
+    
                 try {
                     ls = !!(localStorage.getItem);
                 } catch (e) {
@@ -4911,8 +4911,6 @@ jQuery(document).ready(function ($) {
 
             mass_edit: {
                 init: function () {
-                    $('#location').fileBrowser({title: 'Select Show Location'});
-
                     $('.new_root_dir').change(function () {
                         var curIndex = SICKRAGE.manage.mass_edit.findDirIndex($(this).attr('id'));
                         $('#display_new_root_dir_' + curIndex).html('<b>' + $(this).val() + '</b>');

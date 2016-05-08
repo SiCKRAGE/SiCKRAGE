@@ -279,7 +279,7 @@ class TVEpisode(object):
     @location.setter
     def location(self, new_location):
         if os.path.isfile(new_location):
-            sickrage.srCore.srLogger.debug("Setter sets location to " + new_location)
+            sickrage.srCore.srLogger.debug("Episode location set to " + new_location)
             self.dirty = True
         self._location = new_location
 
@@ -364,27 +364,30 @@ class TVEpisode(object):
                                ('indexer', lambda: self.loadFromIndexer(season, episode))])
 
         # attempt populating episode
-        success = []
+        success = {'db': False,
+                   'nfo': False,
+                   'indexer': False}
+
         for method, func in methods.items():
             if method == 'db':
                 # populate episode from database
-                success += [func()]
-            elif method == 'nfo':
+                success[method] = func()
+            elif method == 'nfo' and not success['db']:
                 # populate episode from nfo files
                 try:
-                    success += [func()]
+                    success[method] = func()
                 except NoNFOException:
                     sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
                         self.show.indexerid, season or 0, episode or 0))
             elif method == 'indexer':
                 # populate episode from indexers
                 try:
-                    success += [func()]
+                    success[method] = func()
                 except EpisodeDeletedException:
                     self.deleteEpisode()
 
             # confirm if we successfully populated the episode
-            if any(success):
+            if any(success.values()):
                 if method != 'indexer' and forceIndexer: continue
                 return True
 
@@ -485,7 +488,7 @@ class TVEpisode(object):
             if self.name:
                 sickrage.srCore.srLogger.debug(
                     "{} timed out but we have enough info from other sources, allowing the error".format(indexer_name))
-                return
+                return False
             else:
                 sickrage.srCore.srLogger.error("{} timed out, unable to create the episode".format(indexer_name))
                 return False
@@ -496,7 +499,7 @@ class TVEpisode(object):
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexerid != -1:
                 self.deleteEpisode()
-            return
+            return False
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
         if not getattr(myEp, 'episodename'):
@@ -555,7 +558,7 @@ class TVEpisode(object):
                 self.show.location) and not sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS and not sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR:
             sickrage.srCore.srLogger.info(
                 "The show dir %s is missing, not bothering to change the episode statuses since it'd probably be invalid" % self.show.location)
-            return
+            return False
 
         if self.location:
             sickrage.srCore.srLogger.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
@@ -595,16 +598,13 @@ class TVEpisode(object):
         return True
 
     def loadFromNFO(self, location):
-
         if not os.path.isdir(self.show.location):
             sickrage.srCore.srLogger.info(
-                str(
-                    self.show.indexerid) + ": The show dir is missing, not bothering to try loading the episode NFO")
-            return
+                "{}: The show dir is missing, not bothering to try loading the episode NFO".format(self.show.indexerid))
+            return False
 
         sickrage.srCore.srLogger.debug(
-            str(
-                self.show.indexerid) + ": Loading episode details from the NFO file associated with " + location)
+            "{}: Loading episode details from the NFO file associated with {}".format(self.show.indexerid, location))
 
         self.location = location
         if self.location != "":

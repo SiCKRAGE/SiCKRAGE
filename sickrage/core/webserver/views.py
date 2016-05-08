@@ -2920,13 +2920,7 @@ class Manage(Home, WebRoot):
         super(Manage, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render(
-            "/manage/index.mako",
-            title='Mass Update',
-            header='Mass Update',
-            topmenu='manage',
-            controller='manage'
-        )
+        return self.redirect('/manage/massUpdate')
 
     @staticmethod
     def showEpisodeStatuses(indexer_id, whichStatus):
@@ -3575,7 +3569,14 @@ class Manage(Home, WebRoot):
             sickrage.srCore.srNotifications.message("The following actions were queued:",
                                                     messageDetail)
 
-        return self.redirect("/manage/")
+        return self.render(
+            '/manage/mass_update.mako',
+            title='Mass Update',
+            header='Mass Update',
+            topmenu='manage',
+            controller='manage',
+            action='mass_update'
+        )
 
     def manageTorrents(self):
         info_download_station = ''

@@ -1,6 +1,7 @@
 # Changelog
 
-- * fa28c11 - 2016-05-08: FIXED: Expand/Collaspe button for episode status manager 
+- * 2afd78f - 2016-05-08: FIXED: Added space between regex names displayed via nameparser FIXED: When setting location on either show or episode it now displays a message detailing as to which location was infact set FIXED: Core JS code for mass_update and mass_edit templates was incorrectly placed resulting in certain JS features to not work correctly 
+- * b5caac0 - 2016-05-08: FIXED: Expand/Collaspe button for episode status manager 
 - * 082c883 - 2016-05-07: FIXED: Queue was to slow with previous shutdown implementation so added a new improved stop event 
 - * 7a80c07 - 2016-05-07: FIXED: Shutdown issue caused by executor thread pools not terminating properly FIXED: Executor pools for queues are now limited to 10 tasks at a time to help with resources FIXED: Removed standard absolute regex, not very accurate 
 - * e7e7340 - 2016-05-07: FIXED: Incorrect filename specified for constraints if performing a install via setup.py 
