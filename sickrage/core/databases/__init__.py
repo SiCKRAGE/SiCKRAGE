@@ -177,7 +177,7 @@ class Connection(object):
             try:
                 yield self._connections[thread_id]
             finally:
-                self._connections[thread_id].commit()
+                del self._connections[thread_id]
 
     @contextmanager
     def _conn_cursor(self):
@@ -187,6 +187,7 @@ class Connection(object):
                 yield (conn, cursor)
             finally:
                 cursor.close()
+                conn.commit()
 
     @contextmanager
     def _tx_stack(self):
@@ -233,13 +234,13 @@ class Connection(object):
         :return: list of results
         """
 
-        q = Queue()
-        with ThreadPoolExecutor(max_workers=len(upserts)) as executor, self.transaction() as tx:
-            [q.put(executor.submit(tx.upsert, *upsert).result()) for upsert in upserts]
-
         sqlResults = []
+
+        q = Queue()
+        map(q.put, upserts)
         while not q.empty():
-            sqlResults += [q.get()]
+            with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
+                sqlResults += [executor.submit(tx.upsert, *q.get()).result()]
 
         sickrage.srCore.srLogger.db("{} Upserts executed".format(len(sqlResults)))
 
@@ -253,13 +254,13 @@ class Connection(object):
         :return: list of results
         """
 
-        q = Queue()
-        with ThreadPoolExecutor(max_workers=len(queries)) as executor, self.transaction() as tx:
-            [q.put(executor.submit(tx.query, query).result()) for query in queries]
-
         sqlResults = []
+
+        q = Queue()
+        map(q.put, queries)
         while not q.empty():
-            sqlResults += [q.get()]
+            with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
+                sqlResults += [executor.submit(tx.query, q.get()).result()]
 
         sickrage.srCore.srLogger.db("{} Transactions executed".format(len(sqlResults)))
         return sqlResults
@@ -274,7 +275,7 @@ class Connection(object):
 
         sickrage.srCore.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
-        with ThreadPoolExecutor(max_workers=1) as executor, self.transaction() as tx:
+        with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
             return executor.submit(tx.query, [query, list(*args)]).result()
 
     def upsert(self, tableName, valueDict, keyDict):
@@ -287,7 +288,7 @@ class Connection(object):
         :param keyDict:  columns in table to update
         """
 
-        with ThreadPoolExecutor(max_workers=1) as executor, self.transaction() as tx:
+        with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
             return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
 
     def select(self, query, *args):

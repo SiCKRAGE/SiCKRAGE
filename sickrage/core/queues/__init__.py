@@ -96,18 +96,19 @@ class srQueue(PriorityQueue):
                     return
 
                 # execute item in queue
-                with ThreadPoolExecutor(len(self.queue)) as executor:
+                with ThreadPoolExecutor(1) as executor:
                     # shutdown queue if stop signal issued
                     if self.stop.isSet():
                         executor._threads.clear()
                         thread._threads_queues.clear()
-                        break
+                        return
 
-                    executor.submit(self.callback, self.get()[1])
+                    executor.submit(self.callback)
 
             self.amActive = False
 
-    def callback(self, item):
+    def callback(self):
+        item = self.get()[1]
         threading.currentThread().setName(self.name)
         item.run()
         item.finish()
