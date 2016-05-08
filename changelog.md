@@ -1,6 +1,7 @@
 # Changelog
 
-- * bd9794a - 2016-05-07: FIXED: Queue was to slow with previous shutdown implementation so added a new improved stop event 
+- * fa28c11 - 2016-05-08: FIXED: Expand/Collaspe button for episode status manager 
+- * 082c883 - 2016-05-07: FIXED: Queue was to slow with previous shutdown implementation so added a new improved stop event 
 - * 7a80c07 - 2016-05-07: FIXED: Shutdown issue caused by executor thread pools not terminating properly FIXED: Executor pools for queues are now limited to 10 tasks at a time to help with resources FIXED: Removed standard absolute regex, not very accurate 
 - * e7e7340 - 2016-05-07: FIXED: Incorrect filename specified for constraints if performing a install via setup.py 
 - * dedb2e8 - 2016-05-07: FIXED: Added worker queues to database mass queries and mass upserts to better handle multi-threading, also moved connection commits to transaction context and we delete threaded connection object once done with it to help solve too many open connections to the database files. 
@@ -38,8 +39,4 @@
 - * 4239c9e - 2016-05-01: Fixed issues with show updates/refreshes both auto and forced, enforced to skip grabbing info from DB to ensure new data takes properly and repairs damaged shows/episodes. 
 - * b053953 - 2016-05-01: Corrected code issues with new indexer persistent show cache, works now! 
 - * e74e982 - 2016-05-01: Updated WebUI via Grunt 
-- * 0d2e6e0 - 2016-05-01: Fixed redundant loading of network timezone data from database. 
-- * 2b3eb60 - 2016-05-01: Corrected standard_absolute regex 
-- * b2010b8 - 2016-05-01: Fixed boolean issue with theTVDB showcache 
-- * 2668d7e - 2016-04-30: Fixed theTVDB persistent show cache, code was borked. 
 
