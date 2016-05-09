@@ -511,17 +511,6 @@
                                 </div>
 
                                 <div class="field-pair">
-                                    <label for="google_oauth2">
-                                        <span class="component-title">Google OAuth2</span>
-                                        <span class="component-desc">
-                                            <input type="checkbox" name="google_oauth2"
-                                                   id="google_oauth2" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.GOOGLE_OAUTH2)]}/>
-                                            <p>use Google OAuth2 for logins instead of username/password</p>
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div class="field-pair">
                                     <label for="web_ipv6">
                                         <span class="component-title">Listen on IPv6</span>
                                         <span class="component-desc">
@@ -695,6 +684,16 @@
                                 </div>
 
                                 <div class="field-pair">
+                                    <label for="google_link">
+                                        <span class="component-title">Link Google Account</span>
+                                        <span class="component-desc">
+                                            <input class="btn btn-inline" type="button" id="google_link" value="Link">
+                                            <p>link your google account to SiCKRAGE for advanced feature usage such as settings/database storage</p>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="field-pair">
                                     <label>
                                         <span class="component-title">Proxy host</span>
                                 <span class="component-desc">
@@ -854,7 +853,7 @@
                     <br>
                     <h6 class="pull-right"><b>All non-absolute folder locations are relative to <span
                             class="path">${sickrage.DATA_DIR}</span></b></h6>
-                    <input type="submit" class="btn pull-left config_submitter button" value="Save Changes" />
+                    <input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
                 </div><!-- /ui-components //-->
 
             </form>
@@ -862,4 +861,5 @@
     </div>
 
     <div></div>
+    <div id="login-dialog"></div><!-- login model dialog //-->
 </%block>

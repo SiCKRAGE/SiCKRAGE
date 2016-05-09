@@ -115,6 +115,9 @@ class srWebServer(object):
                                xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
                                cookie_secret=sickrage.srCore.srConfig.WEB_COOKIE_SECRET,
                                login_url='%s/login/' % sickrage.srCore.srConfig.WEB_ROOT,
+                               google_oauth={
+                                   'key': '48901323822-ebum0n1ago1bo2dku4mqm9l6kl2j60uv.apps.googleusercontent.com',
+                                   'secret': 'vFQy_bojwJ1f2X0hYD3wPu7U'}
                                )
 
         # Main Handlers

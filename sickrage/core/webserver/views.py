@@ -269,6 +269,89 @@ class LogoutHandler(BaseHandler):
         return self.redirect(self.get_argument("next", "/"))
 
 
+class CalendarHandler(BaseHandler):
+    def prepare(self, *args, **kwargs):
+        if sickrage.srCore.srConfig.CALENDAR_UNPROTECTED:
+            self.write(self.calendar())
+        else:
+            self.calendar_auth()
+
+    @authenticated
+    def calendar_auth(self):
+        self.write(self.calendar())
+
+    # Raw iCalendar implementation by Pedro Jose Pereira Vieito (@pvieito).
+    #
+    # iCalendar (iCal) - Standard RFC 5545 <http://tools.ietf.org/html/rfc5546>
+    # Works with iCloud, Google Calendar and Outlook.
+    def calendar(self):
+        """ Provides a subscribeable URL for iCal subscriptions
+        """
+
+        sickrage.srCore.srLogger.info("Receiving iCal request from %s" % self.request.remote_ip)
+
+        # Create a iCal string
+        ical = 'BEGIN:VCALENDAR\r\n'
+        ical += 'VERSION:2.0\r\n'
+        ical += 'X-WR-CALNAME:SiCKRAGE\r\n'
+        ical += 'X-WR-CALDESC:SiCKRAGE\r\n'
+        ical += 'PRODID://Sick-Beard Upcoming Episodes//\r\n'
+
+        # Limit dates
+        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
+        future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
+
+        # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
+        calendar_shows = main_db.MainDB().select(
+            "SELECT show_name, indexer_id, network, airs, runtime FROM tv_shows WHERE ( status = 'Continuing' OR status = 'Returning Series' ) AND paused != '1'")
+        for show in calendar_shows:
+            # Get all episodes of this show airing between today and next month
+            episode_list = main_db.MainDB().select(
+                "SELECT indexerid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?",
+                (past_date, future_date, int(show["indexer_id"])))
+
+            utc = tz.gettz('GMT')
+
+            for episode in episode_list:
+
+                air_date_time = tz_updater.parse_date_time(episode['airdate'], show["airs"],
+                                                           show['network']).astimezone(utc)
+                air_date_time_end = air_date_time + datetime.timedelta(
+                    minutes=tryInt(show["runtime"], 60))
+
+                # Create event for episode
+                ical += 'BEGIN:VEVENT\r\n'
+                ical += 'DTSTART:' + air_date_time.strftime("%Y%m%d") + 'T' + air_date_time.strftime(
+                    "%H%M%S") + 'Z\r\n'
+                ical += 'DTEND:' + air_date_time_end.strftime(
+                    "%Y%m%d") + 'T' + air_date_time_end.strftime(
+                    "%H%M%S") + 'Z\r\n'
+                if sickrage.srCore.srConfig.CALENDAR_ICONS:
+                    ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:http://www.sickrage.ca/favicon.ico\r\n'
+                    ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
+                ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
+                    show['show_name'], episode['season'], episode['episode'], episode['name']
+                )
+                ical += 'UID:SiCKRAGE-' + str(datetime.date.today().isoformat()) + '-' + \
+                        show['show_name'].replace(" ", "-") + '-E' + str(episode['episode']) + \
+                        'S' + str(episode['season']) + '\r\n'
+                if episode['description']:
+                    ical += 'DESCRIPTION: {0} on {1} \\n\\n {2}\r\n'.format(
+                        (show['airs'] or '(Unknown airs)'),
+                        (show['network'] or 'Unknown network'),
+                        episode['description'].splitlines()[0])
+                else:
+                    ical += 'DESCRIPTION:' + (show['airs'] or '(Unknown airs)') + ' on ' + (
+                        show['network'] or 'Unknown network') + '\r\n'
+
+                ical += 'END:VEVENT\r\n'
+
+        # Ending the iCal
+        ical += 'END:VCALENDAR'
+
+        return ical
+
+
 @Route('(.*)(/?)')
 class WebRoot(WebHandler):
     def __init__(self, *args, **kwargs):
@@ -447,88 +530,59 @@ class WebRoot(WebHandler):
         )
 
 
-class CalendarHandler(BaseHandler):
-    def prepare(self, *args, **kwargs):
-        if sickrage.srCore.srConfig.CALENDAR_UNPROTECTED:
-            self.write(self.calendar())
-        else:
-            self.calendar_auth()
+@Route('/google(/?.*)')
+class GoogleAuth(WebRoot):
+    def __init__(self, *args, **kwargs):
+        super(GoogleAuth, self).__init__(*args, **kwargs)
 
-    @authenticated
-    def calendar_auth(self):
-        self.write(self.calendar())
+    def user_code(self):
+        try:
+            return sickrage.srCore.srWebSession.post('https://accounts.google.com/o/oauth2/device/code',
+                                                     data={'client_id': self.settings['google_oauth']['key'],
+                                                           'scope': 'email profile'}).json()
+        except Exception:
+            return {}
 
-    # Raw iCalendar implementation by Pedro Jose Pereira Vieito (@pvieito).
-    #
-    # iCalendar (iCal) - Standard RFC 5545 <http://tools.ietf.org/html/rfc5546>
-    # Works with iCloud, Google Calendar and Outlook.
-    def calendar(self):
-        """ Provides a subscribeable URL for iCal subscriptions
-        """
+    def auth_token(self, code):
+        try:
+            data = sickrage.srCore.srWebSession.post('https://accounts.google.com/o/oauth2/token',
+                                                     data={'client_id': self.settings['google_oauth']['key'],
+                                                           'client_secret': self.settings['google_oauth']['secret'],
+                                                           'grant_type': 'http://oauth.net/grant_type/device/1.0',
+                                                           'code': code}).json()
 
-        sickrage.srCore.srLogger.info("Receiving iCal request from %s" % self.request.remote_ip)
+            if not 'error' in data:
+                self.set_secure_cookie('google_refresh_token', data['refresh_token'], expires_days=30)
+                self.set_secure_cookie('google_access_token', data['access_token'], expires_days=30)
+                self.set_secure_cookie('google_token_type', data['token_type'], expires_days=30)
 
-        # Create a iCal string
-        ical = 'BEGIN:VCALENDAR\r\n'
-        ical += 'VERSION:2.0\r\n'
-        ical += 'X-WR-CALNAME:SiCKRAGE\r\n'
-        ical += 'X-WR-CALDESC:SiCKRAGE\r\n'
-        ical += 'PRODID://Sick-Beard Upcoming Episodes//\r\n'
+            return data
+        except Exception:
+            pass
 
-        # Limit dates
-        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
-        future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
+    def refresh_token(self, token=None):
+        try:
+            if not token:
+                token = self.get_secure_cookie('google_refresh_token')
 
-        # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        calendar_shows = main_db.MainDB().select(
-            "SELECT show_name, indexer_id, network, airs, runtime FROM tv_shows WHERE ( status = 'Continuing' OR status = 'Returning Series' ) AND paused != '1'")
-        for show in calendar_shows:
-            # Get all episodes of this show airing between today and next month
-            episode_list = main_db.MainDB().select(
-                "SELECT indexerid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?",
-                (past_date, future_date, int(show["indexer_id"])))
+            data = sickrage.srCore.srWebSession.post('https://accounts.google.com/o/oauth2/token',
+                                                     data={'client_id': self.settings['google_oauth2']['client_id'],
+                                                           'client_secret': self.settings['google_oauth2'][
+                                                               'client_secret'],
+                                                           'grant_type': 'refresh_token',
+                                                           'refresh_token': token}).json()
 
-            utc = tz.gettz('GMT')
+            self.set_secure_cookie('google_access_token', data['access_token'], expires_days=30)
+            self.set_secure_cookie('google_token_type', data['token_type'], expires_days=30)
 
-            for episode in episode_list:
+            return data
+        except Exception:
+            self.logout()
 
-                air_date_time = tz_updater.parse_date_time(episode['airdate'], show["airs"],
-                                                           show['network']).astimezone(utc)
-                air_date_time_end = air_date_time + datetime.timedelta(
-                    minutes=tryInt(show["runtime"], 60))
-
-                # Create event for episode
-                ical += 'BEGIN:VEVENT\r\n'
-                ical += 'DTSTART:' + air_date_time.strftime("%Y%m%d") + 'T' + air_date_time.strftime(
-                    "%H%M%S") + 'Z\r\n'
-                ical += 'DTEND:' + air_date_time_end.strftime(
-                    "%Y%m%d") + 'T' + air_date_time_end.strftime(
-                    "%H%M%S") + 'Z\r\n'
-                if sickrage.srCore.srConfig.CALENDAR_ICONS:
-                    ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:http://www.sickrage.ca/favicon.ico\r\n'
-                    ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
-                ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
-                    show['show_name'], episode['season'], episode['episode'], episode['name']
-                )
-                ical += 'UID:SiCKRAGE-' + str(datetime.date.today().isoformat()) + '-' + \
-                        show['show_name'].replace(" ", "-") + '-E' + str(episode['episode']) + \
-                        'S' + str(episode['season']) + '\r\n'
-                if episode['description']:
-                    ical += 'DESCRIPTION: {0} on {1} \\n\\n {2}\r\n'.format(
-                        (show['airs'] or '(Unknown airs)'),
-                        (show['network'] or 'Unknown network'),
-                        episode['description'].splitlines()[0])
-                else:
-                    ical += 'DESCRIPTION:' + (show['airs'] or '(Unknown airs)') + ' on ' + (
-                        show['network'] or 'Unknown network') + '\r\n'
-
-                ical += 'END:VEVENT\r\n'
-
-        # Ending the iCal
-        ical += 'END:VCALENDAR'
-
-        return ical
-
+    def logout(self):
+        self.clear_cookie('google_access_token')
+        self.clear_cookie('google_refresh_token')
+        self.clear_cookie('google_token_type')
 
 @Route('/ui(/?.*)')
 class UI(WebRoot):
@@ -3886,7 +3940,7 @@ class ConfigGeneral(Config):
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None,
-                    display_all_seasons=None, showupdate_stale=None, google_oauth2=None, **kwargs):
+                    display_all_seasons=None, showupdate_stale=None, **kwargs):
 
         results = []
 
@@ -3903,8 +3957,6 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.SHOWUPDATE_STALE = sickrage.srCore.srConfig.checkbox_to_value(showupdate_stale)
         sickrage.srCore.srConfig.LOG_NR = log_nr
         sickrage.srCore.srConfig.LOG_SIZE = log_size
-
-        sickrage.srCore.srConfig.GOOGLE_OAUTH2 = sickrage.srCore.srConfig.checkbox_to_value(google_oauth2)
 
         sickrage.srCore.srConfig.TRASH_REMOVE_SHOW = sickrage.srCore.srConfig.checkbox_to_value(trash_remove_show)
         sickrage.srCore.srConfig.TRASH_ROTATE_LOGS = sickrage.srCore.srConfig.checkbox_to_value(trash_rotate_logs)

@@ -1446,6 +1446,85 @@ jQuery(document).ready(function ($) {
             }
         },
 
+        google: {
+            init: function () {
+            },
+
+            login: function () {
+                $.ajax({
+                    dataType: "json",
+                    url: '/google/user_code',
+                    type: 'POST',
+                    success: function (data) {
+                        var loginDialog = '<center><h1>' + data.user_code + '</h1><br/>From any computer, please visit <a href="' + data.verification_url + '" target="_blank">' + data.verification_url + '</a> and enter the code</center>';
+                        $('#login-dialog').dialog({
+                            modal: true,
+                            draggable: false,
+                            width: '25%',
+                            title: 'Link SiCKRAGE'
+                        }).html(loginDialog);
+                        SICKRAGE.google.poll_auth(data.device_code, new Date().getTime() + data.expires_in * 1000, data.interval);
+                    }
+                });
+            },
+
+            logout: function () {
+                $.ajax({
+                    url: '/google/logout',
+                    success: function(){
+                        localStorage.clear();
+                        $('#google_link').prop('value', 'Link');
+                    }
+                });
+            },
+
+            poll_auth: function (code, lastPollTime, nextPollDelay) {
+                if (new Date().getTime() < lastPollTime) {
+                    $.ajax({
+                        dataType: 'json',
+                        url: '/google/auth_token',
+                        data: {code: code},
+                        type: 'POST',
+                        success: function (response) {
+                            if (response.error) {
+                                if (response.error == 'slow_down') {
+                                    nextPollDelay += 5;
+                                }
+
+                                setTimeout(function () {
+                                    SICKRAGE.google.poll_auth(code, lastPollTime, nextPollDelay);
+                                }, nextPollDelay * 1000);
+                            } else {
+                                $('#login-dialog').dialog('close');
+
+                                localStorage.setItem('google_refresh_token', response.refresh_token);
+                                localStorage.setItem('google_access_token', response.access_token);
+                                localStorage.setItem('google_token_type', response.token_type);
+
+                                $('#google_link').prop('value', 'Unlink');
+                            }
+                        }
+                    });
+                }
+            },
+
+            refresh_auth: function () {
+                $.ajax({
+                    dataType: 'json',
+                    url: '/google/refresh_token',
+                    data: {token: localStorage.getItem('google_refresh_token')},
+                    type: 'POST',
+                    success: function (response) {
+                        localStorage.setItem('google_access_token', response.access_token);
+                        localStorage.setItem('google_token_type', response.token_type);
+                    },
+                    error: function () {
+                        SICKRAGE.google.logout();
+                    }
+                });
+            }
+        },
+
         home: {
             init: function () {
                 SICKRAGE.home.add_show_options();
@@ -2655,6 +2734,14 @@ jQuery(document).ready(function ($) {
                 $('#branchCheckout').click(function () {
                     window.location.href = '/home/branchCheckout?branch=' + $("#branchVersion").val();
                 });
+
+                if (localStorage.getItem('google_token_type') == null || localStorage.getItem('google_access_token') == null) {
+                    $('#google_link').prop('value', 'Link');
+                    $('#google_link').click(SICKRAGE.google.login);
+                } else {
+                    $('#google_link').prop('value', 'Unlink');
+                    $('#google_link').click(SICKRAGE.google.logout);
+                }
             },
 
             subtitles: {
