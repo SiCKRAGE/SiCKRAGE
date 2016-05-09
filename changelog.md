@@ -1,6 +1,7 @@
 # Changelog
 
-- * 68524cd - 2016-05-08: FIXED: API Builder was not properly referencing help for api calls, added application and request values to template attributes 
+- * 2c0ba3c - 2016-05-08: UPDATES: Javascript core components 
+- * 25725c2 - 2016-05-08: FIXED: API Builder was not properly referencing help for api calls, added application and request values to template attributes 
 - * 9d32ac0 - 2016-05-08: FIXED: Added space between regex names displayed via nameparser FIXED: When setting location on either show or episode it now displays a message detailing as to which location was infact set FIXED: Core JS code for mass_update and mass_edit templates was incorrectly placed resulting in certain JS features to not work correctly 
 - * b5caac0 - 2016-05-08: FIXED: Expand/Collaspe button for episode status manager 
 - * 082c883 - 2016-05-07: FIXED: Queue was to slow with previous shutdown implementation so added a new improved stop event 

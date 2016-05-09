@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SickRage - VERSION:[${sickrage.srCore.VERSIONUPDATER.updater.version}] - ${title}</title>
+    <title>SickRage - ${title}</title>
 
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
@@ -103,7 +103,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/home/">Back to SickRage</a></li>
                 <li class="hidden-xs">
-                    <a href="https://github.com/SiCKRAGETV/SiCKRAGE/wiki/Donations" rel="noreferrer"
+                    <a href="https://www.gofundme.com/sickrage" rel="noreferrer"
                        onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;">
                         <img src="/images/donate.jpg" alt="[donate]" class="navbaricon"/>
                     </a>
