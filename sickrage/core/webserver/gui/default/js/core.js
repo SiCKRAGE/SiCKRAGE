@@ -891,7 +891,7 @@ jQuery(document).ready(function ($) {
                 }
 
                 var path, callback, ls = false;
-    
+
                 try {
                     ls = !!(localStorage.getItem);
                 } catch (e) {
@@ -1101,8 +1101,8 @@ jQuery(document).ready(function ($) {
             syncOptionIDs: function () {
                 // re-sync option ids
                 var i = 0;
-                $('#rootDirs option').each(function() {
-                    $(this).attr('id', 'rd-'+(i++));
+                $('#rootDirs option').each(function () {
+                    $(this).attr('id', 'rd-' + (i++));
                 });
             },
 
@@ -2053,7 +2053,12 @@ jQuery(document).ready(function ($) {
                             return false;
                         }
 
-                        window.location.href = '/home/addShows/addExistingShows?promptForSettings=' + ($('#promptForSettings').prop('checked') ? 'on' : 'off') + '&shows_to_add=' + dirArr.join('&shows_to_add=');
+                        var url = '/home/addShows/addExistingShows?promptForSettings=' + ($('#promptForSettings').prop('checked') ? 'on' : 'off') + '&shows_to_add=' + dirArr.join('&shows_to_add=');
+                        if (url.length < 2083) {
+                            window.location.href = url;
+                        } else {
+                            alert("You've selected too many shows, please uncheck some and try again. [" + url.length + "/2083 characters]");
+                        }
                     });
 
                     var lastTxt = '';

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 47adb0e - 2016-05-08: FIXED: JS Core code for root directory function FIXED: Status template code, corrected for new queue system 
+- * caf1aa5 - 2016-05-08: ADDED: Limit to number of shows allowed to be added at once for existing shows feature 
+- * 9b0d49d - 2016-05-08: FIXED: JS Core code for root directory function FIXED: Status template code, corrected for new queue system 
 - * aa47a34 - 2016-05-08: UPDATES: Javascript core components 
 - * 25725c2 - 2016-05-08: FIXED: API Builder was not properly referencing help for api calls, added application and request values to template attributes 
 - * 9d32ac0 - 2016-05-08: FIXED: Added space between regex names displayed via nameparser FIXED: When setting location on either show or episode it now displays a message detailing as to which location was infact set FIXED: Core JS code for mass_update and mass_edit templates was incorrectly placed resulting in certain JS features to not work correctly 
