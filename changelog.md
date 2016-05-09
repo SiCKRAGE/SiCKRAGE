@@ -1,6 +1,7 @@
 # Changelog
 
-- * caf1aa5 - 2016-05-08: ADDED: Limit to number of shows allowed to be added at once for existing shows feature 
+- * a15d290 - 2016-05-08: GRUNT: Updated JS core files 
+- * 020d273 - 2016-05-08: ADDED: Limit to number of shows allowed to be added at once for existing shows feature 
 - * 9b0d49d - 2016-05-08: FIXED: JS Core code for root directory function FIXED: Status template code, corrected for new queue system 
 - * aa47a34 - 2016-05-08: UPDATES: Javascript core components 
 - * 25725c2 - 2016-05-08: FIXED: API Builder was not properly referencing help for api calls, added application and request values to template attributes 
