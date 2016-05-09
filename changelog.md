@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2c0ba3c - 2016-05-08: UPDATES: Javascript core components 
+- * 47adb0e - 2016-05-08: FIXED: JS Core code for root directory function FIXED: Status template code, corrected for new queue system 
+- * aa47a34 - 2016-05-08: UPDATES: Javascript core components 
 - * 25725c2 - 2016-05-08: FIXED: API Builder was not properly referencing help for api calls, added application and request values to template attributes 
 - * 9d32ac0 - 2016-05-08: FIXED: Added space between regex names displayed via nameparser FIXED: When setting location on either show or episode it now displays a message detailing as to which location was infact set FIXED: Core JS code for mass_update and mass_edit templates was incorrectly placed resulting in certain JS features to not work correctly 
 - * b5caac0 - 2016-05-08: FIXED: Expand/Collaspe button for episode status manager 
@@ -37,7 +38,4 @@
 - * f1919a1 - 2016-05-01: FIXED: Requirements installation now recursive 
 - * 8aa69f5 - 2016-05-01: Updated readme.md 
 - * 7d0a498 - 2016-05-01: Added changelog generator 
-- * 9bd21fc - 2016-05-01: More responsive-ui fixes applied 
-- * a31ee71 - 2016-05-01: Added check to determin if config settings have been loaded or not so we don&#x27;t attempt saving them if not required. 
-- * 4239c9e - 2016-05-01: Fixed issues with show updates/refreshes both auto and forced, enforced to skip grabbing info from DB to ensure new data takes properly and repairs damaged shows/episodes. 
 

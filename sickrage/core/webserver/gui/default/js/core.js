@@ -987,6 +987,7 @@ jQuery(document).ready(function ($) {
                         var deletedNum = $("#rootDirs option:selected").attr('id').substr(3);
 
                         toDelete.remove();
+                        SICKRAGE.root_dirs.syncOptionIDs();
 
                         if (newDefault) {
 
@@ -1008,6 +1009,7 @@ jQuery(document).ready(function ($) {
                         }
 
                     }
+
                     SICKRAGE.root_dirs.refreshRootDirs();
                     $.get('/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
                 });
@@ -1022,9 +1024,9 @@ jQuery(document).ready(function ($) {
 
                 $('#rootDirs').click(SICKRAGE.root_dirs.refreshRootDirs);
 
-                SICKRAGE.root_dirs.refreshRootDirs();
-                SICKRAGE.root_dirs.refreshRootDirs();
+                SICKRAGE.root_dirs.syncOptionIDs();
                 SICKRAGE.root_dirs.setDefault($('#whichDefaultRootDir').val(), true);
+                SICKRAGE.root_dirs.refreshRootDirs();
             },
 
             addRootDir: function (path) {
@@ -1040,12 +1042,13 @@ jQuery(document).ready(function ($) {
 
                 $('#rootDirs').append('<option value="' + path + '">' + path + '</option>');
 
-                SICKRAGE.root_dirs.refreshRootDirs();
+                SICKRAGE.root_dirs.syncOptionIDs();
 
                 if (isDefault) {
                     SICKRAGE.root_dirs.setDefault($('#rootDirs option').attr('id'));
                 }
 
+                SICKRAGE.root_dirs.refreshRootDirs();
                 $.get('/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
             },
 
@@ -1095,6 +1098,14 @@ jQuery(document).ready(function ($) {
                 $('#whichDefaultRootDir').val(which);
             },
 
+            syncOptionIDs: function () {
+                // re-sync option ids
+                var i = 0;
+                $('#rootDirs option').each(function() {
+                    $(this).attr('id', 'rd-'+(i++));
+                });
+            },
+
             refreshRootDirs: function () {
                 if (!$("#rootDirs").length) {
                     return;
@@ -1103,10 +1114,7 @@ jQuery(document).ready(function ($) {
                 var doDisable = 'true';
 
                 // re-sync option ids
-                var i = 0;
-                $('#rootDirs option').each(function () {
-                    $(this).attr('id', 'rd-' + (i++));
-                });
+                SICKRAGE.root_dirs.syncOptionIDs();
 
                 // if nothing's selected then select the default
                 if (!$("#rootDirs option:selected").length && $('#whichDefaultRootDir').val().length) {

@@ -28,7 +28,7 @@
                     </div>
                     <br>
 
-                    <p>SickRage can add existing shows, using the current options, by using locally stored NFO/XML
+                    <p>SiCKRAGE can add existing shows, using the current options, by using locally stored NFO/XML
                         metadata to eliminate user interaction.
                         If you would rather have SickRage prompt you to customize each show, then use the checkbox
                         below.</p>
@@ -38,7 +38,7 @@
 
                     <hr/>
 
-                    <p><b>Displaying folders within these directories which aren't already added to SickRage:</b></p>
+                    <p><b>Displaying folders within these directories which aren't already added to SiCKRAGE:</b></p>
 
                     <ul id="rootDirStaticList">
                         <li></li>

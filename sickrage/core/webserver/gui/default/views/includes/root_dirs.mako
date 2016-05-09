@@ -1,4 +1,4 @@
-    <%
+<%
     import sickrage
 
     if sickrage.srCore.srConfig.ROOT_DIRS:
