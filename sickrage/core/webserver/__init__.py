@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 
 import os
 import shutil
+import socket
 import threading
 import webbrowser
 
@@ -178,7 +179,12 @@ class srWebServer(object):
         if sickrage.srCore.srConfig.ENABLE_HTTPS:
             self.server.ssl_options = {"certfile": sickrage.srCore.srConfig.HTTPS_CERT,
                                        "keyfile": sickrage.srCore.srConfig.HTTPS_KEY}
-        self.server.listen(sickrage.srCore.srConfig.WEB_PORT, None)
+
+        try:
+            self.server.listen(sickrage.srCore.srConfig.WEB_PORT, None)
+        except socket.error as e:
+            print(e.message)
+            raise
 
         # launch browser window
         if all([not sickrage.NOLAUNCH, sickrage.srCore.srConfig.LAUNCH_BROWSER]):
