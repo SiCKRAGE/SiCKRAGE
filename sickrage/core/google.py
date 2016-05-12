@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 import os
 import pickle
 
-from googleapiclient.discovery import build
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 
 import sickrage
@@ -41,10 +40,6 @@ class googleAuth(object):
         self.credentials = self.load()
 
         self.flow = OAuth2WebServerFlow(self.client_id, self.client_secret, ' '.join(self.scopes))
-
-    def google_drive(self):
-        http = self.credentials.authorize(sickrage.srCore.srWebSession)
-        return build('drive', 'v2', http=http)
 
     def get_user_code(self):
         return self.flow.step1_get_device_and_user_codes()

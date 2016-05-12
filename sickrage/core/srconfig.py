@@ -2312,17 +2312,6 @@ class srConfig(object):
         new_config.walk(self.encrypt)
         new_config.write()
 
-        # save settings to google drive
-        if sickrage.srCore.googleAuth.credentials:
-            drive = sickrage.srCore.googleAuth.google_drive()
-            file = drive.CreateFile({'title': os.path.basename(sickrage.CONFIG_FILE)})
-
-            try:
-                file.Upload()
-            except Exception:
-                pass
-
-
     def encrypt(self, section, key, _decrypt=False):
         """
         :rtype: basestring

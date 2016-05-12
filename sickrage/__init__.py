@@ -204,7 +204,7 @@ def install_requirements(upgrade=False, restart=False):
         session=PipSession())
 
     for r in requirements:
-        req_options, req_args = InstallCommand().parse_args([r.req.project_name])
+        req_options, req_args = InstallCommand().parse_args([str(r.req)])
         req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
         req_options.constraints = [os.path.join(os.path.abspath(os.path.dirname(__file__)), 'constraints.txt')]
         req_options.cache_dir = None
@@ -212,7 +212,7 @@ def install_requirements(upgrade=False, restart=False):
         req_options.verbose = 1
 
         try:
-            print("Installing/Upgrading SiCKRAGE requirements package: {}".format(r.req.project_name))
+            print("Installing/Upgrading SiCKRAGE requirements package: {}".format(str(r.req)))
             sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
             if not r.installed_version:
                 req_options.upgrade = True

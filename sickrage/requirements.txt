@@ -23,7 +23,6 @@ FormEncode
 future
 futures
 gntp
-google-api-python-client
 guessit
 hachoir-core
 hachoir-metadata
@@ -39,6 +38,7 @@ markdown2
 MarkupSafe
 MultipartPostHandler
 oauth2
+oauth2client
 oauthlib
 pbr
 profilehooks
