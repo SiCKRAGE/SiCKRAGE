@@ -30,8 +30,8 @@ class PutioAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
         super(PutioAPI, self).__init__('putio', host, username, password)
 
-        self.client_id = "48901323822-2nplbq4cc2sibf942v3lf1kqr0vl67gp.apps.googleusercontent.com"
-        self.redirect_uri = 'https://auth.sickrage.ca/auth/google/callback'
+        self.client_id = "48901323822-1arri7nf5i65fartv81e4odekbt8c7td.apps.googleusercontent.com"
+        self.redirect_uri = 'https://auth.sickrage.ca/auth'
         self.url = 'https://api.put.io/login'
 
     def _get_auth(self):
@@ -49,9 +49,15 @@ class PutioAPI(GenericClient):
 
         try:
             response = sickrage.srCore.srWebSession.post(self.url, data=post_data,
-                                                         allow_redirects=False)
+                                                         allow_redirects=False,
+                                                         raise_exceptions=False,
+                                                         verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             response = sickrage.srCore.srWebSession.get(response.headers['location'],
-                                                        allow_redirects=False)
+                                                        allow_redirects=False,
+                                                        raise_exceptions=False,
+                                                        verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             resulting_uri = '{redirect_uri}#access_token=(.*)'.format(
                 redirect_uri=re.escape(self.redirect_uri))
 

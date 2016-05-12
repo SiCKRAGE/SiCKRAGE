@@ -41,8 +41,11 @@ class DelugeAPI(GenericClient):
                                 "id": 1})
 
         try:
-            self.response = sickrage.srCore.srWebSession.post(self.url, data=post_data.encode('utf-8'),
-                                                            verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+            self.response = sickrage.srCore.srWebSession.post(self.url,
+                                                              data=post_data.encode('utf-8'),
+                                                              raise_exceptions=False,
+                                                              verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
         except Exception:
             return None
 
@@ -53,8 +56,11 @@ class DelugeAPI(GenericClient):
                                 "id": 10})
 
         try:
-            self.response = sickrage.srCore.srWebSession.post(self.url, data=post_data.encode('utf-8'),
-                                                            verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+            self.response = sickrage.srCore.srWebSession.post(self.url,
+                                                              data=post_data.encode('utf-8'),
+                                                              raise_exceptions=False,
+                                                              verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
         except Exception:
             return None
 
@@ -65,8 +71,11 @@ class DelugeAPI(GenericClient):
                                     "params": [],
                                     "id": 11})
             try:
-                self.response = sickrage.srCore.srWebSession.post(self.url, data=post_data.encode('utf-8'),
-                                                                verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+                self.response = sickrage.srCore.srWebSession.post(self.url,
+                                                                  data=post_data.encode('utf-8'),
+                                                                  raise_exceptions=False,
+                                                                  verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             except Exception:
                 return None
 
@@ -80,8 +89,11 @@ class DelugeAPI(GenericClient):
                                     "id": 11})
 
             try:
-                self.response = sickrage.srCore.srWebSession.post(self.url, data=post_data.encode('utf-8'),
-                                                                verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+                self.response = sickrage.srCore.srWebSession.post(self.url,
+                                                                  data=post_data.encode('utf-8'),
+                                                                  raise_exceptions=False,
+                                                                  verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             except Exception:
                 return None
 
@@ -90,8 +102,11 @@ class DelugeAPI(GenericClient):
                                     "id": 10})
 
             try:
-                self.response = sickrage.srCore.srWebSession.post(self.url, data=post_data.encode('utf-8'),
-                                                                verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+                self.response = sickrage.srCore.srWebSession.post(self.url,
+                                                                  data=post_data.encode('utf-8'),
+                                                                  raise_exceptions=False,
+                                                                  verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             except Exception:
                 return None
 

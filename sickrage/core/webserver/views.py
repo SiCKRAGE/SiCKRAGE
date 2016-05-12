@@ -32,7 +32,7 @@ from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, recursive_unicode
+from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, authenticated
@@ -47,7 +47,7 @@ from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
-from sickrage.core.classes import ErrorViewer, AllShowsListUI
+from sickrage.core.classes import ErrorViewer, AllShowsListUI, AttrDict
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
@@ -535,54 +535,23 @@ class GoogleAuth(WebRoot):
     def __init__(self, *args, **kwargs):
         super(GoogleAuth, self).__init__(*args, **kwargs)
 
-    def user_code(self):
+    def get_user_code(self):
+        data = sickrage.srCore.googleAuth.get_user_code()
+        return json_encode({field: str(getattr(data, field)) for field in data._fields})
+
+    def get_credentials(self, flow_info):
         try:
-            return sickrage.srCore.srWebSession.post('https://accounts.google.com/o/oauth2/device/code',
-                                                     data={'client_id': self.settings['google_oauth']['key'],
-                                                           'scope': 'email profile'}).json()
-        except Exception:
-            return {}
+            data = sickrage.srCore.googleAuth.get_credentials(AttrDict(json_decode(flow_info)))
+            return json_encode(data.token_response)
+        except Exception as e:
+            return json_encode({'error': e.message})
 
-    def auth_token(self, code):
-        try:
-            data = sickrage.srCore.srWebSession.post('https://accounts.google.com/o/oauth2/token',
-                                                     data={'client_id': self.settings['google_oauth']['key'],
-                                                           'client_secret': self.settings['google_oauth']['secret'],
-                                                           'grant_type': 'http://oauth.net/grant_type/device/1.0',
-                                                           'code': code}).json()
-
-            if not 'error' in data:
-                self.set_secure_cookie('google_refresh_token', data['refresh_token'], expires_days=30)
-                self.set_secure_cookie('google_access_token', data['access_token'], expires_days=30)
-                self.set_secure_cookie('google_token_type', data['token_type'], expires_days=30)
-
-            return data
-        except Exception:
-            pass
-
-    def refresh_token(self, token=None):
-        try:
-            if not token:
-                token = self.get_secure_cookie('google_refresh_token')
-
-            data = sickrage.srCore.srWebSession.post('https://accounts.google.com/o/oauth2/token',
-                                                     data={'client_id': self.settings['google_oauth2']['client_id'],
-                                                           'client_secret': self.settings['google_oauth2'][
-                                                               'client_secret'],
-                                                           'grant_type': 'refresh_token',
-                                                           'refresh_token': token}).json()
-
-            self.set_secure_cookie('google_access_token', data['access_token'], expires_days=30)
-            self.set_secure_cookie('google_token_type', data['token_type'], expires_days=30)
-
-            return data
-        except Exception:
-            self.logout()
+    def refresh_credentials(self):
+        sickrage.srCore.googleAuth.refresh_credentials()
 
     def logout(self):
-        self.clear_cookie('google_access_token')
-        self.clear_cookie('google_refresh_token')
-        self.clear_cookie('google_token_type')
+        sickrage.srCore.googleAuth.logout()
+
 
 @Route('/ui(/?.*)')
 class UI(WebRoot):

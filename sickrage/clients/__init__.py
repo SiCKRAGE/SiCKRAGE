@@ -340,12 +340,18 @@ class GenericClient(object):
 
     def testAuthentication(self):
         try:
-            self.response = sickrage.srCore.srWebSession.get(self.url, timeout=120, verify=False)
+            # verify valid url
+            self.response = sickrage.srCore.srWebSession.get(self.url,
+                                                             timeout=120,
+                                                             verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
 
+            # get auth
             self._get_auth()
+
+            # verify auth
             if self.auth:
                 return True, 'Success: Connected and Authenticated'
-            else:
-                return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
+
+            return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
         except Exception:
             return False, 'Error: Unable to connect to ' + self.name

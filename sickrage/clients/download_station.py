@@ -35,7 +35,10 @@ class DownloadStationAPI(GenericClient):
         auth_url = self.host + 'webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=' + self.username + '&passwd=' + self.password + '&session=DownloadStation&format=sid'
 
         try:
-            self.response = sickrage.srCore.srWebSession.get(auth_url, verify=False)
+            self.response = sickrage.srCore.srWebSession.get(auth_url,
+                                                             raise_exceptions=False,
+                                                             verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             self.auth = self.response.json()['data']['sid']
         except Exception:
             return None

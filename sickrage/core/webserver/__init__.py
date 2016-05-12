@@ -61,7 +61,8 @@ class StaticImageHandler(StaticFileHandler):
 
         # image css check
         self.root = (self.root, os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css', 'lib', 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css', 'lib', 'images', path)))
+            os.path.exists(
+                os.path.normpath(os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css', 'lib', 'images', path)))
         ]
 
         return super(StaticImageHandler, self).get(path, include_body)
@@ -96,9 +97,12 @@ class srWebServer(object):
         # tornado setup
         if sickrage.srCore.srConfig.ENABLE_HTTPS:
             # If either the HTTPS certificate or key do not exist, make some self-signed ones.
-            if not (sickrage.srCore.srConfig.HTTPS_CERT and os.path.exists(sickrage.srCore.srConfig.HTTPS_CERT)) or not (
+            if not (
+                        sickrage.srCore.srConfig.HTTPS_CERT and os.path.exists(
+                        sickrage.srCore.srConfig.HTTPS_CERT)) or not (
                         sickrage.srCore.srConfig.HTTPS_KEY and os.path.exists(sickrage.srCore.srConfig.HTTPS_KEY)):
-                if not create_https_certificates(sickrage.srCore.srConfig.HTTPS_CERT, sickrage.srCore.srConfig.HTTPS_KEY):
+                if not create_https_certificates(sickrage.srCore.srConfig.HTTPS_CERT,
+                                                 sickrage.srCore.srConfig.HTTPS_KEY):
                     sickrage.srCore.srLogger.info("Unable to create CERT/KEY files, disabling HTTPS")
                     sickrage.srCore.srConfig.ENABLE_HTTPS = False
 
@@ -114,11 +118,7 @@ class srWebServer(object):
                                gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
                                xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
                                cookie_secret=sickrage.srCore.srConfig.WEB_COOKIE_SECRET,
-                               login_url='%s/login/' % sickrage.srCore.srConfig.WEB_ROOT,
-                               google_oauth={
-                                   'key': '48901323822-ebum0n1ago1bo2dku4mqm9l6kl2j60uv.apps.googleusercontent.com',
-                                   'secret': 'vFQy_bojwJ1f2X0hYD3wPu7U'}
-                               )
+                               login_url='%s/login/' % sickrage.srCore.srConfig.WEB_ROOT)
 
         # Main Handlers
         self.app.add_handlers('.*$', [
@@ -176,7 +176,8 @@ class srWebServer(object):
 
         self.server = HTTPServer(self.app)
         if sickrage.srCore.srConfig.ENABLE_HTTPS:
-            self.server.ssl_options = {"certfile": sickrage.srCore.srConfig.HTTPS_CERT, "keyfile": sickrage.srCore.srConfig.HTTPS_KEY}
+            self.server.ssl_options = {"certfile": sickrage.srCore.srConfig.HTTPS_CERT,
+                                       "keyfile": sickrage.srCore.srConfig.HTTPS_KEY}
         self.server.listen(sickrage.srCore.srConfig.WEB_PORT, None)
 
         # launch browser window
@@ -193,13 +194,12 @@ class srWebServer(object):
         if os.path.isdir(makocache):
             shutil.rmtree(makocache)
 
-        sickrage.srCore.srLogger.info(
-            "SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]"
-                .format(sickrage.srCore.VERSIONUPDATER.updater.version,
-                        sickrage.CONFIG_FILE,
-                        ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
-                        get_lan_ip(), sickrage.srCore.srConfig.WEB_PORT)
-        )
+        sickrage.srCore.srLogger.info("SiCKRAGE :: STARTED")
+        sickrage.srCore.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(sickrage.srCore.VERSIONUPDATER.updater.version))
+        sickrage.srCore.srLogger.info("SiCKRAGE :: CONFIG:[{}]".format(sickrage.CONFIG_FILE))
+        sickrage.srCore.srLogger.info("SiCKRAGE :: URL:[{}://{}:{}/]".format(
+            ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
+            get_lan_ip(), sickrage.srCore.srConfig.WEB_PORT))
 
     def shutdown(self):
         if self.started:

@@ -1453,7 +1453,7 @@ jQuery(document).ready(function ($) {
             login: function () {
                 $.ajax({
                     dataType: "json",
-                    url: '/google/user_code',
+                    url: '/google/get_user_code',
                     type: 'POST',
                     success: function (data) {
                         var loginDialog = '<center><h1>' + data.user_code + '</h1><br/>From any computer, please visit <a href="' + data.verification_url + '" target="_blank">' + data.verification_url + '</a> and enter the code</center>';
@@ -1463,7 +1463,7 @@ jQuery(document).ready(function ($) {
                             width: '25%',
                             title: 'Link SiCKRAGE'
                         }).html(loginDialog);
-                        SICKRAGE.google.poll_auth(data.device_code, new Date().getTime() + data.expires_in * 1000, data.interval);
+                        SICKRAGE.google.poll_auth(data, new Date().getTime() + new Date(data.user_code_expiry).getTime() * 1000, data.interval);
                     }
                 });
             },
@@ -1471,28 +1471,28 @@ jQuery(document).ready(function ($) {
             logout: function () {
                 $.ajax({
                     url: '/google/logout',
-                    success: function(){
+                    success: function () {
                         localStorage.clear();
-                        $('#google_link').prop('value', 'Link');
+                        location.reload();
                     }
                 });
             },
 
-            poll_auth: function (code, lastPollTime, nextPollDelay) {
+            poll_auth: function (flow_info, lastPollTime, nextPollDelay) {
                 if (new Date().getTime() < lastPollTime) {
                     $.ajax({
                         dataType: 'json',
-                        url: '/google/auth_token',
-                        data: {code: code},
+                        url: '/google/get_credentials',
+                        data: {flow_info: JSON.stringify(flow_info)},
                         type: 'POST',
                         success: function (response) {
                             if (response.error) {
-                                if (response.error == 'slow_down') {
+                                if (response.error === 'slow_down') {
                                     nextPollDelay += 5;
                                 }
 
                                 setTimeout(function () {
-                                    SICKRAGE.google.poll_auth(code, lastPollTime, nextPollDelay);
+                                    SICKRAGE.google.poll_auth(flow_info, lastPollTime, nextPollDelay);
                                 }, nextPollDelay * 1000);
                             } else {
                                 $('#login-dialog').dialog('close');
@@ -1501,7 +1501,7 @@ jQuery(document).ready(function ($) {
                                 localStorage.setItem('google_access_token', response.access_token);
                                 localStorage.setItem('google_token_type', response.token_type);
 
-                                $('#google_link').prop('value', 'Unlink');
+                                location.reload();
                             }
                         }
                     });
@@ -1511,7 +1511,7 @@ jQuery(document).ready(function ($) {
             refresh_auth: function () {
                 $.ajax({
                     dataType: 'json',
-                    url: '/google/refresh_token',
+                    url: '/google/refresh_credentials',
                     data: {token: localStorage.getItem('google_refresh_token')},
                     type: 'POST',
                     success: function (response) {
@@ -2735,12 +2735,18 @@ jQuery(document).ready(function ($) {
                     window.location.href = '/home/branchCheckout?branch=' + $("#branchVersion").val();
                 });
 
-                if (localStorage.getItem('google_token_type') == null || localStorage.getItem('google_access_token') == null) {
+                $('#google_link').click(function () {
+                    if (localStorage.getItem('google_token_type') === null || localStorage.getItem('google_access_token') === null) {
+                        SICKRAGE.google.login();
+                    } else {
+                        SICKRAGE.google.logout();
+                    }
+                });
+
+                if (localStorage.getItem('google_token_type') === null || localStorage.getItem('google_access_token') === null) {
                     $('#google_link').prop('value', 'Link');
-                    $('#google_link').click(SICKRAGE.google.login);
                 } else {
                     $('#google_link').prop('value', 'Unlink');
-                    $('#google_link').click(SICKRAGE.google.logout);
                 }
             },
 

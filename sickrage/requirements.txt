@@ -43,6 +43,7 @@ pbr
 profilehooks
 py-unrar2
 pycparser
+pydrive
 PyGithub
 pysrt
 python-dateutil

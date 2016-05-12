@@ -1,6 +1,7 @@
 # Changelog
 
-- * 59d9b6c - 2016-05-09: FEATURE: Google device linking 
+- * da9d76e - 2016-05-11: UPDATES: Code added to prepare for new API server coming online shortly to link in new service features FIXED: Torrent clients having issues with username/password authentication such as uTorrent and others alike 
+- * 729bfd3 - 2016-05-09: FEATURE: Google device linking 
 - * b388f40 - 2016-05-08: GRUNT: Updated JS core files 
 - * 020d273 - 2016-05-08: ADDED: Limit to number of shows allowed to be added at once for existing shows feature 
 - * 9b0d49d - 2016-05-08: FIXED: JS Core code for root directory function FIXED: Status template code, corrected for new queue system 
@@ -22,20 +23,4 @@
 - * 3a69945 - 2016-05-05: FIXED: Object comparison used when trying to compare boolean against text incorrectly in provider modules, caused issues with updating cache from RSS feeds 
 - * c69a161 - 2016-05-05: FIXED: Show episode file locations were not being set due to missing code runs 
 - * 9e208da - 2016-05-05: FIXED: Error loading IMDb and TMDb info caused by lack of exception handling and checking of attributes 
-- * cc235d9 - 2016-05-04: FIXED: Thread names for searches were not being properly set 
-- * 2f61a1b - 2016-05-04: FEATURE: Added Google OAuth2 to be used instead of username/password if wanted 
-- * 9418082 - 2016-05-04: FIXED: General settings during save was missing new stale shows variable causing settings not to be saved. 
-- * 310f701 - 2016-05-04: UPDATED: Changed Put.io client-id and redirect-uri UPDATED: Grunt JS tasks run 
-- * ae35575 - 2016-05-04: FEATURE: Added a rotating error log file handler to seperate errors logs into there own file for easier capture 
-- * fa6a00d - 2016-05-04: FIXED: Web client exception handling now logs via exception not error 
-- * 6fd09bb - 2016-05-04: FIXED: Transmission client was not sending username and password into web client sessions, code was left out during upgrades by mistake 
-- * 6fd10db - 2016-05-03: FIXED: When disabling torrent or nzb functionality for searches but not disabling individual providers under those categories the non-disabled providers were still being used for searches even if the main classification of them was disabled 
-- * b0a313c - 2016-05-03: FIXED: Small code correction for boolean logic during transmission client authentication 
-- * c5a6d08 - 2016-05-03: FIXED: Custom requests exception handling added for theTVDB indexer to resolved premature exception handling from primary requests exception handler 
-- * d293d32 - 2016-05-03: FIXED: Requests exceptional handler can optionally be turned off to allow custom handling of certain exceptions FIXED: Transmission authentication issues caused by premature requests exception handling resolved by custom exception handling code 
-- * c46fbc6 - 2016-05-03: FIXED: Daily searches now set shows airing on the day of the performed search to wanted instead of including hours and mintues as a deciding factor FIXED: Womble nzb provider urls corrected FEATURE: Network Timezone datetime parser now allows for results being returned as dates not just datetime 
-- * d13fb3d - 2016-05-03: REFACTORED: Renamed files pertaining to indexers 
-- * 580b217 - 2016-05-03: FIXED: Detects VirtualEnv properly during pip and requirements installations FIXED: More detailed constraints file used to ensure requirements installations go smoother FIXED: InsecurePlatformWarning messages during requirements installs now surpressed 
-- * 5bf6fc9 - 2016-05-03: FIXED: Detects VirtualEnv properly during pip and requirements installations FIXED: More detailed constraints file used to ensure requirements installations go smoother FIXED: InsecurePlatformWarning messages during requirements installs now surpressed 
-- * 874eda1 - 2016-05-02: FEATURE: Added new Putio torrent search client FEATURE: Added request web client exception decorator for handling of requests exceptions properly 
 

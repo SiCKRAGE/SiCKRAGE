@@ -683,7 +683,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="field-pair" style="display: none">
                                     <label for="google_link">
                                         <span class="component-title">Link Google Account</span>
                                         <span class="component-desc">

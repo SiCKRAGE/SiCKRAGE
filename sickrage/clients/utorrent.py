@@ -47,7 +47,12 @@ class uTorrentAPI(GenericClient):
     def _get_auth(self):
 
         try:
-            self.response = sickrage.srCore.srWebSession.get(self.url + 'token.html', verify=False)
+            self.response = sickrage.srCore.srWebSession.get(self.url + 'token.html',
+                                                             timeout=120,
+                                                             auth=(self.username, self.password),
+                                                             raise_exceptions=False,
+                                                             verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
         except Exception:
             return None

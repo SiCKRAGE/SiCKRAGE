@@ -37,6 +37,7 @@ from sickrage.core.caches.name_cache import srNameCache
 from sickrage.core.classes import AttrDict, srIntervalTrigger
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.databases import main_db, cache_db, failed_db
+from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, removetree, restoreDB, get_lan_ip, get_temp_dir
 from sickrage.core.nameparser.validator import check_force_season_folders
@@ -151,6 +152,9 @@ class Core(object):
 
         # init web client session
         self.srWebSession = srSession()
+
+        # google api
+        self.googleAuth = googleAuth()
 
         # name cache
         self.NAMECACHE = srNameCache()

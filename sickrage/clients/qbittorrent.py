@@ -32,7 +32,11 @@ class qbittorrentAPI(GenericClient):
     def _get_auth(self):
 
         try:
-            self.response = sickrage.srCore.srWebSession.get(self.host, auth=HTTPDigestAuth(self.username, self.password), verify=False)
+            self.response = sickrage.srCore.srWebSession.get(self.host,
+                                                             auth=HTTPDigestAuth(self.username, self.password),
+                                                             raise_exceptions=False,
+                                                             verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+
             self.auth = self.response.text
         except Exception:
             return None
