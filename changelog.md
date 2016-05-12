@@ -1,6 +1,7 @@
 # Changelog
 
-- * 834d819 - 2016-05-12: FIXED: Removed PyDrive from requirements and constraints files, using custom internal methods instead 
+- * eb3aca5 - 2016-05-12: ADDED: Google API Client requirement 
+- * a8568d4 - 2016-05-12: FIXED: Removed PyDrive from requirements and constraints files, using custom internal methods instead 
 - * 5dd094d - 2016-05-11: UPDATES: Code added to prepare for new API server coming online shortly to link in new service features FIXED: Torrent clients having issues with username/password authentication such as uTorrent and others alike 
 - * 729bfd3 - 2016-05-09: FEATURE: Google device linking 
 - * b388f40 - 2016-05-08: GRUNT: Updated JS core files 

@@ -23,6 +23,7 @@ FormEncode
 future
 futures
 gntp
+google-api-python-client
 guessit
 hachoir-core
 hachoir-metadata
