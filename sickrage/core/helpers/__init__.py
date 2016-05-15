@@ -985,7 +985,11 @@ def anon_url(*url):
     """
 
     url = ''.join(map(str, url))
-    if not url.startswith('http://'):
+
+    # Handle URL's containing https or http, previously only handled http
+    uri_pattern = ur'^https?://'
+    unicode_uri_pattern = re.compile(uri_pattern, re.UNICODE)
+    if not re.search(unicode_uri_pattern, url):
         url = 'http://' + url
 
     return '{}{}'.format(sickrage.srCore.srConfig.ANON_REDIRECT, url)
