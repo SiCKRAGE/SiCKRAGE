@@ -37,6 +37,13 @@ resultFilters = [
     "dub(bed)?"
 ]
 
+languageMap = {
+    "de": ["german","videomann"],
+    "fr": ["french"],
+    "it": ["ita", "italian"],
+    "es": ["spanish"]
+}
+
 if hasattr('General', 'ignored_subs_list') and sickbeard.IGNORED_SUBS_LIST:
     resultFilters.append("(" + sickbeard.IGNORED_SUBS_LIST.replace(",", "|") + ")sub(bed|ed|s)?")
 
@@ -58,6 +65,25 @@ def containsAtLeastOneWord(name, words):
         if regexp.search(name):
             return word
     return False
+
+def valid_release_for_lang(name, showlang):
+    """
+    Filters out results based on the shows language
+    name: name to check
+    showlang: the ISO 3166-2 code of the language (de, en) etc
+    Returns: False if the release is not falid for the given language
+    """
+    if showlang in languageMap:
+        if not containsAtLeastOneWord(name, languageMap[showlang]):
+            logger.log(u"Ignoring " + name + " because it did not contain any of the required words for show language '%s': %s" % (showlang, languageMap[showlang]), logger.INFO)
+            return False
+    #check for each other languages words, if present it's not a valid result
+    for lang in languageMap:
+        if lang != showlang and containsAtLeastOneWord(name, languageMap[lang]):
+            logger.log(u"Ignoring " + name + " because it contains at least one ignored word form show language '%s': %s" % (lang, languageMap[lang]), logger.INFO)
+            return False
+
+    return True
 
 
 def filter_bad_releases(name, parse=True, show=None):
@@ -116,6 +142,9 @@ def filter_bad_releases(name, parse=True, show=None):
     if require_words and not containsAtLeastOneWord(name, require_words):
         logger.log(u"Release: " + name + " doesn't contain any of " + ', '.join(set(require_words)) +
                    ", ignoring it", logger.INFO)
+        return False
+
+    if not valid_release_for_lang(name, show.lang):
         return False
 
     return True
