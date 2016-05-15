@@ -18,15 +18,6 @@
     layout = sickbeard.HISTORY_LAYOUT
     history_limit = sickbeard.HISTORY_LIMIT
 %>
-<%block name="css">
-<style type="text/css">
-.sort_data {display:none;}
-</style>
-</%block>
-<%block name="metas">
-<meta data-var="sickbeard.FUZZY_DATING" data-content="${sickbeard.FUZZY_DATING}">
-<meta data-var="layout" data-content="${layout}">
-</%block>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/history.js"></script>
 </%block>
@@ -45,6 +36,8 @@
         <option value="100" ${('', 'selected="selected"')[limit == 100]}>100</option>
         <option value="250" ${('', 'selected="selected"')[limit == 250]}>250</option>
         <option value="500" ${('', 'selected="selected"')[limit == 500]}>500</option>
+        <option value="750" ${('', 'selected="selected"')[limit == 750]}>750</option>
+        <option value="1000" ${('', 'selected="selected"')[limit == 1000]}>1000</option>
         <option value="0"   ${('', 'selected="selected"')[limit == 0  ]}>All</option>
     </select>
 
@@ -84,7 +77,7 @@
                     <% isoDate = datetime.datetime.strptime(str(hItem["date"]), History.date_format).isoformat('T') %>
                     <time datetime="${isoDate}" class="date">${airDate}</time>
                 </td>
-                <td class="tvShow" width="35%"><a href="${srRoot}/home/displayShow?show=${hItem["show_id"]}#season-${hItem["season"]}">${hItem["show_name"]} - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}</a></td>
+                <td class="tvShow" width="35%"><a href="${srRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">${hItem["show_name"]} - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}</a></td>
                 <td align="center" ${('', 'class="subtitles_column"')[curStatus == SUBTITLED]}>
                 % if curStatus == SUBTITLED:
                     <img width="16" height="11" style="vertical-align:middle;" src="${srRoot}/images/subtitles/flags/${hItem['resource']}.png" onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';">

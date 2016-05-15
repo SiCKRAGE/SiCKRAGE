@@ -43,7 +43,25 @@
         <meta name="msapplication-TileImage" content="${srRoot}/images/ico/favicon-144.png">
         <meta name="msapplication-config" content="${srRoot}/css/browserconfig.xml">
 
+
+        <meta data-var="srRoot" data-content="${srRoot}">
+        <meta data-var="themeSpinner" data-content="${('', '-dark')[sickbeard.THEME_NAME == 'dark']}">
+        <meta data-var="anonURL" data-content="${sickbeard.ANON_REDIRECT}">
+
+        <meta data-var="sickbeard.ANIME_SPLIT_HOME" data-content="${sickbeard.ANIME_SPLIT_HOME}">
+        <meta data-var="sickbeard.COMING_EPS_LAYOUT" data-content="${sickbeard.COMING_EPS_LAYOUT}">
+        <meta data-var="sickbeard.COMING_EPS_SORT" data-content="${sickbeard.COMING_EPS_SORT}">
+        <meta data-var="sickbeard.DATE_PRESET" data-content="${sickbeard.DATE_PRESET}">
+        <meta data-var="sickbeard.FILTER_ROW" data-content="${sickbeard.FILTER_ROW}">
         <meta data-var="sickbeard.FUZZY_DATING" data-content="${sickbeard.FUZZY_DATING}">
+        <meta data-var="sickbeard.HISTORY_LAYOUT" data-content="${sickbeard.HISTORY_LAYOUT}">
+        <meta data-var="sickbeard.HOME_LAYOUT" data-content="${sickbeard.HOME_LAYOUT}">
+        <meta data-var="sickbeard.POSTER_SORTBY" data-content="${sickbeard.POSTER_SORTBY}">
+        <meta data-var="sickbeard.POSTER_SORTDIR" data-content="${sickbeard.POSTER_SORTDIR}">
+        <meta data-var="sickbeard.ROOT_DIRS" data-content="${sickbeard.ROOT_DIRS}">
+        <meta data-var="sickbeard.SORT_ARTICLE" data-content="${sickbeard.SORT_ARTICLE}">
+        <meta data-var="sickbeard.TIME_PRESET" data-content="${sickbeard.TIME_PRESET}">
+        <meta data-var="sickbeard.TRIM_ZERO" data-content="${sickbeard.TRIM_ZERO}">
         <%block name="metas" />
 
         <link rel="shortcut icon" href="${srRoot}/images/ico/favicon.ico">
@@ -92,26 +110,34 @@
             % if sbLogin:
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
-                        <li id="NAVnews" ${('', 'class="active"')[topmenu == 'news']}>
-                            <a href="${srRoot}/news/">News</a>
-                        </li>
-                        <li id="NAVirc" ${('', 'class="active"')[topmenu == 'irc']}>
-                            <a href="${srRoot}/IRC/">IRC</a>
-                        </li>
-                        <li id="NAVhome" ${('', 'class="active"')[topmenu == 'home']}>
-                            <a href="${srRoot}/home/">Shows</a>
+                        <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
+                            <a href="${srRoot}/home/" class="dropdown-toggle">Shows</a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="${srRoot}/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
+                                <li><a href="${srRoot}/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a></li>
+                                <li><a href="${srRoot}/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual Post-Processing</a></li>
+                                % if sickbeard.SHOWS_RECENT:
+                                    <li role="separator" class="divider"></li>
+                                    % for recentShow in sickbeard.SHOWS_RECENT:
+                                        <li><a href="${srRoot}/home/displayShow/?show=${recentShow['indexerid']}"><i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a></li>
+                                    % endfor
+                                % endif
+                            </ul>
+                            <div style="clear:both;"></div>
                         </li>
 
-                        <li id="NAVcomingEpisodes" ${('', 'class="active"')[topmenu == 'comingEpisodes']}>
-                            <a href="${srRoot}/comingEpisodes/">Coming Episodes</a>
+                        <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
+                            <a href="${srRoot}/schedule/">Schedule</a>
                         </li>
 
-                        <li id="NAVhistory" ${('', 'class="active"')[topmenu == 'history']}>
+                        <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
                             <a href="${srRoot}/history/">History</a>
                         </li>
 
-                        <li id="NAVmanage" class="dropdown ${('', 'active')[topmenu == 'manage']}">
-                            <a href="${srRoot}/manage/" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
+                        <li id="NAVmanage" class="navbar-split dropdown${('', ' active')[topmenu == 'manage']}">
+                            <a href="${srRoot}/manage/episodeStatuses/" class="dropdown-toggle">Manage</a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
                                 <li><a href="${srRoot}/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog Overview</a></li>
@@ -136,18 +162,12 @@
                                 <li><a href="${srRoot}/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed Subtitle Management</a></li>
                             % endif
                             </ul>
+                            <div style="clear:both;"></div>
                         </li>
 
-                        <li id="NAVerrorlogs" class="dropdown" ${('', 'class="active"')[topmenu == 'errorlogs']}>
-                            <a href="${srRoot}/errorlogs/" class="dropdown-toggle" data-toggle="dropdown">${logPageTitle} <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Log (Errors)</a></li>
-                                <li><a href="${srRoot}/errorlogs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a></li>
-                            </ul>
-                        </li>
-
-                        <li id="NAVconfig" class="dropdown" ${('', 'class="active"')[topmenu == 'config']}>
-                            <a href="${srRoot}/config/" class="dropdown-toggle" data-toggle="dropdown"><img src="${srRoot}/images/menu/system18.png" class="navbaricon hidden-xs" /><b class="caret hidden-xs"></b><span class="visible-xs">Config <b class="caret"></b></span></a>
+                        <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
+                            <a href="${srRoot}/config/" class="dropdown-toggle"><span class="visible-xs">Config</span><img src="${srRoot}/images/menu/system18.png" class="navbaricon hidden-xs" /></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a></li>
                                 <li><a href="${srRoot}/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a></li>
@@ -159,20 +179,56 @@
                                 <li><a href="${srRoot}/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a></li>
                                 <li><a href="${srRoot}/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a></li>
                             </ul>
+                            <div style="clear:both;"></div>
                         </li>
 
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="${srRoot}/images/menu/system18-2.png" class="navbaricon hidden-xs" /><b class="caret hidden-xs"></b><span class="visible-xs">System <b class="caret"></b></span></a>
+                        <%
+                            if sickbeard.NEWS_UNREAD:
+                                newsBadge = ' <span class="badge">'+str(sickbeard.NEWS_UNREAD)+'</span>'
+                            else:
+                                newsBadge = ''
+
+                            numCombined = numErrors + numWarnings + sickbeard.NEWS_UNREAD
+                            if numCombined:
+                                if numErrors:
+                                    toolsBadgeClass = ' btn-danger'
+                                elif numWarnings:
+                                    toolsBadgeClass = ' btn-warning'
+                                else:
+                                    toolsBadgeClass = ''
+
+                                toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
+                            else:
+                                toolsBadge = ''
+                        %>
+                        <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
+                            <a href="${srRoot}/home/status/" class="dropdown-toggle"><span class="visible-xs">Tools</span><img src="${srRoot}/images/menu/system18-2.png" class="navbaricon hidden-xs" />${toolsBadge}</a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
                             <ul class="dropdown-menu">
+                                <li><a href="${srRoot}/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
+                                <li><a href="${srRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
+                                <li><a href="${srRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
+                                <li><a href="https://github.com/SiCKRAGETV/SickRage/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><i class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
+                                <li role="separator" class="divider"></li>
+                                %if numErrors:
+                                    <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span class="badge btn-danger">${numErrors}</span></a></li>
+                                %endif
+                                %if numWarnings:
+                                    <li><a href="${srRoot}/errorlogs/?level=${sickbeard.logger.WARNING}"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span class="badge btn-warning">${numWarnings}</span></a></li>
+                                %endif
+                                <li><a href="${srRoot}/errorlogs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a></li>
+                                <li role="separator" class="divider"></li>
                                 <li><a href="${srRoot}/home/updateCheck?pid=${sbPID}"><i class="menu-icon-update"></i>&nbsp;Check For Updates</a></li>
-                                <li><a href="${srRoot}/changes"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
                                 <li><a href="${srRoot}/home/restart/?pid=${sbPID}" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
                                 <li><a href="${srRoot}/home/shutdown/?pid=${sbPID}" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
-                                <li><a href="${srRoot}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
+                                % if sbLogin != True:
+                                    <li><a href="${srRoot}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
+                                % endif
+                                <li role="separator" class="divider"></li>
                                 <li><a href="${srRoot}/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a></li>
                             </ul>
+                            <div style="clear:both;"></div>
                         </li>
-                        <li id="donate"><a href="https://github.com/SiCKRAGETV/SickRage/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><img src="${srRoot}/images/donate.jpg" alt="[donate]" class="navbaricon hidden-xs" /></a></li>
                     </ul>
             % endif
                 </div><!-- /.navbar-collapse -->
@@ -285,36 +341,26 @@
                 </div>
             </div>
         </footer>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery-1.11.2.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/bootstrap.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/bootstrap-hover-dropdown.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery-ui-1.10.4.custom.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/_bower.min.js?${sbPID}"></script>
         <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookie.js?${sbPID}"></script>
         <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookiejar.js?${sbPID}"></script>
         <script type="text/javascript" src="${srRoot}/js/lib/jquery.json-2.2.min.js?${sbPID}"></script>
         <script type="text/javascript" src="${srRoot}/js/lib/jquery.selectboxes.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter-2.17.7.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.qtip-2.2.1.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/pnotify.custom.min.js"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.form-3.35.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.ui.touch-punch-0.2.2.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/isotope.pkgd.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.confirm.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.timeago.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter-2.17.7.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.qtip-2.2.1.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.ui.touch-punch-0.2.2.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/isotope.pkgd.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.confirm.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/formwizard.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/pnotify.custom.min.js?${sbPID}"></script><!-- Needs to be removed -->
         <script type="text/javascript" src="${srRoot}/js/new/parsers.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/script.js?${sbPID}"></script>
-        <script type="text/javascript">
-            srRoot = '${srRoot}'; // needed for browser.js & ajaxNotifications.js
-            //HTML for scrolltopcontrol, which is auto wrapped in DIV w/ ID="topcontrol"
-            top_image_html = '<img src="${srRoot}/images/top.gif" width="31" height="11" alt="Jump to top" />';
-            themeSpinner = '${('', '-dark')[sickbeard.THEME_NAME == 'dark']}';
-            anonURL = '${sickbeard.ANON_REDIRECT}';
-        </script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.scrolltopcontrol-1.1.js"></script>
-        <script type="text/javascript" src="${srRoot}/js/browser.js"></script>
-        <script type="text/javascript" src="${srRoot}/js/ajaxNotifications.js"></script>
+        <script type="text/javascript" src="${srRoot}/js/new/meta.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/new/core.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.scrolltopcontrol-1.1.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/browser.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/ajaxNotifications.js?${sbPID}"></script>
         <script type="text/javascript" src="${srRoot}/js/confirmations.js?${sbPID}"></script>
     % endif
         <%block name="scripts" />

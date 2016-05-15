@@ -268,7 +268,7 @@ class Quality:
         if checkName([r"(pdtv|hd.?tv|dsr|tvrip).(xvid|x26[45]|h.?26[45])"], all) and not checkName([r"(720|1080)[pi]"], all) and\
                 not checkName([r"hr.ws.pdtv.x26[45]"], any)or checkName(["videoman"], all) and not checkName(["(720|1080)[pi]"], all):
             ret = Quality.SDTV
-        elif checkName([r"web.?dl|webrip", r"xvid|x26[45]|h.?26[45]"], all) and not checkName([r"(720|1080)[pi]"], all):
+        elif checkName([r"web.?dl|webrip|webhd(rip)?|amazonhd|huluhd", r"xvid|x26[45]|h.?26[45]"], all) and not checkName([r"(720|1080)[pi]"], all):
             ret = Quality.SDTV
         elif checkName([r"(dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray)(.ws)?.(xvid|divx|x26[45])"], any) and not checkName([r"(720|1080)[pi]"], all):
             ret = Quality.SDDVD
@@ -279,9 +279,9 @@ class Quality:
             ret = Quality.RAWHDTV
         elif checkName([r"1080p", r"hd.?tv", r"(h|x)26[45]"], all):
             ret = Quality.FULLHDTV
-        elif checkName([r"720p", r"web.?dl|webrip|webhd(rip)?|netflixhd|ituneshd|amazonhd"], all) or checkName([r"720p", r"itunes", r"(x|h).?26[45]"], all):
+        elif checkName([r"720p", r"web.?dl|webrip|webhd(rip)?|netflixu?hd|ituneshd|amazonhd|huluhd"], all) or checkName([r"720p", r"itunes", r"(x|h).?26[45]"], all):
             ret = Quality.HDWEBDL
-        elif checkName([r"1080p", r"web.?dl|webrip|webhd(rip)?|netflixhd|ituneshd|amazonhd"], all) or checkName([r"1080p", r"itunes", r"(x|h).?26[45]"], all):
+        elif checkName([r"1080p", r"web.?dl|webrip|webhd(rip)?|netflixu?hd|ituneshd|amazonhd|huluhd"], all) or checkName([r"1080p", r"itunes", r"(x|h).?26[45]"], all):
             ret = Quality.FULLHDWEBDL
         elif checkName([r"720p", r"blue?-?ray|hddvd|b[rd]rip", r"(h|x)26[45]"], all):
             ret = Quality.HDBLURAY

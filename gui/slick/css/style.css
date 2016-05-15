@@ -1342,12 +1342,8 @@ td.col-search {
 }
 
 /* =======================================================================
-comingEpisodes.mako
+schedule.mako
 ========================================================================== */
-
-.sort_data {
-    display: none;
-}
 
 .key {
     margin-bottom: 20px;
@@ -1911,6 +1907,7 @@ span.quality {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
+    white-space: nowrap;
 }
 
 span.any-hd {
@@ -2105,7 +2102,6 @@ input, textarea, select, .uneditable-input {
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
     color: #ffffff;
-    background-color: transparent;
 }
 
 .navbar-default .navbar-nav > .active > a,
@@ -2140,6 +2136,19 @@ input, textarea, select, .uneditable-input {
 .navbar-default .navbar-nav > .open > a:focus {
     background-color: #333333;
     color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li.navbar-split > a {
+    display: inline-block;
+    float: left;
+}
+
+.navbar-default .navbar-nav > li.navbar-split > a:first-child {
+    padding-right: 8px;
+}
+
+.navbar-default .navbar-nav > li.navbar-split > a:nth-child(2) {
+    padding-left: 8px;
 }
 
 @media (max-width: 767px) {

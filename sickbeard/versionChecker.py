@@ -26,6 +26,7 @@ import stat
 import traceback
 import db
 import time
+import datetime
 
 import sickbeard
 from sickbeard import notifiers
@@ -79,6 +80,8 @@ class CheckVersion:
                         else:
                             logger.log(u"Update failed!")
                             ui.notifications.message('Update failed!')
+
+            self.check_for_new_news(force)
 
         self.amActive = False
 
@@ -249,7 +252,7 @@ class CheckVersion:
         force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
-        if not self.updater or not sickbeard.VERSION_NOTIFY and not sickbeard.AUTO_UPDATE and not force:
+        if not self.updater or (not sickbeard.VERSION_NOTIFY and not sickbeard.AUTO_UPDATE and not force):
             logger.log(u"Version checking is disabled, not checking for the newest version")
             return False
 
@@ -270,6 +273,43 @@ class CheckVersion:
         # found updates
         self.updater.set_newest_text()
         return True
+
+    def check_for_new_news(self, force=False):
+        """
+        Checks GitHub for the latest news.
+
+        returns: unicode, a copy of the news
+
+        force: ignored
+        """
+
+        # Grab a copy of the news
+        logger.log(u'check_for_new_news: Checking GitHub for latest news.', logger.DEBUG)
+        try:
+            news = helpers.getURL(sickbeard.NEWS_URL, session=requests.Session())
+        except:
+            logger.log(u'check_for_new_news: Could not load news from repo.', logger.WARNING)
+
+        try:
+            last_read = datetime.datetime.strptime(sickbeard.NEWS_LAST_READ, '%Y-%m-%d')
+        except:
+            last_read = 0
+        dates= re.finditer(r'^####(\d{4}-\d{2}-\d{2})####$', news, re.M)
+
+        sickbeard.NEWS_UNREAD = 0
+        gotLatest = False
+        for match in dates:
+            if not gotLatest:
+                gotLatest = True
+                sickbeard.NEWS_LATEST = match.group(1)
+
+            try:
+                if datetime.datetime.strptime(match.group(1), '%Y-%m-%d') > last_read:
+                    sickbeard.NEWS_UNREAD += 1
+            except:
+                pass
+
+        return news
 
     def update(self):
         if self.updater:
@@ -456,7 +496,6 @@ class GitUpdateManager(UpdateManager):
             if branch:
                 sickbeard.BRANCH = branch
                 return branch
-
         return ""
 
     def _check_github_for_update(self):
@@ -473,7 +512,6 @@ class GitUpdateManager(UpdateManager):
 
         # get all new info from github
         output, err, exit_status = self._run_git(self._git_path, 'fetch %s' % sickbeard.GIT_REMOTE)
-
         if not exit_status == 0:
             logger.log(u"Unable to contact github, can't check for update", logger.WARNING)
             return
@@ -496,7 +534,6 @@ class GitUpdateManager(UpdateManager):
 
         # get number of commits behind and ahead (option --count not supported git < 1.7.2)
         output, err, exit_status = self._run_git(self._git_path, 'rev-list --left-right "@{upstream}"...HEAD')
-
         if exit_status == 0 and output:
 
             try:
@@ -624,7 +661,7 @@ class GitUpdateManager(UpdateManager):
         branches, err, exit_status = self._run_git(self._git_path, 'ls-remote --heads %s' % sickbeard.GIT_REMOTE)  # @UnusedVariable
         if exit_status == 0 and branches:
             if branches:
-                return re.findall('\S+\Wrefs/heads/(.*)', branches)
+                return re.findall(r'refs/heads/(.*)', branches)
         return []
 
     def update_remote_origin(self):

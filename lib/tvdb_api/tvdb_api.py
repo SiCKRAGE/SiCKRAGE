@@ -22,7 +22,7 @@ import logging
 import zipfile
 import datetime as dt
 import requests
-from requests import exceptions
+
 import xmltodict
 
 try:
@@ -178,9 +178,9 @@ class Show(dict):
         Search terms are converted to lower case (unicode) strings.
 
         # Examples
-        
+
         These examples assume t is an instance of Tvdb():
-        
+
         >>> t = Tvdb()
         >>>
 
@@ -296,7 +296,7 @@ class Episode(dict):
         """Search episode data for term, if it matches, return the Episode (self).
         The key parameter can be used to limit the search to a specific element,
         for example, episodename.
-        
+
         This primarily for use use by Show.search and Season.search. See
         Show.search for further information on search
 
@@ -422,7 +422,7 @@ class Tvdb:
             By default, Tvdb will only search in the language specified using
             the language option. When this is True, it will search for the
             show in and language
-        
+
         apikey (str/unicode):
             Override the default thetvdb.com API key. By default it will use
             tvdb_api's own key (fine for small scripts), but you can use your
@@ -622,7 +622,7 @@ class Tvdb:
                 raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
         else:
             try:
-                return xmltodict.parse(resp.content.decode('utf-8'), postprocessor=process)
+                return xmltodict.parse(resp.text, postprocessor=process)
             except:
                 return dict([(u'data', None)])
 
@@ -671,7 +671,8 @@ class Tvdb:
         - Replaces &amp; with &
         - Trailing whitespace
         """
-        data = data.replace(u"&amp;", u"&")
+
+        data = unicode(data).replace(u"&amp;", u"&")
         data = data.strip()
         return data
 
