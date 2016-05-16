@@ -144,7 +144,7 @@ def filter_bad_releases(name, parse=True, show=None):
                    ", ignoring it", logger.INFO)
         return False
 
-    if not valid_release_for_lang(name, show.lang):
+    if show and not valid_release_for_lang(name, show.lang):
         return False
 
     return True
