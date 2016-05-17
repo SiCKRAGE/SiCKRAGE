@@ -36,6 +36,6 @@ indexerConfig[INDEXER_TVDB] = {
 indexerConfig[INDEXER_TVDB]['trakt_id'] = 'tvdb_id'
 indexerConfig[INDEXER_TVDB]['xem_origin'] = 'tvdb'
 indexerConfig[INDEXER_TVDB]['icon'] = 'thetvdb16.png'
-indexerConfig[INDEXER_TVDB]['scene_loc'] = 'http://sickragetv.github.io/sb_tvdb_scene_exceptions/exceptions.txt'
+indexerConfig[INDEXER_TVDB]['scene_loc'] = 'https://raw.githubusercontent.com/cytec/sb_tvdb_scene_exceptions/gh-pages/exceptions.txt'
 indexerConfig[INDEXER_TVDB]['show_url'] = 'http://thetvdb.com/?tab=series&id='
 indexerConfig[INDEXER_TVDB]['base_url'] = 'http://tvdb.cytec.us/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB]['api_params']
