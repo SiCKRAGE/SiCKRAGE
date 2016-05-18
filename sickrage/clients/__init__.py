@@ -343,7 +343,8 @@ class GenericClient(object):
             # verify valid url
             self.response = sickrage.srCore.srWebSession.get(self.url,
                                                              timeout=120,
-                                                             verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+                                                             raise_exceptions=False,
+                                                             verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             # get auth
             self._get_auth()
@@ -353,5 +354,5 @@ class GenericClient(object):
                 return True, 'Success: Connected and Authenticated'
 
             return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
-        except Exception:
+        except Exception as e:
             return False, 'Error: Unable to connect to ' + self.name
