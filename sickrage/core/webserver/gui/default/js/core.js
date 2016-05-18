@@ -140,7 +140,10 @@ jQuery(document).ready(function ($) {
                             }
                         },
                         type: 'text'
-                    },
+                    }
+                );
+
+                $.tablesorter.addParser(
                     {
                         id: 'quality',
                         is: function () {
@@ -150,7 +153,10 @@ jQuery(document).ready(function ($) {
                             return s.replace('hd1080p', 5).replace('hd720p', 4).replace('hd', 3).replace('sd', 2).replace('any', 1).replace('best', 0).replace('custom', 7);
                         },
                         type: 'numeric'
-                    },
+                    }
+                );
+
+                $.tablesorter.addParser(
                     {
                         id: 'realISODate',
                         is: function () {
@@ -160,7 +166,10 @@ jQuery(document).ready(function ($) {
                             return new Date(s).getTime();
                         },
                         type: 'numeric'
-                    },
+                    }
+                );
+
+                $.tablesorter.addParser(
                     {
                         id: 'cDate',
                         is: function () {
@@ -170,7 +179,10 @@ jQuery(document).ready(function ($) {
                             return s;
                         },
                         type: 'numeric'
-                    },
+                    }
+                );
+
+                $.tablesorter.addParser(
                     {
                         id: 'eps',
                         is: function () {
@@ -1555,7 +1567,7 @@ jQuery(document).ready(function ($) {
                 });
 
                 $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
-                    sortList: [[7, 1], [2, 0]],
+                    sortList: [[6, 1], [2, 0]],
                     textExtraction: {
                         0: function (node) {
                             return $(node).find('time').attr('datetime');
@@ -1602,7 +1614,7 @@ jQuery(document).ready(function ($) {
                             return {
                                 filter_columnFilters: true,
                                 filter_hideFilters: true,
-                                filter_saveFilters: true,
+                                // filter_saveFilters: true,
                                 filter_functions: {
                                     5: function (e, n, f) {
                                         var test = false;

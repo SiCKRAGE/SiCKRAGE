@@ -344,9 +344,8 @@ def main():
         if DEBUG:
             traceback.print_exc()
 
-        if not DEVELOPER:
-            # install required packages
-            install_requirements(upgrade=True, restart=True)
+        # install required packages
+        install_requirements(upgrade=True, restart=True)
     except KeyboardInterrupt:
         pass
     except Exception as e:
