@@ -51,7 +51,7 @@ class uTorrentAPI(GenericClient):
                                                              timeout=120,
                                                              auth=(self.username, self.password),
                                                              raise_exceptions=False,
-                                                             verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+                                                             verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
         except Exception:
