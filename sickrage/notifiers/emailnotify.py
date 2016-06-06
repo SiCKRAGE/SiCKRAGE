@@ -200,15 +200,16 @@ class EmailNotifier(srNotifiers):
         if smtpDebug:
             srv.set_debuglevel(1)
         try:
-            if (use_tls == '1' or use_tls == True) or (len(user) > 0 and len(pwd) > 0):
+            if (bool(use_tls)) or (len(user) > 0 and len(pwd) > 0):
                 srv.ehlo()
                 sickrage.srCore.srLogger.debug('Sent initial EHLO command!')
-            if use_tls == '1' or use_tls == True:
+            if bool(use_tls):
                 srv.starttls()
                 sickrage.srCore.srLogger.debug('Sent STARTTLS command!')
             if len(user) > 0 and len(pwd) > 0:
                 srv.login(user, pwd)
                 sickrage.srCore.srLogger.debug('Sent LOGIN command!')
+
             srv.sendmail(smtp_from, to, msg.as_string())
             srv.quit()
             return True

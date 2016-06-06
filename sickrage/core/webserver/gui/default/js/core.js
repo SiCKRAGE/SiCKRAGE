@@ -4005,7 +4005,7 @@ jQuery(document).ready(function ($) {
                         host = host.length > 0 ? host : null;
                         port = $('#email_port').val();
                         port = port.length > 0 ? port : null;
-                        tls = $('#email_tls').attr('checked') !== undefined ? 1 : 0;
+                        tls = $('#email_tls').prop('checked');
                         from = $('#email_from').val();
                         from = from.length > 0 ? from : 'root@localhost';
                         user = $('#email_user').val().trim();

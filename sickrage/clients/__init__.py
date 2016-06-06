@@ -27,7 +27,6 @@ from bencode import BTFailure, bdecode, bencode
 
 import sickrage
 
-
 __all__ = [
     'utorrent',
     'transmission',
@@ -166,6 +165,7 @@ class GenericClient(object):
         self.url = None
         self.response = None
         self.auth = None
+        self.cookies = None
         self.last_time = time.time()
 
     def _request(self, method='get', *args, **kwargs):
@@ -186,14 +186,19 @@ class GenericClient(object):
             return False
 
         try:
+            if 'data' in kwargs and kwargs['data'] is None:
+                del kwargs['data']
+
             self.response = sickrage.srCore.srWebSession.request(method.upper(),
-                                                               self.url,
-                                                               auth=(self.username, self.password),
-                                                               timeout=120,
-                                                               *args,
-                                                               **kwargs)
-            sickrage.srCore.srLogger.debug(self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
-        except Exception:
+                                                                 self.url,
+                                                                 auth=(self.username, self.password),
+                                                                 raise_exceptions=False,
+                                                                 timeout=120,
+                                                                 *args,
+                                                                 **kwargs)
+            sickrage.srCore.srLogger.debug(
+                self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
+        except Exception as e:
             return False
 
         return True

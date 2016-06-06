@@ -54,6 +54,7 @@ class uTorrentAPI(GenericClient):
                                                              verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
+            self.cookies = self.response.cookies
         except Exception:
             return None
 
