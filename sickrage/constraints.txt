@@ -50,7 +50,6 @@ profilehooks==1.8.1
 py-unrar2==0.99.6
 pyasn1==0.1.9
 pycparser==2.14
-pyfiglet==0.7.5
 PyGithub==1.26.0
 pyOpenSSL==16.0.0
 pysrt==1.1.1

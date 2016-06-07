@@ -75,4 +75,3 @@ tzlocal
 wheel
 xmltodict
 yarg
-pyfiglet

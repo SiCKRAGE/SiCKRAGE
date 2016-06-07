@@ -22,14 +22,17 @@ from __future__ import print_function, unicode_literals, with_statement
 
 import argparse
 import codecs
+import importlib
 import io
 import locale
 import logging
 import os
+import pkgutil
 import sys
 import threading
 import time
 import traceback
+import site
 
 __all__ = [
     'srCore',
@@ -52,6 +55,8 @@ DEVELOPER = None
 DAEMONIZE = None
 NOLAUNCH = None
 QUITE = None
+MODULE_DIR = None
+LIBS_DIR = None
 DATA_DIR = None
 CONFIG_FILE = None
 PIDFILE = None
@@ -62,13 +67,7 @@ time.strptime("2012", "%Y")
 # set thread name
 threading.currentThread().setName('MAIN')
 
-
 logging.captureWarnings(True)
-
-
-def print_logo():
-    from pyfiglet import print_figlet
-    print_figlet('SiCKRAGE', font='doom')
 
 
 def encodingInit():
@@ -191,7 +190,10 @@ def pid_exists(pid):
         return True
 
 
-def install_requirements(upgrade=False, restart=False):
+def install_requirements(target_dir):
+    if not target_dir:
+        return
+
     # install pip package manager
     install_pip()
 
@@ -200,53 +202,51 @@ def install_requirements(upgrade=False, restart=False):
     from pip.req import parse_requirements
 
     requirements = parse_requirements(
-        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements.txt'),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt')),
         session=PipSession())
 
     for r in requirements:
         req_options, req_args = InstallCommand().parse_args([str(r.req)])
-        req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
-        req_options.constraints = [os.path.join(os.path.abspath(os.path.dirname(__file__)), 'constraints.txt')]
+        # req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
+        req_options.target_dir = target_dir
+        req_options.constraints = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'constraints.txt'))]
         req_options.cache_dir = None
         req_options.quiet = 1
         req_options.verbose = 1
+        req_options.ignore_installed = True
+        req_options.force_reinstall = True
 
         try:
-            print("Installing/Upgrading SiCKRAGE requirements package: {}".format(str(r.req)))
+            print("Installing SiCKRAGE requirements package: {}".format(str(r.req)))
             sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
-            if not r.installed_version:
-                req_options.upgrade = True
-                req_options.ignore_dependencies = True
-                InstallCommand().run(req_options, req_args)
-            req_options.upgrade = False
+            # req_options.ignore_dependencies = True
+            # InstallCommand().run(req_options, req_args)
             req_options.ignore_dependencies = False
             InstallCommand().run(req_options, req_args)
         except Exception as e:
             continue
 
-    # restart sickrage silently
-    if restart:
-        os.execl(sys.executable, sys.executable, *sys.argv)
-
 
 def main():
-    global srCore, status, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+    global srCore, status, SYS_ENCODING, PROG_DIR, LIBS_DIR, MODULE_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \
+        DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     # sickrage requires python 2.7+
     if sys.version_info < (2, 7):
         sys.exit("Sorry, SiCKRAGE requires Python 2.7+")
 
     # add sickrage module to python system path
-    path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-    if path not in sys.path:
-        sys.path.insert(0, path)
+    MODULE_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+    if not (MODULE_DIR in sys.path):
+        sys.path, remainder = sys.path[:1], sys.path[1:]
+        site.addsitedir(MODULE_DIR)
+        sys.path.extend(remainder)
 
     # set locale encoding
     SYS_ENCODING = encodingInit()
 
     try:
-        # print logo
-        print_logo()
+        print("..::[ SiCKRAGE ]::..")
 
         # sickrage startup options
         parser = argparse.ArgumentParser(prog='sickrage')
@@ -316,6 +316,13 @@ def main():
         if not os.access(DATA_DIR, os.W_OK):
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
+        # add sickrage required libs to python system path
+        LIBS_DIR = os.path.abspath(os.path.join(DATA_DIR, 'libs'))
+        if not (LIBS_DIR in sys.path):
+            sys.path, remainder = sys.path[:1], sys.path[1:]
+            site.addsitedir(LIBS_DIR)
+            sys.path.extend(remainder)
+
         # Pidfile for daemon
         PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
         if os.path.exists(PIDFILE):
@@ -332,20 +339,22 @@ def main():
             QUITE = False
             daemonize(PIDFILE)
 
-        # import core
-        from sickrage import core
-
         # main app loop
         while True:
-            # start core
-            srCore = core.Core()
-            srCore.start()
-    except ImportError as e:
-        if DEBUG:
-            traceback.print_exc()
+            try:
+                from sickrage import core
+                srCore = core.Core()
+                srCore.start()
+            except ImportError:
+                if DEBUG:
+                    traceback.print_exc()
 
-        # install required packages
-        install_requirements(upgrade=True, restart=True)
+                # install requirements
+                install_requirements(target_dir=LIBS_DIR)
+
+                # restart and reload modules
+                os.execl(sys.executable, sys.executable, *sys.argv)
+
     except KeyboardInterrupt:
         pass
     except Exception as e:

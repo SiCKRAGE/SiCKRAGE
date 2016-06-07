@@ -7,7 +7,7 @@ from pip.req import parse_requirements
 from setuptools import setup, Command
 
 # Get the version number
-with io.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'version.txt')) as f:
+with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
     version = f.read()
 
 
@@ -22,16 +22,16 @@ class CleanCommand(Command):
         pass
 
     def run(self):
-        shutil.rmtree(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'build'), ignore_errors=True)
-        shutil.rmtree(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dist'), ignore_errors=True)
-        shutil.rmtree(os.path.join(os.path.abspath(os.path.dirname(__file__)), '*.pyc'), ignore_errors=True)
-        shutil.rmtree(os.path.join(os.path.abspath(os.path.dirname(__file__)), '*.tgz'), ignore_errors=True)
-        shutil.rmtree(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage.egg-info'), ignore_errors=True)
+        shutil.rmtree(os.path.abspath(os.path.join(os.path.dirname(__file__), 'build')), ignore_errors=True)
+        shutil.rmtree(os.path.abspath(os.path.join(os.path.dirname(__file__), 'dist')), ignore_errors=True)
+        shutil.rmtree(os.path.abspath(os.path.join(os.path.dirname(__file__), '*.pyc')), ignore_errors=True)
+        shutil.rmtree(os.path.abspath(os.path.join(os.path.dirname(__file__), '*.tgz')), ignore_errors=True)
+        shutil.rmtree(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage.egg-info')), ignore_errors=True)
 
 
 def requirements():
     return [str(r.req) for r in parse_requirements(
-        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'requirements.txt'),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'requirements.txt')),
         session=PipSession())]
 
 
@@ -49,7 +49,7 @@ setup(
     tests_require=['pip'],
     requires=['pip'],
     install_requires=['-c {}'.format(
-        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'constraints.txt'))] + requirements(),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'constraints.txt')))].extend(requirements()),
     include_package_data=True,
     platforms='any',
     zip_safe=False,

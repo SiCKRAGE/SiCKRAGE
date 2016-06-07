@@ -30,7 +30,7 @@ Additionally most of the SickRage development team can be found in the [#sickrag
 
 Many bugs reported are actually issues with the user mis-understanding of how something works (there are a bit of moving parts to an ideal setup) and most of the time can be fixed by just changing some settings to fit the users needs.
 
-If you are new to SickRage, it is usually a much better idea to ask for help first in the [Using SickRage Forum](http://www.sickrage.tv) or the [SickRage IRC channel](http://webchat.freenode.net/?channels=sickrage). You will get much quicker support, and you will help avoid tying up the SickRage team with invalid bug reports.
+If you are new to SickRage, it is usually a much better idea to ask for help first in the [Using SickRage Forum](http://www.sickrage.ca) or the [SickRage IRC channel](http://webchat.freenode.net/?channels=sickrage). You will get much quicker support, and you will help avoid tying up the SickRage team with invalid bug reports.
 
 ### Try the latest version of SickRage
 
