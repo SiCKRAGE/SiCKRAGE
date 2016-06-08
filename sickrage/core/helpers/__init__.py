@@ -608,7 +608,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     # move the file
     try:
         sickrage.srCore.srLogger.info("Renaming file from %s to %s" % (cur_path, new_path))
-        shutil.move(cur_path, new_path)
+        moveFile(cur_path, new_path)
     except (OSError, IOError) as e:
         sickrage.srCore.srLogger.error("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
         return False
@@ -1121,7 +1121,7 @@ def restoreConfigZip(archive, targetDir):
                 return tail or os.path.basename(head)
 
             bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-            shutil.move(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
+            moveFile(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
@@ -1133,15 +1133,14 @@ def restoreConfigZip(archive, targetDir):
         removetree(targetDir)
 
 
-def backupAll(backupDir):
+def backupSR(backupDir):
     source = []
 
     filesList = ['sickrage.db',
-                 'scheduer.db',
-                 'config.ini',
                  'failed.db',
                  'cache.db',
-                 sickrage.CONFIG_FILE]
+                 'thetvdb.db',
+                 os.path.basename(sickrage.CONFIG_FILE)]
 
     for f in filesList:
         fp = os.path.join(sickrage.DATA_DIR, f)
@@ -1153,11 +1152,45 @@ def backupAll(backupDir):
             for dirname in dirs:
                 if path == sickrage.srCore.srConfig.CACHE_DIR and dirname not in ['images']:
                     dirs.remove(dirname)
+
             for filename in files:
                 source += [os.path.join(path, filename)]
 
     target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
     return backupConfigZip(source, target, sickrage.DATA_DIR)
+
+
+def restoreSR(srcDir, dstDir):
+    try:
+        filesList = ['sickrage.db',
+                     'sickbeard.db',
+                     'failed.db',
+                     'cache.db',
+                     'thetvdb.db',
+                     os.path.basename(sickrage.CONFIG_FILE)]
+
+        for filename in filesList:
+            srcFile = os.path.join(srcDir, filename)
+            dstFile = os.path.join(dstDir, filename)
+            bakFile = os.path.join(dstDir, '{}.bak-{}'
+                                   .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+
+            if os.path.exists(srcFile):
+                if os.path.isfile(dstFile):
+                    moveFile(dstFile, bakFile)
+                moveFile(srcFile, dstFile)
+
+        if os.path.exists(os.path.join(srcDir, 'cache')):
+            if os.path.exists(os.path.join(dstDir, 'cache')):
+                moveFile(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
+                                                                        .format('cache',
+                                                                                datetime.datetime.now().strftime(
+                                                                                    '%Y%m%d_%H%M%S'))))
+            moveFile(os.path.join(srcDir, 'cache'), dstDir)
+
+        return True
+    except Exception as e:
+        return False
 
 
 def touchFile(fname, atime=None):
@@ -1427,31 +1460,6 @@ def removetree(tgt):
     return
 
 
-def restoreDB(srcDir, dstDir):
-    try:
-        filesList = ['sickrage.db',
-                     'scheduler.db',
-                     'config.ini',
-                     'failed.db',
-                     'cache.db',
-                     sickrage.CONFIG_FILE]
-
-        for filename in filesList:
-            srcFile = os.path.join(srcDir, filename)
-            dstFile = os.path.join(dstDir, filename)
-            bakFile = os.path.join(dstDir, '{0}.bak-{1}'
-                                   .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
-
-            if os.path.exists(srcFile):
-                if os.path.isfile(dstFile):
-                    shutil.move(dstFile, bakFile)
-                shutil.move(srcFile, dstFile)
-
-        return True
-    except Exception:
-        return False
-
-
 def restoreVersionedFile(backup_file, version):
     """
     Restore a file version to original state
@@ -1474,7 +1482,7 @@ def restoreVersionedFile(backup_file, version):
         sickrage.srCore.srLogger.debug("Trying to backup %s to %s.r%s before restoring backup"
                                        % (new_file, new_file, version))
 
-        shutil.move(new_file, new_file + '.' + 'r' + str(version))
+        moveFile(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         sickrage.srCore.srLogger.warning("Error while trying to backup file %s before proceeding with restore: %r"
                                          % (restore_file, e))

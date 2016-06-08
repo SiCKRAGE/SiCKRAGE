@@ -56,7 +56,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, NoNFOException, \
     ShowDirectoryNotFoundException
-from sickrage.core.helpers import argToBool, backupAll, check_url, \
+from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, tryInt
@@ -4039,7 +4039,7 @@ class ConfigBackupRestore(Config):
         finalResult = ''
 
         if backupDir:
-            if backupAll(backupDir):
+            if backupSR(backupDir):
                 finalResult += "Backup SUCCESSFUL"
             else:
                 finalResult += "Backup FAILED!"

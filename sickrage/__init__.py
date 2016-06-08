@@ -34,6 +34,10 @@ import time
 import traceback
 import site
 
+import shutil
+
+import datetime
+
 __all__ = [
     'srCore',
     'PROG_DIR',
@@ -225,7 +229,6 @@ def install_requirements(target_dir):
             InstallCommand().run(req_options, req_args)
         except Exception as e:
             continue
-
 
 def main():
     global srCore, status, SYS_ENCODING, PROG_DIR, LIBS_DIR, MODULE_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \

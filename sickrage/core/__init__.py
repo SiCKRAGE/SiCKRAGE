@@ -29,17 +29,18 @@ import sys
 import threading
 import traceback
 
+import sickrage
+
 from apscheduler.schedulers.tornado import TornadoScheduler
 from tornado.ioloop import IOLoop
 
-import sickrage
 from sickrage.core.caches.name_cache import srNameCache
 from sickrage.core.classes import AttrDict, srIntervalTrigger
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.databases import main_db, cache_db, failed_db
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
-    generateCookieSecret, makeDir, removetree, restoreDB, get_lan_ip, get_temp_dir
+    generateCookieSecret, makeDir, removetree, get_lan_ip, get_temp_dir, restoreSR
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
@@ -93,15 +94,6 @@ class Core(object):
 
         # process id
         self.PID = os.getpid()
-
-        # Check if we need to perform a restore first
-        os.chdir(sickrage.DATA_DIR)
-        restore_dir = os.path.join(sickrage.DATA_DIR, 'restore')
-        if os.path.exists(restore_dir):
-            success = restoreDB(restore_dir, sickrage.DATA_DIR)
-            print("Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
-            if success:
-                os.execl(sys.executable, sys.executable, *sys.argv)
 
         # generate notifiers dict
         self.notifiersDict = AttrDict(
@@ -193,6 +185,24 @@ class Core(object):
         # thread name
         threading.currentThread().setName('CORE')
 
+        # Check if we need to perform a restore first
+        if os.path.exists(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore'))):
+            success = restoreSR(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore')), sickrage.DATA_DIR)
+            print("Restoring SiCKRAGE backup: %s!\n" % ("FAILED", "SUCCESSFUL")[success])
+            if success:
+                shutil.rmtree(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore')), ignore_errors=True)
+
+        # migrate old database file names to new ones
+        if os.path.isfile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db'))):
+            if os.path.isfile(os.path.join(sickrage.DATA_DIR, 'sickrage.db')):
+                helpers.moveFile(os.path.join(sickrage.DATA_DIR, 'sickrage.db'),
+                                 os.path.join(sickrage.DATA_DIR, '{}.bak-{}'
+                                              .format('sickrage.db',
+                                                      datetime.datetime.now().strftime(
+                                                          '%Y%m%d_%H%M%S'))))
+
+            helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')), os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
+
         # load config
         self.srConfig.load()
 
@@ -212,10 +222,6 @@ class Core(object):
 
         # start logger
         self.srLogger.start()
-
-        # migrate old database file names to new ones
-        if not os.path.exists(main_db.MainDB().filename) and os.path.exists("sickbeard.db"):
-            helpers.moveFile("sickbeard.db", main_db.MainDB().filename)
 
         # initialize the main SB database
         main_db.MainDB().InitialSchema().upgrade()
@@ -239,42 +245,12 @@ class Core(object):
             self.srLogger.error("!!! Creating local cache dir failed")
             self.srConfig.CACHE_DIR = get_temp_dir()
 
-        # Check if we need to perform a restore of the cache folder
-        try:
-            restore_dir = os.path.join(sickrage.DATA_DIR, 'restore')
-            if os.path.exists(restore_dir) and os.path.exists(os.path.join(restore_dir, 'cache')):
-                def restore_cache(src_dir, dst_dir):
-                    def path_leaf(path):
-                        head, tail = os.path.split(path)
-                        return tail or os.path.basename(head)
-
-                    try:
-                        if os.path.isdir(dst_dir):
-                            bak_filename = '{}-{}'.format(path_leaf(dst_dir),
-                                                          datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-                            shutil.move(dst_dir, os.path.join(os.path.dirname(dst_dir), bak_filename))
-
-                        shutil.move(src_dir, dst_dir)
-                        self.srLogger.info("Restore: restoring cache successful")
-                    except Exception as E:
-                        self.srLogger.error("Restore: restoring cache failed: {}".format(E.message))
-
-                restore_cache(os.path.join(restore_dir, 'cache'), self.srConfig.CACHE_DIR)
-        except Exception as e:
-            self.srLogger.error("Restore: restoring cache failed: {}".format(e.message))
-        finally:
-            if os.path.exists(os.path.join(sickrage.DATA_DIR, 'restore')):
-                try:
-                    removetree(os.path.join(sickrage.DATA_DIR, 'restore'))
-                except Exception as e:
-                    self.srLogger.error("Restore: Unable to remove the restore directory: {}".format(e.message))
-
-                for cleanupDir in ['mako', 'sessions', 'indexers']:
-                    try:
-                        removetree(os.path.join(self.srConfig.CACHE_DIR, cleanupDir))
-                    except Exception as e:
-                        self.srLogger.warning(
-                            "Restore: Unable to remove the cache/{} directory: {1}".format(cleanupDir, e))
+        # cleanup cache folder
+        for dir in ['mako', 'sessions', 'indexers']:
+            try:
+                shutil.rmtree(os.path.join(self.srConfig.CACHE_DIR, dir), ignore_errors=True)
+            except Exception:
+                continue
 
         # init anidb connection
         if not self.srConfig.USE_ANIDB:

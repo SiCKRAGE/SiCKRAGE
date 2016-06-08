@@ -33,7 +33,7 @@ import traceback
 import github
 
 import sickrage
-from sickrage.core.helpers import backupAll, removetree
+from sickrage.core.helpers import backupSR, removetree
 from sickrage.notifiers import srNotifiers
 
 
@@ -87,7 +87,7 @@ class srVersionUpdater(object):
             if not os.path.isdir(backupDir):
                 os.mkdir(backupDir)
 
-            if self._keeplatestbackup(backupDir) and backupAll(backupDir):
+            if self._keeplatestbackup(backupDir) and backupSR(backupDir):
                 sickrage.srCore.srLogger.info("Config backup successful, updating...")
                 sickrage.srCore.srNotifications.message('Backup', 'Config backup successful, updating...')
                 return True

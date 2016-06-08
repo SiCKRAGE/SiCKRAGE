@@ -364,8 +364,11 @@ class Connection(object):
         self.action("ALTER TABLE [{}] ADD {} {}".format(table, column, type))
         self.action("UPDATE [{}] SET {} = ?".format(table, column), [default])
 
-    def incDBVersion(self):
-        self.action("UPDATE db_version SET db_version = db_version + 1")
+    def incDBVersion(self, version=None):
+        if not version:
+            version = self.checkDBVersion() + 1
+
+        self.action("UPDATE db_version SET db_version = {}".format(version))
 
 
 class SchemaUpgrade(Connection):

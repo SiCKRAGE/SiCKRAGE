@@ -1294,7 +1294,10 @@ class srConfig(object):
         elif str(my_val).lower() == "false":
             my_val = 0
 
-        my_val = int(my_val)
+        try:
+            my_val = int(my_val)
+        except Exception:
+            my_val = def_val
 
         if not silent:
             sickrage.srCore.srLogger.debug(key + " -> " + str(my_val))
@@ -1306,7 +1309,10 @@ class srConfig(object):
     ################################################################################
 
     def check_setting_float(self, section, key, def_val, silent=True):
-        my_val = float(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
+        try:
+            my_val = float(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
+        except Exception:
+            my_val = def_val
 
         if not silent:
             sickrage.srCore.srLogger.debug(section + " -> " + str(my_val))
@@ -1319,6 +1325,7 @@ class srConfig(object):
 
     def check_setting_str(self, section, key, def_val="", silent=True):
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
+
         if my_val:
             censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
             if censored_regex.search(key) or (section, key) in self.CENSORED_ITEMS:
