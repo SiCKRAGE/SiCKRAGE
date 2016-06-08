@@ -207,7 +207,7 @@ class EmailNotifier(srNotifiers):
                 srv.starttls()
                 sickrage.srCore.srLogger.debug('Sent STARTTLS command!')
             if len(user) > 0 and len(pwd) > 0:
-                srv.login(user, pwd)
+                srv.login(str(user), str(pwd))
                 sickrage.srCore.srLogger.debug('Sent LOGIN command!')
 
             srv.sendmail(smtp_from, to, msg.as_string())

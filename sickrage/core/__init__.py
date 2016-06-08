@@ -539,7 +539,7 @@ class Core(object):
             try:
                 curshow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
                 self.srLogger.debug("Loading data for show: [{}]".format(curshow.name))
-                self.NAMECACHE.buildNameCache(curshow)
+                #self.NAMECACHE.buildNameCache(curshow)
                 curshow.nextEpisode()
                 self.SHOWLIST += [curshow]
             except Exception as e:
