@@ -105,7 +105,7 @@ class RarbgProvider(TorrentProvider):
         if not self._doLogin():
             return results
 
-        if epObj is not None:
+        if epObj != None:
             ep_indexerid = epObj.show.indexerid
             ep_indexer = epObj.show.indexer
         else:
@@ -116,10 +116,10 @@ class RarbgProvider(TorrentProvider):
             sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                if mode is 'RSS':
+                if mode == 'RSS':
                     searchURL = self.urls['listing'] + self.defaultOptions
                 elif mode == 'Season':
                     if ep_indexer == INDEXER_TVDB:
@@ -203,7 +203,7 @@ class RarbgProvider(TorrentProvider):
 
                 try:
                     data = re.search(r'\[\{\"title\".*\}\]', data)
-                    if data is not None:
+                    if data != None:
                         data_json = json.loads(data.group())
                     else:
                         data_json = {}
@@ -226,7 +226,7 @@ class RarbgProvider(TorrentProvider):
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
+                            if mode != 'RSS':
                                 sickrage.srLogger.debug("Found result: %s " % title)
                             items[mode].append(item)
 

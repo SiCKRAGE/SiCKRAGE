@@ -206,7 +206,7 @@ class Connection(object):
         """
         try:
             if self.hasTable('db_version'):
-                return self.select("SELECT db_version FROM db_version")
+                return self.select("SELECT db_version FROM db_version")[0]["db_version"]
         except:
             return 0
 

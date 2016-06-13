@@ -1121,6 +1121,7 @@ class MainDB(Connection):
                     "CREATE TABLE tmdb_info (indexer_id INTEGER PRIMARY KEY, tmdb_id TEXT, name TEXT, first_air_date NUMERIC, akas TEXT, episode_run_time NUMERIC, genres TEXT, origin_country TEXT, languages TEXT, production_companies TEXT, popularity TEXT, vote_count INTEGER, last_air_date NUMERIC)")
 
             if not self.hasColumn("tv_shows", "tmdb_id"):
-                self.addColumn("tv_shows", "tmdb_id")
+                self.addColumn("tv_shows", "tmdb_id", "TEXT", "")
+
 
             self.incDBVersion()
