@@ -553,7 +553,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             process_fail_message = ""
         except EpisodePostProcessingFailedException as e:
             result.result = False
-            process_fail_message = e
+            process_fail_message = e.message
 
         if processor:
             result.output += processor.log
