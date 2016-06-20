@@ -26,14 +26,14 @@ import urllib
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class HDSpaceProvider(TorrentProvider):
     def __init__(self):
-        super(HDSpaceProvider, self).__init__("HDSpace")
+        super(HDSpaceProvider, self).__init__("HDSpace", 'hd-space.org')
 
         self.supportsBacklog = True
 
@@ -45,47 +45,46 @@ class HDSpaceProvider(TorrentProvider):
 
         self.cache = HDSpaceCache(self)
 
-        self.urls = {'base_url': 'https://hd-space.org/',
-                     'login': 'https://hd-space.org/index.php?page=login',
-                     'search': 'https://hd-space.org/index.php?page=torrents&search=%s&active=1&options=0',
-                     'rss': 'https://hd-space.org/rss_torrents.php?feed=dl'}
+        self.urls.update({
+            'login': '{base_url}/index.php?page=login'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/rss_torrents.php?feed=dl'.format(base_url=self.urls['base_url'])
+        })
 
         self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
-        self.urls['search'] += '&category='
         for cat in self.categories:
             self.urls['search'] += str(cat) + '%%3B'
             self.urls['rss'] += '&cat[]=' + str(cat)
         self.urls['search'] = self.urls['search'][:-4]  # remove extra %%3B
 
-        self.url = self.urls['base_url']
-
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
     def _doLogin(self):
 
-        if 'pass' in requests.utils.dict_from_cookiejar(self.session.cookies):
+        if 'pass' in requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies):
             return True
 
         login_params = {'uid': self.username,
                         'pwd': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Password Incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -94,21 +93,22 @@ class HDSpaceProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
                 else:
                     searchURL = self.urls['search'] % ''
 
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s" % search_string)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
-                data = self.getURL(searchURL)
-                if not data or 'please try later' in data:
-                    sickrage.srLogger.debug("No data returned from provider")
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 # Search result page contains some invalid html that prevents html parser from returning all data.
@@ -118,12 +118,12 @@ class HDSpaceProvider(TorrentProvider):
                     data = data.split('<div id="information"></div>')[1]
                     index = data.index('<table')
                 except ValueError:
-                    sickrage.srLogger.error("Could not find main torrent table")
+                    sickrage.srCore.srLogger.error("Could not find main torrent table")
                     continue
 
                 with bs4_parser(data[index:]) as html:
                     if not html:
-                        sickrage.srLogger.debug("No html data parsed from provider")
+                        sickrage.srCore.srLogger.debug("No html data parsed from provider")
                         continue
 
                 torrents = html.findAll('tr')
@@ -142,22 +142,22 @@ class HDSpaceProvider(TorrentProvider):
                         download_url = self.urls['base_url'] + dl_href
                         seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
                         leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
-                        size = re.match(r'.*?([0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+).*', str(result), re.DOTALL).group(1)
+                        size = convert_size(result)
 
                         if not all([title, download_url]):
                             continue
 
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug("Found result: %s " % title)
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
@@ -174,20 +174,6 @@ class HDSpaceProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split(' ')
-        size = float(size)
-        if modifier in 'KB':
-            size = size * 1024
-        elif modifier in 'MB':
-            size = size * 1024 ** 2
-        elif modifier in 'GB':
-            size = size * 1024 ** 3
-        elif modifier in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
-
 
 class HDSpaceCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
@@ -198,4 +184,4 @@ class HDSpaceCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

@@ -21,30 +21,22 @@
 from __future__ import unicode_literals
 
 import urllib
-
 from datetime import datetime
 
 import sickrage
-from core.caches import tv_cache
-from core.classes import Proper
-from core.helpers import show_names
-from providers import NZBProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.classes import Proper
+from sickrage.core.helpers import show_names
+from sickrage.providers import NZBProvider
 
 
 class AnimeNZBProvider(NZBProvider):
     def __init__(self):
-        super(AnimeNZBProvider, self).__init__("AnimeNZB")
-
+        super(AnimeNZBProvider, self).__init__("AnimeNZB", 'animenzb.com')
         self.supportsBacklog = False
-        self.public = True
         self.supportsAbsoluteNumbering = True
         self.anime_only = True
-
         self.cache = animenzbCache(self)
-
-        self.urls = {'base_url': 'http://animenzb.com//'}
-
-        self.url = self.urls['base_url']
 
     def _get_season_search_strings(self, ep_obj):
         return [x for x in show_names.makeSceneSeasonSearchString(self.show, ep_obj)]
@@ -52,9 +44,9 @@ class AnimeNZBProvider(NZBProvider):
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         return [x for x in show_names.makeSceneSearchString(self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
 
-        sickrage.srLogger.debug("Search string: %s " % search_string)
+        sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
         if self.show and not self.show.is_anime:
             return []
@@ -65,15 +57,15 @@ class AnimeNZBProvider(NZBProvider):
             "max": "100"
         }
 
-        searchURL = self.url + "rss?" + urllib.urlencode(params)
-        sickrage.srLogger.debug("Search URL: %s" % searchURL)
+        searchURL = self.urls['base_url'] + "/rss?" + urllib.urlencode(params)
+        sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
         results = []
         for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
             (title, url) = self._get_title_and_url(curItem)
 
             if title and url:
                 results.append(curItem)
-                sickrage.srLogger.debug("Found result: %s " % title)
+                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
         # For each search mode sort all the items by seeders if available if available
         results.sort(key=lambda tup: tup[0], reverse=True)
@@ -84,11 +76,11 @@ class AnimeNZBProvider(NZBProvider):
 
         results = []
 
-        for item in self._doSearch("v2|v3|v4|v5"):
+        for item in self.search("v2|v3|v4|v5"):
 
             (title, url) = self._get_title_and_url(item)
 
-            if item.has_key('published_parsed') and item[b'published_parsed']:
+            if item.has_key('published_parsed') and item['published_parsed']:
                 result_date = item.published_parsed
                 if result_date:
                     result_date = datetime(*result_date[0:6])

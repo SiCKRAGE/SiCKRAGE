@@ -22,24 +22,21 @@ import re
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class BitSoupProvider(TorrentProvider):
     def __init__(self):
-        super(BitSoupProvider, self).__init__("BitSoup")
+        super(BitSoupProvider, self).__init__("BitSoup",'www.bitsoup.me')
 
-        self.urls = {
-            'base_url': 'https://www.bitsoup.me',
-            'login': 'https://www.bitsoup.me/takelogin.php',
-            'detail': 'https://www.bitsoup.me/details.php?id=%s',
-            'search': 'https://www.bitsoup.me/browse.php',
-            'download': 'https://bitsoup.me/%s',
-        }
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.supportsBacklog = True
 
@@ -57,7 +54,7 @@ class BitSoupProvider(TorrentProvider):
 
     def _checkAuth(self):
         if not self.username or not self.password:
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -69,18 +66,19 @@ class BitSoupProvider(TorrentProvider):
             'ssl': 'yes'
         }
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -89,16 +87,18 @@ class BitSoupProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'search'] = search_string
+                self.search_params['search'] = search_string
 
-                data = self.getURL(self.urls['search'], params=self.search_params)
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], self.search_params).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -108,7 +108,7 @@ class BitSoupProvider(TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
@@ -131,20 +131,19 @@ class BitSoupProvider(TorrentProvider):
 
                                 # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
-
                 except Exception:
-                    sickrage.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -166,4 +165,4 @@ class BitSoupCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

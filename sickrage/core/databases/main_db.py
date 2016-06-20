@@ -18,15 +18,15 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os.path
 
 import babelfish
-from datetime import datetime, date
 
 import sickrage
-from core.common import ARCHIVED, DOWNLOADED, Quality, SKIPPED, \
+from sickrage.core.common import ARCHIVED, DOWNLOADED, Quality, SKIPPED, \
     UNAIRED, UNKNOWN, WANTED, dateTimeFormat, statusStrings
-from core.databases import Connection, SchemaUpgrade
+from sickrage.core.databases import Connection, SchemaUpgrade
 
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
 MAX_DB_VERSION = 43
@@ -39,6 +39,7 @@ class MainDB(Connection):
     class SanityCheck(Connection):
         def __init__(self):
             super(MainDB.SanityCheck, self).__init__()
+            self.fix_missing_tables()
             self.fix_missing_table_indexes()
             self.fix_duplicate_shows()
             self.fix_duplicate_episodes()
@@ -54,191 +55,200 @@ class MainDB(Connection):
 
         # todo: fix spelling to compound
         def convert_archived_to_compund(self):
-            sickrage.srLogger.debug('Checking for archived episodes not qualified')
+            sickrage.srCore.srLogger.debug('Checking for archived episodes not qualified')
 
             query = "SELECT episode_id, showid, status, location, season, episode " + \
                     "FROM tv_episodes WHERE status = {}".format(ARCHIVED)
 
             sqlResults = self.select(query)
             if sqlResults:
-                sickrage.srLogger.warning(
-                        "Found %i shows with bare archived status, attempting automatic conversion..." % len(
-                            sqlResults))
+                sickrage.srCore.srLogger.warning(
+                    "Found %i shows with bare archived status, attempting automatic conversion..." % len(
+                        sqlResults))
 
             for archivedEp in sqlResults:
                 fixedStatus = Quality.compositeStatus(ARCHIVED, Quality.UNKNOWN)
-                existing = archivedEp[b'location'] and os.path.exists(archivedEp[b'location'])
+                existing = archivedEp['location'] and os.path.exists(archivedEp['location'])
                 if existing:
-                    quality = Quality.assumeQuality(archivedEp[b'location'])
+                    quality = Quality.assumeQuality(archivedEp['location'])
                     fixedStatus = Quality.compositeStatus(ARCHIVED, quality)
 
-                sickrage.srLogger.info('Changing status from {} to {} for {}: S{}E{} at {} (File {})'
-                                        .format(statusStrings[ARCHIVED], statusStrings[fixedStatus],
-                                     archivedEp[b'showid'], archivedEp[b'season'], archivedEp[b'episode'],
-                                     archivedEp[b'location'] if archivedEp[b'location'] else 'unknown location',
-                                     ('NOT FOUND', 'EXISTS')[bool(existing)]))
+                sickrage.srCore.srLogger.info('Changing status from {} to {} for {}: S{}E{} at {} (File {})'
+                                              .format(statusStrings[ARCHIVED], statusStrings[fixedStatus],
+                                                      archivedEp['showid'], archivedEp['season'], archivedEp['episode'],
+                                                      archivedEp['location'] if archivedEp[
+                                                          'location'] else 'unknown location',
+                                                      ('NOT FOUND', 'EXISTS')[bool(existing)]))
 
                 self.action(
-                        "UPDATE tv_episodes SET status = {0} WHERE episode_id = {}".format(fixedStatus,
-                                                                                           archivedEp[b'episode_id']))
+                    "UPDATE tv_episodes SET status = {0} WHERE episode_id = {}".format(fixedStatus,
+                                                                                       archivedEp['episode_id']))
 
         def convert_tvrage_to_tvdb(self):
-            sickrage.srLogger.debug("Checking for shows with tvrage id's, since tvrage is gone")
-            from indexers.indexer_config import INDEXER_TVRAGE, INDEXER_TVDB
+            sickrage.srCore.srLogger.debug("Checking for shows with tvrage id's, since tvrage is gone")
+            from sickrage.indexers.config import INDEXER_TVRAGE, INDEXER_TVDB
 
             sqlResults = self.select(
-                    "SELECT indexer_id, show_name, location FROM tv_shows WHERE indexer = {}".format(INDEXER_TVRAGE))
+                "SELECT indexer_id, show_name, location FROM tv_shows WHERE indexer = {}".format(INDEXER_TVRAGE))
 
             if sqlResults:
-                sickrage.srLogger.warning(
-                        "Found {} shows with TVRage ID's, attempting automatic conversion...".format(len(sqlResults)))
+                sickrage.srCore.srLogger.warning(
+                    "Found {} shows with TVRage ID's, attempting automatic conversion...".format(len(sqlResults)))
 
             for tvrage_show in sqlResults:
-                sickrage.srLogger.info("Processing {} at {}".format(tvrage_show[b'show_name'], tvrage_show[b'location']))
+                sickrage.srCore.srLogger.info(
+                    "Processing {} at {}".format(tvrage_show['show_name'], tvrage_show['location']))
                 mapping = self.select(
-                        "SELECT mindexer_id FROM indexer_mapping WHERE indexer_id=%i AND indexer=%i AND mindexer=%i" %
-                        (tvrage_show[b'indexer_id'], INDEXER_TVRAGE, INDEXER_TVDB))
+                    "SELECT mindexer_id FROM indexer_mapping WHERE indexer_id=%i AND indexer=%i AND mindexer=%i" %
+                    (tvrage_show['indexer_id'], INDEXER_TVRAGE, INDEXER_TVDB))
 
                 if len(mapping) != 1:
-                    sickrage.srLogger.warning(
-                            "Error mapping show from tvrage to tvdb for %s (%s), found %i mapping results. Cannot convert automatically!" %
-                            (tvrage_show[b'show_name'], tvrage_show[b'location'], len(mapping)))
-                    sickrage.srLogger.warning("Removing the TVRage show and it's episodes from the DB, use 'addExistingShow'")
+                    sickrage.srCore.srLogger.warning(
+                        "Error mapping show from tvrage to tvdb for %s (%s), found %i mapping results. Cannot convert automatically!" %
+                        (tvrage_show['show_name'], tvrage_show['location'], len(mapping)))
+                    sickrage.srCore.srLogger.warning(
+                        "Removing the TVRage show and it's episodes from the DB, use 'addExistingShow'")
                     self.action("DELETE FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (
-                        tvrage_show[b'indexer_id'], INDEXER_TVRAGE))
-                    self.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show[b'indexer_id'])
+                        tvrage_show['indexer_id'], INDEXER_TVRAGE))
+                    self.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show['indexer_id'])
                     continue
 
-                sickrage.srLogger.info('Checking if there is already a show with id:%i in the show list')
+                sickrage.srCore.srLogger.info('Checking if there is already a show with id:%i in the show list')
                 duplicate = self.select("SELECT * FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (
-                    mapping[0][b'mindexer_id'], INDEXER_TVDB))
+                    mapping[0]['mindexer_id'], INDEXER_TVDB))
                 if duplicate:
-                    sickrage.srLogger.warning(
-                            'Found %s which has the same id as %s, cannot convert automatically so I am pausing %s' %
-                            (duplicate[0][b'show_name'], tvrage_show[b'show_name'], duplicate[0][b'show_name']))
+                    sickrage.srCore.srLogger.warning(
+                        'Found %s which has the same id as %s, cannot convert automatically so I am pausing %s' %
+                        (duplicate[0]['show_name'], tvrage_show['show_name'], duplicate[0]['show_name']))
                     self.action("UPDATE tv_shows SET paused=1 WHERE indexer=%i AND indexer_id=%i" %
-                                (INDEXER_TVDB, duplicate[0][b'indexer_id']))
+                                (INDEXER_TVDB, duplicate[0]['indexer_id']))
 
-                    sickrage.srLogger.warning("Removing %s and it's episodes from the DB" % tvrage_show[b'show_name'])
+                    sickrage.srCore.srLogger.warning(
+                        "Removing %s and it's episodes from the DB" % tvrage_show['show_name'])
                     self.action("DELETE FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (
-                        tvrage_show[b'indexer_id'], INDEXER_TVRAGE))
-                    self.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show[b'indexer_id'])
-                    sickrage.srLogger.warning(
-                            'Manually move the season folders from %s into %s, and delete %s before rescanning %s and unpausing it' %
-                            (tvrage_show[b'location'], duplicate[0][b'location'], tvrage_show[b'location'],
-                             duplicate[0][b'show_name']))
+                        tvrage_show['indexer_id'], INDEXER_TVRAGE))
+                    self.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show['indexer_id'])
+                    sickrage.srCore.srLogger.warning(
+                        'Manually move the season folders from %s into %s, and delete %s before rescanning %s and unpausing it' %
+                        (tvrage_show['location'], duplicate[0]['location'], tvrage_show['location'],
+                         duplicate[0]['show_name']))
                     continue
 
-                sickrage.srLogger.info('Mapping %s to tvdb id %i' % (tvrage_show[b'show_name'], mapping[0][b'mindexer_id']))
+                sickrage.srCore.srLogger.info(
+                    'Mapping %s to tvdb id %i' % (tvrage_show['show_name'], mapping[0]['mindexer_id']))
 
                 self.action(
-                        "UPDATE tv_shows SET indexer=%i, indexer_id=%i WHERE indexer_id=%i" %
-                        (INDEXER_TVDB, mapping[0][b'mindexer_id'], tvrage_show[b'indexer_id'])
+                    "UPDATE tv_shows SET indexer=%i, indexer_id=%i WHERE indexer_id=%i" %
+                    (INDEXER_TVDB, mapping[0]['mindexer_id'], tvrage_show['indexer_id'])
                 )
 
-                sickrage.srLogger.info('Relinking episodes to show')
+                sickrage.srCore.srLogger.info('Relinking episodes to show')
                 self.action(
-                        "UPDATE tv_episodes SET indexer=%i, showid=%i, indexerid=0 WHERE showid=%i" %
-                        (INDEXER_TVDB, mapping[0][b'mindexer_id'], tvrage_show[b'indexer_id'])
+                    "UPDATE tv_episodes SET indexer=%i, showid=%i, indexerid=0 WHERE showid=%i" %
+                    (INDEXER_TVDB, mapping[0]['mindexer_id'], tvrage_show['indexer_id'])
                 )
 
-                sickrage.srLogger.warning('Please perform a full update on %s' % tvrage_show[b'show_name'])
+                sickrage.srCore.srLogger.warning('Please perform a full update on %s' % tvrage_show['show_name'])
 
         def fix_duplicate_shows(self, column='indexer_id'):
 
             sqlResults = self.select(
-                    "SELECT show_id, " + column + ", COUNT(" + column + ") as count FROM tv_shows GROUP BY " + column + " HAVING count > 1")
+                "SELECT show_id, " + column + ", COUNT(" + column + ") as count FROM tv_shows GROUP BY " + column + " HAVING count > 1")
 
             for cur_duplicate in sqlResults:
 
-                sickrage.srLogger.debug(
+                sickrage.srCore.srLogger.debug(
                     "Duplicate show detected! " + column + ": " + str(cur_duplicate[column]) + " count: " + str(
-                            cur_duplicate[b"count"]))
+                        cur_duplicate["count"]))
 
                 cur_dupe_results = self.select(
-                        "SELECT show_id, " + column + " FROM tv_shows WHERE " + column + " = ? LIMIT ?",
-                        [cur_duplicate[column], int(cur_duplicate[b"count"]) - 1]
+                    "SELECT show_id, " + column + " FROM tv_shows WHERE " + column + " = ? LIMIT ?",
+                    [cur_duplicate[column], int(cur_duplicate["count"]) - 1]
                 )
 
                 for cur_dupe_id in cur_dupe_results:
-                    sickrage.srLogger.info(
-                            "Deleting duplicate show with " + column + ": " + str(
-                                    cur_dupe_id[column]) + " show_id: " + str(
-                                    cur_dupe_id[b"show_id"]))
-                    self.action("DELETE FROM tv_shows WHERE show_id = ?", [cur_dupe_id[b"show_id"]])
+                    sickrage.srCore.srLogger.info(
+                        "Deleting duplicate show with " + column + ": " + str(
+                            cur_dupe_id[column]) + " show_id: " + str(
+                            cur_dupe_id["show_id"]))
+                    self.action("DELETE FROM tv_shows WHERE show_id = ?", [cur_dupe_id["show_id"]])
 
         def fix_duplicate_episodes(self):
 
             sqlResults = self.select(
-                    "SELECT showid, season, episode, COUNT(showid) AS count FROM tv_episodes GROUP BY showid, season, episode HAVING count > 1")
+                "SELECT showid, season, episode, COUNT(showid) AS count FROM tv_episodes GROUP BY showid, season, episode HAVING count > 1")
 
             for cur_duplicate in sqlResults:
 
-                sickrage.srLogger.debug(
-                    "Duplicate episode detected! showid: " + str(cur_duplicate[b"showid"]) + " season: " + str(
-                            cur_duplicate[b"season"]) + " episode: " + str(
-                            cur_duplicate[b"episode"]) + " count: " + str(
-                            cur_duplicate[b"count"]))
+                sickrage.srCore.srLogger.debug(
+                    "Duplicate episode detected! showid: " + str(cur_duplicate["showid"]) + " season: " + str(
+                        cur_duplicate["season"]) + " episode: " + str(
+                        cur_duplicate["episode"]) + " count: " + str(
+                        cur_duplicate["count"]))
 
                 cur_dupe_results = self.select(
-                        "SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? ORDER BY episode_id DESC LIMIT ?",
-                        [cur_duplicate[b"showid"], cur_duplicate[b"season"], cur_duplicate[b"episode"],
-                         int(cur_duplicate[b"count"]) - 1]
+                    "SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? ORDER BY episode_id DESC LIMIT ?",
+                    [cur_duplicate["showid"], cur_duplicate["season"], cur_duplicate["episode"],
+                     int(cur_duplicate["count"]) - 1]
                 )
 
                 for cur_dupe_id in cur_dupe_results:
-                    sickrage.srLogger.info("Deleting duplicate episode with episode_id: " + str(cur_dupe_id[b"episode_id"]))
-                    self.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_dupe_id[b"episode_id"]])
+                    sickrage.srCore.srLogger.info(
+                        "Deleting duplicate episode with episode_id: " + str(cur_dupe_id["episode_id"]))
+                    self.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_dupe_id["episode_id"]])
 
         def fix_orphan_episodes(self):
 
             sqlResults = self.select(
-                    "SELECT episode_id, showid, tv_shows.indexer_id FROM tv_episodes LEFT JOIN tv_shows ON tv_episodes.showid=tv_shows.indexer_id WHERE tv_shows.indexer_id IS NULL")
+                "SELECT episode_id, showid, tv_shows.indexer_id FROM tv_episodes LEFT JOIN tv_shows ON tv_episodes.showid=tv_shows.indexer_id WHERE tv_shows.indexer_id IS NULL")
 
             for cur_orphan in sqlResults:
-                sickrage.srLogger.debug(
-                    "Orphan episode detected! episode_id: " + str(cur_orphan[b"episode_id"]) + " showid: " + str(
-                            cur_orphan[b"showid"]))
-                sickrage.srLogger.info("Deleting orphan episode with episode_id: " + str(cur_orphan[b"episode_id"]))
-                self.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_orphan[b"episode_id"]])
+                sickrage.srCore.srLogger.debug(
+                    "Orphan episode detected! episode_id: " + str(cur_orphan["episode_id"]) + " showid: " + str(
+                        cur_orphan["showid"]))
+                sickrage.srCore.srLogger.info(
+                    "Deleting orphan episode with episode_id: " + str(cur_orphan["episode_id"]))
+                self.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_orphan["episode_id"]])
 
         def fix_missing_table_indexes(self):
             if not self.hasIndex('idx_indexer_id'):
-                sickrage.srLogger.info("Missing idx_indexer_id for TV Shows table detected!, fixing...")
+                sickrage.srCore.srLogger.info("Missing idx_indexer_id for TV Shows table detected!, fixing...")
                 self.action("CREATE UNIQUE INDEX idx_indexer_id ON tv_shows(indexer_id);")
 
             if not self.hasIndex('idx_tv_episodes_showid_airdate'):
-                sickrage.srLogger.info("Missing idx_tv_episodes_showid_airdate for TV Episodes table detected!, fixing...")
+                sickrage.srCore.srLogger.info(
+                    "Missing idx_tv_episodes_showid_airdate for TV Episodes table detected!, fixing...")
                 self.action("CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);")
 
             if not self.hasIndex('idx_showid'):
-                sickrage.srLogger.info("Missing idx_showid for TV Episodes table detected!, fixing...")
+                sickrage.srCore.srLogger.info("Missing idx_showid for TV Episodes table detected!, fixing...")
                 self.action("CREATE INDEX idx_showid ON tv_episodes (showid);")
 
             if not self.hasIndex('idx_status'):
-                sickrage.srLogger.info("Missing idx_status for TV Episodes table detected!, fixing...")
+                sickrage.srCore.srLogger.info("Missing idx_status for TV Episodes table detected!, fixing...")
                 self.action("CREATE INDEX idx_status ON tv_episodes (status, season, episode, airdate)")
 
             if not self.hasIndex('idx_sta_epi_air'):
-                sickrage.srLogger.info("Missing idx_sta_epi_air for TV Episodes table detected!, fixing...")
+                sickrage.srCore.srLogger.info("Missing idx_sta_epi_air for TV Episodes table detected!, fixing...")
                 self.action("CREATE INDEX idx_sta_epi_air ON tv_episodes (status, episode, airdate)")
 
             if not self.hasIndex('idx_sta_epi_sta_air'):
-                sickrage.srLogger.info("Missing idx_sta_epi_sta_air for TV Episodes table detected!, fixing...")
+                sickrage.srCore.srLogger.info("Missing idx_sta_epi_sta_air for TV Episodes table detected!, fixing...")
                 self.action("CREATE INDEX idx_sta_epi_sta_air ON tv_episodes (season, episode, status, airdate)")
 
         def fix_unaired_episodes(self):
 
-            curDate = date.today()
+            curDate = datetime.date.today()
 
             sqlResults = self.select(
-                    "SELECT episode_id FROM tv_episodes WHERE (airdate > ? OR airdate = 1) AND status IN (?,?) AND season > 0",
-                    [curDate.toordinal(), SKIPPED, WANTED])
+                "SELECT episode_id FROM tv_episodes WHERE (airdate > ? OR airdate = 1) AND status IN (?,?) AND season > 0",
+                [curDate.toordinal(), SKIPPED, WANTED])
 
             for cur_unaired in sqlResults:
-                sickrage.srLogger.info("Fixing unaired episode status for episode_id: %s" % cur_unaired[b"episode_id"])
+                sickrage.srCore.srLogger.info(
+                    "Fixing unaired episode status for episode_id: %s" % cur_unaired["episode_id"])
                 self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
-                            [UNAIRED, cur_unaired[b"episode_id"]])
+                            [UNAIRED, cur_unaired["episode_id"]])
 
         def fix_tvrage_show_statues(self):
             status_map = {
@@ -257,45 +267,47 @@ class MainDB(Connection):
                 '': 'Unknown',
             }
 
-            for old_status, new_status in status_map.iteritems():
+            for old_status, new_status in status_map.items():
                 self.action("UPDATE tv_shows SET status = ? WHERE LOWER(status) = ?", [new_status, old_status])
 
         def fix_episode_statuses(self):
             sqlResults = self.select("SELECT episode_id, showid FROM tv_episodes WHERE status IS NULL")
 
             for cur_ep in sqlResults:
-                sickrage.srLogger.debug(
-                        "MALFORMED episode status detected! episode_id: " + str(
-                                cur_ep[b"episode_id"]) + " showid: " + str(
-                                cur_ep[b"showid"]))
-                sickrage.srLogger.info("Fixing malformed episode status with episode_id: " + str(cur_ep[b"episode_id"]))
+                sickrage.srCore.srLogger.debug(
+                    "MALFORMED episode status detected! episode_id: " + str(
+                        cur_ep["episode_id"]) + " showid: " + str(
+                        cur_ep["showid"]))
+                sickrage.srCore.srLogger.info(
+                    "Fixing malformed episode status with episode_id: " + str(cur_ep["episode_id"]))
                 self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
-                            [UNKNOWN, cur_ep[b"episode_id"]])
+                            [UNKNOWN, cur_ep["episode_id"]])
 
         def fix_invalid_airdates(self):
 
             sqlResults = self.select(
-                    "SELECT episode_id, showid FROM tv_episodes WHERE airdate >= ? OR airdate < 1",
-                    [date.max.toordinal()])
+                "SELECT episode_id, showid FROM tv_episodes WHERE airdate >= ? OR airdate < 1",
+                [datetime.date.max.toordinal()])
 
             for bad_airdate in sqlResults:
-                sickrage.srLogger.debug(
-                        "Bad episode airdate detected! episode_id: " + str(
-                                bad_airdate[b"episode_id"]) + " showid: " + str(
-                                bad_airdate[b"showid"]))
-                sickrage.srLogger.info("Fixing bad episode airdate for episode_id: " + str(bad_airdate[b"episode_id"]))
+                sickrage.srCore.srLogger.debug(
+                    "Bad episode airdate detected! episode_id: " + str(
+                        bad_airdate["episode_id"]) + " showid: " + str(
+                        bad_airdate["showid"]))
+                sickrage.srCore.srLogger.info(
+                    "Fixing bad episode airdate for episode_id: " + str(bad_airdate["episode_id"]))
                 self.action("UPDATE tv_episodes SET airdate = '1' WHERE episode_id = ?",
-                            [bad_airdate[b"episode_id"]])
+                            [bad_airdate["episode_id"]])
 
         def fix_subtitles_codes(self):
 
             sqlResults = self.select(
-                    "SELECT subtitles, episode_id FROM tv_episodes WHERE subtitles != '' AND subtitles_lastsearch < ?;",
-                    [datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)]
+                "SELECT subtitles, episode_id FROM tv_episodes WHERE subtitles != '' AND subtitles_lastsearch < ?;",
+                [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)]
             )
 
             validLanguages = [babelfish.Language.fromopensubtitles(language).opensubtitles for language in
-                              babelfish.language_converters[b'opensubtitles'].codes if len(language) == 3]
+                              babelfish.language_converters['opensubtitles'].codes if len(language) == 3]
 
             if not sqlResults:
                 return
@@ -303,24 +315,30 @@ class MainDB(Connection):
             for sqlResult in sqlResults:
                 langs = []
 
-                sickrage.srLogger.debug("Checking subtitle codes for episode_id: %s, codes: %s" %
-                                         (sqlResult[b'episode_id'], sqlResult[b'subtitles']))
+                sickrage.srCore.srLogger.debug("Checking subtitle codes for episode_id: %s, codes: %s" %
+                                               (sqlResult['episode_id'], sqlResult['subtitles']))
 
-                for subcode in sqlResult[b'subtitles'].split(','):
+                for subcode in sqlResult['subtitles'].split(','):
                     if not len(subcode) is 3 or subcode not in validLanguages:
-                        sickrage.srLogger.debug("Fixing subtitle codes for episode_id: %s, invalid code: %s" %
-                                                 (sqlResult[b'episode_id'], subcode))
+                        sickrage.srCore.srLogger.debug("Fixing subtitle codes for episode_id: %s, invalid code: %s" %
+                                                       (sqlResult['episode_id'], subcode))
                         continue
 
                     langs.append(subcode)
 
                 self.action(
-                        "UPDATE tv_episodes SET subtitles = ?, subtitles_lastsearch = ? WHERE episode_id = ?;",
-                        [','.join(langs), datetime.now().strftime(dateTimeFormat),
-                         sqlResult[b'episode_id']])
+                    "UPDATE tv_episodes SET subtitles = ?, subtitles_lastsearch = ? WHERE episode_id = ?;",
+                    [','.join(langs), datetime.datetime.now().strftime(dateTimeFormat),
+                     sqlResult['episode_id']])
 
         def fix_show_nfo_lang(self):
             self.action("UPDATE tv_shows SET lang = '' WHERE lang = 0 OR lang = '0'")
+
+        def fix_missing_tables(self):
+            if self.checkDBVersion() == MAX_DB_VERSION:
+                if not self.hasTable('tmdb_info'):
+                    sickrage.srCore.srLogger.info("Missing tmdb_info table detected!, fixing...")
+                    MainDB.AddTmdbInfo().execute()
 
     class InitialSchema(SchemaUpgrade):
 
@@ -360,27 +378,27 @@ class MainDB(Connection):
                 cur_db_version = self.checkDBVersion()
 
                 if cur_db_version < MIN_DB_VERSION:
-                    sickrage.srLogger.log_error_and_exit("Your database version (" +
-                                                          str(
-                                                       cur_db_version) + ") is too old to migrate from what this version of SiCKRAGE supports (" +
-                                                          str(MIN_DB_VERSION) + ").\n" +
-                                               "Upgrade using a previous version (tag) build 496 to build 501 of SiCKRAGE first or remove database file to begin fresh."
-                                                          )
+                    sickrage.srCore.srLogger.log_error_and_exit("Your database version (" +
+                                                                str(
+                                                                    cur_db_version) + ") is too old to migrate from what this version of SiCKRAGE supports (" +
+                                                                str(
+                                                                    MIN_DB_VERSION) + ").\n" + "Remove database file to begin fresh."
+                                                                )
 
                 if cur_db_version > MAX_DB_VERSION:
-                    sickrage.srLogger.log_error_and_exit("Your database version (" +
-                                                          str(
-                                                       cur_db_version) + ") has been incremented past what this version of SiCKRAGE supports (" +
-                                                          str(MAX_DB_VERSION) + ").\n" +
-                                               "If you have used other forks of SiCKRAGE, your database may be unusable due to their modifications."
-                                                          )
+                    sickrage.srCore.srLogger.log_error_and_exit("Your database version (" +
+                                                                str(
+                                                                    cur_db_version) + ") has been incremented past what this version of SiCKRAGE supports (" +
+                                                                str(MAX_DB_VERSION) + ").\n" +
+                                                                "If you have used other forks of SiCKRAGE, your database may be unusable due to their modifications."
+                                                                )
 
     class AddSizeAndSceneNameFields(InitialSchema):
         def test(self):
             return self.checkDBVersion() >= 10
 
         def execute(self, **kwargs):
-            from core.nameparser import NameParser, InvalidNameException, InvalidShowException
+            from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 
             self.backup(10)
 
@@ -392,33 +410,33 @@ class MainDB(Connection):
 
             ep_results = self.select("SELECT episode_id, location, file_size FROM tv_episodes")
 
-            sickrage.srLogger.info("Adding file size to all episodes in DB, please be patient")
+            sickrage.srCore.srLogger.info("Adding file size to all episodes in DB, please be patient")
             for cur_ep in ep_results:
-                if not cur_ep[b"location"]:
+                if not cur_ep["location"]:
                     continue
 
                 # if there is no size yet then populate it for us
-                if (not cur_ep[b"file_size"] or not int(cur_ep[b"file_size"])) and os.path.isfile(cur_ep[b"location"]):
-                    cur_size = os.path.getsize(cur_ep[b"location"])
+                if (not cur_ep["file_size"] or not int(cur_ep["file_size"])) and os.path.isfile(cur_ep["location"]):
+                    cur_size = os.path.getsize(cur_ep["location"])
                     self.action("UPDATE tv_episodes SET file_size = ? WHERE episode_id = ?",
-                                [cur_size, int(cur_ep[b"episode_id"])])
+                                [cur_size, int(cur_ep["episode_id"])])
 
             # check each snatch to see if we can use it to get a release name from
             history_results = self.select("SELECT * FROM history WHERE provider != -1 ORDER BY date ASC")
 
-            sickrage.srLogger.info("Adding release name to all episodes still in history")
+            sickrage.srCore.srLogger.info("Adding release name to all episodes still in history")
             for cur_result in history_results:
                 # find the associated download, if there isn't one then ignore it
                 download_results = self.select(
-                        "SELECT resource FROM history WHERE provider = -1 AND showid = ? AND season = ? AND episode = ? AND date > ?",
-                        [cur_result[b"showid"], cur_result[b"season"], cur_result[b"episode"], cur_result[b"date"]])
+                    "SELECT resource FROM history WHERE provider = -1 AND showid = ? AND season = ? AND episode = ? AND date > ?",
+                    [cur_result["showid"], cur_result["season"], cur_result["episode"], cur_result["date"]])
                 if not download_results:
-                    sickrage.srLogger.debug("Found a snatch in the history for " + cur_result[
-                        b"resource"] + " but couldn't find the associated download, skipping it")
+                    sickrage.srCore.srLogger.debug("Found a snatch in the history for " + cur_result[
+                        "resource"] + " but couldn't find the associated download, skipping it")
                     continue
 
-                nzb_name = cur_result[b"resource"]
-                file_name = os.path.basename(download_results[0][b"resource"])
+                nzb_name = cur_result["resource"]
+                file_name = os.path.basename(download_results[0]["resource"])
 
                 # take the extension off the filename, it's not needed
                 if '.' in file_name:
@@ -426,24 +444,24 @@ class MainDB(Connection):
 
                 # find the associated episode on disk
                 ep_results = self.select(
-                        "SELECT episode_id, status FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? AND location != ''",
-                        [cur_result[b"showid"], cur_result[b"season"], cur_result[b"episode"]])
+                    "SELECT episode_id, status FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? AND location != ''",
+                    [cur_result["showid"], cur_result["season"], cur_result["episode"]])
                 if not ep_results:
-                    sickrage.srLogger.debug(
-                            "The episode " + nzb_name + " was found in history but doesn't exist on disk anymore, skipping")
+                    sickrage.srCore.srLogger.debug(
+                        "The episode " + nzb_name + " was found in history but doesn't exist on disk anymore, skipping")
                     continue
 
                 # get the status/quality of the existing ep and make sure it's what we expect
-                ep_status, ep_quality = Quality.splitCompositeStatus(int(ep_results[0][b"status"]))
+                ep_status, ep_quality = Quality.splitCompositeStatus(int(ep_results[0]["status"]))
                 if ep_status != DOWNLOADED:
                     continue
 
-                if ep_quality != int(cur_result[b"quality"]):
+                if ep_quality != int(cur_result["quality"]):
                     continue
 
                 # make sure this is actually a real release name and not a season pack or something
                 for cur_name in (nzb_name, file_name):
-                    sickrage.srLogger.debug("Checking if " + cur_name + " is actually a good release name")
+                    sickrage.srCore.srLogger.debug("Checking if " + cur_name + " is actually a good release name")
                     try:
                         np = NameParser(False)
                         parse_result = np.parse(cur_name)
@@ -453,16 +471,16 @@ class MainDB(Connection):
                     if parse_result.series_name and parse_result.season_number is not None and parse_result.episode_numbers and parse_result.release_group:
                         # if all is well by this point we'll just put the release name into the database
                         self.action("UPDATE tv_episodes SET release_name = ? WHERE episode_id = ?",
-                                    [cur_name, ep_results[0][b"episode_id"]])
+                                    [cur_name, ep_results[0]["episode_id"]])
                         break
 
             # check each snatch to see if we can use it to get a release name from
             empty_results = self.select("SELECT episode_id, location FROM tv_episodes WHERE release_name = ''")
 
-            sickrage.srLogger.info("Adding release name to all episodes with obvious scene filenames")
+            sickrage.srCore.srLogger.info("Adding release name to all episodes with obvious scene filenames")
             for cur_result in empty_results:
 
-                ep_file_name = os.path.basename(cur_result[b"location"])
+                ep_file_name = os.path.basename(cur_result["location"])
                 ep_file_name = os.path.splitext(ep_file_name)[0]
 
                 # only want to find real scene names here so anything with a space in it is out
@@ -478,12 +496,12 @@ class MainDB(Connection):
                 if not parse_result.release_group:
                     continue
 
-                sickrage.srLogger.debug(
-                        "Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
+                sickrage.srCore.srLogger.debug(
+                    "Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
                 self.action("UPDATE tv_episodes SET release_name = ? WHERE episode_id = ?",
-                            [ep_file_name, cur_result[b"episode_id"]])
+                            [ep_file_name, cur_result["episode_id"]])
 
-            self.incDBVersion()
+            self.incDBVersion(10)
 
     class RenameSeasonFolders(AddSizeAndSceneNameFields):
         def test(self):
@@ -493,7 +511,7 @@ class MainDB(Connection):
             # rename the column
             self.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
             self.action(
-                    "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, location TEXT, show_name TEXT, tvdb_id NUMERIC, network TEXT, genre TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, tvr_id NUMERIC, tvr_name TEXT, air_by_date NUMERIC, lang TEXT)")
+                "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, location TEXT, show_name TEXT, tvdb_id NUMERIC, network TEXT, genre TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, tvr_id NUMERIC, tvr_name TEXT, air_by_date NUMERIC, lang TEXT)")
             sql = "INSERT INTO tv_shows SELECT * FROM tmp_tv_shows"
             self.action(sql)
 
@@ -503,9 +521,9 @@ class MainDB(Connection):
             self.action("UPDATE tv_shows SET flatten_folders = 0 WHERE flatten_folders = 2")
             self.action("DROP TABLE tmp_tv_shows")
 
-            self.incDBVersion()
+            self.incDBVersion(11)
 
-    class Add1080pAndRawHDQualities(RenameSeasonFolders):
+    class Add1080pAndRawHdQualities(RenameSeasonFolders):
         """Add support for 1080p related qualities along with RawHD
 
         Quick overview of what the upgrade needs to do:
@@ -572,38 +590,39 @@ class MainDB(Connection):
             self.backup(self.checkDBVersion())
 
             # update the default quality so we dont grab the wrong qualities after migration
-            sickrage.srConfig.QUALITY_DEFAULT = self._update_composite_qualities(sickrage.srConfig.QUALITY_DEFAULT)
+            sickrage.srCore.srConfig.QUALITY_DEFAULT = self._update_composite_qualities(
+                sickrage.srCore.srConfig.QUALITY_DEFAULT)
 
-            sickrage.srConfig.save_config()
+            sickrage.srCore.srConfig.save()
 
             # upgrade previous HD to HD720p -- shift previous qualities to new placevalues
             old_hd = Quality.combineQualities(
-                    [Quality.HDTV, Quality.HDWEBDL >> 2, Quality.HDBLURAY >> 3], [])
+                [Quality.HDTV, Quality.HDWEBDL >> 2, Quality.HDBLURAY >> 3], [])
             new_hd = Quality.combineQualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY],
                                               [])
 
             # update ANY -- shift existing qualities and add new 1080p qualities, note that rawHD was not added to the ANY template
             old_any = Quality.combineQualities(
-                    [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.HDWEBDL >> 2,
-                     Quality.HDBLURAY >> 3, Quality.UNKNOWN], [])
+                [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.HDWEBDL >> 2,
+                 Quality.HDBLURAY >> 3, Quality.UNKNOWN], [])
             new_any = Quality.combineQualities(
-                    [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.FULLHDTV,
-                     Quality.HDWEBDL, Quality.FULLHDWEBDL, Quality.HDBLURAY,
-                     Quality.FULLHDBLURAY,
-                     Quality.UNKNOWN], [])
+                [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.FULLHDTV,
+                 Quality.HDWEBDL, Quality.FULLHDWEBDL, Quality.HDBLURAY,
+                 Quality.FULLHDBLURAY,
+                 Quality.UNKNOWN], [])
 
             # update qualities (including templates)
             cl = []
-            sickrage.srLogger.info("[1/4] Updating pre-defined templates and the quality for each show...")
+            sickrage.srCore.srLogger.info("[1/4] Updating pre-defined templates and the quality for each show...")
             shows = self.select("SELECT * FROM tv_shows")
             for cur_show in shows:
-                if cur_show[b"quality"] == old_hd:
+                if cur_show["quality"] == old_hd:
                     new_quality = new_hd
-                elif cur_show[b"quality"] == old_any:
+                elif cur_show["quality"] == old_any:
                     new_quality = new_any
                 else:
-                    new_quality = self._update_composite_qualities(cur_show[b"quality"])
-                cl.append(["UPDATE tv_shows SET quality = ? WHERE show_id = ?", [new_quality, cur_show[b"show_id"]]])
+                    new_quality = self._update_composite_qualities(cur_show["quality"])
+                cl.append(["UPDATE tv_shows SET quality = ? WHERE show_id = ?", [new_quality, cur_show["show_id"]]])
 
             if len(cl) > 0:
                 self.mass_action(cl)
@@ -611,46 +630,44 @@ class MainDB(Connection):
 
             # update status that are are within the old hdwebdl (1<<3 which is 8) and better -- exclude unknown (1<<15 which is 32768)
             cl = []
-            sickrage.srLogger.info("[2/4] Updating the status for the episodes within each show...")
+            sickrage.srCore.srLogger.info("[2/4] Updating the status for the episodes within each show...")
             episodes = self.select("SELECT * FROM tv_episodes WHERE status < 3276800 AND status >= 800")
             for cur_episode in episodes:
                 cl.append(["UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
-                           [self._update_status(cur_episode[b"status"]), cur_episode[b"episode_id"]]])
+                           [self._update_status(cur_episode["status"]), cur_episode["episode_id"]]])
             if len(cl) > 0:
                 self.mass_action(cl)
                 del cl  # cleanup
 
             # update previous history so it shows the correct action
             cl = []
-            sickrage.srLogger.info("[3/4] Updating history to reflect the correct action...")
+            sickrage.srCore.srLogger.info("[3/4] Updating history to reflect the correct action...")
             historyAction = self.select("SELECT * FROM history WHERE action < 3276800 AND action >= 800")
             for cur_entry in historyAction:
                 cl.append(["UPDATE history SET action = ? WHERE showid = ? AND date = ?",
-                           [self._update_status(cur_entry[b"action"]), cur_entry[b"showid"], cur_entry[b"date"]]])
+                           [self._update_status(cur_entry["action"]), cur_entry["showid"], cur_entry["date"]]])
             if len(cl) > 0:
                 self.mass_action(cl)
                 del cl  # cleanup
-
 
             # update previous history so it shows the correct quality
             cl = []
-            sickrage.srLogger.info("[4/4] Updating history to reflect the correct quality...")
+            sickrage.srCore.srLogger.info("[4/4] Updating history to reflect the correct quality...")
             historyQuality = self.select("SELECT * FROM history WHERE quality < 32768 AND quality >= 8")
             for cur_entry in historyQuality:
                 cl.append(["UPDATE history SET quality = ? WHERE showid = ? AND date = ?",
-                           [self._update_quality(cur_entry[b"quality"]), cur_entry[b"showid"], cur_entry[b"date"]]])
+                           [self._update_quality(cur_entry["quality"]), cur_entry["showid"], cur_entry["date"]]])
             if len(cl) > 0:
                 self.mass_action(cl)
                 del cl  # cleanup
 
-
-            self.incDBVersion()
+            self.incDBVersion(12)
 
             # cleanup and reduce db if any previous data was removed
-            sickrage.srLogger.debug("Performing a vacuum on the database.")
+            sickrage.srCore.srLogger.debug("Performing a vacuum on the database.")
             self.action("VACUUM")
 
-    class AddShowidTvdbidIndex(Add1080pAndRawHDQualities):
+    class AddShowidTvdbidIndex(Add1080pAndRawHdQualities):
         """ Adding index on tvdb_id (tv_shows) and showid (tv_episodes) to speed up searches/queries """
 
         def test(self):
@@ -659,18 +676,19 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(13)
 
-            sickrage.srLogger.info("Check for duplicate shows before adding unique index.")
+            sickrage.srCore.srLogger.info("Check for duplicate shows before adding unique index.")
             MainDB().SanityCheck().fix_duplicate_shows('tvdb_id')
 
-            sickrage.srLogger.info("Adding index on tvdb_id (tv_shows) and showid (tv_episodes) to speed up searches/queries.")
+            sickrage.srCore.srLogger.info(
+                "Adding index on tvdb_id (tv_shows) and showid (tv_episodes) to speed up searches/queries.")
             if not self.hasTable("idx_showid"):
                 self.action("CREATE INDEX idx_showid ON tv_episodes (showid);")
             if not self.hasTable("idx_tvdb_id"):
                 self.action("CREATE UNIQUE INDEX idx_tvdb_id ON tv_shows (tvdb_id);")
 
-            self.incDBVersion()
+            self.incDBVersion(13)
 
-    class AddLastUpdateTVDB(AddShowidTvdbidIndex):
+    class AddLastUpdateTvdb(AddShowidTvdbidIndex):
         """ Adding column last_update_tvdb to tv_shows for controlling nightly updates """
 
         def test(self):
@@ -679,39 +697,39 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(14)
 
-            sickrage.srLogger.info("Adding column last_update_tvdb to tvshows")
+            sickrage.srCore.srLogger.info("Adding column last_update_tvdb to tvshows")
             if not self.hasColumn("tv_shows", "last_update_tvdb"):
                 self.addColumn("tv_shows", "last_update_tvdb", default=1)
 
-            self.incDBVersion()
+            self.incDBVersion(14)
 
-    class AddDBIncreaseTo15(AddLastUpdateTVDB):
+    class AddDbIncreaseTo15(AddLastUpdateTvdb):
         def test(self):
             return self.checkDBVersion() >= 15
 
         def execute(self, **kwargs):
-            self.incDBVersion()
+            self.incDBVersion(15)
 
-    class AddIMDbInfo(AddDBIncreaseTo15):
+    class AddImdbInfo(AddDbIncreaseTo15):
         def test(self):
             return self.checkDBVersion() >= 16
 
         def execute(self, **kwargs):
             self.action(
-                    "CREATE TABLE imdb_info (tvdb_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
+                "CREATE TABLE imdb_info (tvdb_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
 
             if not self.hasColumn("tv_shows", "imdb_id"):
                 self.addColumn("tv_shows", "imdb_id")
 
-            self.incDBVersion()
+            self.incDBVersion(16)
 
-    class AddProperNamingSupport(AddIMDbInfo):
+    class AddProperNamingSupport(AddImdbInfo):
         def test(self):
             return self.checkDBVersion() >= 17
 
         def execute(self, **kwargs):
             self.addColumn("tv_episodes", "is_proper")
-            self.incDBVersion()
+            self.incDBVersion(17)
 
     class AddEmailSubscriptionTable(AddProperNamingSupport):
         def test(self):
@@ -719,7 +737,7 @@ class MainDB(Connection):
 
         def execute(self, **kwargs):
             self.addColumn('tv_shows', 'notify_list', 'TEXT', None)
-            self.incDBVersion()
+            self.incDBVersion(18)
 
     class AddProperSearch(AddEmailSubscriptionTable):
         def test(self):
@@ -728,22 +746,22 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(19)
 
-            sickrage.srLogger.info("Adding column last_proper_search to info")
+            sickrage.srCore.srLogger.info("Adding column last_proper_search to info")
             if not self.hasColumn("info", "last_proper_search"):
                 self.addColumn("info", "last_proper_search", default=1)
 
-            self.incDBVersion()
+            self.incDBVersion(19)
 
     class AddDvdOrderOption(AddProperSearch):
         def test(self):
             return self.checkDBVersion() >= 20
 
         def execute(self, **kwargs):
-            sickrage.srLogger.info("Adding column dvdorder to tvshows")
+            sickrage.srCore.srLogger.info("Adding column dvdorder to tvshows")
             if not self.hasColumn("tv_shows", "dvdorder"):
                 self.addColumn("tv_shows", "dvdorder", "NUMERIC", "0")
 
-            self.incDBVersion()
+            self.incDBVersion(20)
 
     class AddSubtitlesSupport(AddDvdOrderOption):
         def test(self):
@@ -754,25 +772,25 @@ class MainDB(Connection):
                 self.addColumn("tv_shows", "subtitles")
                 self.addColumn("tv_episodes", "subtitles", "TEXT", "")
                 self.addColumn("tv_episodes", "subtitles_searchcount")
-                self.addColumn("tv_episodes", "subtitles_lastsearch", "TIMESTAMP", str(datetime.min))
-            self.incDBVersion()
+                self.addColumn("tv_episodes", "subtitles_lastsearch", "TIMESTAMP", str(datetime.datetime.min))
+            self.incDBVersion(21)
 
-    class ConvertTVShowsToIndexerScheme(AddSubtitlesSupport):
+    class ConvertTvShowsToIndexerScheme(AddSubtitlesSupport):
         def test(self):
             return self.checkDBVersion() >= 22
 
         def execute(self, **kwargs):
             self.backup(22)
 
-            sickrage.srLogger.info("Converting TV Shows table to Indexer Scheme...")
+            sickrage.srCore.srLogger.info("Converting TV Shows table to Indexer Scheme...")
 
             if self.hasTable("tmp_tv_shows"):
-                sickrage.srLogger.info("Removing temp tv show tables left behind from previous updates...")
+                sickrage.srCore.srLogger.info("Removing temp tv show tables left behind from previous updates...")
                 self.action("DROP TABLE tmp_tv_shows")
 
             self.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
             self.action(
-                    "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, tmdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
+                "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, tmdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
             self.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
             self.action("DROP TABLE tmp_tv_shows")
 
@@ -781,26 +799,26 @@ class MainDB(Connection):
             self.action("UPDATE tv_shows SET classification = 'Scripted'")
             self.action("UPDATE tv_shows SET indexer = 1")
 
-            self.incDBVersion()
+            self.incDBVersion(22)
 
-    class ConvertTVEpisodesToIndexerScheme(ConvertTVShowsToIndexerScheme):
+    class ConvertTvEpisodesToIndexerScheme(ConvertTvShowsToIndexerScheme):
         def test(self):
             return self.checkDBVersion() >= 23
 
         def execute(self, **kwargs):
             self.backup(23)
 
-            sickrage.srLogger.info("Converting TV Episodes table to Indexer Scheme...")
+            sickrage.srCore.srLogger.info("Converting TV Episodes table to Indexer Scheme...")
 
             if self.hasTable("tmp_tv_episodes"):
-                sickrage.srLogger.info("Removing temp tv episode tables left behind from previous updates...")
+                sickrage.srCore.srLogger.info("Removing temp tv episode tables left behind from previous updates...")
                 self.action("DROP TABLE tmp_tv_episodes")
 
             self.action("ALTER TABLE tv_episodes RENAME TO tmp_tv_episodes")
             self.action(
-                    "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer NUMERIC, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC)")
+                "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer NUMERIC, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC)")
             self.action(
-                    "INSERT INTO tv_episodes SELECT * FROM tmp_tv_episodes")
+                "INSERT INTO tv_episodes SELECT * FROM tmp_tv_episodes")
             self.action("DROP TABLE tmp_tv_episodes")
 
             self.action("CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid,airdate);")
@@ -811,51 +829,51 @@ class MainDB(Connection):
 
             self.action("UPDATE tv_episodes SET indexer = 1")
 
-            self.incDBVersion()
+            self.incDBVersion(23)
 
-    class ConvertIMDBInfoToIndexerScheme(ConvertTVEpisodesToIndexerScheme):
+    class ConvertImdbInfoToIndexerScheme(ConvertTvEpisodesToIndexerScheme):
         def test(self):
             return self.checkDBVersion() >= 24
 
         def execute(self, **kwargs):
             self.backup(24)
 
-            sickrage.srLogger.info("Converting IMDB Info table to Indexer Scheme...")
+            sickrage.srCore.srLogger.info("Converting IMDB Info table to Indexer Scheme...")
 
             if self.hasTable("tmp_imdb_info"):
-                sickrage.srLogger.info("Removing temp imdb info tables left behind from previous updates...")
+                sickrage.srCore.srLogger.info("Removing temp imdb info tables left behind from previous updates...")
                 self.action("DROP TABLE tmp_imdb_info")
 
             self.action("ALTER TABLE imdb_info RENAME TO tmp_imdb_info")
             self.action(
-                    "CREATE TABLE imdb_info (indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
+                "CREATE TABLE imdb_info (indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
             self.action(
-                    "INSERT INTO imdb_info SELECT * FROM tmp_imdb_info")
+                "INSERT INTO imdb_info SELECT * FROM tmp_imdb_info")
             self.action("DROP TABLE tmp_imdb_info")
 
-            self.incDBVersion()
+            self.incDBVersion(24)
 
-    class ConvertInfoToIndexerScheme(ConvertIMDBInfoToIndexerScheme):
+    class ConvertInfoToIndexerScheme(ConvertImdbInfoToIndexerScheme):
         def test(self):
             return self.checkDBVersion() >= 25
 
         def execute(self, **kwargs):
             self.backup(25)
 
-            sickrage.srLogger.info("Converting Info table to Indexer Scheme...")
+            sickrage.srCore.srLogger.info("Converting Info table to Indexer Scheme...")
 
             if self.hasTable("tmp_info"):
-                sickrage.srLogger.info("Removing temp info tables left behind from previous updates...")
+                sickrage.srCore.srLogger.info("Removing temp info tables left behind from previous updates...")
                 self.action("DROP TABLE tmp_info")
 
             self.action("ALTER TABLE info RENAME TO tmp_info")
             self.action(
-                    "CREATE TABLE info (last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC)")
+                "CREATE TABLE info (last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC)")
             self.action(
-                    "INSERT INTO info SELECT * FROM tmp_info")
+                "INSERT INTO info SELECT * FROM tmp_info")
             self.action("DROP TABLE tmp_info")
 
-            self.incDBVersion()
+            self.incDBVersion(25)
 
     class AddArchiveFirstMatchOption(ConvertInfoToIndexerScheme):
         def test(self):
@@ -864,11 +882,11 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(26)
 
-            sickrage.srLogger.info("Adding column archive_firstmatch to tvshows")
+            sickrage.srCore.srLogger.info("Adding column archive_firstmatch to tvshows")
             if not self.hasColumn("tv_shows", "archive_firstmatch"):
                 self.addColumn("tv_shows", "archive_firstmatch", "NUMERIC", "0")
 
-            self.incDBVersion()
+            self.incDBVersion(26)
 
     class AddSceneNumbering(AddArchiveFirstMatchOption):
         def test(self):
@@ -881,9 +899,9 @@ class MainDB(Connection):
                 self.action("DROP TABLE scene_numbering")
 
             self.action(
-                    "CREATE TABLE scene_numbering (indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER, scene_season INTEGER, scene_episode INTEGER, PRIMARY KEY (indexer_id, season, episode, scene_season, scene_episode))")
+                "CREATE TABLE scene_numbering (indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER, scene_season INTEGER, scene_episode INTEGER, PRIMARY KEY (indexer_id, season, episode, scene_season, scene_episode))")
 
-            self.incDBVersion()
+            self.incDBVersion(27)
 
     class ConvertIndexerToInteger(AddSceneNumbering):
         def test(self):
@@ -892,7 +910,7 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(28)
 
-            sickrage.srLogger.info("Converting Indexer to Integer ...")
+            sickrage.srCore.srLogger.info("Converting Indexer to Integer ...")
 
             self.mass_action([
                 ["UPDATE tv_shows SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]],
@@ -903,7 +921,7 @@ class MainDB(Connection):
                 ["UPDATE scene_numbering SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]]
             ])
 
-            self.incDBVersion()
+            self.incDBVersion(28)
 
     class AddRequireAndIgnoreWords(ConvertIndexerToInteger):
         """ Adding column rls_require_words and rls_ignore_words to tv_shows """
@@ -914,15 +932,15 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(29)
 
-            sickrage.srLogger.info("Adding column rls_require_words to tvshows")
+            sickrage.srCore.srLogger.info("Adding column rls_require_words to tvshows")
             if not self.hasColumn("tv_shows", "rls_require_words"):
                 self.addColumn("tv_shows", "rls_require_words", "TEXT", "")
 
-            sickrage.srLogger.info("Adding column rls_ignore_words to tvshows")
+            sickrage.srCore.srLogger.info("Adding column rls_ignore_words to tvshows")
             if not self.hasColumn("tv_shows", "rls_ignore_words"):
                 self.addColumn("tv_shows", "rls_ignore_words", "TEXT", "")
 
-            self.incDBVersion()
+            self.incDBVersion(29)
 
     class AddSportsOption(AddRequireAndIgnoreWords):
         def test(self):
@@ -931,26 +949,26 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(30)
 
-            sickrage.srLogger.info("Adding column sports to tvshows")
+            sickrage.srCore.srLogger.info("Adding column sports to tvshows")
             if not self.hasColumn("tv_shows", "sports"):
                 self.addColumn("tv_shows", "sports", "NUMERIC", "0")
 
             if self.hasColumn("tv_shows", "air_by_date") and self.hasColumn("tv_shows", "sports"):
                 # update sports column
                 cl = []
-                sickrage.srLogger.info("[4/4] Updating tv_shows to reflect the correct sports value...")
+                sickrage.srCore.srLogger.info("[4/4] Updating tv_shows to reflect the correct sports value...")
                 historyQuality = self.select(
-                        "SELECT * FROM tv_shows WHERE LOWER(classification) = 'sports' AND air_by_date = 1 AND sports = 0")
+                    "SELECT * FROM tv_shows WHERE LOWER(classification) = 'sports' AND air_by_date = 1 AND sports = 0")
                 for cur_entry in historyQuality:
                     cl.append(["UPDATE tv_shows SET sports = ? WHERE show_id = ?",
-                               [cur_entry[b"air_by_date"], cur_entry[b"show_id"]]])
-                    cl.append(["UPDATE tv_shows SET air_by_date = 0 WHERE show_id = ?", [cur_entry[b"show_id"]]])
+                               [cur_entry["air_by_date"], cur_entry["show_id"]]])
+                    cl.append(["UPDATE tv_shows SET air_by_date = 0 WHERE show_id = ?", [cur_entry["show_id"]]])
 
                 if len(cl) > 0:
                     self.mass_action(cl)
                     del cl  # cleanup
 
-            self.incDBVersion()
+            self.incDBVersion(30)
 
     class AddSceneNumberingToTvEpisodes(AddSportsOption):
         def test(self):
@@ -959,35 +977,35 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(31)
 
-            sickrage.srLogger.info("Adding column scene_season and scene_episode to tvepisodes")
+            sickrage.srCore.srLogger.info("Adding column scene_season and scene_episode to tvepisodes")
             self.addColumn("tv_episodes", "scene_season", "NUMERIC", "NULL")
             self.addColumn("tv_episodes", "scene_episode", "NUMERIC", "NULL")
 
-            self.incDBVersion()
+            self.incDBVersion(31)
 
-    class AddAnimeTVShow(AddSceneNumberingToTvEpisodes):
+    class AddAnimeTvShow(AddSceneNumberingToTvEpisodes):
         def test(self):
             return self.checkDBVersion() >= 32
 
         def execute(self, **kwargs):
             self.backup(32)
 
-            sickrage.srLogger.info("Adding column anime to tv_episodes")
+            sickrage.srCore.srLogger.info("Adding column anime to tv_episodes")
             self.addColumn("tv_shows", "anime", "NUMERIC", "0")
 
-            self.incDBVersion()
+            self.incDBVersion(32)
 
-    class AddAbsoluteNumbering(AddAnimeTVShow):
+    class AddAbsoluteNumbering(AddAnimeTvShow):
         def test(self):
             return self.checkDBVersion() >= 33
 
         def execute(self, **kwargs):
             self.backup(33)
 
-            sickrage.srLogger.info("Adding column absolute_number to tv_episodes")
+            sickrage.srCore.srLogger.info("Adding column absolute_number to tv_episodes")
             self.addColumn("tv_episodes", "absolute_number", "NUMERIC", "0")
 
-            self.incDBVersion()
+            self.incDBVersion(33)
 
     class AddSceneAbsoluteNumbering(AddAbsoluteNumbering):
         def test(self):
@@ -996,11 +1014,11 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(34)
 
-            sickrage.srLogger.info("Adding column absolute_number and scene_absolute_number to scene_numbering")
+            sickrage.srCore.srLogger.info("Adding column absolute_number and scene_absolute_number to scene_numbering")
             self.addColumn("scene_numbering", "absolute_number", "NUMERIC", "0")
             self.addColumn("scene_numbering", "scene_absolute_number", "NUMERIC", "0")
 
-            self.incDBVersion()
+            self.incDBVersion(34)
 
     class AddAnimeBlacklistWhitelist(AddSceneAbsoluteNumbering):
         def test(self):
@@ -1014,7 +1032,7 @@ class MainDB(Connection):
                 ["CREATE TABLE whitelist (show_id INTEGER, range TEXT, keyword TEXT)"]
             ])
 
-            self.incDBVersion()
+            self.incDBVersion(35)
 
     class AddSceneAbsoluteNumbering2(AddAnimeBlacklistWhitelist):
         def test(self):
@@ -1023,10 +1041,10 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(36)
 
-            sickrage.srLogger.info("Adding column scene_absolute_number to tv_episodes")
+            sickrage.srCore.srLogger.info("Adding column scene_absolute_number to tv_episodes")
             self.addColumn("tv_episodes", "scene_absolute_number", "NUMERIC", "0")
 
-            self.incDBVersion()
+            self.incDBVersion(36)
 
     class AddXemRefresh(AddSceneAbsoluteNumbering2):
         def test(self):
@@ -1035,11 +1053,11 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(37)
 
-            sickrage.srLogger.info("Creating table xem_refresh")
+            sickrage.srCore.srLogger.info("Creating table xem_refresh")
             self.action(
-                    "CREATE TABLE xem_refresh (indexer TEXT, indexer_id INTEGER PRIMARY KEY, last_refreshed INTEGER)")
+                "CREATE TABLE xem_refresh (indexer TEXT, indexer_id INTEGER PRIMARY KEY, last_refreshed INTEGER)")
 
-            self.incDBVersion()
+            self.incDBVersion(37)
 
     class AddSceneToTvShows(AddXemRefresh):
         def test(self):
@@ -1048,10 +1066,10 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(38)
 
-            sickrage.srLogger.info("Adding column scene to tv_shows")
+            sickrage.srCore.srLogger.info("Adding column scene to tv_shows")
             self.addColumn("tv_shows", "scene", "NUMERIC", "0")
 
-            self.incDBVersion()
+            self.incDBVersion(38)
 
     class AddIndexerMapping(AddSceneToTvShows):
         def test(self):
@@ -1063,11 +1081,11 @@ class MainDB(Connection):
             if self.hasTable("indexer_mapping"):
                 self.action("DROP TABLE indexer_mapping")
 
-            sickrage.srLogger.info("Adding table indexer_mapping")
+            sickrage.srCore.srLogger.info("Adding table indexer_mapping")
             self.action(
-                    "CREATE TABLE indexer_mapping (indexer_id INTEGER, indexer NUMERIC, mindexer_id INTEGER, mindexer NUMERIC, PRIMARY KEY (indexer_id, indexer))")
+                "CREATE TABLE indexer_mapping (indexer_id INTEGER, indexer NUMERIC, mindexer_id INTEGER, mindexer NUMERIC, PRIMARY KEY (indexer_id, indexer))")
 
-            self.incDBVersion()
+            self.incDBVersion(39)
 
     class AddVersionToTvEpisodes(AddIndexerMapping):
         def test(self):
@@ -1076,12 +1094,12 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(40)
 
-            sickrage.srLogger.info("Adding column version to tv_episodes and history")
+            sickrage.srCore.srLogger.info("Adding column version to tv_episodes and history")
             self.addColumn("tv_episodes", "version", "NUMERIC", "-1")
             self.addColumn("tv_episodes", "release_group", "TEXT", "")
             self.addColumn("history", "version", "NUMERIC", "-1")
 
-            self.incDBVersion()
+            self.incDBVersion(40)
 
     class AddDefaultEpStatusToTvShows(AddVersionToTvEpisodes):
         def test(self):
@@ -1090,37 +1108,37 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(41)
 
-            sickrage.srLogger.info("Adding column default_ep_status to tv_shows")
+            sickrage.srCore.srLogger.info("Adding column default_ep_status to tv_shows")
             self.addColumn("tv_shows", "default_ep_status", "NUMERIC", "-1")
 
-            self.incDBVersion()
+            self.incDBVersion(41)
 
-    class AlterTVShowsFieldTypes(AddDefaultEpStatusToTvShows):
+    class AlterTvShowsFieldTypes(AddDefaultEpStatusToTvShows):
         def test(self):
             return self.checkDBVersion() >= 42
 
         def execute(self, **kwargs):
             self.backup(42)
 
-            sickrage.srLogger.info("Converting column indexer and default_ep_status field types to numeric")
+            sickrage.srCore.srLogger.info("Converting column indexer and default_ep_status field types to numeric")
             self.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
             self.action(
-                    "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, tmdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
+                "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, tmdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
             self.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
             self.action("DROP TABLE tmp_tv_shows")
 
-            self.incDBVersion()
+            self.incDBVersion(42)
 
-    class AddTMDbInfo(AlterTVShowsFieldTypes):
+    class AddTmdbInfo(AlterTvShowsFieldTypes):
         def test(self):
             return self.checkDBVersion() >= 43
 
         def execute(self, **kwargs):
             self.backup(43)
             self.action(
-                    "CREATE TABLE tmdb_info (indexer_id INTEGER PRIMARY KEY, tmdb_id TEXT, name TEXT, first_air_date NUMERIC, akas TEXT, episode_run_time NUMERIC, genres TEXT, origin_country TEXT, languages TEXT, production_companies TEXT, popularity TEXT, vote_count INTEGER, last_air_date NUMERIC)")
+                "CREATE TABLE tmdb_info (indexer_id INTEGER PRIMARY KEY, tmdb_id TEXT, name TEXT, first_air_date NUMERIC, akas TEXT, episode_run_time NUMERIC, genres TEXT, origin_country TEXT, languages TEXT, production_companies TEXT, popularity TEXT, vote_count INTEGER, last_air_date NUMERIC)")
 
             if not self.hasColumn("tv_shows", "tmdb_id"):
                 self.addColumn("tv_shows", "tmdb_id")
 
-            self.incDBVersion()
+            self.incDBVersion(43)

@@ -23,7 +23,7 @@ from urllib import urlencode
 from urllib2 import HTTPError, Request, urlopen
 
 import sickrage
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class pyTivoNotifier(srNotifiers):
@@ -43,12 +43,12 @@ class pyTivoNotifier(srNotifiers):
 
         # Values from config
 
-        if not sickrage.srConfig.USE_PYTIVO:
+        if not sickrage.srCore.srConfig.USE_PYTIVO:
             return False
 
-        host = sickrage.srConfig.PYTIVO_HOST
-        shareName = sickrage.srConfig.PYTIVO_SHARE_NAME
-        tsn = sickrage.srConfig.PYTIVO_TIVO_NAME
+        host = sickrage.srCore.srConfig.PYTIVO_HOST
+        shareName = sickrage.srCore.srConfig.PYTIVO_SHARE_NAME
+        tsn = sickrage.srCore.srConfig.PYTIVO_TIVO_NAME
 
         # There are two more values required, the container and file.
         #
@@ -84,7 +84,7 @@ class pyTivoNotifier(srNotifiers):
         requestUrl = "http://" + host + "/TiVoConnect?" + urlencode(
                 {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
 
-        sickrage.srLogger.debug("pyTivo notification: Requesting " + requestUrl)
+        sickrage.srCore.srLogger.debug("pyTivo notification: Requesting " + requestUrl)
 
         request = Request(requestUrl)
 
@@ -92,14 +92,14 @@ class pyTivoNotifier(srNotifiers):
             response = urlopen(request)  # @UnusedVariable
         except HTTPError  as e:
             if hasattr(e, 'reason'):
-                sickrage.srLogger.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
+                sickrage.srCore.srLogger.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
                 return False
             elif hasattr(e, 'code'):
-                sickrage.srLogger.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
+                sickrage.srCore.srLogger.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
             return False
         except Exception as e:
-            sickrage.srLogger.error("PYTIVO: Unknown exception: {}".format(e.message))
+            sickrage.srCore.srLogger.error("PYTIVO: Unknown exception: {}".format(e.message))
             return False
         else:
-            sickrage.srLogger.info("pyTivo notification: Successfully requested transfer of file")
+            sickrage.srCore.srLogger.info("pyTivo notification: Successfully requested transfer of file")
             return True

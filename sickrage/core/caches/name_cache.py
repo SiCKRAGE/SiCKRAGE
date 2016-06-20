@@ -21,46 +21,48 @@ from __future__ import unicode_literals
 
 import threading
 import time
-
 from datetime import datetime, timedelta
 
 import sickrage
-from core.databases import cache_db
-from core.helpers import full_sanitizeSceneName
-from core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
+from sickrage.core.databases import cache_db
+from sickrage.core.helpers import full_sanitizeSceneName
+from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
 
 class srNameCache(object):
     def __init__(self, *args, **kwargs):
         self.name = "NAMECACHE"
         self.amActive = False
-        self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
-        self.minTime = sickrage.srConfig.NAMECACHE_FREQ
+        self.minTime = 10
+        self.lastUpdate = {}
         self.cache = {}
 
     def run(self, force=False):
-        """
-        Runs the postprocessor
-        :param force: Forces run (reserved for future use)
-        :return: Returns when done without a return state/code
-        """
-
         if self.amActive:
             return
 
+        # set active
         self.amActive = True
 
-        origThreadName = threading.currentThread().getName()
-
+        # set thread name
         threading.currentThread().setName(self.name)
-        self.buildNameCache()
-        threading.currentThread().setName(origThreadName)
 
+        # set minimum time limit
+        self.minTime = sickrage.srCore.srConfig.NAMECACHE_FREQ
+
+        # init cache
+        self.cache = self.loadNameCacheFromDB()
+
+        # build name cache
+        self.buildNameCache()
+
+        # unset active
         self.amActive = False
 
-    def shouldUpdate(self):
+    def shouldUpdate(self, show):
         # if we've updated recently then skip the update
-        if not datetime.today() - self.lastUpdate < timedelta(minutes=self.minTime):
+        if datetime.today() - getattr(self.lastUpdate, show.name, datetime.fromtimestamp(
+                int(time.mktime(datetime.today().timetuple())))) < timedelta(minutes=self.minTime):
             return True
 
     def addNameToCache(self, name, indexer_id=0):
@@ -94,9 +96,15 @@ class srNameCache(object):
         """
         cache_db.CacheDB().action("DELETE FROM scene_names WHERE indexer_id = ? OR indexer_id = ?", (indexerid, 0))
 
-        toRemove = [key for key, value in self.cache.iteritems() if value == 0 or value == indexerid]
+        toRemove = [key for key, value in self.cache.items() if value == 0 or value == indexerid]
         for key in toRemove:
             del self.cache[key]
+
+    def loadNameCacheFromDB(self):
+        sqlResults = cache_db.CacheDB(row_type='dict').select(
+            "SELECT indexer_id, name FROM scene_names")
+
+        return dict((row["name"], int(row["indexer_id"])) for row in sqlResults)
 
     def saveNameCacheToDb(self):
         """Commit cache to database file"""
@@ -105,29 +113,24 @@ class srNameCache(object):
             cache_db.CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
                                       [indexer_id, name])
 
-    def buildNameCache(self, show=None):
+    def buildNameCache(self, show=None, force=False):
         """Build internal name cache
 
         :param show: Specify show to build name cache for, if None, just do all shows
         """
 
-        if self.shouldUpdate():
-            if not show:
-                retrieve_exceptions()
-                for show in sickrage.srCore.SHOWLIST:
-                    self.buildNameCache(show)
-            else:
-                self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+        if not show:
+            retrieve_exceptions()
+            for show in sickrage.srCore.SHOWLIST:
+                self.buildNameCache(show)
+        elif self.shouldUpdate(show):
+            self.lastUpdate[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
-                sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
-                self.clearCache(show.indexerid)
-                for curSeason in [-1] + get_scene_seasons(show.indexerid):
-                    for name in list(set(get_scene_exceptions(
-                            show.indexerid, season=curSeason) + [show.name])):
+            sickrage.srCore.srLogger.debug("Building internal name cache for [{}]".format(show.name))
+            self.clearCache(show.indexerid)
+            for curSeason in [-1] + get_scene_seasons(show.indexerid):
+                for name in list(set(get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
+                    self.addNameToCache(name, show.indexerid)
 
-                        name = full_sanitizeSceneName(name)
-                        if name not in self.cache:
-                            self.cache[name] = int(show.indexerid)
-
-                sickrage.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
-                    show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))
+            sickrage.srCore.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
+                show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))

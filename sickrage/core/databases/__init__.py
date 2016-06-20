@@ -18,20 +18,26 @@
 
 from __future__ import unicode_literals
 
-from concurrent import futures
+from Queue import Queue
+from time import sleep
+
+try:
+    from futures import ThreadPoolExecutor
+except ImportError:
+    from concurrent.futures import ThreadPoolExecutor
 
 __all__ = ["main_db", "cache_db", "failed_db"]
 
 import os
 import re
-import time
 import sqlite3
 import threading
 from contextlib import contextmanager
 from collections import defaultdict
 
 import sickrage
-from core.helpers import backupVersionedFile, restoreVersionedFile
+from sickrage.core.helpers import backupVersionedFile, restoreVersionedFile
+
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
@@ -51,6 +57,14 @@ def dbFilename(filename=None, suffix=None):
     if suffix:
         filename = filename + ".{}".format(suffix)
     return os.path.join(sickrage.DATA_DIR, filename)
+
+
+class UniRow(sqlite3.Row):
+    def __init__(self, *args, **kwargs):
+        super(UniRow, self).__init__(*args, **kwargs)
+
+    def __getitem__(self, y):
+        return super(UniRow, self).__getitem__(str(y))
 
 
 class Transaction(object):
@@ -104,12 +118,11 @@ class Transaction(object):
                     result = cursor.fetchall()
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     conn.rollback()
-                    time.sleep(1)
+                    sleep(1)
                 except Exception as e:
-                    sickrage.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
+                    sickrage.srCore.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
                 finally:
                     return result
-
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -125,7 +138,7 @@ class Transaction(object):
             genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
             query = ["UPDATE [" + tableName + "] SET " + ", ".join(
                 genParams(valueDict)) + " WHERE " + " AND ".join(genParams(keyDict)),
-                               valueDict.values() + keyDict.values()]
+                     valueDict.values() + keyDict.values()]
 
             cursor.execute(*query)
             if not conn.total_changes:
@@ -137,10 +150,11 @@ class Transaction(object):
 
             return (False, True)[conn.total_changes > 0]
 
+
 class Connection(object):
     def __init__(self, filename=None, suffix=None, row_type=None, timeout=None):
         self.filename = dbFilename(filename, suffix)
-        self.row_type = row_type or sqlite3.Row
+        self.row_type = row_type or UniRow
         self._shared_map_lock = threading.Lock()
         self._db_lock = threading.Lock()
         self._connections = {}
@@ -154,7 +168,7 @@ class Connection(object):
             thread_id = threading.current_thread().ident
 
             if thread_id not in self._connections:
-                with sqlite3.connect(self.filename, timeout=self.timeout) as conn:
+                with sqlite3.connect(self.filename, timeout=self.timeout, check_same_thread=False) as conn:
                     conn.row_factory = (self._dict_factory, self.row_type)[self.row_type != 'dict']
                     conn.execute("PRAGMA journal_mode=WAL")
                     self._connections[thread_id] = conn
@@ -163,8 +177,7 @@ class Connection(object):
             try:
                 yield self._connections[thread_id]
             finally:
-                self._connections[thread_id].commit()
-
+                del self._connections[thread_id]
 
     @contextmanager
     def _conn_cursor(self):
@@ -174,6 +187,7 @@ class Connection(object):
                 yield (conn, cursor)
             finally:
                 cursor.close()
+                conn.commit()
 
     @contextmanager
     def _tx_stack(self):
@@ -190,8 +204,10 @@ class Connection(object):
         """Get a :class:`Transaction` object for interacting directly
         with the underlying SQLite database.
         """
-        threading.Thread().setName("DB")
+        _ = threading.currentThread().getName()
+        threading.currentThread().setName("DB")
         yield Transaction(self)
+        threading.currentThread().setName(_)
 
     def _get_id(self):
         with self._db_lock:
@@ -206,7 +222,7 @@ class Connection(object):
         """
         try:
             if self.hasTable('db_version'):
-                return self.select("SELECT db_version FROM db_version")
+                return self.select("SELECT db_version FROM db_version")[0]["db_version"]
         except:
             return 0
 
@@ -218,11 +234,17 @@ class Connection(object):
         :return: list of results
         """
 
-        from itertools import izip
-        with futures.ThreadPoolExecutor(10) as executor, self.transaction() as tx:
-            sqlResults = executor.map(tx.upsert, *izip(*upserts))
-            sickrage.srLogger.db("{} Upserts executed".format(len(upserts)))
-            return sqlResults
+        sqlResults = []
+
+        q = Queue()
+        map(q.put, upserts)
+        while not q.empty():
+            with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
+                sqlResults += [executor.submit(tx.upsert, *q.get()).result()]
+
+        sickrage.srCore.srLogger.db("{} Upserts executed".format(len(sqlResults)))
+
+        return sqlResults
 
     def mass_action(self, queries):
         """
@@ -232,10 +254,16 @@ class Connection(object):
         :return: list of results
         """
 
-        with futures.ThreadPoolExecutor(10) as executor, self.transaction() as tx:
-            sqlResults = executor.map(tx.query, queries)
-            sickrage.srLogger.db("{} Transactions executed".format(len(queries)))
-            return sqlResults
+        sqlResults = []
+
+        q = Queue()
+        map(q.put, queries)
+        while not q.empty():
+            with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
+                sqlResults += [executor.submit(tx.query, q.get()).result()]
+
+        sickrage.srCore.srLogger.db("{} Transactions executed".format(len(sqlResults)))
+        return sqlResults
 
     def action(self, query, *args):
         """
@@ -245,9 +273,9 @@ class Connection(object):
         :param query: Query string
         """
 
-        sickrage.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
+        sickrage.srCore.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
-        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
+        with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
             return executor.submit(tx.query, [query, list(*args)]).result()
 
     def upsert(self, tableName, valueDict, keyDict):
@@ -260,7 +288,7 @@ class Connection(object):
         :param keyDict:  columns in table to update
         """
 
-        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
+        with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
             return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
 
     def select(self, query, *args):
@@ -285,7 +313,7 @@ class Connection(object):
         sqlResult = self.select("PRAGMA table_info(`{}`)".format(tableName))
 
         for column in sqlResult:
-            columns[column[b'name']] = {'type': column[b'type']}
+            columns[column['name']] = {'type': column['type']}
 
         return columns
 
@@ -333,11 +361,14 @@ class Connection(object):
         :param type: Column type to add
         :param default: Default value for column
         """
-        self.action("ALTER TABLE [%s] ADD %s %s" % (table, column, type))
-        self.action("UPDATE [%s] SET %s = ?" % (table, column), default)
+        self.action("ALTER TABLE [{}] ADD {} {}".format(table, column, type))
+        self.action("UPDATE [{}] SET {} = ?".format(table, column), [default])
 
-    def incDBVersion(self):
-        self.action("UPDATE db_version SET db_version = db_version + 1")
+    def incDBVersion(self, version=None):
+        if not version:
+            version = self.checkDBVersion() + 1
+
+        self.action("UPDATE db_version SET db_version = {}".format(version))
 
 
 class SchemaUpgrade(Connection):
@@ -353,17 +384,17 @@ class SchemaUpgrade(Connection):
             name = prettyName(upgradeClass.__name__)
 
             while (True):
-                sickrage.srLogger.debug("Checking {} database structure".format(name))
+                sickrage.srCore.srLogger.debug("Checking {} database structure".format(name))
 
                 try:
                     instance = upgradeClass()
 
                     if not instance.test():
-                        sickrage.srLogger.debug("Database upgrade required: {}".format(name))
+                        sickrage.srCore.srLogger.debug("Database upgrade required: {}".format(name))
                         instance.execute()
-                        sickrage.srLogger.debug("{} upgrade completed".format(name))
+                        sickrage.srCore.srLogger.debug("{} upgrade completed".format(name))
                     else:
-                        sickrage.srLogger.debug("{} upgrade not required".format(name))
+                        sickrage.srCore.srLogger.debug("{} upgrade not required".format(name))
 
                     return True
                 except sqlite3.DatabaseError:
@@ -381,18 +412,18 @@ class SchemaUpgrade(Connection):
         :return: True if restore succeeds, False if it fails
         """
 
-        sickrage.srLogger.info("Restoring database before trying upgrade again")
+        sickrage.srCore.srLogger.info("Restoring database before trying upgrade again")
         if not restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
-            sickrage.srLogger.info("Database restore failed, abort upgrading database")
+            sickrage.srCore.srLogger.info("Database restore failed, abort upgrading database")
             return False
         return True
 
     def backup(self, version):
-        sickrage.srLogger.info("Backing up database before upgrade")
+        sickrage.srCore.srLogger.info("Backing up database before upgrade")
         if not backupVersionedFile(dbFilename(), version):
-            sickrage.srLogger.log_error_and_exit("Database backup failed, abort upgrading database")
+            sickrage.srCore.srLogger.log_error_and_exit("Database backup failed, abort upgrading database")
         else:
-            sickrage.srLogger.info("Proceeding with upgrade")
+            sickrage.srCore.srLogger.info("Proceeding with upgrade")
 
     @classmethod
     def get_subclasses(cls):

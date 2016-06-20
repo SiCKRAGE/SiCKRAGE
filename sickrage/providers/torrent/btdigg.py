@@ -21,49 +21,50 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class BTDIGGProvider(TorrentProvider):
     def __init__(self):
-        super(BTDIGGProvider, self).__init__("BTDigg")
+        super(BTDIGGProvider, self).__init__("BTDigg",'btdigg.org')
 
         self.supportsBacklog = True
-        self.public = True
-        self.ratio = 0
-        self.urls = {'url': 'https://btdigg.org/',
-                     'api': 'https://api.btdigg.org/'}
 
-        self.url = self.urls['url']
+        self.ratio = 0
+
+        self.urls.update({
+            'api': 'api.{base_url}/'.format(base_url=self.urls['base_url'])
+        })
 
         self.cache = BTDiggCache(self)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s" % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
                 searchURL = self.urls['api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                jdata = self.getURL(searchURL, json=True)
-                if not jdata:
-                    sickrage.srLogger.info("No data returned to be parsed!!!")
-                    return []
+                try:
+                    jdata = sickrage.srCore.srWebSession.get(searchURL).json()
+                except Exception:
+                    sickrage.srCore.srLogger.info("No data returned to be parsed!!!")
+                    continue
 
                 for torrent in jdata:
-                    if not torrent[b'ff']:
-                        title = torrent[b'name']
-                        download_url = torrent[b'magnet']
-                        size = torrent[b'size']
+                    if not torrent['ff']:
+                        title = torrent['name']
+                        download_url = torrent['magnet']
+                        size = torrent['size']
                         # FIXME
                         seeders = 1
                         leechers = 0
@@ -73,13 +74,13 @@ class BTDIGGProvider(TorrentProvider):
 
                         # Filter unseeded torrent
                         # if seeders < self.minseed or leechers < self.minleech:
-                        #    if mode is not 'RSS':
+                        #    if mode != 'RSS':
                         #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                         #    continue
 
                         item = title, download_url, size, seeders, leechers
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug("Found result: %s" % title)
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: %s" % title)
 
                         items[mode].append(item)
 
@@ -104,4 +105,4 @@ class BTDiggCache(tv_cache.TVCache):
     def _getRSSData(self):
         # Use x264 for RSS search since most results will use that codec and since the site doesnt have latest results search
         search_params = {'RSS': ['x264']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

@@ -20,13 +20,12 @@
 from __future__ import unicode_literals
 
 import os
-
 from datetime import date
 
 import sickrage
-from core.common import DOWNLOADED, Quality
-from core.nameparser import NameParser
-from core.nameparser.episode import Episode
+from sickrage.core.common import DOWNLOADED, Quality
+from sickrage.core.nameparser import NameParser
+from sickrage.core.nameparser.episode import Episode
 
 name_presets = (
     '%SN - %Sx%0E - %EN',
@@ -62,17 +61,12 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     :return: true if season folders need to be forced on or false otherwise.
     """
     if pattern is None:
-        pattern = sickrage.srConfig.NAMING_PATTERN
+        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
 
     if anime_type is None:
-        anime_type = sickrage.srConfig.NAMING_ANIME
+        anime_type = sickrage.srCore.srConfig.NAMING_ANIME
 
-    valid = not validate_name(pattern=pattern, anime_type=anime_type, file_only=True)
-
-    if multi is not None:
-        valid = valid or not validate_name(pattern, multi, anime_type, file_only=True)
-
-    return valid
+    return not validate_name(pattern, multi, anime_type, file_only=True)
 
 
 def check_valid_naming(pattern=None, multi=None, anime_type=None):
@@ -85,19 +79,13 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.srConfig.NAMING_PATTERN
+        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
 
     if anime_type is None:
-        anime_type = sickrage.srConfig.NAMING_ANIME
+        anime_type = sickrage.srCore.srConfig.NAMING_ANIME
 
-    sickrage.srLogger.debug("Checking whether the pattern " + pattern + " is valid for a single episode")
-    valid = validate_name(pattern=pattern, anime_type=anime_type)
-
-    if multi is not None:
-        sickrage.srLogger.debug("Checking whether the pattern " + pattern + " is valid for a multi episode")
-        valid = valid and validate_name(pattern, multi, anime_type)
-
-    return valid
+    sickrage.srCore.srLogger.debug("Checking whether the pattern " + pattern + " is valid")
+    return validate_name(pattern, multi, anime_type)
 
 
 def check_valid_abd_naming(pattern=None):
@@ -108,9 +96,9 @@ def check_valid_abd_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.srConfig.NAMING_PATTERN
+        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
 
-    sickrage.srLogger.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
+    sickrage.srCore.srLogger.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
     valid = validate_name(pattern, abd=True)
 
     return valid
@@ -124,9 +112,9 @@ def check_valid_sports_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.srConfig.NAMING_PATTERN
+        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
 
-    sickrage.srLogger.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
+    sickrage.srCore.srLogger.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
     valid = validate_name(pattern, sports=True)
 
     return valid
@@ -152,36 +140,36 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
         new_name = os.path.join(new_path, new_name)
 
     if not new_name:
-        sickrage.srLogger.debug("Unable to create a name out of " + pattern)
+        sickrage.srCore.srLogger.debug("Unable to create a name out of " + pattern)
         return False
 
-    sickrage.srLogger.debug("Trying to parse " + new_name)
+    sickrage.srCore.srLogger.debug("Trying to parse " + new_name)
 
     parser = NameParser(True, showObj=ep.show, naming_pattern=True)
 
     try:
         result = parser.parse(new_name)
     except Exception:
-        sickrage.srLogger.debug("Unable to parse " + new_name + ", not valid")
+        sickrage.srCore.srLogger.debug("Unable to parse " + new_name + ", not valid")
         return False
 
-    sickrage.srLogger.debug("Parsed " + new_name + " into " + str(result))
+    sickrage.srCore.srLogger.debug("Parsed " + new_name + " into " + str(result))
 
     if abd or sports:
         if result.air_date != ep.airdate:
-            sickrage.srLogger.debug("Air date incorrect in parsed episode, pattern isn't valid")
+            sickrage.srCore.srLogger.debug("Air date incorrect in parsed episode, pattern isn't valid")
             return False
     elif anime_type != 3:
         if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in
                                                                             [ep] + ep.relatedEps]:
-            sickrage.srLogger.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
+            sickrage.srCore.srLogger.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
             return False
     else:
         if result.season_number != ep.season:
-            sickrage.srLogger.debug("Season number incorrect in parsed episode, pattern isn't valid")
+            sickrage.srCore.srLogger.debug("Season number incorrect in parsed episode, pattern isn't valid")
             return False
         if result.episode_numbers != [x.episode for x in [ep] + ep.relatedEps]:
-            sickrage.srLogger.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
+            sickrage.srCore.srLogger.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
             return False
 
     return True
@@ -239,5 +227,4 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
 
 def test_name(pattern, multi=None, abd=False, sports=False, anime_type=None):
     ep = generate_sample_ep(multi, abd, sports, anime_type)
-
     return {'name': ep.formatted_filename(pattern, multi, anime_type), 'dir': ep.formatted_dir(pattern, multi)}

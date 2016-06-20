@@ -1,6 +1,6 @@
 # This file is part of SickRage.
 #
-# URL: https://www.sickrage.tv
+# URL: https://www.sickrage.ca
 # Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # SickRage is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@ from __future__ import unicode_literals
 
 import os
 
-from core.caches.image_cache import ImageCache
-from core.media import Media
+from sickrage.core.caches.image_cache import ImageCache
+from sickrage.core.media import Media
 
 
 class Banner(Media):

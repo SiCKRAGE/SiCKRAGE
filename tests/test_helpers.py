@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 
 import unittest
 
-from core.helpers import remove_non_release_groups
+from sickrage.core.helpers import remove_non_release_groups
 from tests import SiCKRAGETestCase
 
 test_result = 'Show.Name.S01E01.HDTV.x264-RLSGROUP'

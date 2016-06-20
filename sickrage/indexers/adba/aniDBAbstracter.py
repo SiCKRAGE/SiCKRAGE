@@ -24,7 +24,7 @@ import sickrage
 from aniDBfileInfo import read_anidb_xml, get_file_size, get_file_hash
 from aniDBmaper import AniDBMaper
 from aniDBtvDBmaper import TvDBMap
-from indexers.adba.aniDBerrors import AniDBIncorrectParameterError
+from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError
 
 
 class aniDBabstractObject(object):
@@ -284,7 +284,7 @@ class Episode(aniDBabstractObject):
     def _calculate_file_stuff(self, filePath):
         if not filePath:
             return (None, None)
-        sickrage.srLogger.info("Calculating the ed2k. Please wait...")
+        sickrage.srCore.srLogger.info("Calculating the ed2k. Please wait...")
         ed2k = get_file_hash(filePath)
         size = get_file_size(filePath)
         return ed2k, size

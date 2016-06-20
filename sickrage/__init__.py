@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-
+# -*- coding: utf-8 -*-
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -18,39 +18,94 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals, with_statement
 
-import atexit
-import ctypes
-import getopt
+import argparse
+import codecs
+import importlib
 import io
+import locale
+import logging
 import os
+import pkgutil
 import sys
 import threading
 import time
 import traceback
+import site
+
+import shutil
+
+import datetime
+
+__all__ = [
+    'srCore',
+    'PROG_DIR',
+    'DATA_DIR',
+    'DEVELOPER',
+    'SYS_ENCODING',
+    'PIDFILE'
+]
+
+status = None
+srCore = None
+
+PROG_DIR = os.path.abspath(os.path.dirname(__file__))
+
+SYS_ENCODING = None
+DEBUG = None
+WEB_PORT = None
+DEVELOPER = None
+DAEMONIZE = None
+NOLAUNCH = None
+QUITE = None
+MODULE_DIR = None
+LIBS_DIR = None
+DATA_DIR = None
+CONFIG_FILE = None
+PIDFILE = None
+
+# fix threading time bug
+time.strptime("2012", "%Y")
 
 # set thread name
 threading.currentThread().setName('MAIN')
 
-time.strptime("2012", "%Y")
-
-srCore = None
-srLogger = None
-srConfig = None
-
-PROG_DIR = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
+logging.captureWarnings(True)
 
 
-def root_check():
+def encodingInit():
+    # map the following codecs to utf-8
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
+
+    # get locale encoding
     try:
-        return not os.getuid() == 0
+        locale.setlocale(locale.LC_ALL, "")
+        encoding = locale.getpreferredencoding()
+    except (locale.Error, IOError):
+        encoding = None
+
+    # enforce UTF-8
+    if not encoding or codecs.lookup(encoding).name == 'ascii':
+        encoding = 'UTF-8'
+
+    # wrap i/o in unicode
+    sys.stdout = codecs.getwriter(encoding)(sys.stdout)
+    sys.stdin = codecs.getreader(encoding)(sys.stdin)
+
+    return encoding
+
+
+def isElevatedUser():
+    try:
+        return os.getuid() == 0
     except AttributeError:
-        return not ctypes.windll.shell32.IsUserAnAdmin() != 0
+        import ctypes
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 
-def virtualenv_check():
+def isVirtualEnv():
     return hasattr(sys, 'real_prefix')
 
 
@@ -62,7 +117,6 @@ def install_pip():
     file_name = os.path.abspath(os.path.join(os.path.dirname(__file__), url.split('/')[-1]))
     u = urllib2.urlopen(url)
     with io.open(file_name, 'wb') as f:
-        meta = u.info()
         block_sz = 8192
         while True:
             buf = u.read(block_sz)
@@ -72,40 +126,10 @@ def install_pip():
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, file_name] + ([], ['--user'])[root_check() and virtualenv_check()])
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
-
-
-def install_requirements():
-    from pip.commands.install import InstallCommand
-    from pkg_resources import ContextualVersionConflict
-
-    requirements = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))]
-    options = InstallCommand().parse_args([])[0]
-    options.use_user_site = root_check() and not virtualenv_check()
-    options.requirements = requirements
-    options.cache_dir = None
-    options.upgrade = True
-    options.quiet = 1
-    options.pre = True
-
-    # install/upgrade all requirements for sickrage
-    print("Installing SiCKRAGE requirement packages, please stand by ...")
-
-    attempts = 0
-    while attempts < 3:
-        try:
-            options.ignore_dependencies = True
-            InstallCommand().run(options, [])
-            options.ignore_dependencies = False
-            InstallCommand().run(options, [])
-        except ContextualVersionConflict:
-            attempts += 1
-            time.sleep(1)
-        finally:
-            break
 
 
 def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
@@ -114,7 +138,7 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         if pid > 0:
             # Exit from first parent
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
         sys.stderr.write("Fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
         sys.exit(1)
 
@@ -129,11 +153,13 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         if pid > 0:
             # Exit from second parent
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
         sys.stderr.write("Fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
         sys.exit(1)
 
-    if sys.platform != 'darwin':  # This block breaks on OS X
+    print("Daemonized successfully, pid %s" % os.getpid())
+
+    if sys.platform != 'darwin':
         # Redirect standard file descriptors
         sys.stdout.flush()
         sys.stderr.flush()
@@ -145,229 +171,203 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         os.dup2(se.fileno(), sys.stderr.fileno())
 
     # Write the PID file
+    import atexit
     atexit.register(lambda: delpid(pidfile))
-    file(pidfile, 'w+').write("%s\n" % str(os.getpid()))
+    io.open(pidfile, 'w+').write("%s\n" % str(os.getpid()))
 
 
 def delpid(pidfile):
     # Removes the PID file
-    if os.path.exists(pidfile):
+    if pidfile and os.path.exists(pidfile):
         os.remove(pidfile)
 
 
-def help_message(prog_dir):
-    """
-    LOGGER.info help message for commandline options
-    """
-
-    help_msg = "\n"
-    help_msg += "Usage: SiCKRAGE <option> <another option>\n"
-    help_msg += "\n"
-    help_msg += "Options:\n"
-    help_msg += "\n"
-    help_msg += "    -h          --help              LOGGER.infos this message\n"
-    help_msg += "    -q          --quiet             Disables logging to CONSOLE\n"
-    help_msg += "                --nolaunch          Suppress launching web browser on startup\n"
-
-    if sys.platform == 'win32' or sys.platform == 'darwin':
-        help_msg += "    -d          --daemon            Running as real daemon is not supported on Windows\n"
-        help_msg += "                                    On Windows and MAC, --daemon is substituted with: --quiet --nolaunch\n"
+def pid_exists(pid):
+    """Check whether pid exists in the current process table."""
+    if pid < 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except OSError as e:
+        return False
     else:
-        help_msg += "    -d          --daemon            Run as double forked daemon (includes options --quiet --nolaunch)\n"
-        help_msg += "                --pidfile=<path>    Combined with --daemon creates a pidfile (full path including filename)\n"
-
-    help_msg += "    -p <port>   --port=<port>       Override default/configured port to listen on\n"
-    help_msg += "                --datadir=<path>    Override folder (full path) as location for\n"
-    help_msg += "                                    storing database, configfile, cache, logfiles \n"
-    help_msg += "                                    Default: " + prog_dir + "\n"
-    help_msg += "                --config=<path>     Override config filename (full path including filename)\n"
-    help_msg += "                                    to load configuration from \n"
-    help_msg += "                                    Default: config.ini in " + prog_dir + " or --datadir location\n"
-    help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
-    help_msg += "                --install-optional  Install optional pacakges from requirements folder\n"
-    help_msg += "                --ssl               Enables ssl/https\n"
-    help_msg += "                --debug             Enable debugging\n"
-
-    return help_msg
+        return True
 
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences
+def install_requirements(target_dir):
+    if not target_dir:
+        return
+
+    # install pip package manager
+    install_pip()
+
+    from pip.commands.install import InstallCommand
+    from pip.download import PipSession
+    from pip.req import parse_requirements
+
+    requirements = parse_requirements(
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt')),
+        session=PipSession())
+
+    for r in requirements:
+        req_options, req_args = InstallCommand().parse_args([str(r.req)])
+        # req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
+        req_options.target_dir = target_dir
+        req_options.constraints = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'constraints.txt'))]
+        req_options.cache_dir = None
+        req_options.quiet = 1
+        req_options.verbose = 1
+        req_options.ignore_installed = True
+        req_options.force_reinstall = True
+
+        try:
+            print("Installing SiCKRAGE requirements package: {}".format(str(r.req)))
+            sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
+            # req_options.ignore_dependencies = True
+            # InstallCommand().run(req_options, req_args)
+            req_options.ignore_dependencies = False
+            InstallCommand().run(req_options, req_args)
+        except Exception as e:
+            continue
+
 def main():
-    global srCore, srConfig, srLogger, DATA_DIR
+    global srCore, status, SYS_ENCODING, PROG_DIR, LIBS_DIR, MODULE_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \
+        DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
+    # sickrage requires python 2.7+
     if sys.version_info < (2, 7):
-        print("Sorry, SiCKRAGE requires Python 2.7+")
-        sys.exit(1)
+        sys.exit("Sorry, SiCKRAGE requires Python 2.7+")
 
     # add sickrage module to python system path
-    path = os.path.dirname(os.path.realpath(__file__))
-    if path not in sys.path:
-        sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+    MODULE_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+    if not (MODULE_DIR in sys.path):
+        sys.path, remainder = sys.path[:1], sys.path[1:]
+        site.addsitedir(MODULE_DIR)
+        sys.path.extend(remainder)
+
+    # set locale encoding
+    SYS_ENCODING = encodingInit()
 
     try:
-        opts, _ = getopt.getopt(
-            sys.argv[1:], "hqdp::",
-            ['help',
-             'dev',
-             'quiet',
-             'nolaunch',
-             'daemon',
-             'pidfile=',
-             'port=',
-             'datadir=',
-             'config=',
-             'noresize',
-             'install-optional',
-             'ssl',
-             'debug']
-        )
-    except getopt.GetoptError:
-        sys.exit(help_message(PROG_DIR))
+        print("..::[ SiCKRAGE ]::..")
 
-    # defaults
-    PIDFILE = os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid'))
-    DEVELOPER = False
-    DAEMONIZE = False
-    WEB_PORT = None
-    INSTALL_OPTIONAL = False
-    WEB_NOLAUNCH = False
-    SSL = False
-    DEBUG = False
-    CONFIG_FILE = "config.ini"
-    CONSOLE = not hasattr(sys, "frozen")
+        # sickrage startup options
+        parser = argparse.ArgumentParser(prog='sickrage')
+        parser.add_argument('-v', '--version',
+                            action='version',
+                            version='%(prog)s 8.0')
+        parser.add_argument('-d', '--daemon',
+                            action='store_true',
+                            help='Run as a daemon (*NIX ONLY)')
+        parser.add_argument('-q', '--quite',
+                            action='store_true',
+                            help='Disables logging to CONSOLE')
+        parser.add_argument('-p', '--port',
+                            default=8081,
+                            type=int,
+                            help='Override default/configured port to listen on')
+        parser.add_argument('--dev',
+                            action='store_true',
+                            help='Enable developer mode')
+        parser.add_argument('--debug',
+                            action='store_true',
+                            help='Enable debugging')
+        parser.add_argument('--datadir',
+                            default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage')),
+                            help='Overrides data folder for database, configfile, cache, logfiles (full path)')
+        parser.add_argument('--config',
+                            default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage', 'config.ini')),
+                            help='Overrides config filename (full path including filename)')
+        parser.add_argument('--pidfile',
+                            default='sickrage.pid',
+                            help='Creates a pidfile (full path including filename)')
+        parser.add_argument('--nolaunch',
+                            action='store_true',
+                            help='Suppress launching web browser on startup')
 
-    for o, a in opts:
-        # help message
-        if o in ('-h', '--help'):
-            sys.exit(help_message(PROG_DIR))
+        args = parser.parse_args()
 
-        # For now we'll just silence the logging
-        if o in ('-q', '--quiet'):
-            CONSOLE = False
-
-        # developer mode
-        if o in ('--dev',):
-            print("!!! DEVELOPER MODE ENABLED !!!")
-            DEVELOPER = True
-
-        # Suppress launching web browser
-        # Needed for OSes without default browser assigned
-        # Prevent duplicate browser window when restarting in the app
-        if o in ('--nolaunch',):
-            WEB_NOLAUNCH = True
+        # Quite
+        QUITE = args.quite
 
         # Override default/configured port
-        if o in ('-p', '--port'):
-            try:
-                WEB_PORT = int(a)
-            except ValueError:
-                sys.exit("Port: " + str(a) + " is not a number. Exiting.")
+        WEB_PORT = int(args.port)
 
-        # Run as a double forked daemon
-        if o in ('-d', '--daemon'):
-            DAEMONIZE = (False, True)[not sys.platform == 'win32']
-            WEB_NOLAUNCH = True
-            CONSOLE = False
+        # Launch browser
+        NOLAUNCH = args.nolaunch
 
-        # Write a pidfile if requested
-        if o in ('--pidfile',):
-            PIDFILE = str(a)
+        DEVELOPER = args.dev
+        if DEVELOPER:
+            print("!!! DEVELOPER MODE ENABLED !!!")
 
-            # If the pidfile already exists, sickrage may still be running, so exit
-            if os.path.exists(PIDFILE):
-                sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
+        DEBUG = args.debug
+        if DEBUG:
+            print("!!! DEBUG MODE ENABLED !!!")
 
         # Specify folder to use as the data dir
-        if o in ('--datadir',):
-            DATA_DIR = os.path.abspath(os.path.expanduser(a))
-
-        # Specify folder to load the config file from
-        if o in ('--config',):
-            CONFIG_FILE = os.path.abspath(os.path.expanduser(a))
-
-        # Prevent resizing of the banner/posters even if PIL is installed
-        if o in ('--noresize',):
-            NO_RESIZE = True
-
-        # Install optional packages from requirements folder
-        if o in ('--install-optional',):
-            INSTALL_OPTIONAL = True
-
-        # Install ssl packages from requirements folder
-        if o in ('--ssl',):
-            SSL = True
-
-        # Install ssl packages from requirements folder
-        if o in ('--debug',):
-            print("!!! DEBUGGING MODE ENABLED !!!")
-            DEBUG = True
-
-    try:
-        # daemonize sickrage ?
-        if DAEMONIZE:
-            daemonize(PIDFILE)
-
-        import core
-        from core.helpers import makeDir
+        DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
+        CONFIG_FILE = os.path.abspath(os.path.expanduser(args.config))
 
         # Make sure that we can create the data dir
         if not os.access(DATA_DIR, os.F_OK):
             try:
                 os.makedirs(DATA_DIR, 0o744)
             except os.error:
-                raise SystemExit("Unable to create data directory '" + DATA_DIR + "'")
+                sys.exit("Unable to create data directory '" + DATA_DIR + "'")
 
         # Make sure we can write to the data dir
         if not os.access(DATA_DIR, os.W_OK):
-            raise SystemExit("Data directory must be writeable '" + DATA_DIR + "'")
+            sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
-        print("Starting SiCKRAGE ...")
+        # add sickrage required libs to python system path
+        LIBS_DIR = os.path.abspath(os.path.join(DATA_DIR, 'libs'))
+        if not (LIBS_DIR in sys.path):
+            sys.path, remainder = sys.path[:1], sys.path[1:]
+            site.addsitedir(LIBS_DIR)
+            sys.path.extend(remainder)
 
-        # init logger
-        srLogger = core.srLogger()
+        # Pidfile for daemon
+        PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
+        if os.path.exists(PIDFILE):
+            if pid_exists(int(io.open(PIDFILE).read())):
+                sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
 
-        # init core
-        srCore = core.srCore()
+            # remove stale pidfile
+            delpid(PIDFILE)
 
-        # init config
-        srConfig = core.srConfig(CONFIG_FILE)
+        # daemonize if requested
+        DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
+        if DAEMONIZE:
+            NOLAUNCH = False
+            QUITE = False
+            daemonize(PIDFILE)
 
-        # load config
-        srConfig.load_config()
+        # main app loop
+        while True:
+            try:
+                from sickrage import core
+                srCore = core.Core()
+                srCore.start()
+            except ImportError:
+                if DEBUG:
+                    traceback.print_exc()
 
-        # start logger
-        srLogger.logFile = os.path.abspath(os.path.join(DATA_DIR, srConfig.LOG_DIR, srConfig.LOG_FILE))
-        srLogger.logSize = srConfig.LOG_SIZE
-        srLogger.logNr = srConfig.LOG_NR
-        srLogger.consoleLogging = CONSOLE
-        srLogger.debugLogging = DEBUG or srConfig.DEBUG
-        srLogger.fileLogging = makeDir(os.path.abspath(os.path.join(DATA_DIR, srConfig.LOG_DIR)))
-        srLogger.start()
+                # install requirements
+                install_requirements(target_dir=LIBS_DIR)
 
-        # start core
-        srCore.start()
+                # restart and reload modules
+                os.execl(sys.executable, sys.executable, *sys.argv)
 
-        # start web-ui
-        srCore.WEBSERVER.open_browser = (True, False)[WEB_NOLAUNCH]
-        srCore.WEBSERVER.port = (srConfig.WEB_PORT, WEB_PORT)[WEB_PORT is not None]
-        srCore.WEBSERVER.start()
-    except ImportError:
-        # install pip package manager
-        install_pip()
-
-        # install required packages
-        install_requirements()
-
-        # restart sickrage silently
-        os.execl(sys.executable, sys.executable, *sys.argv)
     except KeyboardInterrupt:
         pass
-    except Exception:
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        traceback.print_tb(exc_traceback)
-        traceback.print_exception(exc_type, exc_value, exc_traceback)
-        sys.exit(1)
-    sys.exit(0)
+    except Exception as e:
+        traceback.print_exc()
+        if srCore:
+            srCore.srLogger.debug(traceback.format_exc())
+        status = e.message
+    finally:
+        if srCore:
+            srCore.shutdown(status)
 
 
 if __name__ == '__main__':

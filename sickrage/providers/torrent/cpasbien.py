@@ -23,25 +23,27 @@ from __future__ import unicode_literals
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class CpasbienProvider(TorrentProvider):
     def __init__(self):
-        super(CpasbienProvider, self).__init__("Cpasbien")
+        super(CpasbienProvider, self).__init__("Cpasbien","www.cpasbien.io")
 
         self.supportsBacklog = True
-        self.public = True
+
         self.ratio = None
-        self.url = "http://www.cpasbien.io"
+        self.urls.update({
+            'download': '{base_url}/telechargement/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = CpasbienCache(self)
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         size = -1
         seeders = 1
@@ -51,17 +53,19 @@ class CpasbienProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.url + '/recherche/' + search_string.replace('.', '-') + '.html'
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL)
+                searchURL = self.urls['base_url'] + '/recherche/' + search_string.replace('.', '-') + '.html'
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -85,12 +89,12 @@ class CpasbienProvider(TorrentProvider):
                             try:
                                 link = row.find("a", title=True)
                                 title = link.text.lower().strip()
-                                pageURL = link[b'href']
+                                pageURL = link['href']
 
                                 # downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
                                 tmp = pageURL.split('/')[-1].replace('.html', '.torrent')
 
-                                downloadTorrentLink = ('http://www.cpasbien.io/telechargement/%s' % tmp)
+                                downloadTorrentLink = (self.urls['download'] % tmp)
 
                                 if downloadTorrentLink:
                                     download_url = downloadTorrentLink
@@ -105,13 +109,13 @@ class CpasbienProvider(TorrentProvider):
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

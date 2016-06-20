@@ -27,14 +27,14 @@ import requests
 from requests.auth import AuthBase
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class BLUETIGERSProvider(TorrentProvider):
     def __init__(self):
-        super(BLUETIGERSProvider, self).__init__("BLUETIGERS")
+        super(BLUETIGERSProvider, self).__init__("BLUETIGERS",'www.bluetigers.ca')
 
         self.supportsBacklog = True
 
@@ -46,21 +46,18 @@ class BLUETIGERSProvider(TorrentProvider):
 
         self.cache = BLUETIGERSCache(self)
 
-        self.urls = {
-            'base_url': 'https://www.bluetigers.ca/',
-            'search': 'https://www.bluetigers.ca/torrents-search.php',
-            'login': 'https://www.bluetigers.ca/account-login.php',
-            'download': 'https://www.bluetigers.ca/torrents-details.php?id=%s&hit=1',
-        }
+        self.urls.update({
+            'search': '{base_url}/torrents-search.php'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/account-login.php'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/torrents-details.php?id=%s&hit=1'.format(base_url=self.urls['base_url'])
+        })
 
         self.search_params = {
             "c16": 1, "c10": 1, "c130": 1, "c131": 1, "c17": 1, "c18": 1, "c19": 1
         }
 
-        self.url = self.urls['base_url']
-
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -69,18 +66,19 @@ class BLUETIGERSProvider(TorrentProvider):
             'take_login': '1'
         }
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('/account-logout.php', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -90,16 +88,18 @@ class BLUETIGERSProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'search'] = search_string
+                self.search_params['search'] = search_string
 
-                data = self.getURL(self.urls['search'], params=self.search_params)
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -107,13 +107,13 @@ class BLUETIGERSProvider(TorrentProvider):
                         result_linkz = html.findAll('a', href=re.compile("torrents-details"))
 
                         if not result_linkz:
-                            sickrage.srLogger.debug("Data returned from provider do not contains any torrent")
+                            sickrage.srCore.srLogger.debug("Data returned from provider do not contains any torrent")
                             continue
 
                         if result_linkz:
                             for link in result_linkz:
                                 title = link.text
-                                download_url = self.urls['base_url'] + "/" + link[b'href']
+                                download_url = self.urls['base_url'] + "/" + link['href']
                                 download_url = download_url.replace("torrents-details", "download")
                                 # FIXME
                                 size = -1
@@ -125,18 +125,18 @@ class BLUETIGERSProvider(TorrentProvider):
 
                                 # Filter unseeded torrent
                                 # if seeders < self.minseed or leechers < self.minleech:
-                                #    if mode is not 'RSS':
+                                #    if mode != 'RSS':
                                 #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                                 #    continue
 
                                 item = title, download_url, size, seeders, leechers
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug("Found result: %s " % title)
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -156,7 +156,7 @@ class BLUETIGERSAuth(AuthBase):
         self.token = token
 
     def __call__(self, r):
-        r.headers[b'Authorization'] = self.token
+        r.headers['Authorization'] = self.token
         return r
 
 
@@ -169,4 +169,4 @@ class BLUETIGERSCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

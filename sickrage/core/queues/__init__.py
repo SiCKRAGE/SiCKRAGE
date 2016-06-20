@@ -20,75 +20,62 @@
 from __future__ import unicode_literals
 
 import threading
-
+from Queue import PriorityQueue
 from datetime import datetime
+
+try:
+    from futures import ThreadPoolExecutor, thread
+except ImportError:
+    from concurrent.futures import ThreadPoolExecutor, thread
 
 import sickrage
 
 
-class QueuePriorities:
+class QueuePriorities(object):
     LOW = 10
     NORMAL = 20
     HIGH = 30
 
 
-class GenericQueue(object):
-    def __init__(self, *args, **kwargs):
+class srQueue(PriorityQueue):
+    def __init__(self, maxsize=0):
+        PriorityQueue.__init__(self, maxsize)
         self.queue_name = "QUEUE"
         self.lock = threading.Lock()
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
-        self._queue = []
+        self.stop = threading.Event()
 
     @property
     def name(self):
         return self.queue_name
 
-    def _get_queue(self):
-        # sort by priority
-        def sorter(x, y):
-            """
-            Sorts by priority descending then time ascending
-            """
-            if x.priority == y.priority:
-                if y.added == x.added:
-                    return 0
-                elif y.added < x.added:
-                    return 1
-                elif y.added > x.added:
-                    return -1
-            else:
-                return y.priority - x.priority
-        self._queue.sort(cmp=sorter)
-        return self._queue
 
-    def _set_queue(self, item):
-        self._queue.append(item)
+    def get(self, block=True, timeout=None):
+        return PriorityQueue.get(self, block, timeout)
 
-    queue = property(_get_queue, _set_queue)
-
-    def pause(self):
-        """Pauses this queue"""
-        sickrage.srLogger.info("Pausing queue")
-        self.min_priority = 999999999999
-
-    def unpause(self):
-        """Unpauses this queue"""
-        sickrage.srLogger.info("Unpausing queue")
-        self.min_priority = 0
-
-    def add_item(self, item):
+    def put(self, item, block=True, timeout=None):
         """
         Adds an item to this queue
 
         :param item: Queue object to add
         :return: item
         """
-        with self.lock:
-            item.added = datetime.now()
-            self.queue.append(item)
-            return item
+        item.name = "{}-{}".format(self.name, item.name)
+        item.added = datetime.now()
+        PriorityQueue.put(self, (item.priority, item), block, timeout)
+        return item
+
+    def pause(self):
+        """Pauses this queue"""
+        sickrage.srCore.srLogger.info("Pausing queue")
+        self.min_priority = 999999999999
+
+    def unpause(self):
+        """Unpauses this queue"""
+        sickrage.srCore.srLogger.info("Unpausing queue")
+        self.min_priority = 0
 
     def run(self, force=False):
         """
@@ -97,32 +84,37 @@ class GenericQueue(object):
         :param force: Force queue processing (currently not implemented)
         """
 
+        if self.amActive:
+            return
+
         with self.lock:
-            if self.amActive:
-                return
+            self.amActive = True
 
             # if there's something in the queue then run it in a thread and take it out of the queue
-            if len(self.queue) > 0:
-                self.amActive = True
-
-                workers = len(self.queue) * 2
-                if self.queue[0].priority < self.min_priority:
+            while not self.empty():
+                if self.queue[0][0] < self.min_priority:
                     return
 
-                def execute(item, queue_name):
-                    # set queue name
-                    item.name = "{}-{}".format(queue_name, item.name)
+                # execute item in queue
+                with ThreadPoolExecutor(1) as executor:
+                    if self.stop.isSet():
+                        executor._threads.clear()
+                        thread._threads_queues.clear()
+                        executor.shutdown()
+                        return
 
-                    # execute queue item
-                    item.run()
-
-                    # queue item finished
-                    item.finish()
-
-                # thread queue item
-                threading.Thread(target=execute, args=(self.queue.pop(0), self.queue_name)).start()
+                    executor.submit(self.callback)
 
             self.amActive = False
+
+    def callback(self):
+        item = self.get()[1]
+        threading.currentThread().setName(self.name)
+        item.run()
+        item.finish()
+
+    def shutdown(self):
+        self.stop.set()
 
 
 class QueueItem(object):
@@ -136,14 +128,8 @@ class QueueItem(object):
         self.added = None
 
     def run(self):
-        """Implementing classes should call this"""
         threading.currentThread().setName(self.name)
-
         self.inProgress = True
 
     def finish(self):
-        """Implementing Classes should call this"""
-
         self.inProgress = False
-
-        threading.currentThread().setName(self.name)

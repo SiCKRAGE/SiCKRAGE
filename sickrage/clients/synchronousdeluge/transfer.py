@@ -4,7 +4,7 @@ import struct
 import zlib
 from _ssl import PROTOCOL_SSLv3, CERT_NONE
 
-from clients.synchronousdeluge import rencode
+from sickrage.clients.synchronousdeluge import rencode
 
 __all__ = ["DelugeTransfer"]
 

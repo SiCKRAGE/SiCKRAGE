@@ -23,12 +23,12 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
-from core.common import countryList
-from core.databases import cache_db
-from core.helpers import show_names
-from core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
+from sickrage.core.common import countryList
+from sickrage.core.databases import cache_db
+from sickrage.core.helpers import show_names
+from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
     get_scene_exception_by_name
-from core.tv.show import TVShow
+from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 

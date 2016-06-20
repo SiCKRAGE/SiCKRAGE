@@ -1,6 +1,6 @@
 # This file is part of SickRage.
 #
-# URL: https://www.sickrage.tv
+# URL: https://www.sickrage.ca
 # Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # SickRage is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@ from __future__ import unicode_literals
 
 import os
 
-from core.caches.image_cache import ImageCache
-from core.media import Media
+from sickrage.core.caches.image_cache import ImageCache
+from sickrage.core.media import Media
 
 
 class Poster(Media):
@@ -29,7 +29,7 @@ class Poster(Media):
     Get the poster of a show
     """
 
-    def __init__(self, indexer_id, media_format=None):
+    def __init__(self, indexer_id, media_format='normal'):
         super(Poster, self).__init__(indexer_id, media_format)
 
     def get_default_media_name(self):

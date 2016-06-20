@@ -25,14 +25,14 @@ import re
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class TorrentDayProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentDayProvider, self).__init__("TorrentDay")
+        super(TorrentDayProvider, self).__init__("TorrentDay", 'classic.torrentday.com')
 
         self.supportsBacklog = True
 
@@ -47,12 +47,11 @@ class TorrentDayProvider(TorrentProvider):
 
         self.cache = TorrentDayCache(self)
 
-        self.urls = {'base_url': 'https://classic.torrentday.com',
-                     'login': 'https://classic.torrentday.com/torrents/',
-                     'search': 'https://classic.torrentday.com/V3/API/API.php',
-                     'download': 'https://classic.torrentday.com/download.php/%s/%s'}
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/torrents/'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/V3/API/API.php'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.cookies = None
 
@@ -61,11 +60,11 @@ class TorrentDayProvider(TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
         else:
 
             login_params = {'username': self.username,
@@ -73,31 +72,28 @@ class TorrentDayProvider(TorrentProvider):
                             'submit.x': 0,
                             'submit.y': 0}
 
-            response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-            if not response:
-                sickrage.srLogger.warning("Unable to connect to provider")
+            try:
+                response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            except Exception:
+                sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('You tried too often', response):
-                sickrage.srLogger.warning("Too many login access attempts")
+                sickrage.srCore.srLogger.warning("Too many login access attempts")
                 return False
 
             try:
-                if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and \
-                        requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
-                    self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
-                    self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
-
-                    self.cookies = {'uid': self._uid,
-                                    'pass': self._hash}
+                    self._uid = requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)['uid']
+                    self._hash = requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)['pass']
+                    self.cookies = {'uid': self._uid, 'pass': self._hash}
                     return True
-            except:
+            except Exception:
                 pass
 
-            sickrage.srLogger.warning("Unable to obtain cookie")
+            sickrage.srCore.srLogger.warning("Unable to obtain cookie")
             return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -106,11 +102,11 @@ class TorrentDayProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
@@ -120,23 +116,18 @@ class TorrentDayProvider(TorrentProvider):
                 if self.freeleech:
                     post_data.update({'free': 'on'})
 
-                parsedJSON = self.getURL(self.urls['search'], post_data=post_data, json=True)
-                if not parsedJSON:
-                    sickrage.srLogger.debug("No data returned from provider")
-                    continue
-
                 try:
-                    torrents = parsedJSON.get('Fs', [])[0].get('Cn', {}).get('torrents', [])
+                    parsedJSON = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
+                    torrents = parsedJSON['Fs'][0]['Cn']['torrents']
                 except Exception:
-                    sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 for torrent in torrents:
-
-                    title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent[b'name'])
-                    download_url = self.urls['download'] % (torrent[b'id'], torrent[b'fname'])
-                    seeders = int(torrent[b'seed'])
-                    leechers = int(torrent[b'leech'])
+                    title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent['name'])
+                    download_url = self.urls['download'] % (torrent['id'], torrent['fname'])
+                    seeders = int(torrent['seed'])
+                    leechers = int(torrent['leech'])
                     # FIXME
                     size = -1
 
@@ -145,15 +136,15 @@ class TorrentDayProvider(TorrentProvider):
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                            title, seeders, leechers))
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
+                                    title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers
-                    if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 
@@ -177,4 +168,4 @@ class TorrentDayCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

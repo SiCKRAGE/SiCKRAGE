@@ -25,24 +25,21 @@ from xml.parsers.expat import ExpatError
 import xmltodict
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import tryInt
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import tryInt
+from sickrage.providers import TorrentProvider
 
 
 class ExtraTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(ExtraTorrentProvider, self).__init__("ExtraTorrent")
+        super(ExtraTorrentProvider, self).__init__("ExtraTorrent",'extratorrent.cc')
 
-        self.urls = {
-            'index': 'http://extratorrent.cc',
-            'rss': 'http://extratorrent.cc/rss.xml',
-        }
-
-        self.url = self.urls['index']
+        self.urls.update({
+            'rss': '{base_url}/rss.xml'.format(base_url=self.urls['base_url'])
+        })
 
         self.supportsBacklog = True
-        self.public = True
+
         self.ratio = None
         self.minseed = None
         self.minleech = None
@@ -51,71 +48,74 @@ class ExtraTorrentProvider(TorrentProvider):
 
         self.search_params = {'cid': 8}
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 try:
-                    self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
-                    data = self.getURL(self.urls['rss'], params=self.search_params)
-                    if not data:
-                        sickrage.srLogger.debug("No data returned from provider")
+                    self.search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string})
+
+                    try:
+                        data = sickrage.srCore.srWebSession.get(self.urls['rss'], params=self.search_params).text
+                    except Exception:
+                        sickrage.srCore.srLogger.debug("No data returned from provider")
                         continue
 
                     if not data.startswith('<?xml'):
-                        sickrage.srLogger.info('Expected xml but got something else, is your mirror failing?')
+                        sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
                     try:
                         data = xmltodict.parse(data)
                     except ExpatError:
-                        sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                        sickrage.srCore.srLogger.error(
+                            "Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                        sickrage.srLogger.debug("Malformed rss returned, skipping")
+                    if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
+                        sickrage.srCore.srLogger.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
-                    entries = data[b'rss'][b'channel'][b'item']
+                    entries = data['rss']['channel']['item']
                     entries = entries if isinstance(entries, list) else [entries]
 
                     for item in entries:
-                        title = item[b'title'].decode('utf-8')
-                        # info_hash = item[b'info_hash']
-                        size = int(item[b'size'])
-                        seeders = tryInt(item[b'seeders'], 0)
-                        leechers = tryInt(item[b'leechers'], 0)
-                        download_url = item[b'enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(
-                                item[b'link'])
+                        title = item['title'].decode('utf-8')
+                        # info_hash = item['info_hash']
+                        size = int(item['size'])
+                        seeders = tryInt(item['seeders'], 0)
+                        leechers = tryInt(item['leechers'], 0)
+                        download_url = item['enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(
+                            item['link'])
 
                         if not all([title, download_url]):
                             continue
 
                             # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug("Found result: %s " % title)
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
                 except (AttributeError, TypeError, KeyError, ValueError):
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -125,15 +125,11 @@ class ExtraTorrentProvider(TorrentProvider):
         return results
 
     def _magnet_from_details(self, link):
-        details = self.getURL(link)
-        if not details:
+        try:
+            details = sickrage.srCore.srWebSession.get(link).text
+            return re.search(r'href="(magnet.*?)"', details).group(1) or ''
+        except Exception:
             return ''
-
-        match = re.search(r'href="(magnet.*?)"', details)
-        if not match:
-            return ''
-
-        return match.group(1)
 
     def seedRatio(self):
         return self.ratio
@@ -147,4 +143,4 @@ class ExtraTorrentCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

@@ -4,9 +4,9 @@ import platform
 from collections import defaultdict
 from itertools import imap
 
-from clients.synchronousdeluge.exceptions import DelugeRPCError
-from clients.synchronousdeluge.protocol import DelugeRPCRequest, DelugeRPCResponse
-from clients.synchronousdeluge.transfer import DelugeTransfer
+from sickrage.clients.synchronousdeluge.exceptions import DelugeRPCError
+from sickrage.clients.synchronousdeluge.protocol import DelugeRPCRequest, DelugeRPCResponse
+from sickrage.clients.synchronousdeluge.transfer import DelugeTransfer
 
 __all__ = ["DelugeClient"]
 

@@ -21,11 +21,10 @@ from __future__ import unicode_literals
 
 import functools
 import locale
-
 from datetime import datetime
 
 import sickrage
-from core.updaters.tz_updater import sr_timezone
+from sickrage.core.updaters.tz_updater import sr_timezone
 
 
 date_presets = (
@@ -111,7 +110,7 @@ class srDateTime(datetime):
     @static_or_instance
     def convert_to_setting(self, dt=None):
         try:
-            if sickrage.srConfig.TIMEZONE_DISPLAY == 'local':
+            if sickrage.srCore.srConfig.TIMEZONE_DISPLAY == 'local':
                 return dt.astimezone(sr_timezone) if self is None else self.astimezone(sr_timezone)
             else:
                 return dt if self is None else self
@@ -153,16 +152,16 @@ class srDateTime(datetime):
                     if t_preset is not None:
                         strt = dt.strftime(t_preset)
                     elif show_seconds:
-                        strt = dt.strftime(sickrage.srConfig.TIME_PRESET_W_SECONDS)
+                        strt = dt.strftime(sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS)
                     else:
-                        strt = dt.strftime(sickrage.srConfig.TIME_PRESET)
+                        strt = dt.strftime(sickrage.srCore.srConfig.TIME_PRESET)
             else:
                 if t_preset is not None:
                     strt = self.strftime(t_preset)
                 elif show_seconds:
-                    strt = self.strftime(sickrage.srConfig.TIME_PRESET_W_SECONDS)
+                    strt = self.strftime(sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS)
                 else:
-                    strt = self.strftime(sickrage.srConfig.TIME_PRESET)
+                    strt = self.strftime(sickrage.srCore.srConfig.TIME_PRESET)
         finally:
             try:
                 if srDateTime.has_locale:
@@ -196,12 +195,12 @@ class srDateTime(datetime):
                     if d_preset is not None:
                         strd = dt.strftime(d_preset)
                     else:
-                        strd = dt.strftime(sickrage.srConfig.DATE_PRESET)
+                        strd = dt.strftime(sickrage.srCore.srConfig.DATE_PRESET)
             else:
                 if d_preset is not None:
                     strd = self.strftime(d_preset)
                 else:
-                    strd = self.strftime(sickrage.srConfig.DATE_PRESET)
+                    strd = self.strftime(sickrage.srCore.srConfig.DATE_PRESET)
         finally:
 
             try:
@@ -237,7 +236,7 @@ class srDateTime(datetime):
                     if d_preset is not None:
                         strd = dt.strftime(d_preset)
                     else:
-                        strd = dt.strftime(sickrage.srConfig.DATE_PRESET)
+                        strd = dt.strftime(sickrage.srCore.srConfig.DATE_PRESET)
                     try:
                         if srDateTime.has_locale:
                             locale.setlocale(locale.LC_TIME, 'en_US')
@@ -250,14 +249,14 @@ class srDateTime(datetime):
                     if t_preset is not None:
                         strd += ', {}'.format(dt.strftime(t_preset))
                     elif show_seconds:
-                        strd += ', {}'.format(dt.strftime(sickrage.srConfig.TIME_PRESET_W_SECONDS))
+                        strd += ', {}'.format(dt.strftime(sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS))
                     else:
-                        strd += ', {}'.format(dt.strftime(sickrage.srConfig.TIME_PRESET))
+                        strd += ', {}'.format(dt.strftime(sickrage.srCore.srConfig.TIME_PRESET))
             else:
                 if d_preset is not None:
                     strd = self.strftime(d_preset)
                 else:
-                    strd = self.strftime(sickrage.srConfig.DATE_PRESET)
+                    strd = self.strftime(sickrage.srCore.srConfig.DATE_PRESET)
 
                 try:
                     if srDateTime.has_locale:
@@ -271,9 +270,9 @@ class srDateTime(datetime):
                 if t_preset is not None:
                     strd += ', {}'.format(dt.strftime(t_preset))
                 elif show_seconds:
-                    strd += ', {}'.format(dt.strftime(sickrage.srConfig.TIME_PRESET_W_SECONDS))
+                    strd += ', {}'.format(dt.strftime(sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS))
                 else:
-                    strd += ', {}'.format(dt.strftime(sickrage.srConfig.TIME_PRESET))
+                    strd += ', {}'.format(dt.strftime(sickrage.srCore.srConfig.TIME_PRESET))
         finally:
             try:
                 if srDateTime.has_locale:

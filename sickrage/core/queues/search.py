@@ -23,12 +23,12 @@ import time
 import traceback
 
 import sickrage
-from core.common import cpu_presets
-from core.queues import GenericQueue, QueueItem, QueuePriorities
-from core.search import searchForNeededEpisodes, searchProviders, \
+from sickrage.core.common import cpu_presets
+from sickrage.core.queues import srQueue, QueueItem, QueuePriorities
+from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
     snatchEpisode
-from core.tv.show.history import FailedHistory, History
-from core.ui import notifications
+from sickrage.core.tv.show.history import FailedHistory, History
+
 
 search_queue_lock = threading.Lock()
 
@@ -40,47 +40,51 @@ MANUAL_SEARCH = 40
 MANUAL_SEARCH_HISTORY = []
 MANUAL_SEARCH_HISTORY_SIZE = 100
 
+def fifo(myList, item, maxSize=100):
+    if len(myList) >= maxSize:
+        myList.pop(0)
+    myList.append(item)
 
-class srSearchQueue(GenericQueue):
-    def __init__(self, *args, **kwargs):
-        super(srSearchQueue, self).__init__()
+class srSearchQueue(srQueue):
+    def __init__(self):
+        srQueue.__init__(self)
         self.queue_name = "SEARCHQUEUE"
 
     def run(self, force=False):
-        super(srSearchQueue, self).run(force)
+        srQueue.run(self, force)
 
     def is_in_queue(self, show, segment):
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, BacklogQueueItem) and cur_item.show == show and cur_item.segment == segment:
                 return True
         return False
 
     def is_ep_in_queue(self, segment):
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.segment == segment:
                 return True
         return False
 
     def is_show_in_queue(self, show):
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexerid == show:
                 return True
         return False
 
     def get_all_ep_from_queue(self, show):
         ep_obj_list = []
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
                 ep_obj_list.append(cur_item)
         return ep_obj_list
 
     def pause_backlog(self):
         self.min_priority = QueuePriorities.HIGH
-        sickrage.srCore.SCHEDULER.pause_job('BACKLOG')
+        sickrage.srCore.srScheduler.pause_job('BACKLOG')
 
     def unpause_backlog(self):
         self.min_priority = 0
-        sickrage.srCore.SCHEDULER.resume_job('BACKLOG')
+        sickrage.srCore.srScheduler.resume_job('BACKLOG')
 
     def is_backlog_paused(self):
         # backlog priorities are NORMAL, this should be done properly somewhere
@@ -93,200 +97,189 @@ class srSearchQueue(GenericQueue):
         return False
 
     def is_backlog_in_progress(self):
-        for cur_item in self.queue + [self.currentItem]:
+        for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
         return False
 
     def is_dailysearch_in_progress(self):
-        for cur_item in self.queue + [self.currentItem]:
+        for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
         return False
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for cur_item in self.queue:
+        for cur_priority, cur_item in self.queue:
             if isinstance(cur_item, DailySearchQueueItem):
-                length[b'daily'] += 1
+                length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):
-                length[b'backlog'] += 1
+                length['backlog'] += 1
             elif isinstance(cur_item, ManualSearchQueueItem):
-                length[b'manual'] += 1
+                length['manual'] += 1
             elif isinstance(cur_item, FailedQueueItem):
-                length[b'failed'] += 1
+                length['failed'] += 1
         return length
 
-    def add_item(self, item):
+    @property
+    def queue(self):
+        return self.queue
+
+    @queue.setter
+    def queue(self, item):
+        if not len(sickrage.srCore.providersDict.enabled()):
+            sickrage.srCore.srLogger.warning("Search Failed, No NZB/Torrent providers enabled")
+            return
+
         if isinstance(item, DailySearchQueueItem):
             # daily searches
-            GenericQueue.add_item(self, item)
+            self.put(item)
         elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show, item.segment):
             # backlog searches
-            GenericQueue.add_item(self, item)
+            self.put(item)
         elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.segment):
             # manual and failed searches
-            GenericQueue.add_item(self, item)
+            self.put(item)
         else:
-            sickrage.srLogger.debug("Not adding item, it's already in the queue")
+            sickrage.srCore.srLogger.debug("Not adding item, it's already in the queue")
 
 
 class DailySearchQueueItem(QueueItem):
     def __init__(self):
-        self.success = None
-        QueueItem.__init__(self, 'Daily Search', DAILY_SEARCH)
+        super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
+        self.success = False
+        self.started = False
 
     def run(self):
-        QueueItem.run(self)
+        super(DailySearchQueueItem, self).run()
+        self.started = True
 
         try:
-            sickrage.srLogger.info("Beginning daily search for new episodes")
+            sickrage.srCore.srLogger.info("Beginning daily search for new episodes")
             foundResults = searchForNeededEpisodes()
-
-            if not len(foundResults):
-                sickrage.srLogger.info("No needed episodes found")
-            else:
+            if foundResults:
                 for result in foundResults:
                     # just use the first result for now
-                    sickrage.srLogger.info("Downloading " + result.name + " from " + result.provider.name)
+                    sickrage.srCore.srLogger.info("Downloading " + result.name + " from " + result.provider.name)
                     self.success = snatchEpisode(result)
 
                     # give the CPU a break
-                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+            else:
+                sickrage.srCore.srLogger.info("No needed episodes found")
         except Exception:
-            sickrage.srLogger.debug(traceback.format_exc())
-
-        if self.success is None:
-            self.success = False
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
 
 class ManualSearchQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
-        QueueItem.__init__(self, 'Manual Search', MANUAL_SEARCH)
-        self.priority = QueuePriorities.HIGH
+        super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
         self.name = 'MANUAL-' + str(show.indexerid)
-        self.success = None
         self.show = show
         self.segment = segment
-        self.started = None
+        self.success = False
+        self.started = False
+        self.priority = QueuePriorities.HIGH
         self.downCurQuality = downCurQuality
 
     def run(self):
-        QueueItem.run(self)
+        super(ManualSearchQueueItem, self).run()
+        self.started = True
 
         try:
-            sickrage.srLogger.info("Beginning manual search for: [" + self.segment.prettyName() + "]")
-            self.started = True
-
+            sickrage.srCore.srLogger.info("Beginning manual search for: [" + self.segment.prettyName() + "]")
             searchResult = searchProviders(self.show, [self.segment], True, self.downCurQuality)
-
             if searchResult:
                 # just use the first result for now
-                sickrage.srLogger.info("Downloading " + searchResult[0].name + " from " + searchResult[0].provider.name)
+                sickrage.srCore.srLogger.info("Downloading " + searchResult[0].name + " from " + searchResult[0].provider.name)
                 self.success = snatchEpisode(searchResult[0])
 
                 # give the CPU a break
-                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
             else:
-                notifications.message('No downloads were found',
+                sickrage.srCore.srNotifications.message('No downloads were found',
                                       "Couldn't find a download for <i>%s</i>" % self.segment.prettyName())
 
-                sickrage.srLogger.info("Unable to find a download for: [" + self.segment.prettyName() + "]")
+                sickrage.srCore.srLogger.info("Unable to find a download for: [" + self.segment.prettyName() + "]")
 
         except Exception:
-            sickrage.srLogger.debug(traceback.format_exc())
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
 
-        if self.success is None:
-            self.success = False
-
 class BacklogQueueItem(QueueItem):
     def __init__(self, show, segment):
-        QueueItem.__init__(self, 'Backlog', BACKLOG_SEARCH)
-        self.priority = QueuePriorities.LOW
-        self.name = 'BACKLOG-' + str(show.indexerid)
-        self.success = None
+        super(BacklogQueueItem, self).__init__('Backlog', BACKLOG_SEARCH)
         self.show = show
+        self.name = 'BACKLOG-' + str(show.indexerid)
+        self.success = False
+        self.started = False
         self.segment = segment
+        self.priority = QueuePriorities.LOW
 
     def run(self):
-        QueueItem.run(self)
+        super(BacklogQueueItem, self).run()
+        self.started = True
 
         if not self.show.paused:
             try:
-                sickrage.srLogger.info("Beginning backlog search for: [" + self.show.name + "]")
+                sickrage.srCore.srLogger.info("Beginning backlog search for: [" + self.show.name + "]")
                 searchResult = searchProviders(self.show, self.segment, False)
-
                 if searchResult:
                     for result in searchResult:
                         # just use the first result for now
-                        sickrage.srLogger.info("Downloading " + result.name + " from " + result.provider.name)
+                        sickrage.srCore.srLogger.info("Downloading " + result.name + " from " + result.provider.name)
                         snatchEpisode(result)
 
                         # give the CPU a break
-                        time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                        time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
                 else:
-                    sickrage.srLogger.info("No needed episodes found during backlog search for: [" + self.show.name + "]")
+                    sickrage.srCore.srLogger.info("No needed episodes found during backlog search for: [" + self.show.name + "]")
             except Exception:
-                sickrage.srLogger.debug(traceback.format_exc())
+                sickrage.srCore.srLogger.debug(traceback.format_exc())
 
 class FailedQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
-        QueueItem.__init__(self, 'Retry', FAILED_SEARCH)
-        self.priority = QueuePriorities.HIGH
-        self.name = 'RETRY-' + str(show.indexerid)
+        super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
         self.show = show
+        self.name = 'RETRY-' + str(show.indexerid)
+        self.success = False
+        self.started = False
         self.segment = segment
-        self.success = None
-        self.started = None
+        self.priority = QueuePriorities.HIGH
         self.downCurQuality = downCurQuality
 
     def run(self):
-        QueueItem.run(self)
+        super(FailedQueueItem, self).run()
         self.started = True
 
         try:
             for epObj in self.segment:
-
-                sickrage.srLogger.info("Marking episode as bad: [" + epObj.prettyName() + "]")
+                sickrage.srCore.srLogger.info("Marking episode as bad: [" + epObj.prettyName() + "]")
 
                 FailedHistory.markFailed(epObj)
-
                 (release, provider) = FailedHistory.findFailedRelease(epObj)
                 if release:
                     FailedHistory.logFailed(release)
                     History.logFailed(epObj, release, provider)
 
                 FailedHistory.revertFailedEpisode(epObj)
-                sickrage.srLogger.info("Beginning failed download search for: [" + epObj.prettyName() + "]")
+                sickrage.srCore.srLogger.info("Beginning failed download search for: [" + epObj.prettyName() + "]")
 
             # If it is wanted, self.downCurQuality doesnt matter
             # if it isnt wanted, we need to make sure to not overwrite the existing ep that we reverted to!
             searchResult = searchProviders(self.show, self.segment, True, False)
-
             if searchResult:
                 for result in searchResult:
                     # just use the first result for now
-                    sickrage.srLogger.info("Downloading " + result.name + " from " + result.provider.name)
+                    sickrage.srCore.srLogger.info("Downloading " + result.name + " from " + result.provider.name)
                     snatchEpisode(result)
 
                     # give the CPU a break
-                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
-            else:
-                pass
-                # LOGGER.info(u"No valid episode found to retry for: [" + self.segment.prettyName() + "]")
+                    time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
         except Exception:
-            sickrage.srLogger.debug(traceback.format_exc())
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
-
-        if self.success is None:
-            self.success = False
-
-def fifo(myList, item, maxSize=100):
-    if len(myList) >= maxSize:
-        myList.pop(0)
-    myList.append(item)

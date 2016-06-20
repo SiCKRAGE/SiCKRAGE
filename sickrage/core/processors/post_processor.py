@@ -28,19 +28,19 @@ import stat
 import subprocess
 
 import sickrage
-from core.common import Quality, ARCHIVED, DOWNLOADED
-from core.databases import main_db
-from core.exceptions import EpisodeNotFoundException, \
+from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import EpisodeNotFoundException, \
     EpisodePostProcessingFailedException, ShowDirectoryNotFoundException
-from core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
+from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
-    set_up_anidb_connection, isFileLocked, verify_freespace, delete_empty_folders, make_dirs
-from core.nameparser import InvalidNameException, InvalidShowException, \
+    isFileLocked, verify_freespace, delete_empty_folders, make_dirs
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.searchers.subtitle_searcher import wantedLanguages
-from core.tv.show.history import FailedHistory, History
-from indexers.adba import aniDBAbstracter
-from notifiers import srNotifiers
+from sickrage.core.searchers.subtitle_searcher import wantedLanguages
+from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.indexers.adba import aniDBAbstracter
+from sickrage.notifiers import srNotifiers
 
 
 class PostProcessor(object):
@@ -77,7 +77,7 @@ class PostProcessor(object):
         # name of the NZB that resulted in this folder
         self.nzb_name = nzb_name
 
-        self.process_method = process_method if process_method else sickrage.srConfig.PROCESS_METHOD
+        self.process_method = process_method if process_method else sickrage.srCore.srConfig.PROCESS_METHOD
 
         self.in_history = False
 
@@ -102,7 +102,7 @@ class PostProcessor(object):
         :param message: The string to log (unicode)
         :param level: The log level to use (optional)
         """
-        sickrage.srLogger.log(level or sickrage.srLogger.INFO, message)
+        sickrage.srCore.srLogger.log(level or sickrage.srCore.srLogger.INFO, message)
         self.log += message + '\n'
 
     def _checkForExistingFile(self, existing_file):
@@ -120,7 +120,7 @@ class PostProcessor(object):
         """
 
         if not existing_file:
-            self._log("There is no existing file so there's no worries about replacing it", sickrage.srLogger.DEBUG)
+            self._log("There is no existing file so there's no worries about replacing it", sickrage.srCore.srLogger.DEBUG)
             return PostProcessor.DOESNT_EXIST
 
         # if the new file exists, return the appropriate code depending on the size
@@ -128,20 +128,20 @@ class PostProcessor(object):
 
             # see if it's bigger than our old file
             if os.path.getsize(existing_file) > os.path.getsize(self.file_path):
-                self._log("File " + existing_file + " is larger than " + self.file_path, sickrage.srLogger.DEBUG)
+                self._log("File " + existing_file + " is larger than " + self.file_path, sickrage.srCore.srLogger.DEBUG)
                 return PostProcessor.EXISTS_LARGER
 
             elif os.path.getsize(existing_file) == os.path.getsize(self.file_path):
-                self._log("File " + existing_file + " is the same size as " + self.file_path, sickrage.srLogger.DEBUG)
+                self._log("File " + existing_file + " is the same size as " + self.file_path, sickrage.srCore.srLogger.DEBUG)
                 return PostProcessor.EXISTS_SAME
 
             else:
-                self._log("File " + existing_file + " is smaller than " + self.file_path, sickrage.srLogger.DEBUG)
+                self._log("File " + existing_file + " is smaller than " + self.file_path, sickrage.srCore.srLogger.DEBUG)
                 return PostProcessor.EXISTS_SMALLER
 
         else:
             self._log("File " + existing_file + " doesn't exist so there's no worries about replacing it",
-                      sickrage.srLogger.DEBUG)
+                      sickrage.srCore.srLogger.DEBUG)
             return PostProcessor.DOESNT_EXIST
 
     def list_associated_files(self, file_path, base_name_only=False, subtitles_only=False, subfolders=False):
@@ -216,9 +216,9 @@ class PostProcessor(object):
                 file_path_list.append(associated_file_path)
 
         if file_path_list:
-            self._log("Found the following associated files: " + str(file_path_list), sickrage.srLogger.DEBUG)
+            self._log("Found the following associated files: " + str(file_path_list), sickrage.srCore.srLogger.DEBUG)
         else:
-            self._log("No associated files were during this pass", sickrage.srLogger.DEBUG)
+            self._log("No associated files were during this pass", sickrage.srCore.srLogger.DEBUG)
 
         return file_path_list
 
@@ -239,27 +239,27 @@ class PostProcessor(object):
             file_list = file_list + self.list_associated_files(file_path, base_name_only=True, subfolders=True)
 
         if not file_list:
-            self._log("There were no files associated with " + file_path + ", not deleting anything", sickrage.srLogger.DEBUG)
+            self._log("There were no files associated with " + file_path + ", not deleting anything", sickrage.srCore.srLogger.DEBUG)
             return
 
         # delete the file and any other files which we want to delete
         for cur_file in file_list:
             if os.path.isfile(cur_file):
-                self._log("Deleting file " + cur_file, sickrage.srLogger.DEBUG)
+                self._log("Deleting file " + cur_file, sickrage.srCore.srLogger.DEBUG)
                 # check first the read-only attribute
                 file_attribute = os.stat(cur_file)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
-                    self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable', sickrage.srLogger.DEBUG)
+                    self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable', sickrage.srCore.srLogger.DEBUG)
                     try:
                         os.chmod(cur_file, stat.S_IWRITE)
                     except:
-                        self._log('Cannot change permissions of ' + cur_file, sickrage.srLogger.WARNING)
+                        self._log('Cannot change permissions of ' + cur_file, sickrage.srCore.srLogger.WARNING)
 
                 os.remove(cur_file)
 
                 # do the library update for synoindex
-                sickrage.srCore.NOTIFIERS.synoindex_notifier.deleteFile(cur_file)
+                sickrage.srCore.notifiersDict.synoindex_notifier.deleteFile(cur_file)
 
     def _combined_file_operation(self, file_path, new_path, new_base_name, associated_files=False, action=None,
                                  subs=False):
@@ -276,7 +276,7 @@ class PostProcessor(object):
         """
 
         if not action:
-            self._log("Must provide an action for the combined file operation", sickrage.srLogger.ERROR)
+            self._log("Must provide an action for the combined file operation", sickrage.srCore.srLogger.ERROR)
             return
 
         file_list = [file_path]
@@ -286,7 +286,7 @@ class PostProcessor(object):
             file_list = file_list + self.list_associated_files(file_path, subtitles_only=True)
 
         if not file_list:
-            self._log("There were no files associated with " + file_path + ", not moving anything", sickrage.srLogger.DEBUG)
+            self._log("There were no files associated with " + file_path + ", not moving anything", sickrage.srCore.srLogger.DEBUG)
             return
 
         # create base name with file_path (media_file without .extension)
@@ -308,7 +308,7 @@ class PostProcessor(object):
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
-            if cur_extension == 'nfo' and sickrage.srConfig.NFO_RENAME == True:
+            if cur_extension == 'nfo' and sickrage.srCore.srConfig.NFO_RENAME == True:
                 cur_extension = 'nfo-orig'
 
             # If new base name then convert name
@@ -318,11 +318,11 @@ class PostProcessor(object):
             else:
                 new_file_name = replaceExtension(cur_file_name, cur_extension)
 
-            if sickrage.srConfig.SUBTITLES_DIR and cur_extension in subtitleExtensions:
-                subs_new_path = os.path.join(new_path, sickrage.srConfig.SUBTITLES_DIR)
+            if sickrage.srCore.srConfig.SUBTITLES_DIR and cur_extension in subtitleExtensions:
+                subs_new_path = os.path.join(new_path, sickrage.srCore.srConfig.SUBTITLES_DIR)
                 dir_exists = makeDir(subs_new_path)
                 if not dir_exists:
-                    sickrage.srLogger.error("Unable to create subtitles folder " + subs_new_path)
+                    sickrage.srCore.srLogger.error("Unable to create subtitles folder " + subs_new_path)
                 else:
                     chmodAsParent(subs_new_path)
                 new_file_path = os.path.join(subs_new_path, new_file_name)
@@ -343,13 +343,13 @@ class PostProcessor(object):
 
         def _int_move(cur_file_path, new_file_path):
 
-            self._log("Moving file from " + cur_file_path + " to " + new_file_path, sickrage.srLogger.DEBUG)
+            self._log("Moving file from " + cur_file_path + " to " + new_file_path, sickrage.srCore.srLogger.DEBUG)
             try:
                 moveFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
-                          sickrage.srLogger.ERROR)
+                          sickrage.srCore.srLogger.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_move,
@@ -367,12 +367,12 @@ class PostProcessor(object):
 
         def _int_copy(cur_file_path, new_file_path):
 
-            self._log("Copying file from " + cur_file_path + " to " + new_file_path, sickrage.srLogger.DEBUG)
+            self._log("Copying file from " + cur_file_path + " to " + new_file_path, sickrage.srCore.srLogger.DEBUG)
             try:
                 copyFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                sickrage.srLogger.error("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message))
+                sickrage.srCore.srLogger.error("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message))
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
@@ -390,12 +390,12 @@ class PostProcessor(object):
 
         def _int_hard_link(cur_file_path, new_file_path):
 
-            self._log("Hard linking file from " + cur_file_path + " to " + new_file_path, sickrage.srLogger.DEBUG)
+            self._log("Hard linking file from " + cur_file_path + " to " + new_file_path, sickrage.srCore.srLogger.DEBUG)
             try:
                 hardlinkFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to link file {} to {}: {}".format(cur_file_path, new_file_path, e)), sickrage.srLogger.ERROR
+                self._log("Unable to link file {} to {}: {}".format(cur_file_path, new_file_path, e)), sickrage.srCore.srLogger.ERROR
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_hard_link,
@@ -413,13 +413,13 @@ class PostProcessor(object):
 
         def _int_move_and_sym_link(cur_file_path, new_file_path):
 
-            self._log("Moving then symbolic linking file from " + cur_file_path + " to " + new_file_path, sickrage.srLogger.DEBUG)
+            self._log("Moving then symbolic linking file from " + cur_file_path + " to " + new_file_path, sickrage.srCore.srLogger.DEBUG)
             try:
                 moveAndSymlinkFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
-                          sickrage.srLogger.ERROR)
+                          sickrage.srCore.srLogger.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files,
@@ -457,10 +457,10 @@ class PostProcessor(object):
             if len(sql_results) == 0:
                 continue
 
-            indexer_id = int(sql_results[0][b"showid"])
-            season = int(sql_results[0][b"season"])
-            quality = int(sql_results[0][b"quality"])
-            version = int(sql_results[0][b"version"])
+            indexer_id = int(sql_results[0]["showid"])
+            season = int(sql_results[0]["season"])
+            quality = int(sql_results[0]["quality"])
+            version = int(sql_results[0]["version"])
 
             if quality == Quality.UNKNOWN:
                 quality = None
@@ -470,7 +470,7 @@ class PostProcessor(object):
             self.in_history = True
             self.version = version
             to_return = (show, season, [], quality, version)
-            self._log("Found result in history: " + str(to_return), sickrage.srLogger.DEBUG)
+            self._log("Found result in history: " + str(to_return), sickrage.srCore.srLogger.DEBUG)
 
             return to_return
 
@@ -500,12 +500,12 @@ class PostProcessor(object):
                         remove_extension(os.path.basename(parse_result.original_name)))
 
         else:
-            sickrage.srLogger.debug("Parse result not sufficient (all following have to be set). will not save release name")
-            sickrage.srLogger.debug("Parse result(series_name): " + str(parse_result.series_name))
-            sickrage.srLogger.debug("Parse result(season_number): " + str(parse_result.season_number))
-            sickrage.srLogger.debug("Parse result(episode_numbers): " + str(parse_result.episode_numbers))
-            sickrage.srLogger.debug("Parse result(air_date): " + str(parse_result.air_date))
-            sickrage.srLogger.debug("Parse result(release_group): " + str(parse_result.release_group))
+            sickrage.srCore.srLogger.debug("Parse result not sufficient (all following have to be set). will not save release name")
+            sickrage.srCore.srLogger.debug("Parse result(series_name): " + str(parse_result.series_name))
+            sickrage.srCore.srLogger.debug("Parse result(season_number): " + str(parse_result.season_number))
+            sickrage.srCore.srLogger.debug("Parse result(episode_numbers): " + str(parse_result.episode_numbers))
+            sickrage.srCore.srLogger.debug("Parse result(air_date): " + str(parse_result.air_date))
+            sickrage.srCore.srLogger.debug("Parse result(release_group): " + str(parse_result.release_group))
 
     def _analyze_name(self, name):
         """
@@ -522,7 +522,7 @@ class PostProcessor(object):
         if not name:
             return to_return
 
-        sickrage.srLogger.debug("Analyzing name " + repr(name))
+        sickrage.srCore.srLogger.debug("Analyzing name " + repr(name))
 
         name = remove_non_release_groups(remove_extension(name))
 
@@ -566,11 +566,11 @@ class PostProcessor(object):
 
         :param filePath: file to add to mylist
         """
-        if set_up_anidb_connection():
+        if sickrage.srCore.ADBA_CONNECTION:
             if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
-                self.anidbEpisode = self._build_anidb_episode(sickrage.srConfig.ADBA_CONNECTION, filePath)
+                self.anidbEpisode = self._build_anidb_episode(sickrage.srCore.ADBA_CONNECTION, filePath)
 
-            self._log("Adding the file to the anidb mylist", sickrage.srLogger.DEBUG)
+            self._log("Adding the file to the anidb mylist", sickrage.srCore.srLogger.DEBUG)
             try:
                 self.anidbEpisode.add_to_mylist(status=1)  # status = 1 sets the status of the file to "internal HDD"
             except Exception as e:
@@ -612,7 +612,7 @@ class PostProcessor(object):
             try:
                 (cur_show, cur_season, cur_episodes, cur_quality, cur_version) = cur_attempt()
             except (InvalidNameException, InvalidShowException) as e:
-                sickrage.srLogger.debug("Unable to parse, skipping: {}".format(e.message))
+                sickrage.srCore.srLogger.debug("Unable to parse, skipping: {}".format(e.message))
                 continue
 
             if not cur_show:
@@ -636,7 +636,7 @@ class PostProcessor(object):
             if season == -1 and show and episodes:
                 self._log(
                         "Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
-                        sickrage.srLogger.DEBUG)
+                        sickrage.srCore.srLogger.DEBUG)
                 airdate = episodes[0].toordinal()
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
@@ -658,7 +658,7 @@ class PostProcessor(object):
                     else:
                         self._log(
                                 "Unable to find episode with date " +
-                                str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping", sickrage.srLogger.DEBUG)
+                                str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping", sickrage.srCore.srLogger.DEBUG)
                         # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
                         episodes = []
                         continue
@@ -672,7 +672,7 @@ class PostProcessor(object):
                 if int(numseasonsSQlResult[0][0]) == 1 and season is None:
                     self._log(
                             "Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
-                            sickrage.srLogger.DEBUG)
+                            sickrage.srCore.srLogger.DEBUG)
                     season = 1
 
             if show and season and episodes:
@@ -694,7 +694,7 @@ class PostProcessor(object):
 
         root_ep = None
         for cur_episode in episodes:
-            self._log("Retrieving episode object for " + str(season) + "x" + str(cur_episode), sickrage.srLogger.DEBUG)
+            self._log("Retrieving episode object for " + str(season) + "x" + str(cur_episode), sickrage.srCore.srLogger.DEBUG)
 
             # now that we've figured out which episode this file is just load it manually
             try:
@@ -702,7 +702,7 @@ class PostProcessor(object):
                 if not curEp:
                     raise EpisodeNotFoundException()
             except EpisodeNotFoundException as e:
-                self._log("Unable to create episode: {}".format(e.message)), sickrage.srLogger.DEBUG
+                self._log("Unable to create episode: {}".format(e.message)), sickrage.srCore.srLogger.DEBUG
                 raise EpisodePostProcessingFailedException()
 
             # associate all the episodes together under a single root episode
@@ -729,7 +729,7 @@ class PostProcessor(object):
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                         "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
-                        sickrage.srLogger.DEBUG)
+                        sickrage.srCore.srLogger.DEBUG)
                 return ep_quality
 
         # nzb name is the most reliable if it exists, followed by folder name and lastly file name
@@ -745,11 +745,11 @@ class PostProcessor(object):
             ep_quality = Quality.nameQuality(cur_name, ep_obj.show.is_anime)
             self._log(
                     "Looking up quality for name " + cur_name + ", got " + Quality.qualityStrings[ep_quality],
-                    sickrage.srLogger.DEBUG)
+                    sickrage.srCore.srLogger.DEBUG)
 
             # if we find a good one then use it
             if ep_quality != Quality.UNKNOWN:
-                sickrage.srLogger.debug(cur_name + " looks like it has quality " + Quality.qualityStrings[
+                sickrage.srCore.srLogger.debug(cur_name + " looks like it has quality " + Quality.qualityStrings[
                     ep_quality] + ", using that")
                 return ep_quality
 
@@ -759,17 +759,17 @@ class PostProcessor(object):
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                         "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
-                        sickrage.srLogger.DEBUG)
+                        sickrage.srCore.srLogger.DEBUG)
                 return ep_quality
 
         # Try guessing quality from the file name
         ep_quality = Quality.assumeQuality(self.file_path)
         self._log(
                 "Guessing quality for name " + self.file_name + ", got " + Quality.qualityStrings[ep_quality],
-                sickrage.srLogger.DEBUG)
+                sickrage.srCore.srLogger.DEBUG)
 
         if ep_quality != Quality.UNKNOWN:
-            sickrage.srLogger.debug(self.file_name + " looks like it has quality " + Quality.qualityStrings[
+            sickrage.srCore.srLogger.debug(self.file_name + " looks like it has quality " + Quality.qualityStrings[
                 ep_quality] + ", using that")
 
         return ep_quality
@@ -780,12 +780,12 @@ class PostProcessor(object):
 
         :param ep_obj: The object to use when calling the extra script
         """
-        for curScriptName in sickrage.srConfig.EXTRA_SCRIPTS:
+        for curScriptName in sickrage.srCore.srConfig.EXTRA_SCRIPTS:
 
             # generate a safe command line string to execute the script and provide all the parameters
             script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
             script_cmd[0] = os.path.abspath(script_cmd[0])
-            self._log("Absolute path to script: " + script_cmd[0], sickrage.srLogger.DEBUG)
+            self._log("Absolute path to script: " + script_cmd[0], sickrage.srCore.srLogger.DEBUG)
 
             script_cmd = script_cmd + [ep_obj.location, self.file_path, str(ep_obj.show.indexerid), str(ep_obj.season),
                                        str(ep_obj.episode), str(ep_obj.airdate)]
@@ -796,7 +796,7 @@ class PostProcessor(object):
                 p = subprocess.Popen(script_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
                 out, _ = p.communicate()  # @UnusedVariable
-                self._log("Script result: " + str(out), sickrage.srLogger.DEBUG)
+                self._log("Script result: " + str(out), sickrage.srCore.srLogger.DEBUG)
 
             except OSError as e:
                 self._log("Unable to run extra_script: {}".format(e.message))
@@ -823,19 +823,19 @@ class PostProcessor(object):
         if self.in_history or ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
             # if the episode is still in a snatched status, then we can assume we want this
             if not self.in_history:
-                self._log("SR snatched this episode and it is not processed before", sickrage.srLogger.DEBUG)
+                self._log("SR snatched this episode and it is not processed before", sickrage.srCore.srLogger.DEBUG)
                 return True
 
             # if it's in history, we only want it if the new quality is higher or if it's a proper of equal or higher quality
             if new_ep_quality > old_ep_quality and new_ep_quality != Quality.UNKNOWN:
                 self._log("SR snatched this episode and it is a higher quality so I'm marking it as priority",
-                          sickrage.srLogger.DEBUG)
+                          sickrage.srCore.srLogger.DEBUG)
                 return True
 
             if self.is_proper and new_ep_quality >= old_ep_quality and new_ep_quality != Quality.UNKNOWN:
                 self._log(
                         "SR snatched this episode and it is a proper of equal or higher quality so I'm marking it as priority",
-                        sickrage.srLogger.DEBUG)
+                        sickrage.srCore.srLogger.DEBUG)
                 return True
 
             return False
@@ -844,13 +844,13 @@ class PostProcessor(object):
         if new_ep_quality > old_ep_quality and new_ep_quality != Quality.UNKNOWN:
             self._log(
                     "This was manually downloaded but it appears to be better quality than what we have so I'm marking it as priority",
-                    sickrage.srLogger.DEBUG)
+                    sickrage.srCore.srLogger.DEBUG)
             return True
 
         # if the user downloaded it manually and it appears to be a PROPER/REPACK then it's priority
         if self.is_proper and new_ep_quality >= old_ep_quality and new_ep_quality != Quality.UNKNOWN:
             self._log("This was manually downloaded but it appears to be a proper so I'm marking it as priority",
-                      sickrage.srLogger.DEBUG)
+                      sickrage.srCore.srLogger.DEBUG)
             return True
 
         return False
@@ -863,7 +863,7 @@ class PostProcessor(object):
         :return: True on success, False on failure
         """
 
-        self._log("Processing " + self.file_path + " (" + str(self.nzb_name) + ")")
+        self._log("Processing {}".format(self.file_path))
 
         if os.path.isdir(self.file_path):
             self._log("File %s seems to be a directory" % self.file_path)
@@ -900,21 +900,21 @@ class PostProcessor(object):
         # get the quality of the episode we're processing
         if quality and not Quality.qualityStrings[quality] == 'Unknown':
             self._log("Snatch history had a quality in it, using that: " + Quality.qualityStrings[quality],
-                      sickrage.srLogger.DEBUG)
+                      sickrage.srCore.srLogger.DEBUG)
             new_ep_quality = quality
         else:
             new_ep_quality = self._get_quality(ep_obj)
 
-        sickrage.srLogger.debug("Quality of the episode we're processing: %s" % new_ep_quality)
+        sickrage.srCore.srLogger.debug("Quality of the episode we're processing: %s" % new_ep_quality)
 
         # see if this is a priority download (is it snatched, in history, PROPER, or BEST)
         priority_download = self._is_priority(ep_obj, new_ep_quality)
-        self._log("Is ep a priority download: " + str(priority_download), sickrage.srLogger.DEBUG)
+        self._log("Is ep a priority download: " + str(priority_download), sickrage.srCore.srLogger.DEBUG)
 
         # get the version of the episode we're processing
         if version:
             self._log("Snatch history had a version in it, using that: v" + str(version),
-                      sickrage.srLogger.DEBUG)
+                      sickrage.srCore.srLogger.DEBUG)
             new_ep_version = version
         else:
             new_ep_version = -1
@@ -954,7 +954,7 @@ class PostProcessor(object):
         # try to find out if we have enough space to perform the copy or move action.
         if not isFileLocked(self.file_path, False):
             if not verify_freespace(self.file_path, ep_obj.show.location, [ep_obj] + ep_obj.relatedEps):
-                self._log("Not enough space to continue PP, exiting", sickrage.srLogger.WARNING)
+                self._log("Not enough space to continue PP, exiting", sickrage.srCore.srLogger.WARNING)
                 return False
         else:
             self._log("Unable to determine needed filespace as the source file is locked for access")
@@ -975,14 +975,14 @@ class PostProcessor(object):
                 #    curEp.status = Quality.compositeStatus(SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not os.path.isdir(ep_obj.show.location) and sickrage.srConfig.CREATE_MISSING_SHOW_DIRS:
-            self._log("Show directory doesn't exist, creating it", sickrage.srLogger.DEBUG)
+        if not os.path.isdir(ep_obj.show.location) and sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS:
+            self._log("Show directory doesn't exist, creating it", sickrage.srCore.srLogger.DEBUG)
             try:
                 os.mkdir(ep_obj.show.location)
                 chmodAsParent(ep_obj.show.location)
 
                 # do the library update for synoindex
-                sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(ep_obj.show.location)
+                sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(ep_obj.show.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
                         "Unable to create the show directory: " + ep_obj.show.location)
@@ -996,7 +996,7 @@ class PostProcessor(object):
             with cur_ep.lock:
 
                 if self.release_name:
-                    self._log("Found release name " + self.release_name, sickrage.srLogger.DEBUG)
+                    self._log("Found release name " + self.release_name, sickrage.srCore.srLogger.DEBUG)
                     cur_ep.release_name = self.release_name
                 else:
                     cur_ep.release_name = ""
@@ -1030,7 +1030,7 @@ class PostProcessor(object):
         if releaseName is not None:
             FailedHistory.logSuccess(releaseName)
         else:
-            self._log("Couldn't find release in snatch history", sickrage.srLogger.WARNING)
+            self._log("Couldn't find release in snatch history", sickrage.srCore.srLogger.WARNING)
 
         # find the destination folder
         try:
@@ -1042,13 +1042,13 @@ class PostProcessor(object):
             raise EpisodePostProcessingFailedException(
                     "Unable to post-process an episode if the show dir doesn't exist, quitting")
 
-        self._log("Destination folder for this episode: " + dest_path, sickrage.srLogger.DEBUG)
+        self._log("Destination folder for this episode: " + dest_path, sickrage.srCore.srLogger.DEBUG)
 
         # create any folders we need
         make_dirs(dest_path)
 
         # figure out the base name of the resulting episode file
-        if sickrage.srConfig.RENAME_EPISODES:
+        if sickrage.srCore.srConfig.RENAME_EPISODES:
             orig_extension = self.file_name.rpartition('.')[-1]
             new_base_name = os.path.basename(proper_path)
             new_file_name = new_base_name + '.' + orig_extension
@@ -1059,7 +1059,7 @@ class PostProcessor(object):
             new_file_name = self.file_name
 
         # add to anidb
-        if ep_obj.show.is_anime and sickrage.srConfig.ANIDB_USE_MYLIST:
+        if ep_obj.show.is_anime and sickrage.srCore.srConfig.ANIDB_USE_MYLIST:
             self._add_to_anidb_mylist(self.file_path)
 
         try:
@@ -1067,29 +1067,29 @@ class PostProcessor(object):
             if self.process_method == "copy":
                 if isFileLocked(self.file_path, False):
                     raise EpisodePostProcessingFailedException("File is locked for reading")
-                self._copy(self.file_path, dest_path, new_base_name, sickrage.srConfig.MOVE_ASSOCIATED_FILES,
-                           sickrage.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._copy(self.file_path, dest_path, new_base_name, sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
+                           sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "move":
                 if isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
-                self._move(self.file_path, dest_path, new_base_name, sickrage.srConfig.MOVE_ASSOCIATED_FILES,
-                           sickrage.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._move(self.file_path, dest_path, new_base_name, sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
+                           sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "hardlink":
-                self._hardlink(self.file_path, dest_path, new_base_name, sickrage.srConfig.MOVE_ASSOCIATED_FILES,
-                               sickrage.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._hardlink(self.file_path, dest_path, new_base_name, sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
+                               sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "symlink":
                 if isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
-                self._moveAndSymlink(self.file_path, dest_path, new_base_name, sickrage.srConfig.MOVE_ASSOCIATED_FILES,
-                                     sickrage.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._moveAndSymlink(self.file_path, dest_path, new_base_name, sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
+                                     sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
             else:
-                sickrage.srLogger.error("Unknown process method: " + str(self.process_method))
+                sickrage.srCore.srLogger.error("Unknown process method: " + str(self.process_method))
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
         except (OSError, IOError):
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # download subtitles
-        if sickrage.srConfig.USE_SUBTITLES and ep_obj.show.subtitles:
+        if sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 with cur_ep.lock:
                     cur_ep.location = os.path.join(dest_path, new_file_name)
@@ -1109,14 +1109,13 @@ class PostProcessor(object):
                 sql_q = cur_ep.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
-                    del sql_q  # cleanup
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
             del sql_l  # cleanup
 
         # set file modify stamp to show airdate
-        if sickrage.srConfig.AIRDATE_EPISODES:
+        if sickrage.srCore.srConfig.AIRDATE_EPISODES:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 with cur_ep.lock:
                     cur_ep.airdateModifyStamp()
@@ -1133,27 +1132,27 @@ class PostProcessor(object):
             srNotifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
-            sickrage.srCore.NOTIFIERS.kodi_notifier.update_library(ep_obj.show.name)
+            sickrage.srCore.notifiersDict.kodi_notifier.update_library(ep_obj.show.name)
 
             # do the library update for Plex
-            sickrage.srCore.NOTIFIERS.plex_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict.plex_notifier.update_library(ep_obj)
 
             # do the library update for EMBY
-            sickrage.srCore.NOTIFIERS.emby_notifier.update_library(ep_obj.show)
+            sickrage.srCore.notifiersDict.emby_notifier.update_library(ep_obj.show)
 
             # do the library update for NMJ
             # nmj_notifier kicks off its library update when the notify_download is issued (inside notifiers)
 
             # do the library update for Synology Indexer
-            sickrage.srCore.NOTIFIERS.synoindex_notifier.addFile(ep_obj.location)
+            sickrage.srCore.notifiersDict.synoindex_notifier.addFile(ep_obj.location)
 
             # do the library update for pyTivo
-            sickrage.srCore.NOTIFIERS.pytivo_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict.pytivo_notifier.update_library(ep_obj)
 
             # do the library update for Trakt
-            sickrage.srCore.NOTIFIERS.trakt_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict.trakt_notifier.update_library(ep_obj)
         except:
-            sickrage.srLogger.info("Some notifications could not be sent. Continuing with post-processing...")
+            sickrage.srCore.srLogger.info("Some notifications could not be sent. Continuing with post-processing...")
 
         self._run_extra_scripts(ep_obj)
 

@@ -21,18 +21,17 @@ from __future__ import unicode_literals
 import fnmatch
 import os
 import re
+from datetime import date
 from functools import partial
 
-from datetime import date
-
 import sickrage
-from core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
+from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
-from core.databases import main_db
-from core.helpers import sanitizeSceneName
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.databases import main_db
+from sickrage.core.helpers import sanitizeSceneName
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.scene_exceptions import get_scene_exceptions
+from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
 resultFilters = [
@@ -43,8 +42,8 @@ resultFilters = [
     "dub(bed)?"
 ]
 
-if hasattr('General', 'ignored_subs_list') and sickrage.srConfig.IGNORED_SUBS_LIST:
-    resultFilters.append("(" + sickrage.srConfig.IGNORED_SUBS_LIST.replace(",", "|") + ")sub(bed|ed|s)?")
+if hasattr('General', 'ignored_subs_list') and sickrage.srCore.srConfig.IGNORED_SUBS_LIST:
+    resultFilters.append("(" + sickrage.srCore.srConfig.IGNORED_SUBS_LIST.replace(",", "|") + ")sub(bed|ed|s)?")
 
 
 def containsAtLeastOneWord(name, words):
@@ -88,7 +87,7 @@ def filterBadReleases(name, parse=True):
         if parse:
             NameParser().parse(name)
     except InvalidNameException:
-        sickrage.srLogger.debug("Unable to parse the filename " + name + " into a valid episode")
+        sickrage.srCore.srLogger.debug("Unable to parse the filename " + name + " into a valid episode")
         return False
     except InvalidShowException:
         pass
@@ -97,18 +96,18 @@ def filterBadReleases(name, parse=True):
 
     # if any of the bad strings are in the name then say no
     ignore_words = list(resultFilters)
-    if sickrage.srConfig.IGNORE_WORDS:
-        ignore_words.extend(sickrage.srConfig.IGNORE_WORDS.split(','))
+    if sickrage.srCore.srConfig.IGNORE_WORDS:
+        ignore_words.extend(sickrage.srCore.srConfig.IGNORE_WORDS.split(','))
     word = containsAtLeastOneWord(name, ignore_words)
     if word:
-        sickrage.srLogger.debug("Invalid scene release: " + name + " contains " + word + ", ignoring it")
+        sickrage.srCore.srLogger.debug("Invalid scene release: " + name + " contains " + word + ", ignoring it")
         return False
 
     # if any of the good strings aren't in the name then say no
-    if sickrage.srConfig.REQUIRE_WORDS:
-        require_words = sickrage.srConfig.REQUIRE_WORDS
+    if sickrage.srCore.srConfig.REQUIRE_WORDS:
+        require_words = sickrage.srCore.srConfig.REQUIRE_WORDS
         if not containsAtLeastOneWord(name, require_words):
-            sickrage.srLogger.debug("Invalid scene release: " + name + " doesn't contain any of " + sickrage.srConfig.REQUIRE_WORDS +
+            sickrage.srCore.srLogger.debug("Invalid scene release: " + name + " doesn't contain any of " + sickrage.srCore.srConfig.REQUIRE_WORDS +
                         ", ignoring it")
             return False
 
@@ -297,15 +296,15 @@ def isGoodResult(name, show, log=True, season=-1):
             curRegex = '^((\[.*?\])|(\d+[\.-]))*[ _\.]*' + escaped_name + '(([ ._-]+\d+)|([ ._-]+s\d{2})).*'
 
         if log:
-            sickrage.srLogger.debug("Checking if show " + name + " matches " + curRegex)
+            sickrage.srCore.srLogger.debug("Checking if show " + name + " matches " + curRegex)
 
         match = re.search(curRegex, name, re.I)
         if match:
-            sickrage.srLogger.debug("Matched " + curRegex + " to " + name)
+            sickrage.srCore.srLogger.debug("Matched " + curRegex + " to " + name)
             return True
 
     if log:
-        sickrage.srLogger.info(
+        sickrage.srCore.srLogger.info(
                 "Provider gave result " + name + " but that doesn't seem like a valid result for " + show.name + " so I'm ignoring it")
     return False
 
@@ -362,7 +361,7 @@ def determineReleaseName(dir_name=None, nzb_name=None):
     """
 
     if nzb_name is not None:
-        sickrage.srLogger.info("Using nzb_name for release name.")
+        sickrage.srCore.srLogger.info("Using nzb_name for release name.")
         return nzb_name.rpartition('.')[0]
 
     if dir_name is None:
@@ -382,7 +381,7 @@ def determineReleaseName(dir_name=None, nzb_name=None):
             found_file = os.path.basename(results[0])
             found_file = found_file.rpartition('.')[0]
             if filterBadReleases(found_file):
-                sickrage.srLogger.info("Release name (" + found_file + ") found from file (" + results[0] + ")")
+                sickrage.srCore.srLogger.info("Release name (" + found_file + ") found from file (" + results[0] + ")")
                 return found_file.rpartition('.')[0]
 
     # If that fails, we try the folder
@@ -391,7 +390,7 @@ def determineReleaseName(dir_name=None, nzb_name=None):
         # NOTE: Multiple failed downloads will change the folder name.
         # (e.g., appending #s)
         # Should we handle that?
-        sickrage.srLogger.debug("Folder name (" + folder + ") appears to be a valid release name. Using it.")
+        sickrage.srCore.srLogger.debug("Folder name (" + folder + ") appears to be a valid release name. Using it.")
         return folder
 
     return None
@@ -416,24 +415,24 @@ def searchDBForShow(regShowName, log=False):
                                              [showName])
 
         if len(sqlResults) == 1:
-            return int(sqlResults[0][b"indexer_id"])
+            return int(sqlResults[0]["indexer_id"])
         else:
             # if we didn't get exactly one result then try again with the year stripped off if possible
             match = re.match(yearRegex, showName)
             if match and match.group(1):
                 if log:
-                    sickrage.srLogger.debug("Unable to match original name but trying to manually strip and specify show year")
+                    sickrage.srCore.srLogger.debug("Unable to match original name but trying to manually strip and specify show year")
                 sqlResults = main_db.MainDB().select(
                         "SELECT * FROM tv_shows WHERE (show_name LIKE ?) AND startyear = ?",
                         [match.group(1) + '%', match.group(3)])
 
             if len(sqlResults) == 0:
                 if log:
-                    sickrage.srLogger.debug("Unable to match a record in the DB for " + showName)
+                    sickrage.srCore.srLogger.debug("Unable to match a record in the DB for " + showName)
                 continue
             elif len(sqlResults) > 1:
                 if log:
-                    sickrage.srLogger.debug("Multiple results for " + showName + " in the DB, unable to match show name")
+                    sickrage.srCore.srLogger.debug("Multiple results for " + showName + " in the DB, unable to match show name")
                 continue
             else:
-                return int(sqlResults[0][b"indexer_id"])
+                return int(sqlResults[0]["indexer_id"])

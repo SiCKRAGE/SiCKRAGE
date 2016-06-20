@@ -20,16 +20,17 @@
 from __future__ import unicode_literals
 
 import re
-
 from datetime import datetime
+
 from dateutil import tz
 
 import sickrage
-from core.databases import cache_db
-from core.helpers import getURL, tryInt
+from sickrage.core.databases import cache_db
+from sickrage.core.helpers import tryInt
+
 
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
-sr_timezone = tz.tzwinlocal().display() if tz.tzwinlocal else tz.tzlocal()
+sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
 
 # update the network timezone table
@@ -37,11 +38,12 @@ def update_network_dict():
     """Update timezone information from SR repositories"""
 
     url = 'http://sickragetv.github.io/network_timezones/network_timezones.txt'
-    url_data = getURL(url)
-    if not url_data:
-        sickrage.srLogger.warning(
+
+    try:
+        url_data = sickrage.srCore.srWebSession.get(url).text
+    except Exception:
+        sickrage.srCore.srLogger.warning(
             'Updating network timezones failed, this can happen from time to time. URL: %s' % url)
-        load_network_dict()
         return
 
     d = {}
@@ -54,10 +56,10 @@ def update_network_dict():
     except (IOError, OSError):
         pass
 
-    network_timezones = dict(cache_db.CacheDB().select('SELECT * FROM network_timezones;'))
+    network_timezones = load_network_dict()
 
     queries = []
-    for network, timezone in d.iteritems():
+    for network, timezone in d.items():
         existing = network in network_timezones
         if not existing:
             queries.append(['INSERT OR IGNORE INTO network_timezones VALUES (?,?);', [network, timezone]])
@@ -85,15 +87,12 @@ def load_network_dict():
     """
     try:
         cur_network_list = cache_db.CacheDB().select('SELECT * FROM network_timezones;')
-        if not cur_network_list:
-            update_network_dict()
-            cur_network_list = cache_db.CacheDB().select('SELECT * FROM network_timezones;')
-        d = dict(cur_network_list)
+        if cur_network_list:
+            return dict(cur_network_list)
     except Exception:
-        d = {}
+        pass
 
-    return d
-
+    return {}
 
 # get timezone of a network or return default timezone
 def get_network_timezone(network, _network_dict):
@@ -114,7 +113,7 @@ def get_network_timezone(network, _network_dict):
 
 
 # parse date and time string into local time
-def parse_date_time(d, t, network):
+def parse_date_time(d, t, network, dateOnly=False):
     """
     Parse date and time string into local time
     :param d: date string
@@ -146,7 +145,7 @@ def parse_date_time(d, t, network):
 
     result = datetime.fromordinal(max(tryInt(d), 1))
 
-    return result.replace(hour=hr, minute=m, tzinfo=network_tz)
+    return result.replace(hour=hr, minute=m, tzinfo=network_tz) if not dateOnly else result.replace(tzinfo=network_tz)
 
 
 def test_timeformat(t):

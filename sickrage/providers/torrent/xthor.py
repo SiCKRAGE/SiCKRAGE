@@ -26,21 +26,23 @@ import urllib
 import requests
 
 import sickrage
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class XthorProvider(TorrentProvider):
     def __init__(self):
 
-        super(XthorProvider, self).__init__("Xthor")
+        super(XthorProvider, self).__init__("Xthor","xthor.bz")
 
         self.supportsBacklog = True
 
         self.cj = cookielib.CookieJar()
 
-        self.url = "https://xthor.bz"
-        self.urlsearch = "https://xthor.bz/browse.php?search=\"%s\"%s"
+        self.urls.update({
+            'search': "{base_url}/browse.php?search=%s%s".format(base_url=self.urls['base_url'])
+        })
+
         self.categories = "&searchin=title&incldead=0"
 
         self.username = None
@@ -48,26 +50,26 @@ class XthorProvider(TorrentProvider):
         self.ratio = None
 
     def _doLogin(self):
-
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password,
                         'submitme': 'X'}
 
-        response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('donate.php', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -77,17 +79,19 @@ class XthorProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL)
+                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 with bs4_parser(data) as html:
@@ -98,7 +102,8 @@ class XthorProvider(TorrentProvider):
                             link = row.find("a", href=re.compile("details.php"))
                             if link:
                                 title = link.text
-                                download_url = self.url + '/' + row.find("a", href=re.compile("download.php"))['href']
+                                download_url = self.urls['base_url'] + '/' + \
+                                               row.find("a", href=re.compile("download.php"))['href']
                                 # FIXME
                                 size = -1
                                 seeders = 1
@@ -109,13 +114,13 @@ class XthorProvider(TorrentProvider):
 
                                 # Filter unseeded torrent
                                 # if seeders < self.minseed or leechers < self.minleech:
-                                #    if mode is not 'RSS':
+                                #    if mode != 'RSS':
                                 #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                                 #    continue
 
                                 item = title, download_url, size, seeders, leechers
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug("Found result: %s " % title)
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 

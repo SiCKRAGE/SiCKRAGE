@@ -18,20 +18,24 @@
 
 from __future__ import unicode_literals
 
+import random
+
 import feedparser
 from feedparser import FeedParserDict
 
 import sickrage
-from core.helpers import normalize_url
+from sickrage.core.webclient import USER_AGENTS
+
 
 def getFeed(url, request_headers=None, handlers=None):
-    feed = FeedParserDict()
     try:
-        try:
-            feed = feedparser.parse(normalize_url(url), False, False, request_headers, handlers=handlers)
-        except AttributeError:
-            sickrage.srLogger.debug('RSS ERROR:[{}] CODE:[{}]'.format(
-                    feed.feed[b'error'][b'description'], feed.feed[b'error'][b'code']))
-    except:pass
-
-    return feed
+        return feedparser.parse(
+            sickrage.srCore.srWebSession.normalize_url(url),
+            agent=random.choice(USER_AGENTS),
+            etag=False,
+            modified=False,
+            request_headers=request_headers,
+            handlers=handlers
+        )
+    except Exception:
+        return FeedParserDict()

@@ -18,9 +18,9 @@ from __future__ import unicode_literals
 
 from threading import Lock
 
-from indexers.adba.aniDBerrors import AniDBIncorrectParameterError, \
+from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError, \
     AniDBInternalError
-from indexers.adba.aniDBresponses import MylistResponse, \
+from sickrage.indexers.adba.aniDBresponses import MylistResponse, \
     NoSuchFileResponse, NoSuchMylistEntryResponse, ProducerResponse
 
 
@@ -61,7 +61,7 @@ class Command:
 
     def flatten(self, command, parameters):
         tmp = []
-        for key, value in parameters.iteritems():
+        for key, value in parameters.items():
             if value is None:
                 continue
             tmp.append("%s=%s" % (self.escape(key), self.escape(value)))

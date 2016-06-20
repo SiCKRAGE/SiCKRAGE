@@ -26,16 +26,16 @@ from xml.parsers.expat import ExpatError
 import xmltodict
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import convert_size
+from sickrage.providers import TorrentProvider
 
 
 class KATProvider(TorrentProvider):
     def __init__(self):
-        super(KATProvider, self).__init__("KickAssTorrents")
+        super(KATProvider, self).__init__("KickAssTorrents", 'kickass.unblocked.la')
 
         self.supportsBacklog = True
-        self.public = True
 
         self.confirmed = True
         self.ratio = None
@@ -44,12 +44,9 @@ class KATProvider(TorrentProvider):
 
         self.cache = KATCache(self)
 
-        self.urls = {
-            'base_url': 'https://kickass.unblocked.la/',
-            'search': 'https://kickass.unblocked.la/%s/',
-        }
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'search': '{base_url}/%s/'.format(base_url=self.urls['base_url'])
+        })
 
         self.search_params = {
             'q': '',
@@ -59,71 +56,70 @@ class KATProvider(TorrentProvider):
             'category': 'tv'
         }
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         # select the correct category
         anime = (self.show and self.show.anime) or (epObj and epObj.show and epObj.show.anime) or False
-        self.search_params[b'category'] = ('tv', 'anime')[anime]
+        self.search_params['category'] = ('tv', 'anime')[anime]
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                self.search_params[b'q'] = search_string.encode('utf-8') if mode is not 'RSS' else ''
-                self.search_params[b'field'] = 'seeders' if mode is not 'RSS' else 'time_add'
+                self.search_params['q'] = search_string.encode('utf-8') if mode != 'RSS' else ''
+                self.search_params['field'] = 'seeders' if mode != 'RSS' else 'time_add'
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s" % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
-                url_fmt_string = 'usearch' if mode is not 'RSS' else search_string
+                url_fmt_string = 'usearch' if mode != 'RSS' else search_string
                 try:
                     searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
-                    sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = self.getURL(searchURL)
-                    # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
-                    if not data:
-                        sickrage.srLogger.debug("No data returned from provider")
+                    sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+
+                    try:
+                        data = sickrage.srCore.srWebSession.get(searchURL).text
+                    except Exception:
+                        sickrage.srCore.srLogger.debug("No data returned from provider")
                         continue
 
                     if not data.startswith('<?xml'):
-                        sickrage.srLogger.info('Expected xml but got something else, is your mirror failing?')
+                        sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
                     try:
                         data = xmltodict.parse(data)
                     except ExpatError:
-                        sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                        sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                        sickrage.srLogger.debug("Malformed rss returned, skipping")
+                    if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
+                        sickrage.srCore.srLogger.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
-                    entries = data[b'rss'][b'channel'][b'item']
+                    entries = data['rss']['channel']['item']
                     entries = entries if isinstance(entries, list) else [entries]
 
                     for item in entries:
                         try:
-                            title = item[b'title']
+                            title = item['title']
                             # Use the torcache link kat provides,
                             # unless it is not torcache or we are not using blackhole
                             # because we want to use magnets if connecting direct to client
                             # so that proxies work.
-                            download_url = item[b'enclosure']['@url']
-                            if sickrage.srConfig.TORRENT_METHOD != "blackhole" or 'torcache' not in download_url:
+                            download_url = item['enclosure']['@url']
+                            if sickrage.srCore.srConfig.TORRENT_METHOD != "blackhole" or 'torcache' not in download_url:
                                 download_url = item['torrent:magnetURI']
 
                             seeders = int(item['torrent:seeds'])
                             leechers = int(item['torrent:peers'])
                             verified = bool(int(item['torrent:verified']) or 0)
-                            size = int(item['torrent:contentLength'])
+                            size = convert_size(item['torrent:contentLength'])
 
                             info_hash = item['torrent:infoHash']
-                            # link = item[b'link']
-
                         except (AttributeError, TypeError, KeyError):
                             continue
 
@@ -132,26 +128,26 @@ class KATProvider(TorrentProvider):
 
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug(
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                             continue
 
                         if self.confirmed and not verified:
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug(
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug(
                                         "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                             continue
 
                         item = title, download_url, size, seeders, leechers, info_hash
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug("Found result: %s " % title)
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
                 except Exception:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -173,4 +169,4 @@ class KATCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['tv', 'anime']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

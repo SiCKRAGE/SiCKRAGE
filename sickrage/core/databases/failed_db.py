@@ -18,8 +18,8 @@
 
 from __future__ import unicode_literals
 
-from core.common import Quality
-from core.databases import Connection, SchemaUpgrade
+from sickrage.core.common import Quality
+from sickrage.core.databases import Connection, SchemaUpgrade
 
 
 class FailedDB(Connection):
@@ -38,8 +38,9 @@ class FailedDB(Connection):
         def execute(self, **kwargs):
             queries = [
                 ('CREATE TABLE failed (release TEXT, size NUMERIC, provider TEXT);',),
-                (
-                    'CREATE TABLE history (date NUMERIC, size NUMERIC, release TEXT, provider TEXT, old_status NUMERIC DEFAULT 0, showid NUMERIC DEFAULT -1, season NUMERIC DEFAULT -1, episode NUMERIC DEFAULT -1);',),
+                ('CREATE TABLE history (date NUMERIC, size NUMERIC, release TEXT, provider TEXT, '
+                 'old_status NUMERIC DEFAULT 0, showid NUMERIC DEFAULT -1, season NUMERIC DEFAULT -1, '
+                 'episode NUMERIC DEFAULT -1);',),
                 ('CREATE TABLE db_version (db_version INTEGER);',),
                 ('INSERT INTO db_version (db_version) VALUES (1);',),
             ]

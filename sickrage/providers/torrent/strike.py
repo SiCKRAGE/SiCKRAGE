@@ -19,62 +19,63 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class STRIKEProvider(TorrentProvider):
     def __init__(self):
-        super(STRIKEProvider, self).__init__("Strike")
+        super(STRIKEProvider, self).__init__("Strike",'getstrike.net')
 
         self.supportsBacklog = True
-        self.public = True
-        self.url = 'https://getstrike.net/'
+
         self.ratio = 0
         self.cache = StrikeCache(self)
         self.minseed, self.minleech = 2 * [None]
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():  # Mode = RSS, Season, Episode
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: " + search_string.strip())
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: " + search_string.strip())
 
-                searchURL = self.url + "api/v2/torrents/search/?category=TV&phrase=" + search_string
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                jdata = self.getURL(searchURL, json=True)
-                if not jdata:
-                    sickrage.srLogger.debug("No data returned from provider")
-                    return []
+                searchURL = self.urls['base_url'] + "/api/v2/torrents/search/?category=TV&phrase=" + search_string
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+
+                try:
+                    jdata = sickrage.srCore.srWebSession.get(searchURL).json()
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    continue
 
                 results = []
 
-                for item in jdata[b'torrents']:
-                    seeders = ('seeds' in item and item[b'seeds']) or 0
-                    leechers = ('leeches' in item and item[b'leeches']) or 0
-                    title = ('torrent_title' in item and item[b'torrent_title']) or ''
-                    size = ('size' in item and item[b'size']) or 0
-                    download_url = ('magnet_uri' in item and item[b'magnet_uri']) or ''
+                for item in jdata['torrents']:
+                    seeders = ('seeds' in item and item['seeds']) or 0
+                    leechers = ('leeches' in item and item['leeches']) or 0
+                    title = ('torrent_title' in item and item['torrent_title']) or ''
+                    size = ('size' in item and item['size']) or 0
+                    download_url = ('magnet_uri' in item and item['magnet_uri']) or ''
 
                     if not all([title, download_url]):
                         continue
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug(
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
 
-                    if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     item = title, download_url, size, seeders, leechers
                     items[mode].append(item)
@@ -98,4 +99,4 @@ class StrikeCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['x264']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

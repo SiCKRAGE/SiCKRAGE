@@ -23,9 +23,8 @@ import os
 import time
 from xml.etree.ElementTree import ElementTree
 
-import requests
+import sickrage
 
-from core.helpers import download_file
 
 
 def get_file_hash(filePath):
@@ -66,33 +65,11 @@ def _remove_file_failed(file):
     except:
         pass
 
-def _download_file(url, filename):
-    try:
-        r = requests.get(url, stream=True, verify=False)
-        with io.open(filename, 'wb') as fp:
-            for chunk in r.iter_content(chunk_size=1024):
-                if chunk:
-                    fp.write(chunk)
-                    fp.flush()
-
-    except requests.HTTPError, e:
-        _remove_file_failed(filename)
-        return False
-    except requests.ConnectionError, e:
-        return False
-    except requests.Timeout, e:
-        return False
-    except Exception:
-        _remove_file_failed(filename)
-        return False
-
-    return True
-
 def get_anime_titles_xml(path):
-    return download_file("https://raw.githubusercontent.com/ScudLee/anime-lists/master/animetitles.xml", path)
+    return sickrage.srCore.srWebSession.download("https://raw.githubusercontent.com/ScudLee/anime-lists/master/animetitles.xml", path)
 
 def get_anime_list_xml(path):
-    return download_file("https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml", path)
+    return sickrage.srCore.srWebSession.download("https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml", path)
 
 def read_anidb_xml(filePath=None):
     if not filePath:

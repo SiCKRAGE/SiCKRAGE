@@ -19,34 +19,30 @@
 from __future__ import unicode_literals
 
 import re
-import time
-import traceback
 from urllib import quote_plus
-from xml.parsers.expat import ExpatError
-
-import xmltodict
 
 import sickrage
-from core.caches import tv_cache
-from core.common import cpu_presets
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class TORRENTZProvider(TorrentProvider):
     def __init__(self):
 
-        super(TORRENTZProvider, self).__init__("Torrentz")
-        self.public = True
+        super(TORRENTZProvider, self).__init__("Torrentz", 'torrentz.eu')
+
         self.supportsBacklog = True
         self.confirmed = True
         self.ratio = None
         self.minseed = None
         self.minleech = None
         self.cache = TORRENTZCache(self)
-        self.urls = {'verified': 'https://torrentz.eu/feed_verified',
-                     'feed': 'https://torrentz.eu/feed',
-                     'base': 'https://torrentz.eu/'}
-        self.url = self.urls['base']
+
+        self.urls.update({
+            'verified': '{base_url}/feed_verified'.format(base_url=self.urls['base_url']),
+            'feed': '{base_url}/feed'.format(base_url=self.urls['base_url'])
+        })
 
     def seedRatio(self):
         return self.ratio
@@ -56,72 +52,53 @@ class TORRENTZProvider(TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return int(match[0]) * 1024 ** 2, int(match[1]), int(match[2])
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings:
             for search_string in search_strings[mode]:
                 search_url = self.urls['verified'] if self.confirmed else self.urls['feed']
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     search_url += '?q=' + quote_plus(search_string)
+                    sickrage.srCore.srLogger.info(search_url)
 
-                sickrage.srLogger.info(search_url)
-                data = self.getURL(search_url)
-                if not data:
-                    sickrage.srLogger.info('Seems to be down right now!')
-                    continue
-
-                if not data.startswith("<?xml"):
-                    sickrage.srLogger.debug('Wrong data returned from: ' + search_url)
+                try:
+                    data = sickrage.srCore.srWebSession.get(search_url).text
+                except Exception:
+                    sickrage.srCore.srLogger.info('Seems to be down right now!')
                     continue
 
                 if not data.startswith('<?xml'):
-                    sickrage.srLogger.info('Expected xml but got something else, is your mirror failing?')
+                    sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
                     continue
 
-                try:
-                    data = xmltodict.parse(data)
-                except ExpatError:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
-                    continue
+                with bs4_parser(data) as html:
+                    if not html:
+                        sickrage.srCore.srLogger.debug("No html data parsed from provider")
+                        continue
 
-                if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                    sickrage.srLogger.debug("Malformed rss returned or no results, skipping")
-                    continue
-
-                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
-
-                # https://github.com/martinblech/xmltodict/issues/111
-                entries = data[b'rss'][b'channel'][b'item']
-                entries = entries if isinstance(entries, list) else [entries]
-
-                for item in entries:
-                    try:
-                        if 'tv' not in item[b'category']:
+                    for item in html('item'):
+                        if item.category and 'tv' not in item.category.get_text(strip=True):
                             continue
-                    except:
-                        continue
 
-                    title = item.get('title', '').rsplit(' ', 1)[0].replace(' ', '.')
-                    t_hash = item.get('guid', '').rsplit('/', 1)[-1]
+                        title = item.title.text.rsplit(' ', 1)[0].replace(' ', '.')
+                        t_hash = item.guid.text.rsplit('/', 1)[-1]
 
-                    if not all([title, t_hash]):
-                        continue
+                        if not all([title, t_hash]):
+                            continue
 
-                    # TODO: Add method to generic provider for building magnet from hash.
-                    download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
-                    size, seeders, leechers = self._split_description(item.get('description', ''))
+                        download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title
+                        torrent_size, seeders, leechers = self._split_description(item.find('description').text)
+                        size = convert_size(torrent_size) or -1
 
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
-                        continue
+                        # Filter unseeded torrent
+                        if seeders < self.minseed or leechers < self.minleech:
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(title, seeders, leechers))
+                            continue
 
-                    items[mode].append((title, download_url, size, seeders, leechers))
+                        items[mode].append((title, download_url, size, seeders, leechers))
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -138,4 +115,4 @@ class TORRENTZCache(tv_cache.TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        return {'entries': self.provider._doSearch({'RSS': ['']})}
+        return {'entries': self.provider.search({'RSS': ['']})}

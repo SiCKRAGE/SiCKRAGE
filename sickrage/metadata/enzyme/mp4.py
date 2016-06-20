@@ -18,6 +18,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with enzyme.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import unicode_literals
+
 __all__ = ['Parser']
 
 import StringIO
@@ -193,7 +195,7 @@ class MPEG4(core.AVContainer):
             (size, type) = struct.unpack('>I4s', h)
 
         if not type in ['moov', 'wide', 'free']:
-            log.debug(u'invalid header: %r' % type)
+            log.debug('invalid header: %r' % type)
             raise ParseError()
 
         # Extended size
@@ -220,7 +222,7 @@ class MPEG4(core.AVContainer):
             # stop at nonsense data
             return 0
 
-        log.debug(u'%r [%X]' % (atomtype, atomsize))
+        log.debug('%r [%X]' % (atomtype, atomsize))
 
         if atomtype == 'udta':
             # Userdata (Metadata)
@@ -253,7 +255,7 @@ class MPEG4(core.AVContainer):
                         self._appendtable('QTUDTA', i18ntabl[k])
                         self._appendtable('QTUDTA', tabl)
             else:
-                log.debug(u'NO i18')
+                log.debug('NO i18')
                 self._appendtable('QTUDTA', tabl)
 
         elif atomtype == 'trak':
@@ -276,12 +278,12 @@ class MPEG4(core.AVContainer):
                         # XXX Apple time. FIXME to work on Apple, too
                         self.timestamp = int(tkhd[1]) - 2082844800
                     except Exception, e:
-                        log.exception(u'There was trouble extracting timestamp')
+                        log.exception('There was trouble extracting timestamp')
 
                 elif datatype == 'mdia':
                     pos += 8
                     datasize -= 8
-                    log.debug(u'--> mdia information')
+                    log.debug('--> mdia information')
 
                     while datasize:
                         mdia = struct.unpack('>I4s', atomdata[pos:pos + 8])
@@ -332,7 +334,7 @@ class MPEG4(core.AVContainer):
                                     tracktype = 'image'
                         elif mdia[1] == 'dinf':
                             dref = struct.unpack('>I4s', atomdata[pos + 8:pos + 8 + 8])
-                            log.debug(u'  --> %r, %r (useless)' % mdia)
+                            log.debug('  --> %r, %r (useless)' % mdia)
                             if dref[1] == 'dref':
                                 num = struct.unpack('>I', atomdata[pos + 20:pos + 20 + 4])[0]
                                 rpos = pos + 20 + 4
@@ -343,7 +345,7 @@ class MPEG4(core.AVContainer):
                                     rpos += ref[0]
                         else:
                             if mdia[1].startswith('st'):
-                                log.debug(u'  --> %r, %r (sample)' % mdia)
+                                log.debug('  --> %r, %r (sample)' % mdia)
                             elif mdia[1] == 'vmhd' and not tracktype:
                                 # indicates that this track is video
                                 tracktype = 'video'
@@ -351,19 +353,19 @@ class MPEG4(core.AVContainer):
                                 # indicates that this track is audio
                                 tracktype = 'audio'
                             else:
-                                log.debug(u'  --> %r, %r (unknown)' % mdia)
+                                log.debug('  --> %r, %r (unknown)' % mdia)
 
                         pos += mdia[0]
                         datasize -= mdia[0]
 
                 elif datatype == 'udta':
-                    log.debug(u'udta: %r' % struct.unpack('>I4s', atomdata[:8]))
+                    log.debug('udta: %r' % struct.unpack('>I4s', atomdata[:8]))
                 else:
                     if datatype == 'edts':
-                        log.debug(u'--> %r [%d] (edit list)' % \
+                        log.debug('--> %r [%d] (edit list)' % \
                                   (datatype, datasize))
                     else:
-                        log.debug(u'--> %r [%d] (unknown)' % \
+                        log.debug('--> %r [%d] (unknown)' % \
                                   (datatype, datasize))
                 pos += datasize
 
@@ -406,7 +408,7 @@ class MPEG4(core.AVContainer):
                     try:
                         decompressed = zlib.decompress(data[4:])
                     except Exception, e:
-                        log.exception(u'There was a proble decompressiong atom')
+                        log.exception('There was a proble decompressiong atom')
                         return atomsize
 
                 decompressedIO = StringIO.StringIO(decompressed)
@@ -414,7 +416,7 @@ class MPEG4(core.AVContainer):
                     pass
 
             else:
-                log.info(u'unknown compression %r' % method)
+                log.info('unknown compression %r' % method)
                 # unknown compression method
                 file.seek(datasize - 8, 1)
 
@@ -426,10 +428,10 @@ class MPEG4(core.AVContainer):
         elif atomtype == 'mdat':
             pos = file.tell() + atomsize - 8
             # maybe there is data inside the mdat
-            log.info(u'parsing mdat')
+            log.info('parsing mdat')
             while self._readatom(file):
                 pass
-            log.info(u'end of mdat')
+            log.info('end of mdat')
             file.seek(pos, 0)
 
 
@@ -465,7 +467,7 @@ class MPEG4(core.AVContainer):
 
         else:
             if not atomtype in ['wide', 'free']:
-                log.info(u'unhandled base atom %r' % atomtype)
+                log.info('unhandled base atom %r' % atomtype)
 
             # Skip unknown atoms
             try:

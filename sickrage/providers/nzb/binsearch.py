@@ -24,18 +24,15 @@ import re
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from providers import NZBProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import NZBProvider
 
 
 class BinSearchProvider(NZBProvider):
     def __init__(self):
-        super(BinSearchProvider, self).__init__("BinSearch")
+        super(BinSearchProvider, self).__init__("BinSearch", 'www.binsearch.info')
 
-        self.public = True
         self.cache = BinSearchCache(self)
-        self.urls = {'base_url': 'https://www.binsearch.info/'}
-        self.url = self.urls['base_url']
 
 
 class BinSearchCache(tv_cache.TVCache):
@@ -65,23 +62,18 @@ class BinSearchCache(tv_cache.TVCache):
         Returns: A tuple containing two strings representing title and URL respectively
         """
 
-        title = item.get('description')
-        if title:
-            title = '' + title
-            if self.descTitleStart.match(title):
-                title = self.descTitleStart.sub('', title)
-                title = self.descTitleEnd.sub('', title)
-                title = title.replace('+', '.')
-            else:
-                # just use the entire title, looks hard/impossible to parse
-                title = item.get('title')
-                if title:
-                    for titleCleaner in self.titleCleaners:
-                        title = titleCleaner.sub('', title)
+        title = item.get('description', '')
+        if self.descTitleStart.match(title):
+            title = self.descTitleStart.sub('', title)
+            title = self.descTitleEnd.sub('', title)
+            title = title.replace('+', '.')
+        else:
+            # just use the entire title, looks hard/impossible to parse
+            title = item.get('title', '')
+            for titleCleaner in self.titleCleaners:
+                title = titleCleaner.sub('', title)
 
-        url = item.get('link')
-        if url:
-            url = url.replace('&amp;', '&')
+        url = item.get('link', '').replace('&amp;', '&')
 
         return (title, url)
 
@@ -102,7 +94,7 @@ class BinSearchCache(tv_cache.TVCache):
 
                 url += urllib.urlencode(urlArgs)
 
-                sickrage.srLogger.debug("Cache update URL: %s " % url)
+                sickrage.srCore.srLogger.debug("Cache update URL: %s " % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
                     ci = self._parseItem(item)
@@ -116,4 +108,4 @@ class BinSearchCache(tv_cache.TVCache):
         return True
 
     def _checkAuth(self, data):
-        return data if data[b'feed'] and data[b'feed'][b'title'] != 'Invalid Link' else None
+        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

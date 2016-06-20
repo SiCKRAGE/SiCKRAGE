@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
 
+import io
 import os
 from mimetypes import guess_type
 
 import sickrage
-from core.exceptions import MultipleShowObjectsException
-from core.helpers import findCertainShow
+from sickrage.core.exceptions import MultipleShowObjectsException
+from sickrage.core.helpers import findCertainShow
 
 class Media(object):
     def __init__(self, indexer_id, media_format=None):
@@ -36,7 +37,16 @@ class Media(object):
         :return: The content of the desired media file
         """
 
-        return os.path.relpath(self.get_static_media_path()).replace('\\','/')
+        return os.path.realpath(self.get_static_media_path()).replace('\\','/')
+
+    @property
+    def get_media_bytes(self):
+        """
+        :return: The content of the desired media file
+        """
+
+        with io.open(os.path.abspath(self.get_static_media_path()).replace('\\', '/'), 'rb') as media:
+            return media.read()
 
     def get_media_path(self):
         """
@@ -51,7 +61,7 @@ class Media(object):
         :return: The root folder containing the media
         """
 
-        return os.path.join(sickrage.srConfig.GUI_DIR)
+        return os.path.join(sickrage.srCore.srConfig.GUI_DIR)
 
     def get_media_type(self):
         """

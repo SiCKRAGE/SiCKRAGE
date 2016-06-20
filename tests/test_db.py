@@ -22,7 +22,7 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from core.databases import main_db
+from sickrage.core.databases import main_db
 from tests import SiCKRAGETestDBCase
 
 

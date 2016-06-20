@@ -6,7 +6,7 @@ backports-abc
 backports.ssl-match-hostname
 beautifulsoup4
 bencode
-CacheControl
+cachecontrol[filecache]
 certifi
 chardet
 click
@@ -23,7 +23,7 @@ FormEncode
 future
 futures
 gntp
-guessit==1.0.3
+guessit
 hachoir-core
 hachoir-metadata
 hachoir-parser
@@ -33,12 +33,12 @@ idna
 ipaddress
 imdbpie
 jsonrpclib
-lockfile
 Mako
 markdown2
 MarkupSafe
 MultipartPostHandler
 oauth2
+oauth2client
 oauthlib
 pbr
 profilehooks
@@ -52,8 +52,9 @@ python-twitter
 pytz
 pyxdg
 PyYAML
-requests[security]==2.9.1
+requests[security]
 requests-oauthlib
+requests-futures
 rtorrent-python
 Send2Trash
 simplejson
@@ -62,6 +63,7 @@ six
 SQLAlchemy
 sqlalchemy-migrate
 SQLObject
+sqlite-cache
 sqlparse
 stevedore
 subliminal

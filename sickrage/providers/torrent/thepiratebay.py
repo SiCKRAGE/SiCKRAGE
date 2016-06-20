@@ -22,17 +22,17 @@ import re
 from urllib import urlencode
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import convert_size
+from sickrage.providers import TorrentProvider
 
 
 class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
 
-        super(ThePirateBayProvider, self).__init__("ThePirateBay")
+        super(ThePirateBayProvider, self).__init__("ThePirateBay",'pirateproxy.la')
 
         self.supportsBacklog = True
-        self.public = True
 
         self.ratio = None
         self.confirmed = True
@@ -41,13 +41,10 @@ class ThePirateBayProvider(TorrentProvider):
 
         self.cache = ThePirateBayCache(self)
 
-        self.urls = {
-            'base_url': 'https://pirateproxy.la/',
-            'search': 'https://pirateproxy.la/s/',
-            'rss': 'https://pirateproxy.la/tv/latest'
-        }
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'search': '{base_url}/s/'.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/tv/latest'.format(base_url=self.urls['base_url'])
+        })
 
         """
         205 = SD, 208 = HD, 200 = All Videos
@@ -63,33 +60,34 @@ class ThePirateBayProvider(TorrentProvider):
 
         self.re_title_url = r'/torrent/(?P<id>\d+)/(?P<title>.*?)".+?(?P<url>magnet.*?)".+?Size (?P<size>[\d\.]*&nbsp;[TGKMiB]{2,3}).+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 self.search_params.update({'q': search_string.strip()})
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: " + search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: " + search_string)
 
-                searchURL = self.urls[('search', 'rss')[mode is 'RSS']] + '?' + urlencode(self.search_params)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL)
-                # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
-                if not data:
+                searchURL = self.urls[('search', 'rss')[mode == 'RSS']] + '?' + urlencode(self.search_params)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 matches = re.compile(self.re_title_url, re.DOTALL).finditer(data)
                 for torrent in matches:
                     title = torrent.group('title')
                     download_url = torrent.group('url')
-                    # id = int(torrent.group('id'))
-                    size = self._convertSize(torrent.group('size'))
+                    size = convert_size(torrent.group('size'))
                     seeders = int(torrent.group('seeders'))
                     leechers = int(torrent.group('leechers'))
 
@@ -98,22 +96,22 @@ class ThePirateBayProvider(TorrentProvider):
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     # Accept Torrent only from Good People for every Episode Search
                     if self.confirmed and re.search(r'(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug(
-                                    "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug(
+                                "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
                         continue
 
                     item = title, download_url, size, seeders, leechers
-                    if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 
@@ -123,20 +121,6 @@ class ThePirateBayProvider(TorrentProvider):
             results += items[mode]
 
         return results
-
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split('&nbsp;')
-        size = float(size)
-        if modifier in 'KiB':
-            size *= 1024
-        elif modifier in 'MiB':
-            size *= 1024 ** 2
-        elif modifier in 'GiB':
-            size *= 1024 ** 3
-        elif modifier in 'TiB':
-            size *= 1024 ** 4
-        return size
 
     def seedRatio(self):
         return self.ratio
@@ -151,4 +135,4 @@ class ThePirateBayCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

@@ -20,8 +20,8 @@ from __future__ import unicode_literals
 
 import os
 
-from core.helpers import replaceExtension
 from kodi_12plus import KODI_12PlusMetadata
+from sickrage.core.helpers import replaceExtension
 
 
 class KODIMetadata(KODI_12PlusMetadata):

@@ -22,16 +22,15 @@ from __future__ import unicode_literals
 from urllib import quote_plus
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class BitCannonProvider(TorrentProvider):
     def __init__(self):
-        super(BitCannonProvider, self).__init__("BitCannon")
+        super(BitCannonProvider, self).__init__("BitCannon",'127.0.0.1:1337')
 
         self.supportsBacklog = True
-        self.public = True
 
         self.minseed = None
         self.minleech = None
@@ -39,29 +38,34 @@ class BitCannonProvider(TorrentProvider):
 
         self.cache = BitCannonCache(self)
 
-        self.url = 'http://127.0.0.1:1337/'
-        self.urls = {
-            'base_url': self.url,
-            'search': self.url + 'search/',
-            'trackers': self.url + 'stats',
-        }
+        self.urls.update({
+            'search': '{base_url}/search/'.format(base_url=self.urls['base_url']),
+            'trackers': '{base_url}/stats'.format(base_url=self.urls['base_url']),
+        })
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        trackers = (self.getURL(self.urls['trackers'], json=True) or {}).get('Trackers', [])
-        if not trackers:
-            sickrage.srLogger.info('Could not get tracker list from BitCannon, aborting search')
+        try:
+            trackers = sickrage.srCore.srWebSession.get(self.urls['trackers']).json().get('Trackers')
+        except Exception:
+            sickrage.srCore.srLogger.info('Could not get tracker list from BitCannon, aborting search')
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 searchURL = self.urls['search'] + search_string
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL, json=True)
-                for item in data or []:
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).json()
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    continue
+
+                for item in data:
                     if 'tv' not in (item.get('Category') or '').lower():
                         continue
 
@@ -77,8 +81,8 @@ class BitCannonProvider(TorrentProvider):
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug(
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
@@ -90,8 +94,8 @@ class BitCannonProvider(TorrentProvider):
                                                                                     in trackers]))
 
                     item = title, download_url, size, seeders, leechers
-                    if mode is not 'RSS':
-                        sickrage.srLogger.debug("Found result: %s " % title)
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 
@@ -116,4 +120,4 @@ class BitCannonCache(tv_cache.TVCache):
     def _getRSSData(self):
         return {'entries': []}
         # search_strings = {'RSS': ['']}
-        # return {'entries': self.provider._doSearch(search_strings)}
+        # return {'entries': self.provider.search(search_strings)}

@@ -19,15 +19,15 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.caches import tv_cache
-from core.exceptions import AuthException
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.exceptions import AuthException
+from sickrage.providers import TorrentProvider
 
 
 class ShazbatProvider(TorrentProvider):
     def __init__(self):
 
-        super(ShazbatProvider, self).__init__("Shazbat.tv")
+        super(ShazbatProvider, self).__init__("Shazbat.tv",'www.shazbat.tv')
 
         self.supportsBacklog = False
 
@@ -37,9 +37,9 @@ class ShazbatProvider(TorrentProvider):
 
         self.cache = ShazbatCache(self)
 
-        self.urls = {'base_url': 'http://www.shazbat.tv/',
-                     'website': 'http://www.shazbat.tv/login',}
-        self.url = self.urls['website']
+        self.urls.update({
+            'login': '{base_url}/login'.format(base_url=self.urls['base_url'])
+        })
 
     def _checkAuth(self):
         if not self.passkey:
@@ -50,8 +50,8 @@ class ShazbatProvider(TorrentProvider):
     def _checkAuthFromData(self, data):
         if not self.passkey:
             self._checkAuth()
-        elif not (data[b'entries'] and data[b'feed']):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+        elif not (data['entries'] and data['feed']):
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -67,8 +67,8 @@ class ShazbatCache(tv_cache.TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        rss_url = self.provider.urls[b'base_url'] + 'rss/recent?passkey=' + self.provider.passkey + '&fname=true'
-        sickrage.srLogger.debug("Cache update URL: %s" % rss_url)
+        rss_url = self.provider.urls['base_url'] + 'rss/recent?passkey=' + self.provider.passkey + '&fname=true'
+        sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)
 

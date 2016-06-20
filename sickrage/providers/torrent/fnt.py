@@ -25,14 +25,14 @@ import traceback
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class FNTProvider(TorrentProvider):
     def __init__(self):
-        super(FNTProvider, self).__init__("FNT")
+        super(FNTProvider, self).__init__("FNT",'fnt.nu')
 
         self.supportsBacklog = True
 
@@ -44,12 +44,11 @@ class FNTProvider(TorrentProvider):
 
         self.cache = FNTCache(self)
 
-        self.urls = {'base_url': 'https://fnt.nu',
-                     'search': 'https://www.fnt.nu/torrents/recherche/',
-                     'login': 'https://fnt.nu/account-login.php',
-                     }
+        self.urls.update({
+            'search': '{base_url}/torrents/recherche/'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/account-login.php'.format(base_url=self.urls['base_url'])
+        })
 
-        self.url = self.urls['base_url']
         self.search_params = {
             "afficher": 1, "c118": 1, "c129": 1, "c119": 1, "c120": 1, "c121": 1, "c126": 1,
             "c137": 1, "c138": 1, "c146": 1, "c122": 1, "c110": 1, "c109": 1, "c135": 1, "c148": 1,
@@ -58,7 +57,7 @@ class FNTProvider(TorrentProvider):
         }
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -66,18 +65,19 @@ class FNTProvider(TorrentProvider):
                         'submit': 'Se loguer'
                         }
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Pseudo ou mot de passe non valide', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -87,16 +87,18 @@ class FNTProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'recherche'] = search_string
+                self.search_params['recherche'] = search_string
 
-                data = self.getURL(self.urls['search'], params=self.search_params)
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -104,7 +106,7 @@ class FNTProvider(TorrentProvider):
                         result_table = html.find('table', {'id': 'tablealign3bis'})
 
                         if not result_table:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         if result_table:
@@ -122,16 +124,16 @@ class FNTProvider(TorrentProvider):
                                         continue
 
                                     try:
-                                        detailseedleech = link[b'mtcontent']
+                                        detailseedleech = link['mtcontent']
                                         seeders = int(
-                                                detailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
+                                            detailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
                                         leechers = int(
-                                                detailseedleech.split("<font color='red'>")[1].split("</font>")[0])
+                                            detailseedleech.split("<font color='red'>")[1].split("</font>")[0])
                                         # FIXME
                                         size = -1
                                     except Exception:
-                                        sickrage.srLogger.debug(
-                                                "Unable to parse torrent id & seeders & leechers. Traceback: %s " % traceback.format_exc())
+                                        sickrage.srCore.srLogger.debug(
+                                            "Unable to parse torrent id & seeders & leechers. Traceback: %s " % traceback.format_exc())
                                         continue
 
                                     if not all([title, download_url]):
@@ -139,20 +141,20 @@ class FNTProvider(TorrentProvider):
 
                                     # Filter unseeded torrent
                                     if seeders < self.minseed or leechers < self.minleech:
-                                        if mode is not 'RSS':
-                                            sickrage.srLogger.debug(
-                                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                            title, seeders, leechers))
+                                        if mode != 'RSS':
+                                            sickrage.srCore.srLogger.debug(
+                                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                                    title, seeders, leechers))
                                         continue
 
                                     item = title, download_url, size, seeders, leechers
-                                    if mode is not 'RSS':
-                                        sickrage.srLogger.debug("Found result: %s " % title)
+                                    if mode != 'RSS':
+                                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                                     items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -174,4 +176,4 @@ class FNTCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

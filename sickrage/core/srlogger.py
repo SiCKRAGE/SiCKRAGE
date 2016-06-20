@@ -31,24 +31,26 @@ import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
-logging.basicConfig()
-logging.getLogger().addHandler(logging.NullHandler())
+# logging.basicConfig()
+import sickrage
+
+from sickrage.core import makeDir
 
 class srLogger(logging.getLoggerClass()):
-    def __init__(self, logFile=None, logSize=1048576, logNr=5, consoleLogging=True, fileLogging=True,
-                 debugLogging=False, *args, **kwargs):
-        super(srLogger, self).__init__("sickrage")
+    logging.captureWarnings(True)
+    logging.getLogger().addHandler(logging.NullHandler())
+
+    def __init__(self, name="sickrage"):
+        super(srLogger, self).__init__(name)
         self.propagate = False
 
-        self.censored_items = {}
+        self.consoleLogging = True
+        self.fileLogging = False
+        self.debugLogging = False
 
-        self.consoleLogging = consoleLogging
-        self.fileLogging = fileLogging
-        self.debugLogging = debugLogging
-
-        self.logFile = logFile
-        self.logSize = logSize
-        self.logNr = logNr
+        self.logFile = None
+        self.logSize = 1048576
+        self.logNr = 5
 
         self.submitter_running = False
 
@@ -95,8 +97,8 @@ class srLogger(logging.getLoggerClass()):
                                'apscheduler.scheduler']
 
         # set custom level for database logging
-        logging.addLevelName(self.logLevels[b'DB'], 'DB')
-        logging.getLogger("sickrage").setLevel(self.logLevels[b'DB'])
+        logging.addLevelName(self.logLevels['DB'], 'DB')
+        logging.getLogger("sickrage").setLevel(self.logLevels['DB'])
 
         # start logger
         self.start()
@@ -110,21 +112,32 @@ class srLogger(logging.getLoggerClass()):
             console = logging.StreamHandler()
             console.setFormatter(
                 logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
-            console.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            console.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
             self.addHandler(console)
 
-        # rotating log file handler
-        if self.fileLogging and self.logFile:
+        # rotating log file handlers
+        if self.logFile and makeDir(os.path.dirname(self.logFile)):
             rfh = RotatingFileHandler(
                 filename=self.logFile,
                 maxBytes=self.logSize,
                 backupCount=self.logNr
             )
 
+            rfh_errors = RotatingFileHandler(
+                filename=self.logFile.replace('.log', '.error.log'),
+                maxBytes=self.logSize,
+                backupCount=self.logNr
+            )
+
             rfh.setFormatter(
                 logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
-            rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            rfh.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
             self.addHandler(rfh)
+
+            rfh_errors.setFormatter(
+                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
+            rfh_errors.setLevel(self.logLevels['ERROR'])
+            self.addHandler(rfh_errors)
 
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
         if (False, True)[name in self.allowedLoggers]:
@@ -132,7 +145,8 @@ class srLogger(logging.getLoggerClass()):
 
             try:
                 record.msg = re.sub(
-                    r"(.*)\b({})\b(.*)".format('|'.join([x for x in self.censored_items.values() if len(x)])), r"\1\3",
+                    r"(.*)\b({})\b(.*)".format(
+                        '|'.join([x for x in sickrage.srCore.srConfig.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
                     record.msg)
 
                 # needed because Newznab apikey isn't stored as key=value in a section.
@@ -142,8 +156,8 @@ class srLogger(logging.getLoggerClass()):
 
             # sending record to UI
             if record.levelno in [WARNING, ERROR]:
-                from core.classes import WarningViewer
-                from core.classes import ErrorViewer
+                from sickrage.core.classes import WarningViewer
+                from sickrage.core.classes import ErrorViewer
                 (WarningViewer(), ErrorViewer())[record.levelno == ERROR].add(record.msg, True)
 
             return record
@@ -152,7 +166,7 @@ class srLogger(logging.getLoggerClass()):
         super(srLogger, self).log(level, msg, *args, **kwargs)
 
     def db(self, msg, *args, **kwargs):
-        super(srLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
+        super(srLogger, self).log(self.logLevels['DB'], msg, *args, **kwargs)
 
     def info(self, msg, *args, **kwargs):
         super(srLogger, self).info(msg, *args, **kwargs)
@@ -183,8 +197,9 @@ class srLogger(logging.getLoggerClass()):
         submitter_result = None
         issue_id = None
 
-        from core.classes import ErrorViewer
-        if not (sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.srConfig.DEBUG and len(
+        from sickrage.core.classes import ErrorViewer
+        if not (
+                    sickrage.srCore.srConfig.GIT_USERNAME and sickrage.srCore.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
                 ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
@@ -203,11 +218,12 @@ class srLogger(logging.getLoggerClass()):
 
         self.submitter_running = True
 
-        gh_org = sickrage.srConfig.GIT_ORG or 'SiCKRAGETV'
+        gh_org = sickrage.srCore.srConfig.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
         import github
-        gh = github.Github(login_or_token=sickrage.srConfig.GIT_USERNAME, password=sickrage.srConfig.GIT_PASSWORD,
+        gh = github.Github(login_or_token=sickrage.srCore.srConfig.GIT_USERNAME,
+                           password=sickrage.srCore.srConfig.GIT_PASSWORD,
                            user_agent="SiCKRAGE")
 
         try:
@@ -218,7 +234,7 @@ class srLogger(logging.getLoggerClass()):
                 with io.open(self.logFile, 'r') as f:
                     log_data = f.readlines()
 
-            for i in range(1, int(sickrage.srConfig.LOG_NR)):
+            for i in range(1, int(sickrage.srCore.srConfig.LOG_NR)):
                 if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
                     with io.open(self.logFile + ".%i" % i, 'r') as f:
                         log_data += f.readlines()
@@ -259,7 +275,7 @@ class srLogger(logging.getLoggerClass()):
                     message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
                 except Exception:
                     message += "Locale: unknown" + "\n"
-                message += "Version: **" + sickrage.srCore.VERSION + "**\n"
+                message += "Version: **" + sickrage.srCore.VERSIONUPDATER.updater.version + "**\n"
                 if hasattr(gist, 'html_url'):
                     message += "Link to Log: " + gist.html_url + "\n"
                 else:
@@ -289,7 +305,7 @@ class srLogger(logging.getLoggerClass()):
                             (ascii_error and is_ascii_error(report.title)):
 
                         issue_id = report.number
-                        if not report.raw_data[b'locked']:
+                        if not report.raw_data['locked']:
                             if report.create_comment(message):
                                 submitter_result = 'Commented on existing issue #%s successfully!' % issue_id
                             else:

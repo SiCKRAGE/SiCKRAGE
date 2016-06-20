@@ -24,14 +24,14 @@ import re
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class AlphaRatioProvider(TorrentProvider):
     def __init__(self):
-        super(AlphaRatioProvider, self).__init__("AlphaRatio")
+        super(AlphaRatioProvider, self).__init__("AlphaRatio", 'alpharatio.cc')
         self.supportsBacklog = True
         self.username = None
         self.password = None
@@ -39,13 +39,12 @@ class AlphaRatioProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'http://alpharatio.cc/',
-                     'login': 'http://alpharatio.cc/login.php',
-                     'detail': 'http://alpharatio.cc/torrents.php?torrentid=%s',
-                     'search': 'http://alpharatio.cc/torrents.php?searchstr=%s%s',
-                     'download': 'http://alpharatio.cc/%s'}
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/torrents.php?torrentid=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"
 
@@ -59,19 +58,20 @@ class AlphaRatioProvider(TorrentProvider):
                         'remember_me': 'on',
                         'login': 'submit'}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -80,17 +80,19 @@ class AlphaRatioProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string, self.catagories)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                data = self.getURL(searchURL)
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -100,7 +102,7 @@ class AlphaRatioProvider(TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
@@ -110,7 +112,7 @@ class AlphaRatioProvider(TorrentProvider):
 
                             try:
                                 title = link.contents[0]
-                                download_url = self.urls['download'] % (url[b'href'])
+                                download_url = self.urls['download'] % (url['href'])
                                 seeders = cells[len(cells) - 2].contents[0]
                                 leechers = cells[len(cells) - 1].contents[0]
                                 # FIXME
@@ -123,20 +125,20 @@ class AlphaRatioProvider(TorrentProvider):
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception:
-                    sickrage.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -158,4 +160,4 @@ class AlphaRatioCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

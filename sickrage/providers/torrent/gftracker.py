@@ -21,16 +21,18 @@ from __future__ import unicode_literals
 import re
 import traceback
 
+import requests
+
 import sickrage
-from core.caches import tv_cache
-from core.exceptions import AuthException
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class GFTrackerProvider(TorrentProvider):
     def __init__(self):
-        super(GFTrackerProvider, self).__init__("GFTracker")
+        super(GFTrackerProvider, self).__init__("GFTracker",'www.thegft.org')
 
         self.supportsBacklog = True
 
@@ -40,13 +42,11 @@ class GFTrackerProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'https://www.thegft.org',
-                     'login': 'https://www.thegft.org/loginsite.php',
-                     'search': 'https://www.thegft.org/browse.php?view=%s%s',
-                     'download': 'https://www.thegft.org/%s',
-                     }
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/loginsite.php'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?view=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.cookies = None
 
@@ -68,21 +68,24 @@ class GFTrackerProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+
+
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            return False
+
         # Save cookies from response
-        self.cookies = self.headers.get('Set-Cookie')
-
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
-            return False
-
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
+
+        requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -91,20 +94,22 @@ class GFTrackerProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (self.categories, search_string)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 # Set cookies from response
-                self.headers.update({'Cookie': self.cookies})
                 # Returns top 30 results by default, expandable in user profile
-                data = self.getURL(searchURL)
-                if not data:
+
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL, cookies=self.cookies).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -114,7 +119,7 @@ class GFTrackerProvider(TorrentProvider):
 
                         # Continue only if at least one release is found
                         if len(torrent_rows) < 1:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
@@ -126,17 +131,17 @@ class GFTrackerProvider(TorrentProvider):
 
                             try:
                                 if title.has_key('title'):
-                                    title = title[b'title']
+                                    title = title['title']
                                 else:
                                     title = cells[1].find("a")['title']
 
-                                download_url = self.urls['download'] % (link[b'href'])
+                                download_url = self.urls['download'] % (link['href'])
                                 seeders = int(shares[0])
                                 leechers = int(shares[1])
 
                                 size = -1
                                 if re.match(r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
-                                    size = self._convertSize(torrent_size.rstrip())
+                                    size = convert_size(torrent_size.rstrip())
 
                             except (AttributeError, TypeError):
                                 continue
@@ -146,20 +151,20 @@ class GFTrackerProvider(TorrentProvider):
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -171,25 +176,6 @@ class GFTrackerProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    @staticmethod
-    def _convertSize(sizeString):
-        size = sizeString[:-2].strip()
-        modifier = sizeString[-2:].upper()
-        try:
-            size = float(size)
-            if modifier in 'KB':
-                size = size * 1024
-            elif modifier in 'MB':
-                size = size * 1024 ** 2
-            elif modifier in 'GB':
-                size = size * 1024 ** 3
-            elif modifier in 'TB':
-                size = size * 1024 ** 4
-        except Exception:
-            size = -1
-        return int(size)
-
-
 class GFTrackerCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
         tv_cache.TVCache.__init__(self, provider_obj)
@@ -199,4 +185,4 @@ class GFTrackerCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

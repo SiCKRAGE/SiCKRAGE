@@ -25,15 +25,15 @@ import traceback
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class TorrentBytesProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentBytesProvider, self).__init__("TorrentBytes")
+        super(TorrentBytesProvider, self).__init__("TorrentBytes", 'www.torrentbytes.net')
 
         self.supportsBacklog = True
 
@@ -44,13 +44,12 @@ class TorrentBytesProvider(TorrentProvider):
         self.minleech = None
         self.freeleech = False
 
-        self.urls = {'base_url': 'https://www.torrentbytes.net',
-                     'login': 'https://www.torrentbytes.net/takelogin.php',
-                     'detail': 'https://www.torrentbytes.net/details.php?id=%s',
-                     'search': 'https://www.torrentbytes.net/browse.php?search=%s%s',
-                     'download': 'https://www.torrentbytes.net/download.php?id=%s&name=%s'}
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?search=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php?id=%s&name=%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.categories = "&c41=1&c33=1&c38=1&c32=1&c37=1"
 
@@ -64,18 +63,19 @@ class TorrentBytesProvider(TorrentProvider):
                         'password': self.password,
                         'login': 'Log in!'}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -84,17 +84,19 @@ class TorrentBytesProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                data = self.getURL(searchURL)
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -102,7 +104,7 @@ class TorrentBytesProvider(TorrentProvider):
                         # Continue only if one Release is found
                         empty = html.find('Nothing found!')
                         if empty:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         torrent_table = html.find('table', attrs={'border': '1'})
@@ -113,7 +115,7 @@ class TorrentBytesProvider(TorrentProvider):
                             size = None
                             link = cells[1].find('a', attrs={'class': 'index'})
 
-                            full_id = link[b'href'].replace('details.php?id=', '')
+                            full_id = link['href'].replace('details.php?id=', '')
                             torrent_id = full_id.split("&")[0]
 
                             # Free leech torrents are marked with green [F L] in the title (i.e. <font color=green>[F&nbsp;L]</font>)
@@ -138,7 +140,7 @@ class TorrentBytesProvider(TorrentProvider):
                                 # Need size for failed downloads handling
                                 if size is None:
                                     if re.match(r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[6].text):
-                                        size = self._convertSize(cells[6].text)
+                                        size = convert_size(cells[6].text)
                                         if not size:
                                             size = -1
 
@@ -150,20 +152,20 @@ class TorrentBytesProvider(TorrentProvider):
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                                    title, seeders, leechers))
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -175,21 +177,6 @@ class TorrentBytesProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    @staticmethod
-    def _convertSize(sizeString):
-        size = sizeString[:-2]
-        modifier = sizeString[-2:]
-        size = float(size)
-        if modifier in 'KB':
-            size *= 1024
-        elif modifier in 'MB':
-            size *= 1024 ** 2
-        elif modifier in 'GB':
-            size *= 1024 ** 3
-        elif modifier in 'TB':
-            size *= 1024 ** 4
-        return int(size)
-
 
 class TorrentBytesCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
@@ -200,4 +187,4 @@ class TorrentBytesCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

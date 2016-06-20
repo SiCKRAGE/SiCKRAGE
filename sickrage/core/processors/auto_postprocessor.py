@@ -22,7 +22,7 @@ import os.path
 import threading
 
 import sickrage
-from core.process_tv import processDir
+from sickrage.core.process_tv import processDir
 
 
 class srPostProcessor(object):
@@ -43,18 +43,21 @@ class srPostProcessor(object):
 
         self.amActive = True
 
-        if not os.path.isdir(sickrage.srConfig.TV_DOWNLOAD_DIR):
-            sickrage.srLogger.error("Automatic post-processing attempted but dir " + sickrage.srConfig.TV_DOWNLOAD_DIR + " doesn't exist")
+        # set thread name
+        threading.currentThread().setName(self.name)
+
+        if not os.path.isdir(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
+            sickrage.srCore.srLogger.error("Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " doesn't exist")
             self.amActive = False
             return
 
-        if not os.path.isabs(sickrage.srConfig.TV_DOWNLOAD_DIR):
-            sickrage.srLogger.error(
-                    "Automatic post-processing attempted but dir " + sickrage.srConfig.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)")
+        if not os.path.isabs(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
+            sickrage.srCore.srLogger.error(
+                    "Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)")
             self.amActive = False
             return
 
-        processDir(sickrage.srConfig.TV_DOWNLOAD_DIR)
+        processDir(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR)
 
         self.amActive = False
 

@@ -26,14 +26,14 @@ import urllib
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class HDTorrentsProvider(TorrentProvider):
     def __init__(self):
-        super(HDTorrentsProvider, self).__init__("HDTorrents")
+        super(HDTorrentsProvider, self).__init__("HDTorrents", 'hd-torrents.org')
 
         self.supportsBacklog = True
 
@@ -43,13 +43,12 @@ class HDTorrentsProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'https://hd-torrents.org',
-                     'login': 'https://hd-torrents.org/login.php',
-                     'search': 'https://hd-torrents.org/torrents.php?search=%s&active=1&options=0%s',
-                     'rss': 'https://hd-torrents.org/torrents.php?search=&active=1&options=0%s',
-                     'home': 'https://hd-torrents.org/%s'}
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents.php?search=%s&active=1&options=0%s'.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/torrents.php?search=&active=1&options=0%s'.format(base_url=self.urls['base_url']),
+            'home': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.categories = "&category[]=59&category[]=60&category[]=30&category[]=38"
         self.proper_strings = ['PROPER', 'REPACK']
@@ -59,31 +58,32 @@ class HDTorrentsProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'uid': self.username,
                         'pwd': self.password,
                         'submit': 'Confirm'}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('You need cookies enabled to log in.', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -92,21 +92,22 @@ class HDTorrentsProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     searchURL = self.urls['search'] % (urllib.quote_plus(search_string), self.categories)
                 else:
                     searchURL = self.urls['rss'] % self.categories
 
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s" % search_string)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
-                data = self.getURL(searchURL)
-                if not data or 'please try later' in data:
-                    sickrage.srLogger.debug("No data returned from provider")
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 # Search result page contains some invalid html that prevents html parser from returning all data.
@@ -116,24 +117,24 @@ class HDTorrentsProvider(TorrentProvider):
                     index = data.lower().ind
                     '<table class="mainblockcontenttt"'
                 except ValueError:
-                    sickrage.srLogger.error("Could not find table of torrents mainblockcontenttt")
+                    sickrage.srCore.srLogger.error("Could not find table of torrents mainblockcontenttt")
                     continue
 
                 data = urllib.unquote(data[index:].encode('utf-8')).decode('utf-8').replace('\t', '')
 
                 with bs4_parser(data) as html:
                     if not html:
-                        sickrage.srLogger.debug("No html data parsed from provider")
+                        sickrage.srCore.srLogger.debug("No html data parsed from provider")
                         continue
 
                     empty = html.find('No torrents here')
                     if empty:
-                        sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                         continue
 
                     tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
                     if not tables:
-                        sickrage.srLogger.error("Could not find table of torrents mainblockcontenttt")
+                        sickrage.srCore.srLogger.error("Could not find table of torrents mainblockcontenttt")
                         continue
 
                     torrents = tables.findChildren('tr')
@@ -152,9 +153,9 @@ class HDTorrentsProvider(TorrentProvider):
                             for cell in cells:
                                 try:
                                     if None is title and cell.get('title') and cell.get('title') in 'Download':
-                                        title = re.search('f=(.*).torrent', cell.a[b'href']).group(1).replace('+', '.')
+                                        title = re.search('f=(.*).torrent', cell.a['href']).group(1).replace('+', '.')
                                         title = title.decode('utf-8')
-                                        download_url = self.urls['home'] % cell.a[b'href']
+                                        download_url = self.urls['home'] % cell.a['href']
                                         continue
                                     if None is seeders and cell.get('class')[0] and cell.get('class')[
                                         0] in 'green' 'yellow' 'red':
@@ -172,27 +173,28 @@ class HDTorrentsProvider(TorrentProvider):
                                     # Need size for failed downloads handling
                                     if size is None:
                                         if re.match(r'[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cell.text):
-                                            size = self._convertSize(cell.text)
+                                            size = convert_size(cell.text)
                                             if not size:
                                                 size = -1
 
                                 except Exception:
-                                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                                    sickrage.srCore.srLogger.error(
+                                        "Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
                             if not all([title, download_url]):
                                 continue
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
@@ -209,20 +211,6 @@ class HDTorrentsProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    @staticmethod
-    def _convertSize(size):
-        size, modifier = size.split(' ')
-        size = float(size)
-        if modifier in 'KB':
-            size = size * 1024
-        elif modifier in 'MB':
-            size = size * 1024 ** 2
-        elif modifier in 'GB':
-            size = size * 1024 ** 3
-        elif modifier in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
-
 
 class HDTorrentsCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
@@ -233,4 +221,4 @@ class HDTorrentsCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

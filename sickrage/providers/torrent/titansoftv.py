@@ -1,4 +1,3 @@
-
 # URL: http://code.google.com/p/sickrage
 # Originally written for SickGear
 #
@@ -22,22 +21,25 @@ from __future__ import unicode_literals
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.exceptions import AuthException
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.exceptions import AuthException
+from sickrage.providers import TorrentProvider
 
 
 class TitansOfTVProvider(TorrentProvider):
     def __init__(self):
-        super(TitansOfTVProvider, self).__init__('TitansOfTV')
+        super(TitansOfTVProvider, self).__init__('TitansOfTV','titansof.tv')
         self.supportsBacklog = True
 
         self.supportsAbsoluteNumbering = True
         self.api_key = None
         self.ratio = None
         self.cache = TitansOfTVCache(self)
-        self.url = 'http://titansof.tv/api/torrents'
-        self.download_url = 'http://titansof.tv/api/torrents/%s/download?apikey=%s'
+
+        self.urls.update({
+            'api': '{base_url}/api/torrents'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/api/torrents/%s/download?apikey=%s'.format(base_url=self.urls['base_url'])
+        })
 
     def seedRatio(self):
         return self.ratio
@@ -52,41 +54,39 @@ class TitansOfTVProvider(TorrentProvider):
     def _checkAuthFromData(data):
 
         if 'error' in data:
-            sickrage.srLogger.warning("Invalid api key. Check your settings")
+            sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
         # FIXME ADD MODE
         self._checkAuth()
         results = []
         params = {}
-        self.headers.update({'X-Authorization': self.api_key})
 
         if search_params:
             params.update(search_params)
 
-        searchURL = self.url + '?' + urllib.urlencode(params)
-        sickrage.srLogger.debug("Search string: %s " % search_params)
-        sickrage.srLogger.debug("Search URL: %s" % searchURL)
+        searchURL = self.urls['api'] + '?' + urllib.urlencode(params)
+        sickrage.srCore.srLogger.debug("Search string: %s " % search_params)
+        sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-        parsedJSON = self.getURL(searchURL, json=True)  # do search
-
-        if not parsedJSON:
-            sickrage.srLogger.debug("No data returned from provider")
+        try:
+            parsedJSON = sickrage.srCore.srWebSession.get(searchURL, headers={'X-Authorization': self.api_key}).json()
+        except Exception:
+            sickrage.srCore.srLogger.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
-
             try:
-                found_torrents = parsedJSON[b'results']
+                found_torrents = parsedJSON['results']
             except Exception:
                 found_torrents = {}
 
             for result in found_torrents:
                 title = result.get('release_name', '')
                 tid = result.get('id', '')
-                download_url = self.download_url % (tid, self.api_key)
+                download_url = self.urls['download'] % (tid, self.api_key)
                 # FIXME size, seeders, leechers
                 size = -1
                 seeders = 1
@@ -97,28 +97,27 @@ class TitansOfTVProvider(TorrentProvider):
 
                 # Filter unseeded torrent
                 # if seeders < self.minseed or leechers < self.minleech:
-                #    if mode is not 'RSS':
+                #    if mode != 'RSS':
                 #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                 #    continue
 
                 item = title, download_url, size, seeders, leechers
 
-                sickrage.srLogger.debug("Found result: %s " % title)
+                sickrage.srCore.srLogger.debug("Found result: %s " % title)
                 results.append(item)
 
         # FIXME SORTING
-
         return results
 
     def _get_season_search_strings(self, ep_obj):
-        search_params = {'limit': 100, b'season': 'Season %02d' % ep_obj.scene_season}
+        search_params = {'limit': 100, 'season': 'Season %02d' % ep_obj.scene_season}
 
         if ep_obj.show.indexer == 1:
-            search_params[b'series_id'] = ep_obj.show.indexerid
+            search_params['series_id'] = ep_obj.show.indexerid
         elif ep_obj.show.indexer == 2:
             tvdbid = ep_obj.show.mapIndexers()[1]
             if tvdbid:
-                search_params[b'series_id'] = tvdbid
+                search_params['series_id'] = tvdbid
 
         return [search_params]
 
@@ -127,16 +126,16 @@ class TitansOfTVProvider(TorrentProvider):
         if not ep_obj:
             return [{}]
 
-        search_params = {'limit': 100, b'episode': 'S%02dE%02d' % (ep_obj.scene_season, ep_obj.scene_episode)}
+        search_params = {'limit': 100, 'episode': 'S%02dE%02d' % (ep_obj.scene_season, ep_obj.scene_episode)}
 
         # Do a general name search for the episode, formatted like SXXEYY
 
         if ep_obj.show.indexer == 1:
-            search_params[b'series_id'] = ep_obj.show.indexerid
+            search_params['series_id'] = ep_obj.show.indexerid
         elif ep_obj.show.indexer == 2:
             tvdbid = ep_obj.show.mapIndexers()[1]
             if tvdbid:
-                search_params[b'series_id'] = tvdbid
+                search_params['series_id'] = tvdbid
 
         return [search_params]
 
@@ -150,4 +149,4 @@ class TitansOfTVCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'limit': 100}
-        return self.provider._doSearch(search_params)
+        return self.provider.search(search_params)

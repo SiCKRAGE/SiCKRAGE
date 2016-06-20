@@ -21,14 +21,13 @@ from __future__ import unicode_literals
 
 import re
 import urllib
-
 from datetime import datetime
 from datetime import timedelta
 
 import sickrage
-from core.common import Quality, SNATCHED, SUBTITLED, FAILED, WANTED
-from core.databases import failed_db, main_db
-from core.exceptions import EpisodeNotFoundException
+from sickrage.core.common import Quality, SNATCHED, SUBTITLED, FAILED, WANTED
+from sickrage.core.databases import failed_db, main_db
+from sickrage.core.exceptions import EpisodeNotFoundException
 
 
 class History:
@@ -82,15 +81,15 @@ class History:
         data = []
         for result in results:
             data.append({
-                'action': result[b'action'],
-                'date': result[b'date'],
-                'episode': result[b'episode'],
-                'provider': result[b'provider'],
-                'quality': result[b'quality'],
-                'resource': result[b'resource'],
-                'season': result[b'season'],
-                'show_id': result[b'showid'],
-                'show_name': result[b'show_name']
+                'action': result['action'],
+                'date': result['date'],
+                'episode': result['episode'],
+                'provider': result['provider'],
+                'quality': result['quality'],
+                'resource': result['resource'],
+                'season': result['season'],
+                'show_id': result['showid'],
+                'show_name': result['show_name']
             })
 
         return data
@@ -243,27 +242,27 @@ class FailedHistory(object):
         sql_results = failed_db.FailedDB().select("SELECT * FROM history WHERE release=?", [release])
 
         if len(sql_results) == 0:
-            sickrage.srLogger.warning(
+            sickrage.srCore.srLogger.warning(
                     "Release not found in snatch history.")
         elif len(sql_results) > 1:
-            sickrage.srLogger.warning("Multiple logged snatches found for release")
-            sizes = len(set(x[b"size"] for x in sql_results))
-            providers = len(set(x[b"provider"] for x in sql_results))
+            sickrage.srCore.srLogger.warning("Multiple logged snatches found for release")
+            sizes = len(set(x["size"] for x in sql_results))
+            providers = len(set(x["provider"] for x in sql_results))
             if sizes == 1:
-                sickrage.srLogger.warning("However, they're all the same size. Continuing with found size.")
-                size = sql_results[0][b"size"]
+                sickrage.srCore.srLogger.warning("However, they're all the same size. Continuing with found size.")
+                size = sql_results[0]["size"]
             else:
-                sickrage.srLogger.warning(
+                sickrage.srCore.srLogger.warning(
                         "They also vary in size. Deleting the logged snatches and recording this release with no size/provider")
                 for result in sql_results:
-                    FailedHistory.deleteLoggedSnatch(result[b"release"], result[b"size"], result[b"provider"])
+                    FailedHistory.deleteLoggedSnatch(result["release"], result["size"], result["provider"])
 
             if providers == 1:
-                sickrage.srLogger.info("They're also from the same provider. Using it as well.")
-                provider = sql_results[0][b"provider"]
+                sickrage.srCore.srLogger.info("They're also from the same provider. Using it as well.")
+                provider = sql_results[0]["provider"]
         else:
-            size = sql_results[0][b"size"]
-            provider = sql_results[0][b"provider"]
+            size = sql_results[0]["size"]
+            provider = sql_results[0]["provider"]
 
         if not FailedHistory.hasFailed(release, size, provider):
             failed_db.FailedDB().action("INSERT INTO failed (release, size, provider) VALUES (?, ?, ?)", [release, size, provider])
@@ -306,21 +305,21 @@ class FailedHistory(object):
         sql_results = failed_db.FailedDB().select("SELECT * FROM history WHERE showid=? AND season=?",
                                   [epObj.show.indexerid, epObj.season])
 
-        history_eps = dict([(res[b"episode"], res) for res in sql_results])
+        history_eps = dict([(res["episode"], res) for res in sql_results])
 
         try:
-            sickrage.srLogger.info("Reverting episode (%s, %s): %s" % (epObj.season, epObj.episode, epObj.name))
+            sickrage.srCore.srLogger.info("Reverting episode (%s, %s): %s" % (epObj.season, epObj.episode, epObj.name))
             with epObj.lock:
                 if epObj.episode in history_eps:
-                    sickrage.srLogger.info("Found in history")
-                    epObj.status = history_eps[epObj.episode][b'old_status']
+                    sickrage.srCore.srLogger.info("Found in history")
+                    epObj.status = history_eps[epObj.episode]['old_status']
                 else:
-                    sickrage.srLogger.warning("WARNING: Episode not found in history. Setting it back to WANTED")
+                    sickrage.srCore.srLogger.warning("WARNING: Episode not found in history. Setting it back to WANTED")
                     epObj.status = WANTED
                     epObj.saveToDB()
 
         except EpisodeNotFoundException as e:
-            sickrage.srLogger.warning("Unable to create episode, please set its status manually: {}".format(e.message))
+            sickrage.srCore.srLogger.warning("Unable to create episode, please set its status manually: {}".format(e.message))
 
     @staticmethod
     def markFailed(epObj):
@@ -339,7 +338,7 @@ class FailedHistory(object):
                 epObj.saveToDB()
 
         except EpisodeNotFoundException as e:
-            sickrage.srLogger.warning("Unable to get episode, please set its status manually: {}".format(e.message))
+            sickrage.srCore.srLogger.warning("Unable to get episode, please set its status manually: {}".format(e.message))
 
         return log_str
 
@@ -409,17 +408,17 @@ class FailedHistory(object):
                               [epObj.show.indexerid, epObj.season, epObj.episode])
 
         for result in results:
-            release = str(result[b"release"])
-            provider = str(result[b"provider"])
-            date = result[b"date"]
+            release = str(result["release"])
+            provider = str(result["provider"])
+            date = result["date"]
 
             # Clear any incomplete snatch records for this release if any exist
             failed_db.FailedDB().action("DELETE FROM history WHERE release=? AND DATE!=?", [release, date])
 
             # Found a previously failed release
-            sickrage.srLogger.debug("Failed release found for season (%s): (%s)" % (epObj.season, result[b"release"]))
+            sickrage.srCore.srLogger.debug("Failed release found for season (%s): (%s)" % (epObj.season, result["release"]))
             return (release, provider)
 
         # Release was not found
-        sickrage.srLogger.debug("No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid))
+        sickrage.srCore.srLogger.debug("No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid))
         return (release, provider)

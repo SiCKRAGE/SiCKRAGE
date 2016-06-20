@@ -20,20 +20,18 @@
 from __future__ import unicode_literals
 
 import re
-import time
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.common import cpu_presets
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class SCCProvider(TorrentProvider):
     def __init__(self):
 
-        super(SCCProvider, self).__init__("SceneAccess")
+        super(SCCProvider, self).__init__("SceneAccess",'sceneaccess.eu')
 
         self.supportsBacklog = True
 
@@ -45,13 +43,12 @@ class SCCProvider(TorrentProvider):
 
         self.cache = SCCCache(self)
 
-        self.urls = {'base_url': 'https://sceneaccess.eu',
-                     'login': 'https://sceneaccess.eu/login',
-                     'detail': 'https://www.sceneaccess.eu/details?id=%s',
-                     'search': 'https://sceneaccess.eu/all?search=%s&method=1&%s',
-                     'download': 'https://www.sceneaccess.eu/%s'}
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/login'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/all?search=%s&method=1&%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.categories = {'sponly': 'c26=26&c44=44&c45=45',
                            # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
@@ -63,14 +60,15 @@ class SCCProvider(TorrentProvider):
                         'password': self.password,
                         'submit': 'come on in'}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -80,7 +78,7 @@ class SCCProvider(TorrentProvider):
         title = r'<title>.+? \| %s</title>' % section
         return re.search(title, text, re.IGNORECASE)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
 
@@ -90,22 +88,19 @@ class SCCProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            if mode is not 'RSS':
-                sickrage.srLogger.debug("Search Mode: %s" % mode)
+            if mode != 'RSS':
+                sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[search_mode])
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = self.getURL(searchURL)
-                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
-                except Exception as e:
-                    sickrage.srLogger.warning("Unable to fetch data. Error: %s" % repr(e))
-
-                if not data:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 with bs4_parser(data) as html:
@@ -114,7 +109,7 @@ class SCCProvider(TorrentProvider):
 
                     # Continue only if at least one Release is found
                     if len(torrent_rows) < 2:
-                        sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                         continue
 
                     for result in torrent_table.find_all('tr')[1:]:
@@ -125,15 +120,14 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = self.getURL(self.url + "/" + link[b'href'])
-                                if data:
-                                    with bs4_parser(data) as details_html:
-                                        title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
-                            download_url = self.urls['download'] % url[b'href']
+                                data = sickrage.srCore.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
+                                with bs4_parser(data) as details_html:
+                                    title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
+                            download_url = self.urls['download'] % url['href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
-                            size = self._convertSize(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
-                        except (AttributeError, TypeError):
+                            size = convert_size(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
+                        except Exception:
                             continue
 
                         if not all([title, download_url]):
@@ -141,15 +135,15 @@ class SCCProvider(TorrentProvider):
 
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
-                        if mode is not 'RSS':
-                            sickrage.srLogger.debug("Found result: %s " % title)
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
@@ -163,20 +157,6 @@ class SCCProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    @staticmethod
-    def _convertSize(size):
-        size, base = size.split()
-        size = float(size)
-        if base in 'KB':
-            size = size * 1024
-        elif base in 'MB':
-            size = size * 1024 ** 2
-        elif base in 'GB':
-            size = size * 1024 ** 3
-        elif base in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
-
 
 class SCCCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
@@ -187,4 +167,4 @@ class SCCCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

@@ -23,14 +23,14 @@ import traceback
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class PretomeProvider(TorrentProvider):
     def __init__(self):
-        super(PretomeProvider, self).__init__("Pretome")
+        super(PretomeProvider, self).__init__("Pretome",'pretome.info')
 
         self.supportsBacklog = True
 
@@ -41,13 +41,12 @@ class PretomeProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'https://pretome.info',
-                     'login': 'https://pretome.info/takelogin.php',
-                     'detail': 'https://pretome.info/details.php?id=%s',
-                     'search': 'https://pretome.info/browse.php?search=%s%s',
-                     'download': 'https://pretome.info/download.php/%s/%s.torrent'}
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?search=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php/%s/%s.torrent'.format(base_url=self.urls['base_url'])
+        })
 
         self.categories = "&st=1&cat%5B%5D=7"
 
@@ -58,7 +57,7 @@ class PretomeProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password or not self.pin:
-            sickrage.srLogger.warning("Invalid username or password or pin. Check your settings")
+            sickrage.srCore.srLogger.warning("Invalid username or password or pin. Check your settings")
 
         return True
 
@@ -68,18 +67,19 @@ class PretomeProvider(TorrentProvider):
                         'password': self.password,
                         'login_pin': self.pin}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+        except Exception:
+            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -88,17 +88,19 @@ class PretomeProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                data = self.getURL(searchURL)
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -106,12 +108,12 @@ class PretomeProvider(TorrentProvider):
                         # Continue only if one Release is found
                         empty = html.find('h2', text="No .torrents fit this filter criteria")
                         if empty:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         torrent_table = html.find('table', attrs={'style': 'border: none; width: 100%;'})
                         if not torrent_table:
-                            sickrage.srLogger.error("Could not find table of torrents")
+                            sickrage.srCore.srLogger.error("Could not find table of torrents")
                             continue
 
                         torrent_rows = torrent_table.find_all('tr', attrs={'class': 'browse'})
@@ -121,11 +123,11 @@ class PretomeProvider(TorrentProvider):
                             size = None
                             link = cells[1].find('a', attrs={'style': 'font-size: 1.25em; font-weight: bold;'})
 
-                            torrent_id = link[b'href'].replace('details.php?id=', '')
+                            torrent_id = link['href'].replace('details.php?id=', '')
 
                             try:
                                 if link.has_key('title'):
-                                    title = link[b'title']
+                                    title = link['title']
                                 else:
                                     title = link.contents[0]
 
@@ -136,7 +138,7 @@ class PretomeProvider(TorrentProvider):
                                 # Need size for failed downloads handling
                                 if size is None:
                                     if re.match(r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[7].text):
-                                        size = self._convertSize(cells[7].text)
+                                        size = convert_size(cells[7].text)
                                         if not size:
                                             size = -1
 
@@ -148,20 +150,20 @@ class PretomeProvider(TorrentProvider):
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -173,22 +175,6 @@ class PretomeProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    @staticmethod
-    def _convertSize(sizeString):
-        size = sizeString[:-2]
-        modifier = sizeString[-2:]
-        size = float(size)
-        if modifier in 'KB':
-            size = size * 1024
-        elif modifier in 'MB':
-            size = size * 1024 ** 2
-        elif modifier in 'GB':
-            size = size * 1024 ** 3
-        elif modifier in 'TB':
-            size = size * 1024 ** 4
-        return int(size)
-
-
 class PretomeCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
         tv_cache.TVCache.__init__(self, provider_obj)
@@ -198,4 +184,4 @@ class PretomeCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

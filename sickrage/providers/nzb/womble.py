@@ -19,17 +19,15 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.caches import tv_cache
-from providers import NZBProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import NZBProvider
 
 
 class WombleProvider(NZBProvider):
     def __init__(self):
-        super(WombleProvider, self).__init__("Womble's Index")
-        self.public = True
+        super(WombleProvider, self).__init__("Womble's Index", 'newshost.co.za')
+
         self.cache = WombleCache(self)
-        self.urls = {'base_url': 'http://newshost.co.za/'}
-        self.url = self.urls['base_url']
 
 
 class WombleCache(tv_cache.TVCache):
@@ -48,11 +46,11 @@ class WombleCache(tv_cache.TVCache):
             self.setLastUpdate()
 
             cl = []
-            for url in [self.provider.url + 'rss/?sec=tv-x264&fr=false',
-                        self.provider.url + 'rss/?sec=tv-sd&fr=false',
-                        self.provider.url + 'rss/?sec=tv-dvd&fr=false',
-                        self.provider.url + 'rss/?sec=tv-hd&fr=false']:
-                sickrage.srLogger.debug("Cache update URL: %s" % url)
+            for url in [self.provider.urls['base_url'] + '/rss/?sec=tv-x264&fr=false',
+                        self.provider.urls['base_url'] + '/rss/?sec=tv-sd&fr=false',
+                        self.provider.urls['base_url'] + '/rss/?sec=tv-dvd&fr=false',
+                        self.provider.urls['base_url'] + '/rss/?sec=tv-hd&fr=false']:
+                sickrage.srCore.srLogger.debug("Cache update URL: %s" % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
                     ci = self._parseItem(item)
@@ -66,4 +64,4 @@ class WombleCache(tv_cache.TVCache):
         return True
 
     def _checkAuth(self, data):
-        return data if data[b'feed'] and data[b'feed'][b'title'] != 'Invalid Link' else None
+        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

@@ -23,10 +23,10 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
-from core.common import ANY, Quality, WANTED
-from core.tv.episode import TVEpisode
-from core.tv.show import TVShow
-from providers import sortedProviderDict, GenericProvider
+from sickrage.core.common import ANY, Quality, WANTED
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
+from sickrage.providers import TorrentProvider
 from tests import SiCKRAGETestDBCase
 
 tests = {"Game of Thrones":
@@ -42,7 +42,7 @@ class SearchTest(SiCKRAGETestDBCase):
 
 def test_generator(curData, name, provider, forceSearch):
     def test(self):
-        show = TVShow(1, int(curData[b"tvdbid"]))
+        show = TVShow(1, int(curData["tvdbid"]))
         show.name = name
         show.quality = ANY | Quality.UNKNOWN | Quality.RAWHDTV
         show.saveToDB()
@@ -50,12 +50,12 @@ def test_generator(curData, name, provider, forceSearch):
 
         sickrage.srCore.SHOWLIST.append(show)
 
-        for epNumber in curData[b"e"]:
-            episode = TVEpisode(show, curData[b"s"], epNumber)
+        for epNumber in curData["e"]:
+            episode = TVEpisode(show, curData["s"], epNumber)
             episode.status = WANTED
 
             # We arent updating scene numbers, so fake it here
-            episode.scene_season = curData[b"s"]
+            episode.scene_season = curData["s"]
             episode.scene_episode = epNumber
 
             episode.saveToDB()
@@ -76,8 +76,8 @@ def test_generator(curData, name, provider, forceSearch):
                 continue
 
             try:
-                assert (season_strings == curData[b"s_strings"])
-                assert (episode_strings == curData[b"e_strings"])
+                assert (season_strings == curData["s_strings"])
+                assert (episode_strings == curData["e_strings"])
             except AssertionError:
                 continue
 
@@ -90,7 +90,7 @@ def test_generator(curData, name, provider, forceSearch):
             if not provider.public:
                 continue
 
-            items = provider._doSearch(search_strings)
+            items = provider.search(search_strings)
             if not items:
                 print("No results from provider?")
                 continue
@@ -118,13 +118,13 @@ for forceSearch in (True, False):
     for name, curData in tests.items():
         fname = name.replace(' ', '_')
 
-        for provider in sortedProviderDict().values():
-            if provider.type == GenericProvider.TORRENT:
+        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+            if providerObj.type == TorrentProvider.type:
                 if forceSearch:
-                    test_name = 'test_manual_%s_%s_%s' % (fname, curData[b"tvdbid"], provider.name)
+                    test_name = 'test_manual_%s_%s_%s' % (fname, curData["tvdbid"], providerObj.name)
                 else:
-                    test_name = 'test_%s_%s_%s' % (fname, curData[b"tvdbid"], provider.name)
-                test = test_generator(curData, name, provider, forceSearch)
+                    test_name = 'test_%s_%s_%s' % (fname, curData["tvdbid"], providerObj.name)
+                test = test_generator(curData, name, providerObj, forceSearch)
                 setattr(SearchTest, test_name, test)
 
 

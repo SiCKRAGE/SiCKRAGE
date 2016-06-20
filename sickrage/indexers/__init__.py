@@ -19,59 +19,96 @@
 from __future__ import unicode_literals
 
 import os
+import re
 
 import sickrage
-from indexers.indexer_config import indexerConfig, initConfig
+from sickrage.core.classes import ShowListUI
+from sickrage.core.helpers import findCertainShow
+from sickrage.indexers.config import indexerConfig
 
 
 class srIndexerApi(object):
-    def __init__(self, indexerID=None):
-        self.indexerID = int(indexerID or 0)
-
-    def __del__(self):
-        pass
+    def __init__(self, indexerID=1):
+        self.indexerID = indexerID
+        self.module = indexerConfig[self.indexerID]['module']
 
     def indexer(self, *args, **kwargs):
-        if self.indexerID:
-            return indexerConfig[self.indexerID][b'module'](*args, **kwargs)
+        return self.module(*args, **kwargs)
 
     @property
     def config(self):
-        if self.indexerID:
-            return indexerConfig[self.indexerID]
-        _ = initConfig
-        if sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_[b'valid_languages'].index(sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)]
-        _[b'valid_languages'].sort()
-        _[b'valid_languages'].insert(0, sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)
-        return _
+        return indexerConfig[self.indexerID]
 
     @property
     def name(self):
-        if self.indexerID:
-            return indexerConfig[self.indexerID][b'name']
+        return indexerConfig[self.indexerID]['name']
 
     @property
     def api_params(self):
-        if self.indexerID:
-            if sickrage.srConfig.CACHE_DIR:
-                indexerConfig[self.indexerID][b'api_params'][b'cache'] = os.path.join(sickrage.srConfig.CACHE_DIR, 'indexers',
-                                                                                      self.name)
-            if sickrage.srConfig.PROXY_SETTING and sickrage.srConfig.PROXY_INDEXERS:
-                indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickrage.srConfig.PROXY_SETTING
+        if sickrage.srCore.srConfig.CACHE_DIR:
+            indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickrage.srCore.srConfig.CACHE_DIR,
+                                                                                'indexers',
+                                                                                self.name)
+        if sickrage.srCore.srConfig.PROXY_SETTING and sickrage.srCore.srConfig.PROXY_INDEXERS:
+            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.srCore.srConfig.PROXY_SETTING
 
-            return indexerConfig[self.indexerID][b'api_params']
+        return indexerConfig[self.indexerID]['api_params']
 
     @property
     def cache(self):
-        if sickrage.srConfig.CACHE_DIR:
-            return self.api_params[b'cache']
+        return self.api_params['cache']
 
     @property
     def indexers(self):
-        return dict((int(x[b'id']), x[b'name']) for x in indexerConfig.values())
+        return dict((int(x['id']), x['name']) for x in indexerConfig.values())
 
-    @property
-    def session(self):
-        if self.indexerID:
-            return indexerConfig[self.indexerID][b'session']
+    def searchForShowID(self, regShowName, showid=None, ui=ShowListUI):
+        """
+        Contacts indexer to check for information on shows by showid
+
+        :param regShowName: Name of show
+        :param showid: Which indexer ID to look for
+        :param ui: Custom UI for indexer use
+        :return:
+        """
+
+        showNames = [re.sub('[. -]', ' ', regShowName)]
+
+        # Query Indexers for each search term and build the list of results
+
+        # Query Indexers for each search term and build the list of results
+        lINDEXER_API_PARMS = self.api_params.copy()
+        if ui is not None:
+            lINDEXER_API_PARMS['custom_ui'] = ui
+        t = self.indexer(**lINDEXER_API_PARMS)
+
+        for name in showNames:
+            sickrage.srCore.srLogger.debug("Trying to find " + name + " on " + self.name)
+
+            try:
+                search = t[showid] if showid else t[name]
+            except Exception:
+                continue
+
+            try:
+                seriesname = search[0]['seriesname']
+            except Exception:
+                seriesname = None
+
+            try:
+                series_id = search[0]['id']
+            except Exception:
+                series_id = None
+
+            if not (seriesname and series_id):
+                continue
+
+            ShowObj = findCertainShow(sickrage.srCore.SHOWLIST, int(series_id))
+
+            # Check if we can find the show in our list (if not, it's not the right show)
+            if (showid is None) and (ShowObj is not None) and (ShowObj.indexerid == int(series_id)):
+                return seriesname, self.indexerID, int(series_id)
+            elif (showid is not None) and (int(showid) == int(series_id)):
+                return seriesname, self.indexerID, int(showid)
+
+        return None, None, None

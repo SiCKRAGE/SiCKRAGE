@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import ast
 import base64
 import ctypes
+import datetime
 import errno
 import hashlib
 import httplib
@@ -15,27 +16,20 @@ import re
 import shutil
 import socket
 import stat
+import tempfile
 import time
 import traceback
+import urllib2
 import urlparse
 import uuid
 import zipfile
-from _socket import timeout as SocketTimeout
-from contextlib import closing, contextmanager
-from datetime import datetime
-from itertools import cycle, izip
+from contextlib import contextmanager
 
-import requests
 import six
 from bs4 import BeautifulSoup
 
 import sickrage
-from clients import http_error_code
-from core.exceptions import MultipleShowObjectsException
-from core.helpers.sessions import _setUpSession
-from indexers import adba
-from indexers.indexer_exceptions import indexer_episodenotfound, \
-    indexer_seasonnotfound
+from sickrage.core.exceptions import MultipleShowObjectsException
 
 mediaExtensions = [
     'avi', 'mkv', 'mpg', 'mpeg', 'wmv',
@@ -46,6 +40,23 @@ mediaExtensions = [
 ]
 
 subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
+
+
+def get_remote_md5_sum(url, max_file_size=100 * 1024 * 1024):
+    remote = urllib2.urlopen(url)
+    hash = hashlib.md5()
+
+    total_read = 0
+    while True:
+        data = remote.read(4096)
+        total_read += 4096
+
+        if not data or total_read > max_file_size:
+            break
+
+        hash.update(data)
+
+    return hash.hexdigest()
 
 
 def safe_getattr(object, name, default=None):
@@ -78,32 +89,29 @@ def readFileBuffered(filename, reverse=False):
             del data
 
 
-def normalize_url(url):
-    url = str(url)
-    segments = url.split('/')
-    correct_segments = []
-    for segment in segments:
-        if segment != '':
-            correct_segments.append(segment)
-    first_segment = str(correct_segments[0])
-    if first_segment.find('http') == -1:
-        correct_segments = ['http:'] + correct_segments
-    correct_segments[0] = correct_segments[0] + '/'
-    normalized_url = '/'.join(correct_segments)
-    return normalized_url
-
-
 def argToBool(x):
     """
     convert argument of unknown type to a bool:
     """
 
-    class FalseStrings:
-        val = ("", "0", "false", "f", "no", "n", "off")
-
     if isinstance(x, six.string_types):
-        return (x.lower() not in FalseStrings.val)
+        if x.lower() in ("0", "false", "f", "no", "n", "off"):
+            return False
+        elif x.lower() in ("1", "true", "t", "yes", "y", "on"):
+            return True
+        raise ValueError("failed to cast as boolean")
+
     return bool(x)
+
+
+def autoType(s):
+    for fn in (argToBool, int, float):
+        try:
+            return fn(s)
+        except ValueError:
+            pass
+
+    return (s, None)[s.lower() == "none"]
 
 
 def fixGlob(path):
@@ -194,7 +202,7 @@ def remove_non_release_groups(name):
     }
 
     _name = name
-    for remove_string, remove_type in removeWordsList.iteritems():
+    for remove_string, remove_type in removeWordsList.items():
         if remove_type == 'search':
             _name = _name.replace(remove_string, '')
         elif remove_type == 'searchre':
@@ -244,7 +252,7 @@ def isSyncFile(filename):
 
     extension = filename.rpartition(".")[2].lower()
     # if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
-    syncfiles = sickrage.srConfig.SYNC_FILES
+    syncfiles = sickrage.srCore.srConfig.SYNC_FILES
     if extension in syncfiles.split(",") or filename.startswith('.syncthing'):
         return True
     else:
@@ -329,7 +337,7 @@ def sanitizeFileName(name):
     # remove bad chars from the filename
     name = re.sub(r'[\\/\*]', '-', name)
     name = re.sub(r'[:"<>|?]', '', name)
-    name = re.sub(ur'\u2122', '', name)  # Trade Mark Sign
+    name = re.sub(r'\u2122', '', name)  # Trade Mark Sign
 
     # remove leading/trailing periods and spaces
     name = name.strip(' .')
@@ -386,64 +394,10 @@ def makeDir(path):
     if not os.path.isdir(path):
         try:
             os.makedirs(path)
-            sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(path)
+            sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(path)
         except OSError:
             return False
     return True
-
-
-def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
-    """
-    Contacts indexer to check for information on shows by showid
-
-    :param regShowName: Name of show
-    :param indexer: Which indexer to use
-    :param indexer_id: Which indexer ID to look for
-    :param ui: Custom UI for indexer use
-    :return:
-    """
-
-    showNames = [re.sub('[. -]', ' ', regShowName)]
-
-    # Query Indexers for each search term and build the list of results
-    for i in sickrage.srCore.INDEXER_API().indexers if not indexer else int(indexer or []):
-        # Query Indexers for each search term and build the list of results
-        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(i).api_params.copy()
-        if ui is not None:
-            lINDEXER_API_PARMS[b'custom_ui'] = ui
-        t = sickrage.srCore.INDEXER_API(i).indexer(**lINDEXER_API_PARMS)
-
-        for name in showNames:
-            sickrage.srLogger.debug("Trying to find " + name + " on " + sickrage.srCore.INDEXER_API(i).name)
-
-            try:
-                search = t[indexer_id] if indexer_id else t[name]
-            except Exception:
-                continue
-
-            try:
-                seriesname = search[0][b'seriesname']
-            except Exception:
-                seriesname = None
-
-            try:
-                series_id = search[0][b'id']
-            except Exception:
-                series_id = None
-
-            if not (seriesname and series_id):
-                continue
-            ShowObj = findCertainShow(sickrage.srCore.SHOWLIST, int(series_id))
-            # Check if we can find the show in our list (if not, it's not the right show)
-            if (indexer_id is None) and (ShowObj is not None) and (ShowObj.indexerid == int(series_id)):
-                return seriesname, i, int(series_id)
-            elif (indexer_id is not None) and (int(indexer_id) == int(series_id)):
-                return seriesname, i, int(indexer_id)
-
-        if indexer:
-            break
-
-    return None, None, None
 
 
 def listMediaFiles(path):
@@ -515,7 +469,7 @@ def link(src, dst):
     """
 
     if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0:
+        if ctypes.windll.kernel32.CreateHardLinkW(dst, src, 0) == 0:
             raise ctypes.WinError()
     else:
         os.link(src, dst)
@@ -533,8 +487,8 @@ def hardlinkFile(srcFile, destFile):
         link(srcFile, destFile)
         fixSetGroupID(destFile)
     except Exception as e:
-        sickrage.srLogger.warning("Failed to create hardlink of %s at %s. Error: %r. Copying instead"
-                                  % (srcFile, destFile, e))
+        sickrage.srCore.srLogger.warning("Failed to create hardlink of %s at %s. Error: %r. Copying instead"
+                                         % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -547,7 +501,7 @@ def symlink(src, dst):
     """
 
     if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src),
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(dst, src,
                                                       1 if os.path.isdir(src) else 0) in [0, 1280]:
             raise ctypes.WinError()
     else:
@@ -568,8 +522,8 @@ def moveAndSymlinkFile(srcFile, destFile):
         fixSetGroupID(destFile)
         symlink(destFile, srcFile)
     except Exception as e:
-        sickrage.srLogger.warning("Failed to create symlink of %s at %s. Error: %r. Copying instead"
-                                  % (srcFile, destFile, e))
+        sickrage.srCore.srLogger.warning("Failed to create symlink of %s at %s. Error: %r. Copying instead"
+                                         % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -579,16 +533,16 @@ def make_dirs(path):
     parents
     """
 
-    sickrage.srLogger.debug("Checking if the path %s already exists" % path)
+    sickrage.srCore.srLogger.debug("Checking if the path [{}] already exists".format(path))
 
     if not os.path.isdir(path):
         # Windows, create all missing folders
         if os.name == 'nt' or os.name == 'ce':
             try:
-                sickrage.srLogger.debug("Folder %s didn't exist, creating it" % path)
+                sickrage.srCore.srLogger.debug("Folder %s didn't exist, creating it" % path)
                 os.makedirs(path)
             except (OSError, IOError) as e:
-                sickrage.srLogger.error("Failed creating %s : %r" % (path, e))
+                sickrage.srCore.srLogger.error("Failed creating %s : %r" % (path, e))
                 return False
 
         # not Windows, create all missing folders and set permissions
@@ -605,14 +559,14 @@ def make_dirs(path):
                     continue
 
                 try:
-                    sickrage.srLogger.debug("Folder %s didn't exist, creating it" % sofar)
+                    sickrage.srCore.srLogger.debug("Folder %s didn't exist, creating it" % sofar)
                     os.mkdir(sofar)
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmodAsParent(os.path.normpath(sofar))
                     # do the library update for synoindex
-                    sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(sofar)
+                    sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(sofar)
                 except (OSError, IOError) as e:
-                    sickrage.srLogger.error("Failed creating %s : %r" % (sofar, e))
+                    sickrage.srCore.srLogger.error("Failed creating %s : %r" % (sofar, e))
                     return False
 
     return True
@@ -653,10 +607,10 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
 
     # move the file
     try:
-        sickrage.srLogger.info("Renaming file from %s to %s" % (cur_path, new_path))
-        shutil.move(cur_path, new_path)
+        sickrage.srCore.srLogger.info("Renaming file from %s to %s" % (cur_path, new_path))
+        moveFile(cur_path, new_path)
     except (OSError, IOError) as e:
-        sickrage.srLogger.error("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
+        sickrage.srCore.srLogger.error("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
         return False
 
     # clean up any old folders that are empty
@@ -676,7 +630,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
     # treat check_empty_dir as empty when it only contains these items
     ignore_items = []
 
-    sickrage.srLogger.info("Trying to clean any empty folders under " + check_empty_dir)
+    sickrage.srCore.srLogger.info("Trying to clean any empty folders under " + check_empty_dir)
 
     # as long as the folder exists and doesn't contain any files, delete it
     try:
@@ -688,13 +642,13 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
 
                 try:
                     # directory is empty or contains only ignore_items
-                    sickrage.srLogger.info("Deleting empty folder: " + check_empty_dir)
+                    sickrage.srCore.srLogger.info("Deleting empty folder: " + check_empty_dir)
                     os.rmdir(check_empty_dir)
 
                     # do the library update for synoindex
-                    sickrage.srCore.NOTIFIERS.synoindex_notifier.deleteFolder(check_empty_dir)
+                    sickrage.srCore.notifiersDict.synoindex_notifier.deleteFolder(check_empty_dir)
                 except OSError as e:
-                    sickrage.srLogger.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
+                    sickrage.srCore.srLogger.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
                     raise StopIteration
                 check_empty_dir = os.path.dirname(check_empty_dir)
             else:
@@ -732,7 +686,8 @@ def chmodAsParent(childPath):
     parentPath = os.path.dirname(childPath)
 
     if not parentPath:
-        sickrage.srLogger.debug("No parent path provided in " + childPath + ", unable to get permissions from it")
+        sickrage.srCore.srLogger.debug(
+            "No parent path provided in " + childPath + ", unable to get permissions from it")
         return
 
     childPath = os.path.join(parentPath, os.path.basename(childPath))
@@ -755,15 +710,16 @@ def chmodAsParent(childPath):
     user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
     if user_id != 0 and user_id != childPath_owner:
-        sickrage.srLogger.debug("Not running as root or owner of " + childPath + ", not trying to set permissions")
+        sickrage.srCore.srLogger.debug(
+            "Not running as root or owner of " + childPath + ", not trying to set permissions")
         return
 
     try:
         os.chmod(childPath, childMode)
-        sickrage.srLogger.debug(
+        sickrage.srCore.srLogger.debug(
             "Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
     except OSError:
-        sickrage.srLogger.debug("Failed to set permission for %s to %o" % (childPath, childMode))
+        sickrage.srCore.srLogger.debug("Failed to set permission for %s to %o" % (childPath, childMode))
 
 
 def fixSetGroupID(childPath):
@@ -795,15 +751,15 @@ def fixSetGroupID(childPath):
         user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
         if user_id != 0 and user_id != childPath_owner:
-            sickrage.srLogger.debug(
+            sickrage.srCore.srLogger.debug(
                 "Not running as root or owner of " + childPath + ", not trying to set the set-group-ID")
             return
 
         try:
             os.chown(childPath, -1, parentGID)  # @UndefinedVariable - only available on UNIX
-            sickrage.srLogger.debug("Respecting the set-group-ID bit on the parent directory for %s" % childPath)
+            sickrage.srCore.srLogger.debug("Respecting the set-group-ID bit on the parent directory for %s" % childPath)
         except OSError:
-            sickrage.srLogger.error(
+            sickrage.srCore.srLogger.error(
                 "Failed to respect the set-group-ID bit on the parent directory for %s (setting group ID %i)" % (
                     childPath, parentGID))
 
@@ -824,7 +780,7 @@ def is_anime_in_show_list():
 def update_anime_support():
     """Check if we need to support anime, and if we do, enable the feature"""
 
-    sickrage.srConfig.ANIMESUPPORT = is_anime_in_show_list()
+    sickrage.srCore.srConfig.ANIMESUPPORT = is_anime_in_show_list()
 
 
 def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=None):
@@ -839,7 +795,7 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
             ep = show.getEpisode(None, None, absolute_number=absolute_number)
             if ep:
                 episodes.append(ep.episode)
-                season = ep.season  # this will always take the last found season so eps that cross the season border are not handeled well
+                season = ep.season
 
     return season, episodes
 
@@ -955,7 +911,7 @@ def create_https_certificates(ssl_cert, ssl_key):
             with io.open(ssl_cert, 'w') as certout:
                 certout.write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert))
         except Exception:
-            sickrage.srLogger.error("Error creating SSL key and certificate")
+            sickrage.srCore.srLogger.error("Error creating SSL key and certificate")
             return False
 
     return True
@@ -1027,40 +983,16 @@ def anon_url(*url):
     """
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
     """
-    return '{}{}'.format(sickrage.srConfig.ANON_REDIRECT, ''.join(map(str, url)))
 
+    url = ''.join(map(str, url))
 
-unique_key1 = hex(uuid.getnode() ** 2)  # Used in encryption v1
+    # Handle URL's containing https or http, previously only handled http
+    uri_pattern = ur'^https?://'
+    unicode_uri_pattern = re.compile(uri_pattern, re.UNICODE)
+    if not re.search(unicode_uri_pattern, url):
+        url = 'http://' + url
 
-
-def encrypt(data, encryption_version=0, _decrypt=False):
-    # Version 1: Simple XOR encryption (this is not very secure, but works)
-    """
-
-    :rtype: basestring
-    """
-    if encryption_version == 1:
-        if _decrypt:
-            return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(unique_key1)))
-        else:
-            return base64.encodestring(
-                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(unique_key1)))).strip()
-    # Version 2: Simple XOR encryption (this is not very secure, but works)
-    elif encryption_version == 2:
-        if _decrypt:
-            return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
-                           izip(base64.decodestring(data), cycle(sickrage.srConfig.ENCRYPTION_SECRET)))
-        else:
-            return base64.encodestring(
-                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(
-                    sickrage.srConfig.ENCRYPTION_SECRET)))).strip()
-    # Version 0: Plain text
-    else:
-        return data
-
-
-def decrypt(data, encryption_version=0):
-    return encrypt(data, encryption_version, _decrypt=True)
+    return '{}{}'.format(sickrage.srCore.srConfig.ANON_REDIRECT, url)
 
 
 def full_sanitizeSceneName(name):
@@ -1080,7 +1012,7 @@ def is_hidden_folder(folder):
 
     def has_hidden_attribute(filepath):
         try:
-            attrs = ctypes.windll.kernel32.GetFileAttributesW(unicode(filepath))
+            attrs = ctypes.windll.kernel32.GetFileAttributesW(filepath)
             assert attrs != -1
             result = bool(attrs & 2)
         except (AttributeError, AssertionError):
@@ -1101,60 +1033,6 @@ def real_path(path):
     return os.path.normpath(os.path.normcase(os.path.realpath(path)))
 
 
-def validateShow(show, season=None, episode=None):
-    indexer_lang = show.lang
-
-    try:
-        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show.indexer).api_params.copy()
-
-        if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-            lINDEXER_API_PARMS[b'language'] = indexer_lang
-
-        if show.dvdorder != 0:
-            lINDEXER_API_PARMS[b'dvdorder'] = True
-
-        t = sickrage.srCore.INDEXER_API(show.indexer).indexer(**lINDEXER_API_PARMS)
-        if season is None and episode is None:
-            return t
-
-        return t[show.indexerid][season][episode]
-    except (indexer_episodenotfound, indexer_seasonnotfound):
-        pass
-
-
-def set_up_anidb_connection():
-    """Connect to anidb"""
-
-    if not sickrage.srConfig.USE_ANIDB:
-        sickrage.srLogger.debug("Usage of anidb disabled. Skiping")
-        return False
-
-    if not sickrage.srConfig.ANIDB_USERNAME and not sickrage.srConfig.ANIDB_PASSWORD:
-        sickrage.srLogger.debug("anidb username and/or password are not set. Aborting anidb lookup.")
-        return False
-
-    if not sickrage.srConfig.ADBA_CONNECTION:
-        def anidb_logger(msg):
-            return sickrage.srLogger.debug("anidb: %s " % msg)
-
-        try:
-            sickrage.srConfig.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=anidb_logger)
-        except Exception as e:
-            sickrage.srLogger.warning("anidb exception msg: %r " % repr(e))
-            return False
-
-    try:
-        if not sickrage.srConfig.ADBA_CONNECTION.authed():
-            sickrage.srConfig.ADBA_CONNECTION.auth(sickrage.srConfig.ANIDB_USERNAME, sickrage.srConfig.ANIDB_PASSWORD)
-        else:
-            return True
-    except Exception as e:
-        sickrage.srLogger.warning("anidb exception msg: %r " % repr(e))
-        return False
-
-    return sickrage.srConfig.ADBA_CONNECTION.authed()
-
-
 def makeZip(fileList, archive):
     """
     Create a ZIP of files
@@ -1170,7 +1048,7 @@ def makeZip(fileList, archive):
         a.close()
         return True
     except Exception as e:
-        sickrage.srLogger.error("Zip creation error: %r " % repr(e))
+        sickrage.srCore.srLogger.error("Zip creation error: %r " % repr(e))
         return False
 
 
@@ -1194,14 +1072,14 @@ def extractZip(archive, targetDir):
 
             # copy file (taken from zipfile's extract)
             source = zip_file.open(member)
-            target = file(os.path.join(targetDir, filename), "wb")
+            target = io.open(os.path.join(targetDir, filename), "wb")
             shutil.copyfileobj(source, target)
             source.close()
             target.close()
         zip_file.close()
         return True
     except Exception as e:
-        sickrage.srLogger.error("Zip extraction error: %r " % repr(e))
+        sickrage.srCore.srLogger.error("Zip extraction error: %r " % repr(e))
         return False
 
 
@@ -1221,7 +1099,7 @@ def backupConfigZip(fileList, archive, arcname=None):
                 z.write(f, os.path.relpath(f, arcname))
         return True
     except Exception as e:
-        sickrage.srLogger.error("Zip creation error: {} ".format(e.message))
+        sickrage.srCore.srLogger.error("Zip creation error: {} ".format(e.message))
         return False
 
 
@@ -1242,8 +1120,8 @@ def restoreConfigZip(archive, targetDir):
                 head, tail = os.path.split(path)
                 return tail or os.path.basename(head)
 
-            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.now().strftime('%Y%m%d_%H%M%S'))
-            shutil.move(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
+            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
+            moveFile(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
@@ -1251,35 +1129,68 @@ def restoreConfigZip(archive, targetDir):
 
         return True
     except Exception as e:
-        sickrage.srLogger.error("Zip extraction error: {}".format(e.message))
+        sickrage.srCore.srLogger.error("Zip extraction error: {}".format(e.message))
         removetree(targetDir)
 
 
-def backupAll(backupDir):
+def backupSR(backupDir):
     source = []
 
     filesList = ['sickrage.db',
-                 'scheduer.db',
-                 'config.ini',
                  'failed.db',
                  'cache.db',
-                 sickrage.srConfig.CONFIG_FILE]
+                 'thetvdb.db',
+                 os.path.basename(sickrage.CONFIG_FILE)]
 
     for f in filesList:
         fp = os.path.join(sickrage.DATA_DIR, f)
         if os.path.exists(fp):
             source += [fp]
 
-    if sickrage.srConfig.CACHE_DIR:
-        for (path, dirs, files) in os.walk(sickrage.srConfig.CACHE_DIR, topdown=True):
+    if sickrage.srCore.srConfig.CACHE_DIR:
+        for (path, dirs, files) in os.walk(sickrage.srCore.srConfig.CACHE_DIR, topdown=True):
             for dirname in dirs:
-                if path == sickrage.srConfig.CACHE_DIR and dirname not in ['images']:
+                if path == sickrage.srCore.srConfig.CACHE_DIR and dirname not in ['images']:
                     dirs.remove(dirname)
+
             for filename in files:
                 source += [os.path.join(path, filename)]
 
-    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.now().strftime('%Y%m%d%H%M%S')))
+    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
     return backupConfigZip(source, target, sickrage.DATA_DIR)
+
+
+def restoreSR(srcDir, dstDir):
+    try:
+        filesList = ['sickrage.db',
+                     'sickbeard.db',
+                     'failed.db',
+                     'cache.db',
+                     'thetvdb.db',
+                     os.path.basename(sickrage.CONFIG_FILE)]
+
+        for filename in filesList:
+            srcFile = os.path.join(srcDir, filename)
+            dstFile = os.path.join(dstDir, filename)
+            bakFile = os.path.join(dstDir, '{}.bak-{}'
+                                   .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+
+            if os.path.exists(srcFile):
+                if os.path.isfile(dstFile):
+                    moveFile(dstFile, bakFile)
+                moveFile(srcFile, dstFile)
+
+        if os.path.exists(os.path.join(srcDir, 'cache')):
+            if os.path.exists(os.path.join(dstDir, 'cache')):
+                moveFile(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
+                                                                        .format('cache',
+                                                                                datetime.datetime.now().strftime(
+                                                                                    '%Y%m%d_%H%M%S'))))
+            moveFile(os.path.join(srcDir, 'cache'), dstDir)
+
+        return True
+    except Exception as e:
+        return False
 
 
 def touchFile(fname, atime=None):
@@ -1293,142 +1204,20 @@ def touchFile(fname, atime=None):
 
     if atime is not None:
         try:
-            with file(fname, 'a'):
+            with io.open(fname, 'a'):
                 os.utime(fname, (atime, atime))
                 return True
         except OSError as e:
             if e.errno == errno.ENOSYS:
-                sickrage.srLogger.debug("File air date stamping not available on your OS. Please disable setting")
+                sickrage.srCore.srLogger.debug(
+                    "File air date stamping not available on your OS. Please disable setting")
             elif e.errno == errno.EACCES:
-                sickrage.srLogger.error(
+                sickrage.srCore.srLogger.error(
                     "File air date stamping failed(Permission denied). Check permissions for file: %s" % fname)
             else:
-                sickrage.srLogger.error("File air date stamping failed. The error is: %r" % e)
+                sickrage.srCore.srLogger.error("File air date stamping failed. The error is: %r" % e)
 
     return False
-
-
-def codeDescription(status_code):
-    """
-    Returns the description of the URL error code
-    """
-    if status_code in http_error_code:
-        return http_error_code[status_code]
-    else:
-        sickrage.srLogger.error("Unknown error code: %s. Please submit an issue" % status_code)
-        return 'unknown'
-
-
-def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=None, json=False, needBytes=False):
-    """
-    Returns a byte-string retrieved from the url provider.
-    """
-
-    resp = None
-
-    if headers is None:
-        headers = {}
-    if not requests.__version__ < (2, 8):
-        sickrage.srLogger.debug(
-            "Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
-
-    url = normalize_url(url)
-    session = _setUpSession(session or requests.Session(), headers, params)
-
-    try:
-        # decide if we get or post data to server
-        if post_data:
-            if isinstance(post_data, (list, dict)):
-                for param in post_data:
-                    if isinstance(post_data[param], unicode):
-                        post_data[param] = post_data[param].encode('utf-8')
-
-            session.headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
-            resp = session.post(url, data=post_data, timeout=timeout, allow_redirects=True, verify=session.verify)
-        else:
-            resp = session.get(url, timeout=timeout, allow_redirects=True, verify=session.verify)
-
-        if resp.ok:
-            return (resp.text, resp.content)[needBytes] if not json else resp.json()
-    except (SocketTimeout, TypeError) as e:
-        sickrage.srLogger.warning("Connection timed out (sockets) accessing getURL %s Error: %r" % (url, e))
-    except requests.exceptions.HTTPError as e:
-        sickrage.srLogger.debug("HTTP error in getURL %s Error: %r" % (url, e))
-    except requests.exceptions.ConnectionError as e:
-        sickrage.srLogger.debug("Connection error to getURL %s Error: %r" % (url, e))
-    except requests.exceptions.Timeout as e:
-        sickrage.srLogger.warning("Connection timed out accessing getURL %s Error: %r" % (url, e))
-    except requests.exceptions.ContentDecodingError:
-        sickrage.srLogger.debug("Content-Encoding was gzip, but content was not compressed. getURL: %s" % url)
-        sickrage.srLogger.debug(traceback.format_exc())
-    except Exception as e:
-        sickrage.srLogger.debug("Unknown exception in getURL %s Error: %r" % (url, e))
-        sickrage.srLogger.debug(traceback.format_exc())
-    finally:
-        if resp:
-            [i.raw.release_conn() for i in resp.history]
-            resp.raw.release_conn()
-
-
-def download_file(url, filename, session=None, headers=None):
-    """
-    Downloads a file specified
-
-    :param url: Source URL
-    :param filename: Target file on filesystem
-    :param session: request session to use
-    :param headers: override existing headers in request session
-    :return: True on success, False on failure
-    """
-
-    resp = None
-
-    if headers is None:
-        headers = {}
-    url = normalize_url(url)
-    session = _setUpSession(session, headers)
-    session.stream = True
-
-    try:
-        with closing(session.get(url, allow_redirects=True, verify=session.verify)) as resp:
-            if not resp.ok:
-                return False
-
-            try:
-                with io.open(filename, 'wb') as fp:
-                    for chunk in resp.iter_content(chunk_size=1024):
-                        if chunk:
-                            fp.write(chunk)
-                            fp.flush()
-
-                chmodAsParent(filename)
-
-                [i.raw.release_conn() for i in resp.history]
-                resp.raw.release_conn()
-
-                return True
-            except Exception:
-                sickrage.srLogger.warning("Problem setting permissions or writing file to: %s" % filename)
-
-    except (SocketTimeout, TypeError) as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection timed out (sockets) while loading download URL %s Error: %r" % (url, e))
-    except requests.exceptions.HTTPError as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("HTTP error %r while loading download URL %s " % (e), url)
-    except requests.exceptions.ConnectionError as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection error %r while loading download URL %s " % (e), url)
-    except requests.exceptions.Timeout as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection timed out %r while loading download URL %s " % (e), url)
-    except EnvironmentError as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Unable to save the file: %r " % e)
-    except Exception:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning(
-            "Unknown exception while loading download URL %s : %r" % (url, traceback.format_exc()))
 
 
 def get_size(start_path='.'):
@@ -1449,8 +1238,8 @@ def get_size(start_path='.'):
             try:
                 total_size += os.path.getsize(fp)
             except OSError as e:
-                sickrage.srLogger.error("Unable to get size for file %s Error: %r" % (fp, e))
-                sickrage.srLogger.debug(traceback.format_exc())
+                sickrage.srCore.srLogger.error("Unable to get size for file %s Error: %r" % (fp, e))
+                sickrage.srCore.srLogger.debug(traceback.format_exc())
     return total_size
 
 
@@ -1473,7 +1262,7 @@ def generateApiKey():
     m.update(r)
 
     # Return a hex digest of the md5, eg 49f68a5c8493ec2c0bf489821c21fc3b
-    sickrage.srLogger.info("New API generated")
+    sickrage.srCore.srLogger.debug("New API generated")
     return m.hexdigest()
 
 
@@ -1488,7 +1277,7 @@ def pretty_filesize(file_bytes):
 def remove_article(text=''):
     """Remove the english articles from a text string"""
 
-    return re.sub(ur'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+    return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
 
 
 def generateCookieSecret():
@@ -1510,7 +1299,7 @@ def verify_freespace(src, dest, oldfile=None):
     if not isinstance(oldfile, list):
         oldfile = [oldfile]
 
-    sickrage.srLogger.debug("Trying to determine free space on destination drive")
+    sickrage.srCore.srLogger.debug("Trying to determine free space on destination drive")
 
     if hasattr(os, 'statvfs'):  # POSIX
         def disk_usage(path):
@@ -1529,21 +1318,21 @@ def verify_freespace(src, dest, oldfile=None):
                 fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA
             ret = fun(path, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
             if ret == 0:
-                sickrage.srLogger.warning("Unable to determine free space, something went wrong")
+                sickrage.srCore.srLogger.warning("Unable to determine free space, something went wrong")
                 raise ctypes.WinError()
             return free.value
     else:
-        sickrage.srLogger.info("Unable to determine free space on your OS")
+        sickrage.srCore.srLogger.info("Unable to determine free space on your OS")
         return True
 
     if not os.path.isfile(src):
-        sickrage.srLogger.warning("A path to a file is required for the source. " + src + " is not a file.")
+        sickrage.srCore.srLogger.warning("A path to a file is required for the source. " + src + " is not a file.")
         return True
 
     try:
         diskfree = disk_usage(dest)
     except Exception:
-        sickrage.srLogger.warning("Unable to determine free space, so I will assume there is enough.")
+        sickrage.srCore.srLogger.warning("Unable to determine free space, so I will assume there is enough.")
         return True
 
     neededspace = int(os.path.getsize(src))
@@ -1556,8 +1345,9 @@ def verify_freespace(src, dest, oldfile=None):
     if diskfree > neededspace:
         return True
     else:
-        sickrage.srLogger.warning("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
-                                  % (neededspace, pretty_filesize(neededspace), diskfree, pretty_filesize(diskfree)))
+        sickrage.srCore.srLogger.warning("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
+                                         % (neededspace, pretty_filesize(neededspace), diskfree,
+                                            pretty_filesize(diskfree)))
         return False
 
 
@@ -1608,11 +1398,12 @@ def isFileLocked(checkfile, writeLockCheck=False):
         lockFile = checkfile + ".lckchk"
         if os.path.exists(lockFile):
             os.remove(lockFile)
+
         try:
             os.rename(checkfile, lockFile)
             time.sleep(1)
             os.rename(lockFile, checkfile)
-        except (Exception, OSError, IOError) as e:
+        except (Exception, OSError, IOError):
             return True
 
     return False
@@ -1669,31 +1460,6 @@ def removetree(tgt):
     return
 
 
-def restoreDB(srcDir, dstDir):
-    try:
-        filesList = ['sickrage.db',
-                     'scheduler.db',
-                     'config.ini',
-                     'failed.db',
-                     'cache.db',
-                     sickrage.srConfig.CONFIG_FILE]
-
-        for filename in filesList:
-            srcFile = os.path.join(srcDir, filename)
-            dstFile = os.path.join(dstDir, filename)
-            bakFile = os.path.join(dstDir, '{0}.bak-{1}'
-                                   .format(filename, datetime.now().strftime('%Y%m%d_%H%M%S')))
-
-            if os.path.exists(srcFile):
-                if os.path.isfile(dstFile):
-                    shutil.move(dstFile, bakFile)
-                shutil.move(srcFile, dstFile)
-
-        return True
-    except Exception:
-        return False
-
-
 def restoreVersionedFile(backup_file, version):
     """
     Restore a file version to original state
@@ -1709,37 +1475,37 @@ def restoreVersionedFile(backup_file, version):
     restore_file = '{}.v{}'.format(new_file, version)
 
     if not os.path.isfile(new_file):
-        sickrage.srLogger.debug("Not restoring, %s doesn't exist" % new_file)
+        sickrage.srCore.srLogger.debug("Not restoring, %s doesn't exist" % new_file)
         return False
 
     try:
-        sickrage.srLogger.debug("Trying to backup %s to %s.r%s before restoring backup"
-                                % (new_file, new_file, version))
+        sickrage.srCore.srLogger.debug("Trying to backup %s to %s.r%s before restoring backup"
+                                       % (new_file, new_file, version))
 
-        shutil.move(new_file, new_file + '.' + 'r' + str(version))
+        moveFile(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
-        sickrage.srLogger.warning("Error while trying to backup file %s before proceeding with restore: %r"
-                                  % (restore_file, e))
+        sickrage.srCore.srLogger.warning("Error while trying to backup file %s before proceeding with restore: %r"
+                                         % (restore_file, e))
         return False
 
     while not os.path.isfile(new_file):
         if not os.path.isfile(restore_file):
-            sickrage.srLogger.debug("Not restoring, %s doesn't exist" % restore_file)
+            sickrage.srCore.srLogger.debug("Not restoring, %s doesn't exist" % restore_file)
             break
 
         try:
-            sickrage.srLogger.debug("Trying to restore file %s to %s" % (restore_file, new_file))
+            sickrage.srCore.srLogger.debug("Trying to restore file %s to %s" % (restore_file, new_file))
             shutil.copy(restore_file, new_file)
-            sickrage.srLogger.debug("Restore done")
+            sickrage.srCore.srLogger.debug("Restore done")
             break
         except Exception as e:
-            sickrage.srLogger.warning("Error while trying to restore file %s. Error: %r" % (restore_file, e))
+            sickrage.srCore.srLogger.warning("Error while trying to restore file %s. Error: %r" % (restore_file, e))
             numTries += 1
             time.sleep(1)
-            sickrage.srLogger.debug("Trying again. Attempt #: %s" % numTries)
+            sickrage.srCore.srLogger.debug("Trying again. Attempt #: %s" % numTries)
 
         if numTries >= 10:
-            sickrage.srLogger.warning("Unable to restore file %s to %s" % (restore_file, new_file))
+            sickrage.srCore.srLogger.warning("Unable to restore file %s to %s" % (restore_file, new_file))
             return False
 
     return True
@@ -1760,22 +1526,22 @@ def backupVersionedFile(old_file, version):
 
     while not os.path.isfile(new_file):
         if not os.path.isfile(old_file):
-            sickrage.srLogger.debug("Not creating backup, %s doesn't exist" % old_file)
+            sickrage.srCore.srLogger.debug("Not creating backup, %s doesn't exist" % old_file)
             break
 
         try:
-            sickrage.srLogger.debug("Trying to back up %s to %s" % (old_file, new_file))
+            sickrage.srCore.srLogger.debug("Trying to back up %s to %s" % (old_file, new_file))
             shutil.copyfile(old_file, new_file)
-            sickrage.srLogger.debug("Backup done")
+            sickrage.srCore.srLogger.debug("Backup done")
             break
         except Exception as e:
-            sickrage.srLogger.warning("Error while trying to back up %s to %s : %r" % (old_file, new_file, e))
+            sickrage.srCore.srLogger.warning("Error while trying to back up %s to %s : %r" % (old_file, new_file, e))
             numTries += 1
             time.sleep(1)
-            sickrage.srLogger.debug("Trying again.")
+            sickrage.srCore.srLogger.debug("Trying again.")
 
         if numTries >= 10:
-            sickrage.srLogger.error("Unable to back up %s to %s please do it manually." % (old_file, new_file))
+            sickrage.srCore.srLogger.error("Unable to back up %s to %s please do it manually." % (old_file, new_file))
             return False
 
     return True
@@ -1809,3 +1575,48 @@ def getFileSize(file):
         return os.path.getsize(file) / 1024 / 1024
     except:
         return None
+
+
+def get_temp_dir():
+    """
+    Returns the [system temp dir]/thetvdb-u501 (or
+    thetvdb-myuser)
+    """
+
+    import getpass
+
+    if hasattr(os, 'getuid'):
+        uid = "u%d" % (os.getuid())
+    else:
+        # For Windows
+        try:
+            uid = getpass.getuser()
+        except ImportError:
+            return os.path.join(tempfile.gettempdir(), "sickrage")
+
+    return os.path.join(tempfile.gettempdir(), "sickrage-%s" % uid)
+
+
+def scrub(obj):
+    if isinstance(obj, dict):
+        for k in obj.keys():
+            scrub(obj[k])
+            del obj[k]
+    elif isinstance(obj, list):
+        for i in reversed(range(len(obj))):
+            scrub(obj[i])
+            del obj[i]
+
+
+def convert_size(size, default=0):
+    units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+    size_regex = re.compile(r'([\d+.]+)\s?({})?'.format('|'.join(units)), re.I)
+
+    try:
+        size, unit = float(size_regex.search(str(size)).group(1) or -1), size_regex.search(str(size)).group(2) or 'B'
+    except Exception:
+        return default
+
+    size *= 1024 ** units.index(unit.upper())
+
+    return max(long(size), 0)

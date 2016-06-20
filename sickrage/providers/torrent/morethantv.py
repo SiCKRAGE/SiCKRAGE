@@ -24,15 +24,15 @@ import traceback
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.exceptions import AuthException
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.providers import TorrentProvider
 
 
 class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
-        super(MoreThanTVProvider, self).__init__("MoreThanTV")
+        super(MoreThanTVProvider, self).__init__("MoreThanTV",'www.morethan.tv')
 
         self.supportsBacklog = True
 
@@ -45,13 +45,12 @@ class MoreThanTVProvider(TorrentProvider):
         self.minleech = None
         # self.freeleech = False
 
-        self.urls = {'base_url': 'https://www.morethan.tv/',
-                     'login': 'https://www.morethan.tv/login.php',
-                     'detail': 'https://www.morethan.tv/torrents.php?id=%s',
-                     'search': 'https://www.morethan.tv/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
-                     'download': 'https://www.morethan.tv/torrents.php?action=download&id=%s'}
-
-        self.url = self.urls['base_url']
+        self.urls.update({
+            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/torrents.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/torrents.php?action=download&id=%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.cookies = None
 
@@ -67,29 +66,30 @@ class MoreThanTVProvider(TorrentProvider):
         return True
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,
                             'login': 'Log in',
                             'keeplogged': '1'}
 
-            response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
-            if not response:
-                sickrage.srLogger.warning("Unable to connect to provider")
+            try:
+                response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            except Exception:
+                sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('Your username or password was incorrect.', response):
-                sickrage.srLogger.warning("Invalid username or password. Check your settings")
+                sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
                 return False
 
             return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -100,18 +100,20 @@ class MoreThanTVProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode is not 'RSS':
-                    sickrage.srLogger.debug("Search string: %s " % search_string)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string.replace('(', '').replace(')', ''))
-                sickrage.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 # returns top 15 results by default, expandable in user profile to 100
-                data = self.getURL(searchURL)
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
@@ -121,20 +123,20 @@ class MoreThanTVProvider(TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         # skip colheader
                         for result in torrent_rows[1:]:
                             cells = result.findChildren('td')
                             link = cells[1].find('span', attrs={'title': 'Download'}).parent
-                            title_anchor = cells[1].find('a', attrs = {'dir': 'ltr'})
+                            title_anchor = cells[1].find('a', attrs={'dir': 'ltr'})
 
                             # skip if torrent has been nuked due to poor quality
                             if cells[1].find('img', alt='Nuked') is not None:
                                 continue
 
-                            torrent_id_long = link[b'href'].replace('torrents.php?action=download&id=', '')
+                            torrent_id_long = link['href'].replace('torrents.php?action=download&id=', '')
 
                             try:
                                 if title_anchor.has_key('title'):
@@ -149,7 +151,7 @@ class MoreThanTVProvider(TorrentProvider):
 
                                 size = -1
                                 if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]', cells[4].contents[0]):
-                                    size = self._convertSize(cells[4].text.strip())
+                                    size = convert_size(cells[4].text.strip())
 
                             except (AttributeError, TypeError):
                                 continue
@@ -159,20 +161,20 @@ class MoreThanTVProvider(TorrentProvider):
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
-                                if mode is not 'RSS':
-                                    sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
-                            if mode is not 'RSS':
-                                sickrage.srLogger.debug("Found result: %s " % title)
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -184,24 +186,6 @@ class MoreThanTVProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    @staticmethod
-    def _convertSize(sizeString):
-        size = sizeString[:-2].strip()
-        modifier = sizeString[-2:].upper()
-        try:
-            size = float(size)
-            if modifier in 'KB':
-                size = size * 1024
-            elif modifier in 'MB':
-                size = size * 1024 ** 2
-            elif modifier in 'GB':
-                size = size * 1024 ** 3
-            elif modifier in 'TB':
-                size = size * 1024 ** 4
-        except Exception:
-            size = -1
-        return int(size)
-
 
 class MoreThanTVCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
@@ -212,4 +196,4 @@ class MoreThanTVCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

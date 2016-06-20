@@ -25,7 +25,7 @@ from xml.dom.minidom import parseString
 from xml.etree import ElementTree
 
 import sickrage
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class NMJv2Notifier(srNotifiers):
@@ -78,16 +78,16 @@ class NMJv2Notifier(srNotifiers):
                                                                                              '').replace(
                             '</database_path>', '').replace('[=]', '')
                     if dbloc == "local" and DB_path.find("localhost") > -1:
-                        sickrage.srConfig.NMJv2_HOST = host
-                        sickrage.srConfig.NMJv2_DATABASE = DB_path
+                        sickrage.srCore.srConfig.NMJv2_HOST = host
+                        sickrage.srCore.srConfig.NMJv2_DATABASE = DB_path
                         return True
                     if dbloc == "network" and DB_path.find("://") > -1:
-                        sickrage.srConfig.NMJv2_HOST = host
-                        sickrage.srConfig.NMJv2_DATABASE = DB_path
+                        sickrage.srCore.srConfig.NMJv2_HOST = host
+                        sickrage.srCore.srConfig.NMJv2_DATABASE = DB_path
                         return True
 
         except IOError as e:
-            sickrage.srLogger.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
+            sickrage.srCore.srLogger.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         return False
 
@@ -104,10 +104,10 @@ class NMJv2Notifier(srNotifiers):
 
         # if a host is provided then attempt to open a handle to that URL
         try:
-            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickrage.srConfig.NMJv2_DATABASE + "&arg2=&arg3=update_all"
-            sickrage.srLogger.debug("NMJ scan update command sent to host: %s" % (host))
-            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.srConfig.NMJv2_DATABASE + "&arg2=background&arg3="
-            sickrage.srLogger.debug("Try to mount network drive via url: %s" % (host))
+            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickrage.srCore.srConfig.NMJv2_DATABASE + "&arg2=&arg3=update_all"
+            sickrage.srCore.srLogger.debug("NMJ scan update command sent to host: %s" % (host))
+            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.srCore.srConfig.NMJv2_DATABASE + "&arg2=background&arg3="
+            sickrage.srCore.srLogger.debug("Try to mount network drive via url: %s" % (host))
             prereq = urllib2.Request(url_scandir)
             req = urllib2.Request(url_updatedb)
             handle1 = urllib2.urlopen(prereq)
@@ -116,19 +116,19 @@ class NMJv2Notifier(srNotifiers):
             handle2 = urllib2.urlopen(req)
             response2 = handle2.read()
         except IOError as e:
-            sickrage.srLogger.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
+            sickrage.srCore.srLogger.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         try:
             et = ElementTree.fromstring(response1)
             result1 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srLogger.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e.message))
+            sickrage.srCore.srLogger.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e.message))
             return False
         try:
             et = ElementTree.fromstring(response2)
             result2 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srLogger.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e.message))
+            sickrage.srCore.srLogger.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e.message))
             return False
 
         # if the result was a number then consider that an error
@@ -142,15 +142,15 @@ class NMJv2Notifier(srNotifiers):
                           "Read only file system"]
         if int(result1) > 0:
             index = error_codes.index(result1)
-            sickrage.srLogger.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
+            sickrage.srCore.srLogger.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
             return False
         else:
             if int(result2) > 0:
                 index = error_codes.index(result2)
-                sickrage.srLogger.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
+                sickrage.srCore.srLogger.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
                 return False
             else:
-                sickrage.srLogger.info("NMJv2 started background scan")
+                sickrage.srCore.srLogger.info("NMJv2 started background scan")
                 return True
 
     def _notifyNMJ(self, host=None, force=False):
@@ -162,14 +162,14 @@ class NMJv2Notifier(srNotifiers):
         mount: The mount URL (optional, defaults to the mount URL in the config)
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
-        if not sickrage.srConfig.USE_NMJv2 and not force:
-            sickrage.srLogger.debug("Notification for NMJ scan update not enabled, skipping this notification")
+        if not sickrage.srCore.srConfig.USE_NMJv2 and not force:
+            sickrage.srCore.srLogger.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.srConfig.NMJv2_HOST
+            host = sickrage.srCore.srConfig.NMJv2_HOST
 
-        sickrage.srLogger.debug("Sending scan command for NMJ ")
+        sickrage.srCore.srLogger.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host)
