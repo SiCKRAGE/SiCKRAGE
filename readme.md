@@ -2,6 +2,7 @@ Automatic Video Library Manager for TV Shows. It watches for new episodes of you
 
 #### Dependencies
 - To run SickRage from source you will need Python 2.7.10
+- To install requirements run 'pip install -r requirements.txt' from install folder
  
 #### Features
  - Kodi/XBMC library updates, poster/banner/fanart downloads, and NFO/TBN generation
