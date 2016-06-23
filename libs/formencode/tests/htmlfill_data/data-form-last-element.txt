@@ -1,7 +1,0 @@
-<select name='num'><option
-value='1'>ONE</option></select>
-----
-<select name="num"><option value="1"
-selected="selected">ONE</option></select>
-----
-defaults={"num":"1"}

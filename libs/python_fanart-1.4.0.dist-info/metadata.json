@@ -1,1 +1,0 @@
-{"extensions": {"python.details": {"document_names": {"description": "DESCRIPTION.rst"}}}, "extras": [], "generator": "bdist_wheel (0.29.0)", "metadata_version": "2.0", "name": "python-fanart", "run_requires": [{"requires": ["requests (==1.2.3)"]}], "summary": "Python interface to fanart.tv API", "version": "1.4.0"}
