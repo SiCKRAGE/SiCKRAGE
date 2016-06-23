@@ -1,0 +1,429 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>News</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">News</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents:</p>
+<ul class="simple">
+<li><a href="#sqlobject-0-10-9" class="reference internal" id="id6">SQLObject 0.10.9</a></li>
+<li><a href="#sqlobject-0-10-8" class="reference internal" id="id7">SQLObject 0.10.8</a></li>
+<li><a href="#sqlobject-0-10-7" class="reference internal" id="id8">SQLObject 0.10.7</a></li>
+<li><a href="#sqlobject-0-10-6" class="reference internal" id="id9">SQLObject 0.10.6</a></li>
+<li><a href="#sqlobject-0-10-5" class="reference internal" id="id10">SQLObject 0.10.5</a></li>
+<li><a href="#sqlobject-0-10-4" class="reference internal" id="id11">SQLObject 0.10.4</a></li>
+<li><a href="#sqlobject-0-10-3" class="reference internal" id="id12">SQLObject 0.10.3</a></li>
+<li><a href="#sqlobject-0-10-2" class="reference internal" id="id13">SQLObject 0.10.2</a></li>
+<li><a href="#sqlobject-0-10-1" class="reference internal" id="id14">SQLObject 0.10.1</a></li>
+<li><a href="#sqlobject-0-10-0" class="reference internal" id="id15">SQLObject 0.10.0</a><ul>
+<li><a href="#features-interface" class="reference internal" id="id16">Features &amp; Interface</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-9-11" class="reference internal" id="id17">SQLObject 0.9.11</a></li>
+<li><a href="#sqlobject-0-9-10" class="reference internal" id="id18">SQLObject 0.9.10</a></li>
+<li><a href="#sqlobject-0-9-9" class="reference internal" id="id19">SQLObject 0.9.9</a></li>
+<li><a href="#sqlobject-0-9-8" class="reference internal" id="id20">SQLObject 0.9.8</a></li>
+<li><a href="#sqlobject-0-9-7" class="reference internal" id="id21">SQLObject 0.9.7</a><ul>
+<li><a href="#small-features" class="reference internal" id="id22">Small Features</a></li>
+<li><a href="#bug-fixes" class="reference internal" id="id23">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-9-6" class="reference internal" id="id24">SQLObject 0.9.6</a></li>
+<li><a href="#sqlobject-0-9-5" class="reference internal" id="id25">SQLObject 0.9.5</a></li>
+<li><a href="#sqlobject-0-9-4" class="reference internal" id="id26">SQLObject 0.9.4</a></li>
+<li><a href="#sqlobject-0-9-3" class="reference internal" id="id27">SQLObject 0.9.3</a></li>
+<li><a href="#sqlobject-0-9-2" class="reference internal" id="id28">SQLObject 0.9.2</a></li>
+<li><a href="#sqlobject-0-9-1" class="reference internal" id="id29">SQLObject 0.9.1</a><ul>
+<li><a href="#id1" class="reference internal" id="id30">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-9-0" class="reference internal" id="id31">SQLObject 0.9.0</a><ul>
+<li><a href="#id2" class="reference internal" id="id32">Features &amp; Interface</a></li>
+<li><a href="#id3" class="reference internal" id="id33">Small Features</a></li>
+<li><a href="#id4" class="reference internal" id="id34">Bug Fixes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-9">
+<span id="start"></span><h1>SQLObject 0.10.9</h1>
+<ul class="simple">
+<li>The cache culling algorithm was enhanced to eliminate memory leaks by
+removing references to dead objects; tested on a website that runs around
+4 million requests a day.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-8">
+<h1>SQLObject 0.10.8</h1>
+<p>Released 30 Sep 2009.</p>
+<ul class="simple">
+<li>Fixed a bug in logging to console - convert unicode to str.</li>
+<li>Fixed an obscure bug in ConnectionHub triggered by an SQLObject class
+whose instances can be coerced to boolean False.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-7">
+<h1>SQLObject 0.10.7</h1>
+<p>Released 20 Sep 2009.</p>
+<ul class="simple">
+<li>Fixed a bug: Sybase tables with identity column fire two identity_inserts.</li>
+<li>Fixed a bug: q.startswith(), q.contains() and q.endswith() escape (with a
+backslash) all special characters (backslashes, underscores and percent
+signs).</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-6">
+<h1>SQLObject 0.10.6</h1>
+<p>Released 18 May 2009.</p>
+<ul class="simple">
+<li>Better support for Python 2.6: do not import the deprecated sets module.</li>
+<li>A number of changes ported from <a href="#sqlobject-0-9-11" class="reference internal">SQLObject 0.9.11</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-5">
+<h1>SQLObject 0.10.5</h1>
+<p>Released 6 May 2009.</p>
+<ul class="simple">
+<li>A number of changes ported from <a href="#sqlobject-0-9-10" class="reference internal">SQLObject 0.9.10</a>.</li>
+<li>sqlmeta.getColumns() becomes classmethod.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-4">
+<h1>SQLObject 0.10.4</h1>
+<p>Released 8 Dec 2008.</p>
+<ul class="simple">
+<li>Fixed createSQL constrains generation under MySQL when the table's name
+includes the database's name (contains a dot).</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-3">
+<h1>SQLObject 0.10.3</h1>
+<p>Released 1 Dec 2008.</p>
+<ul class="simple">
+<li>A number of changes ported from <a href="#sqlobject-0-9-8" class="reference internal">SQLObject 0.9.8</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-2">
+<h1>SQLObject 0.10.2</h1>
+<p>Released 30 May 2008.</p>
+<ul class="simple">
+<li>A number of changes ported from <a href="#sqlobject-0-9-7" class="reference internal">SQLObject 0.9.7</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-1">
+<h1>SQLObject 0.10.1</h1>
+<p>Released 4 May 2008.</p>
+<ul class="simple">
+<li>Fixed a bug: limit doesn't work in sqlbuilder.Select.</li>
+<li>A number of changes ported from <a href="#sqlobject-0-9-6" class="reference internal">SQLObject 0.9.6</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-10-0">
+<h1>SQLObject 0.10.0</h1>
+<p>Released 11 Mar 2008.</p>
+<div class="section" id="features-interface">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Dropped support for Python 2.2. The minimal version of Python for
+SQLObject is 2.3 now.</li>
+<li>Removed actively deprecated attributes;
+lowered deprecation level for other attributes to be removed after 0.10.</li>
+<li>SQLBuilder Select supports the rest of SelectResults options (reversed,
+distinct, joins, etc.)</li>
+<li>SQLObject.select() (i.e., SelectResults) and DBConnection.queryForSelect()
+use SQLBuilder Select queries; this make all SELECTs implemented
+internally via a single mechanism.</li>
+<li>SQLBuilder Joins handle SQLExpression tables (not just str/SQLObject/Alias)
+and properly sqlrepr.</li>
+<li>Added SQLBuilder ImportProxy. It allows one to ignore the circular import
+issues with referring to SQLObject classes in other files - it uses the
+classregistry as the string class names for FK/Joins do, but specifically
+intended for SQLBuilder expressions. See
+tests/test_sqlbuilder_importproxy.py.</li>
+<li>Added SelectResults.throughTo. It allows one to traverse relationships
+(FK/Join) via SQL, avoiding the intermediate objects. Additionally, it's
+a simple mechanism for pre-caching/eager-loading of later FK
+relationships (i.e., going to loop over a select of somePeople and ask
+for aPerson.group, first call list(somePeople.throughTo.group) to preload
+those related groups and use 2 db queries instead of N+1). See
+tests/test_select_through.py.</li>
+<li>Added ViewSQLObject.</li>
+<li>Added sqlmeta.getColumns() to get all the columns for a class (including
+parent classes), excluding the column 'childName' and including the column
+'id'. sqlmeta.asDict() now uses getColumns(), so there is no need to
+override it in the inheritable sqlmeta class; this makes asDict() to work
+properly on inheritable sqlobjects.</li>
+<li>Allow MyTable.select(MyTable.q.foreignKey == object) where object is
+an instance of SQLObject.</li>
+<li>Added rich comparison methods; SQLObjects of the same class are
+considered equal is they have the same id; other methods return
+NotImplemented.</li>
+<li>RowDestroySignal is sent on destroying an SQLObject instance; postfunctions
+are run after the row has been destroyed.</li>
+<li>Changed the implementation type in BoolCol under SQLite from TINYINT to
+BOOLEAN and made fromDatabase machinery to recognize it.</li>
+<li>MySQLConnection (and DB URI) accept a number of SSL-related parameters:
+ssl_key, ssl_cert, ssl_ca, ssl_capath.</li>
+<li>Use sets instead of dicts in tablesUsed. Dropped tablesUsedDict function;
+instead there is tablesUsedSet that returns a set of strings.</li>
+<li>SQLBuilder tablesUsedSet handles sqlrepr'able objects.</li>
+<li>Under MySQL, PickleCol no longer used TEXT column types; the smallest
+column is now BLOB - it is not possible to create TINYBLOB column.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-9-11">
+<h1>SQLObject 0.9.11</h1>
+<p>Released 18 May 2009.</p>
+<ul class="simple">
+<li>Two bugs in SQLiteConnection.columnsFromSchema() were fixed: use
+sqlmeta.idName instead of 'id'; convert default 'NULL' to None.</li>
+<li>Use sqlmeta.idName instead of 'id' in all connection classes.</li>
+<li>Fixed a bug that prevented to override per class _connection if there is
+sqlhub.processConnection.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-10">
+<h1>SQLObject 0.9.10</h1>
+<p>Released 6 May 2009.</p>
+<ul>
+<li><p class="first">Another unicode-related patch for MySQL; required because different
+versions of MySQLdb require different handling:</p>
+<pre class="literal-block">
+- MySQLdb &lt; 1.2.1: only ascii
+- MySQLdb = 1.2.1: only unicode
+- MySQLdb > 1.2.1: both ascii and unicode
+</pre>
+</li>
+<li><p class="first">Setup requires FormEncode version 1.1.1+.</p>
+</li>
+<li><p class="first">A minor bug was fixed in creating a DecimalValidator - pass the column name
+to it.</p>
+</li>
+<li><p class="first">A bug was fixed in InheritableIteration - pass connection to child
+klass.select().</p>
+</li>
+<li><p class="first">A bug was fixed in PostgresConnection.columnsFromSchema() - foreign keys
+are now recognized and created as proper ForeignKey with correct
+column name and table name.</p>
+</li>
+<li><p class="first">Bugs in PostgresConnection and MSSQLConnection related to properties was
+fixed. A note for developers: from now on properties in DBConnection
+classes are forbidden as they don't work with Transaction -
+Transaction.__getattr__() cannot properly wrap 'self' so a property is
+called with wrong 'self'.</p>
+</li>
+<li><p class="first">Transaction instances now explicitly raises TypeError on close() -
+without this calling Transaction.close() calls connection.close() which
+is wrong.</p>
+</li>
+<li><p class="first">A bug in SQLiteConnection.columnsFromSchema() that led to an infinite
+loop was fixed.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-9">
+<h1>SQLObject 0.9.9</h1>
+<ul class="simple">
+<li>Backported from the trunk: under MySQL use the connection's dbEncoding
+instead of ascii, when converting a unicode value from python to database
+for a StringCol.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-8">
+<h1>SQLObject 0.9.8</h1>
+<p>Released 1 Dec 2008.</p>
+<ul class="simple">
+<li>Changed interpretation of strings in the DB URI for boolean parameters:
+'0', 'no', 'off' and 'false' are now interpreted as False.</li>
+<li>Fixed a bug with incorrect handling of calls like
+connectionForURI(dburi, cache=False) when dburi already contains some
+parameters in the URI.</li>
+<li>Convert decimal.to_eng_string() to str to work around a bug in Python 2.5.2;
+see <a href="http://mail.python.org/pipermail/python-dev/2008-March/078189.html" class="reference external">http://mail.python.org/pipermail/python-dev/2008-March/078189.html</a></li>
+<li>Added test_default_style.py.</li>
+<li>Fixed a minor bug in SQLiteConnection that fails to parse Enum columns.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-7">
+<h1>SQLObject 0.9.7</h1>
+<p>Released 30 May 2008.</p>
+<div class="section" id="small-features">
+<h2>Small Features</h2>
+<ul class="simple">
+<li>Use VARCHAR(MAX) and VARBINARY(MAX) for MSSQL >= 9.0.</li>
+<li>Run post_funcs after RowDestroySignal.</li>
+</ul>
+</div>
+<div class="section" id="bug-fixes">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed a minor bug in Set column.</li>
+<li>A bug fixed for RowCreatedSignal together with InheritableSQLObject:
+run post_funcs after the entire hierarchy has been created.</li>
+<li>Aggregate functions now honors 'distinct'.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-9-6">
+<h1>SQLObject 0.9.6</h1>
+<p>Released 4 May 2008.</p>
+<ul class="simple">
+<li>A bug in inheritable delColumn() that doesn't remove properties was fixed.</li>
+<li>A minor bug was fixed in col.py - the registry must be passed to findClass().</li>
+<li>Reverted the patch declarative.threadSafeMethod() - it causes more harm
+then good.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-5">
+<h1>SQLObject 0.9.5</h1>
+<p>Released 10 Mar 2008.</p>
+<ul class="simple">
+<li>Fixed a minor bug in SQLiteConnection.columnsFromSchema() - set dbName.</li>
+<li>A bug in delColumn() that removes all properties was fixed by recreating
+properties.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-4">
+<h1>SQLObject 0.9.4</h1>
+<p>Released 3 Mar 2008.</p>
+<ul class="simple">
+<li>Use list.reverse() in manager/command.py for Python 2.2 compatibility.</li>
+<li>Prevent MultipleJoin from removing the intermediate table if it was not
+created by the Join.</li>
+<li>Fixed a bug with no default when defaultSQL is defined for the column.</li>
+<li>Recognize POINT data type as string in PostgresConnection.columnsFromSchema().</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-3">
+<h1>SQLObject 0.9.3</h1>
+<p>Released 10 Jan 2008.</p>
+<ul class="simple">
+<li>A number of changes ported from SQLObject 0.7.10.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-2">
+<h1>SQLObject 0.9.2</h1>
+<p>Released 30 Oct 2007.</p>
+<ul class="simple">
+<li>Fixed a bug in Versioning - do not copy "alternateID" and "unique"
+attributes from the versioned table.</li>
+<li>Fixed a misspelled 'zerofill' option's name.</li>
+<li>Fixed bugs in SQLiteConnection.guessColumn().</li>
+<li>A number of changes ported from SQLObject 0.7.9 and SQLObject 0.8.6.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-9-1">
+<h1>SQLObject 0.9.1</h1>
+<p>Released 25 July 2007.</p>
+<div class="section" id="id1">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed misspelled methods in col.py.</li>
+<li>A number of bugfixes ported from SQLObject 0.7.8 and SQLObject 0.8.5.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-9-0">
+<h1>SQLObject 0.9.0</h1>
+<p>Released 10 May 2007.</p>
+<div class="section" id="id2">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Support for Python 2.2 has been declared obsolete.</li>
+<li>Removed actively deprecated attributes;
+lowered deprecation level for other attributes to be removed after 0.9.</li>
+<li>SQLite connection got columnsFromSchema(). Now all connections fully support
+fromDatabase. There are two version of columnsFromSchema() for SQLite -
+one parses the result of "SELECT sql FROM sqlite_master" and the other
+uses "PRAGMA table_info"; the user can choose one over the other by using
+"use_table_info" parameter in DB URI; default is False as the pragma is
+available only in the later versions of SQLite.</li>
+<li>Changed connection.delColumn(): the first argument is sqlmeta, not
+tableName (required for SQLite).</li>
+<li>SQLite connection got delColumn(). Now all connections fully support
+delColumn(). As SQLite backend doesn't implement "ALTER TABLE DROP COLUMN"
+delColumn() is implemented by creating a new table without the column,
+copying all data, dropping the original table and renaming the new table.</li>
+<li><a href="Versioning.html" class="reference external">Versioning</a>.</li>
+</ul>
+<ul class="simple">
+<li>MySQLConnection got new keyword "conv" - a list of custom converters.</li>
+<li>Use logging if it's available and is configured via DB URI.</li>
+<li>New columns: TimestampCol to support MySQL TIMESTAMP type;
+SetCol to support MySQL SET type;
+TinyIntCol for TINYINT; SmallIntCol for SMALLINT;
+MediumIntCol for MEDIUMINT; BigIntCol for BIGINT.</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>Small Features</h2>
+<ul class="simple">
+<li>Support for MySQL INT type attributes: UNSIGNED, ZEROFILL.</li>
+<li>Support for DEFAULT SQL attribute via defaultSQL keyword argument.</li>
+<li>cls.tableExists() as a shortcut for conn.tableExists(cls.sqlmeta.table).</li>
+<li>cls.deleteMany(), cls.deleteBy().</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>idName can be inherited from the parent sqlmeta class.</li>
+</ul>
+<p><a href="News2.html" class="reference external">Older news</a></p>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

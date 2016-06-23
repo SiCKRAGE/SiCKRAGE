@@ -1,0 +1,374 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>events</tt>
+  </h1>
+  <p class="pudge-member-parent-link">
+    <small>
+    The events module is accessible via the
+    <a href="module-sqlobject.html">
+      <tt>sqlobject</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (1)
+      </a>
+    </li><li>
+      <a href="#functions" class="pudge-section-link">
+        Functions (2)
+      </a>
+    </li><li>
+      <a href="#classes" class="pudge-section-link">
+        Classes (12)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.events-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/events.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.events.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject'</pre>
+    </div>
+  </div>
+    <a name="functions"></a>
+    <h2>Functions</h2>
+    <div class="pudge-member routine ">
+    <a name="listen"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.events.html#listen" class="pudge-obj-link">listen</a>(receiver, soClass, signal, alsoSubclasses=True, weak=True)</tt>
+      <a href="sqlobject/events.py.html?f=9&amp;l=21#9" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Listen for the given <tt class="docutils literal">signal</tt> on the SQLObject subclass
+<tt class="docutils literal">soClass</tt>, calling <tt class="docutils literal">receiver()</tt> when <tt class="docutils literal">send(soClass, signal,
+<span class="pre">...)</span></tt> is called.
+    </p>
+    <p>If <tt class="docutils literal">alsoSubclasses</tt> is true, receiver will also be called when
+an event is fired on any subclass.</p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="send"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.events.html#send" class="pudge-obj-link">send</a>(signal=_Any, sender=_Anonymous, *arguments, **named)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=306&amp;l=353#306" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Send signal from sender to all connected receivers.
+    </p>
+    <p>signal -- (hashable) signal value, see connect for details</p>
+<p>sender -- the sender of the signal</p>
+<blockquote>
+<p>if Any, only receivers registered for Any will receive
+the message.</p>
+<p>if Anonymous, only receivers registered to receive
+messages from Anonymous or Any will receive the message</p>
+<p>Otherwise can be any python object (normally one
+registered with a connect if you actually want
+something to occur).</p>
+</blockquote>
+<dl class="docutils">
+<dt>arguments -- positional arguments which will be passed to</dt>
+<dd><em>all</em> receivers. Note that this may raise TypeErrors
+if the receivers do not allow the particular arguments.
+Note also that arguments are applied before named
+arguments, so they should be used with care.</dd>
+<dt>named -- named arguments which will be filtered according</dt>
+<dd>to the parameters of the receivers to only provide those
+acceptable to the receiver.</dd>
+</dl>
+<p>Return a list of tuple pairs [(receiver, response), ... ]</p>
+<p>if any receiver raises an error, the error propagates back
+through send, terminating the dispatch loop, so it is quite
+possible to not have all receivers called if a raises an
+error.</p>
+    </div>
+  </div>
+    <a name="classes"></a>
+    <h2>Classes</h2>
+    <div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.Signal.html" class="pudge-obj-link">Signal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=25&amp;l=32#25" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Base event for all SQLObject events.
+    </p>
+    <p>In general the sender for these methods is the class, not the
+instance.</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.Signal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.ClassCreateSignal.html" class="pudge-obj-link">ClassCreateSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=33&amp;l=50#33" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Signal raised after class creation.  The sender is the superclass
+(in case of multiple superclasses, the first superclass).  The
+arguments are <tt class="docutils literal">(new_class_name, bases, new_attrs, post_funcs,
+early_funcs)</tt>.  <tt class="docutils literal">new_attrs</tt> is a dictionary and may be modified
+(but <tt class="docutils literal">new_class_name</tt> and <tt class="docutils literal">bases</tt> are immutable).
+<tt class="docutils literal">post_funcs</tt> is an initially-empty list that can have callbacks
+appended to it.
+    </p>
+    <p>Note: at the time this event is called, the new class has not yet
+been created.  The functions in <tt class="docutils literal">post_funcs</tt> will be called
+after the class is created, with the single arguments of
+<tt class="docutils literal">(new_class)</tt>.  Also, <tt class="docutils literal">early_funcs</tt> will be called at the
+soonest possible time after class creation (<tt class="docutils literal">post_funcs</tt> is
+called after the class's <tt class="docutils literal">__classinit__</tt>).</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.ClassCreateSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.RowCreateSignal.html" class="pudge-obj-link">RowCreateSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=70&amp;l=82#70" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called before an instance is created, with the class as the
+sender.  Called with the arguments <tt class="docutils literal">(instance, kwargs, post_funcs)</tt>.
+There may be a <tt class="docutils literal">connection</tt> argument.  <tt class="docutils literal"><span class="pre">kwargs``may</span> be usefully
+modified.  ``post_funcs</tt> is a list of callbacks, intended to have
+functions appended to it, and are called with the arguments
+<tt class="docutils literal">(new_instance)</tt>.
+    </p>
+    <p>Note: this is not called when an instance is created from an
+existing database row.</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.RowCreateSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.RowCreatedSignal.html" class="pudge-obj-link">RowCreatedSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=82&amp;l=94#82" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called after an instance is created, with the class as the
+sender.  Called with the arguments <tt class="docutils literal">(instance, kwargs, post_funcs)</tt>.
+There may be a <tt class="docutils literal">connection</tt> argument.  <tt class="docutils literal"><span class="pre">kwargs``may</span> be usefully
+modified.  ``post_funcs</tt> is a list of callbacks, intended to have
+functions appended to it, and are called with the arguments
+<tt class="docutils literal">(new_instance)</tt>.
+    </p>
+    <p>Note: this is not called when an instance is created from an
+existing database row.</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.RowCreatedSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.RowDestroySignal.html" class="pudge-obj-link">RowDestroySignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=97&amp;l=117#97" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called before an instance is deleted.  Sender is the instance's
+class.  Arguments are <tt class="docutils literal">(instance, post_funcs)</tt>.
+    </p>
+    <p><tt class="docutils literal">post_funcs</tt> is a list of callbacks, intended to have
+functions appended to it, and are called with arguments <tt class="docutils literal">(instance)</tt>.
+If any of the post_funcs raises an exception, the deletion is only
+affected if this will prevent a commit.</p>
+<p>You cannot cancel the delete, but you can raise an exception (which will
+probably cancel the delete, but also cause an uncaught exception if not
+expected).</p>
+<p>Note: this is not called when an instance is destroyed through
+garbage collection.</p>
+<p>@@: Should this allow <tt class="docutils literal">instance</tt> to be a primary key, so that a
+row can be deleted without first fetching it?</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.RowDestroySignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.RowDestroyedSignal.html" class="pudge-obj-link">RowDestroyedSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=118&amp;l=128#118" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called after an instance is deleted.  Sender is the instance's
+class.  Arguments are <tt class="docutils literal">(instance)</tt>.
+    </p>
+    <p>This is called before the post_funcs of RowDestroySignal</p>
+<p>Note: this is not called when an instance is destroyed through
+garbage collection.</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.RowDestroyedSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.RowUpdateSignal.html" class="pudge-obj-link">RowUpdateSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=129&amp;l=137#129" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called when an instance is updated through a call to <tt class="docutils literal">.set()</tt>
+(or a column attribute assignment).  The arguments are
+<tt class="docutils literal">(instance, kwargs)</tt>.  <tt class="docutils literal">kwargs</tt> can be modified.  This is run
+<em>before</em> the instance is updated; if you want to look at the
+current values, simply look at <tt class="docutils literal">instance</tt>.
+    </p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.RowUpdateSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.RowUpdatedSignal.html" class="pudge-obj-link">RowUpdatedSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=138&amp;l=147#138" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called when an instance is updated through a call to <tt class="docutils literal">.set()</tt>
+(or a column attribute assignment).  The arguments are
+<tt class="docutils literal">(instance, post_funcs)</tt>. <tt class="docutils literal">post_funcs</tt> is a list of callbacks,
+intended to have functions appended to it, and are called with the
+arguments <tt class="docutils literal">(new_instance)</tt>. This is run <em>after</em> the instance is
+updated; Works better with lazyUpdate = True.
+    </p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.RowUpdatedSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.AddColumnSignal.html" class="pudge-obj-link">AddColumnSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=148&amp;l=157#148" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called when a column is added to a class, with arguments <tt class="docutils literal">(cls,
+connection, column_name, column_definition, changeSchema,
+post_funcs)</tt>.  This is called <em>after</em> the column has been added,
+and is called for each column after class creation.
+    </p>
+    <p>post_funcs are called with <tt class="docutils literal">(cls, so_column_obj)</tt></p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.AddColumnSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.DeleteColumnSignal.html" class="pudge-obj-link">DeleteColumnSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=158&amp;l=168#158" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called when a column is removed from a class, with the arguments
+<tt class="docutils literal">(cls, connection, column_name, so_column_obj, post_funcs)</tt>.
+Like <tt class="docutils literal">AddColumnSignal</tt> this is called after the action has been
+performed, and is called for subclassing (when a column is
+implicitly removed by setting it to <tt class="docutils literal">None</tt>).
+    </p>
+    <p>post_funcs are called with <tt class="docutils literal">(cls, so_column_obj)</tt></p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.DeleteColumnSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.CreateTableSignal.html" class="pudge-obj-link">CreateTableSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=172&amp;l=184#172" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called when a table is created.  If <tt class="docutils literal"><span class="pre">ifNotExists==True</span></tt> and the
+table exists, this event is not called.
+    </p>
+    <p>Called with <tt class="docutils literal">(cls, connection, extra_sql, post_funcs)</tt>.
+<tt class="docutils literal">extra_sql</tt> is a list (which can be appended to) of extra SQL
+statements to be run after the table is created.  <tt class="docutils literal">post_funcs</tt>
+functions are called with <tt class="docutils literal">(cls, connection)</tt> after the table
+has been created.  Those functions are <em>not</em> called simply when
+constructing the SQL.</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.CreateTableSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.events.DropTableSignal.html" class="pudge-obj-link">DropTableSignal</a>(...)</tt>
+      <a href="sqlobject/events.py.html?f=185&amp;l=194#185" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Called when a table is dropped.  If <tt class="docutils literal"><span class="pre">ifExists==True</span></tt> and the
+table doesn't exist, this event is not called.
+    </p>
+    <p>Called with <tt class="docutils literal">(cls, connection, extra_sql, post_funcs)</tt>.
+<tt class="docutils literal">post_funcs</tt> functions are called with <tt class="docutils literal">(cls, connection)</tt>
+after the table has been dropped.</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.events.DropTableSignal.html#members">
+          4 members</a>.
+      </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/events.py.html" title="sqlobject/events.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>ClassRegistry</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    We'll be dealing with classes that reference each other, so
+class C1 may reference C2 (in a join), while C2 references
+C1 right back.  Since classes are created in an order, there
+will be a point when C1 exists but C2 doesn't.  So we deal
+with classes by name, and after each class is created we
+try to fix up any references by replacing the names with
+actual classes.
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The ClassRegistry class is accessible via the
+    <a href="module-sqlobject.classregistry.html">
+      <tt>sqlobject.classregistry</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <span class="pudge-missing-section-link">
+        Attributes
+      </span>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (9)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/classregistry.py.html?f=27&amp;l=113#27" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>Here we keep a dictionaries of class names to classes -- note
+that the classes might be spread among different modules, so
+since we pile them together names need to be globally unique,
+to just module unique.
+Like needSet below, the container dictionary is keyed by the
+class registry.</p>
+  </div>
+  <hr>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine alias">
+    <a name="__format__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#__format__" class="pudge-obj-link">__format__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      default object formatter
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__subclasshook__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#__subclasshook__" class="pudge-obj-link">__subclasshook__</a>(...)</tt>
+      <a href="None.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Abstract classes can override this to customize issubclass().
+    </p>
+    <p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
+It should return True, False or NotImplemented.  If it returns
+NotImplemented, the normal algorithm is used.  Otherwise, it
+overrides the normal algorithm (and the outcome is cached).</p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__sizeof__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#__sizeof__" class="pudge-obj-link">__sizeof__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      __sizeof__() -> int
+size of object in memory, in bytes
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#__init__" class="pudge-obj-link">__init__</a>(self, name)</tt>
+      <a href="sqlobject/classregistry.py.html?f=45&amp;l=50#45" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="addClassCallback"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#addClassCallback" class="pudge-obj-link">addClassCallback</a>(self, className, callback, *args, **kw)</tt>
+      <a href="sqlobject/classregistry.py.html?f=51&amp;l=62#51" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Whenever a name is substituted for the class, you can register
+a callback that will be called when the needed class is
+created.  If it's already been created, the callback will be
+called immediately.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="addCallback"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#addCallback" class="pudge-obj-link">addCallback</a>(self, callback, *args, **kw)</tt>
+      <a href="sqlobject/classregistry.py.html?f=63&amp;l=71#63" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      This callback is called for all classes, not just specific
+ones (like addClassCallback).
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="addClass"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#addClass" class="pudge-obj-link">addClass</a>(self, cls)</tt>
+      <a href="sqlobject/classregistry.py.html?f=72&amp;l=99#72" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Everytime a class is created, we add it to the registry, so
+that other classes can find it by name.  We also call any
+callbacks that are waiting for the class.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="getClass"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#getClass" class="pudge-obj-link">getClass</a>(self, className)</tt>
+      <a href="sqlobject/classregistry.py.html?f=100&amp;l=110#100" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="allClasses"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.classregistry.ClassRegistry.html#allClasses" class="pudge-obj-link">allClasses</a>(self)</tt>
+      <a href="sqlobject/classregistry.py.html?f=111&amp;l=113#111" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/classregistry.py.html?f=27&amp;l=113#27" title="sqlobject/classregistry.py:27">the source</a>
+    for more information.
+    </small>
+  </p>

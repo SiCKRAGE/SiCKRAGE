@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>SybaseConnection</tt>
+  </h1>
+  <p class="pudge-member-parent-link">
+    <small>
+    The SybaseConnection class is accessible via the
+    <a href="module-sqlobject.sybase.sybaseconnection.html">
+      <tt>sqlobject.sybase.sybaseconnection</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (7)
+      </a>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (14)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=4&amp;l=169#4" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="supportTransactions"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#supportTransactions" class="pudge-obj-link">supportTransactions</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>False</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="NumericType"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#NumericType" class="pudge-obj-link">NumericType</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>None</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="SHOW_COLUMNS"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#SHOW_COLUMNS" class="pudge-obj-link">SHOW_COLUMNS</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '%s'"</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="SHOW_TABLES"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#SHOW_TABLES" class="pudge-obj-link">SHOW_TABLES</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"SELECT name FROM sysobjects WHERE type='U'"</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="HAS_IDENTITY"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#HAS_IDENTITY" class="pudge-obj-link">HAS_IDENTITY</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"\n       SELECT col.name, col.status, obj.name\n       FROM syscolumns col\n       JOIN sysobjects obj\n       ON obj.id = col.id\n       WHERE obj.name = '%s'\n             AND (col.status &amp; 0x80) = 0x80\n    "</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="schemes"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#schemes" class="pudge-obj-link">schemes</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>['sybase']</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="dbName"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#dbName" class="pudge-obj-link">dbName</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sybase'</pre>
+    </div>
+  </div>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#__init__" class="pudge-obj-link">__init__</a>(self, db, user, password='', host='localhost', port=None, locking=1, **kw)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=11&amp;l=35#11" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="insert_id"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#insert_id" class="pudge-obj-link">insert_id</a>(self, conn)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=41&amp;l=49#41" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Sybase adapter/cursor does not support the
+insert_id method.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="makeConnection"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#makeConnection" class="pudge-obj-link">makeConnection</a>(self)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=50&amp;l=54#50" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createReferenceConstraint"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#createReferenceConstraint" class="pudge-obj-link">createReferenceConstraint</a>(self, soClass, col)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=103&amp;l=105#103" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#createColumn" class="pudge-obj-link">createColumn</a>(self, soClass, col)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=106&amp;l=108#106" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIDColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#createIDColumn" class="pudge-obj-link">createIDColumn</a>(self, soClass)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=109&amp;l=112#109" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIndexSQL"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#createIndexSQL" class="pudge-obj-link">createIndexSQL</a>(self, soClass, index)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=113&amp;l=115#113" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="joinSQLType"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#joinSQLType" class="pudge-obj-link">joinSQLType</a>(self, join)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=116&amp;l=118#116" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="tableExists"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#tableExists" class="pudge-obj-link">tableExists</a>(self, tableName)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=120&amp;l=125#120" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="addColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#addColumn" class="pudge-obj-link">addColumn</a>(self, tableName, column)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=126&amp;l=130#126" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="delColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#delColumn" class="pudge-obj-link">delColumn</a>(self, sqlmeta, column)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=131&amp;l=133#131" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="columnsFromSchema"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#columnsFromSchema" class="pudge-obj-link">columnsFromSchema</a>(self, tableName, soClass)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=136&amp;l=153#136" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="guessClass"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#guessClass" class="pudge-obj-link">guessClass</a>(self, t)</tt>
+      <a href="sqlobject/sybase/sybaseconnection.py.html?f=157&amp;l=169#157" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__del__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.sybase.sybaseconnection.SybaseConnection.html#__del__" class="pudge-obj-link">__del__</a>(self)</tt>
+      <a href="sqlobject/dbconnection.py.html?f=674&amp;l=676#674" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/sybase/sybaseconnection.py.html?f=4&amp;l=169#4" title="sqlobject/sybase/sybaseconnection.py:4">the source</a>
+    for more information.
+    </small>
+  </p>

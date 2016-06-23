@@ -1,0 +1,205 @@
+<html><head><title>/home/phd/current/SQLObject/SQLObject/sqlobject/boundattributes.py</title>
+        <script type="text/javascript"><!--
+        
+function show_line_range() {
+    var href = document.location.href;
+    if (href.indexOf('?') == -1) {
+        return;
+    }
+    var qs = href.substring(href.indexOf('?')+1);
+    if (qs.indexOf('#') >= 0) {
+        qs = qs.substring(0, qs.indexOf('#'));
+    }
+    var first = qs.match(/f=(\d+)/)[1];
+    var last = qs.match(/l=(\d+)/)[1];
+    if (! first || ! last) {
+        return;
+    }
+    var anchors = document.getElementsByTagName('A');
+    var container = document.createElement('DIV');
+    container.className = 'highlighted';
+    var children = [];
+    var start = null;
+    var parent = null;
+    var highlight = false;
+    for (var i = 0; i < anchors.length; i++) {
+        var el = anchors[i];
+        if (el.getAttribute('name') == first) {
+            start = el.previousSibling;
+            parent = el.parentNode;
+            highlight = true;
+        }
+        if (el.getAttribute('name') == last) {
+            break;
+        }
+        if (highlight) {
+            children[children.length] = el;
+            el = el.nextSibling;
+            while (el && el.tagName != 'A') {
+                children[children.length] = el;
+                el = el.nextSibling;
+            }
+        }
+    }
+    for (i=0; i<children.length; i++) {
+        container.appendChild(children[i]);
+    }
+    if (start) {
+        start.parentNode.insertBefore(container, start.nextSibling);
+    } else {
+        parent.insertBefore(container, parent.childNodes[0]);
+    }
+}
+
+        // --></script>
+        <style>
+        div.python {
+          color: #333
+        }
+        div.python a.lnum {
+          color: #555;
+          background-color: #eee;
+          border-right: 1px solid #999;
+          padding-right: 2px;
+          margin-right: 4px;
+        }
+        div.python span.comment { color: #933 }
+        div.python span.keyword { color: #a3e; font-weight: bold  }
+        div.python span.op { color: #c96 }
+        div.python span.string { color: #6a6 }
+        div.python span.name { }
+        div.python span.text { color: #333 }
+        div.highlighted { background-color: #ff9; border: 1px solid #009 }
+        </style></head><body onload="show_line_range()"><div class="python"><code><a class="lnum" href="#1" name="1">0001</a><span class="string">"""</span><br />
+<a class="lnum" href="#2" name="2">0002</a><span class="string">Bound&#0160;attributes&#0160;are&#0160;attributes&#0160;that&#0160;are&#0160;bound&#0160;to&#0160;a&#0160;specific&#0160;class&#0160;and</span><br />
+<a class="lnum" href="#3" name="3">0003</a><span class="string">a&#0160;specific&#0160;name.&#0160;&#0160;In&#0160;SQLObject&#0160;a&#0160;typical&#0160;example&#0160;is&#0160;a&#0160;column&#0160;object,</span><br />
+<a class="lnum" href="#4" name="4">0004</a><span class="string">which&#0160;knows&#0160;its&#0160;name&#0160;and&#0160;class.</span><br />
+<a class="lnum" href="#5" name="5">0005</a><span class="string"></span><br />
+<a class="lnum" href="#6" name="6">0006</a><span class="string">A&#0160;bound&#0160;attribute&#0160;should&#0160;define&#0160;a&#0160;method&#0160;``__addtoclass__(added_class,</span><br />
+<a class="lnum" href="#7" name="7">0007</a><span class="string">name)``&#0160;(attributes&#0160;without&#0160;this&#0160;method&#0160;will&#0160;simply&#0160;be&#0160;treated&#0160;as</span><br />
+<a class="lnum" href="#8" name="8">0008</a><span class="string">normal).&#0160;&#0160;The&#0160;return&#0160;value&#0160;is&#0160;ignored;&#0160;if&#0160;the&#0160;attribute&#0160;wishes&#0160;to</span><br />
+<a class="lnum" href="#9" name="9">0009</a><span class="string">change&#0160;the&#0160;value&#0160;in&#0160;the&#0160;class,&#0160;it&#0160;must&#0160;call&#0160;``setattr(added_class,</span><br />
+<a class="lnum" href="#10" name="10">0010</a><span class="string">name,&#0160;new_value)``.</span><br />
+<a class="lnum" href="#11" name="11">0011</a><span class="string"></span><br />
+<a class="lnum" href="#12" name="12">0012</a><span class="string">BoundAttribute&#0160;is&#0160;a&#0160;class&#0160;that&#0160;facilitates&#0160;lazy&#0160;attribute&#0160;creation.</span><br />
+<a class="lnum" href="#13" name="13">0013</a><span class="string"></span><br />
+<a class="lnum" href="#14" name="14">0014</a><span class="string">``bind_attributes(cls,&#0160;new_attrs)``&#0160;is&#0160;a&#0160;function&#0160;that&#0160;looks&#0160;for</span><br />
+<a class="lnum" href="#15" name="15">0015</a><span class="string">attributes&#0160;with&#0160;this&#0160;special&#0160;method.&#0160;&#0160;``new_attrs``&#0160;is&#0160;a&#0160;dictionary,</span><br />
+<a class="lnum" href="#16" name="16">0016</a><span class="string">as&#0160;typically&#0160;passed&#0160;into&#0160;``__classinit__``&#0160;with&#0160;declarative&#0160;(calling</span><br />
+<a class="lnum" href="#17" name="17">0017</a><span class="string">``bind_attributes``&#0160;in&#0160;``__classinit__``&#0160;would&#0160;be&#0160;typical).</span><br />
+<a class="lnum" href="#18" name="18">0018</a><span class="string"></span><br />
+<a class="lnum" href="#19" name="19">0019</a><span class="string">Note&#0160;if&#0160;you&#0160;do&#0160;this&#0160;that&#0160;attributes&#0160;defined&#0160;in&#0160;a&#0160;superclass&#0160;will&#0160;not</span><br />
+<a class="lnum" href="#20" name="20">0020</a><span class="string">be&#0160;rebound&#0160;in&#0160;subclasses.&#0160;&#0160;If&#0160;you&#0160;want&#0160;to&#0160;rebind&#0160;attributes&#0160;in</span><br />
+<a class="lnum" href="#21" name="21">0021</a><span class="string">subclasses,&#0160;use&#0160;``bind_attributes_local``,&#0160;which&#0160;adds&#0160;a</span><br />
+<a class="lnum" href="#22" name="22">0022</a><span class="string">``__bound_attributes__``&#0160;variable&#0160;to&#0160;your&#0160;class&#0160;to&#0160;track&#0160;these&#0160;active</span><br />
+<a class="lnum" href="#23" name="23">0023</a><span class="string">attributes.</span><br />
+<a class="lnum" href="#24" name="24">0024</a><span class="string">"""</span><br />
+<a class="lnum" href="#25" name="25">0025</a><br />
+<a class="lnum" href="#26" name="26">0026</a><span class="name">__all__</span>&#0160;<span class="op">=</span>&#0160;<span class="op">[</span><span class="string">'BoundAttribute'</span><span class="op">,</span>&#0160;<span class="string">'BoundFactory'</span><span class="op">,</span>&#0160;<span class="string">'bind_attributes'</span><span class="op">,</span><br />
+<a class="lnum" href="#27" name="27">0027</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'bind_attributes_local'</span><span class="op">]</span><br />
+<a class="lnum" href="#28" name="28">0028</a><br />
+<a class="lnum" href="#29" name="29">0029</a><span class="keyword">import</span>&#0160;<span class="name">declarative</span><br />
+<a class="lnum" href="#30" name="30">0030</a><span class="keyword">import</span>&#0160;<span class="name">events</span><br />
+<a class="lnum" href="#31" name="31">0031</a><br />
+<a class="lnum" href="#32" name="32">0032</a><span class="keyword">class</span>&#0160;<span class="name">BoundAttribute</span><span class="op">(</span><span class="name">declarative</span><span class="op">.</span><span class="name">Declarative</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#33" name="33">0033</a><br />
+<a class="lnum" href="#34" name="34">0034</a>&#0160;&#0160;&#0160;&#0160;<span class="string">"""</span><br />
+<a class="lnum" href="#35" name="35">0035</a><span class="string">&#0160;&#0160;&#0160;&#0160;This&#0160;is&#0160;a&#0160;declarative&#0160;class&#0160;that&#0160;passes&#0160;all&#0160;the&#0160;values&#0160;given&#0160;to&#0160;it</span><br />
+<a class="lnum" href="#36" name="36">0036</a><span class="string">&#0160;&#0160;&#0160;&#0160;to&#0160;another&#0160;object.&#0160;&#0160;So&#0160;you&#0160;can&#0160;pass&#0160;it&#0160;arguments&#0160;(via</span><br />
+<a class="lnum" href="#37" name="37">0037</a><span class="string">&#0160;&#0160;&#0160;&#0160;__init__/__call__)&#0160;or&#0160;give&#0160;it&#0160;the&#0160;equivalent&#0160;of&#0160;keyword&#0160;arguments</span><br />
+<a class="lnum" href="#38" name="38">0038</a><span class="string">&#0160;&#0160;&#0160;&#0160;through&#0160;subclassing.&#0160;&#0160;Then&#0160;a&#0160;bound&#0160;object&#0160;will&#0160;be&#0160;added&#0160;in&#0160;its</span><br />
+<a class="lnum" href="#39" name="39">0039</a><span class="string">&#0160;&#0160;&#0160;&#0160;place.</span><br />
+<a class="lnum" href="#40" name="40">0040</a><span class="string"></span><br />
+<a class="lnum" href="#41" name="41">0041</a><span class="string">&#0160;&#0160;&#0160;&#0160;To&#0160;hook&#0160;this&#0160;other&#0160;object&#0160;in,&#0160;override&#0160;``make_object(added_class,</span><br />
+<a class="lnum" href="#42" name="42">0042</a><span class="string">&#0160;&#0160;&#0160;&#0160;name,&#0160;**attrs)``&#0160;and&#0160;maybe&#0160;``set_object(added_class,&#0160;name,</span><br />
+<a class="lnum" href="#43" name="43">0043</a><span class="string">&#0160;&#0160;&#0160;&#0160;**attrs)``&#0160;(the&#0160;default&#0160;implementation&#0160;of&#0160;``set_object``</span><br />
+<a class="lnum" href="#44" name="44">0044</a><span class="string">&#0160;&#0160;&#0160;&#0160;just&#0160;resets&#0160;the&#0160;attribute&#0160;to&#0160;whatever&#0160;``make_object``&#0160;returned).</span><br />
+<a class="lnum" href="#45" name="45">0045</a><span class="string"></span><br />
+<a class="lnum" href="#46" name="46">0046</a><span class="string">&#0160;&#0160;&#0160;&#0160;Also&#0160;see&#0160;``BoundFactory``.</span><br />
+<a class="lnum" href="#47" name="47">0047</a><span class="string">&#0160;&#0160;&#0160;&#0160;"""</span><br />
+<a class="lnum" href="#48" name="48">0048</a><br />
+<a class="lnum" href="#49" name="49">0049</a>&#0160;&#0160;&#0160;&#0160;<span class="name">_private_variables</span>&#0160;<span class="op">=</span>&#0160;<span class="op">(</span><br />
+<a class="lnum" href="#50" name="50">0050</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'_private_variables'</span><span class="op">,</span><br />
+<a class="lnum" href="#51" name="51">0051</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'_all_attributes'</span><span class="op">,</span><br />
+<a class="lnum" href="#52" name="52">0052</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'__classinit__'</span><span class="op">,</span><br />
+<a class="lnum" href="#53" name="53">0053</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'__addtoclass__'</span><span class="op">,</span><br />
+<a class="lnum" href="#54" name="54">0054</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'_add_attrs'</span><span class="op">,</span><br />
+<a class="lnum" href="#55" name="55">0055</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'set_object'</span><span class="op">,</span><br />
+<a class="lnum" href="#56" name="56">0056</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'make_object'</span><span class="op">,</span><br />
+<a class="lnum" href="#57" name="57">0057</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'clone_in_subclass'</span><span class="op">,</span><br />
+<a class="lnum" href="#58" name="58">0058</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">)</span><br />
+<a class="lnum" href="#59" name="59">0059</a><br />
+<a class="lnum" href="#60" name="60">0060</a>&#0160;&#0160;&#0160;&#0160;<span class="name">_all_attrs</span>&#0160;<span class="op">=</span>&#0160;<span class="op">(</span><span class="op">)</span><br />
+<a class="lnum" href="#61" name="61">0061</a>&#0160;&#0160;&#0160;&#0160;<span class="name">clone_for_subclass</span>&#0160;<span class="op">=</span>&#0160;<span class="name">True</span><br />
+<a class="lnum" href="#62" name="62">0062</a><br />
+<a class="lnum" href="#63" name="63">0063</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__classinit__</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#64" name="64">0064</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">declarative</span><span class="op">.</span><span class="name">Declarative</span><span class="op">.</span><span class="name">__classinit__</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#65" name="65">0065</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">_all_attrs</span>&#0160;<span class="op">=</span>&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">_add_attrs</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#66" name="66">0066</a><br />
+<a class="lnum" href="#67" name="67">0067</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__instanceinit__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#68" name="68">0068</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">declarative</span><span class="op">.</span><span class="name">Declarative</span><span class="op">.</span><span class="name">__instanceinit__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#69" name="69">0069</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">__dict__</span><span class="op">[</span><span class="string">'_all_attrs'</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_add_attrs</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#70" name="70">0070</a><br />
+<a class="lnum" href="#71" name="71">0071</a>&#0160;&#0160;&#0160;&#0160;<span class="op">@</span><span class="name">staticmethod</span><br />
+<a class="lnum" href="#72" name="72">0072</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">_add_attrs</span><span class="op">(</span><span class="name">this_object</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#73" name="73">0073</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">private</span>&#0160;<span class="op">=</span>&#0160;<span class="name">this_object</span><span class="op">.</span><span class="name">_private_variables</span><br />
+<a class="lnum" href="#74" name="74">0074</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">all_attrs</span>&#0160;<span class="op">=</span>&#0160;<span class="name">list</span><span class="op">(</span><span class="name">this_object</span><span class="op">.</span><span class="name">_all_attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#75" name="75">0075</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">for</span>&#0160;<span class="name">key</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">new_attrs</span><span class="op">.</span><span class="name">keys</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#76" name="76">0076</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">key</span><span class="op">.</span><span class="name">startswith</span><span class="op">(</span><span class="string">'_'</span><span class="op">)</span>&#0160;<span class="keyword">or</span>&#0160;<span class="name">key</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">private</span><span class="op">:</span><br />
+<a class="lnum" href="#77" name="77">0077</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">continue</span><br />
+<a class="lnum" href="#78" name="78">0078</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">key</span>&#0160;<span class="keyword">not</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">all_attrs</span><span class="op">:</span><br />
+<a class="lnum" href="#79" name="79">0079</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">all_attrs</span><span class="op">.</span><span class="name">append</span><span class="op">(</span><span class="name">key</span><span class="op">)</span><br />
+<a class="lnum" href="#80" name="80">0080</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">tuple</span><span class="op">(</span><span class="name">all_attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#81" name="81">0081</a><br />
+<a class="lnum" href="#82" name="82">0082</a>&#0160;&#0160;&#0160;&#0160;<span class="op">@</span><span class="name">declarative</span><span class="op">.</span><span class="name">classinstancemethod</span><br />
+<a class="lnum" href="#83" name="83">0083</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__addtoclass__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">added_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#84" name="84">0084</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">me</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span>&#0160;<span class="keyword">or</span>&#0160;<span class="name">cls</span><br />
+<a class="lnum" href="#85" name="85">0085</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">attrs</span>&#0160;<span class="op">=</span>&#0160;<span class="op">{</span><span class="op">}</span><br />
+<a class="lnum" href="#86" name="86">0086</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">for</span>&#0160;<span class="name">name</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">me</span><span class="op">.</span><span class="name">_all_attrs</span><span class="op">:</span><br />
+<a class="lnum" href="#87" name="87">0087</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">attrs</span><span class="op">[</span><span class="name">name</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">getattr</span><span class="op">(</span><span class="name">me</span><span class="op">,</span>&#0160;<span class="name">name</span><span class="op">)</span><br />
+<a class="lnum" href="#88" name="88">0088</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">attrs</span><span class="op">[</span><span class="string">'added_class'</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">added_class</span><br />
+<a class="lnum" href="#89" name="89">0089</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">attrs</span><span class="op">[</span><span class="string">'attr_name'</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">attr_name</span><br />
+<a class="lnum" href="#90" name="90">0090</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">obj</span>&#0160;<span class="op">=</span>&#0160;<span class="name">me</span><span class="op">.</span><span class="name">make_object</span><span class="op">(</span><span class="op">**</span><span class="name">attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#91" name="91">0091</a><br />
+<a class="lnum" href="#92" name="92">0092</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">clone_for_subclass</span><span class="op">:</span><br />
+<a class="lnum" href="#93" name="93">0093</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">on_rebind</span><span class="op">(</span><span class="name">new_class_name</span><span class="op">,</span>&#0160;<span class="name">bases</span><span class="op">,</span>&#0160;<span class="name">new_attrs</span><span class="op">,</span><br />
+<a class="lnum" href="#94" name="94">0094</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">post_funcs</span><span class="op">,</span>&#0160;<span class="name">early_funcs</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#95" name="95">0095</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">rebind</span><span class="op">(</span><span class="name">new_class</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#96" name="96">0096</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">me</span><span class="op">.</span><span class="name">set_object</span><span class="op">(</span><br />
+<a class="lnum" href="#97" name="97">0097</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">new_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">,</span><br />
+<a class="lnum" href="#98" name="98">0098</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">me</span><span class="op">.</span><span class="name">make_object</span><span class="op">(</span><span class="op">**</span><span class="name">attrs</span><span class="op">)</span><span class="op">)</span><br />
+<a class="lnum" href="#99" name="99">0099</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">post_funcs</span><span class="op">.</span><span class="name">append</span><span class="op">(</span><span class="name">rebind</span><span class="op">)</span><br />
+<a class="lnum" href="#100" name="100">0100</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">events</span><span class="op">.</span><span class="name">listen</span><span class="op">(</span><span class="name">receiver</span><span class="op">=</span><span class="name">on_rebind</span><span class="op">,</span>&#0160;<span class="name">soClass</span><span class="op">=</span><span class="name">added_class</span><span class="op">,</span><br />
+<a class="lnum" href="#101" name="101">0101</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">signal</span><span class="op">=</span><span class="name">events</span><span class="op">.</span><span class="name">ClassCreateSignal</span><span class="op">,</span>&#0160;<span class="name">weak</span><span class="op">=</span><span class="name">False</span><span class="op">)</span><br />
+<a class="lnum" href="#102" name="102">0102</a><br />
+<a class="lnum" href="#103" name="103">0103</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">me</span><span class="op">.</span><span class="name">set_object</span><span class="op">(</span><span class="name">added_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">)</span><br />
+<a class="lnum" href="#104" name="104">0104</a><br />
+<a class="lnum" href="#105" name="105">0105</a>&#0160;&#0160;&#0160;&#0160;<span class="op">@</span><span class="name">classmethod</span><br />
+<a class="lnum" href="#106" name="106">0106</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">set_object</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">added_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#107" name="107">0107</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">setattr</span><span class="op">(</span><span class="name">added_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">)</span><br />
+<a class="lnum" href="#108" name="108">0108</a><br />
+<a class="lnum" href="#109" name="109">0109</a>&#0160;&#0160;&#0160;&#0160;<span class="op">@</span><span class="name">classmethod</span><br />
+<a class="lnum" href="#110" name="110">0110</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">make_object</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">added_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">,</span>&#0160;<span class="op">*</span><span class="name">args</span><span class="op">,</span>&#0160;<span class="op">**</span><span class="name">attrs</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#111" name="111">0111</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">NotImplementedError</span><br />
+<a class="lnum" href="#112" name="112">0112</a><br />
+<a class="lnum" href="#113" name="113">0113</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__setattr__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">name</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#114" name="114">0114</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">__dict__</span><span class="op">[</span><span class="string">'_all_attrs'</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_add_attrs</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="op">{</span><span class="name">name</span><span class="op">:</span>&#0160;<span class="name">value</span><span class="op">}</span><span class="op">)</span><br />
+<a class="lnum" href="#115" name="115">0115</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">__dict__</span><span class="op">[</span><span class="name">name</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">value</span><br />
+<a class="lnum" href="#116" name="116">0116</a><br />
+<a class="lnum" href="#117" name="117">0117</a><span class="keyword">class</span>&#0160;<span class="name">BoundFactory</span><span class="op">(</span><span class="name">BoundAttribute</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#118" name="118">0118</a><br />
+<a class="lnum" href="#119" name="119">0119</a>&#0160;&#0160;&#0160;&#0160;<span class="string">"""</span><br />
+<a class="lnum" href="#120" name="120">0120</a><span class="string">&#0160;&#0160;&#0160;&#0160;This&#0160;will&#0160;bind&#0160;the&#0160;attribute&#0160;to&#0160;whatever&#0160;is&#0160;given&#0160;by</span><br />
+<a class="lnum" href="#121" name="121">0121</a><span class="string">&#0160;&#0160;&#0160;&#0160;``factory_class``.&#0160;&#0160;This&#0160;factory&#0160;should&#0160;be&#0160;a&#0160;callable&#0160;with&#0160;the</span><br />
+<a class="lnum" href="#122" name="122">0122</a><span class="string">&#0160;&#0160;&#0160;&#0160;signature&#0160;``factory_class(added_class,&#0160;attr_name,&#0160;*args,&#0160;**kw)``.</span><br />
+<a class="lnum" href="#123" name="123">0123</a><span class="string"></span><br />
+<a class="lnum" href="#124" name="124">0124</a><span class="string">&#0160;&#0160;&#0160;&#0160;The&#0160;factory&#0160;will&#0160;be&#0160;reinvoked&#0160;(and&#0160;the&#0160;attribute&#0160;rebound)&#0160;for</span><br />
+<a class="lnum" href="#125" name="125">0125</a><span class="string">&#0160;&#0160;&#0160;&#0160;every&#0160;subclassing.</span><br />
+<a class="lnum" href="#126" name="126">0126</a><span class="string">&#0160;&#0160;&#0160;&#0160;"""</span><br />
+<a class="lnum" href="#127" name="127">0127</a><br />
+<a class="lnum" href="#128" name="128">0128</a>&#0160;&#0160;&#0160;&#0160;<span class="name">factory_class</span>&#0160;<span class="op">=</span>&#0160;<span class="name">None</span><br />
+<a class="lnum" href="#129" name="129">0129</a>&#0160;&#0160;&#0160;&#0160;<span class="name">_private_variables</span>&#0160;<span class="op">=</span>&#0160;<span class="op">(</span><br />
+<a class="lnum" href="#130" name="130">0130</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">BoundAttribute</span><span class="op">.</span><span class="name">_private_variables</span>&#0160;<span class="op">+</span>&#0160;<span class="op">(</span><span class="string">'factory_class'</span><span class="op">,</span><span class="op">)</span><span class="op">)</span><br />
+<a class="lnum" href="#131" name="131">0131</a><br />
+<a class="lnum" href="#132" name="132">0132</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">make_object</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">added_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">,</span>&#0160;<span class="op">*</span><span class="name">args</span><span class="op">,</span>&#0160;<span class="op">**</span><span class="name">kw</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#133" name="133">0133</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">factory_class</span><span class="op">(</span><span class="name">added_class</span><span class="op">,</span>&#0160;<span class="name">attr_name</span><span class="op">,</span>&#0160;<span class="op">*</span><span class="name">args</span><span class="op">,</span>&#0160;<span class="op">**</span><span class="name">kw</span><span class="op">)</span></code></div></body></html>

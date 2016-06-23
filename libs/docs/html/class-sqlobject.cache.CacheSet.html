@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>CacheSet</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    A CacheSet is used to collect and maintain a series of caches.  In
+SQLObject, there is one CacheSet per connection, and one Cache
+in the CacheSet for each class, since IDs are not unique across
+classes.  It contains methods similar to Cache, but that take
+a <tt class="docutils literal">cls</tt> argument.
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The CacheSet class is accessible via the
+    <a href="module-sqlobject.cache.html">
+      <tt>sqlobject.cache</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <span class="pudge-missing-section-link">
+        Attributes
+      </span>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (17)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/cache.py.html?f=281&amp;l=376#281" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine alias">
+    <a name="__format__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#__format__" class="pudge-obj-link">__format__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      default object formatter
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__subclasshook__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#__subclasshook__" class="pudge-obj-link">__subclasshook__</a>(...)</tt>
+      <a href="None.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Abstract classes can override this to customize issubclass().
+    </p>
+    <p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
+It should return True, False or NotImplemented.  If it returns
+NotImplemented, the normal algorithm is used.  Otherwise, it
+overrides the normal algorithm (and the outcome is cached).</p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__sizeof__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#__sizeof__" class="pudge-obj-link">__sizeof__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      __sizeof__() -> int
+size of object in memory, in bytes
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#__init__" class="pudge-obj-link">__init__</a>(self, *args, **kw)</tt>
+      <a href="sqlobject/cache.py.html?f=291&amp;l=295#291" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="get"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#get" class="pudge-obj-link">get</a>(self, id, cls)</tt>
+      <a href="sqlobject/cache.py.html?f=296&amp;l=302#296" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="put"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#put" class="pudge-obj-link">put</a>(self, id, cls, obj)</tt>
+      <a href="sqlobject/cache.py.html?f=303&amp;l=305#303" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="finishPut"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#finishPut" class="pudge-obj-link">finishPut</a>(self, cls)</tt>
+      <a href="sqlobject/cache.py.html?f=306&amp;l=308#306" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="created"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#created" class="pudge-obj-link">created</a>(self, id, cls, obj)</tt>
+      <a href="sqlobject/cache.py.html?f=309&amp;l=315#309" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="expire"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#expire" class="pudge-obj-link">expire</a>(self, id, cls)</tt>
+      <a href="sqlobject/cache.py.html?f=316&amp;l=321#316" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="clear"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#clear" class="pudge-obj-link">clear</a>(self, cls=None)</tt>
+      <a href="sqlobject/cache.py.html?f=322&amp;l=328#322" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="tryGet"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#tryGet" class="pudge-obj-link">tryGet</a>(self, id, cls)</tt>
+      <a href="sqlobject/cache.py.html?f=329&amp;l=331#329" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="tryGetByName"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#tryGetByName" class="pudge-obj-link">tryGetByName</a>(self, id, clsname)</tt>
+      <a href="sqlobject/cache.py.html?f=332&amp;l=337#332" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="allIDs"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#allIDs" class="pudge-obj-link">allIDs</a>(self, cls)</tt>
+      <a href="sqlobject/cache.py.html?f=338&amp;l=343#338" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="allSubCaches"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#allSubCaches" class="pudge-obj-link">allSubCaches</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=344&amp;l=346#344" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="allSubCachesByClassNames"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#allSubCachesByClassNames" class="pudge-obj-link">allSubCachesByClassNames</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=347&amp;l=349#347" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="weakrefAll"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#weakrefAll" class="pudge-obj-link">weakrefAll</a>(self, cls=None)</tt>
+      <a href="sqlobject/cache.py.html?f=350&amp;l=361#350" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Move all objects in the cls (or if not given, then in all
+classes) to the weakref dictionary, where they can be
+collected.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="getAll"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheSet.html#getAll" class="pudge-obj-link">getAll</a>(self, cls=None)</tt>
+      <a href="sqlobject/cache.py.html?f=362&amp;l=376#362" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Returns all instances in the cache for the given class or all
+classes.
+    </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/cache.py.html?f=281&amp;l=376#281" title="sqlobject/cache.py:281">the source</a>
+    for more information.
+    </small>
+  </p>

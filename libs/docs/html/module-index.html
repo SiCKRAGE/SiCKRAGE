@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>SQLObject -- Module Reference</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content">
+  <h1 class="pudge-member-page-heading">
+    SQLObject
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Module Reference
+  </h4>
+  <h2>Packages and Modules</h2>
+  <dl class="pudge-module-list">
+    <dt><tt><a href="module-sqlobject.html" class="pudge-obj-link">
+        sqlobject
+        </a></tt>
+    </dt>
+    <dd>
+      SQLObject
+    </dd>
+    <dt><tt><a href="module-sqlobject.manager.html" class="pudge-obj-link">
+        sqlobject.manager
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.mysql.html" class="pudge-obj-link">
+        sqlobject.mysql
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.cache.html" class="pudge-obj-link">
+        sqlobject.cache
+        </a></tt>
+    </dt>
+    <dd>
+      This implements the instance caching in SQLObject.  Caching is
+relatively aggressive.  All objects are retained so long as they are
+in memory, by keeping weak references to objects.  We also keep other
+objects in a cache that doesn't allow them to be garbage collected
+(unless caching is turned off).
+    </dd>
+    <dt><tt><a href="module-sqlobject.include.html" class="pudge-obj-link">
+        sqlobject.include
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.postgres.html" class="pudge-obj-link">
+        sqlobject.postgres
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.views.html" class="pudge-obj-link">
+        sqlobject.views
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.util.html" class="pudge-obj-link">
+        sqlobject.util
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.versioning.html" class="pudge-obj-link">
+        sqlobject.versioning
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.constraints.html" class="pudge-obj-link">
+        sqlobject.constraints
+        </a></tt>
+    </dt>
+    <dd>
+      Constraints
+    </dd>
+    <dt><tt><a href="module-sqlobject.dberrors.html" class="pudge-obj-link">
+        sqlobject.dberrors
+        </a></tt>
+    </dt>
+    <dd>
+      dberrors: database exception classes for SQLObject.
+    </dd>
+    <dt><tt><a href="module-sqlobject.index.html" class="pudge-obj-link">
+        sqlobject.index
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.rdbhost.html" class="pudge-obj-link">
+        sqlobject.rdbhost
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.mssql.html" class="pudge-obj-link">
+        sqlobject.mssql
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.sqlbuilder.html" class="pudge-obj-link">
+        sqlobject.sqlbuilder
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.firebird.html" class="pudge-obj-link">
+        sqlobject.firebird
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.converters.html" class="pudge-obj-link">
+        sqlobject.converters
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.classregistry.html" class="pudge-obj-link">
+        sqlobject.classregistry
+        </a></tt>
+    </dt>
+    <dd>
+      <dl class="docutils">
+<dt>classresolver.py</dt>
+<dd>2 February 2004, Ian Bicking &lt;<a href="mailto:ianb@colorstudy.com" class="reference external">ianb@colorstudy.com</a>></dd>
+</dl>
+    </dd>
+    <dt><tt><a href="module-sqlobject.main.html" class="pudge-obj-link">
+        sqlobject.main
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.boundattributes.html" class="pudge-obj-link">
+        sqlobject.boundattributes
+        </a></tt>
+    </dt>
+    <dd>
+      Bound attributes are attributes that are bound to a specific class and
+a specific name.  In SQLObject a typical example is a column object,
+which knows its name and class.
+    </dd>
+    <dt><tt><a href="module-sqlobject.styles.html" class="pudge-obj-link">
+        sqlobject.styles
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.sqlite.html" class="pudge-obj-link">
+        sqlobject.sqlite
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.dbconnection.html" class="pudge-obj-link">
+        sqlobject.dbconnection
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.sybase.html" class="pudge-obj-link">
+        sqlobject.sybase
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.__version__.html" class="pudge-obj-link">
+        sqlobject.__version__
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.events.html" class="pudge-obj-link">
+        sqlobject.events
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.maxdb.html" class="pudge-obj-link">
+        sqlobject.maxdb
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.declarative.html" class="pudge-obj-link">
+        sqlobject.declarative
+        </a></tt>
+    </dt>
+    <dd>
+      Declarative objects.
+    </dd>
+    <dt><tt><a href="module-sqlobject.sresults.html" class="pudge-obj-link">
+        sqlobject.sresults
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.col.html" class="pudge-obj-link">
+        sqlobject.col
+        </a></tt>
+    </dt>
+    <dd>
+      Col -- SQLObject columns
+    </dd>
+    <dt><tt><a href="module-sqlobject.inheritance.html" class="pudge-obj-link">
+        sqlobject.inheritance
+        </a></tt>
+    </dt>
+    <dt><tt><a href="module-sqlobject.joins.html" class="pudge-obj-link">
+        sqlobject.joins
+        </a></tt>
+    </dt>
+  </dl>
+</div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

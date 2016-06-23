@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>PostgresConnection</tt>
+  </h1>
+  <p class="pudge-member-parent-link">
+    <small>
+    The PostgresConnection class is accessible via the
+    <a href="module-sqlobject.postgres.pgconnection.html">
+      <tt>sqlobject.postgres.pgconnection</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (3)
+      </a>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (19)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=20&amp;l=447#20" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="supportTransactions"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#supportTransactions" class="pudge-obj-link">supportTransactions</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>True</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="schemes"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#schemes" class="pudge-obj-link">schemes</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>['postgres', 'postgresql']</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="dbName"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#dbName" class="pudge-obj-link">dbName</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'postgres'</pre>
+    </div>
+  </div>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#__init__" class="pudge-obj-link">__init__</a>(self, dsn=None, host=None, port=None, db=None, user=None, password=None, **kw)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=26&amp;l=121#26" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="makeConnection"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#makeConnection" class="pudge-obj-link">makeConnection</a>(self)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=139&amp;l=159#139" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#createColumn" class="pudge-obj-link">createColumn</a>(self, soClass, col)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=222&amp;l=224#222" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createReferenceConstraint"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#createReferenceConstraint" class="pudge-obj-link">createReferenceConstraint</a>(self, soClass, col)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=225&amp;l=227#225" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIndexSQL"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#createIndexSQL" class="pudge-obj-link">createIndexSQL</a>(self, soClass, index)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=228&amp;l=230#228" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIDColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#createIDColumn" class="pudge-obj-link">createIDColumn</a>(self, soClass)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=231&amp;l=234#231" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="dropTable"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#dropTable" class="pudge-obj-link">dropTable</a>(self, tableName, cascade=False)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=235&amp;l=238#235" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="joinSQLType"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#joinSQLType" class="pudge-obj-link">joinSQLType</a>(self, join)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=239&amp;l=241#239" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="tableExists"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#tableExists" class="pudge-obj-link">tableExists</a>(self, tableName)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=242&amp;l=246#242" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="addColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#addColumn" class="pudge-obj-link">addColumn</a>(self, tableName, column)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=247&amp;l=251#247" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="delColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#delColumn" class="pudge-obj-link">delColumn</a>(self, sqlmeta, column)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=252&amp;l=254#252" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="columnsFromSchema"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#columnsFromSchema" class="pudge-obj-link">columnsFromSchema</a>(self, tableName, soClass)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=255&amp;l=362#255" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="guessClass"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#guessClass" class="pudge-obj-link">guessClass</a>(self, t)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=363&amp;l=392#363" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="defaultFromSchema"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#defaultFromSchema" class="pudge-obj-link">defaultFromSchema</a>(self, colClass, defaultstr)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=393&amp;l=404#393" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      If the default can be converted to a python constant, convert it.
+Otherwise return is as a sqlbuilder constant.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="listTables"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#listTables" class="pudge-obj-link">listTables</a>(self)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=431&amp;l=438#431" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="listDatabases"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#listDatabases" class="pudge-obj-link">listDatabases</a>(self)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=439&amp;l=441#439" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createEmptyDatabase"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#createEmptyDatabase" class="pudge-obj-link">createEmptyDatabase</a>(self)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=442&amp;l=444#442" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="dropDatabase"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#dropDatabase" class="pudge-obj-link">dropDatabase</a>(self)</tt>
+      <a href="sqlobject/postgres/pgconnection.py.html?f=445&amp;l=447#445" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__del__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.postgres.pgconnection.PostgresConnection.html#__del__" class="pudge-obj-link">__del__</a>(self)</tt>
+      <a href="sqlobject/dbconnection.py.html?f=674&amp;l=676#674" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/postgres/pgconnection.py.html?f=20&amp;l=447#20" title="sqlobject/postgres/pgconnection.py:20">the source</a>
+    for more information.
+    </small>
+  </p>

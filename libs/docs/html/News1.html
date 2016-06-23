@@ -1,0 +1,513 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>News</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">News</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents:</p>
+<ul class="simple">
+<li><a href="#sqlobject-0-6-1" class="reference internal" id="id17">SQLObject 0.6.1</a><ul>
+<li><a href="#interface-changes" class="reference internal" id="id18">Interface Changes</a></li>
+<li><a href="#features" class="reference internal" id="id19">Features</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-6" class="reference internal" id="id20">SQLObject 0.6</a><ul>
+<li><a href="#id2" class="reference internal" id="id21">Interface Changes</a></li>
+<li><a href="#bugs" class="reference internal" id="id22">Bugs</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-5-3" class="reference internal" id="id23">SQLObject 0.5.3</a><ul>
+<li><a href="#id3" class="reference internal" id="id24">Bugs</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-5-2" class="reference internal" id="id25">SQLObject 0.5.2</a><ul>
+<li><a href="#id4" class="reference internal" id="id26">Interface Changes</a></li>
+<li><a href="#id5" class="reference internal" id="id27">Bugs</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-5-1" class="reference internal" id="id28">SQLObject 0.5.1</a><ul>
+<li><a href="#id6" class="reference internal" id="id29">Interface Changes</a></li>
+<li><a href="#id7" class="reference internal" id="id30">Bugs</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-5" class="reference internal" id="id31">SQLObject 0.5</a><ul>
+<li><a href="#id8" class="reference internal" id="id32">Features</a></li>
+<li><a href="#id9" class="reference internal" id="id33">Interface Changes</a></li>
+<li><a href="#id10" class="reference internal" id="id34">Bugs</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-4" class="reference internal" id="id35">SQLObject 0.4</a><ul>
+<li><a href="#id11" class="reference internal" id="id36">Features</a><ul>
+<li><a href="#col-and-join" class="reference internal" id="id37">Col and Join</a></li>
+</ul>
+</li>
+<li><a href="#id12" class="reference internal" id="id38">Bugs</a></li>
+<li><a href="#internal" class="reference internal" id="id39">Internal</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-3" class="reference internal" id="id40">SQLObject 0.3</a><ul>
+<li><a href="#id13" class="reference internal" id="id41">Features</a></li>
+<li><a href="#id14" class="reference internal" id="id42">Bugs</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-2-1" class="reference internal" id="id43">SQLObject 0.2.1</a><ul>
+<li><a href="#id15" class="reference internal" id="id44">Bugs</a></li>
+<li><a href="#id16" class="reference internal" id="id45">Features</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-6-1">
+<span id="start"></span><h1>SQLObject 0.6.1</h1>
+<div class="section" id="interface-changes">
+<h2>Interface Changes</h2>
+<ul class="simple">
+<li>The long broken and unused <tt class="docutils literal">DBMConnection</tt> has been removed.</li>
+<li>Added a connection parameter to all class methods (patch 974755)</li>
+<li>Connection objects have a <tt class="docutils literal">.module</tt> attribute, which points to
+the DB-API module.  This is useful for getting access to the
+exception objects.</li>
+</ul>
+</div>
+<div class="section" id="features">
+<h2>Features</h2>
+<ul class="simple">
+<li>New <tt class="docutils literal">UnicodeCol()</tt> that converts to and from Unicode
+in the database.  See <a href="SQLObject.html#subclasses-of-col" class="reference external">docs</a>.</li>
+</ul>
+<ul class="simple">
+<li>Added indexing (from Jeremy Fitzhardinge).  See <a href="SQLObject.html#indexes" class="reference external">the
+documentation</a> for more.</li>
+</ul>
+<ul class="simple">
+<li>All connections are explicitly closed, not just garbage collected.
+Many database drivers don't close database connections properly when
+the connection object is garbage collected.</li>
+<li>New <tt class="docutils literal">distinct</tt> option to selects, like <tt class="docutils literal"><span class="pre">MyClass.select(...,</span>
+distinct=True)</tt></li>
+<li>You can now do
+<tt class="docutils literal">MyClass.selectBy(joinedTable=joinedTableInstance)</tt>, where before
+you had to do
+<tt class="docutils literal">MyClass.selectBy(joinedTableID=joinedTableInstance.id)</tt>.  (From
+Dave Cook)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-6">
+<h1>SQLObject 0.6</h1>
+<div class="section" id="id2">
+<h2>Interface Changes</h2>
+<ul class="simple">
+<li>Lazy updates.  Add <tt class="docutils literal">_lazyUpdate=True</tt> to your class, and updates
+will only be written when you call <tt class="docutils literal">obj.syncUpdate()</tt> or
+<tt class="docutils literal">obj.sync()</tt> (<tt class="docutils literal">sync</tt> also refetches the data from the database,
+which <tt class="docutils literal">syncUpdate</tt> does not do).  When enabled, instances have a
+property <tt class="docutils literal">dirty</tt>, which indicates if they have pending updates.
+Inserts are still done immediately.</li>
+<li>Separated database drivers (PostgresConnection, MySQLConnection,
+etc.) into separate packages.  You can access the driver through
+URIs, like <tt class="docutils literal"><span class="pre">mysql://user:pass@host/dbname</span></tt> -- to set drivers after
+class creation you should use <cite>sqlobject.connectionForURI()</cite>.</li>
+<li>The <tt class="docutils literal">SQLObject</tt> package has been renamed to <tt class="docutils literal">sqlobject</tt>.  This
+makes it similar to several other packages, and emphasizes the
+distinction between the <tt class="docutils literal">sqlobject</tt> package and the <tt class="docutils literal">SQLObject</tt>
+class.</li>
+<li>Class instantiation now creates new rows (like <cite>.new()</cite> used to
+do), and the <cite>.get()</cite> method now retrieves objects that already have
+rows (like class instantiation used to do).</li>
+<li>We're now using a Subversion repository instead of CVS.  It is
+located at <a href="http://svn.colorstudy.com/trunk/SQLObject" class="reference external">http://svn.colorstudy.com/trunk/SQLObject</a></li>
+<li>If you pass <tt class="docutils literal">forceDBName=True</tt> to the <tt class="docutils literal">*Col</tt> constructors, then
+your column name doesn't have to be restricted to a-z, 0-9, and _.</li>
+<li><tt class="docutils literal">*Col</tt> constructors now support cascade: <tt class="docutils literal">cascade=None</tt>
+(default) means no constraint; <tt class="docutils literal">cascade=True</tt> means that if the
+foreign key is deleted, the object will be deleted;
+<tt class="docutils literal">cascade=False</tt> means that the delete will fail;
+<tt class="docutils literal"><span class="pre">cascade="null"</span></tt> means that the column will be set to NULL.  The
+constraints are only implemented in the DBMS, not in SQLObject
+(i.e., they will not work in databases like MySQL and SQLite).</li>
+<li>New <tt class="docutils literal">_create(id, **kw)</tt> method that can be overridden to intercept
+and modify attempts to insert rows in the database.</li>
+<li>You can specify <tt class="docutils literal">_idType</tt> in your class, like <tt class="docutils literal">_idType = str</tt>.
+The default type is <tt class="docutils literal">int</tt>; i.e., IDs are coerced to integers.
+This is a temporary interface; a more general specifier for primary
+keys will be added later.</li>
+<li>New classmethod <tt class="docutils literal">createTableSQL()</tt> method for SQLObject classes,
+which returns the SQL that can be used to create the table.  Analog
+to <tt class="docutils literal">createTable()</tt>.</li>
+</ul>
+</div>
+<div class="section" id="bugs">
+<h2>Bugs</h2>
+<ul class="simple">
+<li>SQLite booleans fixed.</li>
+<li>You can now use <tt class="docutils literal"><span class="pre">sqlite:/:memory:</span></tt> to store the database in
+memory.</li>
+<li>Some bugs resolved when caching is turned off (SF 956847)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-5-3">
+<h1>SQLObject 0.5.3</h1>
+<div class="section" id="id3">
+<h2>Bugs</h2>
+<ul class="simple">
+<li>Python 2.2 booleans fixed (SF: 903488)</li>
+<li>Longs (e.g., <tt class="docutils literal">1L</tt>) get converted properly (SF: 939965)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-5-2">
+<h1>SQLObject 0.5.2</h1>
+<p>We're now using Subversion instead of CVS.  The repository is located
+at svn://colorstudy.com/trunk/SQLObject</p>
+<div class="section" id="id4">
+<h2>Interface Changes</h2>
+<ul class="simple">
+<li>If you commit or rollback a transaction, you must call
+<tt class="docutils literal">trans.begin()</tt> to restart the transaction.  Any database access on
+the transaction inbetween commit/rollback and being will result in an
+AssertionError.  (It's also acceptable to create a new transaction
+object instead of reusing the old one, but objects in that
+transaction will be invalid)</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>Bugs</h2>
+<ul class="simple">
+<li>Using .select() would hold on to a connection, and also release it
+back to the connection pool.  Very un-threadsafe and all-around
+bad.</li>
+<li>Fixed bug which did not release connections after database (query)
+error.</li>
+<li>When setting columns that use validators, the Pythonic
+(vs. database) representation wasn't being stored in the column.
+Now we roundtrip (through toPython and fromPython) the values when
+they get set.</li>
+<li>PostgreConnection is back to using sequences for ID generation,
+instead of oids.  Long explanation -- oids can be unindexed in some
+versions of Postgres, or not even exist.</li>
+<li>When turning caching off and using transactions, got an attribute
+error on rollback.</li>
+<li>Rollback or commit didn't find objects that were expired from the
+cache but still in memory.</li>
+<li>Rollback or commit didn't free the connection object, so as you
+created more transactions it stole connections and didn't put them
+back in the pool.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-5-1">
+<h1>SQLObject 0.5.1</h1>
+<p>Released: 12-Nov-2003</p>
+<div class="section" id="id6">
+<h2>Interface Changes</h2>
+<ul class="simple">
+<li>Select results no longer have a __len__ method (i.e., you can't do
+<tt class="docutils literal"><span class="pre">len(Person.select(Person.q.firstName=='Bob'))</span></tt>).  There is now a
+<tt class="docutils literal">.count()</tt> method instead.  <tt class="docutils literal">__len__</tt> gets called implicitly in
+several circumstances, like <tt class="docutils literal">list()</tt>, which causes potentially
+expensive queries to <tt class="docutils literal"><span class="pre">COUNT(*)</span></tt>.</li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h2>Bugs</h2>
+<ul class="simple">
+<li>Objects retrieved from a join now respect the transaction context of
+the original instance.</li>
+<li><tt class="docutils literal"><span class="pre">.select().reversed()</span></tt> works.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-5">
+<h1>SQLObject 0.5</h1>
+<p>Released: 1-Nov-2003</p>
+<div class="section" id="id8">
+<h2>Features</h2>
+<ul class="simple">
+<li><a href="http://firebird.sourceforge.net/" class="reference external">Firebird</a> support.</li>
+<li>Database-specific literal quoting (motivation: MySQL and Postgres
+use backslashes, Firebird and SQLite do not).</li>
+<li>Generic conversion/validation can be added to columns.</li>
+<li>BoolCol for portable boolean columns (BOOL on Postgres, INT on
+MySQL, etc.)</li>
+<li>Non-integer IDs.  (Automatic table creation is not supported for
+non-integer IDs)</li>
+<li>Explicit IDs for new instances/rows (required for non-integer IDs).</li>
+<li>Instances can be synced with the database (in case there have been
+updates to the object since it was first fetched).</li>
+<li>Instances can be expired, so that they will be synced when they are
+next accessed.</li>
+</ul>
+</div>
+<div class="section" id="id9">
+<h2>Interface Changes</h2>
+<ul class="simple">
+<li><cite>SQLBuilder.sqlRepr</cite> renamed to <cite>SQLBuilder.sqlrepr</cite>, signature
+changed to <tt class="docutils literal">sqlrepr(value, databaseName)</tt> to quote <tt class="docutils literal">value</tt>,
+where <tt class="docutils literal">databaseName</tt> is one of <tt class="docutils literal">"mysql"</tt>, <tt class="docutils literal">"postgres"</tt>,
+<tt class="docutils literal">"sqlite"</tt>, <tt class="docutils literal">"firebird"</tt>.</li>
+<li><tt class="docutils literal">sqlRepr</tt> magic method renamed to <tt class="docutils literal">__sqlrepr__</tt>, and takes new
+<tt class="docutils literal">databaseName</tt> argument.</li>
+<li>When using explicit booleans, use <tt class="docutils literal">Col.TRUE</tt> and <tt class="docutils literal">Col.FALSE</tt> for
+backward compatibility with Python 2.2.  This is not required for
+<tt class="docutils literal">BoolCol</tt>, however (which converts all true values to TRUE and
+false values to FALSE)</li>
+<li>SQLObject has a <tt class="docutils literal">sqlrepr</tt> method, so you can construct queries
+with something like <tt class="docutils literal">"WHERE last_name = %s" %
+<span class="pre">Person.sqlrepr('Bob')</span></tt></li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h2>Bugs</h2>
+<ul class="simple">
+<li>Released all locks with <tt class="docutils literal">finally:</tt>, so that bugs won't cause
+frozen locks.</li>
+<li>Tons of transaction fixes.  Transactions pretty much work.</li>
+<li>A class can have multiple foreign keys pointing to the same table
+(e.g., <tt class="docutils literal">spouse = <span class="pre">ForeignKey("Person");</span> supervisor =
+<span class="pre">ForeignKey("Person")</span></tt>)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-4">
+<h1>SQLObject 0.4</h1>
+<div class="section" id="id11">
+<h2>Features</h2>
+<ul>
+<li><p class="first">You can specify columns in a new, preferred manner:</p>
+<pre class="literal-block">
+class SomeObject(SQLObject):
+    someColumn = Col()
+</pre>
+<p>Equivalent to:</p>
+<pre class="literal-block">
+class SomeObject(SQLObject):
+    _columns = [Col('someColumn')]
+</pre>
+<p>Ditto joins.</p>
+</li>
+<li><p class="first">Cache objects have a clear method, which empties all objects.
+However, weak references to objects <em>are</em> maintained, so the
+integrity of the cache can be ensured.</p>
+</li>
+<li><p class="first">SQLObject subclasses can be further subclassed, adding or removing
+column definitions (as well as changing settings like connection,
+style, etc).  Each class still refers to a single concrete table in
+the database -- the class hierarchy is not represented in the
+database.</p>
+</li>
+<li><p class="first">Each SQLObject subclass can have an associated style, as given in
+the <cite>_style</cite> attribute.  This object is used to map between Python
+and database names (e.g., the column name for a Python attribute).
+Some samples are available in the <cite>Style</cite> module.</p>
+</li>
+<li><p class="first">Postgres support for <cite>_fromDatabase</cite> (reading a table definition from
+the database, and creating a class from that).</p>
+</li>
+<li><p class="first">Postgres id columns more permissive, you don't have to create a
+specially named sequence (or implicitly create that sequence through
+<tt class="docutils literal">SERIAL</tt>).  lastoid is used instead.</p>
+</li>
+<li><p class="first">MySQL uses <tt class="docutils literal">localhost</tt> as the default host, and the empty string
+as the default password.</p>
+</li>
+<li><p class="first">Added functions for use with queries: <cite>ISNULL</cite>, <cite>ISNOTNULL</cite>.  <tt class="docutils literal">==</tt>
+and <tt class="docutils literal">!=</tt> can be used with None, and is translated into <cite>ISNULL</cite>,
+<cite>ISNOTNULL</cite>.</p>
+</li>
+<li><p class="first">Classes can be part of a specific registry.  Since classes are
+referred to by name in several places, the names have to be unique.
+This can be problematic, so you can add a class variable <cite>_registry</cite>,
+the value of which should be a string.  Classes references are
+assumed to be inside that registry, and class names need only be
+unique among classes in that registry.</p>
+</li>
+<li><p class="first"><tt class="docutils literal">SomeClass.select()</tt> selects all, instead of using
+<tt class="docutils literal"><span class="pre">SomeClass.select('all')</span></tt>.  You can also use None instead of
+<tt class="docutils literal">'all'</tt>.</p>
+</li>
+<li><p class="first">Trying to fetch non-existent objects raises <cite>SQLObjectNotFound</cite>,
+which is a subclass of the builtin exception <cite>LookupError</cite>.
+This may not be raised if <cite>_cacheValues</cite> is False and you use
+the ID to fetch an object (but alternateID fetches will raise
+the exception in either case).</p>
+</li>
+<li><p class="first">Can order by descending order, with the <cite>reversed</cite> option to
+the <cite>select</cite> method, or by prefixing the column with a <tt class="docutils literal"><span class="pre">"-"</span></tt>.</p>
+</li>
+<li><p class="first">Ordering with joins works better -- you can order with multiple
+columns, as well as descending ordering.</p>
+</li>
+</ul>
+<div class="section" id="col-and-join">
+<h3>Col and Join</h3>
+<ul class="simple">
+<li><cite>Join</cite> constructors have an argument <cite>orderBy</cite>, which is the name
+of a Python attribute to sort results by.  If not given, the
+appropriate class's <cite>_defaultOrder</cite> will be used.  None implies
+no sorting (and <tt class="docutils literal">orderBy=None</tt> will override <cite>_defaultOrder</cite>).</li>
+<li><cite>ForeignKey</cite> class (subclass of <cite>Col</cite>), for somewhat easier/clearer
+declaration of foreign keys.</li>
+<li><cite>Col</cite> (and subclasses) can take a <cite>sqlType</cite> argument, which is used
+in table definitions.  E.g., <tt class="docutils literal"><span class="pre">Col(sqlType="BOOLEAN")</span></tt> can be used
+to create a <tt class="docutils literal">BOOLEAN</tt> column, even though no <cite>BooleanCol</cite> exists.</li>
+<li><cite>alternateID</cite> (a specifier for columns) implies <tt class="docutils literal">NOT NULL</tt>.  Also
+implies <tt class="docutils literal">UNIQUE</tt>.</li>
+<li><cite>unique</cite> (a specifier for columns) added.</li>
+<li><cite>DecimalCol</cite> and <cite>CurrencyCol</cite> added.</li>
+<li><cite>EnumCol</cite> uses constraints on Postgres (if you use <cite>createTable</cite>).</li>
+</ul>
+</div>
+</div>
+<div class="section" id="id12">
+<h2>Bugs</h2>
+<ul class="simple">
+<li><cite>DateTimeCol</cite> uses <tt class="docutils literal">TIMESTAMP</tt> for Postgres.  Note that the
+Python type name is used for column names, not necessarily the
+SQL standard name.</li>
+<li>Foreign key column names are slightly more permissive.  They still
+need to end in <tt class="docutils literal">id</tt>, but it's case insensitive.</li>
+<li>_defaultOrder should be the python attribute's name, not the database
+name.</li>
+<li>SomeClass.q.colName uses proper Python attributes for colName, and
+proper database names when executed in the database.</li>
+<li>SQLite select results back to being proper iterator.</li>
+<li>SomeClass.q.colName now does proper translation to database names,
+using dbName, etc., instead of being entirely algorithm-driven.</li>
+<li>Raise <cite>TypeError</cite> if you pass an unknown argument to the <cite>new</cite>
+method.</li>
+<li>You can override the _get_* or _set_* version of a property without
+overriding the other.</li>
+<li>Python 2.3 compatible.</li>
+<li>Trying to use <tt class="docutils literal"><span class="pre">Col('id')</span></tt> or <tt class="docutils literal">id = Col()</tt> will raise an
+exception, instead of just acting funky.</li>
+<li><tt class="docutils literal">ForeignKey</tt> columns return None if the associated column is
+NULL in the database (used to just act weird).</li>
+<li>Instantiating an object with an id of None will give an error,
+instead of just acting weird.</li>
+</ul>
+</div>
+<div class="section" id="internal">
+<h2>Internal</h2>
+<ul class="simple">
+<li><cite>Col</cite> class separated into <cite>Col</cite> and <cite>SOCol</cite> (and same for all other
+<cite>*Col</cite> classes).  <cite>Col</cite> defines a column, <cite>SOCol</cite> is that definition
+bound to a particular SQLObject class.</li>
+<li>Instance variable <tt class="docutils literal">_SO_columns</tt> holds the <cite>SOCol</cite> instances.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-3">
+<h1>SQLObject 0.3</h1>
+<div class="section" id="id13">
+<h2>Features</h2>
+<ul class="simple">
+<li>Table creation (SQL schema generation) via new class method
+<cite>createTable</cite>.  And of course a <cite>dropTable</cite> method to go with.</li>
+<li>Add and remove columns at runtime, optionally modifying the
+schema in the database (via <tt class="docutils literal">ALTER</tt>).  (Does not work in
+SQLite)</li>
+<li>New column classes (see <cite>Col</cite> module), indicates type</li>
+<li>Classes can be created by parsing an already existant table
+(MySQL only).</li>
+<li>Objects are not cached indefinitely.  Cached objects are expired
+into a weak dictionary (it allows objects to be garbage collected if
+nowhere else in the program is using the object, but until it is
+collected it's still available to the cache).  Some cache control,
+pass <tt class="docutils literal">nocache=True</tt> to your connection object to eliminate as much
+caching as possible.  See <cite>Cache</cite> module for a bit more.</li>
+<li>New DBMConnection, implements a database-like backend without any
+database to speak of, including queries (so long as you use
+<cite>SQLBuilder</cite> and don't generate your where clauses manually).
+Actual SQL generation is done entirely by the database connection,
+allowing portability across very different backends.</li>
+<li>Postgres table IDs should be created with type <tt class="docutils literal">SERIAL</tt> (which
+implicitly creates a sequence).</li>
+<li>New <cite>_defaultOrder</cite> class variable gives a default for the
+<cite>orderBy</cite> parameter to <cite>select</cite> queries.</li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h2>Bugs</h2>
+<ul class="simple">
+<li>LIMIT/OFFSET (select result slicing) works in Postgres and SQLite.</li>
+<li><tt class="docutils literal">tableExists</tt> method from DBConnection works in same.</li>
+<li>mxDateTime not required (never should have been, always just an
+option).</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-2-1">
+<h1>SQLObject 0.2.1</h1>
+<div class="section" id="id15">
+<h2>Bugs</h2>
+<ul class="simple">
+<li>Fixed caching of new objects</li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h2>Features</h2>
+<ul class="simple">
+<li><a href="http://sqlite.org/" class="reference external">SQLite</a> support</li>
+<li>Select statements are lazily generated, retrieve full rows for
+speed, and are slicable (<a href="SQLObject.html#selecting-multiple-objects" class="reference external">select docs</a>).</li>
+<li><cite>alternateID</cite> option for <cite>Col</cite> objects -- select individual objects
+via UNIQUE columns, e.g., a username (<a href="SQLObject.html#col-class-specifying-columns" class="reference external">Col docs</a>).</li>
+</ul>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

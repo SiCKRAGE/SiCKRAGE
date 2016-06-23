@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>The sqlobject-admin Tool</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">The sqlobject-admin Tool</h1>
+  <table rules="none" frame="void" class="docinfo">
+<col class="docinfo-name">
+<col class="docinfo-content">
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Ian Bicking &lt;<a href="mailto:ianb@colorstudy.com" class="reference external">ianb@colorstudy.com</a>></td></tr>
+<tr><th class="docinfo-name">Revision:</th>
+<td>$Rev$</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>$LastChangedDate$</td></tr>
+</tbody>
+</table>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a href="#introduction" class="reference internal" id="id1">Introduction</a><ul>
+<li><a href="#common-options" class="reference internal" id="id2">Common Options</a></li>
+<li><a href="#simple-commands" class="reference internal" id="id3">Simple Commands</a></li>
+</ul>
+</li>
+<li><a href="#the-create-command" class="reference internal" id="id4">The <tt class="docutils literal">create</tt> Command</a></li>
+<li><a href="#the-sql-command" class="reference internal" id="id5">The <tt class="docutils literal">sql</tt> Command</a></li>
+<li><a href="#the-drop-command" class="reference internal" id="id6">The <tt class="docutils literal">drop</tt> Command</a></li>
+<li><a href="#the-execute-command" class="reference internal" id="id7">The <tt class="docutils literal">execute</tt> Command</a></li>
+<li><a href="#the-list-command" class="reference internal" id="id8">The <tt class="docutils literal">list</tt> Command</a></li>
+<li><a href="#the-status-command" class="reference internal" id="id9">The <tt class="docutils literal">status</tt> Command</a><ul>
+<li><a href="#versioning-upgrading" class="reference internal" id="id10">Versioning &amp; Upgrading</a></li>
+</ul>
+</li>
+<li><a href="#basic-usage" class="reference internal" id="id11">Basic Usage</a></li>
+<li><a href="#the-record-command" class="reference internal" id="id12">The <tt class="docutils literal">record</tt> Command</a></li>
+<li><a href="#the-upgrade-command" class="reference internal" id="id13">The <tt class="docutils literal">upgrade</tt> Command</a><ul>
+<li><a href="#future" class="reference internal" id="id14">Future</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="warning">
+<p class="first admonition-title">Warning</p>
+<p>This document isn't entirely accurate; some of what it describes
+are the intended features of the tool, not the actual features.</p>
+<p class="last">Particularly inaccurate is how modules and classes are found.</p>
+</div>
+<div class="section" id="introduction">
+<h1><a href="#id1" class="toc-backref">Introduction</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">sqlobject-admin</span></tt> tool included with SQLObject allows you to
+manage your database as defined with SQLObject classes.</p>
+<p>Some of the features include creating tables, checking the status of
+the database, recording a version of a schema, and updating the
+database to match the version of the schema in your code.</p>
+<p>To see a list of commands run <tt class="docutils literal"><span class="pre">sqlobject-admin</span> help</tt>.  Each
+sub-command has <tt class="docutils literal"><span class="pre">-h</span></tt> option which explains the details of that
+command.</p>
+<div class="section" id="common-options">
+<h2><a href="#id2" class="toc-backref">Common Options</a></h2>
+<p>Many of the commands share some common options, mostly for finding the
+database and classes.</p>
+<p><tt class="docutils literal"><span class="pre">-c</span> CONNECTION</tt> or <tt class="docutils literal"><span class="pre">--connection=CONNECTION</span></tt>:</p>
+<blockquote>
+This takes an argument, the connection string for the database.
+This overrides any connection the classes have (if they are
+hardwired to a connection).</blockquote>
+<p><tt class="docutils literal"><span class="pre">-f</span> FILENAME</tt> or <tt class="docutils literal"><span class="pre">--config-file=FILENAME</span></tt>:</p>
+<blockquote>
+This is a configuration file from which to get the connection.
+This configuration file should be a Python-syntax file that
+defines a global variable <tt class="docutils literal">database</tt>, which is the connection
+string for the database.</blockquote>
+<p><tt class="docutils literal"><span class="pre">-m</span> MODULE</tt> or <tt class="docutils literal"><span class="pre">--module=MODULE</span></tt>:</p>
+<blockquote>
+A module to look in for classes.  <tt class="docutils literal">MODULE</tt> is something like
+<tt class="docutils literal">myapp.amodule</tt>.  Remember to set your <tt class="docutils literal">$PYTHONPATH</tt> if the
+module can't be imported.  You can provide this argument multiple
+times.</blockquote>
+<p><tt class="docutils literal"><span class="pre">-p</span> PACKAGE</tt> or <tt class="docutils literal"><span class="pre">--package=PACKAGE</span></tt>:</p>
+<blockquote>
+A package to look in.  This looks in all the modules in this class
+and subclasses for SQLObject classes.</blockquote>
+<p><tt class="docutils literal"><span class="pre">--class=CLASSMATCH</span></tt>:</p>
+<blockquote>
+This <em>restricts</em> the classes found to the matching classes.  You
+may use wildcards.  You can provide multiple <tt class="docutils literal"><span class="pre">--class</span></tt>
+arguments, and if any pattern matches the class will be included.</blockquote>
+<p><tt class="docutils literal"><span class="pre">--egg=EGG_SPEC</span></tt>:</p>
+<blockquote>
+This is an <a href="http://peak.telecommunity.com/DevCenter/PythonEggs" class="reference external">Egg</a> description
+that should be loaded.  So if you give <tt class="docutils literal"><span class="pre">--egg=ProjectName</span></tt> it'll
+load that egg, and look in <tt class="docutils literal"><span class="pre">ProjectName.egg-info/sqlobject.txt</span></tt>
+for some settings (like <tt class="docutils literal">db_module</tt> and <tt class="docutils literal">history_dir</tt>).</blockquote>
+<p>When finding SQLObject classes, we look in the modules for classes
+that belong to the module -- so if you import a class from another
+module it won't be "matched".  You have to indicate its original
+module.</p>
+<p>If classes have to be handled in a specific order, create a
+<tt class="docutils literal">soClasses</tt> global variable that holds a list of the classes.  This
+overrides the module restrictions.  This is important in databases
+with referential integrity, where dependent tables can't be created
+before the tables they depend on.</p>
+</div>
+<div class="section" id="simple-commands">
+<h2><a href="#id3" class="toc-backref">Simple Commands</a></h2>
+</div>
+</div>
+<div class="section" id="the-create-command">
+<h1><a href="#id4" class="toc-backref">The <tt class="docutils literal">create</tt> Command</a></h1>
+<p>This finds the tables and creates them.  Any tables that exist are
+simply skipped.</p>
+<p>It also collects data from sqlmeta.createSQL (added in svn trunk) and
+runs the queries after table creation. createSQL can be a string with
+a single SQL command, a list of SQL commands, or a dictionary with
+keys that are dbNames and values that are either single SQL command
+string or a list of SQL commands. An example follows:</p>
+<pre class="literal-block">
+class MyTable(SQLObject):
+    class sqlmeta:
+        createSQL = {'postgres': [
+            "ALTER TABLE my_table ADD CHECK(my_field != '');",
+            ]}
+    myField = StringCol()
+</pre>
+</div>
+<div class="section" id="the-sql-command">
+<h1><a href="#id5" class="toc-backref">The <tt class="docutils literal">sql</tt> Command</a></h1>
+<p>This shows the SQL to create all the tables.</p>
+</div>
+<div class="section" id="the-drop-command">
+<h1><a href="#id6" class="toc-backref">The <tt class="docutils literal">drop</tt> Command</a></h1>
+<p>Drops tables!  Missing tables are skipped.</p>
+</div>
+<div class="section" id="the-execute-command">
+<h1><a href="#id7" class="toc-backref">The <tt class="docutils literal">execute</tt> Command</a></h1>
+<p>This executes an arbitrary SQL expression.  This is mostly useful if
+you want to run a query against a database described by a SQLObject
+connection string.  Use <tt class="docutils literal"><span class="pre">--stdin</span></tt> if you want to pipe commands in;
+otherwise you give the commands as arguments.</p>
+</div>
+<div class="section" id="the-list-command">
+<h1><a href="#id8" class="toc-backref">The <tt class="docutils literal">list</tt> Command</a></h1>
+<p>Lists out all the classes found.  This can help you figure out
+what classes you are dealing with, and if there's any missing that you
+expected.</p>
+</div>
+<div class="section" id="the-status-command">
+<h1><a href="#id9" class="toc-backref">The <tt class="docutils literal">status</tt> Command</a></h1>
+<p>This shows if tables are present in the database.  If possible (it
+depends on the database) it will also show if the tables are missing
+any columns, or have any extra columns, when compared to the table the
+SQLObject class describes.  It doesn't check column types, indexes, or
+constraints.  This feature may be added in the future.</p>
+<div class="section" id="versioning-upgrading">
+<h2><a href="#id10" class="toc-backref">Versioning &amp; Upgrading</a></h2>
+<p>There's two commands related to storing the schema and upgrading the
+database: <tt class="docutils literal">record</tt> and <tt class="docutils literal">upgrade</tt>.</p>
+<p>The idea is that you record each iteration of your schema, and this
+gets a version number.  Something like <tt class="docutils literal"><span class="pre">2003-05-04a</span></tt>.  If you are
+using source control you'll check all versions into your repository;
+you don't overwrite one with the next.</p>
+<p>In addition to the on-disk record of the different schemas you have
+gone through, the database itself contains a record of what version it
+is at.  By having all the versions available at once, we can upgrade
+from any version.  But more on that <a href="the-upgrade-command" class="reference external">later</a></p>
+</div>
+</div>
+<div class="section" id="basic-usage">
+<h1><a href="#id11" class="toc-backref">Basic Usage</a></h1>
+<p>Here's a quick summary of how you use these commands:</p>
+<ol class="arabic simple">
+<li>In project where you've never used <tt class="docutils literal"><span class="pre">sqlobject-admin</span></tt> before, you
+run <tt class="docutils literal"><span class="pre">sqlobject-admin</span> record <span class="pre">--output-dir=sqlobject-history</span></tt>.
+If your active database is up-to-date with the code, then the tool
+will add a <tt class="docutils literal">sqlobject_db_version</tt> table to the database with the
+current version.</li>
+<li>Now, make some updates to your code.  Don't update the database!
+(You could, but for now it's more fun if you don't.)</li>
+<li>Run <tt class="docutils literal"><span class="pre">sqlobject-admin</span> record <span class="pre">--edit</span></tt>.  A new version will be
+created, and an editor will be opened up.</li>
+</ol>
+</div>
+<div class="section" id="the-record-command">
+<h1><a href="#id12" class="toc-backref">The <tt class="docutils literal">record</tt> Command</a></h1>
+<p>Record will take the SQL <tt class="docutils literal">CREATE</tt> statements for your tables, and
+output them in new version.  It creates the version by using the
+ISO-formatted date (YYYY-MM-DD) and a suffix to make it unique.  It
+puts each table in its own file.</p>
+<p>This normally doesn't touch the database at all -- it only records the
+schema as defined in your code, regardless of the database.  In fact,
+I recommend calling <tt class="docutils literal">record</tt> <em>before</em> you update your database.</p>
+</div>
+<div class="section" id="the-upgrade-command">
+<h1><a href="#id13" class="toc-backref">The <tt class="docutils literal">upgrade</tt> Command</a></h1>
+<div class="section" id="future">
+<h2><a href="#id14" class="toc-backref">Future</a></h2>
+<ul class="simple">
+<li>Get <tt class="docutils literal">record</tt> to do <tt class="docutils literal">svn cp</tt> when creating a new version, then
+write over those files; this way the version control system will
+have nice diffs.</li>
+<li>An option to <tt class="docutils literal">record</tt> the SQL for multiple database backends at
+once (now only the active backend is recorded).</li>
+<li>An option to upgrade databases with Python scripts instead of SQL
+commands.  Or a little of both.</li>
+<li>Review all the verbosity, maybe add logging, review simulation.</li>
+<li>Generate simple <tt class="docutils literal">ALTER</tt> statements for upgrade scripts, to give
+people something to work with.  Maybe.</li>
+<li>A command to trim versions, by merging upgrade scripts.</li>
+</ul>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

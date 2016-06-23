@@ -1,0 +1,83 @@
+<html><head><title>/home/phd/current/SQLObject/SQLObject/sqlobject/__init__.py</title>
+        <script type="text/javascript"><!--
+        
+function show_line_range() {
+    var href = document.location.href;
+    if (href.indexOf('?') == -1) {
+        return;
+    }
+    var qs = href.substring(href.indexOf('?')+1);
+    if (qs.indexOf('#') >= 0) {
+        qs = qs.substring(0, qs.indexOf('#'));
+    }
+    var first = qs.match(/f=(\d+)/)[1];
+    var last = qs.match(/l=(\d+)/)[1];
+    if (! first || ! last) {
+        return;
+    }
+    var anchors = document.getElementsByTagName('A');
+    var container = document.createElement('DIV');
+    container.className = 'highlighted';
+    var children = [];
+    var start = null;
+    var parent = null;
+    var highlight = false;
+    for (var i = 0; i < anchors.length; i++) {
+        var el = anchors[i];
+        if (el.getAttribute('name') == first) {
+            start = el.previousSibling;
+            parent = el.parentNode;
+            highlight = true;
+        }
+        if (el.getAttribute('name') == last) {
+            break;
+        }
+        if (highlight) {
+            children[children.length] = el;
+            el = el.nextSibling;
+            while (el && el.tagName != 'A') {
+                children[children.length] = el;
+                el = el.nextSibling;
+            }
+        }
+    }
+    for (i=0; i<children.length; i++) {
+        container.appendChild(children[i]);
+    }
+    if (start) {
+        start.parentNode.insertBefore(container, start.nextSibling);
+    } else {
+        parent.insertBefore(container, parent.childNodes[0]);
+    }
+}
+
+        // --></script>
+        <style>
+        div.python {
+          color: #333
+        }
+        div.python a.lnum {
+          color: #555;
+          background-color: #eee;
+          border-right: 1px solid #999;
+          padding-right: 2px;
+          margin-right: 4px;
+        }
+        div.python span.comment { color: #933 }
+        div.python span.keyword { color: #a3e; font-weight: bold  }
+        div.python span.op { color: #c96 }
+        div.python span.string { color: #6a6 }
+        div.python span.name { }
+        div.python span.text { color: #333 }
+        div.highlighted { background-color: #ff9; border: 1px solid #009 }
+        </style></head><body onload="show_line_range()"><div class="python"><code><a class="lnum" href="#1" name="1">0001</a><span class="string">"""SQLObject"""</span><br />
+<a class="lnum" href="#2" name="2">0002</a><span class="keyword">from</span>&#0160;<span class="name">__version__</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">version</span><span class="op">,</span>&#0160;<span class="name">version_info</span><br />
+<a class="lnum" href="#3" name="3">0003</a><br />
+<a class="lnum" href="#4" name="4">0004</a><span class="keyword">from</span>&#0160;<span class="name">col</span>&#0160;<span class="keyword">import</span>&#0160;<span class="op">*</span><br />
+<a class="lnum" href="#5" name="5">0005</a><span class="keyword">from</span>&#0160;<span class="name">index</span>&#0160;<span class="keyword">import</span>&#0160;<span class="op">*</span><br />
+<a class="lnum" href="#6" name="6">0006</a><span class="keyword">from</span>&#0160;<span class="name">joins</span>&#0160;<span class="keyword">import</span>&#0160;<span class="op">*</span><br />
+<a class="lnum" href="#7" name="7">0007</a><span class="keyword">from</span>&#0160;<span class="name">main</span>&#0160;<span class="keyword">import</span>&#0160;<span class="op">*</span><br />
+<a class="lnum" href="#8" name="8">0008</a><span class="keyword">from</span>&#0160;<span class="name">sqlbuilder</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">AND</span><span class="op">,</span>&#0160;<span class="name">OR</span><span class="op">,</span>&#0160;<span class="name">NOT</span><span class="op">,</span>&#0160;<span class="name">IN</span><span class="op">,</span>&#0160;<span class="name">LIKE</span><span class="op">,</span>&#0160;<span class="name">RLIKE</span><span class="op">,</span>&#0160;<span class="name">DESC</span><span class="op">,</span>&#0160;<span class="name">CONTAINSSTRING</span><span class="op">,</span>&#0160;<span class="name">const</span><span class="op">,</span>&#0160;<span class="name">func</span><br />
+<a class="lnum" href="#9" name="9">0009</a><span class="keyword">from</span>&#0160;<span class="name">styles</span>&#0160;<span class="keyword">import</span>&#0160;<span class="op">*</span><br />
+<a class="lnum" href="#10" name="10">0010</a><span class="keyword">from</span>&#0160;<span class="name">dbconnection</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">connectionForURI</span><br />
+<a class="lnum" href="#11" name="11">0011</a><span class="keyword">import</span>&#0160;<span class="name">dberrors</span></code></div></body></html>

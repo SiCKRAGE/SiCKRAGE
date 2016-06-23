@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
-# Author: echel0n <sickrage.tv@gmail.com>
-# URL: http://www.github.com/sickragetv/sickrage/
+# Author: echel0n <echel0n@sickrage.ca>
+# URL: https://git.sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -20,6 +20,17 @@
 
 from __future__ import unicode_literals
 
+import os
+import sys
+import site
+
 if __name__ == '__main__':
+    # add sickrage libs path to python system path
+    LIBS_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'libs'))
+    if not (LIBS_DIR in sys.path):
+        sys.path, remainder = sys.path[:1], sys.path[1:]
+        site.addsitedir(LIBS_DIR)
+        sys.path.extend(remainder)
+
     from sickrage import main
     main()

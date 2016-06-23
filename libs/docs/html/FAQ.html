@@ -1,0 +1,611 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>SQLObject FAQ</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">SQLObject FAQ</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a href="#sqlexpression" class="reference internal" id="id1">SQLExpression</a><ul>
+<li><a href="#how-does-the-select-method-know-what-to-do" class="reference internal" id="id2">How does the select(...) method know what to do?</a></li>
+</ul>
+</li>
+<li><a href="#why-there-is-no-len" class="reference internal" id="id3">Why there is no __len__?</a></li>
+<li><a href="#how-can-i-do-a-left-join" class="reference internal" id="id4">How can I do a LEFT JOIN?</a><ul>
+<li><a href="#simple" class="reference internal" id="id5">Simple</a></li>
+<li><a href="#efficient" class="reference internal" id="id6">Efficient</a></li>
+<li><a href="#sql-wise" class="reference internal" id="id7">SQL-wise</a></li>
+</ul>
+</li>
+<li><a href="#how-can-i-join-a-table-with-itself" class="reference internal" id="id8">How can I join a table with itself?</a></li>
+<li><a href="#how-can-i-define-my-own-intermediate-table-in-my-many-to-many-relationship" class="reference internal" id="id9">How can I define my own intermediate table in my Many-to-Many relationship?</a></li>
+<li><a href="#how-does-inheritance-work" class="reference internal" id="id10">How Does Inheritance Work?</a></li>
+<li><a href="#composite-compound-attributes" class="reference internal" id="id11">Composite/Compound Attributes</a></li>
+<li><a href="#non-integer-ids" class="reference internal" id="id12">Non-Integer IDs</a></li>
+<li><a href="#binary-values" class="reference internal" id="id13">Binary Values</a></li>
+<li><a href="#reloading-modules" class="reference internal" id="id14">Reloading Modules</a></li>
+<li><a href="#python-keywords" class="reference internal" id="id15">Python Keywords</a></li>
+<li><a href="#lazy-updates-and-insert" class="reference internal" id="id16">Lazy Updates and Insert</a></li>
+<li><a href="#mutually-referencing-tables" class="reference internal" id="id17">Mutually referencing tables</a></li>
+<li><a href="#what-about-group-by-union-etc" class="reference internal" id="id18">What about GROUP BY, UNION, etc?</a></li>
+<li><a href="#how-to-do-mass-insertion" class="reference internal" id="id19">How to do mass-insertion?</a></li>
+<li><a href="#how-can-i-specify-the-mysql-engine-to-use-or-tweak-other-sql-engine-specific-features" class="reference internal" id="id20">How can I specify the MySQL engine to use, or tweak other SQL-engine specific features?</a></li>
+</ul>
+</div>
+<div class="section" id="sqlexpression">
+<h1><a href="#id1" class="toc-backref">SQLExpression</a></h1>
+<p>In <cite>SomeTable.select(SomeTable.q.Foo > 30)</cite> why doesn't the inner parameter,
+<cite>SomeTable.q.Foo > 30</cite>, get evaluated to some boolean value?</p>
+<p><cite>q</cite> is an object that returns special attributes of type
+<cite>sqlbuilder.SQLExpression</cite>. SQLExpression is a special class that overrides
+almost all Python magic methods and upon any operation instead of
+evaluating it constructs another instance of SQLExpression that remembers
+what operation it has to do. Similar to a symbolic algebra. Example:</p>
+<blockquote>
+SQLExpression("foo") > 30</blockquote>
+<p>produces SQLExpression("foo", ">", 30) (well, it really produces
+SQLExpression(SQLExpression("foo")...))</p>
+<div class="section" id="how-does-the-select-method-know-what-to-do">
+<h2><a href="#id2" class="toc-backref">How does the select(...) method know what to do?</a></h2>
+<p>In short, select() recursively evaluates the top-most SQLExpression to a
+string:</p>
+<blockquote>
+SQLExpression("foo", ">", 30) => "foo > 30"</blockquote>
+<p>and passes the result as a string to the SQL backend.</p>
+<p>The longer but more detailed and correct explanation is that select()
+produces an instance of <a href="SelectResults.html" class="reference external">SelectResults</a> class that upon being iterated over
+produces an instance of Iteration class that upon calling its next()
+method (it is iterator!) construct the SQL query string, passes it to the
+backend, fetches the results, wraps every row as SQLObject instance and
+passes them back to the user.</p>
+<p>For the details of the implementation see sqlobject/main.py for SQLObject,
+sqlobject/sqlbuilder.py for SQLExpression, sqlobject/dbconnection.py for
+DBConnection class (that constructs the query strings) and Iteration class,
+and different subdirectories of sqlobject for concrete implementations of
+connection classes - different backends require different query strings.</p>
+</div>
+</div>
+<div class="section" id="why-there-is-no-len">
+<h1><a href="#id3" class="toc-backref">Why there is no __len__?</a></h1>
+<p>There are reasons why there is no __len__ method, though many people think
+having those make them feel more integrated into Python.</p>
+<p>One is that len(foo) is expected to be fast, but issuing a COUNT query can
+be slow.  Worse, often this causes the database to do essentially redundant
+work when the actual query is performed (generally taking the len of a
+sequence is followed by accessing items from that sequence).</p>
+<p>Another is that list(foo) implicitly tries to do a len first, as an
+optimization (because len is expected to be cheap -- see previous point).
+Worse, it swallows <em>all</em> exceptions that occur during that call to __len__,
+so if it fails (e.g. there's a typo somewhere in the query), the original
+cause is silently discarded, and instead you're left with mysterious errors
+like "current transaction is aborted, commands ignored until end of
+transaction block" for no apparent reason.</p>
+</div>
+<div class="section" id="how-can-i-do-a-left-join">
+<h1><a href="#id4" class="toc-backref">How can I do a LEFT JOIN?</a></h1>
+<p>The short: you can't.  You don't need to.  That's a relational way of
+thinking, not an object way of thinking.  But it's okay!  It's not
+hard to do the same thing, even if it's not with the same query.</p>
+<p>For these examples, imagine you have a bunch of customers, with
+contacts.  Not all customers have a contact, some have several.  The
+left join would look like:</p>
+<pre class="literal-block">
+SELECT customer.id, customer.first_name, customer.last_name,
+       contact.id, contact.address
+FROM customer
+LEFT JOIN contact ON contact.customer_id = customer.id
+</pre>
+<div class="section" id="simple">
+<h2><a href="#id5" class="toc-backref">Simple</a></h2>
+<pre class="literal-block">
+for customer in Customer.select():
+    print customer.firstName, customer.lastName
+    for contact in customer.contacts:
+        print '   ', contact.phoneNumber
+</pre>
+<p>The effect is the same as the left join -- you get all the customers,
+and you get all their contacts.  The problem, however, is that you
+will be executing more queries -- a query for each customer to fetch
+the contacts -- where with the left join you'd only do one query.  The
+actual amount of information returned from the database will be the
+same.  There's a good chance that this won't be significantly slower.
+I'd advise doing it this way unless you hit an actual performance
+problem.</p>
+</div>
+<div class="section" id="efficient">
+<h2><a href="#id6" class="toc-backref">Efficient</a></h2>
+<p>Lets say you really don't want to do all those queries.  Okay, fine:</p>
+<pre class="literal-block">
+custContacts = {}
+for contact in Contact.select():
+    custContacts.setdefault(contact.customerID, []).append(contact)
+for customer in Customer.select():
+    print customer.firstName, customer.lastName
+    for contact in custContacts.get(customer.id, []):
+        print '   ', contact.phoneNumber
+</pre>
+<p>This way there will only be at most two queries.  It's a little more
+crude, but this is an optimization, and optimizations often look less
+than pretty.</p>
+<p>But, say you don't want to get everyone, just some group of people
+(presumably a large enough group that you still need this
+optimization):</p>
+<pre class="literal-block">
+query = Customer.q.firstName.startswith('J')
+custContacts = {}
+for contact in Contact.select(AND(Contact.q.customerID == Customer.q.id,
+                                  query)):
+    custContacts.setdefault(contact.customerID, []).append(contact)
+for customer in Customer.select(query):
+    print customer.firstName, customer.lastName
+    for contact in custContacts.get(customer.id, []):
+        print '   ', contact.phoneNumber
+</pre>
+</div>
+<div class="section" id="sql-wise">
+<h2><a href="#id7" class="toc-backref">SQL-wise</a></h2>
+<p>Use LEFTJOIN() from <a href="SQLBuilder.html" class="reference external">SQLBuilder</a>.</p>
+</div>
+</div>
+<div class="section" id="how-can-i-join-a-table-with-itself">
+<h1><a href="#id8" class="toc-backref">How can I join a table with itself?</a></h1>
+<p>Use Alias from <a href="SQLBuilder.html" class="reference external">SQLBuilder</a>. See <a href="SQLObject.html#how-can-i-join-a-table-with-itself" class="reference external">example</a>.</p>
+</div>
+<div class="section" id="how-can-i-define-my-own-intermediate-table-in-my-many-to-many-relationship">
+<h1><a href="#id9" class="toc-backref">How can I define my own intermediate table in my Many-to-Many relationship?</a></h1>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">In User and Role, SQLRelatedJoin is used with createRelatedTable=False
+so the intermediate table is not created automatically. We also set the
+intermediate table name with intermediateTable='user_roles'.
+UserRoles is the definition of our intermediate table.
+UserRoles creates a unique index to make sure we don't have duplicate
+data in the database.
+We also added an extra field called active which has a boolean value.
+The active column might be used to activate/deactivate a given role for
+a user in this example.
+Another common field to add in this an intermediate table might be a sort
+field.
+If you want to get a list of rows from the intermediate table directly
+add a MultipleJoin to User or Role class.</p>
+</div>
+<p>We'll expand on the User and Role example and define our own UserRoles class which
+will be the intermediate table for the User and Role Many-to-Many relationship.</p>
+<p>Example:</p>
+<pre class="literal-block">
+>>> class User(SQLObject):
+...     class sqlmeta:
+...         table = "user_table"
+...     username = StringCol(alternateID=True, length=20)
+...     roles = SQLRelatedJoin('Role',
+...         intermediateTable='user_roles',
+...         createRelatedTable=False)
+
+>>> class Role(SQLObject):
+...     name = StringCol(alternateID=True, length=20)
+...     users = SQLRelatedJoin('User',
+...         intermediateTable='user_roles',
+...         createRelatedTable=False)
+
+>>> class UserRoles(SQLObject):
+...     class sqlmeta:
+...         table = "user_roles"
+...     user = ForeignKey('User', notNull=True, cascade=True)
+...     role = ForeignKey('Role', notNull=True, cascade=True)
+...     active = BoolCol(notNull=True, default=False)
+...     unique = index.DatabaseIndex(user, role, unique=True)
+</pre>
+</div>
+<div class="section" id="how-does-inheritance-work">
+<h1><a href="#id10" class="toc-backref">How Does Inheritance Work?</a></h1>
+<p>SQLObject is not intended to represent every Python inheritance
+structure in an RDBMS -- rather it is intended to represent RDBMS
+structures as Python objects.  So lots of things you can do in Python
+you can't do with SQLObject classes.  However, some form of
+inheritance is possible.</p>
+<p>One way of using this is to create local conventions.  Perhaps:</p>
+<pre class="literal-block">
+class SiteSQLObject(SQLObject):
+    _connection = DBConnection.MySQLConnection(user='test', db='test')
+    _style = MixedCaseStyle()
+
+    # And maybe you want a list of the columns, to autogenerate
+    # forms from:
+    def columns(self):
+        return [col.name for col in self._columns]
+</pre>
+<p>Since SQLObject doesn't have a firm introspection mechanism (at least
+not yet) the example shows the beginnings of a bit of ad hoc
+introspection (in this case exposing the <tt class="docutils literal">_columns</tt> attribute in a
+more pleasing/public interface).</p>
+<p>However, this doesn't relate to <em>database</em> inheritance at all, since
+we didn't define any columns.  What if we do?</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    firstName = StringCol()
+    lastName = StringCol()
+
+class Employee(Person):
+    position = StringCol()
+</pre>
+<p>Unfortunately, the resultant schema probably doesn't look like what
+you might have wanted:</p>
+<pre class="literal-block">
+CREATE TABLE person (
+    id INT PRIMARY KEY,
+    first_name TEXT,
+    last_name TEXT
+);
+
+CREATE TABLE employee (
+    id INT PRIMARY KEY
+    first_name TEXT,
+    last_name TEXT,
+    position TEXT
+)
+</pre>
+<p>All the columns from <tt class="docutils literal">person</tt> are just repeated in the <tt class="docutils literal">employee</tt>
+table.  What's more, an ID for a Person is distinct from an ID for an
+employee, so for instance you must choose <tt class="docutils literal"><span class="pre">ForeignKey("Person")</span></tt> or
+<tt class="docutils literal"><span class="pre">ForeignKey("Employee")</span></tt>, you can't have a foreign key that
+sometimes refers to one, and sometimes refers to the other.</p>
+<p>Altogether, not very useful.  You probably want a <tt class="docutils literal">person</tt> table,
+and then an <tt class="docutils literal">employee</tt> table with a one-to-one relation between the
+two.  Of course, you can have that, just create the appropriate
+classes/tables -- but it will appear as two distinct classes, and
+you'd have to do something like <tt class="docutils literal"><span class="pre">Person(1).employee.position</span></tt>.  Of
+course, you can always create the necessary shortcuts, like:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    firstName = StringCol()
+    lastName = StringCol()
+
+    def _get_employee(self):
+        value = Employee.selectBy(person=self)
+        if value:
+            return value[0]
+        else:
+            raise AttributeError, '%r is not an employee' % self
+    def _get_isEmployee(self):
+        value = Employee.selectBy(person=self)
+        # turn into a bool:
+        return not not value
+    def _set_isEmployee(self, value):
+        if value:
+            # Make sure we are an employee...
+            if not self.isEmployee:
+                Empoyee.new(person=self, position=None)
+        else:
+            if self.isEmployee:
+                self.employee.destroySelf()
+    def _get_position(self):
+        return self.employee.position
+    def _set_position(self, value):
+        self.employee.position = value
+
+class Employee(SQLObject):
+    person = ForeignKey('Person')
+    position = StringCol()
+</pre>
+<p>There is also another kind of inheritance. See <a href="Inheritance.html" class="reference external">Inheritance.html</a></p>
+</div>
+<div class="section" id="composite-compound-attributes">
+<h1><a href="#id11" class="toc-backref">Composite/Compound Attributes</a></h1>
+<p>A composite attribute is an attribute formed from two columns.  For
+example:</p>
+<pre class="literal-block">
+CREATE TABLE invoice_item (
+    id INT PRIMARY KEY,
+    amount NUMERIC(10, 2),
+    currency CHAR(3)
+);
+</pre>
+<p>Now, you'll probably want to deal with one amount/currency value,
+instead of two columns.  SQLObject doesn't directly support this, but
+it's easy (and encouraged) to do it on your own:</p>
+<pre class="literal-block">
+class InvoiceItem(SQLObject):
+    amount = Currency()
+    currency = StringChar(length=3)
+
+    def _get_price(self):
+        return Price(self.amount, self.currency)
+    def _set_price(self, price):
+        self.amount = price.amount
+        self.currency = price.currency
+
+class Price(object):
+    def __init__(self, amount, currency):
+        self._amount = amount
+        self._currency = currency
+
+    def _get_amount(self):
+        return self._amount
+    amount = property(_get_amount)
+
+    def _get_currency(self):
+        return self._currency
+    currency = property(_get_currency)
+
+    def __repr__(self):
+        return '&lt;Price: %s %s>' % (self.amount, self.currency)
+</pre>
+<p>You'll note we go to some trouble to make sure that <tt class="docutils literal">Price</tt> is an
+immutable object.  This is important, because if <tt class="docutils literal">Price</tt> wasn't and
+someone changed an attribute, the containing <tt class="docutils literal">InvoiceItem</tt> instance
+wouldn't detect the change and update the database.  (Also, since
+<tt class="docutils literal">Price</tt> doesn't subclass <tt class="docutils literal">SQLObject</tt>, we have to be explicit about
+creating properties)  Some people refer to this sort of class as a
+<em>Value Object</em>, that can be used similar to how an integer or string
+is used.</p>
+<p>You could also use a mutable composite class:</p>
+<pre class="literal-block">
+class Address(SQLObject):
+    street = StringCol()
+    city = StringCol()
+    state = StringCol(length=2)
+
+    latitude = FloatCol()
+    longitude = FloatCol()
+
+    def _init(self, id):
+        SQLObject._init(self, id)
+        self._coords = SOCoords(self)
+
+    def _get_coords(self):
+        return self._coords
+
+class SOCoords(object):
+    def __init__(self, so):
+        self._so = so
+
+    def _get_latitude(self):
+        return self._so.latitude
+    def _set_latitude(self, value):
+        self._so.latitude = value
+    latitude = property(_get_latitude, set_latitude)
+
+    def _get_longitude(self):
+        return self._so.longitude
+    def _set_longitude(self, value):
+        self._so.longitude = value
+    longitude = property(_get_longitude, set_longitude)
+</pre>
+<p>Pretty much a proxy, really, but <tt class="docutils literal">SOCoords</tt> could contain other
+logic, could interact with non-SQLObject-based latitude/longitude
+values, or could be used among several objects that have
+latitude/longitude columns.</p>
+</div>
+<div class="section" id="non-integer-ids">
+<h1><a href="#id12" class="toc-backref">Non-Integer IDs</a></h1>
+<p>Yes, you can use non-integer IDs.</p>
+<p>If you use non-integer IDs, you will not be able to use automatic <tt class="docutils literal">CREATE
+TABLE</tt> generation (i.e., <tt class="docutils literal">createTable</tt>); SQLObject can create tables
+with int or str IDs.  You also will have to give your own ID values when
+creating an object, like:</p>
+<pre class="literal-block">
+color = Something(id="blue", r=0, b=100, g=0)
+</pre>
+<p>IDs are, and always will in future versions, be considered immutable.
+Right now that is not enforced; you can assign to the <tt class="docutils literal">id</tt>
+attribute.  But if you do you'll just mess everything up.  This will
+probably be taken away sometime to avoid possibly confusing bugs
+(actually, assigning to <tt class="docutils literal">id</tt> is almost certain to cause confusing
+bugs).</p>
+<p>If you are concerned about enforcing the type of IDs (which can be a
+problem even with integer IDs) you may want to do this:</p>
+<pre class="literal-block">
+def Color(SQLObject):
+    def _init(self, id, connection=None):
+        id = str(id)
+        SQLObject._init(self, id, connection)
+</pre>
+<p>Instead of <tt class="docutils literal">str()</tt> you may use <tt class="docutils literal">int()</tt> or whatever else you want.
+This will be resolved in a future version when ID column types can be
+declared like other columns.</p>
+<p>Additionally you can set idType=str in you SQLObject class.</p>
+</div>
+<div class="section" id="binary-values">
+<h1><a href="#id13" class="toc-backref">Binary Values</a></h1>
+<p>Binary values can be difficult to store in databases, as SQL doesn't
+have a widely-implemented way to express binaries as literals, and
+there's differing support in database.</p>
+<p>The module sqlobject.col defines validators and column classes that
+to some extent support binary values. There is BLOBCol that extends
+StringCol and allow to store binary values; currently it works only
+with PostgreSQL and MySQL. PickleCol extends BLOBCol and allows to store
+any object in the column; the column, naturally, pickles the object upon
+assignment and unpickles it upon retrieving the data from the DB.</p>
+<p>Another possible way to keep binary data in a database is by using
+encoding.  Base 64 is a good encoding, reasonably compact but also
+safe.  As an example, imagine you want to store images in the
+database:</p>
+<pre class="literal-block">
+class Image(SQLObject):
+
+    data = StringCol()
+    height = IntCol()
+    width = IntCol()
+
+    def _set_data(self, value):
+        self._SO_set_data(value.encode('base64'))
+
+    def _get_data(self, value):
+        return self._SO_get_data().decode('base64')
+</pre>
+</div>
+<div class="section" id="reloading-modules">
+<h1><a href="#id14" class="toc-backref">Reloading Modules</a></h1>
+<p>If you've tried to reload a module that defines SQLObject subclasses,
+you've probably encountered various odd errors.  The short answer: you
+can't reload these modules.</p>
+<p>The long answer: reloading modules in Python doesn't work very well.
+Reloading actually means <em>re-running</em> the module.  Every <tt class="docutils literal">class</tt>
+statement creates a class -- but your old classes don't disappear.
+When you reload a module, new classes are created, and they take over
+the names in the module.</p>
+<p>SQLObject, however, doesn't search the names in a module to find a
+class.  When you say <tt class="docutils literal"><span class="pre">ForeignKey('SomeClass')</span></tt>, SQLObject looks for
+any SQLObject subclass anywhere with the name <tt class="docutils literal">SomeClass</tt>.  This is
+to avoid problems with circular imports and circular dependencies, as
+tables have forward- and back-references, and other circular
+dependencies.  SQLObject resolves these dependencies lazily.</p>
+<p>But when you reload a module, suddenly there will be two SQLObject
+classes in the process with the same name.  SQLObject doesn't know
+that one of them is obsolete.  And even if it did, it doesn't know
+every other place in the system that has a reference to that obsolete
+class.</p>
+<p>For this reason and several others, reloading modules is highly
+error-prone and difficult to support.</p>
+</div>
+<div class="section" id="python-keywords">
+<h1><a href="#id15" class="toc-backref">Python Keywords</a></h1>
+<p>If you have a table column that is a Python keyword, you should know
+that the Python attribute doesn't have to match the name of the
+column.  See <a href="SQLObject.html#irregular-naming" class="reference external">Irregular Naming</a> in the documentation.</p>
+</div>
+<div class="section" id="lazy-updates-and-insert">
+<h1><a href="#id16" class="toc-backref">Lazy Updates and Insert</a></h1>
+<p><a href="SQLObject.html#lazy-updates" class="reference external">Lazy updates</a> allow you to defer
+sending <tt class="docutils literal">UPDATES</tt> until you synchronize the object.  However, there
+is no way to do a lazy insert; as soon as you create an instance the
+<tt class="docutils literal">INSERT</tt> is executed.</p>
+<p>The reason for this limit is that each object needs a database ID, and
+in many databases you cannot attain an ID until you create a row.</p>
+</div>
+<div class="section" id="mutually-referencing-tables">
+<h1><a href="#id17" class="toc-backref">Mutually referencing tables</a></h1>
+<p>How can I create mutually referencing tables? For the code:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    role = ForeignKey("Role")
+
+class Role(SQLObject):
+    person = ForeignKey("Person")
+
+Person.createTable()
+Role.createTable()
+</pre>
+<p>Postgres raises ProgrammingError: ERROR: relation "role" does not exist.</p>
+<p>The correct way is to delay constraints creation until all tables are
+created:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    role = ForeignKey("Role")
+
+class Role(SQLObject):
+    person = ForeignKey("Person")
+
+constraints = Person.createTable(applyConstraints=False)
+constraints += Role.createTable(applyConstraints=False)
+
+for constraint in constraints:
+    connection.query(constraint)
+</pre>
+</div>
+<div class="section" id="what-about-group-by-union-etc">
+<h1><a href="#id18" class="toc-backref">What about GROUP BY, UNION, etc?</a></h1>
+<p>In short - not every query can be represented in SQLObject. SQLOBject's
+objects are instances of "table" clasess:</p>
+<pre class="literal-block">
+class MyTable(SQLObject):
+    ...
+
+my_table_row = MyTable.get(id)
+</pre>
+<p>Now my_table_row is an instance of MyTable class and represents a row in
+the my_table table. But for a statement with GROUP BY like this:</p>
+<pre class="literal-block">
+SELECT my_column, COUNT(*) FROM my_table GROUP BY my_column;
+</pre>
+<p>there is no table, there is no corresponding "table" class, and SQLObject
+cannot return a list of meaningful objects.</p>
+<p>You can use a lower-level machinery available in <a href="SQLBuilder.html" class="reference external">SQLBuilder</a>.</p>
+</div>
+<div class="section" id="how-to-do-mass-insertion">
+<h1><a href="#id19" class="toc-backref">How to do mass-insertion?</a></h1>
+<p>Mass-insertion using high-level API in SQLObject is slow. There are many
+reasons for that. First, on creation SQLObject instances pass all values
+through validators/converters which is convenient but takes time.
+Second, after an INSERT query SQLObject executes a SELECT query to get
+back autogenerated values (id and timestamps). Third, there is caching
+and cache maintaining. Most of this is unnecessary for mass-insertion,
+hence high-level API is unsuitable.</p>
+<p>Less convenient (no validators) but much faster API is <a href="SQLBuilder.html#insert" class="reference external">Insert</a> from
+<a href="SQLBuilder.html" class="reference external">SQLBuilder</a>.</p>
+</div>
+<div class="section" id="how-can-i-specify-the-mysql-engine-to-use-or-tweak-other-sql-engine-specific-features">
+<h1><a href="#id20" class="toc-backref">How can I specify the MySQL engine to use, or tweak other SQL-engine specific features?</a></h1>
+<p>You can <em>ALTER</em> the table just after creation using the <tt class="docutils literal">sqlmeta</tt>
+attribute <tt class="docutils literal">createSQL</tt>, for example:</p>
+<pre class="literal-block">
+class SomeObject(SQLObject):
+    class sqlmeta:
+        createSQL = { 'mysql' : 'ALTER TABLE some_object ENGINE InnoDB' }
+    # your columns here
+</pre>
+<p>Maybe you want to specify the charset too? No problem:</p>
+<pre class="literal-block">
+class SomeObject(SQLObject):
+    class sqlmeta:
+        createSQL = { 'mysql' : [
+            'ALTER TABLE some_object ENGINE InnoDB',
+            '''ALTER TABLE some_object CHARACTER SET utf8
+                COLLATE utf8_estonian_ci''']
+            }
+</pre>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

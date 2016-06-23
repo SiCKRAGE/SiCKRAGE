@@ -1,0 +1,606 @@
+++++
+News
+++++
+
+.. contents:: Contents:
+   :backlinks: none
+
+.. _start:
+
+SQLObject 0.8.7
+===============
+
+Released 10 Jan 2008.
+
+* A number of changes ported from `SQLObject 0.7.10`_.
+
+SQLObject 0.8.6
+===============
+
+Released 30 Oct 2007.
+
+* Removed SelectResults.__nonzero__, which was a design mistake. Raising an
+  exception in __nonzero__() is inconsistent with other iterators
+  (bool(iter([])) => True).
+
+* A number of changes ported from `SQLObject 0.7.9`_.
+
+SQLObject 0.8.5
+===============
+
+Released 25 July 2007.
+
+Bug Fixes
+---------
+
+* Suppress the second RowUpdateSignal in .set() called from ._SO_setValue().
+
+SQLObject 0.8.4
+===============
+
+Released 10 May 2007.
+
+Bug Fixes
+---------
+
+* A number of bugfixes forward-ported from 0.7.7.
+
+SQLObject 0.8.3
+===============
+
+Released 3 May 2007.
+
+Bug Fixes
+---------
+
+* A number of bugfixes forward-ported from 0.7.6.
+
+SQLObject 0.8.2
+===============
+
+Released 11 Apr 2007.
+
+Bug Fixes
+---------
+
+* Fixed ConnectionHub.doInTransaction() - if the original connection was
+  processConnection - reset processConnection, not threadConnection.
+
+SQLObject 0.8.1
+===============
+
+Released 19 Mar 2007.
+
+Bug Fixes
+---------
+
+* ID columns are reverted back from INT UNSIGNED to INT for MySQL to be in
+  accord with FOREIGN KEYs.
+
+* Fixed return value from Firebird/MaxdbConnection.createTable().
+
+* Fixed and simplified DatabaseIndex.get().
+
+* Fixed ConnectionHub.doInTransaction() - close low-level connection on
+  commit() to prevent connections leaking.
+
+SQLObject 0.8.0
+===============
+
+Released 12 Feb 2007.
+
+Features & Interface
+--------------------
+
+* It is now possible to create tables that reference each other.
+  Constraints (in the DBMSes that support constraints) are added after the
+  tables have been created.
+
+* Added ``createSQL`` as an option for sqlmeta. Here you can add
+  related SQL you want executed by sqlobject-admin create after table
+  creation. createSQL expects a string, list, or dictionary. If using
+  a dictionary the key should be a dbName value (ex. 'postgres') and
+  the value should be a string or list.  Examples in
+  sqlobject/tests/test_sqlobject_admin.py or at
+  <http://sqlobject.org/sqlobject-admin.html#the-create-command>
+
+* Added method ``sqlhub.doInTransaction(callable, *args, **kwargs)``,
+  to be used like::
+
+      sqlhub.doInTransaction(process_request, os.environ)
+
+  This will run ``process_request(os.environ)``.  The return
+  value will be preserved.
+
+* Added method ``.getOne([default])`` to ``SelectResults`` (these are
+  the objects returned by ``.select()`` and ``.selectBy()``).  This
+  returns a single object, when the query is expected to return only
+  one object.  The single argument is the value to return when zero
+  results are found (more than one result is always an error).  If no
+  default is given, it is an error if no such object exists.
+
+* Added a WSGI middleware (in ``sqlobject.wsgi_middleware``) for
+  configuring the database for the request.  Also handles
+  transactions.  Available as ``egg:SQLObject`` in Paste Deploy
+  configuration files.
+
+* New joins! ManyToMany and OneToMany; not fully documented yet, but still
+  more sensible and smarter.
+
+* SELECT FOR UPDATE
+
+* New module dberrors.py - a hierarchy of exceptions. Translation of DB API
+  module's exceptions to the new hierarchy is performed for SQLite and MySQL.
+
+* SQLiteConnection got a new keyword "factory" - a name or a reference to
+  a factory function that returns a connection class; useful for
+  implementing functions or aggregates. See test_select.py and
+  test_sqlite_factory.py for examples.
+
+* SQLObject now disallows columns with names that collide with existing
+  variables and methods, such as "_init", "expire", "set" and so on.
+
+Small Features
+--------------
+
+* Configurable client character set (encoding) for MySQL.
+
+* Added a close option to .commit(), so you can close the transaction as
+  you commit it.
+
+* DecimalValidator.
+
+* Added .expireAll() methods to sqlmeta and connection objects, to expire
+  all instances in those cases.
+
+* String IDs.
+
+* FOREIGN KEY for MySQL.
+
+* Support for sqlite3 (a builtin module in Python 2.5).
+
+* SelectResults cannot be queried for truth value; in any case it was
+  meaningless - the result was always True; now __nonzero__() raises
+  NotImplementedError in case one tries bool(MyTable.select()) or
+  "if MyTable.select():..."
+
+* With empty parameters AND() and OR() returns None.
+
+* Allows to use set/frozenset sets/Set/ImmutableSet sets as sequences
+  passed to the IN operator.
+
+* ID columns are now INT UNSIGNED for MySQL.
+
+Bug Fixes
+---------
+
+* Fixed problem with sqlite and threads; connections are no longer shared
+  between threads for sqlite (except for :memory:).
+
+* The reference loop between SQLObject and SQLObjectState eliminated using
+  weak references.
+
+* Another round of bugfixes for MySQL errors 2006 and 2013 (SERVER_GONE,
+  SERVER_LOST).
+
+* Fixed a bug in MSSQLConnection caused by column names being unicode.
+
+* Fixed a bug in FirebirdConnection caused by column names having trailing
+  spaces.
+
+* Order by several columns with inheritance.
+
+* Fixed aggregators and accumulators with inheritance.
+
+SQLObject 0.7.10
+================
+
+Released 10 Jan 2008.
+
+* With PySQLite2 do not use encode()/decode() from PySQLite1 - always use
+  base64 for BLOBs.
+
+* MySQLConnection doesn't convert query strings to unicode (but allows to
+  pass unicode query strings if the user build ones). DB URI parameter
+  sqlobject_encoding is no longer used.
+
+SQLObject 0.7.9
+===============
+
+Released 30 Oct 2007.
+
+Bug Fixes
+---------
+
+* Remove 'limit' from SelectResults after setting start/end so .clone()
+  never sees limit again.
+
+* Fixed a bug in sqlbuilder._LikeQuoted() - call sqlrepr() on the
+  expression to escape single quotes if the expression is a string.
+
+* Fixed StringCol and UnicodeCol: use sqlType with MSSQL.
+
+* Fixed startswith/endswith/contains for UnicodeCol.
+
+Other Changes
+-------------
+
+* Changed the default value for 'varchar' in BLOBColumns from 'auto' to False
+  (so that the default type for the columns in MySQL is BLOB, not TEXT).
+
+* Changed the implementation type in BoolCol under MySQL from TINYINT to
+  BOOL (which is a synonym for TINYINT(1)).
+
+SQLObject 0.7.8
+===============
+
+Released 25 July 2007.
+
+Bug Fixes
+---------
+
+* Replaced calls to style.dbColumnToPythonAttr() in joins.py by name/dbName
+  lookup in case the user named columns differently using dbName.
+
+* Minor correction in the tests: we fully support EnumCol in Postgres.
+
+* MySQLConnection now recognizes Enum, Double and Time columns when drawing the
+  database scheme from DB.
+
+* Minor fix in FirebirdConnection.fromDatabase.
+
+* Fixed a bug with default field values for columns for Firebird connection.
+
+* Fixed a bug in col.createSQL().
+
+* Fixed a bug in converting date/time for years < 1000 (time.strptime()
+  requires exactly 4 digits for %Y, hence a year < 1000 must be 0-padded).
+
+Other Changes
+-------------
+
+* Changed string quoting style for PostgreSQL and MySQL from \\' to ''.
+
+SQLObject 0.7.7
+===============
+
+Released 10 May 2007.
+
+Bug Fixes
+---------
+
+* Fixed a bug in SQLRelatedJoin that ignored per-instance connection.
+
+* Fixed a bug in MySQL connection in case there is no charset in the DB URI.
+
+SQLObject 0.7.6
+===============
+
+Released 3 May 2007.
+
+Bug Fixes
+---------
+
+* Fixed a longstanding bug with .select() ignoring 'limit' parameter.
+
+* Fixed a bug with absent comma in JOINs.
+
+* Fixed sqlbuilder - .startswith(), .endswith() and .contains() assumed
+  their parameter must be a string; now you can pass an SQLExpression:
+  Table.q.name.contains(func.upper('a')), for example.
+
+* Fixed a longstanding bug in sqlbuilder.Select() with groupBy being a
+  sequence.
+
+* Fixed a bug with Aliases in JOINs.
+
+* Yet another patch to properly initialize MySQL connection encoding.
+
+* Fixed a minor comparison problem in test_decimal.py.
+
+* More documentation about orderBy.
+
+SQLObject 0.7.5
+===============
+
+Released 11 Apr 2007.
+
+Bug Fixes
+---------
+
+* Fixed test_deep_inheritance.py - setup classes in the correct order
+  (required for Postgres 8.0+ which is strict about referential integrity).
+
+* Fixed a bug in DateValidator caused by datetime being a subclass of date.
+
+SQLObject 0.7.4
+===============
+
+Released 19 Mar 2007.
+
+Small Features
+--------------
+
+* For MySQLdb 1.2.2+ call ping(True) on the connection to allow
+  autoreconnect after a timeout.
+
+Bug Fixes
+---------
+
+* Another round of changes to create/drop the tables in the right order
+  in the command-line client `sqlobject-admin`.
+
+* Fixed a bug in UnicodeField - allow comparison with None.
+
+SQLObject 0.7.3
+===============
+
+Released 30 Jan 2007.
+
+Bug Fixes
+---------
+
+* Allow multiple MSSQL connections.
+
+* Psycopg1 requires port to be a string; psycopg2 requires port to be an int.
+
+* Fixed a bug in MSSQLConnection caused by column names being unicode.
+
+* Fixed a bug in FirebirdConnection caused by column names having trailing
+  spaces.
+
+* Fixed a missed import in firebirdconnection.py.
+
+* Remove a leading slash in FirebirdConnection.
+
+* Fixed a bug in deep Inheritance tree.
+
+SQLObject 0.7.2
+===============
+
+Released 20 Nov 2006.
+
+Features & Interface
+--------------------
+
+* sqlbuilder.Select now supports JOINs exactly like SQLObject.select.
+
+* destroySelf() removes the object from related joins.
+
+Bug Fixes
+---------
+
+* Fixed a number of unicode-related problems with newer MySQLdb.
+
+* If the DB API driver returns timedelta instead of time (MySQLdb does
+  this) it is converted to time; but if the timedelta has days an exception
+  is raised.
+
+* Fixed a number of bugs in InheritableSQLObject related to foreign keys.
+
+* Fixed a bug in InheritableSQLObject related to the order of tableRegistry
+  dictionary.
+
+* A bug fix that allows to use SQLObject with DateTime from Zope.
+
+Documentation Added
+-------------------
+
+* Added "How can I define my own intermediate table in my Many-to-Many
+  relationship?" to FAQ.
+
+SQLObject 0.7.1
+===============
+
+Released 25 Sep 2006.
+
+Features & Interface
+--------------------
+
+* Added support for psycopg2_
+
+.. _psycopg2: http://initd.org/projects/psycopg2
+
+* Added support for MSSQL.
+
+* Added ``TimeCol``.
+
+* ``RelatedJoin`` and ``SQLRelatedJoin`` objects have a
+  ``createRelatedTable`` keyword argument (default ``True``).  If
+  ``False``, then the related table won't be automatically created;
+  instead you must manually create it (e.g., with explicit SQLObject
+  classes for the joins).
+
+* Implemented ``RLIKE`` (regular expression LIKE).
+
+* Moved _idSequence to sqlmeta.idSequence.
+
+Small Features
+--------------
+
+* Select over RelatedJoin.
+
+* SQLite foreign keys.
+
+* Postgres DB URIs with a non-default path to unix socket.
+
+* Allow the use of foreign keys in selects.
+
+* Implemented addColumn() for SQLite.
+
+* With PySQLite2 use encode()/decode() from PySQLite1 for BLOBCol if available; else use base64.
+
+Bug Fixes
+---------
+
+* Fixed a longstanding problem with UnicodeCol - at last you can use unicode
+  strings in .select() and .selectBy() queries. There are some limitations,
+  though; see the description of the UnicodeCol_.
+
+.. _UnicodeCol: SQLObject.html#column-types
+
+* Cull patch (clear cache).
+
+* .destroySelf() inside a transaction.
+
+* Synchronize main connection cache during transaction commit.
+
+* Ordering joins with NULLs.
+
+* Fixed bugs with plain/non-plain setters.
+
+* Lots of other bug fixes.
+
+SQLObject 0.7.0
+===============
+
+Features & Interface
+--------------------
+
+* Inheritance. See Inheritance.html_
+
+.. _Inheritance.html: Inheritance.html
+
+* Date/time validators, converters, tests.
+
+* Both `mxDateTime
+  <http://www.egenix.com/files/python/mxDateTime.html>`_ and `datetime
+  <http://python.org/doc/current/lib/module-datetime.html>`_ supported
+  for ``DateTimeCol``.
+
+* Added ``BLOBCol``, for binary data.
+
+* Added ``PickleCol``, to transparently pickle and unpickle data from
+  column.
+
+* New `documented reflection interface
+  <http://svn.colorstudy.com/SQLObject/docs/interface.py>`_, using the
+  new ``.sqlmeta`` class/instance.  Most special attributes that
+  started with ``_`` were moved into ``sqlmeta`` (with leading
+  underscore removed).
+
+* New aggregate functions for select results, like
+  ``cls.select().max(columnName)``: ``.max()``, ``.min()``,
+  ``.avg()``.
+
+* ``ConnectionHub`` aka ``sqlhub`` (@@: Needs documentation)
+
+* Command-line client `sqlobject-admin
+  <http://sqlobject.org/docs/sqlobject-admin.html>`_.
+
+* ``StringCol`` has ``char_binary`` attribute, for explicit case
+  handling in MySQL.
+
+* Various joins now supported (LEFT, RIGHT, STRAIGHT, INNER, OUTER,
+  CROSS): see `documentation
+  <http://sqlobject.org/docs/SQLObject.html#left-join-and-other-joins>`_.
+  Aliases for joining a table with itself.
+
+* Subqueries/subselects (`see docs
+  <http://sqlobject.org/docs/SQLObject.html#subqueries-subselects>`_).
+
+* Select results support ``.filter(extra_query)``
+
+* ``SQLMultipleJoin`` and ``SQLRelatedJoin``, like ``MultipleJoin``
+  and ``RelatedJoin``, except return select results (@@: Document).
+
+* `SingleJoin
+  <http://sqlobject.org/docs/SQLObject.html#singlejoin-one-to-one>`_.
+
+* Columns retain their order from the class definition to table
+  creation.
+
+* SQLObject now depends on the `FormEncode <http://formencode.org>`_
+  library, and internal conversion/validation is done through
+  FormEncode (was previously using old fork of FormEncode).
+
+* Column instances can have attributes set on them (generally for
+  annotating columns with extra data).
+
+Other Changes
+-------------
+
+* When iterating over select results, a list is now immediately
+  created with the full list of instances being selected.  Before
+  instances were created on demand, as select results were 
+  pulled out row-by-row.  The previous lazy behavior is available with
+  the method ``lazyIter``, used like ``for obj in
+  MyClass.select().lazyIter(): ...``.
+
+* Test framework now uses `py.test
+  <http://codespeak.net/py/current/doc/test.html>`_.
+
+* SQLObject now uses a simpler metaclass
+  (``sqlobject.declarative.DeclarativeMeta``).
+
+* autoCommit and queryIns ?? (@@: expand)
+
+* Deprecation (@@: document)
+
+* Use `setuptools
+  <http://peak.telecommunity.com/DevCenter/setuptools>`_ for packaging
+  and installation.
+
+Small Features
+--------------
+
+* ``IntValidator`` for testing ``IntCol`` inputs.
+
+* Base style (``sqlobject.styles.Style``) is now a usable no-op style.
+
+* SQLite in-memory databases allowed with ``sqlite:/:memory:``
+
+* Keyword parameters allowed to ``connectionForURI`` (like
+  ``debug=True``).
+
+* More parameters passed to MySQL connections (unix_socket,
+  named_pipe, init_command, read_default_file, read_default_group,
+  connect_time, compress, named_pipe, use_unicode, client_flag,
+  local_infile).
+
+* ``DateTimeCol.now`` is a function for producing the current date,
+  using whatever date/time module you are using (good for use as a
+  default).
+
+* Inherited classes fetched more efficiently (fewer queries).
+
+* Decimal converter to create `decimal objects
+  <http://python.org/doc/current/lib/module-decimal.html>`_.
+
+* Repository rearranged (now in
+  ``http://svn.colorstudy.com/SQLObject/trunk``).
+
+Bug Fixes
+---------
+
+* Tables with no columns can work.  Why would you have a table without
+  a column?  We do not know, we try only to serve.
+
+* Sybase ``_fromDatabase`` fixed.
+
+* Various fixes to support most recent ``MySQLdb`` adapter, and
+  ``pysqlite`` adapters.
+
+* URI parsing improved, including Windows paths (for use with SQLite).
+
+* ``selectBy(column=None)`` creates ``IS NULL`` query.
+
+* ``selectBy(foreignKey=value)`` now supported (not just selecting by
+  foreign key ID).
+
+* ``cascade='null'`` wasn't working properly (was cascading all
+  deletes, not nullifying!).
+
+* Lots of other bug fixes.
+
+`Older news`__
+
+.. __: News1.html
+
+.. image:: http://sflogo.sourceforge.net/sflogo.php?group_id=74338&type=10
+   :target: http://sourceforge.net/projects/sqlobject
+   :class: noborder
+   :align: center
+   :height: 15
+   :width: 80
+   :alt: Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads

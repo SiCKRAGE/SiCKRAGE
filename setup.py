@@ -31,7 +31,7 @@ class CleanCommand(Command):
 
 def requirements():
     return [str(r.req) for r in parse_requirements(
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'requirements.txt')),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt')),
         session=PipSession())]
 
 
@@ -48,8 +48,7 @@ setup(
     extras_require={"pip": ["pip"]},
     tests_require=['pip'],
     requires=['pip'],
-    install_requires=['-c {}'.format(
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'constraints.txt')))].extend(requirements()),
+    install_requires=requirements(),
     include_package_data=True,
     platforms='any',
     zip_safe=False,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-# Author: echel0n <sickrage.tv@gmail.com>
-# URL: http://www.github.com/sickragetv/sickrage/
+# Author: echel0n <echel0n@sickrage.ca>
+# URL: https://git.sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -22,21 +22,15 @@ from __future__ import print_function, unicode_literals, with_statement
 
 import argparse
 import codecs
-import importlib
 import io
 import locale
 import logging
 import os
-import pkgutil
 import sys
 import threading
 import time
 import traceback
 import site
-
-import shutil
-
-import datetime
 
 __all__ = [
     'srCore',
@@ -50,7 +44,9 @@ __all__ = [
 status = None
 srCore = None
 
-PROG_DIR = os.path.abspath(os.path.dirname(__file__))
+MAIN_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+PROG_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+REQS_FILE = os.path.abspath(os.path.join(MAIN_DIR, 'requirements.txt'))
 
 SYS_ENCODING = None
 DEBUG = None
@@ -60,7 +56,6 @@ DAEMONIZE = None
 NOLAUNCH = None
 QUITE = None
 MODULE_DIR = None
-LIBS_DIR = None
 DATA_DIR = None
 CONFIG_FILE = None
 PIDFILE = None
@@ -107,29 +102,6 @@ def isElevatedUser():
 
 def isVirtualEnv():
     return hasattr(sys, 'real_prefix')
-
-
-def install_pip():
-    print("Downloading pip ...")
-    import urllib2
-
-    url = "https://bootstrap.pypa.io/get-pip.py"
-    file_name = os.path.abspath(os.path.join(os.path.dirname(__file__), url.split('/')[-1]))
-    u = urllib2.urlopen(url)
-    with io.open(file_name, 'wb') as f:
-        block_sz = 8192
-        while True:
-            buf = u.read(block_sz)
-            if not buf:
-                break
-            f.write(buf)
-
-    print("Installing pip ...")
-    import subprocess
-    subprocess.call([sys.executable, file_name] + ([], ['--user'])[all([not isElevatedUser(), not isVirtualEnv()])])
-
-    print("Cleaning up downloaded pip files")
-    os.remove(file_name)
 
 
 def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
@@ -194,44 +166,8 @@ def pid_exists(pid):
         return True
 
 
-def install_requirements(target_dir):
-    if not target_dir:
-        return
-
-    # install pip package manager
-    install_pip()
-
-    from pip.commands.install import InstallCommand
-    from pip.download import PipSession
-    from pip.req import parse_requirements
-
-    requirements = parse_requirements(
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt')),
-        session=PipSession())
-
-    for r in requirements:
-        req_options, req_args = InstallCommand().parse_args([str(r.req)])
-        # req_options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
-        req_options.target_dir = target_dir
-        req_options.constraints = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'constraints.txt'))]
-        req_options.cache_dir = None
-        req_options.quiet = 1
-        req_options.verbose = 1
-        req_options.ignore_installed = True
-        req_options.force_reinstall = True
-
-        try:
-            print("Installing SiCKRAGE requirements package: {}".format(str(r.req)))
-            sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.__stdout__)
-            # req_options.ignore_dependencies = True
-            # InstallCommand().run(req_options, req_args)
-            req_options.ignore_dependencies = False
-            InstallCommand().run(req_options, req_args)
-        except Exception as e:
-            continue
-
 def main():
-    global srCore, status, SYS_ENCODING, PROG_DIR, LIBS_DIR, MODULE_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \
+    global srCore, status, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \
         DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     # sickrage requires python 2.7+
@@ -239,16 +175,17 @@ def main():
         sys.exit("Sorry, SiCKRAGE requires Python 2.7+")
 
     # add sickrage module to python system path
-    MODULE_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-    if not (MODULE_DIR in sys.path):
+    if not (PROG_DIR in sys.path):
         sys.path, remainder = sys.path[:1], sys.path[1:]
-        site.addsitedir(MODULE_DIR)
+        site.addsitedir(PROG_DIR)
         sys.path.extend(remainder)
 
     # set locale encoding
     SYS_ENCODING = encodingInit()
 
     try:
+        from sickrage import core
+
         print("..::[ SiCKRAGE ]::..")
 
         # sickrage startup options
@@ -319,13 +256,6 @@ def main():
         if not os.access(DATA_DIR, os.W_OK):
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
-        # add sickrage required libs to python system path
-        LIBS_DIR = os.path.abspath(os.path.join(DATA_DIR, 'libs'))
-        if not (LIBS_DIR in sys.path):
-            sys.path, remainder = sys.path[:1], sys.path[1:]
-            site.addsitedir(LIBS_DIR)
-            sys.path.extend(remainder)
-
         # Pidfile for daemon
         PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
         if os.path.exists(PIDFILE):
@@ -344,27 +274,19 @@ def main():
 
         # main app loop
         while True:
-            try:
-                from sickrage import core
-                srCore = core.Core()
-                srCore.start()
-            except ImportError:
-                if DEBUG:
-                    traceback.print_exc()
-
-                # install requirements
-                install_requirements(target_dir=LIBS_DIR)
-
-                # restart and reload modules
-                os.execl(sys.executable, sys.executable, *sys.argv)
-
+            srCore = core.Core()
+            srCore.start()
+    except ImportError:
+        traceback.print_exc()
+        if os.path.isfile(REQS_FILE):
+            print("Failed to import required libs, please run 'pip install -r {}' from console".format(REQS_FILE))
     except KeyboardInterrupt:
         pass
     except Exception as e:
         traceback.print_exc()
         if srCore:
             srCore.srLogger.debug(traceback.format_exc())
-        status = e.message
+            status = e.message
     finally:
         if srCore:
             srCore.shutdown(status)

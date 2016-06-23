@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>CacheFactory</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    CacheFactory caches object creation.  Each object should be
+referenced by a single hashable ID (note tuples of hashable
+values are also hashable).
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The CacheFactory class is accessible via the
+    <a href="module-sqlobject.cache.html">
+      <tt>sqlobject.cache</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <span class="pudge-missing-section-link">
+        Attributes
+      </span>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (15)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/cache.py.html?f=13&amp;l=280#13" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine alias">
+    <a name="__format__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#__format__" class="pudge-obj-link">__format__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      default object formatter
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__subclasshook__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#__subclasshook__" class="pudge-obj-link">__subclasshook__</a>(...)</tt>
+      <a href="None.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Abstract classes can override this to customize issubclass().
+    </p>
+    <p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
+It should return True, False or NotImplemented.  If it returns
+NotImplemented, the normal algorithm is used.  Otherwise, it
+overrides the normal algorithm (and the outcome is cached).</p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__sizeof__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#__sizeof__" class="pudge-obj-link">__sizeof__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      __sizeof__() -> int
+size of object in memory, in bytes
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#__init__" class="pudge-obj-link">__init__</a>(self, cullFrequency=100, cullFraction=2, cache=True)</tt>
+      <a href="sqlobject/cache.py.html?f=22&amp;l=53#22" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Every cullFrequency times that an item is retrieved from
+this cache, the cull method is called.
+    </p>
+    <p>The cull method then expires an arbitrary fraction of
+the cached objects.  The idea is at no time will the cache
+be entirely emptied, placing a potentially high load at that
+moment, but everything object will have its time to go
+eventually.  The fraction is given as an integer, and one
+in that many objects are expired (i.e., the default is 1/2
+of objects are expired).</p>
+<p>By setting cache to False, items won't be cached.</p>
+<p>However, in all cases a weak reference is kept to created
+objects, and if the object hasn't been garbage collected
+it will be returned.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="tryGet"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#tryGet" class="pudge-obj-link">tryGet</a>(self, id)</tt>
+      <a href="sqlobject/cache.py.html?f=54&amp;l=65#54" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      This returns None, or the object in cache.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="get"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#get" class="pudge-obj-link">get</a>(self, id)</tt>
+      <a href="sqlobject/cache.py.html?f=66&amp;l=143#66" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      This method can cause deadlocks!  tryGet is safer
+    </p>
+    <p>This returns the object found in cache, or None.  If None,
+then the cache will remain locked!  This is so that the
+calling function can create the object in a threadsafe manner
+before releasing the lock.  You should use this like (note
+that <tt class="docutils literal">cache</tt> is actually a CacheSet object in this
+example):</p>
+<pre class="literal-block">
+obj = cache.get(some_id, my_class)
+if obj is None:
+    try:
+        obj = create_object(some_id)
+        cache.put(some_id, my_class, obj)
+    finally:
+        cache.finishPut(cls)
+</pre>
+<p>This method checks both the main cache (which retains
+references) and the 'expired' cache, which retains only weak
+references.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="put"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#put" class="pudge-obj-link">put</a>(self, id, obj)</tt>
+      <a href="sqlobject/cache.py.html?f=144&amp;l=153#144" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Puts an object into the cache.  Should only be called after
+.get(), so that duplicate objects don't end up in the cache.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="finishPut"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#finishPut" class="pudge-obj-link">finishPut</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=154&amp;l=160#154" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Releases the lock that is retained when .get() is called and
+returns None.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="created"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#created" class="pudge-obj-link">created</a>(self, id, obj)</tt>
+      <a href="sqlobject/cache.py.html?f=161&amp;l=181#161" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Inserts and object into the cache.  Should be used when no one
+else knows about the object yet, so there cannot be any object
+already in the cache.  After a database INSERT is an example
+of this situation.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="cull"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#cull" class="pudge-obj-link">cull</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=182&amp;l=214#182" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Runs through the cache and expires objects
+    </p>
+    <p>E.g., if <tt class="docutils literal">cullFraction</tt> is 3, then every third object is moved to
+the 'expired' (aka weakref) cache.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="clear"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#clear" class="pudge-obj-link">clear</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=215&amp;l=223#215" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Removes everything from the cache.  Warning!  This can cause
+duplicate objects in memory.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="expire"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#expire" class="pudge-obj-link">expire</a>(self, id)</tt>
+      <a href="sqlobject/cache.py.html?f=224&amp;l=239#224" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Expires a single object.  Typically called after a delete.
+Doesn't even keep a weakref.  (@@: bad name?)
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="expireAll"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#expireAll" class="pudge-obj-link">expireAll</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=240&amp;l=254#240" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Expires all objects, moving them all into the expired/weakref
+cache.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="allIDs"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#allIDs" class="pudge-obj-link">allIDs</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=255&amp;l=267#255" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Returns the IDs of all objects in the cache.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="getAll"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.cache.CacheFactory.html#getAll" class="pudge-obj-link">getAll</a>(self)</tt>
+      <a href="sqlobject/cache.py.html?f=268&amp;l=280#268" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Return all the objects in the cache.
+    </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/cache.py.html?f=13&amp;l=280#13" title="sqlobject/cache.py:13">the source</a>
+    for more information.
+    </small>
+  </p>

@@ -1,5 +1,5 @@
 
-# Author: echel0n <sickrage.tv@gmail.com>
+# Author: echel0n <echel0n@sickrage.ca>
 # URL: http://github.com/SiCKRAGETV/SickRage/
 #
 # This file is part of SickRage.

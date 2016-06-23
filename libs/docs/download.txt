@@ -1,0 +1,53 @@
+Download SQLObject
+++++++++++++++++++
+
+The latest releases are always available on the `Python Package Index
+<http://pypi.python.org/pypi/SQLObject>`_, and is installable
+with `easy_install
+<http://pythonhosted.org/setuptools/easy_install.html>`_.
+
+You can install the latest release with::
+
+  easy_install -U SQLObject
+
+You can install the latest version of SQLObject with::
+
+  easy_install SQLObject==dev
+
+You can install the latest bug fixing branch with::
+
+  easy_install SQLObject==bugfix
+
+If you want to require a specific revision (because, for instance, you
+need a bugfix that hasn't appeared in a release), you can put this in
+your `setuptools
+<http://pythonhosted.org/setuptools/>`_ using ``setup.py`` file::
+
+  setup(...
+    install_requires=["SQLObject==bugfix,>=0.7.1dev-r1485"],
+  )
+
+This says that you *need* revision 1485 or higher.  But it also says
+that you can aquire the "bugfix" version to try to get that.  In fact,
+when you install ``SQLObject==bugfix`` you will be installing a
+specific version, and "bugfix" is just a kind of label for a way of
+acquiring the version (it points to a branch in the repository).
+
+Repositories
+------------
+
+The SQLObject `git <http://git-scm.com/>`_ repositories are located at
+http://sourceforge.net/p/sqlobject/_list/git and
+https://github.com/sqlobject
+
+Before switching to git development was performed at the `Subversion
+<https://subversion.apache.org/>`_ repository that is still located at
+http://svn.colorstudy.com/SQLObject
+
+.. image:: http://sflogo.sourceforge.net/sflogo.php?group_id=74338&type=10
+   :target: http://sourceforge.net/projects/sqlobject
+   :class: noborder
+   :align: center
+   :height: 15
+   :width: 80
+   :alt: Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads

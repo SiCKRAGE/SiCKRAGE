@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>MaxdbConnection</tt>
+  </h1>
+  <p class="pudge-member-parent-link">
+    <small>
+    The MaxdbConnection class is accessible via the
+    <a href="module-sqlobject.maxdb.maxdbconnection.html">
+      <tt>sqlobject.maxdb.maxdbconnection</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (5)
+      </a>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (17)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=56&amp;l=304#56" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="supportTransactions"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#supportTransactions" class="pudge-obj-link">supportTransactions</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>True</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="schemes"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#schemes" class="pudge-obj-link">schemes</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>['maxdb']</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="GET_PK_AND_FK"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#GET_PK_AND_FK" class="pudge-obj-link">GET_PK_AND_FK</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"\n    SELECT constraint_cols.column_name, constraints.constraint_type,\n           refname,reftablename\n    FROM user_cons_columns constraint_cols\n    INNER JOIN user_constraints constraints\n    ON constraint_cols.constraint_name = constraints.constraint_name\n    LEFT OUTER JOIN show_foreign_key fk\n    ON constraint_cols.column_name = fk.columnname\n    WHERE constraints.table_name =UPPER('%s')"</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="GET_COLUMNS"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#GET_COLUMNS" class="pudge-obj-link">GET_COLUMNS</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"\n    SELECT COLUMN_NAME, NULLABLE, DATA_DEFAULT, DATA_TYPE,\n           DATA_LENGTH, DATA_SCALE\n    FROM USER_TAB_COLUMNS WHERE TABLE_NAME=UPPER('%s')"</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="dbName"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#dbName" class="pudge-obj-link">dbName</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'maxdb'</pre>
+    </div>
+  </div>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#__init__" class="pudge-obj-link">__init__</a>(self, host='', port=None, user=None, password=None, database=None, autoCommit=1, sqlmode='internal', isolation=None, timeout=None, **kw)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=62&amp;l=78#62" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createSequenceName"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#createSequenceName" class="pudge-obj-link">createSequenceName</a>(self, table)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=103&amp;l=112#103" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      sequence name are builded with the concatenation of the table
+name with '_SEQ' word we truncate the name of the
+sequence_name because sapdb identifier cannot exceed 32
+characters so that the name of the sequence does not exceed 32
+characters
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="makeConnection"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#makeConnection" class="pudge-obj-link">makeConnection</a>(self)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=113&amp;l=118#113" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="sqlAddLimit"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#sqlAddLimit" class="pudge-obj-link">sqlAddLimit</a>(cls, query, limit)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=136&amp;l=145#136" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createTable"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#createTable" class="pudge-obj-link">createTable</a>(self, soClass)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=153&amp;l=170#153" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createReferenceConstraint"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#createReferenceConstraint" class="pudge-obj-link">createReferenceConstraint</a>(self, soClass, col)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=171&amp;l=173#171" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#createColumn" class="pudge-obj-link">createColumn</a>(self, soClass, col)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=174&amp;l=176#174" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIDColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#createIDColumn" class="pudge-obj-link">createIDColumn</a>(self, soClass)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=177&amp;l=180#177" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIndexSQL"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#createIndexSQL" class="pudge-obj-link">createIndexSQL</a>(self, soClass, index)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=181&amp;l=183#181" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="dropTable"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#dropTable" class="pudge-obj-link">dropTable</a>(self, tableName, cascade=False)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=184&amp;l=198#184" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="joinSQLType"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#joinSQLType" class="pudge-obj-link">joinSQLType</a>(self, join)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=199&amp;l=201#199" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="tableExists"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#tableExists" class="pudge-obj-link">tableExists</a>(self, tableName)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=202&amp;l=207#202" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="addColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#addColumn" class="pudge-obj-link">addColumn</a>(self, tableName, column)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=208&amp;l=212#208" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="delColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#delColumn" class="pudge-obj-link">delColumn</a>(self, sqlmeta, column)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=213&amp;l=215#213" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="columnsFromSchema"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#columnsFromSchema" class="pudge-obj-link">columnsFromSchema</a>(self, tableName, soClass)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=231&amp;l=278#231" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="guessClass"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#guessClass" class="pudge-obj-link">guessClass</a>(self, t, flength, fscale=None)</tt>
+      <a href="sqlobject/maxdb/maxdbconnection.py.html?f=282&amp;l=304#282" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      An internal method that tries to figure out what Col subclass
+is appropriate given whatever introspective information is
+available -- both very database-specific.
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__del__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.maxdb.maxdbconnection.MaxdbConnection.html#__del__" class="pudge-obj-link">__del__</a>(self)</tt>
+      <a href="sqlobject/dbconnection.py.html?f=674&amp;l=676#674" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/maxdb/maxdbconnection.py.html?f=56&amp;l=304#56" title="sqlobject/maxdb/maxdbconnection.py:56">the source</a>
+    for more information.
+    </small>
+  </p>

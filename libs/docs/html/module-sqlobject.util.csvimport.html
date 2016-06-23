@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>csvimport</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Import from a CSV file or directory of files.
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The csvimport module is accessible via the
+    <a href="module-sqlobject.util.html">
+      <tt>sqlobject.util</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (1)
+      </a>
+    </li><li>
+      <a href="#functions" class="pudge-section-link">
+        Functions (3)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Classes
+      </span>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.util.csvimport-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/util/csvimport.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>CSV files should have a header line that lists columns.  Headers can
+also be appended with <tt class="docutils literal">:type</tt> to indicate the type of the field.
+<tt class="docutils literal">escaped</tt> is the default, though it can be overridden by the importer.
+Supported types:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal">:python</tt>:</dt>
+<dd>A python expression, run through <tt class="docutils literal">eval()</tt>.  This can be a
+security risk, pass in <tt class="docutils literal">allow_python=False</tt> if you don't want to
+allow it.</dd>
+<dt><tt class="docutils literal">:int</tt>:</dt>
+<dd>Integer</dd>
+<dt><tt class="docutils literal">:float</tt>:</dt>
+<dd>Float</dd>
+<dt><tt class="docutils literal">:str</tt>:</dt>
+<dd>String</dd>
+<dt><tt class="docutils literal">:escaped</tt>:</dt>
+<dd>A string with backslash escapes (note that you don't put quotation
+marks around the value)</dd>
+<dt><tt class="docutils literal">:base64</tt>:</dt>
+<dd>A base64-encoded string</dd>
+<dt><tt class="docutils literal">:date</tt>:</dt>
+<dd>ISO date, like YYYY-MM-DD; this can also be <tt class="docutils literal">NOW+days</tt> or
+<tt class="docutils literal"><span class="pre">NOW-days</span></tt></dd>
+<dt><tt class="docutils literal">:datetime</tt>:</dt>
+<dd>ISO date/time like YYYY-MM-DDTHH:MM:SS (either T or a space can be
+used to separate the time, and seconds are optional).  This can
+also be <tt class="docutils literal">NOW+seconds</tt> or <tt class="docutils literal"><span class="pre">NOW-seconds</span></tt></dd>
+<dt><tt class="docutils literal">:bool</tt>:</dt>
+<dd>Converts true/false/yes/no/on/off/1/0 to boolean value</dd>
+<dt><tt class="docutils literal">:ref</tt>:</dt>
+<dd>This will be resolved to the ID of the object named in this column
+(None if the column is empty).  @@: Since there's no ordering,
+there's no way to promise the object already exists.</dd>
+</dl>
+<p>You can also get back references to the objects if you have a special
+<tt class="docutils literal">[name]</tt> column.</p>
+<p>Any column named <tt class="docutils literal">[comment]</tt> or with no name will be ignored.</p>
+<p>In any column you can put <tt class="docutils literal">[default]</tt> to exclude the value and use
+whatever default the class wants.  <tt class="docutils literal">[null]</tt> will use NULL.</p>
+<p>Lines that begin with <tt class="docutils literal">[comment]</tt> are ignored.</p>
+  </div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.util.csvimport.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject.util'</pre>
+    </div>
+  </div>
+    <a name="functions"></a>
+    <h2>Functions</h2>
+    <div class="pudge-member routine ">
+    <a name="create_data"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.util.csvimport.html#create_data" class="pudge-obj-link">create_data</a>(data, class_getter, keyorder=None)</tt>
+      <a href="sqlobject/util/csvimport.py.html?f=69&amp;l=137#69" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Create the <tt class="docutils literal">data</tt>, which is the return value from
+<tt class="docutils literal">load_csv()</tt>.  Classes will be resolved with the callable
+<tt class="docutils literal">class_getter</tt>; or if <tt class="docutils literal">class_getter</tt> is a module then the
+class names will be attributes of that.
+    </p>
+    <p>Returns a dictionary of <tt class="docutils literal">{object_name: object(s)}</tt>, using the
+names from the <tt class="docutils literal">[name]</tt> columns (if there are any).  If a name
+is used multiple times, you get a list of objects, not a single
+object.</p>
+<p>If <tt class="docutils literal">keyorder</tt> is given, then the keys will be retrieved in that
+order.  It can be a list/tuple of names, or a sorting function.
+If not given and <tt class="docutils literal">class_getter</tt> is a module and has a
+<tt class="docutils literal">soClasses</tt> function, then that will be used for the order.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="load_csv_from_directory"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.util.csvimport.html#load_csv_from_directory" class="pudge-obj-link">load_csv_from_directory</a>(directory, allow_python=True, default_type='escaped', allow_multiple_classes=True)</tt>
+      <a href="sqlobject/util/csvimport.py.html?f=139&amp;l=164#139" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Load the data from all the files in a directory.  Filenames
+indicate the class, with <tt class="docutils literal">general.csv</tt> for data not associated
+with a class.  Return data just like <tt class="docutils literal">load_csv</tt> does.
+    </p>
+    <p>This might cause problems on case-insensitive filesystems.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="load_csv"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.util.csvimport.html#load_csv" class="pudge-obj-link">load_csv</a>(csvreader, allow_python=True, default_type='escaped', default_class=None, allow_multiple_classes=True)</tt>
+      <a href="sqlobject/util/csvimport.py.html?f=165&amp;l=223#165" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Loads the CSV file, returning a list of dictionaries with types
+coerced.
+    </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/util/csvimport.py.html" title="sqlobject/util/csvimport.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

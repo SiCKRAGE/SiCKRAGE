@@ -1,0 +1,683 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>News</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">News</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents:</p>
+<ul class="simple">
+<li><a href="#sqlobject-2-1-2" class="reference internal" id="id19">SQLObject 2.1.2</a></li>
+<li><a href="#sqlobject-2-1-1" class="reference internal" id="id20">SQLObject 2.1.1</a></li>
+<li><a href="#sqlobject-2-1-0" class="reference internal" id="id21">SQLObject 2.1.0</a><ul>
+<li><a href="#minor-features" class="reference internal" id="id22">Minor features</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-2-0-0" class="reference internal" id="id23">SQLObject 2.0.0</a><ul>
+<li><a href="#features-interface" class="reference internal" id="id24">Features &amp; Interface</a></li>
+<li><a href="#id1" class="reference internal" id="id25">Minor features</a></li>
+<li><a href="#development" class="reference internal" id="id26">Development</a></li>
+<li><a href="#documentation" class="reference internal" id="id27">Documentation</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-7-5" class="reference internal" id="id28">SQLObject 1.7.5</a></li>
+<li><a href="#sqlobject-1-7-4" class="reference internal" id="id29">SQLObject 1.7.4</a></li>
+<li><a href="#sqlobject-1-7-3" class="reference internal" id="id30">SQLObject 1.7.3</a></li>
+<li><a href="#sqlobject-1-7-2" class="reference internal" id="id31">SQLObject 1.7.2</a></li>
+<li><a href="#sqlobject-1-7-1" class="reference internal" id="id32">SQLObject 1.7.1</a></li>
+<li><a href="#sqlobject-1-7-0" class="reference internal" id="id33">SQLObject 1.7.0</a><ul>
+<li><a href="#id2" class="reference internal" id="id34">Features &amp; Interface</a></li>
+<li><a href="#id3" class="reference internal" id="id35">Minor features</a></li>
+<li><a href="#bugfixes" class="reference internal" id="id36">Bugfixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-6-6" class="reference internal" id="id37">SQLObject 1.6.6</a></li>
+<li><a href="#sqlobject-1-6-5" class="reference internal" id="id38">SQLObject 1.6.5</a></li>
+<li><a href="#sqlobject-1-6-4" class="reference internal" id="id39">SQLObject 1.6.4</a></li>
+<li><a href="#sqlobject-1-6-3" class="reference internal" id="id40">SQLObject 1.6.3</a></li>
+<li><a href="#sqlobject-1-6-2" class="reference internal" id="id41">SQLObject 1.6.2</a></li>
+<li><a href="#sqlobject-1-6-1" class="reference internal" id="id42">SQLObject 1.6.1</a></li>
+<li><a href="#sqlobject-1-6-0" class="reference internal" id="id43">SQLObject 1.6.0</a><ul>
+<li><a href="#id4" class="reference internal" id="id44">Features &amp; Interface</a></li>
+<li><a href="#id5" class="reference internal" id="id45">Minor features</a></li>
+<li><a href="#id6" class="reference internal" id="id46">Bugfixes</a></li>
+<li><a href="#id7" class="reference internal" id="id47">Development</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-5-6" class="reference internal" id="id48">SQLObject 1.5.6</a></li>
+<li><a href="#sqlobject-1-5-5" class="reference internal" id="id49">SQLObject 1.5.5</a></li>
+<li><a href="#sqlobject-1-5-4" class="reference internal" id="id50">SQLObject 1.5.4</a></li>
+<li><a href="#sqlobject-1-5-3" class="reference internal" id="id51">SQLObject 1.5.3</a><ul>
+<li><a href="#id8" class="reference internal" id="id52">Development</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-5-2" class="reference internal" id="id53">SQLObject 1.5.2</a></li>
+<li><a href="#sqlobject-1-5-1" class="reference internal" id="id54">SQLObject 1.5.1</a></li>
+<li><a href="#sqlobject-1-5-0" class="reference internal" id="id55">SQLObject 1.5.0</a><ul>
+<li><a href="#id9" class="reference internal" id="id56">Features &amp; Interface</a></li>
+<li><a href="#id10" class="reference internal" id="id57">Minor features</a></li>
+<li><a href="#id11" class="reference internal" id="id58">Bugfixes</a></li>
+<li><a href="#id12" class="reference internal" id="id59">Documentation</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-4-1" class="reference internal" id="id60">SQLObject 1.4.1</a></li>
+<li><a href="#sqlobject-1-4-0" class="reference internal" id="id61">SQLObject 1.4.0</a><ul>
+<li><a href="#id13" class="reference internal" id="id62">Features &amp; Interface</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-3-3" class="reference internal" id="id63">SQLObject 1.3.3</a></li>
+<li><a href="#sqlobject-1-3-2" class="reference internal" id="id64">SQLObject 1.3.2</a></li>
+<li><a href="#sqlobject-1-3-1" class="reference internal" id="id65">SQLObject 1.3.1</a></li>
+<li><a href="#sqlobject-1-3-0" class="reference internal" id="id66">SQLObject 1.3.0</a><ul>
+<li><a href="#id14" class="reference internal" id="id67">Features &amp; Interface</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-2-4" class="reference internal" id="id68">SQLObject 1.2.4</a></li>
+<li><a href="#sqlobject-1-2-3" class="reference internal" id="id69">SQLObject 1.2.3</a></li>
+<li><a href="#sqlobject-1-2-2" class="reference internal" id="id70">SQLObject 1.2.2</a></li>
+<li><a href="#sqlobject-1-2-1" class="reference internal" id="id71">SQLObject 1.2.1</a></li>
+<li><a href="#sqlobject-1-2-0" class="reference internal" id="id72">SQLObject 1.2.0</a><ul>
+<li><a href="#id15" class="reference internal" id="id73">Features &amp; Interface</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-1-5" class="reference internal" id="id74">SQLObject 1.1.5</a></li>
+<li><a href="#sqlobject-1-1-4" class="reference internal" id="id75">SQLObject 1.1.4</a></li>
+<li><a href="#sqlobject-1-1-3" class="reference internal" id="id76">SQLObject 1.1.3</a></li>
+<li><a href="#sqlobject-1-1-2" class="reference internal" id="id77">SQLObject 1.1.2</a></li>
+<li><a href="#sqlobject-1-1-1" class="reference internal" id="id78">SQLObject 1.1.1</a></li>
+<li><a href="#sqlobject-1-1" class="reference internal" id="id79">SQLObject 1.1</a><ul>
+<li><a href="#id16" class="reference internal" id="id80">Features &amp; Interface</a></li>
+<li><a href="#source-code-and-internals" class="reference internal" id="id81">Source code and internals</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-1-0-3" class="reference internal" id="id82">SQLObject 1.0.3</a></li>
+<li><a href="#sqlobject-1-0-2" class="reference internal" id="id83">SQLObject 1.0.2</a></li>
+<li><a href="#sqlobject-1-0-1" class="reference internal" id="id84">SQLObject 1.0.1</a></li>
+<li><a href="#sqlobject-1-0-0" class="reference internal" id="id85">SQLObject 1.0.0</a><ul>
+<li><a href="#id17" class="reference internal" id="id86">Features &amp; Interface</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-2-1-2">
+<span id="start"></span><h1>SQLObject 2.1.2</h1>
+<p>Released 15 Mar 2015.</p>
+<ul class="simple">
+<li>Using fdb adapter for Firebird was ported from <a href="#sqlobject-1-6-6" class="reference internal">SQLObject 1.6.6</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-2-1-1">
+<h1>SQLObject 2.1.1</h1>
+<p>Released 10 Mar 2015.</p>
+<ul class="simple">
+<li>Minor fix in PostgresConnection was ported from <a href="#sqlobject-1-6-5" class="reference internal">SQLObject 1.6.5</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-2-1-0">
+<h1>SQLObject 2.1.0</h1>
+<p>Released 6 Jan 2015.</p>
+<div class="section" id="minor-features">
+<h2>Minor features</h2>
+<ul class="simple">
+<li>In queries generated with SQLObject's tables columns are sorted in the
+order they are declared in the table.</li>
+<li>In queries generated with sqlbuilder's Insert/Update, if values are
+passed using dictionaries, columns are sorted alphabetically.</li>
+<li>Tables in SELECT...FROM clause are sorted alphabetically.</li>
+<li>MySQLConnection, PostgresConnection and SQLiteConnection have got
+a new method listDatabases() that lists databases in the connection
+and returns a list of names.</li>
+<li>MySQLConnection, PostgresConnection and SQLiteConnection have got
+a new method listTables() that returns a list of table names in the database.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-2-0-0">
+<h1>SQLObject 2.0.0</h1>
+<p>Released 20 Dec 2014.</p>
+<div class="section" id="features-interface">
+<h2>Features &amp; Interface</h2>
+<ul>
+<li><p class="first">DateTimeCol and TimeCol can read and write values with microseconds.</p>
+<p>WARNING: microseconds are supported by MariaDB since version 5.3.0 and
+by MySQL since version 5.6.4, and even these versions require special
+handling: columns to store microseconds have to be declared with
+precision 6: TIME(6), DATETIME(6), TIMESTAMP(6). SQLObject does the
+right thing when creating a new database but existing databases have
+to be changed: run something like
+<tt class="docutils literal">ALTER TABLE name MODIFY COLUMN col TIME(6)</tt> for every column that
+you want to store microseconds.</p>
+<p>WARNING: backward compatibility problem! Date/Time columns created
+with microseconds cannot be read back from SQLite databases (and
+perhaps other backends) with versions of SQLObject older than 1.7.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2>Minor features</h2>
+<ul class="simple">
+<li>PostgresConnection, when used with fromDatabase=True, sets alternateID
+for unique columns.</li>
+</ul>
+</div>
+<div class="section" id="development">
+<h2>Development</h2>
+<ul class="simple">
+<li>Development was switched from Subversion to git.</li>
+</ul>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation</h2>
+<ul class="simple">
+<li>Old news were restored back to version 0.2.1.</li>
+<li>News.txt was split into 5 small files.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-7-5">
+<h1>SQLObject 1.7.5</h1>
+<p>Released 15 Mar 2015.</p>
+<ul class="simple">
+<li>Using fdb adapter for Firebird was ported from <a href="#sqlobject-1-6-6" class="reference internal">SQLObject 1.6.6</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-7-4">
+<h1>SQLObject 1.7.4</h1>
+<p>Released 10 Mar 2015.</p>
+<ul class="simple">
+<li>Minor fix in PostgresConnection was ported from <a href="#sqlobject-1-6-5" class="reference internal">SQLObject 1.6.5</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-7-3">
+<h1>SQLObject 1.7.3</h1>
+<p>Released 18 Dec 2014.</p>
+<ul class="simple">
+<li>Documentation updates and setup.py change were ported
+from <a href="#sqlobject-1-5-6" class="reference internal">SQLObject 1.5.6</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-7-2">
+<h1>SQLObject 1.7.2</h1>
+<p>Released 14 Dec 2014.</p>
+<ul class="simple">
+<li>Fix a bug: zero-pad microseconds on the right, not on the left; 0.0835
+seconds means 83500 microseconds.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-7-1">
+<h1>SQLObject 1.7.1</h1>
+<p>Released 11 Dec 2014.</p>
+<ul class="simple">
+<li>Documentation updates and setuptools change were ported
+from <a href="#sqlobject-1-5-5" class="reference internal">SQLObject 1.5.5</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-7-0">
+<h1>SQLObject 1.7.0</h1>
+<p>Released 8 Dec 2014.</p>
+<div class="section" id="id2">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Python 2.5 is no longer supported. The minimal supported version is
+Python 2.6.</li>
+<li>DateTimeCol and TimeCol can read values with microseconds (created by
+SQLObject 2.0) but do not write microseconds back.</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>Minor features</h2>
+<ul class="simple">
+<li>Upgrade ez_setup to 2.2.</li>
+</ul>
+</div>
+<div class="section" id="bugfixes">
+<h2>Bugfixes</h2>
+<ul class="simple">
+<li>Thre bugfixes were ported from <a href="#sqlobject-1-5-2" class="reference internal">SQLObject 1.5.2</a>, <a href="#sqlobject-1-5-3" class="reference internal">SQLObject 1.5.3</a>
+and <a href="#sqlobject-1-5-4" class="reference internal">SQLObject 1.5.4</a>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-6-6">
+<h1>SQLObject 1.6.6</h1>
+<p>Released 15 Mar 2015.</p>
+<ul class="simple">
+<li>Use fdb adapter for Firebird.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-6-5">
+<h1>SQLObject 1.6.5</h1>
+<p>Released 10 Mar 2015.</p>
+<ul class="simple">
+<li>Minor fix in PostgresConnection: close the cursor and connection
+in _createOrDropDatabase even after an error.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-6-4">
+<h1>SQLObject 1.6.4</h1>
+<p>Released 18 Dec 2014.</p>
+<ul class="simple">
+<li>Documentation updates and setup.py change were ported
+from <a href="#sqlobject-1-5-6" class="reference internal">SQLObject 1.5.6</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-6-3">
+<h1>SQLObject 1.6.3</h1>
+<p>Released 11 Dec 2014.</p>
+<ul class="simple">
+<li>Documentation updates and setuptools change were ported
+from <a href="#sqlobject-1-5-5" class="reference internal">SQLObject 1.5.5</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-6-2">
+<h1>SQLObject 1.6.2</h1>
+<p>Released 8 Dec 2014.</p>
+<ul class="simple">
+<li>A bugfix was ported from <a href="#sqlobject-1-5-4" class="reference internal">SQLObject 1.5.4</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-6-1">
+<h1>SQLObject 1.6.1</h1>
+<p>Released 26 Oct 2014.</p>
+<ul class="simple">
+<li>A bugfix was ported from <a href="#sqlobject-1-5-3" class="reference internal">SQLObject 1.5.3</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-6-0">
+<h1>SQLObject 1.6.0</h1>
+<p>Released 15 May 2014.</p>
+<div class="section" id="id4">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Python 2.4 is no longer supported. The minimal supported version is
+Python 2.5.</li>
+<li>Support for Python 2.5 is declared obsolete and will be removed
+in the next release.</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>Minor features</h2>
+<ul class="simple">
+<li>Upgrade ez_setup to 1.4.2.</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h2>Bugfixes</h2>
+<ul class="simple">
+<li>A bugfix was ported from <a href="#sqlobject-1-5-2" class="reference internal">SQLObject 1.5.2</a>.</li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h2>Development</h2>
+<ul class="simple">
+<li>Development switched from Subvesion to git.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-5-6">
+<h1>SQLObject 1.5.6</h1>
+<p>Released 18 Dec 2014.</p>
+<ul class="simple">
+<li>Extend setup.py: include docs and tests into the egg.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-5-5">
+<h1>SQLObject 1.5.5</h1>
+<p>Released 11 Dec 2014.</p>
+<ul class="simple">
+<li>Documentation update: change URLs for development with git, add
+Travis CI build status image.</li>
+<li>Extend sdist: include everything into source distribution.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-5-4">
+<h1>SQLObject 1.5.4</h1>
+<p>Released 8 Dec 2014.</p>
+<ul class="simple">
+<li>Fix a minor bug in MSSQLConnection: do not override callable server_version
+with a non-callable.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-5-3">
+<h1>SQLObject 1.5.3</h1>
+<p>Released 26 Oct 2014.</p>
+<ul class="simple">
+<li>Allow unicode in .orderBy(u'-column').</li>
+</ul>
+<div class="section" id="id8">
+<h2>Development</h2>
+<ul class="simple">
+<li>Development switched from Subvesion to git.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-5-2">
+<h1>SQLObject 1.5.2</h1>
+<p>Released 13 Apr 2014.</p>
+<ul class="simple">
+<li>Adapt duplicate error message strings for SQLite 3.8.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-5-1">
+<h1>SQLObject 1.5.1</h1>
+<p>Released 15 Dec 2013.</p>
+<ul class="simple">
+<li>SQLiteConnection.close() now closes and reopens a connection
+to in-memory database.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-5-0">
+<h1>SQLObject 1.5.0</h1>
+<p>Released 5 Oct 2013.</p>
+<div class="section" id="id9">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Helpers for class Outer were changed to lookup columns in table's
+declarations.</li>
+<li>Support for Python 2.4 is declared obsolete and will be removed
+in the next release.</li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h2>Minor features</h2>
+<ul class="simple">
+<li>When a PostgresConnection raises an exception the instance has
+code/error attributes copied from psycopg2's pgcode/pgerror attributes.</li>
+<li>Encode unicode enum values to str.</li>
+<li>Removed setDeprecationLevel from the list of public functions.</li>
+<li>A number of fixes for tests.</li>
+</ul>
+</div>
+<div class="section" id="id11">
+<h2>Bugfixes</h2>
+<ul class="simple">
+<li>A bug was fixed in DBConnection.close(); close() doesn't raise
+an UnboundLocalError if connection pool is empty.</li>
+<li>Fixed parameters for pymssql.</li>
+</ul>
+</div>
+<div class="section" id="id12">
+<h2>Documentation</h2>
+<ul class="simple">
+<li>GNU LGPL text was added as docs/LICENSE file.</li>
+<li>Old FSF address was changed to the new one.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-4-1">
+<h1>SQLObject 1.4.1</h1>
+<p>Released 26 May 2013.</p>
+<ul class="simple">
+<li>A few bugfixes were ported from <a href="#sqlobject-1-3-3" class="reference internal">SQLObject 1.3.3</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-4-0">
+<h1>SQLObject 1.4.0</h1>
+<p>Released 18 May 2013.</p>
+<div class="section" id="id13">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Support for PostgreSQL 8.1 is dropped. The minimal supported version of
+PostgreSQL is 8.2 now.</li>
+<li>Optimization in PostgresConnection: use INSERT...RETURNING id
+to get the autoincremented id in one query instead of two
+(INSERT + SELECT id).</li>
+<li>Changed the way to get if the table has identity in MS SQL.</li>
+<li>NCHAR/NVARCHAR and N''-quoted strings for MS SQL.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-3-3">
+<h1>SQLObject 1.3.3</h1>
+<p>Released 26 May 2013.</p>
+<ul class="simple">
+<li>Fixed bugs in pickling and unpickling (remove/restore a weak proxy to self,
+fixed cache handling).</li>
+<li>Added an example of using SQLObject with web.py by Rhubarb Sin
+to the links page.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-3-2">
+<h1>SQLObject 1.3.2</h1>
+<p>Released 20 Oct 2012.</p>
+<ul class="simple">
+<li>A number of bugfixes were ported from <a href="#sqlobject-1-2-4" class="reference internal">SQLObject 1.2.4</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-3-1">
+<h1>SQLObject 1.3.1</h1>
+<p>Released 25 May 2012.</p>
+<ul class="simple">
+<li>Two bugfixes were ported from <a href="#sqlobject-1-2-3" class="reference internal">SQLObject 1.2.3</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-3-0">
+<h1>SQLObject 1.3.0</h1>
+<p>Released 31 Mar 2012.</p>
+<div class="section" id="id14">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>PostgresConnection performs translation of exceptions to standard
+SQLObject's hierarchy of exceptions.</li>
+<li>Major update of FirebirdConnection: introspection was completely
+rewritten and extended; <tt class="docutils literal">charset</tt> was renamed to <tt class="docutils literal">dbEncoding</tt>;
+a longstanding bug was fixed - pass port to connect().</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-2-4">
+<h1>SQLObject 1.2.4</h1>
+<p>Released 20 Oct 2012.</p>
+<ul class="simple">
+<li>Fixed a bug in sqlbuilder.Select.filter - removed comparison with
+SQLTrueClause.</li>
+<li>Neil Muller fixed a number of tests.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-2-3">
+<h1>SQLObject 1.2.3</h1>
+<p>Released 25 May 2012.</p>
+<ul class="simple">
+<li>Fixed a minor bug in PostgreSQL introspection: VIEWs don't have
+PRIMARY KEYs - use sqlmeta.idName as the key.</li>
+<li>Fixed a bug in cache handling while unpickling.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-2-2">
+<h1>SQLObject 1.2.2</h1>
+<p>Released 1 Mar 2012.</p>
+<ul class="simple">
+<li>A bugfix was ported from <a href="#sqlobject-1-1-5" class="reference internal">SQLObject 1.1.5</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-2-1">
+<h1>SQLObject 1.2.1</h1>
+<p>Released 4 Dec 2011.</p>
+<ul class="simple">
+<li>A bugfix was ported from <a href="#sqlobject-1-1-4" class="reference internal">SQLObject 1.1.4</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-2-0">
+<h1>SQLObject 1.2.0</h1>
+<p>Released 20 Nov 2011.</p>
+<div class="section" id="id15">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Strings are treated specially in Select to allow
+Select(['id, 'name'], where='value = 42'). Update allows a string in
+WHERE.</li>
+<li>ForeignKey('Table', refColumn='refcol_id') to allow ForeignKey to
+point to a non-id column; the referred column must be a unique integer
+column.</li>
+<li>delColumn now accepts a ForeignKey's name without 'ID'.</li>
+<li>Support for PostgreSQL 7.* is dropped. The minimal supported version of
+PostgreSQL is 8.1 now.</li>
+<li>Quoting rules changed for PostgreSQL: SQLObject uses E'' escape string
+if the string contains characters escaped with backslash.</li>
+<li>A bug caused by psycopg2 recently added a new boolean not callable
+autocommit attribute was fixed.</li>
+<li>sqlobject.__doc__ and main.__doc__ no longer contain version number.
+Use sqlobject.version or version_info.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-1-5">
+<h1>SQLObject 1.1.5</h1>
+<p>Released 1 Mar 2012.</p>
+<ul class="simple">
+<li>A bug was fixed in SQLiteConnection - clear _threadPool on close().</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-1-4">
+<h1>SQLObject 1.1.4</h1>
+<p>Released 4 Dec 2011.</p>
+<ul class="simple">
+<li>A bug was fixed in handling <tt class="docutils literal">modulo</tt> operator - SQLite implements
+only <tt class="docutils literal">%</tt>, MySQL - only <tt class="docutils literal">MOD()</tt>, PostgreSQL implements both.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-1-3">
+<h1>SQLObject 1.1.3</h1>
+<p>Released 30 Aug 2011.</p>
+<ul class="simple">
+<li>A bugfix was ported from <a href="#sqlobject-1-0-3" class="reference internal">SQLObject 1.0.3</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-1-2">
+<h1>SQLObject 1.1.2</h1>
+<p>Released 8 Aug 2011.</p>
+<ul class="simple">
+<li>A bugfix was ported from <a href="#sqlobject-1-0-2" class="reference internal">SQLObject 1.0.2</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-1-1">
+<h1>SQLObject 1.1.1</h1>
+<p>Released 1 Jul 2011.</p>
+<ul class="simple">
+<li>Parsing sqlobject.__doc__ for version number is declared obsolete. Use
+sqlobject.version or version_info.</li>
+<li>Documented sqlmeta.dbEncoding and connection.dbEncoding.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-1">
+<h1>SQLObject 1.1</h1>
+<p>Released 20 Jun 2011.</p>
+<div class="section" id="id16">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>SelectResults (returned from .select()) is allowed in IN(column, list).</li>
+<li>A different workaround is used in SQLiteConnection to prevent PySQLite
+from converting strings to unicode - in the case of a registered text
+conversion function PySQLite silently converts empty strings to Nones;
+now SQLObject uses text_factory instead and properly returns empty
+strings.</li>
+<li>It is now possible to declare one encoding for all UnicodeCol's per
+table (as sqlmeta.dbEncoding) or per connection (as connection.dbEncoding).
+Default (if dbEncoding is found neither in column nor in table nor in
+connection) is 'utf-8'.</li>
+</ul>
+</div>
+<div class="section" id="source-code-and-internals">
+<h2>Source code and internals</h2>
+<ul class="simple">
+<li>Decorators @classmethod and @staticmethod are used everywhere.</li>
+<li>All 'mydict.has_key(name)' checks were replaced with 'name in mydict'.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-1-0-3">
+<h1>SQLObject 1.0.3</h1>
+<p>Released 30 Aug 2011.</p>
+<ul class="simple">
+<li>Fixed a bug with Postgres - add quotes in "SET client_encoding" query.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-0-2">
+<h1>SQLObject 1.0.2</h1>
+<p>Released 8 Aug 2011.</p>
+<ul class="simple">
+<li>A bug was fixed in SelectResults slicing that prevented to slice a
+slice (my_results[:20][1:5]).</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-0-1">
+<h1>SQLObject 1.0.1</h1>
+<p>Released 30 May 2011.</p>
+<ul class="simple">
+<li>A syntax incompatibility was fixed in SQLiteConnection that prevented
+SQLObject to be used with Python 2.4.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-1-0-0">
+<h1>SQLObject 1.0.0</h1>
+<p>Released 28 Mar 2011.</p>
+<div class="section" id="id17">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Major API change: DB URI parser was changed to use urllib.split*() and
+unquote(). This means any username/password/path are allowed in DB
+URIs if they are properly %-encoded, and DB URIs are automatically
+unquoted.</li>
+<li>A new module <tt class="docutils literal">__version__.py</tt> was added. New variables <tt class="docutils literal">version</tt>
+(string) and <tt class="docutils literal">version_info</tt> (5-tuple: major, minor, micro, release
+level, serial) are imported into <tt class="docutils literal">sqlobject</tt> namespace.</li>
+<li>In SQLite, id columns are made AUTOINCREMENT.</li>
+<li>Parameter <tt class="docutils literal">backend</tt> in DB URI is no longer supported, use parameter
+<tt class="docutils literal">driver</tt>.</li>
+</ul>
+<p><a href="News4.html" class="reference external">Older news</a></p>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>ViewSQLObject</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    A SQLObject class that derives all it's values from other SQLObject classes.
+Columns on subclasses should use SQLBuilder constructs for dbName,
+and sqlmeta should specify:
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The ViewSQLObject class is accessible via the
+    <a href="module-sqlobject.views.html">
+      <tt>sqlobject.views</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (3)
+      </a>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (14)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/views.py.html?f=31&amp;l=126#31" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <ul class="simple">
+<li>idName as a SQLBuilder construction</li>
+<li>clause as SQLBuilder clause for specifying join conditions or other restrictions</li>
+<li>table as an optional alternate name for the class alias</li>
+</ul>
+<p>See test_views.py for simple examples.</p>
+  </div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="childName"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#childName" class="pudge-obj-link">childName</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>None</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="j"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#j" class="pudge-obj-link">j</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>view_sql_object</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="q"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#q" class="pudge-obj-link">q</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>view_sql_object</pre>
+    </div>
+  </div>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine alias">
+    <a name="__sizeof__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__sizeof__" class="pudge-obj-link">__sizeof__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      __sizeof__() -> int
+size of object in memory, in bytes
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__format__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__format__" class="pudge-obj-link">__format__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      default object formatter
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__subclasshook__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__subclasshook__" class="pudge-obj-link">__subclasshook__</a>(...)</tt>
+      <a href="None.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Abstract classes can override this to customize issubclass().
+    </p>
+    <p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
+It should return True, False or NotImplemented.  If it returns
+NotImplemented, the normal algorithm is used.  Otherwise, it
+overrides the normal algorithm (and the outcome is cached).</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__classinit__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__classinit__" class="pudge-obj-link">__classinit__</a>(cls, new_attrs)</tt>
+      <a href="sqlobject/views.py.html?f=44&amp;l=126#44" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__init__" class="pudge-obj-link">__init__</a>(self, **kw)</tt>
+      <a href="sqlobject/main.py.html?f=1190&amp;l=1245#1190" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__sqlrepr__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__sqlrepr__" class="pudge-obj-link">__sqlrepr__</a>(self, db)</tt>
+      <a href="sqlobject/main.py.html?f=1621&amp;l=1623#1621" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__eq__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__eq__" class="pudge-obj-link">__eq__</a>(self, other)</tt>
+      <a href="sqlobject/main.py.html?f=1657&amp;l=1662#1657" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__ne__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__ne__" class="pudge-obj-link">__ne__</a>(self, other)</tt>
+      <a href="sqlobject/main.py.html?f=1663&amp;l=1665#1663" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__lt__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__lt__" class="pudge-obj-link">__lt__</a>(self, other)</tt>
+      <a href="sqlobject/main.py.html?f=1666&amp;l=1668#1666" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__le__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__le__" class="pudge-obj-link">__le__</a>(self, other)</tt>
+      <a href="sqlobject/main.py.html?f=1669&amp;l=1671#1669" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__gt__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__gt__" class="pudge-obj-link">__gt__</a>(self, other)</tt>
+      <a href="sqlobject/main.py.html?f=1672&amp;l=1674#1672" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__ge__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__ge__" class="pudge-obj-link">__ge__</a>(self, other)</tt>
+      <a href="sqlobject/main.py.html?f=1675&amp;l=1677#1675" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__getstate__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__getstate__" class="pudge-obj-link">__getstate__</a>(self)</tt>
+      <a href="sqlobject/main.py.html?f=1681&amp;l=1693#1681" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__setstate__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.views.ViewSQLObject.html#__setstate__" class="pudge-obj-link">__setstate__</a>(self, d)</tt>
+      <a href="sqlobject/main.py.html?f=1694&amp;l=1706#1694" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/views.py.html?f=31&amp;l=126#31" title="sqlobject/views.py:31">the source</a>
+    for more information.
+    </small>
+  </p>

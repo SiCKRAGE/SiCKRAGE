@@ -1,0 +1,117 @@
+@import url("pudge.css");
+@import url("site.css");
+
+/* Basic Style
+----------------------------------- */
+
+h1.pudge-member-page-heading { 
+}
+h4.pudge-member-page-subheading { 
+  font-size: medium;
+  margin-top: -1.0em;
+  margin-left: 2em;
+  margin-bottom: .3em;
+}
+p.pudge-member-blurb { 
+  /* font-weight: bold; */
+  font-size: 120%;
+  margin-top: 0.2em;
+}
+p.pudge-member-parent-link { 
+  margin-top: 0;
+}
+/*div.pudge-module-doc { 
+  max-width: 45em;
+}*/
+div.pudge-section { 
+  margin-left: 2em;
+  max-width: 45em;
+}
+/* Section Navigation 
+----------------------------------- */
+
+div#pudge-section-nav
+{
+  margin: 1em 0 1.5em 0;
+  padding: 0;
+  height: 20px;
+}
+
+div#pudge-section-nav ul { 
+  border: 0;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  text-align: center;
+  border-right: 1px solid #aaa;
+}
+div#pudge-section-nav ul li
+{
+  display: block;
+  float: left;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+div#pudge-section-nav ul li .pudge-section-link,
+div#pudge-section-nav ul li .pudge-missing-section-link
+{
+  background: #aaa;
+  width: 9em;
+  height: 1.8em;
+  border: 1px solid #bbb;
+  padding: 0;
+  margin: 0 0 10px 0;
+  color: #ddd;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  font: 11px/20px "Verdana", "Lucida Grande";
+  cursor: hand;
+  text-transform: lowercase;
+}
+
+div#pudge-section-nav ul li a:hover {
+  color: #000;
+  background: #fff;
+}
+
+div#pudge-section-nav ul li .pudge-section-link {
+  background: #888;
+  color: #eee;
+  border: 1px solid #bbb;
+}
+
+/* Module Lists
+----------------------------------- */
+dl.pudge-module-list dt { 
+  font-style: normal;
+  font-size: 110%;
+}
+dl.pudge-module-list dd { 
+  /*color: #555;*/
+}
+
+/* Misc Overrides */
+.rst-doc p.topic-title a { 
+  color: #777;
+}
+.rst-doc ul.auto-toc a,
+.rst-doc div.contents a { 
+  color: #333;
+}
+pre { background: #eee; }
+
+.rst-doc dl dt { 
+  color: #444;
+  margin-top: 1em;
+  font-weight: bold;
+}
+.rst-doc dl dd { 
+  margin-top: .2em;
+}
+.rst-doc hr { 
+  display: block;
+  margin: 2em 0;
+}

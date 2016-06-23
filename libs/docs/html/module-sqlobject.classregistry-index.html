@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>Index of sqlobject.classregistry module</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content">
+  <h1>Index of the <tt>classregistry</tt> module</h1>
+  <ul class="pudge-module-index">
+    <li class="module">
+    <span class="prefix">m</span>
+    <a href="module-sqlobject.classregistry.html">
+      <tt>sqlobject.classregistry</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html">...</a>
+    <small>
+      - <span class="rst"><dl class="docutils">
+<dt>classresolver.py</dt>
+<dd>2 February 2004, Ian Bicking &lt;<a href="mailto:ianb@colorstudy.com" class="reference external">ianb@colorstudy.com</a>></dd>
+</dl></span>
+  </small>
+    <ul>
+      <li class="attribute">
+    <span class="prefix">a</span>
+    <a href="module-sqlobject.classregistry.html#__package__">
+      <tt>__package__</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html">...</a>
+    <small></small>
+  </li><li class="attribute">
+    <span class="prefix">a</span>
+    <a href="module-sqlobject.classregistry.html#MasterRegistry">
+      <tt>MasterRegistry</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html">...</a>
+    <small></small>
+  </li>
+      <li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.classregistry.ClassRegistry.html">
+      <tt>ClassRegistry</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=27&amp;l=113#27">...</a>
+    <small>
+      - <span class="rst">We'll be dealing with classes that reference each other, so
+class C1 may reference C2 (in a join), while C2 references
+C1 right back.  Since classes are created in an order, there
+will be a point when C1 exists but C2 doesn't.  So we deal
+with classes by name, and after each class is created we
+try to fix up any references by replacing the names with
+actual classes.</span>
+  </small>
+    <ul>
+      <li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.classregistry.ClassRegistry.html#addClassCallback">
+      <tt>addClassCallback</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=51&amp;l=62#51">...</a>
+    <small>
+      - <span class="rst">Whenever a name is substituted for the class, you can register
+a callback that will be called when the needed class is
+created.  If it's already been created, the callback will be
+called immediately.</span>
+  </small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.classregistry.ClassRegistry.html#getClass">
+      <tt>getClass</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=100&amp;l=110#100">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.classregistry.ClassRegistry.html#allClasses">
+      <tt>allClasses</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=111&amp;l=113#111">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.classregistry.ClassRegistry.html#addCallback">
+      <tt>addCallback</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=63&amp;l=71#63">...</a>
+    <small>
+      - <span class="rst">This callback is called for all classes, not just specific
+ones (like addClassCallback).</span>
+  </small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.classregistry.ClassRegistry.html#__init__">
+      <tt>__init__</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=45&amp;l=50#45">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.classregistry.ClassRegistry.html#addClass">
+      <tt>addClass</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=72&amp;l=99#72">...</a>
+    <small>
+      - <span class="rst">Everytime a class is created, we add it to the registry, so
+that other classes can find it by name.  We also call any
+callbacks that are waiting for the class.</span>
+  </small>
+  </li>
+    </ul>
+  </li>
+      <li class="routine">
+    <span class="prefix">f</span>
+    <a href="module-sqlobject.classregistry.html#registry">
+      <tt>registry</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=126&amp;l=130#126">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="module-sqlobject.classregistry.html#findClass">
+      <tt>findClass</tt>
+    </a>
+    <a href="sqlobject/classregistry.py.html?f=134&amp;l=136#134">...</a>
+    <small></small>
+  </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

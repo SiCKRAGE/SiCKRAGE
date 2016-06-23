@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>Index of sqlobject.events module</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content">
+  <h1>Index of the <tt>events</tt> module</h1>
+  <ul class="pudge-module-index">
+    <li class="module">
+    <span class="prefix">m</span>
+    <a href="module-sqlobject.events.html">
+      <tt>sqlobject.events</tt>
+    </a>
+    <a href="sqlobject/events.py.html">...</a>
+    <small></small>
+    <ul>
+      <li class="attribute">
+    <span class="prefix">a</span>
+    <a href="module-sqlobject.events.html#__package__">
+      <tt>__package__</tt>
+    </a>
+    <a href="sqlobject/events.py.html">...</a>
+    <small></small>
+  </li>
+      <li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.RowCreateSignal.html">
+      <tt>RowCreateSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=70&amp;l=82#70">...</a>
+    <small>
+      - <span class="rst">Called before an instance is created, with the class as the
+sender.  Called with the arguments <tt class="docutils literal">(instance, kwargs, post_funcs)</tt>.
+There may be a <tt class="docutils literal">connection</tt> argument.  <tt class="docutils literal"><span class="pre">kwargs``may</span> be usefully
+modified.  ``post_funcs</tt> is a list of callbacks, intended to have
+functions appended to it, and are called with the arguments
+<tt class="docutils literal">(new_instance)</tt>.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.CreateTableSignal.html">
+      <tt>CreateTableSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=172&amp;l=184#172">...</a>
+    <small>
+      - <span class="rst">Called when a table is created.  If <tt class="docutils literal"><span class="pre">ifNotExists==True</span></tt> and the
+table exists, this event is not called.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.RowDestroyedSignal.html">
+      <tt>RowDestroyedSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=118&amp;l=128#118">...</a>
+    <small>
+      - <span class="rst">Called after an instance is deleted.  Sender is the instance's
+class.  Arguments are <tt class="docutils literal">(instance)</tt>.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.AddColumnSignal.html">
+      <tt>AddColumnSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=148&amp;l=157#148">...</a>
+    <small>
+      - <span class="rst">Called when a column is added to a class, with arguments <tt class="docutils literal">(cls,
+connection, column_name, column_definition, changeSchema,
+post_funcs)</tt>.  This is called <em>after</em> the column has been added,
+and is called for each column after class creation.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.DeleteColumnSignal.html">
+      <tt>DeleteColumnSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=158&amp;l=168#158">...</a>
+    <small>
+      - <span class="rst">Called when a column is removed from a class, with the arguments
+<tt class="docutils literal">(cls, connection, column_name, so_column_obj, post_funcs)</tt>.
+Like <tt class="docutils literal">AddColumnSignal</tt> this is called after the action has been
+performed, and is called for subclassing (when a column is
+implicitly removed by setting it to <tt class="docutils literal">None</tt>).</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.DropTableSignal.html">
+      <tt>DropTableSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=185&amp;l=194#185">...</a>
+    <small>
+      - <span class="rst">Called when a table is dropped.  If <tt class="docutils literal"><span class="pre">ifExists==True</span></tt> and the
+table doesn't exist, this event is not called.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.RowCreatedSignal.html">
+      <tt>RowCreatedSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=82&amp;l=94#82">...</a>
+    <small>
+      - <span class="rst">Called after an instance is created, with the class as the
+sender.  Called with the arguments <tt class="docutils literal">(instance, kwargs, post_funcs)</tt>.
+There may be a <tt class="docutils literal">connection</tt> argument.  <tt class="docutils literal"><span class="pre">kwargs``may</span> be usefully
+modified.  ``post_funcs</tt> is a list of callbacks, intended to have
+functions appended to it, and are called with the arguments
+<tt class="docutils literal">(new_instance)</tt>.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.RowDestroySignal.html">
+      <tt>RowDestroySignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=97&amp;l=117#97">...</a>
+    <small>
+      - <span class="rst">Called before an instance is deleted.  Sender is the instance's
+class.  Arguments are <tt class="docutils literal">(instance, post_funcs)</tt>.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.ClassCreateSignal.html">
+      <tt>ClassCreateSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=33&amp;l=50#33">...</a>
+    <small>
+      - <span class="rst">Signal raised after class creation.  The sender is the superclass
+(in case of multiple superclasses, the first superclass).  The
+arguments are <tt class="docutils literal">(new_class_name, bases, new_attrs, post_funcs,
+early_funcs)</tt>.  <tt class="docutils literal">new_attrs</tt> is a dictionary and may be modified
+(but <tt class="docutils literal">new_class_name</tt> and <tt class="docutils literal">bases</tt> are immutable).
+<tt class="docutils literal">post_funcs</tt> is an initially-empty list that can have callbacks
+appended to it.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.Signal.html">
+      <tt>Signal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=25&amp;l=32#25">...</a>
+    <small>
+      - <span class="rst">Base event for all SQLObject events.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.RowUpdateSignal.html">
+      <tt>RowUpdateSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=129&amp;l=137#129">...</a>
+    <small>
+      - <span class="rst">Called when an instance is updated through a call to <tt class="docutils literal">.set()</tt>
+(or a column attribute assignment).  The arguments are
+<tt class="docutils literal">(instance, kwargs)</tt>.  <tt class="docutils literal">kwargs</tt> can be modified.  This is run
+<em>before</em> the instance is updated; if you want to look at the
+current values, simply look at <tt class="docutils literal">instance</tt>.</span>
+  </small>
+    <ul>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.events.RowUpdatedSignal.html">
+      <tt>RowUpdatedSignal</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=138&amp;l=147#138">...</a>
+    <small>
+      - <span class="rst">Called when an instance is updated through a call to <tt class="docutils literal">.set()</tt>
+(or a column attribute assignment).  The arguments are
+<tt class="docutils literal">(instance, post_funcs)</tt>. <tt class="docutils literal">post_funcs</tt> is a list of callbacks,
+intended to have functions appended to it, and are called with the
+arguments <tt class="docutils literal">(new_instance)</tt>. This is run <em>after</em> the instance is
+updated; Works better with lazyUpdate = True.</span>
+  </small>
+    <ul>
+    </ul>
+  </li>
+      <li class="routine">
+    <span class="prefix">f</span>
+    <a href="module-sqlobject.events.html#listen">
+      <tt>listen</tt>
+    </a>
+    <a href="sqlobject/events.py.html?f=9&amp;l=21#9">...</a>
+    <small>
+      - <span class="rst">Listen for the given <tt class="docutils literal">signal</tt> on the SQLObject subclass
+<tt class="docutils literal">soClass</tt>, calling <tt class="docutils literal">receiver()</tt> when <tt class="docutils literal">send(soClass, signal,
+<span class="pre">...)</span></tt> is called.</span>
+  </small>
+  </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

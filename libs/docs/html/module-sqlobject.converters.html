@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>converters</tt>
+  </h1>
+  <p class="pudge-member-parent-link">
+    <small>
+    The converters module is accessible via the
+    <a href="module-sqlobject.html">
+      <tt>sqlobject</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (4)
+      </a>
+    </li><li>
+      <a href="#functions" class="pudge-section-link">
+        Functions (18)
+      </a>
+    </li><li>
+      <a href="#classes" class="pudge-section-link">
+        Classes (1)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.converters-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/converters.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="NumericType"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.converters.html#NumericType" class="pudge-obj-link">NumericType</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>None</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.converters.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject'</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="converters"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.converters.html#converters" class="pudge-obj-link">converters</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>&lt;sqlobject.converters.ConverterRegistry instance at 0xb502acc></pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="sqlStringReplace"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.converters.html#sqlStringReplace" class="pudge-obj-link">sqlStringReplace</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>[("'", "''"),
+ ('\\', '\\\\'),
+ ('\x00', '\\0'),
+ ('\x08', '\\b'),
+ ('\n', '\\n'),
+ ('\r', '\\r'),
+ ('\t', '\\t')]</pre>
+    </div>
+  </div>
+    <a name="functions"></a>
+    <h2>Functions</h2>
+    <div class="pudge-member routine ">
+    <a name="registerConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#registerConverter" class="pudge-obj-link">registerConverter</a>(self, typ, func)</tt>
+      <a href="sqlobject/converters.py.html?f=45&amp;l=50#45" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="lookupConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#lookupConverter" class="pudge-obj-link">lookupConverter</a>(self, value, default=None)</tt>
+      <a href="sqlobject/converters.py.html?f=51&amp;l=56#51" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="StringLikeConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#StringLikeConverter" class="pudge-obj-link">StringLikeConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=61&amp;l=80#61" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="IntConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#IntConverter" class="pudge-obj-link">IntConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=86&amp;l=88#86" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="LongConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#LongConverter" class="pudge-obj-link">LongConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=91&amp;l=93#91" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="BoolConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#BoolConverter" class="pudge-obj-link">BoolConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=99&amp;l=110#99" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="FloatConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#FloatConverter" class="pudge-obj-link">FloatConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=113&amp;l=115#113" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="NoneConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#NoneConverter" class="pudge-obj-link">NoneConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=129&amp;l=131#129" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="SequenceConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#SequenceConverter" class="pudge-obj-link">SequenceConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=134&amp;l=136#134" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="StructTimeConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#StructTimeConverter" class="pudge-obj-link">StructTimeConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=144&amp;l=146#144" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="DateTimeConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#DateTimeConverter" class="pudge-obj-link">DateTimeConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=149&amp;l=153#149" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="DateConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#DateConverter" class="pudge-obj-link">DateConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=156&amp;l=158#156" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="TimeConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#TimeConverter" class="pudge-obj-link">TimeConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=161&amp;l=163#161" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="DecimalConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#DecimalConverter" class="pudge-obj-link">DecimalConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=166&amp;l=168#166" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="TimedeltaConverter"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#TimedeltaConverter" class="pudge-obj-link">TimedeltaConverter</a>(value, db)</tt>
+      <a href="sqlobject/converters.py.html?f=171&amp;l=175#171" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="sqlrepr"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#sqlrepr" class="pudge-obj-link">sqlrepr</a>(obj, db=None)</tt>
+      <a href="sqlobject/converters.py.html?f=179&amp;l=190#179" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="quote_str"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#quote_str" class="pudge-obj-link">quote_str</a>(s, db)</tt>
+      <a href="sqlobject/converters.py.html?f=192&amp;l=196#192" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="unquote_str"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.converters.html#unquote_str" class="pudge-obj-link">unquote_str</a>(s)</tt>
+      <a href="sqlobject/converters.py.html?f=197&amp;l=204#197" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+    <a name="classes"></a>
+    <h2>Classes</h2>
+    <div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.converters.ConverterRegistry.html" class="pudge-obj-link">ConverterRegistry</a>(...)</tt>
+      <a href="sqlobject/converters.py.html?f=39&amp;l=56#39" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.converters.ConverterRegistry.html#members">
+          3 members</a>.
+      </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/converters.py.html" title="sqlobject/converters.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

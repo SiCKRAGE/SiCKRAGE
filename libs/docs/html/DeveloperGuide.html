@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>SQLObject Developer Guide</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">SQLObject Developer Guide</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a href="#development-installation" class="reference internal" id="id1">Development Installation</a></li>
+<li><a href="#style-guide" class="reference internal" id="id2">Style Guide</a></li>
+<li><a href="#testing" class="reference internal" id="id3">Testing</a></li>
+<li><a href="#documentation" class="reference internal" id="id4">Documentation</a></li>
+</ul>
+</div>
+<p id="start">These are some notes on developing SQLObject.  I'll try to expand them
+as things come up.</p>
+<blockquote>
+-- Ian Bicking</blockquote>
+<div class="section" id="development-installation">
+<h1>Development Installation</h1>
+<p>First install <a href="http://www.formencode.org/en/latest/download.html" class="reference external">FormEncode</a>:</p>
+<pre class="literal-block">
+$ git clone git://github.com/formencode/formencode.git
+$ cd formencode
+$ sudo python setup.py develop
+</pre>
+<p>Then do the same for SQLObject:</p>
+<pre class="literal-block">
+$ git clone git clone git://git.code.sf.net/p/sqlobject/sqlobject
+$ cd sqlobject
+$ sudo python setup.py develop
+</pre>
+<p>Voila!  The packages are globally installed, but the files from the
+checkout were not copied into <tt class="docutils literal"><span class="pre">site-packages</span></tt>.  See <a href="http://pythonhosted.org/setuptools/" class="reference external">setuptools</a> for more.</p>
+</div>
+<div class="section" id="style-guide">
+<h1>Style Guide</h1>
+<p>Generally you should follow the recommendations in <a href="http://www.python.org/peps/pep-0008.html" class="reference external">PEP 8</a>, the
+Python Style Guide.  Some things to take particular note of:</p>
+<ul>
+<li><p class="first"><strong>No tabs</strong>.  Not anywhere.  Always indent with 4 spaces.</p>
+</li>
+<li><p class="first">I don't stress too much on line length.  But try to break lines up
+by grouping with parenthesis instead of with backslashes (if you
+can).  Do asserts like:</p>
+<pre class="literal-block">
+assert some_condition(a, b), (
+    "Some condition failed, %r isn't right!" % a)
+</pre>
+</li>
+<li><p class="first">But if you are having problems with line length, maybe you should
+just break the expression up into multiple statements.</p>
+</li>
+<li><p class="first">Blank lines between methods, unless they are very small and closely
+bound to each other.</p>
+</li>
+<li><p class="first"><em>Never</em> use the form <tt class="docutils literal">condition and trueValue or falseValue</tt>.
+Break it out and use a variable.</p>
+</li>
+<li><p class="first">Careful of namespace pollution.  SQLObject does allow for <tt class="docutils literal">from
+sqlobject import *</tt> so names should be fairly distinct, or they
+shouldn't be exported in <tt class="docutils literal">sqlobject.__init__</tt>.</p>
+</li>
+<li><p class="first">I'm very picky about whitespace.  There's one and only one right way
+to do it.  Good examples:</p>
+<pre class="literal-block">
+short = 3
+longerVar = 4
+
+if x == 4:
+    do stuff
+
+func(arg1='a', arg2='b')
+func((a + b)*10)
+</pre>
+<p><strong>Bad</strong> examples:</p>
+<pre class="literal-block">
+short    =3
+longerVar=4
+
+if x==4: do stuff
+
+func(arg1 = 'a', arg2 = 'b')
+func(a,b)
+func( a, b )
+[ 1, 2, 3 ]
+</pre>
+<p>To me, the poor use of whitespace seems lazy.  I'll think less of
+your code (justified or not) for this very trivial reason.  I will
+fix all your code for you if you don't do it yourself, because I
+can't bear to look at sloppy whitespace.</p>
+</li>
+<li><p class="first">Use <tt class="docutils literal">@@</tt> to mark something that is suboptimal, or where you have a
+concern that it's not right.  Try to also date it and put your
+username there.</p>
+</li>
+<li><p class="first">Docstrings are good.  They should look like:</p>
+<pre class="literal-block">
+class AClass(object):
+    """
+    doc string...
+    """
+</pre>
+<p>Don't use single quotes (''').  Don't bother trying make the string
+less vertically compact.</p>
+</li>
+<li><p class="first">Comments go right before the thing they are commenting on.</p>
+</li>
+<li><p class="first">Methods never, ever, ever start with capital letters.  Generally
+only classes are capitalized.  But definitely never methods.</p>
+</li>
+<li><p class="first">mixedCase is preferred.</p>
+</li>
+<li><p class="first">Use <tt class="docutils literal">cls</tt> to refer to a class.  Use <tt class="docutils literal">meta</tt> to refer to a
+metaclass (which also happens to be a class, but calling a metaclass
+<tt class="docutils literal">cls</tt> will be confusing).</p>
+</li>
+<li><p class="first">Use <tt class="docutils literal">isinstance</tt> instead of comparing types.  E.g.:</p>
+<pre class="literal-block">
+if isinstance(var, str): ...
+# Bad:
+if type(var) is StringType: ...
+</pre>
+</li>
+<li><p class="first">Never, ever use two leading underscores.  This is annoyingly
+private.  If name clashes are a concern, use name mangling instead
+(e.g., <tt class="docutils literal">_SO_blahblah</tt>).  This is essentially the same thing as
+double-underscore, only it's transparent where double underscore
+obscures.</p>
+</li>
+<li><p class="first">Module names should be unique in the package.  Subpackages shouldn't
+share module names with sibling or parent packages.  Sadly this
+isn't possible for <tt class="docutils literal">__init__</tt>, but it's otherwise easy enough.</p>
+</li>
+<li><p class="first">Module names should be all lower case, and probably have no
+underscores (smushedwords).</p>
+</li>
+</ul>
+</div>
+<div class="section" id="testing">
+<h1>Testing</h1>
+<p>Tests are important.  Tests keep everything from falling apart.  All
+new additions should have tests.</p>
+<p>Testing uses py.test, an alternative to <tt class="docutils literal">unittest</tt>.  It is available at
+<a href="http://pytest.org/" class="reference external">http://pytest.org/</a> and <a href="http://pypi.python.org/pypi/pytest" class="reference external">http://pypi.python.org/pypi/pytest</a>.  Read its <a href="http://pytest.org/latest/getting-started.html" class="reference external">getting
+started</a> document for more.</p>
+<p>To actually run the test, you have to give it a database to connect to.
+You do so with the option <tt class="docutils literal"><span class="pre">-D</span></tt>. You can either give a complete URI or
+one of several shortcuts like <tt class="docutils literal">mysql</tt> (these shortcuts are defined in
+the top of <tt class="docutils literal">tests/dbtest.py</tt>).</p>
+<p>All the tests are modules in <tt class="docutils literal">sqlobject/tests</tt>.  Each module tests
+one kind of feature, more or less.  If you are testing a module, call
+the test module <tt class="docutils literal">tests/test_modulename.py</tt> -- only modules that
+start with <tt class="docutils literal">test_</tt> will be picked up by py.test.</p>
+<p>The "framework" for testing is in <tt class="docutils literal">tests/dbtest</tt>.  There's a couple of
+important functions:</p>
+<p><tt class="docutils literal">setupClass(soClass)</tt> creates the tables for the class.  It tries to
+avoid recreating tables if not necessary.</p>
+<p><tt class="docutils literal">supports(featureName)</tt> checks if the database backend supports the
+named feature.  What backends support what is defined at the top of
+<tt class="docutils literal">dbtest</tt>.</p>
+<p>If you <tt class="docutils literal">import *</tt> you'll also get py.test's version of <a href="http://pytest.org/latest/assert.html#assertions-about-expected-exceptions" class="reference external">raises</a>, an
+<tt class="docutils literal">inserts</tt> function that can create instances for you, and a couple
+miscellaneous functions.</p>
+<p>If you submit a patch or implement a feature without a test, I'll be
+forced to write the test.  That's no fun for me, to just be writing
+tests.  So please, write tests; everything at least needs to be
+exercised, even if the tests are absolutely complete.</p>
+<p>We now use Travis CI to run tests. See the status:</p>
+<a href="https://travis-ci.org/sqlobject/sqlobject" class="reference external image-reference"><img src="https://travis-ci.org/sqlobject/sqlobject.svg?branch=2.1" alt="https://travis-ci.org/sqlobject/sqlobject.svg?branch=2.1"></a>
+</div>
+<div class="section" id="documentation">
+<h1>Documentation</h1>
+<p>Please write documentation.  Documentation should live in the docs/
+directory.  Pudge converts documentation from Restructured Text to
+HTML.  It presently requires kid 0.9.3, which must be obtained
+separately (for instance, from <a href="http://pypi.python.org/pypi/kid/0.9.3" class="reference external">http://pypi.python.org/pypi/kid/0.9.3</a>)</p>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

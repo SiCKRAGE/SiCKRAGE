@@ -1,0 +1,186 @@
+<html><head><title>/home/phd/current/SQLObject/SQLObject/sqlobject/versioning/__init__.py</title>
+        <script type="text/javascript"><!--
+        
+function show_line_range() {
+    var href = document.location.href;
+    if (href.indexOf('?') == -1) {
+        return;
+    }
+    var qs = href.substring(href.indexOf('?')+1);
+    if (qs.indexOf('#') >= 0) {
+        qs = qs.substring(0, qs.indexOf('#'));
+    }
+    var first = qs.match(/f=(\d+)/)[1];
+    var last = qs.match(/l=(\d+)/)[1];
+    if (! first || ! last) {
+        return;
+    }
+    var anchors = document.getElementsByTagName('A');
+    var container = document.createElement('DIV');
+    container.className = 'highlighted';
+    var children = [];
+    var start = null;
+    var parent = null;
+    var highlight = false;
+    for (var i = 0; i < anchors.length; i++) {
+        var el = anchors[i];
+        if (el.getAttribute('name') == first) {
+            start = el.previousSibling;
+            parent = el.parentNode;
+            highlight = true;
+        }
+        if (el.getAttribute('name') == last) {
+            break;
+        }
+        if (highlight) {
+            children[children.length] = el;
+            el = el.nextSibling;
+            while (el && el.tagName != 'A') {
+                children[children.length] = el;
+                el = el.nextSibling;
+            }
+        }
+    }
+    for (i=0; i<children.length; i++) {
+        container.appendChild(children[i]);
+    }
+    if (start) {
+        start.parentNode.insertBefore(container, start.nextSibling);
+    } else {
+        parent.insertBefore(container, parent.childNodes[0]);
+    }
+}
+
+        // --></script>
+        <style>
+        div.python {
+          color: #333
+        }
+        div.python a.lnum {
+          color: #555;
+          background-color: #eee;
+          border-right: 1px solid #999;
+          padding-right: 2px;
+          margin-right: 4px;
+        }
+        div.python span.comment { color: #933 }
+        div.python span.keyword { color: #a3e; font-weight: bold  }
+        div.python span.op { color: #c96 }
+        div.python span.string { color: #6a6 }
+        div.python span.name { }
+        div.python span.text { color: #333 }
+        div.highlighted { background-color: #ff9; border: 1px solid #009 }
+        </style></head><body onload="show_line_range()"><div class="python"><code><a class="lnum" href="#1" name="1">0001</a><span class="keyword">from</span>&#0160;<span class="name">sqlobject</span>&#0160;<span class="keyword">import</span>&#0160;<span class="op">*</span><br />
+<a class="lnum" href="#2" name="2">0002</a><span class="keyword">from</span>&#0160;<span class="name">datetime</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">datetime</span><br />
+<a class="lnum" href="#3" name="3">0003</a><br />
+<a class="lnum" href="#4" name="4">0004</a><span class="keyword">class</span>&#0160;<span class="name">Version</span><span class="op">(</span><span class="name">SQLObject</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#5" name="5">0005</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">restore</span><span class="op">(</span><span class="name">self</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#6" name="6">0006</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">values</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">sqlmeta</span><span class="op">.</span><span class="name">asDict</span><span class="op">(</span><span class="op">)</span><br />
+<a class="lnum" href="#7" name="7">0007</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">del</span>&#0160;<span class="name">values</span><span class="op">[</span><span class="string">'id'</span><span class="op">]</span><br />
+<a class="lnum" href="#8" name="8">0008</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">del</span>&#0160;<span class="name">values</span><span class="op">[</span><span class="string">'masterID'</span><span class="op">]</span><br />
+<a class="lnum" href="#9" name="9">0009</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">del</span>&#0160;<span class="name">values</span><span class="op">[</span><span class="string">'dateArchived'</span><span class="op">]</span><br />
+<a class="lnum" href="#10" name="10">0010</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">for</span>&#0160;<span class="name">col</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">extraCols</span><span class="op">:</span><br />
+<a class="lnum" href="#11" name="11">0011</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">del</span>&#0160;<span class="name">values</span><span class="op">[</span><span class="name">col</span><span class="op">]</span><br />
+<a class="lnum" href="#12" name="12">0012</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">masterClass</span><span class="op">.</span><span class="name">get</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">masterID</span><span class="op">)</span><span class="op">.</span><span class="name">set</span><span class="op">(</span><span class="op">**</span><span class="name">values</span><span class="op">)</span><br />
+<a class="lnum" href="#13" name="13">0013</a><br />
+<a class="lnum" href="#14" name="14">0014</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">nextVersion</span><span class="op">(</span><span class="name">self</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#15" name="15">0015</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">version</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">select</span><span class="op">(</span><span class="name">AND</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">q</span><span class="op">.</span><span class="name">masterID</span>&#0160;<span class="op">==</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">masterID</span><span class="op">,</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">q</span><span class="op">.</span><span class="name">id</span>&#0160;<span class="op">&gt;</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">id</span><span class="op">)</span><span class="op">,</span>&#0160;<span class="name">orderBy</span><span class="op">=</span><span class="name">self</span><span class="op">.</span><span class="name">q</span><span class="op">.</span><span class="name">id</span><span class="op">)</span><br />
+<a class="lnum" href="#16" name="16">0016</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">version</span><span class="op">.</span><span class="name">count</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#17" name="17">0017</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">version</span><span class="op">[</span><span class="number">0</span><span class="op">]</span><br />
+<a class="lnum" href="#18" name="18">0018</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">else</span><span class="op">:</span><br />
+<a class="lnum" href="#19" name="19">0019</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">master</span><br />
+<a class="lnum" href="#20" name="20">0020</a><br />
+<a class="lnum" href="#21" name="21">0021</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">getChangedFields</span><span class="op">(</span><span class="name">self</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#22" name="22">0022</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">next</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">nextVersion</span><span class="op">(</span><span class="op">)</span><br />
+<a class="lnum" href="#23" name="23">0023</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">columns</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">masterClass</span><span class="op">.</span><span class="name">sqlmeta</span><span class="op">.</span><span class="name">columns</span><br />
+<a class="lnum" href="#24" name="24">0024</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">fields</span>&#0160;<span class="op">=</span>&#0160;<span class="op">[</span><span class="op">]</span><br />
+<a class="lnum" href="#25" name="25">0025</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">for</span>&#0160;<span class="name">column</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">columns</span><span class="op">:</span><br />
+<a class="lnum" href="#26" name="26">0026</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">column</span>&#0160;<span class="keyword">not</span>&#0160;<span class="keyword">in</span>&#0160;<span class="op">[</span><span class="string">"dateArchived"</span><span class="op">,</span>&#0160;<span class="string">"id"</span><span class="op">,</span>&#0160;<span class="string">"masterID"</span><span class="op">]</span><span class="op">:</span><br />
+<a class="lnum" href="#27" name="27">0027</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">getattr</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">column</span><span class="op">)</span>&#0160;<span class="op">!=</span>&#0160;<span class="name">getattr</span><span class="op">(</span><span class="name">next</span><span class="op">,</span>&#0160;<span class="name">column</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#28" name="28">0028</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">fields</span><span class="op">.</span><span class="name">append</span><span class="op">(</span><span class="name">column</span><span class="op">.</span><span class="name">title</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><br />
+<a class="lnum" href="#29" name="29">0029</a><br />
+<a class="lnum" href="#30" name="30">0030</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">fields</span><br />
+<a class="lnum" href="#31" name="31">0031</a><br />
+<a class="lnum" href="#32" name="32">0032</a>&#0160;&#0160;&#0160;&#0160;<span class="op">@</span><span class="name">classmethod</span><br />
+<a class="lnum" href="#33" name="33">0033</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">select</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">clause</span><span class="op">=</span><span class="name">None</span><span class="op">,</span>&#0160;<span class="op">*</span><span class="name">args</span><span class="op">,</span>&#0160;<span class="op">**</span><span class="name">kw</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#34" name="34">0034</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="keyword">not</span>&#0160;<span class="name">getattr</span><span class="op">(</span><span class="name">cls</span><span class="op">,</span>&#0160;<span class="string">'_connection'</span><span class="op">,</span>&#0160;<span class="name">None</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#35" name="35">0035</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">_connection</span>&#0160;<span class="op">=</span>&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">masterClass</span><span class="op">.</span><span class="name">_connection</span><br />
+<a class="lnum" href="#36" name="36">0036</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">super</span><span class="op">(</span><span class="name">Version</span><span class="op">,</span>&#0160;<span class="name">cls</span><span class="op">)</span><span class="op">.</span><span class="name">select</span><span class="op">(</span><span class="name">clause</span><span class="op">,</span>&#0160;<span class="op">*</span><span class="name">args</span><span class="op">,</span>&#0160;<span class="op">**</span><span class="name">kw</span><span class="op">)</span><br />
+<a class="lnum" href="#37" name="37">0037</a><br />
+<a class="lnum" href="#38" name="38">0038</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__getattr__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">attr</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#39" name="39">0039</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">attr</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">__dict__</span><span class="op">:</span><br />
+<a class="lnum" href="#40" name="40">0040</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">__dict__</span><span class="op">[</span><span class="name">attr</span><span class="op">]</span><br />
+<a class="lnum" href="#41" name="41">0041</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">else</span><span class="op">:</span><br />
+<a class="lnum" href="#42" name="42">0042</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">getattr</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">master</span><span class="op">,</span>&#0160;<span class="name">attr</span><span class="op">)</span><br />
+<a class="lnum" href="#43" name="43">0043</a><br />
+<a class="lnum" href="#44" name="44">0044</a><span class="keyword">def</span>&#0160;<span class="name">getColumns</span><span class="op">(</span><span class="name">columns</span><span class="op">,</span>&#0160;<span class="name">cls</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#45" name="45">0045</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">for</span>&#0160;<span class="name">column</span><span class="op">,</span>&#0160;<span class="name">defi</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">sqlmeta</span><span class="op">.</span><span class="name">columnDefinitions</span><span class="op">.</span><span class="name">items</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#46" name="46">0046</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">column</span><span class="op">.</span><span class="name">endswith</span><span class="op">(</span><span class="string">"ID"</span><span class="op">)</span>&#0160;<span class="keyword">and</span>&#0160;<span class="name">isinstance</span><span class="op">(</span><span class="name">defi</span><span class="op">,</span>&#0160;<span class="name">ForeignKey</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#47" name="47">0047</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">column</span>&#0160;<span class="op">=</span>&#0160;<span class="name">column</span><span class="op">[</span><span class="op">:</span><span class="op">-</span><span class="number">2</span><span class="op">]</span><br />
+<a class="lnum" href="#48" name="48">0048</a><br />
+<a class="lnum" href="#49" name="49">0049</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="comment">#remove&#0160;incompatible&#0160;constraints</span><br />
+<a class="lnum" href="#50" name="50">0050</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">kwds</span>&#0160;<span class="op">=</span>&#0160;<span class="name">dict</span><span class="op">(</span><span class="name">defi</span><span class="op">.</span><span class="name">_kw</span><span class="op">)</span><br />
+<a class="lnum" href="#51" name="51">0051</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">for</span>&#0160;<span class="name">kw</span>&#0160;<span class="keyword">in</span>&#0160;<span class="op">[</span><span class="string">"alternateID"</span><span class="op">,</span>&#0160;<span class="string">"unique"</span><span class="op">]</span><span class="op">:</span><br />
+<a class="lnum" href="#52" name="52">0052</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">kw</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">kwds</span><span class="op">:</span>&#0160;<span class="keyword">del</span>&#0160;<span class="name">kwds</span><span class="op">[</span><span class="name">kw</span><span class="op">]</span><br />
+<a class="lnum" href="#53" name="53">0053</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">columns</span><span class="op">[</span><span class="name">column</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">defi</span><span class="op">.</span><span class="name">__class__</span><span class="op">(</span><span class="op">**</span><span class="name">kwds</span><span class="op">)</span><br />
+<a class="lnum" href="#54" name="54">0054</a><br />
+<a class="lnum" href="#55" name="55">0055</a>&#0160;&#0160;&#0160;&#0160;<span class="comment">#ascend&#0160;heirarchy</span><br />
+<a class="lnum" href="#56" name="56">0056</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">sqlmeta</span><span class="op">.</span><span class="name">parentClass</span><span class="op">:</span><br />
+<a class="lnum" href="#57" name="57">0057</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">getColumns</span><span class="op">(</span><span class="name">columns</span><span class="op">,</span>&#0160;<span class="name">cls</span><span class="op">.</span><span class="name">sqlmeta</span><span class="op">.</span><span class="name">parentClass</span><span class="op">)</span><br />
+<a class="lnum" href="#58" name="58">0058</a><br />
+<a class="lnum" href="#59" name="59">0059</a><br />
+<a class="lnum" href="#60" name="60">0060</a><span class="keyword">class</span>&#0160;<span class="name">Versioning</span><span class="op">(</span><span class="name">object</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#61" name="61">0061</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__init__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">extraCols</span>&#0160;<span class="op">=</span>&#0160;<span class="name">None</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#62" name="62">0062</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">extraCols</span><span class="op">:</span><br />
+<a class="lnum" href="#63" name="63">0063</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">extraCols</span>&#0160;<span class="op">=</span>&#0160;<span class="name">extraCols</span><br />
+<a class="lnum" href="#64" name="64">0064</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">else</span><span class="op">:</span><br />
+<a class="lnum" href="#65" name="65">0065</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">extraCols</span>&#0160;<span class="op">=</span>&#0160;<span class="op">{</span><span class="op">}</span><br />
+<a class="lnum" href="#66" name="66">0066</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">pass</span><br />
+<a class="lnum" href="#67" name="67">0067</a><br />
+<a class="lnum" href="#68" name="68">0068</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__addtoclass__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">soClass</span><span class="op">,</span>&#0160;<span class="name">name</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#69" name="69">0069</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">name</span>&#0160;<span class="op">=</span>&#0160;<span class="name">name</span><br />
+<a class="lnum" href="#70" name="70">0070</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">soClass</span>&#0160;<span class="op">=</span>&#0160;<span class="name">soClass</span><br />
+<a class="lnum" href="#71" name="71">0071</a><br />
+<a class="lnum" href="#72" name="72">0072</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">attrs</span>&#0160;<span class="op">=</span>&#0160;<span class="op">{</span><span class="string">'dateArchived'</span><span class="op">:</span>&#0160;<span class="name">DateTimeCol</span><span class="op">(</span><span class="name">default</span><span class="op">=</span><span class="name">datetime</span><span class="op">.</span><span class="name">now</span><span class="op">)</span><span class="op">,</span><br />
+<a class="lnum" href="#73" name="73">0073</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'master'</span><span class="op">:</span>&#0160;<span class="name">ForeignKey</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">soClass</span><span class="op">.</span><span class="name">__name__</span><span class="op">)</span><span class="op">,</span><br />
+<a class="lnum" href="#74" name="74">0074</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'masterClass'</span>&#0160;<span class="op">:</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">soClass</span><span class="op">,</span><br />
+<a class="lnum" href="#75" name="75">0075</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'extraCols'</span>&#0160;<span class="op">:</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">extraCols</span><br />
+<a class="lnum" href="#76" name="76">0076</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">}</span><br />
+<a class="lnum" href="#77" name="77">0077</a><br />
+<a class="lnum" href="#78" name="78">0078</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">getColumns</span>&#0160;<span class="op">(</span><span class="name">attrs</span><span class="op">,</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">soClass</span><span class="op">)</span><br />
+<a class="lnum" href="#79" name="79">0079</a><br />
+<a class="lnum" href="#80" name="80">0080</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">attrs</span><span class="op">.</span><span class="name">update</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">extraCols</span><span class="op">)</span><br />
+<a class="lnum" href="#81" name="81">0081</a><br />
+<a class="lnum" href="#82" name="82">0082</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">versionClass</span>&#0160;<span class="op">=</span>&#0160;<span class="name">type</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">soClass</span><span class="op">.</span><span class="name">__name__</span><span class="op">+</span><span class="string">'Versions'</span><span class="op">,</span><br />
+<a class="lnum" href="#83" name="83">0083</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">(</span><span class="name">Version</span><span class="op">,</span><span class="op">)</span><span class="op">,</span><br />
+<a class="lnum" href="#84" name="84">0084</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">attrs</span><span class="op">)</span><br />
+<a class="lnum" href="#85" name="85">0085</a><br />
+<a class="lnum" href="#86" name="86">0086</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;&#0160;<span class="string">'_connection'</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">soClass</span><span class="op">.</span><span class="name">__dict__</span><span class="op">:</span><br />
+<a class="lnum" href="#87" name="87">0087</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">versionClass</span><span class="op">.</span><span class="name">_connection</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">soClass</span><span class="op">.</span><span class="name">__dict__</span><span class="op">[</span><span class="string">'_connection'</span><span class="op">]</span><br />
+<a class="lnum" href="#88" name="88">0088</a><br />
+<a class="lnum" href="#89" name="89">0089</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">events</span><span class="op">.</span><span class="name">listen</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">createTable</span><span class="op">,</span><br />
+<a class="lnum" href="#90" name="90">0090</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">soClass</span><span class="op">,</span>&#0160;<span class="name">events</span><span class="op">.</span><span class="name">CreateTableSignal</span><span class="op">)</span><br />
+<a class="lnum" href="#91" name="91">0091</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">events</span><span class="op">.</span><span class="name">listen</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">rowUpdate</span><span class="op">,</span>&#0160;<span class="name">soClass</span><span class="op">,</span><br />
+<a class="lnum" href="#92" name="92">0092</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">events</span><span class="op">.</span><span class="name">RowUpdateSignal</span><span class="op">)</span><br />
+<a class="lnum" href="#93" name="93">0093</a><br />
+<a class="lnum" href="#94" name="94">0094</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">createVersionTable</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">cls</span><span class="op">,</span>&#0160;<span class="name">conn</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#95" name="95">0095</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">versionClass</span><span class="op">.</span><span class="name">createTable</span><span class="op">(</span><span class="name">ifNotExists</span><span class="op">=</span><span class="name">True</span><span class="op">,</span>&#0160;<span class="name">connection</span><span class="op">=</span><span class="name">conn</span><span class="op">)</span><br />
+<a class="lnum" href="#96" name="96">0096</a><br />
+<a class="lnum" href="#97" name="97">0097</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">createTable</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">soClass</span><span class="op">,</span>&#0160;<span class="name">connection</span><span class="op">,</span>&#0160;<span class="name">extra_sql</span><span class="op">,</span>&#0160;<span class="name">post_funcs</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#98" name="98">0098</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">assert</span>&#0160;<span class="name">soClass</span>&#0160;<span class="keyword">is</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">soClass</span><br />
+<a class="lnum" href="#99" name="99">0099</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">post_funcs</span><span class="op">.</span><span class="name">append</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">createVersionTable</span><span class="op">)</span><br />
+<a class="lnum" href="#100" name="100">0100</a><br />
+<a class="lnum" href="#101" name="101">0101</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">rowUpdate</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">instance</span><span class="op">,</span>&#0160;<span class="name">kwargs</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#102" name="102">0102</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">instance</span><span class="op">.</span><span class="name">childName</span>&#0160;<span class="keyword">and</span>&#0160;<span class="name">instance</span><span class="op">.</span><span class="name">childName</span>&#0160;<span class="op">!=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">soClass</span><span class="op">.</span><span class="name">__name__</span><span class="op">:</span><br />
+<a class="lnum" href="#103" name="103">0103</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="comment">#if&#0160;you&#0160;want&#0160;your&#0160;child&#0160;class&#0160;versioned,&#0160;version&#0160;it.</span><br />
+<a class="lnum" href="#104" name="104">0104</a><br />
+<a class="lnum" href="#105" name="105">0105</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">values</span>&#0160;<span class="op">=</span>&#0160;<span class="name">instance</span><span class="op">.</span><span class="name">sqlmeta</span><span class="op">.</span><span class="name">asDict</span><span class="op">(</span><span class="op">)</span><br />
+<a class="lnum" href="#106" name="106">0106</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">del</span>&#0160;<span class="name">values</span><span class="op">[</span><span class="string">'id'</span><span class="op">]</span><br />
+<a class="lnum" href="#107" name="107">0107</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">values</span><span class="op">[</span><span class="string">'masterID'</span><span class="op">]</span>&#0160;<span class="op">=</span>&#0160;<span class="name">instance</span><span class="op">.</span><span class="name">id</span><br />
+<a class="lnum" href="#108" name="108">0108</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">versionClass</span><span class="op">(</span><span class="name">connection</span><span class="op">=</span><span class="name">instance</span><span class="op">.</span><span class="name">_connection</span><span class="op">,</span>&#0160;<span class="op">**</span><span class="name">values</span><span class="op">)</span><br />
+<a class="lnum" href="#109" name="109">0109</a><br />
+<a class="lnum" href="#110" name="110">0110</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__get__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">type</span><span class="op">=</span><span class="name">None</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#111" name="111">0111</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">obj</span>&#0160;<span class="keyword">is</span>&#0160;<span class="name">None</span><span class="op">:</span><br />
+<a class="lnum" href="#112" name="112">0112</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">self</span><br />
+<a class="lnum" href="#113" name="113">0113</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">return</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">versionClass</span><span class="op">.</span><span class="name">select</span><span class="op">(</span><br />
+<a class="lnum" href="#114" name="114">0114</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">versionClass</span><span class="op">.</span><span class="name">q</span><span class="op">.</span><span class="name">masterID</span><span class="op">==</span><span class="name">obj</span><span class="op">.</span><span class="name">id</span><span class="op">,</span>&#0160;<span class="name">connection</span><span class="op">=</span><span class="name">obj</span><span class="op">.</span><span class="name">_connection</span><span class="op">)</span></code></div></body></html>

@@ -1,0 +1,1973 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>SQLObject trunk</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">SQLObject trunk</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents:</p>
+<ul class="simple">
+<li><a href="#author-site-and-license" class="reference internal" id="id9">Author, Site, and License</a></li>
+<li><a href="#introduction" class="reference internal" id="id10">Introduction</a></li>
+<li><a href="#requirements" class="reference internal" id="id11">Requirements</a></li>
+<li><a href="#compared-to-other-database-wrappers" class="reference internal" id="id12">Compared To Other Database Wrappers</a></li>
+<li><a href="#using-sqlobject-an-introduction" class="reference internal" id="id13">Using SQLObject: An Introduction</a><ul>
+<li><a href="#declaring-a-connection" class="reference internal" id="id14">Declaring a Connection</a></li>
+<li><a href="#declaring-the-class" class="reference internal" id="id15">Declaring the Class</a></li>
+<li><a href="#using-the-class" class="reference internal" id="id16">Using the Class</a></li>
+<li><a href="#selecting-multiple-objects" class="reference internal" id="id17">Selecting Multiple Objects</a><ul>
+<li><a href="#q-magic" class="reference internal" id="id18">q-magic</a></li>
+<li><a href="#selectby-method" class="reference internal" id="id19">selectBy Method</a></li>
+</ul>
+</li>
+<li><a href="#lazy-updates" class="reference internal" id="id20">Lazy Updates</a></li>
+<li><a href="#one-to-many-relationships" class="reference internal" id="id21">One-to-Many Relationships</a></li>
+<li><a href="#many-to-many-relationships" class="reference internal" id="id22">Many-to-Many Relationships</a></li>
+<li><a href="#class-sqlmeta" class="reference internal" id="id23">Class sqlmeta</a><ul>
+<li><a href="#using-sqlmeta" class="reference internal" id="id24">Using sqlmeta</a></li>
+<li><a href="#j-magic" class="reference internal" id="id25">j-magic</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-class" class="reference internal" id="id26">SQLObject Class</a></li>
+<li><a href="#customizing-the-objects" class="reference internal" id="id27">Customizing the Objects</a><ul>
+<li><a href="#initializing-the-objects" class="reference internal" id="id28">Initializing the Objects</a></li>
+<li><a href="#adding-magic-attributes-properties" class="reference internal" id="id29">Adding Magic Attributes (properties)</a></li>
+<li><a href="#overriding-column-attributes" class="reference internal" id="id30">Overriding Column Attributes</a></li>
+<li><a href="#undefined-attributes" class="reference internal" id="id31">Undefined attributes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#reference" class="reference internal" id="id32">Reference</a><ul>
+<li><a href="#col-class-specifying-columns" class="reference internal" id="id33">Col Class: Specifying Columns</a><ul>
+<li><a href="#column-types" class="reference internal" id="id34">Column Types</a></li>
+</ul>
+</li>
+<li><a href="#relationships-between-classes-tables" class="reference internal" id="id35">Relationships Between Classes/Tables</a><ul>
+<li><a href="#foreignkey" class="reference internal" id="id36">ForeignKey</a></li>
+<li><a href="#multiplejoin-and-sqlmultiplejoin-one-to-many" class="reference internal" id="id37">MultipleJoin and SQLMultipleJoin: One-to-Many</a></li>
+<li><a href="#relatedjoin-and-sqlrelatedjoin-many-to-many" class="reference internal" id="id38">RelatedJoin and SQLRelatedJoin: Many-to-Many</a></li>
+<li><a href="#singlejoin-one-to-one" class="reference internal" id="id39">SingleJoin: One-to-One</a></li>
+</ul>
+</li>
+<li><a href="#connection-pooling" class="reference internal" id="id40">Connection pooling</a></li>
+<li><a href="#transactions" class="reference internal" id="id41">Transactions</a></li>
+<li><a href="#automatic-schema-generation" class="reference internal" id="id42">Automatic Schema Generation</a><ul>
+<li><a href="#indexes" class="reference internal" id="id43">Indexes</a></li>
+<li><a href="#creating-and-dropping-tables" class="reference internal" id="id44">Creating and Dropping Tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#dynamic-classes" class="reference internal" id="id45">Dynamic Classes</a><ul>
+<li><a href="#automatic-class-generation" class="reference internal" id="id46">Automatic Class Generation</a></li>
+<li><a href="#runtime-column-and-join-changes" class="reference internal" id="id47">Runtime Column and Join Changes</a></li>
+</ul>
+</li>
+<li><a href="#legacy-database-schemas" class="reference internal" id="id48">Legacy Database Schemas</a><ul>
+<li><a href="#sqlobject-requirements" class="reference internal" id="id49">SQLObject requirements</a><ul>
+<li><a href="#workaround-for-primary-keys-made-up-of-multiple-columns" class="reference internal" id="id50">Workaround for primary keys made up of multiple columns</a></li>
+</ul>
+</li>
+<li><a href="#changing-the-naming-style" class="reference internal" id="id51">Changing the Naming Style</a></li>
+<li><a href="#irregular-naming" class="reference internal" id="id52">Irregular Naming</a></li>
+<li><a href="#non-integer-keys" class="reference internal" id="id53">Non-Integer Keys</a></li>
+</ul>
+</li>
+<li><a href="#dbconnection-database-connections" class="reference internal" id="id54">DBConnection: Database Connections</a><ul>
+<li><a href="#id3" class="reference internal" id="id55">MySQL</a></li>
+<li><a href="#postgres" class="reference internal" id="id56">Postgres</a></li>
+<li><a href="#id4" class="reference internal" id="id57">SQLite</a></li>
+<li><a href="#id5" class="reference internal" id="id58">Firebird</a></li>
+<li><a href="#id6" class="reference internal" id="id59">Sybase</a></li>
+<li><a href="#id7" class="reference internal" id="id60">MAX DB</a></li>
+<li><a href="#ms-sql-server" class="reference internal" id="id61">MS SQL Server</a></li>
+</ul>
+</li>
+<li><a href="#events-signals" class="reference internal" id="id62">Events (signals)</a></li>
+<li><a href="#exported-symbols" class="reference internal" id="id63">Exported Symbols</a><ul>
+<li><a href="#left-join-and-other-joins" class="reference internal" id="id64">LEFT JOIN and other JOINs</a></li>
+<li><a href="#how-can-i-join-a-table-with-itself" class="reference internal" id="id65">How can I join a table with itself?</a></li>
+<li><a href="#can-i-use-a-join-with-aliases" class="reference internal" id="id66">Can I use a JOIN() with aliases?</a></li>
+<li><a href="#subqueries-subselects" class="reference internal" id="id67">Subqueries (subselects)</a></li>
+<li><a href="#utilities" class="reference internal" id="id68">Utilities</a></li>
+<li><a href="#sqlbuilder" class="reference internal" id="id69">SQLBuilder</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="author-site-and-license">
+<h1><a href="#id9" class="toc-backref">Author, Site, and License</a></h1>
+<p>SQLObject is by Ian Bicking (<a href="mailto:ianb@colorstudy.com" class="reference external">ianb@colorstudy.com</a>) and <a href="Authors.html" class="reference external">Contributors</a>.  The website is <a href="http://sqlobject.org" class="reference external">sqlobject.org</a>.</p>
+<p>The code is licensed under the <a href="http://www.gnu.org/copyleft/lesser.html" class="reference external">Lesser General Public License</a>
+(LGPL).</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.</p>
+</div>
+<div class="section" id="introduction">
+<h1><a href="#id10" class="toc-backref">Introduction</a></h1>
+<p>SQLObject is an <em>object-relational mapper</em> for <a href="http://python.org" class="reference external">Python</a> programming
+language.  It allows you to translate RDBMS table rows into Python objects,
+and manipulate those objects to transparently manipulate the database.</p>
+<p>In using SQLObject, you will create a class definition that will
+describe how the object translates to the database table.  SQLObject
+will produce the code to access the database, and update the database
+with your changes.  The generated interface looks similar to any other
+interface, and callers need not be aware of the database backend.</p>
+<p>SQLObject also includes a novel feature to avoid generating,
+textually, your SQL queries.  This also allows non-SQL databases to be
+used with the same query syntax.</p>
+</div>
+<div class="section" id="requirements">
+<h1><a href="#id11" class="toc-backref">Requirements</a></h1>
+<p>Currently SQLObject supports <a href="http://mysql.com" class="reference external">MySQL</a> via <a href="http://sourceforge.net/projects/mysql-python/" class="reference external">MySQLdb</a> aka MySQL-python,
+<a href="http://postgresql.org" class="reference external">PostgreSQL</a> via <a href="http://initd.org/projects/psycopg1" class="reference external">psycopg1</a> or <a href="http://initd.org/projects/psycopg2" class="reference external">psycopg2</a>, <a href="http://sqlite.org" class="reference external">SQLite</a> via <a href="http://initd.org/projects/pysqlite" class="reference external">PySQLite</a>, <a href="http://firebird.sourceforge.net" class="reference external">Firebird</a>
+via <a href="http://www.firebirdsql.org/en/devel-python-driver/" class="reference external">fdb</a> or <a href="http://kinterbasdb.sourceforge.net/" class="reference external">kinterbasdb</a>, <a href="http://www.mysql.com/products/maxdb/" class="reference external">MAX DB</a> (also known as SAP DB) via <a href="http://www.sapdb.org/sapdbPython.html" class="reference external">sapdb</a>,
+Sybase via <a href="http://www.object-craft.com.au/projects/sybase/" class="reference external">Sybase</a>, and <a href="http://www.microsoft.com/sql/" class="reference external">MSSQL Server</a> via <a href="http://pymssql.sourceforge.net/" class="reference external">pymssql</a> (+ <a href="http://www.freetds.org/" class="reference external">FreeTDS</a>) or
+<a href="http://adodbapi.sourceforge.net/" class="reference external">adodbapi</a> (Win32).</p>
+<p>Python 2.6 or 2.7 is required.</p>
+</div>
+<div class="section" id="compared-to-other-database-wrappers">
+<h1><a href="#id12" class="toc-backref">Compared To Other Database Wrappers</a></h1>
+<p>There are several object-relational mappers (ORM) for Python.  I
+honestly can't comment deeply on the quality of those packages, but
+I'll try to place SQLObject in perspective.</p>
+<p>SQLObject uses new-style classes extensively.  The resultant objects
+have a new-style feel as a result -- setting attributes has side
+effects (it changes the database), and defining classes has side
+effects (through the use of metaclasses).  Attributes are generally
+exposed, not marked private, knowing that they can be made dynamic
+or write-only later.</p>
+<p>SQLObject creates objects that feel similar to normal Python objects
+(with the semantics of new-style classes).  An attribute attached to a
+column doesn't look different than an attribute that's attached to a
+file, or an attribute that is calculated.  It is a specific goal that
+you be able to change the database without changing the interface,
+including changing the scope of the database, making it more or less
+prominent as a storage mechanism.</p>
+<p>This is in contrast to some ORMs that provide a dictionary-like
+interface to the database (for example, <a href="http://skunkweb.sourceforge.net/pydo.html" class="reference external">PyDO</a>).  The dictionary
+interface distinguishes the row from a normal Python object.  I also
+don't care for the use of strings where an attribute seems more
+natural -- columns are limited in number and predefined, just like
+attributes.  (Note: newer version of PyDO apparently allow attribute
+access as well)</p>
+<p>SQLObject is, to my knowledge, unique in using metaclasses to
+facilitate this seamless integration.  Some other ORMs use code
+generation to create an interface, expressing the schema in a CSV or
+XML file (for example, MiddleKit, part of <a href="http://webware.sourceforge.net" class="reference external">Webware</a>).  By using
+metaclasses you are able to comfortably define your schema in the
+Python source code.  No code generation, no weird tools, no
+compilation step.</p>
+<p>SQLObject provides a strong database abstraction, allowing
+cross-database compatibility (so long as you don't sidestep
+SQLObject).</p>
+<p>SQLObject has joins, one-to-many, and many-to-many, something which
+many ORMs do not have.  The join system is also intended to be
+extensible.</p>
+<p>You can map between database names and Python attribute and class
+names; often these two won't match, or the database style would be
+inappropriate for a Python attribute.  This way your database schema
+does not have to be designed with SQLObject in mind, and the resulting
+classes do not have to inherit the database's naming schemes.</p>
+</div>
+<div class="section" id="using-sqlobject-an-introduction">
+<h1><a href="#id13" class="toc-backref">Using SQLObject: An Introduction</a></h1>
+<p>Let's start off quickly.  We'll generally just import everything from
+the <tt class="docutils literal">sqlobject</tt> class:</p>
+<pre class="literal-block">
+>>> from sqlobject import *
+>>> import sys, os
+</pre>
+<div class="section" id="declaring-a-connection">
+<h2><a href="#id14" class="toc-backref">Declaring a Connection</a></h2>
+<p>The connection URI must follow the standard URI syntax:</p>
+<pre class="literal-block">
+scheme://[user[:password]@]host[:port]/database[?parameters]
+</pre>
+<p>Scheme is one of <tt class="docutils literal">sqlite</tt>, <tt class="docutils literal">mysql</tt>, <tt class="docutils literal">postgres</tt>, <tt class="docutils literal">firebird</tt>,
+<tt class="docutils literal">interbase</tt>, <tt class="docutils literal">maxdb</tt>, <tt class="docutils literal">sapdb</tt>, <tt class="docutils literal">mssql</tt>, <tt class="docutils literal">sybase</tt>.</p>
+<p>Examples:</p>
+<pre class="literal-block">
+mysql://user:password@host/database
+mysql://host/database?debug=1
+postgres://user@host/database?debug=&amp;cache=
+postgres:///full/path/to/socket/database
+postgres://host:5432/database
+sqlite:///full/path/to/database
+sqlite:/C:/full/path/to/database
+sqlite:/:memory:
+</pre>
+<p>Parameters are: <tt class="docutils literal">debug</tt> (default: False), <tt class="docutils literal">debugOutput</tt> (default: False),
+<tt class="docutils literal">cache</tt> (default: True), <tt class="docutils literal">autoCommit</tt> (default: True),
+<tt class="docutils literal">debugThreading</tt> (default: False),
+<tt class="docutils literal">logger</tt> (default: None), <tt class="docutils literal">loglevel</tt> (default: None),
+<tt class="docutils literal">schema</tt> (default: None).</p>
+<p>If you want to pass True value in a connection URI - pass any non-empty
+string; an empty string for False.</p>
+<p>Lets first set up a connection:</p>
+<pre class="literal-block">
+>>> db_filename = os.path.abspath('data.db')
+>>> if os.path.exists(db_filename):
+...     os.unlink(db_filename)
+>>> connection_string = 'sqlite:' + db_filename
+>>> connection = connectionForURI(connection_string)
+>>> sqlhub.processConnection = connection
+</pre>
+<p>The <tt class="docutils literal">sqlhub.processConnection</tt> assignment means that all classes
+will, by default, use this connection we've just set up.</p>
+</div>
+<div class="section" id="declaring-the-class">
+<h2><a href="#id15" class="toc-backref">Declaring the Class</a></h2>
+<p>We'll develop a simple addressbook-like database.  We could create the
+tables ourselves, and just have SQLObject access those tables, but
+let's have SQLObject do that work.  First, the class:</p>
+<blockquote>
+<pre class="doctest-block">
+>>> class Person(SQLObject):
+...
+...     firstName = StringCol()
+...     middleInitial = StringCol(length=1, default=None)
+...     lastName = StringCol()
+</pre>
+</blockquote>
+<p>Many basic table schemas won't be any more complicated than that.
+<cite>firstName</cite>, <cite>middleInitial</cite>, and <cite>lastName</cite> are all columns in the
+database.  The general schema implied by this class definition is:</p>
+<pre class="literal-block">
+CREATE TABLE person (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name TEXT,
+    middle_initial CHAR(1),
+    last_name TEXT
+);
+</pre>
+<p>This is for SQLite or MySQL.  The schema for other databases looks
+slightly different (especially the <tt class="docutils literal">id</tt> column).  You'll notice the
+names were changed from mixedCase to underscore_separated -- this is
+done by the <a href="#changing-the-naming-style" class="reference internal">style object</a>.  There are a variety of ways to handle
+names that don't fit conventions (see <a href="#irregular-naming" class="reference internal">Irregular Naming</a>).</p>
+<p>Now we'll create the table in the database:</p>
+<pre class="literal-block">
+>>> Person.createTable()
+[]
+</pre>
+<p>We can change the type of the various columns by using something other
+than <cite>StringCol</cite>, or using different arguments.  More about this in
+<a href="#column-types" class="reference internal">Column Types</a>.</p>
+<p>You'll note that the <tt class="docutils literal">id</tt> column is not given in the class
+definition, it is implied.  For MySQL databases it should be defined
+as <tt class="docutils literal">INT PRIMARY KEY AUTO_INCREMENT</tt>, in Postgres <tt class="docutils literal">SERIAL PRIMARY
+KEY</tt>, and in SQLite as <tt class="docutils literal">INTEGER PRIMARY KEY</tt>.  You can't use tables
+with SQLObject that don't have a single primary key, and you must
+treat that key as immutable (otherwise you'll confuse SQLObject
+terribly).</p>
+<p>You can <a href="#class-sqlmeta" class="reference internal">override the id name</a> in the database, but it is
+always called <tt class="docutils literal">.id</tt> from Python.</p>
+</div>
+<div class="section" id="using-the-class">
+<h2><a href="#id16" class="toc-backref">Using the Class</a></h2>
+<p>Now that you have a class, how will you use it?  We'll be considering
+the class defined above.</p>
+<p>To create a new object (and row), use class instantiation, like:</p>
+<pre class="literal-block">
+>>> Person(firstName="John", lastName="Doe")
+&lt;Person 1 firstName='John' middleInitial=None lastName='Doe'>
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>In SQLObject NULL/None does <em>not</em> mean default.  NULL is a funny
+thing; it mean very different things in different contexts and to
+different people.  Sometimes it means "default", sometimes "not
+applicable", sometimes "unknown".  If you want a default, NULL or
+otherwise, you always have to be explicit in your class
+definition.</p>
+<p class="last">Also note that the SQLObject default isn't the same as the
+database's default (SQLObject never uses the database's default).</p>
+</div>
+<p>If you had left out <tt class="docutils literal">firstName</tt> or <tt class="docutils literal">lastName</tt> you would have
+gotten an error, as no default was given for these columns
+(<tt class="docutils literal">middleInitial</tt> has a default, so it will be set to <tt class="docutils literal">NULL</tt>, the
+database equivalent of <tt class="docutils literal">None</tt>).</p>
+<p>You can use the class method <cite>.get()</cite> to fetch instances that
+already exist:</p>
+<pre class="literal-block">
+>>> Person.get(1)
+&lt;Person 1 firstName='John' middleInitial=None lastName='Doe'>
+</pre>
+<p>When you create an object, it is immediately inserted into the
+database.  SQLObject uses the database as immediate storage, unlike
+some other systems where you explicitly save objects into a database.</p>
+<p>Here's a longer example of using the class:</p>
+<pre class="literal-block">
+>>> p = Person.get(1)
+>>> p
+&lt;Person 1 firstName='John' middleInitial=None lastName='Doe'>
+>>> p.firstName
+'John'
+>>> p.middleInitial = 'Q'
+>>> p.middleInitial
+'Q'
+>>> p2 = Person.get(1)
+>>> p2
+&lt;Person 1 firstName='John' middleInitial='Q' lastName='Doe'>
+>>> p is p2
+True
+</pre>
+<p>Columns are accessed like attributes.  (This uses the <tt class="docutils literal">property</tt>
+feature of Python, so that retrieving and setting these attributes
+executes code).  Also note that objects are unique -- there is
+generally only one <tt class="docutils literal">Person</tt> instance of a particular id in memory at
+any one time.  If you ask for a person by a particular ID more than
+once, you'll get back the same instance.  This way you can be sure of
+a certain amount of consistency if you have multiple threads accessing
+the same data (though of course across processes there can be no
+sharing of an instance).  This isn't true if you're using
+<a href="#transactions" class="reference internal">transactions</a>, which are necessarily isolated.</p>
+<p>To get an idea of what's happening behind the surface, I'll give the
+same actions with the SQL that is sent, along with some commentary:</p>
+<pre class="literal-block">
+>>> # This will make SQLObject print out the SQL it executes:
+>>> Person._connection.debug = True
+>>> p = Person(firstName='Bob', lastName='Hope')
+ 1/QueryIns:  INSERT INTO person (last_name, middle_initial, first_name) VALUES ('Hope', NULL, 'Bob')
+ 1/QueryR  :  INSERT INTO person (last_name, middle_initial, first_name) VALUES ('Hope', NULL, 'Bob')
+ 1/COMMIT  :  auto
+ 1/QueryOne:  SELECT first_name, middle_initial, last_name FROM person WHERE ((person.id) = (2))
+ 1/QueryR  :  SELECT first_name, middle_initial, last_name FROM person WHERE ((person.id) = (2))
+ 1/COMMIT  :  auto
+>>> p
+&lt;Person 2 firstName='Bob' middleInitial=None lastName='Hope'>
+>>> p.middleInitial = 'Q'
+ 1/Query   :  UPDATE person SET middle_initial = ('Q') WHERE id = (2)
+ 1/QueryR  :  UPDATE person SET middle_initial = ('Q') WHERE id = (2)
+ 1/COMMIT  :  auto
+>>> p2 = Person.get(1)
+>>> # Note: no database access, since we're just grabbing the same
+>>> # instance we already had.
+</pre>
+<p>Hopefully you see that the SQL that gets sent is pretty clear and
+predictable.  To view the SQL being sent, add <tt class="docutils literal"><span class="pre">?debug=t</span></tt> to your
+connection URI, or set the <tt class="docutils literal">debug</tt> attribute on the connection, and
+all SQL will be printed to the console.  This can be reassuring, and I
+would encourage you to try it.</p>
+<!-- comment:
+
+>>> Person._connection.debug = False -->
+<p>As a small optimization, instead of assigning each attribute
+individually, you can assign a number of them using the <tt class="docutils literal">set</tt>
+method, like:</p>
+<pre class="literal-block">
+>>> p.set(firstName='Robert', lastName='Hope Jr.')
+</pre>
+<p>This will send only one <tt class="docutils literal">UPDATE</tt> statement.  You can also use <cite>set</cite>
+with non-database properties (there's no benefit, but it helps hide
+the difference between database and non-database attributes).</p>
+</div>
+<div class="section" id="selecting-multiple-objects">
+<h2><a href="#id17" class="toc-backref">Selecting Multiple Objects</a></h2>
+<p>While the full power of all the kinds of joins you can do with a
+relational database are not revealed in SQLObject, a simple <tt class="docutils literal">SELECT</tt>
+is available.</p>
+<p><tt class="docutils literal">select</tt> is a class method, and you call it like (with the SQL
+that's generated):</p>
+<pre class="literal-block">
+>>> Person._connection.debug = True
+>>> peeps = Person.select(Person.q.firstName=="John")
+>>> list(peeps)
+ 1/Select  :  SELECT person.id, person.first_name, person.middle_initial, person.last_name FROM person WHERE ((person.first_name) = ('John'))
+ 1/QueryR  :  SELECT person.id, person.first_name, person.middle_initial, person.last_name FROM person WHERE ((person.first_name) = ('John'))
+ 1/COMMIT  :  auto
+[&lt;Person 1 firstName='John' middleInitial='Q' lastName='Doe'>]
+</pre>
+<p>This example returns everyone with the first name John.  An expression
+could be more complicated as well, like:</p>
+<pre class="literal-block">
+>>> peeps = Person.select(
+...         AND(Address.q.personID == Person.q.id,
+...             Address.q.zip.startswith('504')))
+>>> list(peeps)
+ 1/Select  :  SELECT person.id, person.first_name, person.middle_initial, person.last_name FROM person, address WHERE ((address.person_id = person.id) AND (address.zip LIKE '504%'))
+ 1/COMMIT  :  auto
+[]
+</pre>
+<p>You'll note that classes have an attribute <tt class="docutils literal">q</tt>, which gives access
+to special objects for constructing query clauses.  All attributes
+under <tt class="docutils literal">q</tt> refer to column names and if you construct logical
+statements with these it'll give you the SQL for that statement.  You
+can also create your SQL more manually:</p>
+<pre class="literal-block">
+>>> Person._connection.debug = False  # Needed for doctests
+>>> peeps = Person.select("""address.person_id = person.id AND
+...                          address.zip LIKE '504%'""",
+...                       clauseTables=['address'])
+</pre>
+<p>Note that you have to use <tt class="docutils literal">clauseTables</tt> if you use tables besides
+the one you are selecting from.  If you use the <tt class="docutils literal">q</tt> attributes
+SQLObject will automatically figure out what extra classes you might
+have used.</p>
+<p>You should use <cite>MyClass.sqlrepr</cite> to quote any values you use if you
+create SQL manually (quoting is automatic if you use <tt class="docutils literal">q</tt>).</p>
+<p id="orderby">You can use the keyword arguments <cite>orderBy</cite> to create <tt class="docutils literal">ORDER BY</tt> in the
+select statements: <cite>orderBy</cite> takes a string, which should be the <em>database</em>
+name of the column, or a column in the form <tt class="docutils literal">Person.q.firstName</tt>.  You
+can use <tt class="docutils literal"><span class="pre">"-colname"</span></tt> or <tt class="docutils literal">DESC(Person.q.firstName</tt>) to specify
+descending order (this is translated to DESC, so it works on non-numeric
+types as well), or call <tt class="docutils literal"><span class="pre">MyClass.select().reversed()</span></tt>. orderBy can also
+take a list of columns in the same format: <tt class="docutils literal"><span class="pre">["-weight",</span> "name"]</tt>.</p>
+<p>You can use the <a href="#class-sqlmeta" class="reference internal">sqlmeta</a> class variable <cite>defaultOrder</cite> to give a
+default ordering for all selects.  To get an unordered result when
+<cite>defaultOrder</cite> is used, use <tt class="docutils literal">orderBy=None</tt>.</p>
+<p>Select results are generators, which are lazily evaluated.  So the SQL
+is only executed when you iterate over the select results, or if you
+use <tt class="docutils literal">list()</tt> to force the result to be executed.  When you iterate
+over the select results, rows are fetched one at a time.  This way you
+can iterate over large results without keeping the entire result set
+in memory.  You can also do things like <tt class="docutils literal">.reversed()</tt> without
+fetching and reversing the entire result -- instead, SQLObject can
+change the SQL that is sent so you get equivalent results.</p>
+<p>You can also slice select results.  This modifies the SQL query, so
+<tt class="docutils literal"><span class="pre">peeps[:10]</span></tt> will result in <tt class="docutils literal">LIMIT 10</tt> being added to the end of
+the SQL query.  If the slice cannot be performed in the SQL (e.g.,
+peeps[:-10]), then the select is executed, and the slice is performed
+on the list of results.  This will generally only happen when you use
+negative indexes.</p>
+<p>In certain cases, you may get a select result with an object in it
+more than once, e.g., in some joins.  If you don't want this, you can
+add the keyword argument <tt class="docutils literal"><span class="pre">MyClass.select(...,</span> distinct=True)</tt>, which
+results in a <tt class="docutils literal">SELECT DISTINCT</tt> call.</p>
+<p>You can get the length of the result without fetching all the results
+by calling <tt class="docutils literal">count</tt> on the result object, like
+<tt class="docutils literal"><span class="pre">MyClass.select().count()</span></tt>.  A <tt class="docutils literal"><span class="pre">COUNT(*)</span></tt> query is used -- the
+actual objects are not fetched from the database.  Together with
+slicing, this makes batched queries easy to write:</p>
+<blockquote>
+start = 20
+size = 10
+query = Table.select()
+results = query[start:start+size]
+total = query.count()
+print "Showing page %i of %i" % (start/size + 1, total/size + 1)</blockquote>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>There are several factors when considering the efficiency of this
+kind of batching, and it depends very much how the batching is
+being used.  Consider a web application where you are showing an
+average of 100 results, 10 at a time, and the results are ordered
+by the date they were added to the database.  While slicing will
+keep the database from returning all the results (and so save some
+communication time), the database will still have to scan through
+the entire result set to sort the items (so it knows which the
+first ten are), and depending on your query may need to scan
+through the entire table (depending on your use of indexes).
+Indexes are probably the most important way to improve importance
+in a case like this, and you may find caching to be more effective
+than slicing.</p>
+<p class="last">In this case, caching would mean retrieving the <em>complete</em> results.
+You can use <tt class="docutils literal"><span class="pre">list(MyClass.select(...))</span></tt> to do this.  You can save
+these results for some limited period of time, as the user looks
+through the results page by page.  This means the first page in a
+search result will be slightly more expensive, but all later pages
+will be very cheap.</p>
+</div>
+<p>For more information on the where clause in the queries, see the
+<a href="SQLBuilder.html" class="reference external">SQLBuilder documentation</a>.</p>
+<div class="section" id="q-magic">
+<h3><a href="#id18" class="toc-backref">q-magic</a></h3>
+<p>Please note the use of the <cite>q</cite> attribute in examples above. <cite>q</cite> is an
+object that returns special objects to construct SQL expressions.
+Operations on objects returned by <cite>q-magic</cite> are not evaluated immediately
+but stored in a manner similar to symbolic algebra; the entire expression
+is evaluated by constructing a string that is sent then to the backend.</p>
+<p>For example, for the code:</p>
+<pre class="literal-block">
+>>> peeps = Person.select(Person.q.firstName=="John")
+</pre>
+<p>SQLObject doesn't evaluate firstName but stores the expression:</p>
+<blockquote>
+Person.q.firstName=="John"</blockquote>
+<p>converts it to the string <tt class="docutils literal">first_name = 'John'</tt> and passes the string to
+the backend.</p>
+</div>
+<div class="section" id="selectby-method">
+<h3><a href="#id19" class="toc-backref">selectBy Method</a></h3>
+<p>An alternative to <tt class="docutils literal">.select</tt> is <tt class="docutils literal">.selectBy</tt>.  It works like:</p>
+<blockquote>
+<pre class="doctest-block">
+>>> peeps = Person.selectBy(firstName="John", lastName="Doe")
+</pre>
+</blockquote>
+<p>Each keyword argument is a column, and all the keyword arguments
+are ANDed together.  The return value is a <cite>SelectResult</cite>, so you
+can slice it, count it, order it, etc.</p>
+</div>
+</div>
+<div class="section" id="lazy-updates">
+<h2><a href="#id20" class="toc-backref">Lazy Updates</a></h2>
+<p>By default SQLObject sends an <tt class="docutils literal">UPDATE</tt> to the database for every
+attribute you set, or every time you call <tt class="docutils literal">.set()</tt>.  If you want to
+avoid this many updates, add <tt class="docutils literal">lazyUpdate = True</tt> to your class <a href="#class-sqlmeta" class="reference internal">sqlmeta
+definition</a>.</p>
+<p>Then updates will only be written to the database when
+you call <tt class="docutils literal">inst.syncUpdate()</tt> or <tt class="docutils literal">inst.sync()</tt>: <tt class="docutils literal">.sync()</tt> also
+refetches the data from the database, which <tt class="docutils literal">.syncUpdate()</tt> does not
+do.</p>
+<p>When enabled instances will have a property <tt class="docutils literal">.sqlmeta.dirty</tt>, which
+indicates if there are pending updates.  Inserts are still done
+immediately; there's no way to do lazy inserts at this time.</p>
+</div>
+<div class="section" id="one-to-many-relationships">
+<h2><a href="#id21" class="toc-backref">One-to-Many Relationships</a></h2>
+<p>An address book is nothing without addresses.</p>
+<p>First, let's define the new address table.  People can have multiple
+addresses, of course:</p>
+<pre class="literal-block">
+>>> class Address(SQLObject):
+...
+...     street = StringCol()
+...     city = StringCol()
+...     state = StringCol(length=2)
+...     zip = StringCol(length=9)
+...     person = ForeignKey('Person')
+>>> Address.createTable()
+[]
+</pre>
+<p>Note the column <tt class="docutils literal">person = <span class="pre">ForeignKey("Person")</span></tt>.  This is a
+reference to a <cite>Person</cite> object.  We refer to other classes by name
+(with a string).  In the database there will be a <tt class="docutils literal">person_id</tt>
+column, type <tt class="docutils literal">INT</tt>, which points to the <tt class="docutils literal">person</tt> column.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>The reason SQLObject uses strings to refer to other classes is
+because the other class often does not yet exist.  Classes in
+Python are <em>created</em>, not <em>declared</em>; so when a module is imported
+the commands are executed.  <tt class="docutils literal">class</tt> is just another command; one
+that creates a class and assigns it to the name you give.</p>
+<p class="last">If class <tt class="docutils literal">A</tt> referred to class <tt class="docutils literal">B</tt>, but class <tt class="docutils literal">B</tt> was defined
+below <tt class="docutils literal">A</tt> in the module, then when the <tt class="docutils literal">A</tt> class was created
+(including creating all its column attributes) the <tt class="docutils literal">B</tt> class
+simply wouldn't exist.  By referring to classes by name, we can
+wait until all the required classes exist before creating the links
+between classes.</p>
+</div>
+<p>We want an attribute that gives the addresses for a person.  In a
+class definition we'd do:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    ...
+    addresses = MultipleJoin('Address')
+</pre>
+<p>But we already have the class.  We can add this to the class
+in-place:</p>
+<pre class="literal-block">
+>>> Person.sqlmeta.addJoin(MultipleJoin('Address',
+...                        joinMethodName='addresses'))
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">In almost all cases you can modify SQLObject classes after they've
+been created.  Having attributes that contain <tt class="docutils literal">*Col</tt> objects in
+the class definition is equivalent to calling certain class methods
+(like <tt class="docutils literal">addColumn()</tt>).</p>
+</div>
+<p>Now we can get the backreference with <tt class="docutils literal">aPerson.addresses</tt>, which
+returns a list.  An example:</p>
+<pre class="literal-block">
+>>> p.addresses
+[]
+>>> Address(street='123 W Main St', city='Smallsville',
+...         state='MN', zip='55407', person=p)
+&lt;Address 1 ...>
+>>> p.addresses
+[&lt;Address 1 ...>]
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">MultipleJoin, as well as RelatedJoin, returns a list of results.
+It is often preferable to get a <a href="SelectResults.html" class="reference external">SelectResults</a> object instead,
+in which case you should use
+SQLMultipleJoin and SQLRelatedJoin. The declaration of these joins is
+unchanged from above, but the returned iterator has many additional useful methods.</p>
+</div>
+</div>
+<div class="section" id="many-to-many-relationships">
+<h2><a href="#id22" class="toc-backref">Many-to-Many Relationships</a></h2>
+<p>For this example we will have user and role objects.  The two have a
+many-to-many relationship, which is represented with the
+<cite>RelatedJoin</cite>.</p>
+<blockquote>
+<pre class="doctest-block">
+>>> class User(SQLObject):
+...
+...     class sqlmeta:
+...         # user is a reserved word in some databases, so we won't
+...         # use that for the table name:
+...         table = "user_table"
+...
+...     username = StringCol(alternateID=True, length=20)
+...     # We'd probably define more attributes, but we'll leave
+...     # that exercise to the reader...
+...
+...     roles = RelatedJoin('Role')
+</pre>
+<pre class="doctest-block">
+>>> class Role(SQLObject):
+...
+...     name = StringCol(alternateID=True, length=20)
+...
+...     users = RelatedJoin('User')
+</pre>
+<pre class="doctest-block">
+>>> User.createTable()
+[]
+>>> Role.createTable()
+[]
+</pre>
+</blockquote>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">The sqlmeta class is used to store
+different kinds of metadata (and override that metadata, like table).
+This is new in SQLObject 0.7. See the section <a href="#class-sqlmeta" class="reference internal">Class sqlmeta</a> for more
+information on how it works and what attributes have special meanings.</p>
+</div>
+<p>And usage:</p>
+<pre class="literal-block">
+>>> bob = User(username='bob')
+>>> tim = User(username='tim')
+>>> jay = User(username='jay')
+>>> admin = Role(name='admin')
+>>> editor = Role(name='editor')
+>>> bob.addRole(admin)
+>>> bob.addRole(editor)
+>>> tim.addRole(editor)
+>>> bob.roles
+[&lt;Role 1 name='admin'>, &lt;Role 2 name='editor'>]
+>>> tim.roles
+[&lt;Role 2 name='editor'>]
+>>> jay.roles
+[]
+>>> admin.users
+[&lt;User 1 username='bob'>]
+>>> editor.users
+[&lt;User 1 username='bob'>, &lt;User 2 username='tim'>]
+</pre>
+<p>In the process an intermediate table is created, <tt class="docutils literal">role_user</tt>, which
+references both of the other classes.  This table is never exposed as
+a class, and its rows do not have equivalent Python objects -- this
+hides some of the nuisance of a many-to-many relationship.</p>
+<p>By the way, if you want to create an intermediate table of your own,
+maybe with additional columns, be aware that the standard SQLObject
+methods add/removesomething may not work as expected. Assuming that
+you are providing the join with the correct joinColumn and otherColumn
+arguments, be aware it's not possible to insert extra data via such
+methods, nor will they set any default value.</p>
+<p>Let's have an example: in the previous User/Role system,
+you're creating a UserRole intermediate table, with the two columns
+containing the foreign keys for the MTM relationship, and an additional
+DateTimeCol defaulting to datetime.datetime.now : that column will
+stay empty when adding roles with the addRole method.
+If you want to get a list of rows from the intermediate table directly
+add a MultipleJoin to User or Role class.</p>
+<p>You may notice that the columns have the extra keyword argument
+<cite>alternateID</cite>.  If you use <tt class="docutils literal">alternateID=True</tt>, this means that the
+column uniquely identifies rows -- like a username uniquely identifies
+a user.  This identifier is in addition to the primary key (<tt class="docutils literal">id</tt>),
+which is always present.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">SQLObject has a strong requirement that the primary key be unique
+and <em>immutable</em>.  You cannot change the primary key through
+SQLObject, and if you change it through another mechanism you can
+cause inconsistency in any running SQLObject program (and in your
+data).  For this reason meaningless integer IDs are encouraged --
+something like a username that could change in the future may
+uniquely identify a row, but it may be changed in the future.  So
+long as it is not used to reference the row, it is also <em>safe</em> to
+change it in the future.</p>
+</div>
+<p>A alternateID column creates a class method, like <tt class="docutils literal">byUsername</tt> for a
+column named <tt class="docutils literal">username</tt> (or you can use the <cite>alternateMethodName</cite>
+keyword argument to override this).  Its use:</p>
+<blockquote>
+<pre class="doctest-block">
+>>> User.byUsername('bob')
+&lt;User 1 username='bob'>
+>>> Role.byName('admin')
+&lt;Role 1 name='admin'>
+</pre>
+</blockquote>
+</div>
+<div class="section" id="class-sqlmeta">
+<h2><a href="#id23" class="toc-backref">Class sqlmeta</a></h2>
+<p>This new class is available starting with SQLObject 0.7 and allows
+specifying metadata in a clearer way, without polluting the class
+namespace with more attributes.</p>
+<p>There are some special attributes that can be used inside this class
+that will change the behavior of the class that contains it.  Those
+values are:</p>
+<dl class="docutils">
+<dt><cite>table</cite>:</dt>
+<dd>The name of the table in the database.  This is derived from
+<tt class="docutils literal">style</tt> and the class name if no explicit name is given.  If you
+don't give a name and haven't defined an alternative <tt class="docutils literal">style</tt>, then
+the standard <cite>MixedCase</cite> to <cite>mixed_case</cite> translation is performed.</dd>
+<dt><cite>idName</cite>:</dt>
+<dd>The name of the primary key column in the database.  This is
+derived from <tt class="docutils literal">style</tt> if no explicit name is given.  The default name
+is <tt class="docutils literal">id</tt>.</dd>
+<dt><cite>idType</cite>:</dt>
+<dd>A function that coerces/normalizes IDs when setting IDs.  This
+is <tt class="docutils literal">int</tt> by default (all IDs are normalized to integers).</dd>
+<dt><cite>style</cite>:</dt>
+<dd>A style object -- this object allows you to use other algorithms
+for translating between Python attribute and class names, and the
+database's column and table names.  See <a href="#changing-the-naming-style" class="reference internal">Changing the Naming
+Style</a> for more.  It is an instance of the <cite>IStyle</cite> interface.</dd>
+<dt><cite>lazyUpdate</cite>:</dt>
+<dd>A boolean (default false).  If true, then setting attributes on
+instances (or using <tt class="docutils literal"><span class="pre">inst.set(.)</span></tt> will not send <tt class="docutils literal">UPDATE</tt>
+queries immediately (you must call <tt class="docutils literal">inst.syncUpdates()</tt> or
+<tt class="docutils literal">inst.sync()</tt> first).</dd>
+<dt><cite>defaultOrder</cite>:</dt>
+<dd>When selecting objects and not giving an explicit order, this
+attribute indicates the default ordering.  It is like this value
+is passed to <tt class="docutils literal">.select()</tt> and related methods; see those method's
+documentation for details.</dd>
+<dt><cite>cacheValues</cite>:</dt>
+<dd><p class="first">A boolean (default true).  If true, then the values in the row are
+cached as long as the instance is kept (and <tt class="docutils literal">inst.expire()</tt> is
+not called).</p>
+<p class="last">If set to <cite>False</cite> then values for attributes from the database
+won't be cached.  So every time you access an attribute in the
+object the database will be queried for a value, i.e., a <tt class="docutils literal">SELECT</tt>
+will be issued.  If you want to handle concurrent access to the
+database from multiple processes then this is probably the way to
+do so.</p>
+</dd>
+<dt><cite>registry</cite>:</dt>
+<dd>Because SQLObject uses strings to relate classes, and these
+strings do not respect module names, name clashes will occur if
+you put different systems together.  This string value serves
+as a namespace for classes.</dd>
+<dt><cite>fromDatabase</cite>:</dt>
+<dd>A boolean (default false).  If true, then on class creation the
+database will be queried for the table's columns, and any missing
+columns (possible all columns) will be added automatically.</dd>
+<dt><cite>dbEncoding</cite>:</dt>
+<dd><a href="#column-types" class="reference internal">UnicodeCol</a> looks up <cite>sqlmeta.dbEncoding</cite> if <cite>column.dbEncoding</cite> is
+<tt class="docutils literal">None</tt> (if <cite>sqlmeta.dbEncoding</cite> is <tt class="docutils literal">None</tt> <a href="#column-types" class="reference internal">UnicodeCol</a> looks up
+<cite>connection.dbEncoding</cite> and if <cite>dbEncoding</cite> isn't defined anywhere it
+defaults to <tt class="docutils literal"><span class="pre">"utf-8"</span></tt>).</dd>
+</dl>
+<p>The following attributes provide introspection but should not be set directly -
+see <a href="#runtime-column-and-join-changes" class="reference internal">Runtime Column and Join Changes</a> for dynamically modifying these class
+elements.</p>
+<dl class="docutils">
+<dt><cite>columns</cite>:</dt>
+<dd>A dictionary of <tt class="docutils literal">{columnName: anSOColInstance}</tt>.  You can get
+information on the columns via this read-only attribute.</dd>
+<dt><cite>columnList</cite>:</dt>
+<dd>A list of the values in <tt class="docutils literal">columns</tt>.  Sometimes a stable, ordered
+version of the columns is necessary; this is used for that.</dd>
+<dt><cite>columnDefinitions</cite>:</dt>
+<dd>A dictionary like <tt class="docutils literal">columns</tt>, but contains the original column
+definitions (which are not class-specific, and have no logic).</dd>
+<dt><cite>joins</cite>:</dt>
+<dd>A list of all the Join objects for this class.</dd>
+<dt><cite>indexes</cite>:</dt>
+<dd>A list of all the indexes for this class.</dd>
+<dt><cite>createSQL</cite>:</dt>
+<dd>SQL queries run after table creation. createSQL can be a string with a
+single SQL command, a list of SQL commands, or a dictionary with keys that
+are dbNames and values that are either single SQL command string or a list
+of SQL commands. This is usually for ALTER TABLE commands.</dd>
+</dl>
+<p>There is also one instance attribute:</p>
+<dl class="docutils">
+<dt><cite>expired</cite>:</dt>
+<dd>A boolean.  If true, then the next time this object's column
+attributes are accessed a query will be run.</dd>
+</dl>
+<p>While in previous versions of SQLObject those attributes were defined
+directly at the class that will map your database data to Python and
+all of them were prefixed with an underscore, now it is suggested that
+you change your code to this new style.  The old way was removed
+in SQLObject 0.8.</p>
+<p>Please note: when using InheritedSQLObject, sqlmeta attributes don't
+get inherited, e.g. you can't access via the sqlmeta.columns dictionary
+the parent's class column objects.</p>
+<div class="section" id="using-sqlmeta">
+<h3><a href="#id24" class="toc-backref">Using sqlmeta</a></h3>
+<p>To use sqlmeta you should write code like this example:</p>
+<pre class="literal-block">
+class MyClass(SQLObject):
+
+    class sqlmeta:
+        lazyUpdate = True
+        cacheValues = False
+
+    columnA = StringCol()
+    columnB = IntCol()
+
+    def _set_attr1(self, value):
+        # do something with value
+
+    def _get_attr1(self):
+        # do something to retrieve value
+</pre>
+<p>The above definition is creating a table <tt class="docutils literal">my_class</tt> (the name may be
+different if you change the <tt class="docutils literal">style</tt> used) with two columns called
+columnA and columnB.  There's also a third field that can be accessed
+using <tt class="docutils literal">MyClass.attr1</tt>.  The sqlmeta class is changing the behavior
+of <tt class="docutils literal">MyClass</tt> so that it will perform lazy updates (you'll have to call
+the <tt class="docutils literal">.sync()</tt> method to write the updates to the database) and it is
+also telling that <tt class="docutils literal">MyClass</tt> won't have any cache, so that every time
+you ask for some information it will be retrieved from the database.</p>
+</div>
+<div class="section" id="j-magic">
+<h3><a href="#id25" class="toc-backref">j-magic</a></h3>
+<p>There is a magic attribute <cite>j</cite> similar to <a href="#q-magic" class="reference internal">q</a> with attributes for
+ForeignKey and SQLMultipleJoin/SQLRelatedJoin, providing a shorthand for
+the SQLBuilder join expressions to traverse the given relationship. For
+example, for a ForeignKey AClass.j.someB is equivalent to
+(AClass.q.someBID==BClass.q.id), as is BClass.j.someAs for the matching
+SQLMultipleJoin.</p>
+</div>
+</div>
+<div class="section" id="sqlobject-class">
+<h2><a href="#id26" class="toc-backref">SQLObject Class</a></h2>
+<p>There is one special attribute - <cite>_connection</cite>. It is the connection
+defined for the table.</p>
+<dl class="docutils">
+<dt><cite>_connection</cite>:</dt>
+<dd><p class="first">The connection object to use, from <cite>DBConnection</cite>.  You can also
+set the variable <cite>__connection__</cite> in the enclosing module and it
+will be picked up (be sure to define <cite>__connection__</cite> before your
+class).  You can also pass a connection object in at instance
+creation time, as described in <a href="#transactions" class="reference internal">transactions</a>.</p>
+<p class="last">If you have defined <cite>sqlhub.processConnection</cite> then this attribute can
+be omitted from your class and the sqlhub will be used instead.  If
+you have several classes using the same connection that might be an
+advantage, besides saving a lot of typing.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="customizing-the-objects">
+<h2><a href="#id27" class="toc-backref">Customizing the Objects</a></h2>
+<p>While we haven't done so in the examples, you can include your own
+methods in the class definition.  Writing your own methods should be
+obvious enough (just do so like in any other class), but there are
+some other details to be aware of.</p>
+<div class="section" id="initializing-the-objects">
+<h3><a href="#id28" class="toc-backref">Initializing the Objects</a></h3>
+<p>There are two ways SQLObject instances can come into existence: they
+can be fetched from the database, or they can be inserted into the
+database.  In both cases a new Python object is created.  This makes
+the role of <cite>__init__</cite> a little confusing.</p>
+<p>In general, you should not touch <cite>__init__</cite>.  Instead use the <cite>_init</cite>
+method, which is called after an object is fetched or inserted.  This
+method has the signature <tt class="docutils literal">_init(self, id, connection=None,
+selectResults=None)</tt>, though you may just want to use <tt class="docutils literal">_init(self,
+*args, **kw)</tt>.  <strong>Note:</strong> don't forget to call
+<tt class="docutils literal">SQLObject._init(self, *args, **kw)</tt> if you override the method!</p>
+</div>
+<div class="section" id="adding-magic-attributes-properties">
+<h3><a href="#id29" class="toc-backref">Adding Magic Attributes (properties)</a></h3>
+<p>You can use all the normal techniques for defining methods in this
+new-style class, including <cite>classmethod</cite>, <cite>staticmethod</cite>, and
+<cite>property</cite>, but you can also use a shortcut.  If you have a method
+that's name starts with <tt class="docutils literal">_set_</tt>, <tt class="docutils literal">_get_</tt>, <tt class="docutils literal">_del_</tt>, or <tt class="docutils literal">_doc_</tt>,
+it will be used to create a property.  So, for instance, say you have
+images stored under the ID of the person in the <tt class="docutils literal">/var/people/images</tt>
+directory:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    # ...
+
+    def imageFilename(self):
+        return 'images/person-%s.jpg' % self.id
+
+    def _get_image(self):
+        if not os.path.exists(self.imageFilename()):
+            return None
+        f = open(self.imageFilename())
+        v = f.read()
+        f.close()
+        return v
+
+    def _set_image(self, value):
+        # assume we get a string for the image
+        f = open(self.imageFilename(), 'w')
+        f.write(value)
+        f.close()
+
+    def _del_image(self, value):
+        # I usually wouldn't include a method like this, but for
+        # instructional purposes...
+        os.unlink(self.imageFilename())
+</pre>
+<p>Later, you can use the <tt class="docutils literal">.image</tt> property just like an attribute, and
+the changes will be reflected in the filesystem by calling these
+methods.  This is a good technique for information that is better to
+keep in files as opposed to the database (such as large, opaque data
+like images).</p>
+<p>You can also pass an <tt class="docutils literal">image</tt> keyword argument to the constructor
+or the <cite>set</cite> method, like <tt class="docutils literal"><span class="pre">Person(...,</span> image=imageText)</tt>.</p>
+<p>All of the methods (<tt class="docutils literal">_get_</tt>, <tt class="docutils literal">_set_</tt>, etc) are optional -- you can
+use any one of them without using the others.  So you could define
+just a <tt class="docutils literal">_get_attr</tt> method so that <tt class="docutils literal">attr</tt> was read-only.</p>
+</div>
+<div class="section" id="overriding-column-attributes">
+<h3><a href="#id30" class="toc-backref">Overriding Column Attributes</a></h3>
+<p>It's a little more complicated if you want to override the behavior of
+an database column attribute.  For instance, imagine there's special
+code you want to run whenever someone's name changes.  In many systems
+you'd do some custom code, then call the superclass's code.  But the
+superclass (<tt class="docutils literal">SQLObject</tt>) doesn't know anything about the column in
+your subclass.  It's even worse with properties.</p>
+<p>SQLObject creates methods like <tt class="docutils literal">_set_lastName</tt> for each of your
+columns, but again you can't use this, since there's no superclass to
+reference (and you can't write <tt class="docutils literal"><span class="pre">SQLObject._set_lastName(...)</span></tt>,
+because the SQLObject class doesn't know about your class's columns).
+You want to override that <tt class="docutils literal">_set_lastName</tt> method yourself.</p>
+<p>To deal with this, SQLObject creates two methods for each getter and
+setter, for example: <tt class="docutils literal">_set_lastName</tt> and <tt class="docutils literal">_SO_set_lastName</tt>.  So
+to intercept all changes to <tt class="docutils literal">lastName</tt>:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    lastName = StringCol()
+    firstName = StringCol()
+
+    def _set_lastName(self, value):
+        self.notifyLastNameChange(value)
+        self._SO_set_lastName(value)
+</pre>
+<p>Or perhaps you want to constrain a phone numbers to be actual
+digits, and of proper length, and make the formatting nice:</p>
+<pre class="literal-block">
+import re
+
+class PhoneNumber(SQLObject):
+    phoneNumber = StringCol(length=30)
+
+    _garbageCharactersRE = re.compile(r'[\-\.\(\) ]')
+    _phoneNumberRE = re.compile(r'^[0-9]+$')
+    def _set_phoneNumber(self, value):
+        value = self._garbageCharactersRE.sub('', value)
+        if not len(value) >= 10:
+            raise ValueError(
+                'Phone numbers must be at least 10 digits long')
+        if not self._phoneNumberRE.match(value):
+            raise ValueError, 'Phone numbers can contain only digits'
+        self._SO_set_phoneNumber(value)
+
+    def _get_phoneNumber(self):
+        value = self._SO_get_phoneNumber()
+        number = '(%s) %s-%s' % (value[0:3], value[3:6], value[6:10])
+        if len(value) > 10:
+            number += ' ext.%s' % value[10:]
+        return number
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>You should be a little cautious when modifying data that gets set
+in an attribute.  Generally someone using your class will expect
+that the value they set the attribute to will be the same value
+they get back.  In this example we removed some of the characters
+before putting it in the database, and reformatted it on the way
+out.  One advantage of methods (as opposed to attribute access) is
+that the programmer is more likely to expect this disconnect.</p>
+<p class="last">Also note while these conversions will take place when getting and
+setting the column, in queries the conversions will not take place.
+So if you convert the value from a "Pythonic" representation to a
+"SQLish" representation, your queries (when using <tt class="docutils literal">.select()</tt> and
+<tt class="docutils literal">.selectBy()</tt>) will have to be in terms of the SQL/Database
+representation (as those commands generate SQL that is run on the
+database).</p>
+</div>
+</div>
+<div class="section" id="undefined-attributes">
+<h3><a href="#id31" class="toc-backref">Undefined attributes</a></h3>
+<p>There's one more thing  worth telling, because you may something get
+strange results when making a typo. SQLObject won't ever complain or
+raise any error when setting a previously undefined attribute; it will
+simply set it, without making any change to the database, i.e: it will
+work as any other attribute you set on any Python class, it will
+'forget' it is a SQLObject class.</p>
+<p>This may sometimes be a problem: if you have got a 'name' attribute and
+you you write 'a.namme="Victor"' once, when setting it, you'll get no
+error, no warning, nothing at all, and you may get crazy at understanding
+why you don't get that value set in your DB.</p>
+</div>
+</div>
+</div>
+<div class="section" id="reference">
+<h1><a href="#id32" class="toc-backref">Reference</a></h1>
+<p>The instructions above should tell you enough to get you started, and
+be useful for many situations.  Now we'll show how to specify the
+class more completely.</p>
+<div class="section" id="col-class-specifying-columns">
+<h2><a href="#id33" class="toc-backref">Col Class: Specifying Columns</a></h2>
+<p>The list of columns is a list of <cite>Col</cite> objects.  These objects don't
+have functionality in themselves, but give you a way to specify the
+column.</p>
+<dl class="docutils">
+<dt><cite>dbName</cite>:</dt>
+<dd>This is the name of the column in the database.  If you don't
+give a name, your Pythonic name will be converted from
+mixed-case to underscore-separated.</dd>
+<dt><cite>default</cite>:</dt>
+<dd>The default value for this column.  Used when creating a new row.
+If you give a callable object or function, the function will be
+called, and the return value will be used.  So you can give
+<tt class="docutils literal">DateTimeCol.now</tt> to make the default value be the current time.
+Or you can use <tt class="docutils literal">sqlbuilder.func.NOW()</tt> to have the database use
+the <tt class="docutils literal">NOW()</tt> function internally.  If you don't give a default
+there will be an exception if this column isn't specified in the
+call to <cite>new</cite>.</dd>
+<dt><cite>defaultSQL</cite>:</dt>
+<dd><tt class="docutils literal">DEFAULT</tt> SQL attribute.</dd>
+<dt><cite>alternateID</cite>:</dt>
+<dd><p class="first">This boolean (default False) indicates if the column can be used
+as an ID for the field (for instance, a username), though it is
+not a primary key.  If so a class method will be added, like
+<tt class="docutils literal">byUsername</tt> which will return that object.  Use
+<cite>alternateMethodName</cite> if you don't like the <tt class="docutils literal">by*</tt> name
+(e.g. <tt class="docutils literal"><span class="pre">alternateMethodName="username"</span></tt>).</p>
+<p class="last">The column should be declared <tt class="docutils literal">UNIQUE</tt> in your table schema.</p>
+</dd>
+<dt><cite>unique</cite>:</dt>
+<dd>If true, when SQLObject creates a table it will declare this
+column to be <tt class="docutils literal">UNIQUE</tt>.</dd>
+<dt><cite>notNone</cite>:</dt>
+<dd>If true, None/<tt class="docutils literal">NULL</tt> is not allowed for this column.  Useful if
+you are using SQLObject to create your tables.</dd>
+<dt><cite>sqlType</cite>:</dt>
+<dd>The SQL type for this column (like <tt class="docutils literal">INT</tt>, <tt class="docutils literal">BOOLEAN</tt>, etc).
+You can use classes (defined below) for this, but if those don't
+work it's sometimes easiest just to use <cite>sqlType</cite>.  Only necessary
+if SQLObject is creating your tables.</dd>
+<dt><cite>validator</cite>:</dt>
+<dd><a href="http://formencode.org/" class="reference external">formencode</a>-like <a href="http://formencode.org/Validator.html" class="reference external">validator</a>. Making long story short, this is
+an object that provides <tt class="docutils literal">to_python()</tt> and <tt class="docutils literal">from_python()</tt>
+to validate <em>and</em> convert (adapt or cast) the values when they are
+read/written from/to the database. You should see <a href="http://formencode.org/" class="reference external">formencode</a>
+<a href="http://formencode.org/Validator.html" class="reference external">validator</a> documentation for more details. This validator is appended
+to the end of the list of the list of column validators. If the column
+has a list of validators their <tt class="docutils literal">from_python()</tt> methods are ran from
+the beginnig of the list to the end; <tt class="docutils literal">to_python()</tt> in the reverse
+order. That said, <tt class="docutils literal">from_python()</tt> method of this validator is called
+last, after all validators in the list; <tt class="docutils literal">to_python()</tt> is called first.</dd>
+<dt><cite>validator2</cite>:</dt>
+<dd>Another validator. It is inserted in the beginning of the list of the
+list of validators, i.e. its <tt class="docutils literal">from_python()</tt> method is called first;
+<tt class="docutils literal">to_python()</tt> last.</dd>
+</dl>
+<div class="section" id="column-types">
+<h3><a href="#id34" class="toc-backref">Column Types</a></h3>
+<p>The <cite>ForeignKey</cite> class should be used instead of <cite>Col</cite> when the column
+is a reference to another table/class.  It is generally used like
+<tt class="docutils literal"><span class="pre">ForeignKey('Role')</span></tt>, in this instance to create a reference to a
+table <cite>Role</cite>.  This is largely equivalent to <tt class="docutils literal"><span class="pre">Col(foreignKey='Role',</span>
+<span class="pre">sqlType='INT')</span></tt>.  Two attributes will generally be created, <tt class="docutils literal">role</tt>,
+which returns a <cite>Role</cite> instance, and <tt class="docutils literal">roleID</tt>, which returns an
+integer ID for the related role.</p>
+<p>There are some other subclasses of <cite>Col</cite>.  These are used to indicate
+different types of columns, when SQLObject creates your tables.</p>
+<dl class="docutils">
+<dt><cite>BLOBCol</cite>:</dt>
+<dd>A column for binary data. Presently works only with MySQL, PostgreSQL
+and SQLite backends.</dd>
+<dt><cite>BoolCol</cite>:</dt>
+<dd>Will create a <tt class="docutils literal">BOOLEAN</tt> column in Postgres, or <tt class="docutils literal">INT</tt> in other
+databases.  It will also convert values to <tt class="docutils literal"><span class="pre">"t"/"f"</span></tt> or <tt class="docutils literal">0/1</tt>
+according to the database backend.</dd>
+<dt><cite>CurrencyCol</cite>:</dt>
+<dd>Equivalent to <tt class="docutils literal">DecimalCol(size=10, precision=2)</tt>.
+WARNING: as DecimalCol MAY NOT return precise numbers, this column
+may share the same behavior. Please read the DecimalCol warning.</dd>
+<dt><cite>DateTimeCol</cite>:</dt>
+<dd>A date and time (usually returned as an datetime or mxDateTime object).</dd>
+<dt><cite>DateCol</cite>:</dt>
+<dd>A date (usually returned as an datetime or mxDateTime object).</dd>
+<dt><cite>TimeCol</cite>:</dt>
+<dd>A time (usually returned as an datetime or mxDateTime object).</dd>
+<dt><cite>TimestampCol</cite>:</dt>
+<dd>Supports MySQL TIMESTAMP type.</dd>
+<dt><cite>DecimalCol</cite>:</dt>
+<dd>Base-10, precise number.  Uses the keyword arguments <cite>size</cite> for
+number of digits stored, and <cite>precision</cite> for the number of digits
+after the decimal point.
+WARNING: it may happen that DecimalCol values, although correctly
+stored in the DB, are returned as floats instead of decimals. For
+example, due to the <a href="http://sqlite.org/datatype3.html#affinity" class="reference external">type affinity</a> SQLite stores decimals as integers
+or floats (NUMERIC storage class).
+You should test with your database adapter, and you should try
+importing the Decimal type and your DB adapter before importing
+SQLObject.</dd>
+</dl>
+<dl class="docutils">
+<dt><cite>DecimalStringCol</cite>:</dt>
+<dd>Similar to <cite>DecimalCol</cite> but stores data as strings to work around
+problems in some drivers and type affinity problem in SQLite. As it
+stores data as strings the column cannot be used in SQL expressions
+(column1 + column2) and probably will has problems with ORDER BY.</dd>
+<dt><cite>EnumCol</cite>:</dt>
+<dd><p class="first">One of several string values -- give the possible strings as a
+list, with the <cite>enumValues</cite> keyword argument.  MySQL has a native
+<tt class="docutils literal">ENUM</tt> type, but will work with other databases too (storage
+just won't be as efficient).</p>
+<p class="last">For PostgreSQL, EnumCol's are implemented using check constraints.
+Due to the way PostgreSQL handles check constraints involving NULL,
+specifying None as a member of an EnumCol will effectively mean that,
+at the SQL level, the check constraint will be ignored (see
+<a href="http://archives.postgresql.org/pgsql-sql/2004-12/msg00065.php" class="reference external">http://archives.postgresql.org/pgsql-sql/2004-12/msg00065.php</a> for
+more details).</p>
+</dd>
+<dt><cite>SetCol</cite>:</dt>
+<dd>Supports MySQL SET type.</dd>
+<dt><cite>FloatCol</cite>:</dt>
+<dd>Floats.</dd>
+<dt><cite>ForeignKey</cite>:</dt>
+<dd>A key to another table/class.  Use like <tt class="docutils literal">user = <span class="pre">ForeignKey('User')</span></tt>. It
+can check for referential integrity using the keyword argument <cite>cascade</cite>,
+please see <a href="#foreignkey" class="reference internal">ForeignKey</a> for details.</dd>
+<dt><cite>IntCol</cite>:</dt>
+<dd>Integers.</dd>
+<dt><cite>PickleCol</cite>:</dt>
+<dd>An extension of BLOBCol; this column can store/retrieve any Python object;
+it actually (un)pickles the object from/to string and stores/retrieves the
+string. One can get and set the value of the column but cannot search
+(use it in WHERE).</dd>
+<dt><cite>StringCol</cite>:</dt>
+<dd><p class="first">A string (character) column.  Extra keywords:</p>
+<dl class="last docutils">
+<dt><cite>length</cite>:</dt>
+<dd>If given, the type will be something like <tt class="docutils literal">VARCHAR(length)</tt>.
+If not given, then <tt class="docutils literal">TEXT</tt> is assumed (i.e., lengthless).</dd>
+<dt><cite>varchar</cite>:</dt>
+<dd>A boolean; if you have a length, differentiates between
+<tt class="docutils literal">CHAR</tt> and <tt class="docutils literal">VARCHAR</tt>, default True, i.e., use
+<tt class="docutils literal">VARCHAR</tt>.</dd>
+</dl>
+</dd>
+<dt><cite>UnicodeCol</cite>:</dt>
+<dd><p class="first">A subclass of <cite>StringCol</cite>.  Also accepts a <cite>dbEncoding</cite> keyword
+argument, it defaults to <tt class="docutils literal">None</tt> which means to lookup <cite>dbEncoding</cite>
+in <a href="#class-sqlmeta" class="reference internal">sqlmeta</a> and connection, and if <cite>dbEncoding</cite> isn't defined
+anywhere it defaults to <tt class="docutils literal"><span class="pre">"utf-8"</span></tt>.  Values coming in and out from
+the database will be encoded and decoded.  <strong>Note</strong>: there are some
+limitations on using UnicodeCol in queries:</p>
+<ul class="simple">
+<li>only simple q-magic fields are supported; no expressions;</li>
+<li>only == and &lt;> operators are supported;</li>
+</ul>
+<p>The following code works:</p>
+<pre class="literal-block">
+MyTable.select(u'value' == MyTable.q.name)
+MyTable.select(MyTable.q.name &lt;> u'value')
+MyTable.select(OR(MyTable.q.col1 == u'value1', MyTable.q.col2 &lt;> u'value2'))
+MyTable.selectBy(name = u'value')
+MyTable.selectBy(col1=u'value1', col2=u'value2')
+MyTable.byCol1(u'value1') # if col1 is an alternateID
+</pre>
+<p>The following does not work:</p>
+<pre class="literal-block">
+MyTable.select((MyTable.q.name + MyTable.q.surname) == u'value')
+</pre>
+<p>In that case you must apply the encoding yourself:</p>
+<pre class="last literal-block">
+MyTable.select((MyTable.q.name + MyTable.q.surname) == u'value'.encode(dbEncoding))
+</pre>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="relationships-between-classes-tables">
+<h2><a href="#id35" class="toc-backref">Relationships Between Classes/Tables</a></h2>
+<div class="section" id="foreignkey">
+<h3><a href="#id36" class="toc-backref">ForeignKey</a></h3>
+<p>You can use the <cite>ForeignKey</cite> to handle foreign references in a table,
+but for back references and many-to-many relationships you'll use
+joins.</p>
+<p><cite>ForeignKey</cite> allows you to specify referential integrity using the keyword
+<cite>cascade</cite>, which can have these values:</p>
+<dl class="docutils">
+<dt><cite>None</cite>:</dt>
+<dd>No action is taken on related deleted columns (this is the default).
+Following the Person/Address example, if you delete the object <cite>Person</cite> with
+id 1 (John Doe), the <cite>Address</cite> with id 1 (123 W Main St) will be kept
+untouched (with <tt class="docutils literal">personID=1</tt>).</dd>
+<dt><cite>False</cite>:</dt>
+<dd>Deletion of an object that has other objects related to it using a
+<cite>ForeignKey</cite> will fail (sets <tt class="docutils literal">ON DELETE RESTRICT</tt>).
+Following the Person/Address example, if you delete the object <cite>Person</cite> with
+id 1 (John Doe) a <cite>SQLObjectIntegrityError</cite> exception will be raised,
+because the <cite>Address</cite> with id 1 (123 W Main St) has a reference
+(<tt class="docutils literal">personID=1</tt>) to it.</dd>
+<dt><cite>True</cite>:</dt>
+<dd>Deletion of an object that has other objects related to it using a
+<cite>ForeignKey</cite> will delete all the related objects too (sets <tt class="docutils literal">ON DELETE
+CASCADE</tt>).
+Following the Person/Address example, if you delete the object <cite>Person</cite> with
+id 1 (John Doe), the <cite>Address</cite> with id 1 (123 W Main St) will be deleted too.</dd>
+<dt><cite>'null'</cite>:</dt>
+<dd>Deletion of an object that has other objects related to it using a
+<cite>ForeignKey</cite> will set the <cite>ForeignKey</cite> column to <cite>NULL</cite>/<cite>None</cite> (sets
+<tt class="docutils literal">ON DELETE SET NULL</tt>).
+Following the Person/Address example, if you delete the object <cite>Person</cite> with
+id 1 (John Doe), the <cite>Address</cite> with id 1 (123 W Main St) will be kept but
+the reference to person will be set to <cite>NULL</cite>/<cite>None</cite> (<tt class="docutils literal">personID=None</tt>).</dd>
+</dl>
+</div>
+<div class="section" id="multiplejoin-and-sqlmultiplejoin-one-to-many">
+<h3><a href="#id37" class="toc-backref">MultipleJoin and SQLMultipleJoin: One-to-Many</a></h3>
+<p>See <a href="#one-to-many-relationships" class="reference internal">One-to-Many Relationships</a> for an example of one-to-many
+relationships.</p>
+<p>MultipleJoin returns a list of results, while SQLMultipleJoin returns a
+SelectResults object.</p>
+<p>Several keyword arguments are allowed to the <cite>MultipleJoin</cite> constructor:</p>
+<dl class="docutils" id="multiple-join-keywords">
+<dt><cite>joinColumn</cite>:</dt>
+<dd>The column name of the key that points to this table.  So, if you
+have a table <tt class="docutils literal">Product</tt>, and another table has a column
+<tt class="docutils literal">ProductNo</tt> that points to this table, then you'd use
+<tt class="docutils literal"><span class="pre">joinColumn="ProductNo"</span></tt>. WARNING: the argument you pass must
+conform to the column name in the database, not to the column in the
+class. So, if you have a SQLObject containing the <tt class="docutils literal">ProductNo</tt>
+column, this will probably be translated into <tt class="docutils literal">product_no_id</tt> in
+the DB (<tt class="docutils literal">product_no</tt> is the normal uppercase- to-lowercase +
+underscores SQLO Translation, the added _id is just because the
+column referring to the table is probably a ForeignKey, and SQLO
+translates foreign keys that way). You should pass that parameter.</dd>
+<dt><cite>orderBy</cite>:</dt>
+<dd>Like the <a href="#orderby" class="reference internal">orderBy</a> argument to <cite>select()</cite>, you can specify
+the order that the joined objects should be returned in.  <cite>defaultOrder</cite>
+will be used if not specified; <tt class="docutils literal">None</tt> forces unordered results.</dd>
+<dt><cite>joinMethodName</cite>:</dt>
+<dd>When adding joins dynamically (using the class method <a href="#addjoin" class="reference internal">addJoin</a>),
+you can give the name of the accessor for the join.  It can also be
+created automatically, and is normally implied (i.e., <tt class="docutils literal">addresses =
+<span class="pre">MultipleJoin(...)</span></tt> implies <tt class="docutils literal"><span class="pre">joinMethodName="addresses"</span></tt>).</dd>
+</dl>
+</div>
+<div class="section" id="relatedjoin-and-sqlrelatedjoin-many-to-many">
+<h3><a href="#id38" class="toc-backref">RelatedJoin and SQLRelatedJoin: Many-to-Many</a></h3>
+<p>See <a href="#many-to-many-relationships" class="reference internal">Many-to-Many Relationships</a> for examples of using many-to-many joins.</p>
+<p>RelatedJoin returns a list of results, while SQLRelatedJoin returns a
+SelectResults object.</p>
+<p><cite>RelatedJoin</cite> has all the keyword arguments of <a href="#multiple-join-keywords" class="reference internal">MultipleJoin</a>, plus:</p>
+<dl class="docutils">
+<dt><cite>otherColumn</cite>:</dt>
+<dd>Similar to <cite>joinColumn</cite>, but referring to the joined class. Same
+warning about column name.</dd>
+<dt><cite>intermediateTable</cite>:</dt>
+<dd>The name of the intermediate table which references both classes.
+WARNING: you should pass the database table name, not the SQLO
+class representing.</dd>
+<dt><cite>addRemoveName</cite>:</dt>
+<dd>In the <a href="#many-to-many-relationships" class="reference internal">user/role example</a>, the methods <cite>addRole(role)</cite> and
+<cite>removeRole(role)</cite> are created.  The <tt class="docutils literal">Role</tt> portion of these
+method names can be changed by giving a string value here.</dd>
+<dt><cite>createRelatedTable</cite>:</dt>
+<dd>default: <tt class="docutils literal">True</tt>. If <tt class="docutils literal">False</tt>, then the related table won't be
+automatically created; instead you must manually create it (e.g.,
+with explicit SQLObject classes for the joins). New in 0.7.1.</dd>
+</dl>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Let's suppose you have SQLObject-inherited classes Alpha and Beta,
+and an AlphasAndBetas used for the many-to-many relationship.
+AlphasAndBetas contains the alphaIndex Foreign Key column referring
+to Alpha, and the betaIndex FK column referring to Beta.
+if you want a 'betas' RelatedJoin in Alpha, you should add it to
+Alpha passing 'Beta' (class name!) as the first parameter, then
+passing 'alpha_index_id' as joinColumn, 'beta_index_id' as
+otherColumn, and 'alphas_and_betas' as intermediateTable.</p>
+</div>
+<p>An example schema that requires the use of <cite>joinColumn</cite>, <cite>otherColumn</cite>,
+and <cite>intermediateTable</cite>:</p>
+<pre class="literal-block">
+CREATE TABLE person (
+    id SERIAL,
+    username VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE role (
+    id SERIAL,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE assigned_roles (
+    person INT NOT NULL,
+    role INT NOT NULL
+);
+</pre>
+<p>Then the usage in a class:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    username = StringCol(length=100, alternateID=True)
+    roles = RelatedJoin('Role', joinColumn='person', otherColumn='role',
+                        intermediateTable='assigned_roles')
+class Role(SQLObject):
+    name = StringCol(length=50, alternateID=True)
+    roles = RelatedJoin('Person', joinColumn='role', otherColumn='person',
+                        intermediateTable='assigned_roles')
+</pre>
+</div>
+<div class="section" id="singlejoin-one-to-one">
+<h3><a href="#id39" class="toc-backref">SingleJoin: One-to-One</a></h3>
+<p>Similar to <cite>MultipleJoin</cite>, but returns just one object, not a list.</p>
+</div>
+</div>
+<div class="section" id="connection-pooling">
+<h2><a href="#id40" class="toc-backref">Connection pooling</a></h2>
+<p>Connection object acquires a new low-level DB API connection from the pool
+and stores it; the low-level connection is removed from the pool;
+"releasing" means "return it to the pool". For single-threaded programs
+there is one connection in the pool.</p>
+<p>If the pool is empty a new low-level connection opened; if one has
+disabled pooling (by setting conn._pool = None) the connection will be
+closed instead of returning to the pool.</p>
+</div>
+<div class="section" id="transactions">
+<h2><a href="#id41" class="toc-backref">Transactions</a></h2>
+<p>Transaction support in SQLObject is left to the database.
+Transactions can be used like:</p>
+<pre class="literal-block">
+conn = DBConnection.PostgresConnection('yada')
+trans = conn.transaction()
+p = Person.get(1, trans)
+p.firstName = 'Bob'
+trans.commit()
+p.firstName = 'Billy'
+trans.rollback()
+</pre>
+<p>The <tt class="docutils literal">trans</tt> object here is essentially a wrapper around a single
+database connection, and <cite>commit</cite> and <cite>rollback</cite> just pass that
+message to the low-level connection.</p>
+<p>One can call as much <tt class="docutils literal">.commit()</tt>'s, but after a <tt class="docutils literal">.rollback()</tt> one
+has to call <tt class="docutils literal">.begin()</tt>. The last <tt class="docutils literal">.commit()</tt> should be called as
+<tt class="docutils literal">.commit(close=True)</tt> to release low-level connection back to the
+connection pool.</p>
+<p>You can use SELECT FOR UPDATE in those databases that support it:</p>
+<pre class="literal-block">
+Person.select(Person.q.name=="value", forUpdate=True, connection=trans)
+</pre>
+<p>Method <tt class="docutils literal">sqlhub.doInTransaction</tt> can be used to run a piece of code in
+a transaction. The method accepts a callable and positional and keywords
+arguments. It begins a transaction using its <tt class="docutils literal">processConnection</tt> or
+<tt class="docutils literal">threadConnection</tt>, calls the callable, commits the transaction and
+closes the underlying connection; it returns whatever the callable
+returned. If an error occurs during call to the callable it rolls the
+transaction back and reraise the exception.</p>
+</div>
+<div class="section" id="automatic-schema-generation">
+<h2><a href="#id42" class="toc-backref">Automatic Schema Generation</a></h2>
+<p>All the connections support creating and dropping tables based on the
+class definition.  First you have to prepare your class definition,
+which means including type information in your columns.</p>
+<div class="section" id="indexes">
+<h3><a href="#id43" class="toc-backref">Indexes</a></h3>
+<p>You can also define indexes for your tables, which is only meaningful
+when creating your tables through SQLObject (SQLObject relies on the
+database to implement the indexes).  You do this again with attribute
+assignment, like:</p>
+<pre class="literal-block">
+firstLastIndex = DatabaseIndex('firstName', 'lastName')
+</pre>
+<p>This creates an index on two columns, useful if you are selecting a
+particular name.  Of course, you can give a single column, and you can
+give the column object (<tt class="docutils literal">firstName</tt>) instead of the string name.
+Note that if you use <tt class="docutils literal">unique</tt> or <tt class="docutils literal">alternateID</tt> (which implies
+<tt class="docutils literal">unique</tt>) the database may make an index for you, and primary keys
+are always indexed.</p>
+<p>If you give the keyword argument <tt class="docutils literal">unique</tt> to <cite>DatabaseIndex</cite> you'll
+create a unique index -- the combination of columns must be unique.</p>
+<p>You can also use dictionaries in place of the column names, to add
+extra options.  E.g.:</p>
+<pre class="literal-block">
+lastNameIndex = DatabaseIndex({'expression': 'lower(last_name)'})
+</pre>
+<p>In that case, the index will be on the lower-case version of the
+column.  It seems that only PostgreSQL supports this.  You can also
+do:</p>
+<pre class="literal-block">
+lastNameIndex = DatabaseIndex({'column': lastName, 'length': 10})
+</pre>
+<p>Which asks the database to only pay attention to the first ten
+characters.  Only MySQL supports this, but it is ignored in other
+databases.</p>
+</div>
+<div class="section" id="creating-and-dropping-tables">
+<h3><a href="#id44" class="toc-backref">Creating and Dropping Tables</a></h3>
+<p>To create a table call <cite>createTable</cite>.  It takes two arguments:</p>
+<dl class="docutils">
+<dt><cite>ifNotExists</cite>:</dt>
+<dd>If the table already exists, then don't try to create it.  Default
+False.</dd>
+<dt><cite>createJoinTables</cite>:</dt>
+<dd>If you used <a href="#many-to-many-relationships" class="reference internal">Many-to-Many relationships</a>, then the intermediate tables
+will be created (but only for one of the two involved classes).
+Default True.</dd>
+</dl>
+<p><cite>dropTable</cite> takes arguments <cite>ifExists</cite> and <cite>dropJoinTables</cite>,
+self-explanatory.</p>
+</div>
+</div>
+</div>
+<div class="section" id="dynamic-classes">
+<h1><a href="#id45" class="toc-backref">Dynamic Classes</a></h1>
+<p>SQLObject classes can be manipulated dynamically.  This leaves open
+the possibility of constructing SQLObject classes from an XML file,
+from database introspection, or from a graphical interface.</p>
+<div class="section" id="automatic-class-generation">
+<h2><a href="#id46" class="toc-backref">Automatic Class Generation</a></h2>
+<p>SQLObject can read the table description from the database, and fill
+in the class columns (as would normally be described in the <cite>_columns</cite>
+attribute).  Do this like:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    class sqlmeta:
+        fromDatabase = True
+</pre>
+<p>You can still specify columns (in <cite>_columns</cite>), and only missing
+columns will be added.</p>
+</div>
+<div class="section" id="runtime-column-and-join-changes">
+<h2><a href="#id47" class="toc-backref">Runtime Column and Join Changes</a></h2>
+<p>You can add and remove columns to your class at runtime.  Such changes
+will effect all instances, since changes are made in place to the
+class.  There are two methods of the <a href="#class-sqlmeta" class="reference internal">class sqlmeta object</a>,
+<cite>addColumn</cite> and <cite>delColumn</cite>, both of
+which take a <cite>Col</cite> object (or subclass) as an argument.  There's also
+an option argument <cite>changeSchema</cite> which, if True, will add or drop the
+column from the database (typically with an <tt class="docutils literal">ALTER</tt> command).</p>
+<p>When adding columns, you must pass the name as part of the column
+constructor, like <tt class="docutils literal"><span class="pre">StringCol("username",</span> length=20)</tt>.  When removing
+columns, you can either use the Col object (as found in <cite>sqlmeta.columns</cite>, or
+which you used in <cite>addColumn</cite>), or you can use the column name (like
+<tt class="docutils literal"><span class="pre">MyClass.delColumn("username")</span></tt>).</p>
+<p id="addjoin">You can also add <a href="#relationships-between-classes-tables" class="reference internal">Joins</a>, like
+<tt class="docutils literal"><span class="pre">MyClass.addJoin(MultipleJoin("MyOtherClass"))</span></tt>, and remove joins with
+<cite>delJoin</cite>.  <cite>delJoin</cite> does not take strings, you have to get the join
+object out of the <cite>sqlmeta.joins</cite> attribute.</p>
+</div>
+</div>
+<div class="section" id="legacy-database-schemas">
+<h1><a href="#id48" class="toc-backref">Legacy Database Schemas</a></h1>
+<p>Often you will have a database that already exists, and does not use
+the naming conventions that SQLObject expects, or does not use any
+naming convention at all.</p>
+<div class="section" id="sqlobject-requirements">
+<h2><a href="#id49" class="toc-backref">SQLObject requirements</a></h2>
+<p>While SQLObject tries not to make too many requirements on your
+schema, some assumptions are made.  Some of these may be relaxed in
+the future.</p>
+<p>All tables that you want to turn into a class need to have an integer
+primary key.  That key should be defined like:</p>
+<dl class="docutils">
+<dt>MySQL:</dt>
+<dd><tt class="docutils literal">INT PRIMARY KEY AUTO_INCREMENT</tt></dd>
+<dt>Postgres:</dt>
+<dd><tt class="docutils literal">SERIAL PRIMARY KEY</tt></dd>
+<dt>SQLite:</dt>
+<dd><tt class="docutils literal">INTEGER PRIMARY KEY</tt></dd>
+</dl>
+<p>SQLObject does not support primary keys made up of multiple columns (that
+probably won't change).  It does not generally support tables with primary
+keys with business meaning -- i.e., primary keys are assumed to be
+immutable (that won't change).</p>
+<p>At the moment foreign key column names must end in <tt class="docutils literal">"ID"</tt>
+(case-insensitive).  This restriction will probably be removed in the
+next release.</p>
+<div class="section" id="workaround-for-primary-keys-made-up-of-multiple-columns">
+<h3><a href="#id50" class="toc-backref">Workaround for primary keys made up of multiple columns</a></h3>
+<p>If the database table/view has ONE NUMERIC Primary Key then sqlmeta - idName
+should be used to map the table column name to SQLObject id column.</p>
+<p>If the Primary Key consists only of number columns it is possible to create a
+virtual column <tt class="docutils literal">id</tt> this way:</p>
+<p>Example for Postgresql:</p>
+<blockquote>
+select '1'||lpad(PK1,max_length_of_PK1,'0')||lpad(PK2,max_length_of_PK2,'0')||...||lpad(PKn,max_length_of_PKn,'0') as "id",
+column_PK1, column_PK2, .., column_PKn, column... from table;</blockquote>
+<p>Note:</p>
+<ul class="simple">
+<li>The arbitrary '1' at the beginning of the string to allow for leading zeros
+of the first PK.</li>
+<li>The application designer has to determine the maximum length of each Primary
+Key.</li>
+</ul>
+<p>This statement can be saved as a view or the column can be added to the
+database table, where it can be kept up to date with a database trigger.</p>
+<p>Obviously the "view" method does generally not allow insert, updates or
+deletes. For Postgresql you may want to consult the chapter "RULES" for
+manipulating underlying tables.</p>
+<p>For an alphanumeric Primary Key column a similar method is possible:</p>
+<p>Every character of the lpaded PK has to be transfered using ascii(character)
+which returns a 3digit number which can be concatenated as shown above.</p>
+<p>Caveats:</p>
+<ul class="simple">
+<li>this way the <tt class="docutils literal">id</tt> may become a very large integer number which may cause
+troubles elsewhere.</li>
+<li>no performance loss takes place if the where clauses specifies the PK
+columns.</li>
+</ul>
+<p>Example: CD-Album
+* Album: PK=ean
+* Tracks: PK=ean,disc_nr,track_nr</p>
+<p>The database view to show the tracks starts:</p>
+<blockquote>
+SELECT ean||lpad("disc_nr",2,'0')||lpad("track_nr",2,'0') as id,  ...
+Note: no leading '1' and no padding necessary for ean numbers</blockquote>
+<p>Tracks.select(Tracks.q.ean==id) ... where id is the ean of the Album.</p>
+</div>
+</div>
+<div class="section" id="changing-the-naming-style">
+<h2><a href="#id51" class="toc-backref">Changing the Naming Style</a></h2>
+<p>By default names in SQLObject are expected to be mixed case in Python
+(like <tt class="docutils literal">mixedCase</tt>), and underscore-separated in SQL (like
+<tt class="docutils literal">mixed_case</tt>).  This applies to table and column names.  The primary
+key is assumed to be simply <tt class="docutils literal">id</tt>.</p>
+<p>Other styles exist.  A typical one is mixed case column names, and a
+primary key that includes the table name, like <tt class="docutils literal">ProductID</tt>.  You can
+use a different <cite>Style</cite> object to indicate a different naming
+convention.  For instance:</p>
+<pre class="literal-block">
+class Person(SQLObject):
+    class sqlmeta:
+        style = MixedCaseStyle(longID=True)
+    firstName = StringCol()
+    lastName = StringCol()
+</pre>
+<p>If you use <tt class="docutils literal">Person.createTable()</tt>, you'll get:</p>
+<pre class="literal-block">
+CREATE TABLE Person (
+    PersonID INT PRIMARY KEY,
+    FirstName Text,
+    LastName Text
+)
+</pre>
+<p>The <cite>MixedCaseStyle</cite> object handles the initial capitalization of
+words, but otherwise leaves them be.  By using <tt class="docutils literal">longID=True</tt>, we
+indicate that the primary key should look like a normal reference
+(<tt class="docutils literal">PersonID</tt> for <cite>MixedCaseStyle</cite>, or <tt class="docutils literal">person_id</tt> for the default
+style).</p>
+<p>If you wish to change the style globally, assign the style to the
+connection, like:</p>
+<pre class="literal-block">
+__connection__.style = MixedCaseStyle(longID=True)
+</pre>
+</div>
+<div class="section" id="irregular-naming">
+<h2><a href="#id52" class="toc-backref">Irregular Naming</a></h2>
+<p>This is now covered in the <a href="#class-sqlmeta" class="reference internal">Class sqlmeta</a> section.</p>
+</div>
+<div class="section" id="non-integer-keys">
+<h2><a href="#id53" class="toc-backref">Non-Integer Keys</a></h2>
+<p>While not strictly a legacy database issue, this fits into the category of
+"irregularities".  If you use non-integer keys, all primary key management
+is up to you.  You must create the table yourself (SQLObject can create
+tables with int or str IDs), and when you create instances you must pass a
+<tt class="docutils literal">id</tt> keyword argument into constructor
+(like <tt class="docutils literal"><span class="pre">Person(id='555-55-5555',</span> <span class="pre">...)</span></tt>).</p>
+</div>
+</div>
+<div class="section" id="dbconnection-database-connections">
+<h1><a href="#id54" class="toc-backref">DBConnection: Database Connections</a></h1>
+<p>The <cite>DBConnection</cite> module currently has six external classes,
+<cite>MySQLConnection</cite>, <cite>PostgresConnection</cite>, <cite>SQLiteConnection</cite>,
+<cite>SybaseConnection</cite>, <cite>MaxdbConnection</cite>, <cite>MSSQLConnection</cite>.</p>
+<p>You can pass the keyword argument <cite>debug</cite> to any connector.  If set to
+true, then any SQL sent to the database will also be printed to the
+console.</p>
+<p>You can additionally pass <cite>logger</cite> keyword argument which should be a
+name of the logger to use. If specified and <cite>debug</cite> is <tt class="docutils literal">True</tt>,
+SQLObject will write debug print statements via that logger instead of
+printing directly to console. The argument <cite>loglevel</cite> allows to choose
+the logging level - it can be <tt class="docutils literal">debug</tt>, <tt class="docutils literal">info</tt>, <tt class="docutils literal">warning</tt>,
+<tt class="docutils literal">error</tt>, <tt class="docutils literal">critical</tt> or <tt class="docutils literal">exception</tt>. In case <cite>logger</cite> is absent or
+empty SQLObject uses <tt class="docutils literal">print</tt>'s instead of logging; <cite>loglevel</cite> can be
+<tt class="docutils literal">stdout</tt> or <tt class="docutils literal">stderr</tt> in this case; default is <tt class="docutils literal">stdout</tt>.</p>
+<p>To configure logging one can do something like that:</p>
+<pre class="literal-block">
+import logging
+logging.basicConfig()
+for handler in logging.root.handlers[:]:
+   logging.root.removeHandler(handler)
+handler = logging.FileHandler("test.log")
+fmt = '[%(asctime)s] %(name)s %(levelname)s: %(message)s'
+handler.setFormatter(logging.Formatter(fmt))
+logging.root.addHandler(handler)
+logging.root.setLevel(logging.DEBUG)
+log = logging.getLogger("TEST")
+log.info("Log started")
+
+__connection__ = "sqlite:/:memory:?debug=1&amp;logger=TEST&amp;loglevel=debug"
+</pre>
+<p>The code redirects SQLObject debug messages to the <cite>test.log</cite> file.</p>
+<div class="section" id="id3">
+<h2><a href="#id55" class="toc-backref">MySQL</a></h2>
+<p><cite>MySQLConnection</cite> takes the keyword arguments <cite>host</cite>, <cite>port</cite>, <cite>db</cite>, <cite>user</cite>,
+and <cite>password</cite>, just like <cite>MySQLdb.connect</cite> does.</p>
+<p>MySQLConnection supports all the features, though MySQL only supports
+<a href="#transactions" class="reference internal">transactions</a> when using the InnoDB backend, and SQLObject currently
+does not have support for explicitly defining the backend when using
+<tt class="docutils literal">createTable</tt>.</p>
+<p>Keyword argument <tt class="docutils literal">conv</tt> allows to pass a list of custom converters.
+Example:</p>
+<pre class="literal-block">
+import time
+import sqlobject
+import MySQLdb.converters
+
+def _mysql_timestamp_converter(raw):
+         """Convert a MySQL TIMESTAMP to a floating point number representing
+         the seconds since the Un*x Epoch. It uses custom code the input seems
+         to be the new (MySQL 4.1+) timestamp format, otherwise code from the
+         MySQLdb module is used."""
+         if raw[4] == '-':
+             return time.mktime(time.strptime(raw, '%Y-%m-%d %H:%M:%S'))
+         else:
+             return MySQLdb.converters.mysql_timestamp_converter(raw)
+
+conversions = MySQLdb.converters.conversions.copy()
+conversions[MySQLdb.constants.FIELD_TYPE.TIMESTAMP] = _mysql_timestamp_converter
+
+MySQLConnection = sqlobject.mysql.builder()
+connection = MySQLConnection(user='foo', db='somedb', conv=conversions)
+</pre>
+</div>
+<div class="section" id="postgres">
+<h2><a href="#id56" class="toc-backref">Postgres</a></h2>
+<p><cite>PostgresConnection</cite> takes a single connection string, like
+<tt class="docutils literal">"dbname=something user=some_user"</tt>, just like <cite>psycopg.connect</cite>.
+You can also use the same keyword arguments as for <cite>MySQLConnection</cite>,
+and a dsn string will be constructed.</p>
+<p>PostgresConnection supports transactions and all other features.</p>
+<p>The user can choose a DB API driver for PostgreSQL by using a <tt class="docutils literal">driver</tt>
+parameter in DB URI or PostgresConnection that can be a comma-separated
+list of driver names. Possible drivers are: <tt class="docutils literal">psycopg2</tt>, <tt class="docutils literal">psycopg1</tt>,
+<tt class="docutils literal">psycopg</tt> (tries psycopg2 and psycopg1), <tt class="docutils literal">pygresql</tt>. Default is
+<tt class="docutils literal">psycopg</tt>.</p>
+</div>
+<div class="section" id="id4">
+<h2><a href="#id57" class="toc-backref">SQLite</a></h2>
+<p><cite>SQLiteConnection</cite> takes the a single string, which is the path to the
+database file.</p>
+<p>SQLite puts all data into one file, with a journal file that is opened
+in the same directory during operation (the file is deleted when the
+program quits).  SQLite does not restrict the types you can put in a
+column -- strings can go in integer columns, dates in integers, etc.</p>
+<p>SQLite may have concurrency issues, depending on your usage in a
+multi-threaded environment.</p>
+<p>The user can choose a DB API driver for SQLite by using a <tt class="docutils literal">driver</tt>
+parameter in DB URI or SQLiteConnection that can be a comma-separated list
+of driver names. Possible drivers are: <tt class="docutils literal">pysqlite2</tt> (alias <tt class="docutils literal">sqlite2</tt>),
+<tt class="docutils literal">sqlite3</tt>, <tt class="docutils literal">sqlite</tt> (alias <tt class="docutils literal">sqlite1</tt>). Default is to test pysqlite2,
+sqlite3 and sqlite in that order.</p>
+</div>
+<div class="section" id="id5">
+<h2><a href="#id58" class="toc-backref">Firebird</a></h2>
+<p><cite>FirebirdConnection</cite> takes the arguments <cite>host</cite>, <cite>db</cite>, <cite>user</cite> (default
+<tt class="docutils literal">"sysdba"</tt>), <cite>password</cite> (default <tt class="docutils literal">"masterkey"</tt>).</p>
+<p>Firebird supports all the features.  Support is still young, so there
+may be some issues, especially with concurrent access, and especially
+using lazy selects.  Try <tt class="docutils literal"><span class="pre">list(MyClass.select())</span></tt> to avoid
+concurrent cursors if you have problems (using <tt class="docutils literal">list()</tt> will
+pre-fetch all the results of a select).</p>
+<p>Firebird support uses <a href="http://www.firebirdsql.org/en/devel-python-driver/" class="reference external">fdb</a> or <a href="http://kinterbasdb.sourceforge.net/" class="reference external">kinterbasdb</a> Python library.</p>
+<p>There could be a problem if one tries to connect to a server running on w32
+from a program running on Unix; the problem is how to specify the database
+so that SQLObject correctly parses it. Vertical bar is replaces by
+a semicolon only on a w32. On Unix a vertical bar is a pretty normal
+character and must not be processed.</p>
+<p>The most correct way to fix the problem is to connect to the DB using
+a database name, not a file name. In the Firebird a DBA can set an alias
+instead of database name in the aliases.conf file</p>
+<p>Example from <a href="http://www.janus-software.com/fbmanual/manual.php?book=admin&amp;topic=4" class="reference external">Firebird 2.0 Administrators Manual</a>:</p>
+<pre class="literal-block">
+# fbdb1 is on a Windows server:
+fbdb1 = c:\Firebird\sample\Employee.fdb
+</pre>
+<p>Now a program can connect to firebird://host:port/fbdb1.</p>
+<p>One can edit aliases.conf whilst the server is running. There is no need to
+stop and restart the server in order for new aliases.conf entries to be
+recognised.</p>
+<p>If you are using indexes and get an error like <em>key size exceeds
+implementation restriction for index</em>, see <a href="http://www.volny.cz/iprenosil/interbase/ip_ib_indexcalculator.htm" class="reference external">this page</a> to understand
+the restrictions on your indexing.</p>
+</div>
+<div class="section" id="id6">
+<h2><a href="#id59" class="toc-backref">Sybase</a></h2>
+<p><cite>SybaseConnection</cite> takes the arguments <cite>host</cite>, <cite>db</cite>, <cite>user</cite>, and
+<cite>password</cite>.  It also takes the extra boolean argument <cite>locking</cite> (default
+True), which is passed through when performing a connection.  You may
+use a False value for <cite>locking</cite> if you are not using multiple threads,
+for a slight performance boost.</p>
+<p>It uses the <a href="http://www.object-craft.com.au/projects/sybase/" class="reference external">Sybase</a> module.</p>
+</div>
+<div class="section" id="id7">
+<h2><a href="#id60" class="toc-backref">MAX DB</a></h2>
+<p>MAX DB, also known as SAP DB, is available from a partnership of SAP
+and MySQL.  It takes the typical arguments: <cite>host</cite>, <cite>database</cite>,
+<cite>user</cite>, <cite>password</cite>.  It also takes the arguments <cite>sqlmode</cite> (default
+<tt class="docutils literal">"internal"</tt>), <cite>isolation</cite>, and <cite>timeout</cite>, which are passed through
+when creating the connection to the database.</p>
+<p>It uses the <a href="http://www.sapdb.org/sapdbPython.html" class="reference external">sapdb</a> module.</p>
+</div>
+<div class="section" id="ms-sql-server">
+<h2><a href="#id61" class="toc-backref">MS SQL Server</a></h2>
+<p>The <cite>MSSQLConnection</cite> objects wants to use new style connection strings
+in the format of</p>
+<p>mssql://user:pass@host:port/db</p>
+<p>This will then be mapped to either the correct driver format.  If running
+SQL Server on a "named" port, make sure to specify the port number in the
+URI.</p>
+<p>The two drivers currently supported are <a href="http://adodbapi.sourceforge.net/" class="reference external">adodbapi</a> and <a href="http://pymssql.sourceforge.net/" class="reference external">pymssql</a>.</p>
+<p>The user can choose a DB API driver for MSSQL by using a <tt class="docutils literal">driver</tt>
+parameter in DB URI or MSSQLConnection that can be a comma-separated list
+of driver names. Possible drivers are: <tt class="docutils literal">adodb</tt> (alias <tt class="docutils literal">adodbapi</tt>) and
+<tt class="docutils literal">pymssql</tt>. Default is to test <tt class="docutils literal">adodbapi</tt> and <tt class="docutils literal">pymssql</tt> in that order.</p>
+</div>
+</div>
+<div class="section" id="events-signals">
+<h1><a href="#id62" class="toc-backref">Events (signals)</a></h1>
+<p>Signals are a mechanism to be notified when data or schema changes happen
+through SQLObject. This may be useful for doing custom data validation,
+logging changes, setting default attributes, etc. Some of what signals can
+do is also possible by overriding methods, but signals may provide
+a cleaner way, especially across classes not related by inheritance.</p>
+<p>Example:</p>
+<pre class="literal-block">
+from sqlobject.events import listen, RowUpdateSignal, RowCreatedSignal
+from model import Users
+
+def update_listener(instance, kwargs):
+    """keep "last_updated" field current"""
+    import datetime
+    # BAD method 1, causes infinite recursion?
+    # instance should be read-only
+    instance.last_updated = datetime.datetime.now()
+    # GOOD method 2
+    kwargs['last_updated'] = datetime.datetime.now()
+
+def created_listener(instance, kwargs, post_funcs):
+    """"email me when new users added"""
+    # email() implementation left as an exercise for the reader
+    msg = "%s just was just added to the database!" % kwargs['name']
+    email(msg)
+
+listen(update_listener, Users, RowUpdateSignal)
+listen(created_listener, Users, RowCreatedSignal)
+</pre>
+</div>
+<div class="section" id="exported-symbols">
+<h1><a href="#id63" class="toc-backref">Exported Symbols</a></h1>
+<p>You can use <tt class="docutils literal">from sqlobject import *</tt>, though you don't have to.  It
+exports a minimal number of symbols.  The symbols exported:</p>
+<p>From <cite>sqlobject.main</cite>:</p>
+<ul class="simple">
+<li><cite>NoDefault</cite></li>
+<li><cite>SQLObject</cite></li>
+<li><cite>getID</cite></li>
+<li><cite>getObject</cite></li>
+</ul>
+<p>From <cite>sqlobject.col</cite>:
+* <cite>Col</cite>
+* <cite>StringCol</cite>
+* <cite>IntCol</cite>
+* <cite>FloatCol</cite>
+* <cite>KeyCol</cite>
+* <cite>ForeignKey</cite>
+* <cite>EnumCol</cite>
+* <cite>SetCol</cite>
+* <cite>DateTimeCol</cite>
+* <cite>DateCol</cite>
+* <cite>TimeCol</cite>
+* <cite>TimestampCol</cite>
+* <cite>DecimalCol</cite>
+* <cite>CurrencyCol</cite></p>
+<p>From <cite>sqlobject.joins</cite>:
+* <cite>MultipleJoin</cite>
+* <cite>RelatedJoin</cite></p>
+<p>From <cite>sqlobject.styles</cite>:
+* <cite>Style</cite>
+* <cite>MixedCaseUnderscoreStyle</cite>
+* <cite>DefaultStyle</cite>
+* <cite>MixedCaseStyle</cite></p>
+<p>From <cite>sqlobject.sqlbuilder</cite>:</p>
+<ul class="simple">
+<li><cite>AND</cite></li>
+<li><cite>OR</cite></li>
+<li><cite>NOT</cite></li>
+<li><cite>IN</cite></li>
+<li><cite>LIKE</cite></li>
+<li><cite>DESC</cite></li>
+<li><cite>CONTAINSSTRING</cite></li>
+<li><cite>const</cite></li>
+<li><cite>func</cite></li>
+</ul>
+<div class="section" id="left-join-and-other-joins">
+<h2><a href="#id64" class="toc-backref">LEFT JOIN and other JOINs</a></h2>
+<p>First look in the <a href="FAQ.html#how-can-i-do-a-left-join" class="reference external">FAQ</a>, question "How can I do a LEFT JOIN?"</p>
+<p>Still here? Well. To perform a JOIN use one of the JOIN helpers from
+<a href="SQLBuilder.html" class="reference external">SQLBuilder</a>. Pass an instance of the helper to .select()
+method.  For example:</p>
+<pre class="literal-block">
+from sqlobject.sqlbuilder import LEFTJOINOn
+MyTable.select(
+    join=LEFTJOINOn(Table1, Table2,
+                    Table1.q.name == Table2.q.value))
+</pre>
+<p>will generate the query:</p>
+<pre class="literal-block">
+SELECT my_table.* FROM my_table, table1
+LEFT JOIN table2 ON table1.name = table2.value;
+</pre>
+<p>If you want to join with the primary table - leave the first table
+None:</p>
+<pre class="literal-block">
+MyTable.select(
+    join=LEFTJOINOn(None, Table1,
+                    MyTable.q.name == Table1.q.value))
+</pre>
+<p>will generate the query:</p>
+<pre class="literal-block">
+SELECT my_table.* FROM my_table
+LEFT JOIN table2 ON my_table.name = table1.value;
+</pre>
+<p>The join argument for .select() can be a JOIN() or a sequence (list/tuple)
+of JOIN()s.</p>
+<p>Available joins are JOIN, INNERJOIN, CROSSJOIN, STRAIGHTJOIN,
+LEFTJOIN, LEFTOUTERJOIN, NATURALJOIN, NATURALLEFTJOIN, NATURALLEFTOUTERJOIN,
+RIGHTJOIN, RIGHTOUTERJOIN, NATURALRIGHTJOIN, NATURALRIGHTOUTERJOIN,
+FULLJOIN, FULLOUTERJOIN, NATURALFULLJOIN, NATURALFULLOUTERJOIN,
+INNERJOINOn, LEFTJOINOn, LEFTOUTERJOINOn, RIGHTJOINOn, RIGHTOUTERJOINOn,
+FULLJOINOn, FULLOUTERJOINOn, INNERJOINUsing, LEFTJOINUsing, LEFTOUTERJOINUsing,
+RIGHTJOINUsing, RIGHTOUTERJOINUsing, FULLJOINUsing, FULLOUTERJOINUsing.</p>
+</div>
+<div class="section" id="how-can-i-join-a-table-with-itself">
+<h2><a href="#id65" class="toc-backref">How can I join a table with itself?</a></h2>
+<p>Use Alias from <a href="SQLBuilder.html" class="reference external">SQLBuilder</a>. Example:</p>
+<pre class="literal-block">
+from sqlobject.sqlbuilder import Alias
+alias = Alias(MyTable, "my_table_alias")
+MyTable.select(MyTable.q.name == alias.q.value)
+</pre>
+<p>will generate the query:</p>
+<pre class="literal-block">
+SELECT my_table.* FROM my_table, my_table AS my_table_alias
+WHERE my_table.name = my_table_alias.value;
+</pre>
+</div>
+<div class="section" id="can-i-use-a-join-with-aliases">
+<h2><a href="#id66" class="toc-backref">Can I use a JOIN() with aliases?</a></h2>
+<p>Sure! That's a situation the JOINs and aliases were primary developed
+for.  Code:</p>
+<pre class="literal-block">
+from sqlobject.sqlbuilder import LEFTJOINOn, Alias
+alias = Alias(OtherTable, "other_table_alias")
+MyTable.select(MyTable.q.name == OtherTable.q.value,
+    join=LEFTJOINOn(MyTable, alias, MyTable.col1 == alias.q.col2))
+</pre>
+<p>will result in the query:</p>
+<pre class="literal-block">
+SELECT my_table.* FROM other_table,
+    my_table LEFT JOIN other_table AS other_table_alias
+WHERE my_table.name == other_table.value AND
+    my_table.col1 = other_table_alias.col2.
+</pre>
+</div>
+<div class="section" id="subqueries-subselects">
+<h2><a href="#id67" class="toc-backref">Subqueries (subselects)</a></h2>
+<p>You can run queries with subqueries (subselects) on those DBMS that can do
+subqueries (MySQL supports subqueries from version 4.1).</p>
+<p>Use corresponding classes and functions from <a href="SQLBuilder.html" class="reference external">SQLBuilder</a>:</p>
+<pre class="literal-block">
+from sqlobject.sqlbuilder import EXISTS, Select
+select = Test1.select(EXISTS(Select(Test2.q.col2, where=(Outer(Test1).q.col1 == Test2.q.col2))))
+</pre>
+<p>generates the query:</p>
+<pre class="literal-block">
+SELECT test1.id, test1.col1 FROM test1 WHERE
+EXISTS (SELECT test2.col2 FROM test2 WHERE (test1.col1 = test2.col2))
+</pre>
+<p>Note the usage of Outer - it is a helper to allow referring to a table in
+the outer query.</p>
+<p>Select() is used instead of .select() because you need to control what
+columns the inner query returns.</p>
+<p>Available queries are <tt class="docutils literal">IN()</tt>, <tt class="docutils literal">NOTIN()</tt>, <tt class="docutils literal">EXISTS()</tt>,
+<tt class="docutils literal">NOTEXISTS()</tt>, <tt class="docutils literal">SOME()</tt>, <tt class="docutils literal">ANY()</tt> and <tt class="docutils literal">ALL()</tt>. The last 3 are
+used with comparison operators, like this: <tt class="docutils literal">somevalue = <span class="pre">ANY(Select(...))</span></tt>.</p>
+</div>
+<div class="section" id="utilities">
+<h2><a href="#id68" class="toc-backref">Utilities</a></h2>
+<p>Some useful utility functions are included with SQLObject.  For more
+information see their module docstrings.</p>
+<ul class="simple">
+<li><a href="http://sqlobject.org/module-sqlobject.util.csvexport.html" class="reference external">sqlobject.util.csvexport</a></li>
+</ul>
+</div>
+<div class="section" id="sqlbuilder">
+<h2><a href="#id69" class="toc-backref">SQLBuilder</a></h2>
+<p>For more information on SQLBuilder, read the <a href="SQLBuilder.html" class="reference external">SQLBuilder
+Documentation</a>.</p>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

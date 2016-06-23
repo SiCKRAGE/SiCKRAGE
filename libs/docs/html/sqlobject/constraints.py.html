@@ -1,0 +1,134 @@
+<html><head><title>/home/phd/current/SQLObject/SQLObject/sqlobject/constraints.py</title>
+        <script type="text/javascript"><!--
+        
+function show_line_range() {
+    var href = document.location.href;
+    if (href.indexOf('?') == -1) {
+        return;
+    }
+    var qs = href.substring(href.indexOf('?')+1);
+    if (qs.indexOf('#') >= 0) {
+        qs = qs.substring(0, qs.indexOf('#'));
+    }
+    var first = qs.match(/f=(\d+)/)[1];
+    var last = qs.match(/l=(\d+)/)[1];
+    if (! first || ! last) {
+        return;
+    }
+    var anchors = document.getElementsByTagName('A');
+    var container = document.createElement('DIV');
+    container.className = 'highlighted';
+    var children = [];
+    var start = null;
+    var parent = null;
+    var highlight = false;
+    for (var i = 0; i < anchors.length; i++) {
+        var el = anchors[i];
+        if (el.getAttribute('name') == first) {
+            start = el.previousSibling;
+            parent = el.parentNode;
+            highlight = true;
+        }
+        if (el.getAttribute('name') == last) {
+            break;
+        }
+        if (highlight) {
+            children[children.length] = el;
+            el = el.nextSibling;
+            while (el && el.tagName != 'A') {
+                children[children.length] = el;
+                el = el.nextSibling;
+            }
+        }
+    }
+    for (i=0; i<children.length; i++) {
+        container.appendChild(children[i]);
+    }
+    if (start) {
+        start.parentNode.insertBefore(container, start.nextSibling);
+    } else {
+        parent.insertBefore(container, parent.childNodes[0]);
+    }
+}
+
+        // --></script>
+        <style>
+        div.python {
+          color: #333
+        }
+        div.python a.lnum {
+          color: #555;
+          background-color: #eee;
+          border-right: 1px solid #999;
+          padding-right: 2px;
+          margin-right: 4px;
+        }
+        div.python span.comment { color: #933 }
+        div.python span.keyword { color: #a3e; font-weight: bold  }
+        div.python span.op { color: #c96 }
+        div.python span.string { color: #6a6 }
+        div.python span.name { }
+        div.python span.text { color: #333 }
+        div.highlighted { background-color: #ff9; border: 1px solid #009 }
+        </style></head><body onload="show_line_range()"><div class="python"><code><a class="lnum" href="#1" name="1">0001</a><span class="string">"""</span><br />
+<a class="lnum" href="#2" name="2">0002</a><span class="string">Constraints</span><br />
+<a class="lnum" href="#3" name="3">0003</a><span class="string">"""</span><br />
+<a class="lnum" href="#4" name="4">0004</a><br />
+<a class="lnum" href="#5" name="5">0005</a><span class="keyword">class</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="name">ValueError</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#6" name="6">0006</a><br />
+<a class="lnum" href="#7" name="7">0007</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__init__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">desc</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">,</span>&#0160;<span class="op">*</span><span class="name">args</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#8" name="8">0008</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">desc</span>&#0160;<span class="op">=</span>&#0160;<span class="name">desc</span><br />
+<a class="lnum" href="#9" name="9">0009</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">col</span>&#0160;<span class="op">=</span>&#0160;<span class="name">col</span><br />
+<a class="lnum" href="#10" name="10">0010</a><br />
+<a class="lnum" href="#11" name="11">0011</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="comment">#&#0160;I&#0160;want&#0160;these&#0160;objects&#0160;to&#0160;be&#0160;garbage-collectable,&#0160;so</span><br />
+<a class="lnum" href="#12" name="12">0012</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="comment">#&#0160;I&#0160;just&#0160;keep&#0160;their&#0160;repr:</span><br />
+<a class="lnum" href="#13" name="13">0013</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">obj</span>&#0160;<span class="op">=</span>&#0160;<span class="name">repr</span><span class="op">(</span><span class="name">obj</span><span class="op">)</span><br />
+<a class="lnum" href="#14" name="14">0014</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">value</span>&#0160;<span class="op">=</span>&#0160;<span class="name">repr</span><span class="op">(</span><span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#15" name="15">0015</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">fullDesc</span>&#0160;<span class="op">=</span>&#0160;<span class="string">"%s.%s&#0160;%s&#0160;(you&#0160;gave:&#0160;%s)"</span>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">%</span>&#0160;<span class="op">(</span><span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">.</span><span class="name">name</span><span class="op">,</span>&#0160;<span class="name">desc</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#17" name="17">0017</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">ValueError</span><span class="op">.</span><span class="name">__init__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">fullDesc</span><span class="op">,</span>&#0160;<span class="op">*</span><span class="name">args</span><span class="op">)</span><br />
+<a class="lnum" href="#18" name="18">0018</a><br />
+<a class="lnum" href="#19" name="19">0019</a><span class="keyword">def</span>&#0160;<span class="name">isString</span><span class="op">(</span><span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#20" name="20">0020</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="keyword">not</span>&#0160;<span class="name">isinstance</span><span class="op">(</span><span class="name">value</span><span class="op">,</span>&#0160;<span class="name">str</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#21" name="21">0021</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"only&#0160;allows&#0160;strings"</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#22" name="22">0022</a><br />
+<a class="lnum" href="#23" name="23">0023</a><span class="keyword">def</span>&#0160;<span class="name">notNull</span><span class="op">(</span><span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#24" name="24">0024</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">value</span>&#0160;<span class="keyword">is</span>&#0160;<span class="name">None</span><span class="op">:</span><br />
+<a class="lnum" href="#25" name="25">0025</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"is&#0160;defined&#0160;NOT&#0160;NULL"</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#26" name="26">0026</a><br />
+<a class="lnum" href="#27" name="27">0027</a><span class="keyword">def</span>&#0160;<span class="name">isInt</span><span class="op">(</span><span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#28" name="28">0028</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="keyword">not</span>&#0160;<span class="name">isinstance</span><span class="op">(</span><span class="name">value</span><span class="op">,</span>&#0160;<span class="op">(</span><span class="name">int</span><span class="op">,</span>&#0160;<span class="name">long</span><span class="op">)</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#29" name="29">0029</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"only&#0160;allows&#0160;integers"</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#30" name="30">0030</a><br />
+<a class="lnum" href="#31" name="31">0031</a><span class="keyword">def</span>&#0160;<span class="name">isFloat</span><span class="op">(</span><span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#32" name="32">0032</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="keyword">not</span>&#0160;<span class="name">isinstance</span><span class="op">(</span><span class="name">value</span><span class="op">,</span>&#0160;<span class="op">(</span><span class="name">int</span><span class="op">,</span>&#0160;<span class="name">long</span><span class="op">,</span>&#0160;<span class="name">float</span><span class="op">)</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#33" name="33">0033</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"only&#0160;allows&#0160;floating&#0160;point&#0160;numbers"</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#34" name="34">0034</a><br />
+<a class="lnum" href="#35" name="35">0035</a><span class="keyword">def</span>&#0160;<span class="name">isBool</span><span class="op">(</span><span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#36" name="36">0036</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="keyword">not</span>&#0160;<span class="name">isinstance</span><span class="op">(</span><span class="name">value</span><span class="op">,</span>&#0160;<span class="name">bool</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#37" name="37">0037</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"only&#0160;allows&#0160;booleans"</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#38" name="38">0038</a><br />
+<a class="lnum" href="#39" name="39">0039</a><span class="keyword">class</span>&#0160;<span class="name">InList</span><span class="op">:</span><br />
+<a class="lnum" href="#40" name="40">0040</a><br />
+<a class="lnum" href="#41" name="41">0041</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__init__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">l</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#42" name="42">0042</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">list</span>&#0160;<span class="op">=</span>&#0160;<span class="name">l</span><br />
+<a class="lnum" href="#43" name="43">0043</a><br />
+<a class="lnum" href="#44" name="44">0044</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__call__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#45" name="45">0045</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">value</span>&#0160;<span class="keyword">not</span>&#0160;<span class="keyword">in</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">list</span><span class="op">:</span><br />
+<a class="lnum" href="#46" name="46">0046</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"accepts&#0160;only&#0160;values&#0160;in&#0160;%s"</span>&#0160;<span class="op">%</span>&#0160;<span class="name">repr</span><span class="op">(</span><span class="name">self</span><span class="op">.</span><span class="name">list</span><span class="op">)</span><span class="op">,</span><br />
+<a class="lnum" href="#47" name="47">0047</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#48" name="48">0048</a><br />
+<a class="lnum" href="#49" name="49">0049</a><span class="keyword">class</span>&#0160;<span class="name">MaxLength</span><span class="op">:</span><br />
+<a class="lnum" href="#50" name="50">0050</a><br />
+<a class="lnum" href="#51" name="51">0051</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__init__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">length</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#52" name="52">0052</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">length</span>&#0160;<span class="op">=</span>&#0160;<span class="name">length</span><br />
+<a class="lnum" href="#53" name="53">0053</a><br />
+<a class="lnum" href="#54" name="54">0054</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">__call__</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#55" name="55">0055</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">try</span><span class="op">:</span><br />
+<a class="lnum" href="#56" name="56">0056</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">length</span>&#0160;<span class="op">=</span>&#0160;<span class="name">len</span><span class="op">(</span><span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#57" name="57">0057</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">except</span>&#0160;<span class="name">TypeError</span><span class="op">:</span><br />
+<a class="lnum" href="#58" name="58">0058</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"object&#0160;does&#0160;not&#0160;have&#0160;a&#0160;length"</span><span class="op">,</span><br />
+<a class="lnum" href="#59" name="59">0059</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span><br />
+<a class="lnum" href="#60" name="60">0060</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">if</span>&#0160;<span class="name">length</span>&#0160;<span class="op">&gt;</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">length</span><span class="op">:</span><br />
+<a class="lnum" href="#61" name="61">0061</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="keyword">raise</span>&#0160;<span class="name">BadValue</span><span class="op">(</span><span class="string">"must&#0160;be&#0160;shorter&#0160;in&#0160;length&#0160;than&#0160;%s"</span><br />
+<a class="lnum" href="#62" name="62">0062</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">%</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">length</span><span class="op">,</span><br />
+<a class="lnum" href="#63" name="63">0063</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">obj</span><span class="op">,</span>&#0160;<span class="name">col</span><span class="op">,</span>&#0160;<span class="name">value</span><span class="op">)</span></code></div></body></html>
