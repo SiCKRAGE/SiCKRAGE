@@ -1,0 +1,713 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>col</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Col -- SQLObject columns
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The col module is accessible via the
+    <a href="module-sqlobject.html">
+      <tt>sqlobject</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (6)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Functions
+      </span>
+    </li><li>
+      <a href="#classes" class="pudge-section-link">
+        Classes (49)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.col-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/col.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>Note that each column object is named BlahBlahCol, and these are used
+in class definitions.  But there's also a corresponding SOBlahBlahCol
+object, which is used in SQLObject <em>classes</em>.</p>
+<p>An explanation: when a SQLObject subclass is created, the metaclass
+looks through your class definition for any subclasses of Col.  It
+collects them together, and indexes them to do all the database stuff
+you like, like the magic attributes and whatnot.  It then asks the Col
+object to create an SOCol object (usually a subclass, actually).  The
+SOCol object contains all the interesting logic, as well as a record
+of the attribute name you used and the class it is bound to (set by
+the metaclass).</p>
+<p>So, in summary: Col objects are what you define, but SOCol objects
+are what gets used.</p>
+  </div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="DATETIME_IMPLEMENTATION"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.col.html#DATETIME_IMPLEMENTATION" class="pudge-obj-link">DATETIME_IMPLEMENTATION</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'datetime'</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="mxdatetime_available"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.col.html#mxdatetime_available" class="pudge-obj-link">mxdatetime_available</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>True</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="MXDATETIME_IMPLEMENTATION"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.col.html#MXDATETIME_IMPLEMENTATION" class="pudge-obj-link">MXDATETIME_IMPLEMENTATION</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'mxDateTime'</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="datetime_available"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.col.html#datetime_available" class="pudge-obj-link">datetime_available</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>True</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="default_datetime_implementation"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.col.html#default_datetime_implementation" class="pudge-obj-link">default_datetime_implementation</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'datetime'</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.col.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject'</pre>
+    </div>
+  </div>
+    <a name="classes"></a>
+    <h2>Classes</h2>
+    <div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOCol.html" class="pudge-obj-link">SOCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=84&amp;l=395#84" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.Col.html" class="pudge-obj-link">Col</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=397&amp;l=436#397" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.Col.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOStringLikeCol.html" class="pudge-obj-link">SOStringLikeCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=446&amp;l=531#446" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      A common ancestor for SOStringCol and SOUnicodeCol
+    </p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOStringLikeCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOStringCol.html" class="pudge-obj-link">SOStringCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=557&amp;l=562#557" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOStringCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.StringCol.html" class="pudge-obj-link">StringCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=563&amp;l=565#563" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.StringCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOUnicodeCol.html" class="pudge-obj-link">SOUnicodeCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=612&amp;l=621#612" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOUnicodeCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.UnicodeCol.html" class="pudge-obj-link">UnicodeCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=622&amp;l=624#622" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.UnicodeCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOIntCol.html" class="pudge-obj-link">SOIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=644&amp;l=674#644" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOIntCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.IntCol.html" class="pudge-obj-link">IntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=675&amp;l=677#675" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.IntCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOTinyIntCol.html" class="pudge-obj-link">SOTinyIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=678&amp;l=681#678" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOTinyIntCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.TinyIntCol.html" class="pudge-obj-link">TinyIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=682&amp;l=684#682" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.TinyIntCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOSmallIntCol.html" class="pudge-obj-link">SOSmallIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=685&amp;l=688#685" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOSmallIntCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SmallIntCol.html" class="pudge-obj-link">SmallIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=689&amp;l=691#689" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SmallIntCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOMediumIntCol.html" class="pudge-obj-link">SOMediumIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=692&amp;l=695#692" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOMediumIntCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.MediumIntCol.html" class="pudge-obj-link">MediumIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=696&amp;l=698#696" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.MediumIntCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOBigIntCol.html" class="pudge-obj-link">SOBigIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=699&amp;l=702#699" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOBigIntCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.BigIntCol.html" class="pudge-obj-link">BigIntCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=703&amp;l=705#703" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.BigIntCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOBoolCol.html" class="pudge-obj-link">SOBoolCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=721&amp;l=749#721" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOBoolCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.BoolCol.html" class="pudge-obj-link">BoolCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=750&amp;l=752#750" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.BoolCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOFloatCol.html" class="pudge-obj-link">SOFloatCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=772&amp;l=787#772" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOFloatCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.FloatCol.html" class="pudge-obj-link">FloatCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=788&amp;l=790#788" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.FloatCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOKeyCol.html" class="pudge-obj-link">SOKeyCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=792&amp;l=812#792" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOKeyCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.KeyCol.html" class="pudge-obj-link">KeyCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=813&amp;l=816#813" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.KeyCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOForeignKey.html" class="pudge-obj-link">SOForeignKey</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=817&amp;l=957#817" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOForeignKey.html#members">
+          27 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.ForeignKey.html" class="pudge-obj-link">ForeignKey</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=958&amp;l=964#958" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.ForeignKey.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOEnumCol.html" class="pudge-obj-link">SOEnumCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=981&amp;l=1037#981" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOEnumCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.EnumCol.html" class="pudge-obj-link">EnumCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1038&amp;l=1040#1038" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.EnumCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOSetCol.html" class="pudge-obj-link">SOSetCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1062&amp;l=1078#1062" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOSetCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SetCol.html" class="pudge-obj-link">SetCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1079&amp;l=1081#1079" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SetCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SODateTimeCol.html" class="pudge-obj-link">SODateTimeCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1177&amp;l=1219#1177" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SODateTimeCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.DateTimeCol.html" class="pudge-obj-link">DateTimeCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1220&amp;l=1232#1220" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.DateTimeCol.html#members">
+          8 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SODateCol.html" class="pudge-obj-link">SODateCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1247&amp;l=1289#1247" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SODateCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.DateCol.html" class="pudge-obj-link">DateCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1290&amp;l=1292#1290" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.DateCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOTimeCol.html" class="pudge-obj-link">SOTimeCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1311&amp;l=1350#1311" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOTimeCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.TimeCol.html" class="pudge-obj-link">TimeCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1351&amp;l=1353#1351" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.TimeCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOTimestampCol.html" class="pudge-obj-link">SOTimestampCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1355&amp;l=1370#1355" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Necessary to support MySQL's use of TIMESTAMP versus DATETIME types
+    </p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOTimestampCol.html#members">
+          22 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.TimestampCol.html" class="pudge-obj-link">TimestampCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1371&amp;l=1373#1371" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.TimestampCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOTimedeltaCol.html" class="pudge-obj-link">SOTimedeltaCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1381&amp;l=1388#1381" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOTimedeltaCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.TimedeltaCol.html" class="pudge-obj-link">TimedeltaCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1389&amp;l=1391#1389" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.TimedeltaCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SODecimalCol.html" class="pudge-obj-link">SODecimalCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1439&amp;l=1456#1439" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SODecimalCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.DecimalCol.html" class="pudge-obj-link">DecimalCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1457&amp;l=1459#1457" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.DecimalCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOCurrencyCol.html" class="pudge-obj-link">SOCurrencyCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1460&amp;l=1466#1460" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOCurrencyCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.CurrencyCol.html" class="pudge-obj-link">CurrencyCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1467&amp;l=1469#1467" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.CurrencyCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SODecimalStringCol.html" class="pudge-obj-link">SODecimalStringCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1492&amp;l=1515#1492" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SODecimalStringCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.DecimalStringCol.html" class="pudge-obj-link">DecimalStringCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1516&amp;l=1518#1516" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.DecimalStringCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOBLOBCol.html" class="pudge-obj-link">SOBLOBCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1563&amp;l=1592#1563" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOBLOBCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.BLOBCol.html" class="pudge-obj-link">BLOBCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1593&amp;l=1595#1593" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.BLOBCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.SOPickleCol.html" class="pudge-obj-link">SOPickleCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1623&amp;l=1641#1623" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.SOPickleCol.html#members">
+          21 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.col.PickleCol.html" class="pudge-obj-link">PickleCol</a>(...)</tt>
+      <a href="sqlobject/col.py.html?f=1642&amp;l=1644#1642" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.col.PickleCol.html#members">
+          7 members</a>.
+      </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/col.py.html" title="sqlobject/col.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

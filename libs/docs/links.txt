@@ -1,0 +1,69 @@
+SQLObject Links
+===============
+
+If you have a link you'd like added to this page, please submit a bug
+report with the link and title at `bug tracker
+<http://sourceforge.net/p/sqlobject/bugs/>`_ or send pull requests at
+`GitHub <https://github.com/sqlobject/sqlobject>`_).
+
+Articles and Documentation
+--------------------------
+
+* `Connecting databases to Python with SQLObject
+  <http://www.ibm.com/developerworks/library/os-pythonsqlo/index.html>`_;
+  an article at DeveloperWorks.
+
+* `DB migration using sqlobject-admin how-to
+  <http://www.algorithm.co.il/blogs/index.php/programming/python/simple-sqlobject-db-migration-how-to/>`_.
+
+* `Handling Form data with Formencode + SQLObject
+  <http://www.groovie.org/articles/2005/08/24/handling-form-data-with-formencode-sqlobject>`_;
+  a post by Ben Bangert about using SQLObject with `FormEncode
+  <http://formencode.org>`_.
+
+* `How to Use Database Agnostic SQL in SQLObject
+  <http://groovie.org/articles/2005/11/01/how-to-use-database-agnostic-sql-in-sqlobject>`_.
+
+* `Using SQLObject with memcached
+  <http://www.zachary.com/s/blog/2005/09/18/sqlobject_and_memcached,_part_1>`_.
+
+* `Example of using SQLObject with web.py under mod_wsgi
+  <https://github.com/RhubarbSin/example-sqlobject-webpy>`_.
+
+Open Source Projects
+--------------------
+
+* `TurboGears <http://turbogears.org/>`_ Web Framework: also integrates
+  with SQLObject.
+
+* `Pylons <http://pylonshq.com/>`_ Web Framework: `Myghty
+  <http://www.myghty.org/>`_ based, with SQLObject integration.
+
+* `Catwalk <http://checkandshare.com/catwalk/>`_ is a web-based
+  SQLObject browser and object editor (included in TurboGears)
+  (`related blog items <http://www.checkandshare.com/blog/?cat=8>`_).
+
+* `Ultra Gleeper <http://www.crummy.com/software/UltraGleeper/>`_, a
+  Recommendation Engine for Web Pages.
+
+* `rdflib <http://rdflib.net/>`_ contains a SQLObject backend.
+
+* `Anemon <http://anemon.org/pmwiki/index.php?n=General.Presentation>`_ DHCP
+  server.
+
+* `Guten <http://guten.sourceforge.net/>`_; an application for
+  browsing, reading, and managing books from `Project Gutenberg
+  <http://www.gutenberg.org/>`_.
+
+* `My Newspaper <http://inigo.katxi.org/devel/mynewspaper/>`_, a
+  personal RSS Aggregator and Reader.
+
+* `Stoq <http://www.stoq.com.br/>`_, an open source retail system.
+
+.. image:: http://sflogo.sourceforge.net/sflogo.php?group_id=74338&type=10
+   :target: http://sourceforge.net/projects/sqlobject
+   :class: noborder
+   :align: center
+   :height: 15
+   :width: 80
+   :alt: Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads

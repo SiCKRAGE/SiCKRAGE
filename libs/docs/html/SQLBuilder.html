@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>SQLBuilder</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">SQLBuilder</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a href="#sqlexpression" class="reference internal" id="id1">SQLExpression</a></li>
+<li><a href="#sql-statements" class="reference internal" id="id2">SQL statements</a><ul>
+<li><a href="#select" class="reference internal" id="id3">Select</a></li>
+<li><a href="#insert" class="reference internal" id="id4">Insert</a></li>
+<li><a href="#update" class="reference internal" id="id5">Update</a></li>
+<li><a href="#delete" class="reference internal" id="id6">Delete</a></li>
+<li><a href="#union" class="reference internal" id="id7">Union</a></li>
+</ul>
+</li>
+<li><a href="#nested-sql-statements-subqueries" class="reference internal" id="id8">Nested SQL statements (subqueries)</a></li>
+</ul>
+</div>
+<p>A number of variables from SQLBuilder are included with <tt class="docutils literal">from
+sqlobject import *</tt> -- see the <a href="SQLObject.html#exported-symbols" class="reference external">relevant SQLObject documentation</a>
+for more.  Its functionality is also available through the special
+<tt class="docutils literal">q</tt> attribute of <cite>SQLObject</cite> classes.</p>
+<div class="section" id="sqlexpression">
+<h1><a href="#id1" class="toc-backref">SQLExpression</a></h1>
+<p>SQLExpression uses clever overriding of operators to make Python
+expressions build SQL expressions -- so long as you start with a Magic
+Object that knows how to fake it.</p>
+<p>With SQLObject, you get a Magic Object by accessing the <tt class="docutils literal">q</tt> attribute
+of a table class -- this gives you an object that represents the
+field. All of this is probably easier to grasp in an example:</p>
+<pre class="literal-block">
+>>> from sqlobject.sqlbuilder import *
+>>> person = table.person
+# person is now equivalent to the Person.q object from the SQLObject
+# documentation
+>>> person
+person
+>>> person.first_name
+person.first_name
+>>> person.first_name == 'John'
+person.first_name = 'John'
+>>> name = 'John'
+>>> person.first_name != name
+person.first_name &lt;> 'John'
+>>> AND(person.first_name == 'John', person.last_name == 'Doe')
+(person.first_name = 'John' AND person.last_name = 'Doe')
+</pre>
+<p>Most of the operators work properly: &lt;, >, &lt;=, >=, !=, ==, +, -, /,
+*, **, %.  However, <tt class="docutils literal">and</tt>, <tt class="docutils literal">or</tt>, and <tt class="docutils literal">not</tt> <strong>do not work</strong>.
+You can use &amp;, |, and ~ instead -- but be aware that these have
+the same precedence as multiplication.  So:</p>
+<pre class="literal-block">
+# This isn't what you want:
+>> person.first_name == 'John' &amp; person.last_name == 'Doe'
+(person.first_name = ('John' AND person.last_name)) = 'Doe')
+# This is:
+>> (person.first_name == 'John') &amp; (person.last_name == 'Doe')
+((person.first_name = 'John') AND (person.last_name == 'Doe'))
+</pre>
+<p>SQLBuilder also contains the functions <tt class="docutils literal">AND</tt>, <tt class="docutils literal">OR</tt>, and <tt class="docutils literal">NOT</tt> which
+also work -- I find these easier to work with.  <tt class="docutils literal">AND</tt> and <tt class="docutils literal">OR</tt> can
+take any number of arguments.</p>
+<p>You can also use <tt class="docutils literal">.startswith()</tt> and <tt class="docutils literal">.endswith()</tt> on an SQL
+expression -- these will translate to appropriate <tt class="docutils literal">LIKE</tt> statements
+and all <tt class="docutils literal">%</tt> quoting is handled for you, so you can ignore that
+implementation detail.  There is also a <tt class="docutils literal">LIKE</tt> function, where you
+can pass your string, with <tt class="docutils literal">%</tt> for the wildcard, as usual.</p>
+<p>If you want to access an SQL function, use the <tt class="docutils literal">func</tt> variable,
+like:</p>
+<pre class="literal-block">
+>> person.created &lt; func.NOW()
+</pre>
+<p>To pass a constant, use the <tt class="docutils literal">const</tt> variable which is actually an
+alias for func.</p>
+</div>
+<div class="section" id="sql-statements">
+<h1><a href="#id2" class="toc-backref">SQL statements</a></h1>
+<p>SQLBuilder implements objects that execute SQL statements. SQLObject
+uses them internally in its <a href="SQLObject.html" class="reference external">higher-level API</a>, but users can use this
+mid-level API to execute SQL queries that are not supported by the
+high-level API. To use these objects first construct an instance of a
+statement object, then ask the connection to convert the instance to an
+SQL query and finally ask the connection to execute the query and return
+the results. For example, for <tt class="docutils literal">Select</tt> class:</p>
+<pre class="literal-block">
+>>> from sqlobject.sqlbuilder import *
+>> select = Select(['name', 'AVG(salary)'], staticTables=['employees'],
+>>     groupBy='name') # create an instance
+>> query = connection.sqlrepr(select) # Convert to SQL string:
+>>     # SELECT name, AVG(salary) FROM employees GROUP BY name
+>> rows = connection.queryAll(query) # Execute the query
+>>     # and get back the results as a list of rows
+>>     # where every row is a sequence of length 2 (name and average salary)
+</pre>
+<div class="section" id="select">
+<h2><a href="#id3" class="toc-backref">Select</a></h2>
+<p>A class to build <tt class="docutils literal">SELECT</tt> queries. Accepts a number of parameters, all
+parameters except <cite>items</cite> are optional. Use <tt class="docutils literal">connection.queryAll(query)</tt>
+to execute the query and get back the results as a list of rows.</p>
+<dl class="docutils">
+<dt><cite>items</cite>:</dt>
+<dd>A string, an SQLExpression or a sequence of strings or
+SQLExpression's, represents the list of columns. If there are
+q-values SQLExpression's <tt class="docutils literal">Select</tt> derives a list of tables for
+SELECT query.</dd>
+<dt><cite>where</cite>:</dt>
+<dd>A string or an SQLExpression, represents the <tt class="docutils literal">WHERE</tt> clause.</dd>
+<dt><cite>groupBy</cite>:</dt>
+<dd>A string or an SQLExpression, represents the <tt class="docutils literal">GROUP BY</tt> clause.</dd>
+<dt><cite>having</cite>:</dt>
+<dd>A string or an SQLExpression, represents the <tt class="docutils literal">HAVING</tt> part of the
+<tt class="docutils literal">GROUP BY</tt> clause.</dd>
+<dt><cite>orderBy</cite>:</dt>
+<dd>A string or an SQLExpression, represents the <tt class="docutils literal">ORDER BY</tt> clause.</dd>
+<dt><cite>join</cite>:</dt>
+<dd>A (list of) JOINs (<tt class="docutils literal">LEFT JOIN</tt>, etc.)</dd>
+<dt><cite>distinct</cite>:</dt>
+<dd>A bool flag to turn on <tt class="docutils literal">DISTINCT</tt> query.</dd>
+<dt><cite>start</cite>, <cite>end</cite>:</dt>
+<dd>Integers. The way to calculate <tt class="docutils literal">OFFSET</tt> and <tt class="docutils literal">LIMIT</tt>.</dd>
+<dt><cite>limit</cite>:</dt>
+<dd>An integer. <cite>limit</cite>, if passed, overrides <cite>end</cite>.</dd>
+<dt><cite>reversed</cite>:</dt>
+<dd>A bool flag to do <tt class="docutils literal">ORDER BY</tt> in the reverse direction.</dd>
+<dt><cite>forUpdate</cite>:</dt>
+<dd>A bool flag to turn on <tt class="docutils literal">SELECT FOR UPDATE</tt> query.</dd>
+<dt><cite>staticTables</cite>:</dt>
+<dd>A sequence of strings or SQLExpression's that name tables for
+<tt class="docutils literal">FROM</tt>. This parameter must be used if <cite>items</cite> is a list of strings
+from which Select cannot derive the list of tables.</dd>
+</dl>
+</div>
+<div class="section" id="insert">
+<h2><a href="#id4" class="toc-backref">Insert</a></h2>
+<p>A class to build <tt class="docutils literal">INSERT</tt> queries. Accepts a number of parameters.
+Use <tt class="docutils literal">connection.query(query)</tt> to execute the query.</p>
+<dl class="docutils">
+<dt><cite>table</cite>:</dt>
+<dd>A string that names the table to <tt class="docutils literal">INSERT</tt> into. Required.</dd>
+<dt><cite>valueList</cite>:</dt>
+<dd><p class="first">A list of (key, value) sequences or {key: value} dictionaries; keys
+are column names. Either <cite>valueList</cite> or <cite>values</cite> must be passed, but
+not both. Example:</p>
+<pre class="last literal-block">
+>> insert = Insert('person', valueList=[('name', 'Test'), ('age', 42)])
+       # or
+>> insert = Insert('person', valueList=[{'name': 'Test'}, {'age': 42}])
+>> query = connection.sqlrepr(insert)
+       # Both generate the same query:
+       # INSERT INTO person (name, age) VALUES ('Test', 42)
+>> connection.query(query)
+</pre>
+</dd>
+<dt><cite>values</cite>:</dt>
+<dd><p class="first">A dictionary {key: value}; keys are column names. Either <cite>valueList</cite>
+or <cite>values</cite> must be passed, but not both. Example:</p>
+<pre class="last literal-block">
+>> insert = Insert('person', values={'name': 'Test', 'age': 42})
+>> query = connection.sqlrepr(insert)
+       # The query is the same
+       # INSERT INTO person (name, age) VALUES ('Test', 42)
+>> connection.query(query)
+</pre>
+</dd>
+</dl>
+<p>Instances of the class work fast and thus are suitable for
+mass-insertion. If one needs to populate a database with SQLObject
+running a lot of <tt class="docutils literal">INSERT</tt> queries this class is the way to go.</p>
+</div>
+<div class="section" id="update">
+<h2><a href="#id5" class="toc-backref">Update</a></h2>
+<p>A class to build <tt class="docutils literal">UPDATE</tt> queries. Accepts a number of parameters.
+Use <tt class="docutils literal">connection.query(query)</tt> to execute the query.</p>
+<dl class="docutils">
+<dt><cite>table</cite>:</dt>
+<dd>A string that names the table to <tt class="docutils literal">UPDATE</tt>. Required.</dd>
+<dt><cite>values</cite>:</dt>
+<dd>A dictionary {key: value}; keys are column names. Required.</dd>
+<dt><cite>where</cite>:</dt>
+<dd>An optional string or SQLExpression, represents the <tt class="docutils literal">WHERE</tt> clause.</dd>
+</dl>
+<p>Example:</p>
+<pre class="literal-block">
+>> update = Update('person',
+>>     values={'name': 'Test', 'age': 42}, where='id=1')
+>> query = connection.sqlrepr(update)
+       # UPDATE person SET name='Test', age=42 WHERE id=1
+>> connection.query(query)
+</pre>
+</div>
+<div class="section" id="delete">
+<h2><a href="#id6" class="toc-backref">Delete</a></h2>
+<p>A class to build <tt class="docutils literal">DELETE FROM</tt> queries. Accepts a number of parameters.
+Use <tt class="docutils literal">connection.query(query)</tt> to execute the query.</p>
+<dl class="docutils">
+<dt><cite>table</cite>:</dt>
+<dd>A string that names the table to <tt class="docutils literal">UPDATE</tt>. Required.</dd>
+<dt><cite>where</cite>:</dt>
+<dd>An optional string or an SQLExpression, represents the <tt class="docutils literal">WHERE</tt>
+clause. Required. If you need to delete all rows pass <tt class="docutils literal">where=None</tt>;
+this is a safety measure.</dd>
+</dl>
+<p>Example:</p>
+<pre class="literal-block">
+>> update = Delete('person', where='id=1')
+>> query = connection.sqlrepr(update)
+       # DELETE FROM person WHERE id=1
+>> connection.query(query)
+</pre>
+</div>
+<div class="section" id="union">
+<h2><a href="#id7" class="toc-backref">Union</a></h2>
+<p>A class to build <tt class="docutils literal">UNION</tt> queries. Accepts a number of parameters -
+<tt class="docutils literal">Select</tt> queries. Use <tt class="docutils literal">connection.queryAll(query)</tt> to execute the
+query and get back the results.</p>
+<p>Example:</p>
+<pre class="literal-block">
+>> select1 = Select(['min', func.MIN(const.salary)], staticTables=['employees'])
+>> select2 = Select(['max', func.MAX(const.salary)], staticTables=['employees'])
+>> union = Union(select1, select2)
+>> query = connection.sqlrepr(union)
+       # SELECT 'min', MIN(salary) FROM employees
+       #    UNION
+       # SELECT 'max', MAX(salary) FROM employees
+>> rows = connection.queryAll(query)
+</pre>
+</div>
+</div>
+<div class="section" id="nested-sql-statements-subqueries">
+<h1><a href="#id8" class="toc-backref">Nested SQL statements (subqueries)</a></h1>
+<p>There are a few special operators that receive as parameter SQL
+statements. These are <tt class="docutils literal">IN</tt>, <tt class="docutils literal">NOTIN</tt>, <tt class="docutils literal">EXISTS</tt>, <tt class="docutils literal">NOTEXISTS</tt>,
+<tt class="docutils literal">SOME</tt>, <tt class="docutils literal">ANY</tt> and <tt class="docutils literal">ALL</tt>. Consider the following example: You are
+interested in removing records from a table using deleteMany. However,
+the criterion for doing so depends on another table.</p>
+<p>You would expect the following to work:</p>
+<pre class="literal-block">
+>> PersonWorkplace.deleteMany(where=
+   ((PersonWorkplace.q.WorkplaceID==Workplace.q.id) &amp;
+   (Workplace.q.id==SOME_ID)))
+</pre>
+<p>But this doesn't work! However, you can't do a join in a deleteMany
+call. To work around this issue, use <tt class="docutils literal">IN</tt>:</p>
+<pre class="literal-block">
+>> PersonWorkplace.deleteMany(where=
+   IN(PersonWorkplace.q.WorkplaceID,
+   Select(Workplace.q.id, Workplace.q.id==SOME_ID)))
+</pre>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

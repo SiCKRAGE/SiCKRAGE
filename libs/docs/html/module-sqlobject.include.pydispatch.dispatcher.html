@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>dispatcher</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Multiple-producer-multiple-consumer signal-dispatching
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The dispatcher module is accessible via the
+    <a href="module-sqlobject.include.pydispatch.html">
+      <tt>sqlobject.include.pydispatch</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (9)
+      </a>
+    </li><li>
+      <a href="#functions" class="pudge-section-link">
+        Functions (7)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Classes
+      </span>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.include.pydispatch.dispatcher-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>dispatcher is the core of the PyDispatcher system,
+providing the primary API and the core logic for the
+system.</p>
+<p>Module attributes of note:</p>
+<blockquote>
+<dl class="docutils">
+<dt>Any -- Singleton used to signal either "Any Sender" or</dt>
+<dd>"Any Signal".  See documentation of the _Any class.</dd>
+<dt>Anonymous -- Singleton used to signal "Anonymous Sender"</dt>
+<dd>See documentation of the _Anonymous class.</dd>
+</dl>
+</blockquote>
+<dl class="docutils">
+<dt>Internal attributes:</dt>
+<dd><dl class="first docutils">
+<dt>WEAKREF_TYPES -- tuple of types/classes which represent</dt>
+<dd>weak references to receivers, and thus must be de-
+referenced on retrieval to retrieve the callable
+object</dd>
+</dl>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">sqlobject.include.pydispatch.dispatcher</tt>, line 17)</p>
+Definition list ends without a blank line; unexpected unindent.</div>
+<p>connections -- { senderkey (id) : { signal : [receivers...]}}
+senders -- { senderkey (id) : weakref(sender) }</p>
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">sqlobject.include.pydispatch.dispatcher</tt>, line 19)</p>
+Unexpected indentation.</div>
+<blockquote>
+used for cleaning up sender references on sender
+deletion</blockquote>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">sqlobject.include.pydispatch.dispatcher</tt>, line 21)</p>
+Block quote ends without a blank line; unexpected unindent.</div>
+<dl class="last docutils">
+<dt>sendersBack -- { receiverkey (id) <span class="classifier-delimiter">:</span> <span class="classifier">[senderkey (id)...] }</span></dt>
+<dd>used for cleaning up receiver references on receiver
+deletion, (considerably speeds up the cleanup process
+vs. the original code.)</dd>
+</dl>
+</dd>
+</dl>
+  </div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="connections"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#connections" class="pudge-obj-link">connections</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>{189926220: {&lt;class 'sqlobject.events.ClassCreateSignal'>: [&lt;weakref at 0xb51f3c4; to 'function' at 0xb524924 (_makeSubclassConnections)>]}}</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="senders"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#senders" class="pudge-obj-link">senders</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>{}</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject.include.pydispatch'</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="generators"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#generators" class="pudge-obj-link">generators</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>_Feature((2, 2, 0, 'alpha', 1), (2, 3, 0, 'final', 0), 0)</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="Anonymous"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#Anonymous" class="pudge-obj-link">Anonymous</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>_Anonymous</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="sendersBack"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#sendersBack" class="pudge-obj-link">sendersBack</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>{189920196: [189926220]}</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__cvsid__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#__cvsid__" class="pudge-obj-link">__cvsid__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'$Id: dispatcher.py,v 1.9 2005/09/17 04:55:57 mcfletch Exp $'</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="WEAKREF_TYPES"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#WEAKREF_TYPES" class="pudge-obj-link">WEAKREF_TYPES</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>(&lt;type 'weakref'>,
+ &lt;class 'sqlobject.include.pydispatch.saferef.BoundMethodWeakref'>)</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="Any"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#Any" class="pudge-obj-link">Any</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>_Any</pre>
+    </div>
+  </div>
+    <a name="functions"></a>
+    <h2>Functions</h2>
+    <div class="pudge-member routine ">
+    <a name="connect"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#connect" class="pudge-obj-link">connect</a>(receiver, signal=_Any, sender=_Any, weak=True)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=84&amp;l=178#84" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Connect receiver to sender for signal
+    </p>
+    <dl class="docutils">
+<dt>receiver -- a callable Python object which is to receive</dt>
+<dd><p class="first">messages/signals/events.  Receivers must be hashable
+objects.</p>
+<p>if weak is True, then receiver must be weak-referencable
+(more precisely saferef.safeRef() must be able to create
+a reference to the receiver).</p>
+<p>Receivers are fairly flexible in their specification,
+as the machinery in the robustApply module takes care
+of most of the details regarding figuring out appropriate
+subsets of the sent arguments to apply to a given
+receiver.</p>
+<dl class="last docutils">
+<dt>Note:</dt>
+<dd>if receiver is itself a weak reference (a callable),
+it will be de-referenced by the system's machinery,
+so <em>generally</em> weak references are not suitable as
+receivers, though some use might be found for the
+facility whereby a higher-level library passes in
+pre-weakrefed receiver references.</dd>
+</dl>
+</dd>
+</dl>
+<p>signal -- the signal to which the receiver should respond</p>
+<blockquote>
+<p>if Any, receiver will receive any signal from the
+indicated sender (which might also be Any, but is not
+necessarily Any).</p>
+<p>Otherwise must be a hashable Python object other than
+None (DispatcherError raised on None).</p>
+</blockquote>
+<p>sender -- the sender to which the receiver should respond</p>
+<blockquote>
+<p>if Any, receiver will receive the indicated signals
+from any sender.</p>
+<p>if Anonymous, receiver will only receive indicated
+signals from send/sendExact which do not specify a
+sender, or specify Anonymous explicitly as the sender.</p>
+<p>Otherwise can be any python object.</p>
+</blockquote>
+<dl class="docutils">
+<dt>weak -- whether to use weak references to the receiver</dt>
+<dd>By default, the module will attempt to use weak
+references to the receiver objects.  If this parameter
+is false, then strong references will be used.</dd>
+</dl>
+<p>returns None, may raise DispatcherTypeError</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="disconnect"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#disconnect" class="pudge-obj-link">disconnect</a>(receiver, signal=_Any, sender=_Any, weak=True)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=181&amp;l=235#181" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Disconnect receiver from sender for signal
+    </p>
+    <p>receiver -- the registered receiver to disconnect
+signal -- the registered signal to disconnect
+sender -- the registered sender to disconnect
+weak -- the weakref state to disconnect</p>
+<p>disconnect reverses the process of connect,
+the semantics for the individual elements are
+logically equivalent to a tuple of
+(receiver, signal, sender, weak) used as a key
+to be deleted from the internal routing tables.
+(The actual process is slightly more complex
+but the semantics are basically the same).</p>
+<dl class="docutils">
+<dt>Note:</dt>
+<dd>Using disconnect is not required to cleanup
+routing when an object is deleted, the framework
+will remove routes for deleted objects
+automatically.  It's only necessary to disconnect
+if you want to stop routing to a live object.</dd>
+<dt>returns None, may raise DispatcherTypeError or</dt>
+<dd>DispatcherKeyError</dd>
+</dl>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="getReceivers"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#getReceivers" class="pudge-obj-link">getReceivers</a>(sender=_Any, signal=_Any)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=236&amp;l=258#236" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Get list of receivers from global tables
+    </p>
+    <p>This utility function allows you to retrieve the
+raw list of receivers from the connections table
+for the given sender and signal pair.</p>
+<dl class="docutils">
+<dt>Note:</dt>
+<dd>there is no guarantee that this is the actual list
+stored in the connections table, so the value
+should be treated as a simple iterable/truth value
+rather than, for instance a list to which you
+might append new records.</dd>
+</dl>
+<p>Normally you would use liveReceivers( getReceivers( ...))
+to retrieve the actual receiver objects as an iterable
+object.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="liveReceivers"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#liveReceivers" class="pudge-obj-link">liveReceivers</a>(receivers)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=259&amp;l=275#259" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Filter sequence of receivers to get resolved, live receivers
+    </p>
+    <p>This is a generator which will iterate over
+the passed sequence, checking for weak references
+and resolving them, then returning all live
+receivers.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="getAllReceivers"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#getAllReceivers" class="pudge-obj-link">getAllReceivers</a>(sender=_Any, signal=_Any)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=278&amp;l=305#278" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Get list of all receivers from global tables
+    </p>
+    <p>This gets all receivers which should receive
+the given signal from sender, each receiver should
+be produced only once by the resulting generator</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="send"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#send" class="pudge-obj-link">send</a>(signal=_Any, sender=_Anonymous, *arguments, **named)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=306&amp;l=353#306" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Send signal from sender to all connected receivers.
+    </p>
+    <p>signal -- (hashable) signal value, see connect for details</p>
+<p>sender -- the sender of the signal</p>
+<blockquote>
+<p>if Any, only receivers registered for Any will receive
+the message.</p>
+<p>if Anonymous, only receivers registered to receive
+messages from Anonymous or Any will receive the message</p>
+<p>Otherwise can be any python object (normally one
+registered with a connect if you actually want
+something to occur).</p>
+</blockquote>
+<dl class="docutils">
+<dt>arguments -- positional arguments which will be passed to</dt>
+<dd><em>all</em> receivers. Note that this may raise TypeErrors
+if the receivers do not allow the particular arguments.
+Note also that arguments are applied before named
+arguments, so they should be used with care.</dd>
+<dt>named -- named arguments which will be filtered according</dt>
+<dd>to the parameters of the receivers to only provide those
+acceptable to the receiver.</dd>
+</dl>
+<p>Return a list of tuple pairs [(receiver, response), ... ]</p>
+<p>if any receiver raises an error, the error propagates back
+through send, terminating the dispatch loop, so it is quite
+possible to not have all receivers called if a raises an
+error.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="sendExact"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.dispatcher.html#sendExact" class="pudge-obj-link">sendExact</a>(signal=_Any, sender=_Anonymous, *arguments, **named)</tt>
+      <a href="sqlobject/include/pydispatch/dispatcher.py.html?f=353&amp;l=372#353" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Send signal only to those receivers registered for exact message
+    </p>
+    <p>sendExact allows for avoiding Any/Anonymous registered
+handlers, sending only to those receivers explicitly
+registered for a particular signal on a particular
+sender.</p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/include/pydispatch/dispatcher.py.html" title="sqlobject/include/pydispatch/dispatcher.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

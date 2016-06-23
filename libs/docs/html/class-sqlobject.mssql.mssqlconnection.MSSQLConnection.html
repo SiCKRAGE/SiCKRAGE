@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>MSSQLConnection</tt>
+  </h1>
+  <p class="pudge-member-parent-link">
+    <small>
+    The MSSQLConnection class is accessible via the
+    <a href="module-sqlobject.mssql.mssqlconnection.html">
+      <tt>sqlobject.mssql.mssqlconnection</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (7)
+      </a>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (16)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=5&amp;l=320#5" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="supportTransactions"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#supportTransactions" class="pudge-obj-link">supportTransactions</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>True</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="limit_re"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#limit_re" class="pudge-obj-link">limit_re</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>&lt;_sre.SRE_Pattern object at 0xad70930></pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="SHOW_COLUMNS"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#SHOW_COLUMNS" class="pudge-obj-link">SHOW_COLUMNS</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"\n        select\n                name,\n                length,\n                (       select name\n                        from systypes\n                        where cast(xusertype as int)= cast(sc.xtype as int)\n                ) datatype,\n                prec,\n                scale,\n                isnullable,\n                cdefault,\n                m.text default_text,\n                isnull(len(autoval),0) is_identity\n        from syscolumns sc\n        LEFT OUTER JOIN syscomments m on sc.cdefault = m.id\n                AND m.colid = 1\n        where\n                sc.id in (select id\n                        from sysobjects\n                where name = '%s')\n        order by\n                colorder"</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="SHOW_TABLES"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#SHOW_TABLES" class="pudge-obj-link">SHOW_TABLES</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"SELECT name FROM sysobjects WHERE type='U'"</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="HAS_IDENTITY"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#HAS_IDENTITY" class="pudge-obj-link">HAS_IDENTITY</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>"\n       select 1\n       from INFORMATION_SCHEMA.COLUMNS\n       where TABLE_NAME = '%s'\n       and COLUMNPROPERTY(object_id(TABLE_NAME), COLUMN_NAME, 'IsIdentity') = 1\n    "</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="schemes"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#schemes" class="pudge-obj-link">schemes</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>['mssql']</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="dbName"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#dbName" class="pudge-obj-link">dbName</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'mssql'</pre>
+    </div>
+  </div>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#__init__" class="pudge-obj-link">__init__</a>(self, db, user, password='', host='localhost', port=None, autoCommit=0, **kw)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=13&amp;l=86#13" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="insert_id"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#insert_id" class="pudge-obj-link">insert_id</a>(self, conn)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=93&amp;l=102#93" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      insert_id method.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="makeConnection"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#makeConnection" class="pudge-obj-link">makeConnection</a>(self)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=103&amp;l=115#103" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createReferenceConstraint"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#createReferenceConstraint" class="pudge-obj-link">createReferenceConstraint</a>(self, soClass, col)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=179&amp;l=181#179" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#createColumn" class="pudge-obj-link">createColumn</a>(self, soClass, col)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=182&amp;l=184#182" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIDColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#createIDColumn" class="pudge-obj-link">createIDColumn</a>(self, soClass)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=185&amp;l=188#185" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="createIndexSQL"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#createIndexSQL" class="pudge-obj-link">createIndexSQL</a>(self, soClass, index)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=189&amp;l=191#189" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="joinSQLType"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#joinSQLType" class="pudge-obj-link">joinSQLType</a>(self, join)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=192&amp;l=194#192" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="tableExists"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#tableExists" class="pudge-obj-link">tableExists</a>(self, tableName)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=196&amp;l=201#196" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="addColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#addColumn" class="pudge-obj-link">addColumn</a>(self, tableName, column)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=202&amp;l=206#202" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="delColumn"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#delColumn" class="pudge-obj-link">delColumn</a>(self, sqlmeta, column)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=207&amp;l=209#207" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="columnsFromSchema"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#columnsFromSchema" class="pudge-obj-link">columnsFromSchema</a>(self, tableName, soClass)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=236&amp;l=264#236" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="guessClass"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#guessClass" class="pudge-obj-link">guessClass</a>(self, t, size, precision, scale)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=277&amp;l=300#277" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Here we take raw values coming out of syscolumns and map to SQLObject class types.
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="server_version"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#server_version" class="pudge-obj-link">server_version</a>(self)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=301&amp;l=312#301" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="can_use_max_types"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#can_use_max_types" class="pudge-obj-link">can_use_max_types</a>(self)</tt>
+      <a href="sqlobject/mssql/mssqlconnection.py.html?f=313&amp;l=320#313" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__del__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.mssql.mssqlconnection.MSSQLConnection.html#__del__" class="pudge-obj-link">__del__</a>(self)</tt>
+      <a href="sqlobject/dbconnection.py.html?f=674&amp;l=676#674" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/mssql/mssqlconnection.py.html?f=5&amp;l=320#5" title="sqlobject/mssql/mssqlconnection.py:5">the source</a>
+    for more information.
+    </small>
+  </p>

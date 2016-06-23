@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>TODO</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">TODO</h1>
+  <ul>
+<li><p class="first">RelatedJoin.hasOther(otherObject[.id])</p>
+</li>
+<li><p class="first">createParamsPre/Post:</p>
+<pre class="literal-block">
+class MyTable(SQLObject):
+    class sqlmeta:
+        createParamsPre = 'TEMPORARY IF NOT EXISTS'
+        createParamsPre = {temporary: True, ifNotExists: True,
+                           'postgres': 'LOCAL'}
+        createParamsPost = 'ENGINE InnoDB'
+        createParamsPost = {'mysql': 'ENGINE InnoDB',
+                            'postgres': 'WITH OIDS'}
+</pre>
+</li>
+<li><p class="first">SQLObject.fastInsert().</p>
+</li>
+<li><p class="first">IntervalCol</p>
+</li>
+<li><p class="first">TimedeltaCol</p>
+</li>
+<li><p class="first">Cached join results.</p>
+</li>
+<li><p class="first">Invert tests isinstance(obj, (tuple, list)) to not isinstance(obj, basestr)
+to allow any iterable.</p>
+</li>
+<li><p class="first">Always use .lazyIter().</p>
+</li>
+<li><p class="first">Optimize Iteration.next() - use cursor.fetchmany().</p>
+</li>
+<li><p class="first">Generators instead of loops (fetchall => fetchone).</p>
+</li>
+<li><p class="first">Cache columns in sqlmeta.getColumns(); reset the cache on add/del Column/Join.</p>
+</li>
+<li><p class="first">Stop supporting Python 2.5:
+make ConnectionHub a context manager instead of .doInTransaction().</p>
+</li>
+<li><p class="first">Create JSONCol.</p>
+</li>
+<li><p class="first">Make version_info a namedtuple.</p>
+</li>
+<li><p class="first">Stop supporting Python 2.6: restore using urllib.splituser in _parseURI.</p>
+</li>
+<li><p class="first">Expression columns - in SELECT but not in INSERT/UPDATE. Something like this:</p>
+<pre class="literal-block">
+class MyClass(SQLObject):
+    function1 = ExpressionCol(func.my_function(MyClass.q.col1))
+    function2 = ExpressionCol('sum(col2)')
+</pre>
+</li>
+<li><p class="first">A hierarchy of exceptions. SQLObject should translate exceptions from
+low-level drivers to a consistent set of high-level exceptions.</p>
+</li>
+<li><p class="first">Memcache.</p>
+</li>
+<li><p class="first">Refactor <tt class="docutils literal">DBConnection</tt> to use parameterized queries instead of
+generating query strings.</p>
+</li>
+<li><p class="first">PREPARE/EXECUTE.</p>
+</li>
+<li><p class="first">Protect all .encode(), catch UnicodeEncode exceptions and reraise Invalid.</p>
+</li>
+<li><p class="first">More kinds of joins, and more powerful join results (closer to how
+<cite>select</cite> works).</p>
+</li>
+<li><p class="first">Better joins - automatic joins in .select()
+based on ForeignKey/MultipleJoin/RelatedJoin.</p>
+</li>
+<li><p class="first">Deprecate, then remove connectionForOldURI.</p>
+</li>
+<li><p class="first">Switch from setuptools to distribute.</p>
+</li>
+<li><p class="first">oursql MySQL bindings: <a href="https://launchpad.net/oursql" class="reference external">https://launchpad.net/oursql</a></p>
+</li>
+<li><p class="first">MySQL Connector/Python: <a href="https://launchpad.net/myconnpy" class="reference external">https://launchpad.net/myconnpy</a></p>
+</li>
+<li><p class="first">Pure Python Mysql Interface: <a href="https://github.com/nasi/MyPy" class="reference external">https://github.com/nasi/MyPy</a></p>
+</li>
+<li><p class="first">PyMySQL: <a href="https://github.com/PyMySQL/PyMySQL" class="reference external">https://github.com/PyMySQL/PyMySQL</a></p>
+</li>
+<li><p class="first">pg8000 driver: <a href="http://code.google.com/p/pg8000/" class="reference external">http://code.google.com/p/pg8000/</a></p>
+</li>
+<li><p class="first">py-postgresql driver: <a href="http://python.projects.postgresql.org/" class="reference external">http://python.projects.postgresql.org/</a></p>
+</li>
+<li><p class="first">pyfirebirdsql: <a href="https://github.com/nakagami/pyfirebirdsql" class="reference external">https://github.com/nakagami/pyfirebirdsql</a></p>
+</li>
+<li><p class="first">dict API: use getitem interface for column access instead of getattr; reserve
+getattr for internal attributes only; this helps to avoid collisions with
+internal attributes.</p>
+</li>
+<li><p class="first">Or move column values access to a separate namespace, e.g. .c:
+row.c.column.</p>
+</li>
+<li><p class="first">Convert documentation to <a href="http://sphinx.pocoo.org/index.html" class="reference external">Sphinx</a> format and publish it on
+<a href="http://readthedocs.org/" class="reference external">http://readthedocs.org/</a></p>
+</li>
+</ul>
+<ul class="simple">
+<li>More documentation. Wiki. Trac.</li>
+<li>RSS 2.0 and Atom news feeds.</li>
+<li>Use <a href="http://www.webwareforpython.org/DBUtils" class="reference external">DBUtils</a>, especially SolidConnection.</li>
+</ul>
+<ul class="simple">
+<li><tt class="docutils literal">_fromDatabase</tt> currently doesn't support IDs that don't fit into
+the normal naming scheme.  It should do so.  You can still use
+<tt class="docutils literal">_idName</tt> with <tt class="docutils literal">_fromDatabase</tt>.</li>
+<li>More databases supported.  There has been interest and some work in
+the progress for Oracle. IWBN to have Informix and DB2 drivers.</li>
+<li>Better transaction support -- right now you can use transactions
+for the database, but objects aren't transaction-aware, so
+non-database persistence won't be able to be rolled back.</li>
+<li>Optimistic locking and other techniques to handle concurrency.</li>
+<li>Profile of SQLObject performance to identify bottlenecks.</li>
+<li>Increase hooks with FormEncode validation and form generation package, so
+SQLObject classes (read: schemas) can be published for editing more
+directly and easily.  (First step: get Schema-generating method into
+sqlmeta class)</li>
+<li>Merge SQLObject.create*, .create*SQL methods with DBPI.create* methods.</li>
+<li>Made SQLObject unicode-based instead of just unicode-aware. All internal
+processing should be done with unicode strings, conversion to/from ascii
+strings should happen for non-unicode DB API drivers.</li>
+<li>Allow to override ConsoleWriter/LogWriter classes and makeDebugWriter
+function.</li>
+</ul>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>saferef</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Refactored "safe reference" from dispatcher.py
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The saferef module is accessible via the
+    <a href="module-sqlobject.include.pydispatch.html">
+      <tt>sqlobject.include.pydispatch</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (1)
+      </a>
+    </li><li>
+      <a href="#functions" class="pudge-section-link">
+        Functions (1)
+      </a>
+    </li><li>
+      <a href="#classes" class="pudge-section-link">
+        Classes (1)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.include.pydispatch.saferef-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/include/pydispatch/saferef.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.saferef.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject.include.pydispatch'</pre>
+    </div>
+  </div>
+    <a name="functions"></a>
+    <h2>Functions</h2>
+    <div class="pudge-member routine ">
+    <a name="safeRef"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.saferef.html#safeRef" class="pudge-obj-link">safeRef</a>(target, onDelete=None)</tt>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=4&amp;l=29#4" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Return a <em>safe</em> weak reference to a callable target
+    </p>
+    <dl class="docutils">
+<dt>target -- the object to be weakly referenced, if it's a</dt>
+<dd>bound method reference, will create a BoundMethodWeakref,
+otherwise creates a simple weakref.</dd>
+<dt>onDelete -- if provided, will have a hard reference stored</dt>
+<dd>to the callable to be called after the safe reference
+goes out of scope with the reference object, (either a
+weakref or a BoundMethodWeakref) as argument.</dd>
+</dl>
+    </div>
+  </div>
+    <a name="classes"></a>
+    <h2>Classes</h2>
+    <div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html" class="pudge-obj-link">BoundMethodWeakref</a>(...)</tt>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=30&amp;l=166#30" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      'Safe' and reusable weak references to instance methods
+    </p>
+    <p>BoundMethodWeakref objects provide a mechanism for
+referencing a bound method without requiring that the
+method object itself (which is normally a transient
+object) is kept alive.  Instead, the BoundMethodWeakref
+object keeps weak references to both the object and the
+function which together define the instance method.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><dl class="first docutils">
+<dt>key -- the identity key for the reference, calculated</dt>
+<dd>by the class's calculateKey method applied to the
+target instance method</dd>
+<dt>deletionMethods -- sequence of callable objects taking</dt>
+<dd>single argument, a reference to this object which
+will be called when <em>either</em> the target object or
+target function is garbage collected (i.e. when
+this object becomes invalid).  These are specified
+as the onDelete parameters of safeRef calls.</dd>
+</dl>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">sqlobject.include.pydispatch.saferef.BoundMethodWeakref</tt>, line 18)</p>
+Definition list ends without a blank line; unexpected unindent.</div>
+<p class="last">weakSelf -- weak reference to the target object
+weakFunc -- weak reference to the target function</p>
+</dd>
+<dt>Class Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>_allInstances -- class attribute pointing to all live</dt>
+<dd>BoundMethodWeakref objects indexed by the class's
+calculateKey(target) method applied to the target
+objects.  This weak value dictionary is used to
+short-circuit creation so that multiple references
+to the same (object, function) pair produce the
+same BoundMethodWeakref instance.</dd>
+</dl>
+</dd>
+</dl>
+      <p class="note">
+        This class contains <a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#members">
+          8 members</a>.
+      </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/include/pydispatch/saferef.py.html" title="sqlobject/include/pydispatch/saferef.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

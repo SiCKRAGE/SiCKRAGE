@@ -1,0 +1,218 @@
+++++++++++++++++++++++++
+The sqlobject-admin Tool
+++++++++++++++++++++++++
+
+:author: Ian Bicking <ianb@colorstudy.com>
+:revision: $Rev$
+:date: $LastChangedDate$
+
+.. contents::
+
+.. warning::
+
+   This document isn't entirely accurate; some of what it describes
+   are the intended features of the tool, not the actual features.
+
+   Particularly inaccurate is how modules and classes are found.
+
+Introduction
+------------
+
+The ``sqlobject-admin`` tool included with SQLObject allows you to
+manage your database as defined with SQLObject classes.
+
+Some of the features include creating tables, checking the status of
+the database, recording a version of a schema, and updating the
+database to match the version of the schema in your code.
+
+To see a list of commands run ``sqlobject-admin help``.  Each
+sub-command has ``-h`` option which explains the details of that
+command.
+
+Common Options
+==============
+
+Many of the commands share some common options, mostly for finding the
+database and classes.
+
+``-c CONNECTION`` or ``--connection=CONNECTION``:
+
+    This takes an argument, the connection string for the database.
+    This overrides any connection the classes have (if they are
+    hardwired to a connection).
+
+``-f FILENAME`` or ``--config-file=FILENAME``:
+
+    This is a configuration file from which to get the connection.
+    This configuration file should be a Python-syntax file that
+    defines a global variable ``database``, which is the connection
+    string for the database.
+
+``-m MODULE`` or ``--module=MODULE``:
+
+    A module to look in for classes.  ``MODULE`` is something like
+    ``myapp.amodule``.  Remember to set your ``$PYTHONPATH`` if the
+    module can't be imported.  You can provide this argument multiple
+    times.
+
+``-p PACKAGE`` or ``--package=PACKAGE``:
+
+    A package to look in.  This looks in all the modules in this class
+    and subclasses for SQLObject classes.
+
+``--class=CLASSMATCH``:
+
+    This *restricts* the classes found to the matching classes.  You
+    may use wildcards.  You can provide multiple ``--class``
+    arguments, and if any pattern matches the class will be included.
+
+``--egg=EGG_SPEC``:
+
+    This is an `Egg
+    <http://peak.telecommunity.com/DevCenter/PythonEggs>`_ description
+    that should be loaded.  So if you give ``--egg=ProjectName`` it'll
+    load that egg, and look in ``ProjectName.egg-info/sqlobject.txt``
+    for some settings (like ``db_module`` and ``history_dir``).
+
+When finding SQLObject classes, we look in the modules for classes
+that belong to the module -- so if you import a class from another
+module it won't be "matched".  You have to indicate its original
+module.
+
+If classes have to be handled in a specific order, create a
+``soClasses`` global variable that holds a list of the classes.  This
+overrides the module restrictions.  This is important in databases
+with referential integrity, where dependent tables can't be created
+before the tables they depend on.
+
+Simple Commands
+===============
+
+The ``create`` Command
+----------------------
+
+This finds the tables and creates them.  Any tables that exist are
+simply skipped.
+
+It also collects data from sqlmeta.createSQL (added in svn trunk) and
+runs the queries after table creation. createSQL can be a string with
+a single SQL command, a list of SQL commands, or a dictionary with
+keys that are dbNames and values that are either single SQL command
+string or a list of SQL commands. An example follows::
+
+    class MyTable(SQLObject):
+        class sqlmeta:
+            createSQL = {'postgres': [
+                "ALTER TABLE my_table ADD CHECK(my_field != '');",
+                ]}
+        myField = StringCol()
+
+The ``sql`` Command
+-------------------
+
+This shows the SQL to create all the tables.
+
+The ``drop`` Command
+--------------------
+
+Drops tables!  Missing tables are skipped.
+
+The ``execute`` Command
+-----------------------
+
+This executes an arbitrary SQL expression.  This is mostly useful if
+you want to run a query against a database described by a SQLObject
+connection string.  Use ``--stdin`` if you want to pipe commands in;
+otherwise you give the commands as arguments.
+
+The ``list`` Command
+--------------------
+
+Lists out all the classes found.  This can help you figure out
+what classes you are dealing with, and if there's any missing that you
+expected.
+
+The ``status`` Command
+----------------------
+
+This shows if tables are present in the database.  If possible (it
+depends on the database) it will also show if the tables are missing
+any columns, or have any extra columns, when compared to the table the
+SQLObject class describes.  It doesn't check column types, indexes, or
+constraints.  This feature may be added in the future.
+
+Versioning & Upgrading
+======================
+
+There's two commands related to storing the schema and upgrading the
+database: ``record`` and ``upgrade``.
+
+The idea is that you record each iteration of your schema, and this
+gets a version number.  Something like ``2003-05-04a``.  If you are
+using source control you'll check all versions into your repository;
+you don't overwrite one with the next.
+
+In addition to the on-disk record of the different schemas you have
+gone through, the database itself contains a record of what version it
+is at.  By having all the versions available at once, we can upgrade
+from any version.  But more on that `later <the-upgrade-command>`_
+
+Basic Usage
+-----------
+
+Here's a quick summary of how you use these commands:
+
+1. In project where you've never used ``sqlobject-admin`` before, you
+   run ``sqlobject-admin record --output-dir=sqlobject-history``.
+   If your active database is up-to-date with the code, then the tool
+   will add a ``sqlobject_db_version`` table to the database with the
+   current version.
+
+2. Now, make some updates to your code.  Don't update the database!
+   (You could, but for now it's more fun if you don't.)
+
+3. Run ``sqlobject-admin record --edit``.  A new version will be
+   created, and an editor will be opened up.
+
+The ``record`` Command
+----------------------
+
+Record will take the SQL ``CREATE`` statements for your tables, and
+output them in new version.  It creates the version by using the
+ISO-formatted date (YYYY-MM-DD) and a suffix to make it unique.  It
+puts each table in its own file.
+
+This normally doesn't touch the database at all -- it only records the
+schema as defined in your code, regardless of the database.  In fact,
+I recommend calling ``record`` *before* you update your database.
+
+The ``upgrade`` Command
+-----------------------
+
+Future
+======
+
+* Get ``record`` to do ``svn cp`` when creating a new version, then
+  write over those files; this way the version control system will
+  have nice diffs.
+
+* An option to ``record`` the SQL for multiple database backends at
+  once (now only the active backend is recorded).
+
+* An option to upgrade databases with Python scripts instead of SQL
+  commands.  Or a little of both.
+
+* Review all the verbosity, maybe add logging, review simulation.
+
+* Generate simple ``ALTER`` statements for upgrade scripts, to give
+  people something to work with.  Maybe.
+
+* A command to trim versions, by merging upgrade scripts.
+
+.. image:: http://sflogo.sourceforge.net/sflogo.php?group_id=74338&type=10
+   :target: http://sourceforge.net/projects/sqlobject
+   :class: noborder
+   :align: center
+   :height: 15
+   :width: 80
+   :alt: Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads

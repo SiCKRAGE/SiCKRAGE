@@ -1,0 +1,629 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>News</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">News</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents:</p>
+<ul class="simple">
+<li><a href="#sqlobject-0-8-7" class="reference internal" id="id25">SQLObject 0.8.7</a></li>
+<li><a href="#sqlobject-0-8-6" class="reference internal" id="id26">SQLObject 0.8.6</a></li>
+<li><a href="#sqlobject-0-8-5" class="reference internal" id="id27">SQLObject 0.8.5</a><ul>
+<li><a href="#bug-fixes" class="reference internal" id="id28">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-8-4" class="reference internal" id="id29">SQLObject 0.8.4</a><ul>
+<li><a href="#id1" class="reference internal" id="id30">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-8-3" class="reference internal" id="id31">SQLObject 0.8.3</a><ul>
+<li><a href="#id2" class="reference internal" id="id32">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-8-2" class="reference internal" id="id33">SQLObject 0.8.2</a><ul>
+<li><a href="#id3" class="reference internal" id="id34">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-8-1" class="reference internal" id="id35">SQLObject 0.8.1</a><ul>
+<li><a href="#id4" class="reference internal" id="id36">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-8-0" class="reference internal" id="id37">SQLObject 0.8.0</a><ul>
+<li><a href="#features-interface" class="reference internal" id="id38">Features &amp; Interface</a></li>
+<li><a href="#small-features" class="reference internal" id="id39">Small Features</a></li>
+<li><a href="#id5" class="reference internal" id="id40">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-10" class="reference internal" id="id41">SQLObject 0.7.10</a></li>
+<li><a href="#sqlobject-0-7-9" class="reference internal" id="id42">SQLObject 0.7.9</a><ul>
+<li><a href="#id6" class="reference internal" id="id43">Bug Fixes</a></li>
+<li><a href="#other-changes" class="reference internal" id="id44">Other Changes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-8" class="reference internal" id="id45">SQLObject 0.7.8</a><ul>
+<li><a href="#id7" class="reference internal" id="id46">Bug Fixes</a></li>
+<li><a href="#id8" class="reference internal" id="id47">Other Changes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-7" class="reference internal" id="id48">SQLObject 0.7.7</a><ul>
+<li><a href="#id9" class="reference internal" id="id49">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-6" class="reference internal" id="id50">SQLObject 0.7.6</a><ul>
+<li><a href="#id10" class="reference internal" id="id51">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-5" class="reference internal" id="id52">SQLObject 0.7.5</a><ul>
+<li><a href="#id11" class="reference internal" id="id53">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-4" class="reference internal" id="id54">SQLObject 0.7.4</a><ul>
+<li><a href="#id12" class="reference internal" id="id55">Small Features</a></li>
+<li><a href="#id13" class="reference internal" id="id56">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-3" class="reference internal" id="id57">SQLObject 0.7.3</a><ul>
+<li><a href="#id14" class="reference internal" id="id58">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-2" class="reference internal" id="id59">SQLObject 0.7.2</a><ul>
+<li><a href="#id15" class="reference internal" id="id60">Features &amp; Interface</a></li>
+<li><a href="#id16" class="reference internal" id="id61">Bug Fixes</a></li>
+<li><a href="#documentation-added" class="reference internal" id="id62">Documentation Added</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-1" class="reference internal" id="id63">SQLObject 0.7.1</a><ul>
+<li><a href="#id17" class="reference internal" id="id64">Features &amp; Interface</a></li>
+<li><a href="#id18" class="reference internal" id="id65">Small Features</a></li>
+<li><a href="#id19" class="reference internal" id="id66">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a href="#sqlobject-0-7-0" class="reference internal" id="id67">SQLObject 0.7.0</a><ul>
+<li><a href="#id20" class="reference internal" id="id68">Features &amp; Interface</a></li>
+<li><a href="#id21" class="reference internal" id="id69">Other Changes</a></li>
+<li><a href="#id22" class="reference internal" id="id70">Small Features</a></li>
+<li><a href="#id23" class="reference internal" id="id71">Bug Fixes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-8-7">
+<span id="start"></span><h1>SQLObject 0.8.7</h1>
+<p>Released 10 Jan 2008.</p>
+<ul class="simple">
+<li>A number of changes ported from <a href="#sqlobject-0-7-10" class="reference internal">SQLObject 0.7.10</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-8-6">
+<h1>SQLObject 0.8.6</h1>
+<p>Released 30 Oct 2007.</p>
+<ul class="simple">
+<li>Removed SelectResults.__nonzero__, which was a design mistake. Raising an
+exception in __nonzero__() is inconsistent with other iterators
+(bool(iter([])) => True).</li>
+<li>A number of changes ported from <a href="#sqlobject-0-7-9" class="reference internal">SQLObject 0.7.9</a>.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-8-5">
+<h1>SQLObject 0.8.5</h1>
+<p>Released 25 July 2007.</p>
+<div class="section" id="bug-fixes">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Suppress the second RowUpdateSignal in .set() called from ._SO_setValue().</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-8-4">
+<h1>SQLObject 0.8.4</h1>
+<p>Released 10 May 2007.</p>
+<div class="section" id="id1">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>A number of bugfixes forward-ported from 0.7.7.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-8-3">
+<h1>SQLObject 0.8.3</h1>
+<p>Released 3 May 2007.</p>
+<div class="section" id="id2">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>A number of bugfixes forward-ported from 0.7.6.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-8-2">
+<h1>SQLObject 0.8.2</h1>
+<p>Released 11 Apr 2007.</p>
+<div class="section" id="id3">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed ConnectionHub.doInTransaction() - if the original connection was
+processConnection - reset processConnection, not threadConnection.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-8-1">
+<h1>SQLObject 0.8.1</h1>
+<p>Released 19 Mar 2007.</p>
+<div class="section" id="id4">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>ID columns are reverted back from INT UNSIGNED to INT for MySQL to be in
+accord with FOREIGN KEYs.</li>
+<li>Fixed return value from Firebird/MaxdbConnection.createTable().</li>
+<li>Fixed and simplified DatabaseIndex.get().</li>
+<li>Fixed ConnectionHub.doInTransaction() - close low-level connection on
+commit() to prevent connections leaking.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-8-0">
+<h1>SQLObject 0.8.0</h1>
+<p>Released 12 Feb 2007.</p>
+<div class="section" id="features-interface">
+<h2>Features &amp; Interface</h2>
+<ul>
+<li><p class="first">It is now possible to create tables that reference each other.
+Constraints (in the DBMSes that support constraints) are added after the
+tables have been created.</p>
+</li>
+<li><p class="first">Added <tt class="docutils literal">createSQL</tt> as an option for sqlmeta. Here you can add
+related SQL you want executed by sqlobject-admin create after table
+creation. createSQL expects a string, list, or dictionary. If using
+a dictionary the key should be a dbName value (ex. 'postgres') and
+the value should be a string or list.  Examples in
+sqlobject/tests/test_sqlobject_admin.py or at
+&lt;<a href="http://sqlobject.org/sqlobject-admin.html#the-create-command" class="reference external">http://sqlobject.org/sqlobject-admin.html#the-create-command</a>></p>
+</li>
+<li><p class="first">Added method <tt class="docutils literal">sqlhub.doInTransaction(callable, *args, **kwargs)</tt>,
+to be used like:</p>
+<pre class="literal-block">
+sqlhub.doInTransaction(process_request, os.environ)
+</pre>
+<p>This will run <tt class="docutils literal">process_request(os.environ)</tt>.  The return
+value will be preserved.</p>
+</li>
+<li><p class="first">Added method <tt class="docutils literal"><span class="pre">.getOne([default])</span></tt> to <tt class="docutils literal">SelectResults</tt> (these are
+the objects returned by <tt class="docutils literal">.select()</tt> and <tt class="docutils literal">.selectBy()</tt>).  This
+returns a single object, when the query is expected to return only
+one object.  The single argument is the value to return when zero
+results are found (more than one result is always an error).  If no
+default is given, it is an error if no such object exists.</p>
+</li>
+<li><p class="first">Added a WSGI middleware (in <tt class="docutils literal">sqlobject.wsgi_middleware</tt>) for
+configuring the database for the request.  Also handles
+transactions.  Available as <tt class="docutils literal">egg:SQLObject</tt> in Paste Deploy
+configuration files.</p>
+</li>
+<li><p class="first">New joins! ManyToMany and OneToMany; not fully documented yet, but still
+more sensible and smarter.</p>
+</li>
+<li><p class="first">SELECT FOR UPDATE</p>
+</li>
+<li><p class="first">New module dberrors.py - a hierarchy of exceptions. Translation of DB API
+module's exceptions to the new hierarchy is performed for SQLite and MySQL.</p>
+</li>
+<li><p class="first">SQLiteConnection got a new keyword "factory" - a name or a reference to
+a factory function that returns a connection class; useful for
+implementing functions or aggregates. See test_select.py and
+test_sqlite_factory.py for examples.</p>
+</li>
+<li><p class="first">SQLObject now disallows columns with names that collide with existing
+variables and methods, such as "_init", "expire", "set" and so on.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="small-features">
+<h2>Small Features</h2>
+<ul class="simple">
+<li>Configurable client character set (encoding) for MySQL.</li>
+<li>Added a close option to .commit(), so you can close the transaction as
+you commit it.</li>
+<li>DecimalValidator.</li>
+<li>Added .expireAll() methods to sqlmeta and connection objects, to expire
+all instances in those cases.</li>
+<li>String IDs.</li>
+<li>FOREIGN KEY for MySQL.</li>
+<li>Support for sqlite3 (a builtin module in Python 2.5).</li>
+<li>SelectResults cannot be queried for truth value; in any case it was
+meaningless - the result was always True; now __nonzero__() raises
+NotImplementedError in case one tries bool(MyTable.select()) or
+"if MyTable.select():..."</li>
+<li>With empty parameters AND() and OR() returns None.</li>
+<li>Allows to use set/frozenset sets/Set/ImmutableSet sets as sequences
+passed to the IN operator.</li>
+<li>ID columns are now INT UNSIGNED for MySQL.</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed problem with sqlite and threads; connections are no longer shared
+between threads for sqlite (except for :memory:).</li>
+<li>The reference loop between SQLObject and SQLObjectState eliminated using
+weak references.</li>
+<li>Another round of bugfixes for MySQL errors 2006 and 2013 (SERVER_GONE,
+SERVER_LOST).</li>
+<li>Fixed a bug in MSSQLConnection caused by column names being unicode.</li>
+<li>Fixed a bug in FirebirdConnection caused by column names having trailing
+spaces.</li>
+<li>Order by several columns with inheritance.</li>
+<li>Fixed aggregators and accumulators with inheritance.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-10">
+<h1>SQLObject 0.7.10</h1>
+<p>Released 10 Jan 2008.</p>
+<ul class="simple">
+<li>With PySQLite2 do not use encode()/decode() from PySQLite1 - always use
+base64 for BLOBs.</li>
+<li>MySQLConnection doesn't convert query strings to unicode (but allows to
+pass unicode query strings if the user build ones). DB URI parameter
+sqlobject_encoding is no longer used.</li>
+</ul>
+</div>
+<div class="section" id="sqlobject-0-7-9">
+<h1>SQLObject 0.7.9</h1>
+<p>Released 30 Oct 2007.</p>
+<div class="section" id="id6">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Remove 'limit' from SelectResults after setting start/end so .clone()
+never sees limit again.</li>
+<li>Fixed a bug in sqlbuilder._LikeQuoted() - call sqlrepr() on the
+expression to escape single quotes if the expression is a string.</li>
+<li>Fixed StringCol and UnicodeCol: use sqlType with MSSQL.</li>
+<li>Fixed startswith/endswith/contains for UnicodeCol.</li>
+</ul>
+</div>
+<div class="section" id="other-changes">
+<h2>Other Changes</h2>
+<ul class="simple">
+<li>Changed the default value for 'varchar' in BLOBColumns from 'auto' to False
+(so that the default type for the columns in MySQL is BLOB, not TEXT).</li>
+<li>Changed the implementation type in BoolCol under MySQL from TINYINT to
+BOOL (which is a synonym for TINYINT(1)).</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-8">
+<h1>SQLObject 0.7.8</h1>
+<p>Released 25 July 2007.</p>
+<div class="section" id="id7">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Replaced calls to style.dbColumnToPythonAttr() in joins.py by name/dbName
+lookup in case the user named columns differently using dbName.</li>
+<li>Minor correction in the tests: we fully support EnumCol in Postgres.</li>
+<li>MySQLConnection now recognizes Enum, Double and Time columns when drawing the
+database scheme from DB.</li>
+<li>Minor fix in FirebirdConnection.fromDatabase.</li>
+<li>Fixed a bug with default field values for columns for Firebird connection.</li>
+<li>Fixed a bug in col.createSQL().</li>
+<li>Fixed a bug in converting date/time for years &lt; 1000 (time.strptime()
+requires exactly 4 digits for %Y, hence a year &lt; 1000 must be 0-padded).</li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h2>Other Changes</h2>
+<ul class="simple">
+<li>Changed string quoting style for PostgreSQL and MySQL from \' to ''.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-7">
+<h1>SQLObject 0.7.7</h1>
+<p>Released 10 May 2007.</p>
+<div class="section" id="id9">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed a bug in SQLRelatedJoin that ignored per-instance connection.</li>
+<li>Fixed a bug in MySQL connection in case there is no charset in the DB URI.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-6">
+<h1>SQLObject 0.7.6</h1>
+<p>Released 3 May 2007.</p>
+<div class="section" id="id10">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed a longstanding bug with .select() ignoring 'limit' parameter.</li>
+<li>Fixed a bug with absent comma in JOINs.</li>
+<li>Fixed sqlbuilder - .startswith(), .endswith() and .contains() assumed
+their parameter must be a string; now you can pass an SQLExpression:
+Table.q.name.contains(func.upper('a')), for example.</li>
+<li>Fixed a longstanding bug in sqlbuilder.Select() with groupBy being a
+sequence.</li>
+<li>Fixed a bug with Aliases in JOINs.</li>
+<li>Yet another patch to properly initialize MySQL connection encoding.</li>
+<li>Fixed a minor comparison problem in test_decimal.py.</li>
+<li>More documentation about orderBy.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-5">
+<h1>SQLObject 0.7.5</h1>
+<p>Released 11 Apr 2007.</p>
+<div class="section" id="id11">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed test_deep_inheritance.py - setup classes in the correct order
+(required for Postgres 8.0+ which is strict about referential integrity).</li>
+<li>Fixed a bug in DateValidator caused by datetime being a subclass of date.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-4">
+<h1>SQLObject 0.7.4</h1>
+<p>Released 19 Mar 2007.</p>
+<div class="section" id="id12">
+<h2>Small Features</h2>
+<ul class="simple">
+<li>For MySQLdb 1.2.2+ call ping(True) on the connection to allow
+autoreconnect after a timeout.</li>
+</ul>
+</div>
+<div class="section" id="id13">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Another round of changes to create/drop the tables in the right order
+in the command-line client <cite>sqlobject-admin</cite>.</li>
+<li>Fixed a bug in UnicodeField - allow comparison with None.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-3">
+<h1>SQLObject 0.7.3</h1>
+<p>Released 30 Jan 2007.</p>
+<div class="section" id="id14">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Allow multiple MSSQL connections.</li>
+<li>Psycopg1 requires port to be a string; psycopg2 requires port to be an int.</li>
+<li>Fixed a bug in MSSQLConnection caused by column names being unicode.</li>
+<li>Fixed a bug in FirebirdConnection caused by column names having trailing
+spaces.</li>
+<li>Fixed a missed import in firebirdconnection.py.</li>
+<li>Remove a leading slash in FirebirdConnection.</li>
+<li>Fixed a bug in deep Inheritance tree.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-2">
+<h1>SQLObject 0.7.2</h1>
+<p>Released 20 Nov 2006.</p>
+<div class="section" id="id15">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>sqlbuilder.Select now supports JOINs exactly like SQLObject.select.</li>
+<li>destroySelf() removes the object from related joins.</li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed a number of unicode-related problems with newer MySQLdb.</li>
+<li>If the DB API driver returns timedelta instead of time (MySQLdb does
+this) it is converted to time; but if the timedelta has days an exception
+is raised.</li>
+<li>Fixed a number of bugs in InheritableSQLObject related to foreign keys.</li>
+<li>Fixed a bug in InheritableSQLObject related to the order of tableRegistry
+dictionary.</li>
+<li>A bug fix that allows to use SQLObject with DateTime from Zope.</li>
+</ul>
+</div>
+<div class="section" id="documentation-added">
+<h2>Documentation Added</h2>
+<ul class="simple">
+<li>Added "How can I define my own intermediate table in my Many-to-Many
+relationship?" to FAQ.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-1">
+<h1>SQLObject 0.7.1</h1>
+<p>Released 25 Sep 2006.</p>
+<div class="section" id="id17">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Added support for <a href="http://initd.org/projects/psycopg2" class="reference external">psycopg2</a></li>
+</ul>
+<ul class="simple">
+<li>Added support for MSSQL.</li>
+<li>Added <tt class="docutils literal">TimeCol</tt>.</li>
+<li><tt class="docutils literal">RelatedJoin</tt> and <tt class="docutils literal">SQLRelatedJoin</tt> objects have a
+<tt class="docutils literal">createRelatedTable</tt> keyword argument (default <tt class="docutils literal">True</tt>).  If
+<tt class="docutils literal">False</tt>, then the related table won't be automatically created;
+instead you must manually create it (e.g., with explicit SQLObject
+classes for the joins).</li>
+<li>Implemented <tt class="docutils literal">RLIKE</tt> (regular expression LIKE).</li>
+<li>Moved _idSequence to sqlmeta.idSequence.</li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h2>Small Features</h2>
+<ul class="simple">
+<li>Select over RelatedJoin.</li>
+<li>SQLite foreign keys.</li>
+<li>Postgres DB URIs with a non-default path to unix socket.</li>
+<li>Allow the use of foreign keys in selects.</li>
+<li>Implemented addColumn() for SQLite.</li>
+<li>With PySQLite2 use encode()/decode() from PySQLite1 for BLOBCol if available; else use base64.</li>
+</ul>
+</div>
+<div class="section" id="id19">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Fixed a longstanding problem with UnicodeCol - at last you can use unicode
+strings in .select() and .selectBy() queries. There are some limitations,
+though; see the description of the <a href="SQLObject.html#column-types" class="reference external">UnicodeCol</a>.</li>
+</ul>
+<ul class="simple">
+<li>Cull patch (clear cache).</li>
+<li>.destroySelf() inside a transaction.</li>
+<li>Synchronize main connection cache during transaction commit.</li>
+<li>Ordering joins with NULLs.</li>
+<li>Fixed bugs with plain/non-plain setters.</li>
+<li>Lots of other bug fixes.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="sqlobject-0-7-0">
+<h1>SQLObject 0.7.0</h1>
+<div class="section" id="id20">
+<h2>Features &amp; Interface</h2>
+<ul class="simple">
+<li>Inheritance. See <a href="Inheritance.html" class="reference external">Inheritance.html</a></li>
+</ul>
+<ul class="simple">
+<li>Date/time validators, converters, tests.</li>
+<li>Both <a href="http://www.egenix.com/files/python/mxDateTime.html" class="reference external">mxDateTime</a> and <a href="http://python.org/doc/current/lib/module-datetime.html" class="reference external">datetime</a> supported
+for <tt class="docutils literal">DateTimeCol</tt>.</li>
+<li>Added <tt class="docutils literal">BLOBCol</tt>, for binary data.</li>
+<li>Added <tt class="docutils literal">PickleCol</tt>, to transparently pickle and unpickle data from
+column.</li>
+<li>New <a href="http://svn.colorstudy.com/SQLObject/docs/interface.py" class="reference external">documented reflection interface</a>, using the
+new <tt class="docutils literal">.sqlmeta</tt> class/instance.  Most special attributes that
+started with <tt class="docutils literal">_</tt> were moved into <tt class="docutils literal">sqlmeta</tt> (with leading
+underscore removed).</li>
+<li>New aggregate functions for select results, like
+<tt class="docutils literal"><span class="pre">cls.select().max(columnName)</span></tt>: <tt class="docutils literal">.max()</tt>, <tt class="docutils literal">.min()</tt>,
+<tt class="docutils literal">.avg()</tt>.</li>
+<li><tt class="docutils literal">ConnectionHub</tt> aka <tt class="docutils literal">sqlhub</tt> (@@: Needs documentation)</li>
+<li>Command-line client <a href="http://sqlobject.org/docs/sqlobject-admin.html" class="reference external">sqlobject-admin</a>.</li>
+<li><tt class="docutils literal">StringCol</tt> has <tt class="docutils literal">char_binary</tt> attribute, for explicit case
+handling in MySQL.</li>
+<li>Various joins now supported (LEFT, RIGHT, STRAIGHT, INNER, OUTER,
+CROSS): see <a href="http://sqlobject.org/docs/SQLObject.html#left-join-and-other-joins" class="reference external">documentation</a>.
+Aliases for joining a table with itself.</li>
+<li>Subqueries/subselects (<a href="http://sqlobject.org/docs/SQLObject.html#subqueries-subselects" class="reference external">see docs</a>).</li>
+<li>Select results support <tt class="docutils literal">.filter(extra_query)</tt></li>
+<li><tt class="docutils literal">SQLMultipleJoin</tt> and <tt class="docutils literal">SQLRelatedJoin</tt>, like <tt class="docutils literal">MultipleJoin</tt>
+and <tt class="docutils literal">RelatedJoin</tt>, except return select results (@@: Document).</li>
+<li><a href="http://sqlobject.org/docs/SQLObject.html#singlejoin-one-to-one" class="reference external">SingleJoin</a>.</li>
+<li>Columns retain their order from the class definition to table
+creation.</li>
+<li>SQLObject now depends on the <a href="http://formencode.org" class="reference external">FormEncode</a>
+library, and internal conversion/validation is done through
+FormEncode (was previously using old fork of FormEncode).</li>
+<li>Column instances can have attributes set on them (generally for
+annotating columns with extra data).</li>
+</ul>
+</div>
+<div class="section" id="id21">
+<h2>Other Changes</h2>
+<ul class="simple">
+<li>When iterating over select results, a list is now immediately
+created with the full list of instances being selected.  Before
+instances were created on demand, as select results were
+pulled out row-by-row.  The previous lazy behavior is available with
+the method <tt class="docutils literal">lazyIter</tt>, used like <tt class="docutils literal">for obj in
+<span class="pre">MyClass.select().lazyIter():</span> ...</tt>.</li>
+<li>Test framework now uses <a href="http://codespeak.net/py/current/doc/test.html" class="reference external">py.test</a>.</li>
+<li>SQLObject now uses a simpler metaclass
+(<tt class="docutils literal">sqlobject.declarative.DeclarativeMeta</tt>).</li>
+<li>autoCommit and queryIns ?? (@@: expand)</li>
+<li>Deprecation (@@: document)</li>
+<li>Use <a href="http://peak.telecommunity.com/DevCenter/setuptools" class="reference external">setuptools</a> for packaging
+and installation.</li>
+</ul>
+</div>
+<div class="section" id="id22">
+<h2>Small Features</h2>
+<ul class="simple">
+<li><tt class="docutils literal">IntValidator</tt> for testing <tt class="docutils literal">IntCol</tt> inputs.</li>
+<li>Base style (<tt class="docutils literal">sqlobject.styles.Style</tt>) is now a usable no-op style.</li>
+<li>SQLite in-memory databases allowed with <tt class="docutils literal"><span class="pre">sqlite:/:memory:</span></tt></li>
+<li>Keyword parameters allowed to <tt class="docutils literal">connectionForURI</tt> (like
+<tt class="docutils literal">debug=True</tt>).</li>
+<li>More parameters passed to MySQL connections (unix_socket,
+named_pipe, init_command, read_default_file, read_default_group,
+connect_time, compress, named_pipe, use_unicode, client_flag,
+local_infile).</li>
+<li><tt class="docutils literal">DateTimeCol.now</tt> is a function for producing the current date,
+using whatever date/time module you are using (good for use as a
+default).</li>
+<li>Inherited classes fetched more efficiently (fewer queries).</li>
+<li>Decimal converter to create <a href="http://python.org/doc/current/lib/module-decimal.html" class="reference external">decimal objects</a>.</li>
+<li>Repository rearranged (now in
+<tt class="docutils literal"><span class="pre">http://svn.colorstudy.com/SQLObject/trunk</span></tt>).</li>
+</ul>
+</div>
+<div class="section" id="id23">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>Tables with no columns can work.  Why would you have a table without
+a column?  We do not know, we try only to serve.</li>
+<li>Sybase <tt class="docutils literal">_fromDatabase</tt> fixed.</li>
+<li>Various fixes to support most recent <tt class="docutils literal">MySQLdb</tt> adapter, and
+<tt class="docutils literal">pysqlite</tt> adapters.</li>
+<li>URI parsing improved, including Windows paths (for use with SQLite).</li>
+<li><tt class="docutils literal">selectBy(column=None)</tt> creates <tt class="docutils literal">IS NULL</tt> query.</li>
+<li><tt class="docutils literal">selectBy(foreignKey=value)</tt> now supported (not just selecting by
+foreign key ID).</li>
+<li><tt class="docutils literal"><span class="pre">cascade='null'</span></tt> wasn't working properly (was cascading all
+deletes, not nullifying!).</li>
+<li>Lots of other bug fixes.</li>
+</ul>
+<p><a href="News1.html" class="reference external">Older news</a></p>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

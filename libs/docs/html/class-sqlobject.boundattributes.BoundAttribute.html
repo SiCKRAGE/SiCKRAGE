@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>BoundAttribute</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    This is a declarative class that passes all the values given to it
+to another object.  So you can pass it arguments (via
+__init__/__call__) or give it the equivalent of keyword arguments
+through subclassing.  Then a bound object will be added in its
+place.
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The BoundAttribute class is accessible via the
+    <a href="module-sqlobject.boundattributes.html">
+      <tt>sqlobject.boundattributes</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (7)
+      </a>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (9)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/boundattributes.py.html?f=32&amp;l=116#32" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>To hook this other object in, override <tt class="docutils literal">make_object(added_class,
+name, **attrs)</tt> and maybe <tt class="docutils literal">set_object(added_class, name,
+**attrs)</tt> (the default implementation of <tt class="docutils literal">set_object</tt>
+just resets the attribute to whatever <tt class="docutils literal">make_object</tt> returned).</p>
+<p>Also see <tt class="docutils literal">BoundFactory</tt>.</p>
+  </div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="clone_for_subclass"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#clone_for_subclass" class="pudge-obj-link">clone_for_subclass</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>True</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__unpackargs__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__unpackargs__" class="pudge-obj-link">__unpackargs__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>()</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__addtoclass__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__addtoclass__" class="pudge-obj-link">__addtoclass__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>&lt;bound class method BoundAttribute.__addtoclass__></pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="singleton"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#singleton" class="pudge-obj-link">singleton</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>&lt;bound class method BoundAttribute.singleton></pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__mutableattributes__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__mutableattributes__" class="pudge-obj-link">__mutableattributes__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>()</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="__restrict_attributes__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__restrict_attributes__" class="pudge-obj-link">__restrict_attributes__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>None</pre>
+    </div>
+  </div><div class="pudge-member name">
+    <a name="declarative_count"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#declarative_count" class="pudge-obj-link">declarative_count</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>1</pre>
+    </div>
+  </div>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine alias">
+    <a name="__subclasshook__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__subclasshook__" class="pudge-obj-link">__subclasshook__</a>(...)</tt>
+      <a href="None.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Abstract classes can override this to customize issubclass().
+    </p>
+    <p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
+It should return True, False or NotImplemented.  If it returns
+NotImplemented, the normal algorithm is used.  Otherwise, it
+overrides the normal algorithm (and the outcome is cached).</p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__format__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__format__" class="pudge-obj-link">__format__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      default object formatter
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__sizeof__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__sizeof__" class="pudge-obj-link">__sizeof__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      __sizeof__() -> int
+size of object in memory, in bytes
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__classinit__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__classinit__" class="pudge-obj-link">__classinit__</a>(cls, new_attrs)</tt>
+      <a href="sqlobject/boundattributes.py.html?f=63&amp;l=66#63" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__instanceinit__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__instanceinit__" class="pudge-obj-link">__instanceinit__</a>(self, new_attrs)</tt>
+      <a href="sqlobject/boundattributes.py.html?f=67&amp;l=70#67" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="set_object"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#set_object" class="pudge-obj-link">set_object</a>(cls, added_class, attr_name, obj)</tt>
+      <a href="sqlobject/boundattributes.py.html?f=105&amp;l=108#105" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="make_object"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#make_object" class="pudge-obj-link">make_object</a>(cls, added_class, attr_name, *args, **attrs)</tt>
+      <a href="sqlobject/boundattributes.py.html?f=109&amp;l=112#109" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__init__" class="pudge-obj-link">__init__</a>(self, *args, **kw)</tt>
+      <a href="sqlobject/declarative.py.html?f=125&amp;l=156#125" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__call__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.boundattributes.BoundAttribute.html#__call__" class="pudge-obj-link">__call__</a>(self, *args, **kw)</tt>
+      <a href="sqlobject/declarative.py.html?f=157&amp;l=160#157" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/boundattributes.py.html?f=32&amp;l=116#32" title="sqlobject/boundattributes.py:32">the source</a>
+    for more information.
+    </small>
+  </p>

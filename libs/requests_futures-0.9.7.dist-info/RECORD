@@ -1,0 +1,11 @@
+requests_futures/__init__.py,sha256=o-tkjepWYBiNdrweMITWAVCgsovatV_wdPnD3pGI2JQ,590
+requests_futures/sessions.py,sha256=MGwio0kJfzWZ-ukPEYKxA0YelhgiMPFfLhfNwBCjvos,2820
+requests_futures-0.9.7.dist-info/DESCRIPTION.rst,sha256=3WTR0ziOlKVoAdJ5NFlh-h7o4VPAlmD-ETFSbwUf6Oo,4384
+requests_futures-0.9.7.dist-info/METADATA,sha256=vVAwnXdHztdwpuuiimwG0Oaofv2pbbza61Xvys_htb0,5398
+requests_futures-0.9.7.dist-info/RECORD,,
+requests_futures-0.9.7.dist-info/WHEEL,sha256=ZjEnM9ajJj3CC6PFLEd3wiDD9cvgsTK9wvIqII7XxRs,98
+requests_futures-0.9.7.dist-info/metadata.json,sha256=y4eExujya_Fqux9SNfI46OPvSmpRi2o-PnBNfM2htwE,998
+requests_futures-0.9.7.dist-info/top_level.txt,sha256=w25exnX7SV9aItrEhYGwv9JSUxInGdM4zTjj_u-ue0Y,17
+requests_futures-0.9.7.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+requests_futures/__init__.pyc,,
+requests_futures/sessions.pyc,,

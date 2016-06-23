@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>csvexport</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Exports a SQLObject class (possibly annotated) to a CSV file.
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The csvexport module is accessible via the
+    <a href="module-sqlobject.util.html">
+      <tt>sqlobject.util</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (1)
+      </a>
+    </li><li>
+      <a href="#functions" class="pudge-section-link">
+        Functions (2)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Classes
+      </span>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.util.csvexport-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/util/csvexport.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.util.csvexport.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject.util'</pre>
+    </div>
+  </div>
+    <a name="functions"></a>
+    <h2>Functions</h2>
+    <div class="pudge-member routine ">
+    <a name="export_csv"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.util.csvexport.html#export_csv" class="pudge-obj-link">export_csv</a>(soClass, select=None, writer=None, connection=None, orderBy=None)</tt>
+      <a href="sqlobject/util/csvexport.py.html?f=14&amp;l=84#14" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Export the SQLObject class <tt class="docutils literal">soClass</tt> to a CSV file.
+    </p>
+    <p><tt class="docutils literal">soClass</tt> can also be a SelectResult object, as returned by
+<tt class="docutils literal">.select()</tt>.  If it is a class, all objects will be retrieved,
+ordered by <tt class="docutils literal">orderBy</tt> if given, or the <tt class="docutils literal">.csvOrderBy</tt> attribute
+if present (but csvOrderBy will only be applied when no select
+result is given).</p>
+<p>You can also pass in select results (or simply a list of
+instances) in <tt class="docutils literal">select</tt> -- if you have a list of objects (not a
+SelectResult instance, as produced by <tt class="docutils literal">.select()</tt>) then you must
+pass it in with <tt class="docutils literal">select</tt> and pass the class in as the first
+argument.</p>
+<p><tt class="docutils literal">writer</tt> is a <tt class="docutils literal">csv.writer()</tt> object, or a file-like object.
+If not given, the string of the file will be returned.</p>
+<p>Uses <tt class="docutils literal">connection</tt> as the data source, if given, otherwise the
+default connection.</p>
+<p>Columns can be annotated with <tt class="docutils literal">.csvTitle</tt> attributes, which will
+form the attributes of the columns, or 'title' (secondarily), or
+if nothing then the column attribute name.</p>
+<p>If a column has a <tt class="docutils literal">.noCSV</tt> attribute which is true, then the
+column will be suppressed.</p>
+<p>Additionally a class can have an <tt class="docutils literal">.extraCSVColumns</tt> attribute,
+which should be a list of strings/tuples.  If a tuple, it should
+be like <tt class="docutils literal">(attribute, title)</tt>, otherwise it is the attribute,
+which will also be the title.  These will be appended to the end
+of the CSV file; the attribute will be retrieved from instances.</p>
+<p>Also a <tt class="docutils literal">.csvColumnOrder</tt> attribute can be on the class, which is
+the string names of attributes in the order they should be
+presented.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="export_csv_zip"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.util.csvexport.html#export_csv_zip" class="pudge-obj-link">export_csv_zip</a>(soClasses, file=None, zip=None, filename_prefix='', connection=None)</tt>
+      <a href="sqlobject/util/csvexport.py.html?f=130&amp;l=179#130" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Export several SQLObject classes into a .zip file.  Each
+item in the <tt class="docutils literal">soClasses</tt> list may be a SQLObject class,
+select result, or <tt class="docutils literal">(soClass, select)</tt> tuple.
+    </p>
+    <p>Each file in the zip will be named after the class name (with
+<tt class="docutils literal">.csv</tt> appended), or using the filename in the <tt class="docutils literal">.csvFilename</tt>
+attribute.</p>
+<p>If <tt class="docutils literal">file</tt> is given, the zip will be written to that.  <tt class="docutils literal">file</tt>
+may be a string (a filename) or a file-like object.  If not given,
+a string will be returnd.</p>
+<p>If <tt class="docutils literal">zip</tt> is given, then the files will be written to that zip
+file.</p>
+<p>All filenames will be prefixed with <tt class="docutils literal">filename_prefix</tt> (which may
+be a directory name, for instance).</p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/util/csvexport.py.html" title="sqlobject/util/csvexport.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>index</tt>
+  </h1>
+  <p class="pudge-member-parent-link">
+    <small>
+    The index module is accessible via the
+    <a href="module-sqlobject.html">
+      <tt>sqlobject</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (1)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Functions
+      </span>
+    </li><li>
+      <a href="#classes" class="pudge-section-link">
+        Classes (1)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.index-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/index.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.index.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject'</pre>
+    </div>
+  </div>
+    <a name="classes"></a>
+    <h2>Classes</h2>
+    <div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.index.DatabaseIndex.html" class="pudge-obj-link">DatabaseIndex</a>(...)</tt>
+      <a href="sqlobject/index.py.html?f=127&amp;l=179#127" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      This takes a variable number of parameters, each of which is a
+column for indexing.  Each column may be a column object or the
+string name of the column (<em>not</em> the database name).  You may also
+use dictionaries, to further customize the indexing of the column.
+The dictionary may have certain keys:
+    </p>
+    <dl class="docutils">
+<dt>'column':</dt>
+<dd>The column object or string identifier.</dd>
+<dt>'length':</dt>
+<dd>MySQL will only index the first N characters if this is
+given.  For other databases this is ignored.</dd>
+<dt>'expression':</dt>
+<dd>You can create an index based on an expression, e.g.,
+'lower(column)'.  This can either be a string or a sqlbuilder
+expression.</dd>
+</dl>
+<p>Further keys may be added to the column specs in the future.</p>
+<p>The class also take the keyword argument 
+    <cite>unique</cite>
+  ; if true then
+a UNIQUE index is created.</p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.index.DatabaseIndex.html#members">
+          8 members</a>.
+      </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/index.py.html" title="sqlobject/index.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

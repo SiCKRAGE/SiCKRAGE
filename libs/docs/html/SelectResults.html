@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>SelectResults: Using Queries</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content"><div class="rst-doc">
+  <h1 class="pudge-member-page-heading">SelectResults: Using Queries</h1>
+  <div class="contents topic" id="contents">
+<p class="topic-title first">Contents:</p>
+<ul class="simple">
+<li><a href="#overview" class="reference internal" id="id1">Overview</a></li>
+<li><a href="#retrieval-methods" class="reference internal" id="id2">Retrieval Methods</a><ul>
+<li><a href="#iteration" class="reference internal" id="id3">Iteration</a></li>
+<li><a href="#getone-default-optional" class="reference internal" id="id4"><tt class="docutils literal">getOne(default=optional)</tt></a></li>
+</ul>
+</li>
+<li><a href="#cloning-methods" class="reference internal" id="id5">Cloning Methods</a><ul>
+<li><a href="#orderby-column" class="reference internal" id="id6"><tt class="docutils literal">orderBy(column)</tt></a></li>
+<li><a href="#limit-num" class="reference internal" id="id7"><tt class="docutils literal">limit(num)</tt></a></li>
+<li><a href="#lazycolumns-v" class="reference internal" id="id8"><tt class="docutils literal">lazyColumns(v)</tt></a></li>
+<li><a href="#reversed" class="reference internal" id="id9"><tt class="docutils literal">reversed()</tt></a></li>
+<li><a href="#distinct" class="reference internal" id="id10"><tt class="docutils literal">distinct()</tt></a></li>
+<li><a href="#filter-expression" class="reference internal" id="id11"><tt class="docutils literal">filter(expression)</tt></a></li>
+</ul>
+</li>
+<li><a href="#aggregate-methods" class="reference internal" id="id12">Aggregate Methods</a><ul>
+<li><a href="#count" class="reference internal" id="id13"><tt class="docutils literal">count()</tt></a></li>
+<li><a href="#sum-column" class="reference internal" id="id14"><tt class="docutils literal">sum(column)</tt></a></li>
+<li><a href="#min-column" class="reference internal" id="id15"><tt class="docutils literal">min(column)</tt></a></li>
+<li><a href="#max-column" class="reference internal" id="id16"><tt class="docutils literal">max(column)</tt></a></li>
+<li><a href="#avg-column" class="reference internal" id="id17"><tt class="docutils literal">avg(column)</tt></a></li>
+</ul>
+</li>
+<li><a href="#traversal-to-related-sqlobject-classes" class="reference internal" id="id18">Traversal to related SQLObject classes</a><ul>
+<li><a href="#throughto-join-name-and-throughto-foreign-key-name" class="reference internal" id="id19"><tt class="docutils literal">throughTo.join_name and throughTo.foreign_key_name</tt></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h1><a href="#id1" class="toc-backref">Overview</a></h1>
+<p>SelectResults are returned from <tt class="docutils literal">.select</tt> and <tt class="docutils literal">.selectBy</tt> methods on SQLObject classes, and from <tt class="docutils literal">SQLMultipleJoin</tt>, and <tt class="docutils literal">SQLRelatedJoin</tt> accessors on SQLObject instances.</p>
+<p>Select results are generators, which are lazily evaluated.  The SQL
+is only executed when you iterate over the select results, fetching
+rows one at a time.  This way you
+can iterate over large results without keeping the entire result set
+in memory. You can also do things like <tt class="docutils literal">.reversed()</tt> without
+fetching and reversing the entire result -- instead, SQLObject can
+change the SQL that is sent so you get equivalent results.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">To retrieve the results all at once use the python idiom
+of calling <tt class="docutils literal">list()</tt> on the generator to force execution
+and convert the results to a stored list.</p>
+</div>
+<p>You can also slice select results.  This modifies the SQL query, so
+<tt class="docutils literal"><span class="pre">peeps[:10]</span></tt> will result in <tt class="docutils literal">LIMIT 10</tt> being added to the end of
+the SQL query.  If the slice cannot be performed in the SQL (e.g.,
+peeps[:-10]), then the select is executed, and the slice is performed
+on the list of results.  This will generally only happen when you use
+negative indexes.</p>
+<p>In certain cases, you may get a select result with an object in it
+more than once, e.g., in some joins.  If you don't want this, you can
+add the keyword argument <tt class="docutils literal"><span class="pre">MyClass.select(...,</span> distinct=True)</tt>, which
+results in a <tt class="docutils literal">SELECT DISTINCT</tt> call.</p>
+<p>You can get the length of the result without fetching all the results
+by calling <tt class="docutils literal">count</tt> on the result object, like
+<tt class="docutils literal"><span class="pre">MyClass.select().count()</span></tt>.  A <tt class="docutils literal"><span class="pre">COUNT(*)</span></tt> query is used -- the
+actual objects are not fetched from the database.  Together with
+slicing, this makes batched queries easy to write:</p>
+<pre class="literal-block">
+start = 20
+size = 10
+query = Table.select()
+results = query[start:start+size]
+total = query.count()
+print "Showing page %i of %i" % (start/size + 1, total/size + 1)
+</pre>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p>There are several factors when considering the efficiency of this
+kind of batching, and it depends very much how the batching is
+being used.  Consider a web application where you are showing an
+average of 100 results, 10 at a time, and the results are ordered
+by the date they were added to the database.  While slicing will
+keep the database from returning all the results (and so save some
+communication time), the database will still have to scan through
+the entire result set to sort the items (so it knows which the
+first ten are), and depending on your query may need to scan
+through the entire table (depending on your use of indexes).
+Indexes are probably the most important way to improve importance
+in a case like this, and you may find caching to be more effective
+than slicing.</p>
+<p class="last">In this case, caching would mean retrieving the <em>complete</em> results.
+You can use <tt class="docutils literal"><span class="pre">list(MyClass.select(...))</span></tt> to do this.  You can save
+these results for some limited period of time, as the user looks
+through the results page by page.  This means the first page in a
+search result will be slightly more expensive, but all later pages
+will be very cheap.</p>
+</div>
+</div>
+<div class="section" id="retrieval-methods">
+<h1><a href="#id2" class="toc-backref">Retrieval Methods</a></h1>
+<div class="section" id="iteration">
+<h2><a href="#id3" class="toc-backref">Iteration</a></h2>
+<p>As mentioned in the overview, the typical way to access the results
+is by treating it as a generator and iterating over it (in a loop,
+by converting to a list, etc).</p>
+</div>
+<div class="section" id="getone-default-optional">
+<h2><a href="#id4" class="toc-backref"><tt class="docutils literal">getOne(default=optional)</tt></a></h2>
+<p>In cases where your restrictions cause there to always be a single record
+in the result set, this method will return it or raise an exception:
+SQLObjectIntegrityError if more than one result is found, or
+SQLObjectNotFound if there are actually no results, unless you pass in
+a default like <tt class="docutils literal">.getOne(None)</tt>.</p>
+</div>
+</div>
+<div class="section" id="cloning-methods">
+<h1><a href="#id5" class="toc-backref">Cloning Methods</a></h1>
+<p>These methods return a modified copy of the SelectResult instance
+they are called on, so successive calls can chained, eg
+<tt class="docutils literal">results = <span class="pre">MyClass.selectBy(city='Boston').filter(MyClass.q.commute_distance>10).orderBy('vehicle_mileage')</span></tt>
+or used independently later on.</p>
+<div class="section" id="orderby-column">
+<h2><a href="#id6" class="toc-backref"><tt class="docutils literal">orderBy(column)</tt></a></h2>
+<p>Takes a string column name (optionally prefixed with '-' for DESCending)
+or a <a href="SQLBuilder.html" class="reference external">SQLBuilder expression</a>.</p>
+</div>
+<div class="section" id="limit-num">
+<h2><a href="#id7" class="toc-backref"><tt class="docutils literal">limit(num)</tt></a></h2>
+<p>Only return first num many results. Equivalent to results[:num] slicing.</p>
+</div>
+<div class="section" id="lazycolumns-v">
+<h2><a href="#id8" class="toc-backref"><tt class="docutils literal">lazyColumns(v)</tt></a></h2>
+<p>Only fetch the IDs for the results, the rest of the columns will be
+retrieved when attributes of the returned instances are accessed.</p>
+</div>
+<div class="section" id="reversed">
+<h2><a href="#id9" class="toc-backref"><tt class="docutils literal">reversed()</tt></a></h2>
+<p>Reverse-order. Alternative to calling orderBy with SQLBuilder.DESC or '-'.</p>
+</div>
+<div class="section" id="distinct">
+<h2><a href="#id10" class="toc-backref"><tt class="docutils literal">distinct()</tt></a></h2>
+<p>In SQL, SELECT DISTINCT, removing duplicate rows.</p>
+</div>
+<div class="section" id="filter-expression">
+<h2><a href="#id11" class="toc-backref"><tt class="docutils literal">filter(expression)</tt></a></h2>
+<p>Add additional expressions to restrict result set.
+Takes either a string static SQL expression valid in a WHERE clause,
+or a <a href="SQLBuilder.html" class="reference external">SQLBuilder expression</a>. ANDed with any previous expressions.</p>
+</div>
+</div>
+<div class="section" id="aggregate-methods">
+<h1><a href="#id12" class="toc-backref">Aggregate Methods</a></h1>
+<p>These return column values (strings, numbers, etc)
+not new SQLResults instances, by making the appropriate
+SQL query (the actual result rows are not retrieved).
+Any that take a column can also take a SQLBuilder
+column instance, e.g. <tt class="docutils literal">MyClass.q.size</tt>.</p>
+<div class="section" id="count">
+<h2><a href="#id13" class="toc-backref"><tt class="docutils literal">count()</tt></a></h2>
+<p>Returns the length of the result set, by a SQL <tt class="docutils literal">SELECT <span class="pre">COUNT(...)</span></tt>
+query.</p>
+</div>
+<div class="section" id="sum-column">
+<h2><a href="#id14" class="toc-backref"><tt class="docutils literal">sum(column)</tt></a></h2>
+<p>The sum of values for <tt class="docutils literal">column</tt> in the result set.</p>
+</div>
+<div class="section" id="min-column">
+<h2><a href="#id15" class="toc-backref"><tt class="docutils literal">min(column)</tt></a></h2>
+<p>The minimum value for <tt class="docutils literal">column</tt> in the result set.</p>
+</div>
+<div class="section" id="max-column">
+<h2><a href="#id16" class="toc-backref"><tt class="docutils literal">max(column)</tt></a></h2>
+<p>The maximum value for <tt class="docutils literal">column</tt> in the result set.</p>
+</div>
+<div class="section" id="avg-column">
+<h2><a href="#id17" class="toc-backref"><tt class="docutils literal">avg(column)</tt></a></h2>
+<p>The average value for the <tt class="docutils literal">column</tt> in the result set.</p>
+</div>
+</div>
+<div class="section" id="traversal-to-related-sqlobject-classes">
+<h1><a href="#id18" class="toc-backref">Traversal to related SQLObject classes</a></h1>
+<div class="section" id="throughto-join-name-and-throughto-foreign-key-name">
+<h2><a href="#id19" class="toc-backref"><tt class="docutils literal">throughTo.join_name and throughTo.foreign_key_name</tt></a></h2>
+<p>This accessor lets you retrieve the objects related to your
+SelectResults by either a join or foreign key relationship,
+in the same manner as the cloning methods above. For instance:</p>
+<pre class="literal-block">
+Schools.select(Schools.q.student_satisfaction>90).throughTo.teachers
+</pre>
+<p>returns a SelectResult of Teachers of Schools with satisfied students,
+assuming Schools has a SQLMultipleJoin or SQLRelatedJoin attribute
+named <tt class="docutils literal">teachers</tt>. Similarily, with a self-joining foreign key named
+<tt class="docutils literal">father</tt>:</p>
+<pre class="literal-block">
+Person.select(Person.q.name=='Steve').throughTo.father.throughTo.father
+</pre>
+<p>returns a SelectResult of Persons who are the paternal grandfather of someone
+named <tt class="docutils literal">Steve</tt>.</p>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+</div>
+</div></div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

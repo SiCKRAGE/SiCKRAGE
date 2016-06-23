@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>BoundMethodWeakref</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    'Safe' and reusable weak references to instance methods
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The BoundMethodWeakref class is accessible via the
+    <a href="module-sqlobject.include.pydispatch.saferef.html">
+      <tt>sqlobject.include.pydispatch.saferef</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <span class="pudge-missing-section-link">
+        Attributes
+      </span>
+    </li><li>
+      <a href="#methods" class="pudge-section-link">
+        Methods (8)
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=30&amp;l=166#30" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>BoundMethodWeakref objects provide a mechanism for
+referencing a bound method without requiring that the
+method object itself (which is normally a transient
+object) is kept alive.  Instead, the BoundMethodWeakref
+object keeps weak references to both the object and the
+function which together define the instance method.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><dl class="first docutils">
+<dt>key -- the identity key for the reference, calculated</dt>
+<dd>by the class's calculateKey method applied to the
+target instance method</dd>
+<dt>deletionMethods -- sequence of callable objects taking</dt>
+<dd>single argument, a reference to this object which
+will be called when <em>either</em> the target object or
+target function is garbage collected (i.e. when
+this object becomes invalid).  These are specified
+as the onDelete parameters of safeRef calls.</dd>
+</dl>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">sqlobject.include.pydispatch.saferef.BoundMethodWeakref</tt>, line 18)</p>
+Definition list ends without a blank line; unexpected unindent.</div>
+<p class="last">weakSelf -- weak reference to the target object
+weakFunc -- weak reference to the target function</p>
+</dd>
+<dt>Class Attributes:</dt>
+<dd><dl class="first last docutils">
+<dt>_allInstances -- class attribute pointing to all live</dt>
+<dd>BoundMethodWeakref objects indexed by the class's
+calculateKey(target) method applied to the target
+objects.  This weak value dictionary is used to
+short-circuit creation so that multiple references
+to the same (object, function) pair produce the
+same BoundMethodWeakref instance.</dd>
+</dl>
+</dd>
+</dl>
+  </div>
+  <hr>
+    <a name="methods"></a>
+    <h2>Methods</h2>
+    <div class="pudge-member routine alias">
+    <a name="__format__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#__format__" class="pudge-obj-link">__format__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      default object formatter
+    </p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__subclasshook__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#__subclasshook__" class="pudge-obj-link">__subclasshook__</a>(...)</tt>
+      <a href="None.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Abstract classes can override this to customize issubclass().
+    </p>
+    <p>This is invoked early on by abc.ABCMeta.__subclasscheck__().
+It should return True, False or NotImplemented.  If it returns
+NotImplemented, the normal algorithm is used.  Otherwise, it
+overrides the normal algorithm (and the outcome is cached).</p>
+    </div>
+  </div><div class="pudge-member routine alias">
+    <a name="__sizeof__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#__sizeof__" class="pudge-obj-link">__sizeof__</a>(...)</tt>
+      <a href="__builtin__.py.html" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      __sizeof__() -> int
+size of object in memory, in bytes
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__init__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#__init__" class="pudge-obj-link">__init__</a>(self, target, onDelete=None)</tt>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=86&amp;l=125#86" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Return a weak-reference-like instance for a bound method
+    </p>
+    <dl class="docutils">
+<dt>target -- the instance-method target for the weak</dt>
+<dd><p class="first">reference, must have im_self and im_func attributes
+and be reconstructable via:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">sqlobject.include.pydispatch.saferef.BoundMethodWeakref.__init__</tt>, line 4)</p>
+Unexpected indentation.</div>
+<blockquote>
+target.im_func.__get__( target.im_self )</blockquote>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">sqlobject.include.pydispatch.saferef.BoundMethodWeakref.__init__</tt>, line 5)</p>
+Block quote ends without a blank line; unexpected unindent.</div>
+<p class="last">which is true of built-in instance methods.</p>
+</dd>
+<dt>onDelete -- optional callback which will be called</dt>
+<dd>when this weak reference ceases to be valid
+(i.e. either the object or the function is garbage
+collected).  Should take a single argument,
+which will be passed a pointer to this object.</dd>
+</dl>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="calculateKey"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#calculateKey" class="pudge-obj-link">calculateKey</a>(cls, target)</tt>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=125&amp;l=132#125" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Calculate the reference key for this reference
+    </p>
+    <p>Currently this is a two-tuple of the id()'s of the
+target object and the target function respectively.</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__nonzero__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#__nonzero__" class="pudge-obj-link">__nonzero__</a>(self)</tt>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=141&amp;l=144#141" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Whether we are still a valid reference
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__cmp__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#__cmp__" class="pudge-obj-link">__cmp__</a>(self, other)</tt>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=144&amp;l=149#144" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Compare with another reference
+    </p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="__call__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="class-sqlobject.include.pydispatch.saferef.BoundMethodWeakref.html#__call__" class="pudge-obj-link">__call__</a>(self)</tt>
+      <a href="sqlobject/include/pydispatch/saferef.py.html?f=149&amp;l=166#149" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Return a strong reference to the bound method
+    </p>
+    <p>If the target cannot be retrieved, then will
+return None, otherwise returns a bound instance
+method for our object and function.</p>
+<dl class="docutils">
+<dt>Note:</dt>
+<dd>You may call this method any number of times,
+as it does not invalidate the reference.</dd>
+</dl>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/include/pydispatch/saferef.py.html?f=30&amp;l=166#30" title="sqlobject/include/pydispatch/saferef.py:30">the source</a>
+    for more information.
+    </small>
+  </p>

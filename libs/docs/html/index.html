@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>SQLObject</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content">
+  <h1 class="pudge-member-page-heading">
+    SQLObject
+  </h1>
+  <div class="rst-doc">
+    <p>SQLObject is a popular <em>Object Relational Manager</em> for providing an
+object interface to your database, with tables as classes, rows as
+instances, and columns as attributes.</p>
+<p>SQLObject includes a Python-object-based query language that makes SQL
+more abstract, and provides substantial database independence for
+applications.</p>
+<ul class="simple">
+<li><a href="download.html" class="reference external">Download</a></li>
+<li><a href="community.html" class="reference external">Mailing list, bugs, etc.</a></li>
+<li><a href="links.html" class="reference external">Related projects and articles</a></li>
+</ul>
+<div class="section" id="documentation">
+<h1>Documentation</h1>
+<ul class="simple">
+<li><a href="News.html" class="reference external">News and updates</a></li>
+<li><a href="SQLObject.html" class="reference external">Main SQLObject documentation</a></li>
+<li><a href="FAQ.html" class="reference external">Frequently Asked Questions</a></li>
+<li><a href="SQLBuilder.html" class="reference external">sqlbuilder documentation</a></li>
+<li><a href="SelectResults.html" class="reference external">select() and SelectResults</a></li>
+<li><a href="sqlobject-admin.html" class="reference external">sqlobject-admin documentation</a></li>
+<li><a href="Inheritance.html" class="reference external">Inheritance</a></li>
+<li><a href="Versioning.html" class="reference external">Versioning</a></li>
+<li><a href="Views.html" class="reference external">Views</a></li>
+<li><a href="DeveloperGuide.html" class="reference external">Developer Guide</a></li>
+<li><a href="Authors.html" class="reference external">Contributors</a></li>
+</ul>
+</div>
+<div class="section" id="example">
+<h1>Example</h1>
+<p>Examples are good.  Examples give a feel for the aesthetic of the API,
+which matters to me a great deal.  This is just a snippet that creates
+a simple class that wraps a table:</p>
+<pre class="literal-block">
+>>> from sqlobject import *
+>>>
+>>> sqlhub.processConnection = connectionForURI('sqlite:/:memory:')
+>>>
+>>> class Person(SQLObject):
+...     fname = StringCol()
+...     mi = StringCol(length=1, default=None)
+...     lname = StringCol()
+...
+>>> Person.createTable()
+</pre>
+<p>SQLObject supports most database schemas that you already have, and
+can also issue the <tt class="docutils literal">CREATE</tt> statement for you (seen in
+<tt class="docutils literal">Person.createTable()</tt>).</p>
+<p>Here's how you'd use the object:</p>
+<pre class="literal-block">
+>>> p = Person(fname="John", lname="Doe")
+>>> p
+&lt;Person 1 fname='John' mi=None lname='Doe'>
+>>> p.fname
+'John'
+>>> p.mi = 'Q'
+>>> p2 = Person.get(1)
+>>> p2
+&lt;Person 1 fname='John' mi='Q' lname='Doe'>
+>>> p is p2
+True
+</pre>
+<a href="http://sourceforge.net/projects/sqlobject" class="reference external image-reference"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=74338&amp;type=10" alt="Get SQLObject at SourceForge.net. Fast, secure and Free Open Source software downloads" style="width: 80px; height: 15px;" class="noborder align-center"></a>
+</div>
+  </div>
+</div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

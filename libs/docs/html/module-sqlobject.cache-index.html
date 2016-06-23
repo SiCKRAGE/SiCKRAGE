@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>Index of sqlobject.cache module</title>
+    <link href="layout.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="page">
+      <h1 class="doc-title"><a></a></h1>
+      <div id="navcontainer">
+		    <ul id="navlist">
+          <li class="pagenav">
+            <ul>
+              <li class="page_item">
+                <a href="index.html" title="Project Home / Index">SQLObject</a>
+              </li>
+              <li class="page_item">
+                <a href="module-index.html" title="sqlobject package and module reference">Modules</a>
+              </li>
+              <li>
+                <a href="community.html" title="Mailing List">Discuss</a>
+              </li>
+	      <li>
+	        <a href="SQLObject.html">Documentation</a>
+	      </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <hr>
+      <div id="content">
+  <h1>Index of the <tt>cache</tt> module</h1>
+  <ul class="pudge-module-index">
+    <li class="module">
+    <span class="prefix">m</span>
+    <a href="module-sqlobject.cache.html">
+      <tt>sqlobject.cache</tt>
+    </a>
+    <a href="sqlobject/cache.py.html">...</a>
+    <small>
+      - <span class="rst">This implements the instance caching in SQLObject.  Caching is
+relatively aggressive.  All objects are retained so long as they are
+in memory, by keeping weak references to objects.  We also keep other
+objects in a cache that doesn't allow them to be garbage collected
+(unless caching is turned off).</span>
+  </small>
+    <ul>
+      <li class="attribute">
+    <span class="prefix">a</span>
+    <a href="module-sqlobject.cache.html#__package__">
+      <tt>__package__</tt>
+    </a>
+    <a href="sqlobject/cache.py.html">...</a>
+    <small></small>
+  </li>
+      <li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.cache.CacheSet.html">
+      <tt>CacheSet</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=281&amp;l=376#281">...</a>
+    <small>
+      - <span class="rst">A CacheSet is used to collect and maintain a series of caches.  In
+SQLObject, there is one CacheSet per connection, and one Cache
+in the CacheSet for each class, since IDs are not unique across
+classes.  It contains methods similar to Cache, but that take
+a <tt class="docutils literal">cls</tt> argument.</span>
+  </small>
+    <ul>
+      <li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#getAll">
+      <tt>getAll</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=362&amp;l=376#362">...</a>
+    <small>
+      - <span class="rst">Returns all instances in the cache for the given class or all
+classes.</span>
+  </small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#allSubCaches">
+      <tt>allSubCaches</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=344&amp;l=346#344">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#finishPut">
+      <tt>finishPut</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=306&amp;l=308#306">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#weakrefAll">
+      <tt>weakrefAll</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=350&amp;l=361#350">...</a>
+    <small>
+      - <span class="rst">Move all objects in the cls (or if not given, then in all
+classes) to the weakref dictionary, where they can be
+collected.</span>
+  </small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#created">
+      <tt>created</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=309&amp;l=315#309">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#tryGetByName">
+      <tt>tryGetByName</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=332&amp;l=337#332">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#clear">
+      <tt>clear</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=322&amp;l=328#322">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#tryGet">
+      <tt>tryGet</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=329&amp;l=331#329">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#get">
+      <tt>get</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=296&amp;l=302#296">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#expire">
+      <tt>expire</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=316&amp;l=321#316">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#allSubCachesByClassNames">
+      <tt>allSubCachesByClassNames</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=347&amp;l=349#347">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#put">
+      <tt>put</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=303&amp;l=305#303">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#allIDs">
+      <tt>allIDs</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=338&amp;l=343#338">...</a>
+    <small></small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheSet.html#__init__">
+      <tt>__init__</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=291&amp;l=295#291">...</a>
+    <small></small>
+  </li>
+    </ul>
+  </li><li class="class">
+    <span class="prefix">C</span>
+    <a href="class-sqlobject.cache.CacheFactory.html">
+      <tt>CacheFactory</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=13&amp;l=280#13">...</a>
+    <small>
+      - <span class="rst">CacheFactory caches object creation.  Each object should be
+referenced by a single hashable ID (note tuples of hashable
+values are also hashable).</span>
+  </small>
+    <ul>
+      <li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheFactory.html#created">
+      <tt>created</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=161&amp;l=181#161">...</a>
+    <small>
+      - <span class="rst">Inserts and object into the cache.  Should be used when no one
+else knows about the object yet, so there cannot be any object
+already in the cache.  After a database INSERT is an example
+of this situation.</span>
+  </small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheFactory.html#clear">
+      <tt>clear</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=215&amp;l=223#215">...</a>
+    <small>
+      - <span class="rst">Removes everything from the cache.  Warning!  This can cause
+duplicate objects in memory.</span>
+  </small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheFactory.html#tryGet">
+      <tt>tryGet</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=54&amp;l=65#54">...</a>
+    <small>
+      - <span class="rst">This returns None, or the object in cache.</span>
+  </small>
+  </li><li class="routine">
+    <span class="prefix">f</span>
+    <a href="class-sqlobject.cache.CacheFactory.html#expire">
+      <tt>expire</tt>
+    </a>
+    <a href="sqlobject/cache.py.html?f=224&amp;l=239#224">...</a>
+    <small>
+      - <span class="rst">Expires a single object.  Typically called after a delete.
+Doesn't even keep a weakref.  (@@: bad name?)</span>
+  </small>
+  </li>
+    </ul>
+  </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+      <div id="footer">
+        <p style="float: left;">
+          built with 
+          <a href="http://lesscode.org/projects/pudge/">pudge/0.1.3</a> |
+		      original design by 
+          <a href="http://blog.ratterobert.com/">ratter / robert</a>
+	      </p>
+        <div>
+        <br> <!--
+        <a name="search">
+          <form method="get" id="searchform" 
+                action="http://lesscode.org/blog/index.php">
+            <div>
+              <input type="text" value="" name="s" id="s" />
+              <input type="submit" id="searchsubmit" value="Search" />
+            </div>
+          </form>
+        </a> -->
+        <br>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

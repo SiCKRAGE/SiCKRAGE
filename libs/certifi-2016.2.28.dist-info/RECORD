@@ -1,0 +1,16 @@
+certifi/__init__.py,sha256=nmbaauec_VTTKNwT1s06WSAI22p3op6ayvVWX3aNlqk,63
+certifi/__main__.py,sha256=FiOYt1Fltst7wk9DRa6GCoBr8qBUxlNQu_MKJf04E6s,41
+certifi/cacert.pem,sha256=3Akigx1BEe2GATdBsDMlMyFHvDhyP773sj5V7ktwdh8,313446
+certifi/core.py,sha256=DqvIINYNNXsp3Srlk_NRaiizaww8po3l8t8ksz-Xt6Q,716
+certifi/old_root.pem,sha256=HT0KIfaM83q0XHFqGEesiGyfmlSWuD2RI0-AVIS2srY,25626
+certifi/weak.pem,sha256=DMwGnZVM4oShvgua1mhZjXaVTKnuWd4MyQoUOBsR8uc,339072
+certifi-2016.2.28.dist-info/DESCRIPTION.rst,sha256=u4KmW8nf84KSFVrJue_kb-ArB1h3uUQT4H6CV_oOeUI,1706
+certifi-2016.2.28.dist-info/METADATA,sha256=41pAz1OXCrnnW4xw6gvQUfcY6uL3i-AFW4tZGuTGjhI,2521
+certifi-2016.2.28.dist-info/RECORD,,
+certifi-2016.2.28.dist-info/WHEEL,sha256=GrqQvamwgBV4nLoJe0vhYRSWzWsx7xjlt74FT0SWYfE,110
+certifi-2016.2.28.dist-info/metadata.json,sha256=KwJpKRjyWmN_fOlLMraMkott86pVfXhmM-EnUFucRTA,910
+certifi-2016.2.28.dist-info/top_level.txt,sha256=KMu4vUCfsjLrkPbSNdgdekS-pVJzBAJFO__nI8NF6-U,8
+certifi-2016.2.28.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+certifi/core.pyc,,
+certifi/__main__.pyc,,
+certifi/__init__.pyc,,

@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>robustapply</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Robust apply mechanism
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The robustapply module is accessible via the
+    <a href="module-sqlobject.include.pydispatch.html">
+      <tt>sqlobject.include.pydispatch</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (1)
+      </a>
+    </li><li>
+      <a href="#functions" class="pudge-section-link">
+        Functions (2)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Classes
+      </span>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.include.pydispatch.robustapply-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/include/pydispatch/robustapply.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>Provides a function "call", which can sort out
+what arguments a given callable object can take,
+and subset the given arguments to match only
+those which are acceptable.</p>
+  </div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.include.pydispatch.robustapply.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>None</pre>
+    </div>
+  </div>
+    <a name="functions"></a>
+    <h2>Functions</h2>
+    <div class="pudge-member routine ">
+    <a name="function"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.robustapply.html#function" class="pudge-obj-link">function</a>(receiver)</tt>
+      <a href="sqlobject/include/pydispatch/robustapply.py.html?f=9&amp;l=25#9" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Get function-like callable object for given receiver
+    </p>
+    <p>returns (function_or_method, codeObject, fromMethod)</p>
+<p>If fromMethod is true, then the callable already
+has its first argument bound</p>
+    </div>
+  </div><div class="pudge-member routine ">
+    <a name="robustApply"></a>
+    <h4 class="pudge-member-name"><span class="prefix">f</span>
+      <tt><a href="module-sqlobject.include.pydispatch.robustapply.html#robustApply" class="pudge-obj-link">robustApply</a>(receiver, *arguments, **named)</tt>
+      <a href="sqlobject/include/pydispatch/robustapply.py.html?f=26&amp;l=45#26" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Call receiver with arguments and an appropriate subset of named
+    </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/include/pydispatch/robustapply.py.html" title="sqlobject/include/pydispatch/robustapply.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+  <h1 class="pudge-member-page-heading">
+    <tt>declarative</tt>
+  </h1>
+  <h4 class="pudge-member-page-subheading">
+    Declarative objects.
+  </h4>
+  <p class="pudge-member-parent-link">
+    <small>
+    The declarative module is accessible via the
+    <a href="module-sqlobject.html">
+      <tt>sqlobject</tt>
+    </a> module.
+    </small>
+  </p>
+  <div id="pudge-section-nav">
+  <ul>
+    <li>
+      <a href="#attributes" class="pudge-section-link">
+        Attributes (1)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Functions
+      </span>
+    </li><li>
+      <a href="#classes" class="pudge-section-link">
+        Classes (3)
+      </a>
+    </li><li>
+      <span class="pudge-missing-section-link">
+        Modules
+      </span>
+    </li>
+    <li>
+      <a href="module-sqlobject.declarative-index.html" class="pudge-section-link">
+        Index
+      </a>
+    </li>
+    <li>
+      <a href="sqlobject/declarative.py.html" class="pudge-section-link">
+        Source
+      </a>
+    </li>
+  </ul>
+  </div>
+  <div style="clear: left"></div>
+  <div class="rst pudge-module-doc">
+    <p>Declarative objects have a simple protocol: you can use classes in
+lieu of instances and they are equivalent, and any keyword arguments
+you give to the constructor will override those instance variables.
+(So if a class is received, we'll simply instantiate an instance with
+no arguments).</p>
+<p>You can provide a variable __unpackargs__ (a list of strings), and if
+the constructor is called with non-keyword arguments they will be
+interpreted as the given keyword arguments.</p>
+<p>If __unpackargs__ is ('*', name), then all the arguments will be put
+in a variable by that name.</p>
+<p>You can define a __classinit__(cls, new_attrs) method, which will be
+called when the class is created (including subclasses).  Note: you
+can't use super() in __classinit__ because the class isn't bound to a
+name.  As an analog to __classinit__, Declarative adds
+__instanceinit__ which is called with the same argument (new_attrs).
+This is like __init__, but after __unpackargs__ and other factors have
+been taken into account.</p>
+<p>If __mutableattributes__ is defined as a sequence of strings, these
+attributes will not be shared between superclasses and their
+subclasses.  E.g., if you have a class variable that contains a list
+and you append to that list, changes to subclasses will effect
+superclasses unless you add the attribute here.</p>
+<p>Also defines classinstancemethod, which acts as either a class method
+or an instance method depending on where it is called.</p>
+  </div>
+  <hr>
+    <a name="attributes"></a>
+    <h2>Attributes</h2>
+    <div class="pudge-member name">
+    <a name="__package__"></a>
+    <h4 class="pudge-member-name"><span class="prefix">a</span>
+      <tt><a href="module-sqlobject.declarative.html#__package__" class="pudge-obj-link">__package__</a></tt></h4>
+    <div class="pudge-section rst">
+      <pre>'sqlobject'</pre>
+    </div>
+  </div>
+    <a name="classes"></a>
+    <h2>Classes</h2>
+    <div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.declarative.classinstancemethod.html" class="pudge-obj-link">classinstancemethod</a>(...)</tt>
+      <a href="sqlobject/declarative.py.html?f=44&amp;l=57#44" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+    <p class="pudge-member-blurb">
+      Acts like a class method when called from a class, like an
+instance method when called by an instance.  The method should
+take two arguments, 'self' and 'cls'; one of these will be None
+depending on how the method was called.
+    </p>
+      <p class="note">
+        This class contains <a href="class-sqlobject.declarative.classinstancemethod.html#members">
+          5 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.declarative.DeclarativeMeta.html" class="pudge-obj-link">DeclarativeMeta</a>(...)</tt>
+      <a href="sqlobject/declarative.py.html?f=79&amp;l=96#79" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.declarative.DeclarativeMeta.html#members">
+          23 members</a>.
+      </p>
+    </div>
+  </div><div class="pudge-member class ">
+    <h4 class="pudge-member-name"><span class="prefix">C</span>
+      <tt>
+        <a href="class-sqlobject.declarative.Declarative.html" class="pudge-obj-link">Declarative</a>(...)</tt>
+      <a href="sqlobject/declarative.py.html?f=97&amp;l=199#97" class="pudge-member-view-source" title="View Source">...</a>
+    </h4>
+    <div class="pudge-section rst">
+      <p class="note">
+        This class contains <a href="class-sqlobject.declarative.Declarative.html#members">
+          12 members</a>.
+      </p>
+    </div>
+  </div>
+  <p>
+    <small>
+    See 
+    <a href="sqlobject/declarative.py.html" title="sqlobject/declarative.py:0">the source</a>
+    for more information.
+    </small>
+  </p>

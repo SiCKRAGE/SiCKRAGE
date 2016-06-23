@@ -1,0 +1,291 @@
+/*
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2003/06/28 22:18:49 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+body {
+  background-color: #eeeeee;
+  font-family: Arial, sans-serif;
+}
+
+em {
+  font-family: Times New Roman, Times, serif;
+}
+
+li {
+  list-style-type: circle;
+}
+
+a.target {
+  color: blue }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+a:hover {
+  background-color: #cccccc;
+}
+
+cite {
+  font-style: normal;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning {
+  // margin: 2em ;
+  background-color: #cccccc;
+  align: center;
+  width: 40%;
+  border: medium outset ;
+  padding: 3px;
+  float: right;
+ }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif;
+  text-align: center;
+  display: block;
+  background-color: #999999;
+  margin: 0; }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif;
+  text-align: center;
+  display: block;
+  background-color: #999999;
+  margin: 0; }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Helvetica, Arial, sans-serif;
+  border: thin solid black;
+  -moz-border-radius: 8px;
+  padding: 4px;
+ }
+
+h1 {
+  background-color: #444499;
+  border: medium solid black;
+  color: #ffffff;
+}
+
+h2 {
+  background-color: #666666;
+  color: #ffffff;
+  border: medium solid black;
+}
+
+h1 a:link, h2 a:link {
+  color: #ffffff;
+}
+
+h3, h4, h5, h6 {
+  background-color: #cccccc;
+  color: #000000;
+}
+
+h3 a:link, h4 a:link, h5 a:link, h6 a:link {
+  color: #000000;
+}
+
+h1.title {
+  text-align: center;
+  background-color: #444499;
+  color: #eeeeee;
+  border: thick solid black;
+  -moz-border-radius: 20px;
+ }
+
+h2.subtitle {
+  text-align: center }
+
+hr {
+  width: 75% }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.first {
+  margin-top: 0 }
+
+p.label {
+  white-space: nowrap }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;
+  background-color: #ffffff;
+  border: thin black solid;
+  padding: 5px;
+}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+td > p:first-child, th > p:first-child {
+  margin-top: 0em }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+tt {
+  //background-color: #eeeeee;
+  color: #000066 }
+
+ul.auto-toc {
+  list-style-type: none }
+
+// Highlighting:
+
+.function {color: #000077; font-weight: bold}
+.keyword {color: #004444;}
+.comment {color: #770000; font-style: italic}
+.normal {color: #000000;}
+.string {color: #006600;}
+.symbol {color: #000000;}
+
+.htmltag {color: #000077;}
+.htmlsymbol {color: #000000;}
+.htmlnormal {color: #000000;}
+.htmlcomment {color: #770000; font-style: italic}
+.htmlstring {color: #006600;}
+.htmlattr {color: #000000;}
+
+.stmlfunction {color: #000077; font-weight: bold}
+.stmlattr {color: #000000;}
+.stmlstring {color: #006600;}
+.stmlexpr {color: #004444;}
+
+img.noborder {border-style: none;}

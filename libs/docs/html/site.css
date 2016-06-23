@@ -1,0 +1,287 @@
+
+/* This is a generated, using these settings:
+   {'nav_container_color': '#79f', 'nav_border_color': '#05f', 'body_outer_bg_color': '#46a', 'nav_button_color': '#037', 'visited_color': '#093', 'body_border_color': '#09f', 'link1': 'SQLObject.html Documentation', 'normal_link_color': '#039', 'hover_color': '#ddf', 'no_about': 'true'} */
+i, em {
+  font-family: Times New Roman,Times,serif;
+}
+
+a {
+  font-weight: bold;
+}
+
+a:link { 
+  color: #039;
+}
+
+a:visited { 
+  color: #093;
+}
+
+a:hover {
+  background-color: #ddf;
+}
+
+/*
+Theme Name: Almodovar
+Theme URI: http://blog.ratterobert.com/archiv/2005/03/09/almodovar/
+Description: Das Theme basiert im Ursprung auf Michael Heilemanns Kubrick-Template und ist von dem einen oder anderen Gimmick anderer sehr guter Templates inspiriert worden.
+Version: 0.7
+Author: ratte / robert
+Author URI: http://blog.ratterobert.com/
+*/
+
+/* Begin Typography & Colors */
+body {
+	font-family: 'Lucida Grande', 'Trebuchet MS', 'Bitstream Vera Sans', Sans-Serif;
+	background-color: #46a;
+	text-align: center;
+}
+
+#page {
+	background-color: #fff;
+	border: 2px solid #09f;
+	text-align: left;
+}
+
+#content {
+	margin: 0;
+	}
+
+#content p,
+#content ul,
+#content blockquote { 
+  /*line-height: 1.6em;*/
+}
+
+#footer {
+  border-top: 1px solid #000;
+  margin-top: 2em;
+  color: #666;
+  font-size: 75%;
+}
+
+#footer a:link, #footer a:visited {
+  font-weight: normal;
+}
+
+small {
+	font-family: 'Trebuchet MS', Arial, Helvetica, Sans-Serif;
+	font-size: 0.9em;
+	line-height: 1.5em;
+	}
+
+h1, h2, h3 {
+	font-family: 'Trebuchet MS', 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	font-weight: bold;
+  margin-top: .7em;
+  margin-bottom: .7em;
+	}
+
+h1 { 
+  font-size: 2.0em;
+}
+h2 {
+  font-size: 1.75em;
+}
+h3 {
+  font-size: 1.25em;
+}
+
+div#content h1, div#content h2, div#content h3 {
+	color: #555;
+        border-bottom: 2px solid #f95_;
+}
+
+h1 a, h2 a, h3 a {
+	color: #555;
+}
+
+h1, h1 a, h1 a:hover, h1 a:visited, 
+h2, h2 a, h2 a:hover, h2 a:visited, 
+h3, h3 a, h3 a:hover, h3 a:visited, 
+cite {
+	text-decoration: none;
+}
+
+small, blockquote, strike {
+	color: #444;
+}
+
+#links ul ul li, #links li {
+	list-style: none;
+}
+
+code {
+	font: 1.1em 'Courier', 'Courier New', Fixed;
+}
+
+acronym, abbr, span.caps {
+	font-size: 0.9em;
+	letter-spacing: .07em;
+}
+
+/* Special case doc-title */
+h1.doc-title { 
+  font-variant: small-caps;
+  letter-spacing: 0.25em;
+  font-size: 2em;
+  margin: 0;
+}
+h1.doc-title a { 
+  display: block;
+  padding-left: 0.8em;
+  padding-bottom: .5em;
+  padding-top: .5em;
+  margin: 0;
+  border-bottom: 1px #fff solid;
+}
+h1.doc-title, 
+h1.doc-title a, 
+h1.doc-title a:visited,
+h1.doc-title a:hover {
+	text-decoration: none;
+	color: #ff5000;
+}
+/* End Typography & Colors */
+
+
+/* Begin Structure */
+body {
+	margin: 0;
+	padding: 0;
+}
+
+#page {
+	background-color: white;
+	margin: 0 auto 0 5em;
+	padding: 0;
+        max-width: 60em;
+	border: 1px solid #959596;
+}
+* html #page { 
+  width: 60em;
+}
+
+#content {
+	margin: 0 1em 0 3em;
+}
+
+#content h1 { 
+  margin-left: 0;
+}
+
+#footer {
+	padding: 0 0 0 1px;
+	margin: 0;
+  margin-top: 1.5em;
+	clear: both;
+	}
+
+#footer p {
+	margin: 1em;
+	}
+
+/* End Structure */
+
+
+
+/*	Begin Headers */
+.description {
+	text-align: center;
+	}
+
+/* End Headers */
+
+
+/* Begin Form Elements */
+#searchform {
+	margin: 1em auto;
+	text-align: right;
+	}
+
+#searchform #s {
+	width: 100px;
+	padding: 2px;
+	}
+
+#searchsubmit {
+	padding: 1px;
+	}
+/* End Form Elements */
+
+
+/* Begin Various Tags & Classes */
+acronym, abbr, span.caps {
+	cursor: help;
+}
+
+acronym, abbr {
+	border-bottom: 1px dashed #999;
+}
+
+blockquote {
+	margin: 15px 30px 0 10px;
+	padding-left: 20px;
+	border-left: 5px solid #ccc;
+}
+
+blockquote cite {
+	margin: 5px 0 0;
+	display: block;
+}
+
+hr {
+	display: none;
+}
+
+a img {
+	border: none;
+}
+
+.navigation {
+	display: block;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 60px;
+}
+/* End Various Tags & Classes*/
+
+span a { color: #CCC; }
+
+span a:hover { color: #FF5000; }
+
+#navcontainer {
+	margin-top: 0px;
+	padding-top: 0px;
+	width: 100%;
+	background-color: #79f;
+	text-align: right;
+}
+
+#navlist ul {
+	margin-left: 0;
+	margin-right: 5px;
+	padding-left: 0;
+	white-space: nowrap;
+}
+
+#navlist li {
+	display: inline;
+	list-style-type: none;
+}
+
+#navlist a {
+  padding: 3px 10px;
+  color: #fff;
+	background-color: #037;
+	text-decoration: none;
+	border: 1px solid #05f;
+  font-weight: normal;
+}
+
+#navlist a:hover {
+	color: #000;
+	background-color: #fff;
+	text-decoration: none;
+  font-weight: normal;
+}
