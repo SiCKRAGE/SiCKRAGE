@@ -166,22 +166,34 @@ def pid_exists(pid):
         return True
 
 
-def main():
-    global srCore, status, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \
-        DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
-
+def check_requirements():
     # sickrage requires python 2.7+
     if sys.version_info < (2, 7):
         sys.exit("Sorry, SiCKRAGE requires Python 2.7+")
 
-    # add sickrage module to python system path
-    if not (PROG_DIR in sys.path):
-        sys.path, remainder = sys.path[:1], sys.path[1:]
-        site.addsitedir(PROG_DIR)
-        sys.path.extend(remainder)
+    # Check if lxml is available
+    try:
+        from lxml import etree
+    except:
+        print(
+            'LXML not available, please install for better/faster scraping support: `http://lxml.de/installation.html`')
 
-    # set locale encoding
-    SYS_ENCODING = encodingInit()
+    try:
+        import OpenSSL
+
+        v = OpenSSL.__version__
+        v_needed = '0.15'
+        if OpenSSL.__version__ >= v_needed:
+            print('OpenSSL installed but %s is needed while %s is installed. Run `pip install -U pyopenssl`',
+                            (v_needed, v))
+    except:
+        print(
+            'OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`')
+
+
+def main():
+    global srCore, status, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \
+        DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
         from sickrage import core
@@ -222,28 +234,35 @@ def main():
                             action='store_true',
                             help='Suppress launching web browser on startup')
 
+        # Parse startup args
         args = parser.parse_args()
-
-        # Quite
         QUITE = args.quite
-
-        # Override default/configured port
         WEB_PORT = int(args.port)
-
-        # Launch browser
         NOLAUNCH = args.nolaunch
-
         DEVELOPER = args.dev
+        DEBUG = args.debug
+        DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
+        CONFIG_FILE = os.path.abspath(os.path.expanduser(args.config))
+        PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
+        DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
+
+        # check lib requirements
+        check_requirements()
+
+        # add sickrage module to python system path
+        if not (PROG_DIR in sys.path):
+            sys.path, remainder = sys.path[:1], sys.path[1:]
+            site.addsitedir(PROG_DIR)
+            sys.path.extend(remainder)
+
+        # set locale encoding
+        SYS_ENCODING = encodingInit()
+
         if DEVELOPER:
             print("!!! DEVELOPER MODE ENABLED !!!")
 
-        DEBUG = args.debug
         if DEBUG:
             print("!!! DEBUG MODE ENABLED !!!")
-
-        # Specify folder to use as the data dir
-        DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
-        CONFIG_FILE = os.path.abspath(os.path.expanduser(args.config))
 
         # Make sure that we can create the data dir
         if not os.access(DATA_DIR, os.F_OK):
@@ -257,7 +276,6 @@ def main():
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
         # Pidfile for daemon
-        PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
         if os.path.exists(PIDFILE):
             if pid_exists(int(io.open(PIDFILE).read())):
                 sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
@@ -266,7 +284,6 @@ def main():
             delpid(PIDFILE)
 
         # daemonize if requested
-        DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
         if DAEMONIZE:
             NOLAUNCH = False
             QUITE = False

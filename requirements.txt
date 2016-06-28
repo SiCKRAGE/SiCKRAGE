@@ -1,83 +1,40 @@
-APScheduler==3.1.0
-babelfish==0.5.5
-backport-ipaddress==0.1
-backports-abc==0.4
-backports.ssl-match-hostname==3.5.0.1
-beautifulsoup4==4.4.1
-bencode==1.0
-CacheControl==0.11.6
-certifi==2016.2.28
-cffi==1.6.0
-chardet==2.3.0
-click==6.6
-configobj==5.0.6
-cryptography==1.3.1
-decorator==4.0.9
-dill==0.2.5
-docopt==0.6.2
-dogpile.cache==0.5.7
-dogpile.core==0.4.1
-enum34==1.1.4
-enzyme==0.4.1
-feedparser==5.2.1
-FormEncode==1.3.0
-funcsigs==1.0.2
-future==0.15.2
-futures==3.0.5
-gntp==1.0.3
-guessit==1.0.3
-hachoir-core==1.3.3
-hachoir-metadata==1.3.3
-hachoir-parser==1.3.4
-html5lib==0.9999999
-httplib2==0.9.2
-idna==2.1
-imdbpie==4.0.2
-ipaddress==1.0.16
-jsonrpclib==0.1.7
-lockfile==0.12.2
-Mako==1.0.4
-markdown2==2.3.1
-MarkupSafe==0.23
-mpmath==0.19
-MultipartPostHandler==0.1.0
-ndg-httpsclient==0.4.0
-oauth2==1.9.0.post1
-oauth2client==2.0.2
-oauthlib==1.1.1
-pbr==1.9.1
-profilehooks==1.8.1
-py-unrar2==0.99.6
-pyasn1==0.1.9
-pycparser==2.14
-PyGithub==1.26.0
-pyOpenSSL==16.0.0
-pysrt==1.1.1
-python-dateutil==2.5.3
-python-fanart==1.4.0
-python-twitter==2.2
-pytz==2016.4
-pyxdg==0.25
-PyYAML==3.11
-requests[security]==2.10.0
-requests-futures==0.9.7
-requests-oauthlib==0.6.1
-rtorrent-python==0.2.9
-Send2Trash==1.3.0
-simplejson==3.8.2
-singledispatch==3.4.0.3
-six==1.10.0
-SQLAlchemy==1.0.12
-sqlalchemy-migrate==0.10.0
-sqlite-cache==0.0.3
-SQLObject==2.1.2
-sqlparse==0.1.19
-stevedore==1.12.0
-subliminal==1.1.1
-sympy==1.0
-Tempita==0.5.2
-tmdbsimple==1.3.0
-tornado==4.3
-tzlocal==1.2.2
-xmltodict==0.10.1
-yarg==0.1.9
+APScheduler == 3.1.0
+babelfish == 0.5.5
+bencode == 1.0
+CacheControl == 0.11.6
+certifi == 2016.2.28
+configobj == 5.0.6
+feedparser == 5.2.1
+hachoir_core == 1.3.3
+hachoir_metadata == 1.3.3
+hachoir_parser == 1.3.4
+imdbpie == 4.0.2
+jsonrpclib == 0.1.7
+Mako == 1.0.4
+markdown2 == 2.3.1
+oauth2 == 1.9.0.post1
+pip == 8.1.0
+setuptools == 20.2.2
+profilehooks == 1.8.1
+requests == 2.10.0
+requests_futures == 0.9.7
+Send2Trash == 1.3.0
+six == 1.10.0
+subliminal == 1.1.1
+tmdbsimple == 1.3.0
+tornado == 4.3
+xmltodict == 0.10.1
+MultipartPostHandler == 0.1.0
+beautifulsoup4 == 4.4.1
+python_dateutil == 2.5.3
+futures == 3.0.5
+gi == 1.2
+PyGithub == 1.26.0
+gntp == 1.0.3
+google_api_python_client == 1.5.1
+python_twitter == 3.1
+pyxdg == 0.25
+urllib3 == 1.16
+py-unrar2 == 0.99.6
+lockfile == 0.12.2
+-e git://github.com/sebastiaansamyn/python-fanart.git#egg=python-fanart

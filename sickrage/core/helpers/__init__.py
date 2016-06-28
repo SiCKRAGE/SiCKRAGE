@@ -867,13 +867,19 @@ def create_https_certificates(ssl_cert, ssl_key):
     domain name(replacing dots by underscores), finally signing the certificate using specified CA and
     returns the path of key and cert files. If you are yet to generate a CA then check the top comments"""
 
+    try:
+        import OpenSSL
+    except ImportError:
+        sickrage.srCore.srLogger.error(
+            "OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`")
+        return False
+
     # Check happens if the certificate and key pair already exists for a domain
     if not os.path.exists(ssl_key) and os.path.exists(ssl_cert):
         # Serial Generation - Serial number must be unique for each certificate,
         serial = int(time.time())
 
         # Create the CA Certificate
-        import OpenSSL
         cakey = OpenSSL.crypto.PKey().generate_key(OpenSSL.crypto.TYPE_RSA, 2048)
         careq = OpenSSL.crypto.X509()
         careq.get_subject().CN = "Certificate Authority"
