@@ -66,8 +66,6 @@ time.strptime("2012", "%Y")
 # set thread name
 threading.currentThread().setName('MAIN')
 
-logging.captureWarnings(True)
-
 
 def encodingInit():
     # map the following codecs to utf-8
@@ -104,7 +102,7 @@ def isVirtualEnv():
     return hasattr(sys, 'real_prefix')
 
 
-def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
+def daemonize(pidfile):
     try:
         pid = os.fork()
         if pid > 0:
@@ -133,11 +131,14 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
 
     if sys.platform != 'darwin':
         # Redirect standard file descriptors
+        sys.stdin = sys.__stdin__
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
         sys.stdout.flush()
         sys.stderr.flush()
-        si = file(stdin, 'r')
-        so = file(stdout, 'a+')
-        se = file(stderr, 'a+', 0)
+        si = file(getattr(os, 'devnull', '/dev/null'), 'r')
+        so = file(getattr(os, 'devnull', '/dev/null'), 'a+')
+        se = file(getattr(os, 'devnull', '/dev/null'), 'a+', 0)
         os.dup2(si.fileno(), sys.stdin.fileno())
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
