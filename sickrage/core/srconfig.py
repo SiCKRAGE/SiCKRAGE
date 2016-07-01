@@ -35,7 +35,7 @@ import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED
 from sickrage.core.databases import main_db
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_temp_dir
 from sickrage.core.nameparser import validator
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.searchers import backlog_searcher
@@ -1338,6 +1338,9 @@ class srConfig(object):
 
     def load(self):
         # Make sure we can write to the config file
+        if not os.path.isabs(sickrage.CONFIG_FILE):
+            sickrage.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.DATA_DIR, sickrage.CONFIG_FILE))
+
         if not os.access(sickrage.CONFIG_FILE, os.W_OK):
             if os.path.isfile(sickrage.CONFIG_FILE):
                 raise SystemExit("Config file '" + sickrage.CONFIG_FILE + "' must be writeable.")
@@ -1363,6 +1366,10 @@ class srConfig(object):
         self.LOG_NR = self.check_setting_int('General', 'log_nr', 5)
         self.LOG_SIZE = self.check_setting_int('General', 'log_size', 1048576)
         self.LOG_DIR = self.check_setting_str('General', 'log_dir', 'Logs')
+
+        if not os.path.isabs(self.LOG_DIR):
+            self.LOG_DIR = os.path.abspath(os.path.join(sickrage.DATA_DIR, self.LOG_DIR))
+
         self.LOG_FILE = os.path.abspath(
             os.path.join(self.LOG_DIR, self.check_setting_str('General', 'log_file', 'sickrage.log')))
 
@@ -1384,7 +1391,10 @@ class srConfig(object):
         # cache settings
         self.CACHE_DIR = self.check_setting_str('General', 'cache_dir', 'cache')
         if not os.path.isabs(self.CACHE_DIR):
-            self.CACHE_DIR = os.path.join(sickrage.DATA_DIR, self.CACHE_DIR)
+            self.CACHE_DIR = os.path.abspath(os.path.join(sickrage.DATA_DIR, self.CACHE_DIR))
+
+        if not makeDir(self.CACHE_DIR):
+            self.CACHE_DIR = get_temp_dir()
 
         # web settings
         self.WEB_PORT = self.check_setting_int('General', 'web_port', 8081)

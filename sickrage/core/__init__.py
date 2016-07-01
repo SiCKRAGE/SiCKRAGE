@@ -40,7 +40,7 @@ from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.databases import main_db, cache_db, failed_db
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
-    generateCookieSecret, makeDir, removetree, get_lan_ip, get_temp_dir, restoreSR
+    generateCookieSecret, makeDir, removetree, get_lan_ip, restoreSR
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
@@ -214,11 +214,7 @@ class Core(object):
         self.srLogger.logNr = self.srConfig.LOG_NR
         self.srLogger.debugLogging = sickrage.DEBUG
         self.srLogger.consoleLogging = not sickrage.QUITE
-        self.srLogger.logFile = os.path.abspath(os.path.join(
-            sickrage.DATA_DIR,
-            self.srConfig.LOG_DIR,
-            self.srConfig.LOG_FILE
-        ))
+        self.srLogger.logFile = self.srConfig.LOG_FILE
 
         # start logger
         self.srLogger.start()
@@ -240,10 +236,6 @@ class Core(object):
 
         if self.srConfig.DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):
             self.srConfig.DEFAULT_PAGE = 'home'
-
-        if not makeDir(self.srConfig.CACHE_DIR):
-            self.srLogger.error("!!! Creating local cache dir failed")
-            self.srConfig.CACHE_DIR = get_temp_dir()
 
         # cleanup cache folder
         for dir in ['mako', 'sessions', 'indexers']:

@@ -227,7 +227,7 @@ def main():
                             help='Overrides data folder for database, configfile, cache, logfiles (full path)')
         parser.add_argument('--config',
                             default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage', 'config.ini')),
-                            help='Overrides config filename (full path including filename)')
+                            help='Overrides config filename')
         parser.add_argument('--pidfile',
                             default='sickrage.pid',
                             help='Creates a pidfile (full path including filename)')
