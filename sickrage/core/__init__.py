@@ -501,7 +501,7 @@ class Core(object):
 
         # delete pid file
         if sickrage.DAEMONIZE:
-            sickrage.delpid(sickrage.PIDFILE)
+            sickrage.delpid(sickrage.PID_FILE)
 
         # system exit with status
         if not restart:

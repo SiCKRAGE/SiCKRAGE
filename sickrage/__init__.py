@@ -36,9 +36,10 @@ __all__ = [
     'srCore',
     'PROG_DIR',
     'DATA_DIR',
+    'CONFIG_FILE'
     'DEVELOPER',
     'SYS_ENCODING',
-    'PIDFILE'
+    'PID_FILE'
 ]
 
 status = None
@@ -58,7 +59,7 @@ QUITE = None
 MODULE_DIR = None
 DATA_DIR = None
 CONFIG_FILE = None
-PIDFILE = None
+PID_FILE = None
 
 # fix threading time bug
 time.strptime("2012", "%Y")
@@ -184,16 +185,23 @@ def check_requirements():
 
         v = OpenSSL.__version__
         v_needed = '0.15'
-        if OpenSSL.__version__ >= v_needed:
-            print('OpenSSL installed but %s is needed while %s is installed. Run `pip install -U pyopenssl`',
-                            (v_needed, v))
+
+        if v >= v_needed:
+            print('OpenSSL installed but {} is needed while {} is installed. Run `pip install -U pyopenssl`'.format(
+                v_needed, v))
     except:
         print(
             'OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`')
 
 
+def version():
+    # Get the version number
+    with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'version.txt'))) as f:
+        return f.read()
+
+
 def main():
-    global srCore, status, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, \
+    global srCore, status, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
         DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
@@ -205,7 +213,7 @@ def main():
         parser = argparse.ArgumentParser(prog='sickrage')
         parser.add_argument('-v', '--version',
                             action='version',
-                            version='%(prog)s 8.0')
+                            version='%(prog)s {}'.format(version()))
         parser.add_argument('-d', '--daemon',
                             action='store_true',
                             help='Run as a daemon (*NIX ONLY)')
@@ -224,13 +232,13 @@ def main():
                             help='Enable debugging')
         parser.add_argument('--datadir',
                             default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage')),
-                            help='Overrides data folder for database, configfile, cache, logfiles (full path)')
+                            help='Overrides data folder for database, config, cache and logs (specify full path)')
         parser.add_argument('--config',
-                            default=os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage', 'config.ini')),
-                            help='Overrides config filename')
+                            default='config.ini',
+                            help='Overrides config filename (specify full path and filename if outside datadir path)')
         parser.add_argument('--pidfile',
                             default='sickrage.pid',
-                            help='Creates a pidfile (full path including filename)')
+                            help='Creates a PID file (specify full path and filename if outside datadir path)')
         parser.add_argument('--nolaunch',
                             action='store_true',
                             help='Suppress launching web browser on startup')
@@ -242,10 +250,16 @@ def main():
         NOLAUNCH = args.nolaunch
         DEVELOPER = args.dev
         DEBUG = args.debug
-        DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
-        CONFIG_FILE = os.path.abspath(os.path.expanduser(args.config))
-        PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
+        DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
+        CONFIG_FILE = args.config
+        PID_FILE = args.pidfile
+
+        if not os.path.isabs(CONFIG_FILE):
+            CONFIG_FILE = os.path.abspath(os.path.join(DATA_DIR, CONFIG_FILE))
+
+        if not os.path.abspath(PID_FILE):
+            PID_FILE = os.path.abspath(os.path.join(DATA_DIR, PID_FILE))
 
         # check lib requirements
         check_requirements()
@@ -277,18 +291,18 @@ def main():
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
         # Pidfile for daemon
-        if os.path.exists(PIDFILE):
-            if pid_exists(int(io.open(PIDFILE).read())):
-                sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
+        if os.path.exists(PID_FILE):
+            if pid_exists(int(io.open(PID_FILE).read())):
+                sys.exit("PID file: " + PID_FILE + " already exists. Exiting.")
 
             # remove stale pidfile
-            delpid(PIDFILE)
+            delpid(PID_FILE)
 
         # daemonize if requested
         if DAEMONIZE:
             NOLAUNCH = False
             QUITE = False
-            daemonize(PIDFILE)
+            daemonize(PID_FILE)
 
         # main app loop
         while True:
