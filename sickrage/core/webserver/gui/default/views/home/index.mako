@@ -15,11 +15,12 @@
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
 
-    <div id="HomeLayout" class="pull-left hidden-print" style="margin-top: -50px;">
+    <div id="HomeLayout" class="text-center hidden-print" style="margin-top: -50px">
         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
             <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
         % endif
-        <span> Layout:
+
+        <span class="badge" style="background-color: #333333;">Layout:<br>
             <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
                 <option value="/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}>
                     Poster
@@ -43,8 +44,7 @@
         </span>
 
         % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
-            &nbsp;
-            <span> Sort By:
+            <span class="badge" style="background-color: #333333;">Sort By:<br>
                 <select id="postersort" class="form-control form-control-inline input-sm">
                     <option value="name"
                             data-sort="/setPosterSortBy/?sort=name" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTBY == 'name']}>
@@ -64,8 +64,7 @@
                     </option>
                 </select>
             </span>
-            &nbsp;
-            <span> Sort Order:
+            <span class="badge" style="background-color: #333333;">Sort Order:<br>
                 <select id="postersortdirection" class="form-control form-control-inline input-sm">
                     <option value="true"
                             data-sort="/setPosterSortDir/?direction=1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTDIR == 1]}>
