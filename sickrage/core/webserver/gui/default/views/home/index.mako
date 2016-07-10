@@ -17,10 +17,12 @@
 
     <div id="HomeLayout" class="text-center hidden-print" style="margin-top: -50px">
         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-            <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
+            <span class="pull-left" style="margin-top: -2px">
+                <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
+            </span>
         % endif
 
-        <span class="badge" style="background-color: #333333;">Layout:<br>
+        <label class="badge" style="margin-top:-5px;background-color: #333333;">Layout:
             <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
                 <option value="/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}>
                     Poster
@@ -35,16 +37,10 @@
                     Simple
                 </option>
             </select>
-            % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-            <span>
-                <input class="search form-control form-control-inline input-sm input200" type="search" data-column="2" placeholder="Search Show Name">
-                <button type="button" class="resetsorting btn btn-inline">Reset Search</button>
-            </span>
-            % endif
-        </span>
+        </label>
 
         % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
-            <span class="badge" style="background-color: #333333;">Sort By:<br>
+            <label class="badge" style="margin-top:-5px;background-color: #333333;">Sort By:
                 <select id="postersort" class="form-control form-control-inline input-sm">
                     <option value="name"
                             data-sort="/setPosterSortBy/?sort=name" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTBY == 'name']}>
@@ -63,8 +59,8 @@
                         Progress
                     </option>
                 </select>
-            </span>
-            <span class="badge" style="background-color: #333333;">Sort Order:<br>
+            </label>
+            <label class="badge" style="margin-top:-5px;background-color: #333333;">Sort Order:
                 <select id="postersortdirection" class="form-control form-control-inline input-sm">
                     <option value="true"
                             data-sort="/setPosterSortDir/?direction=1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTDIR == 1]}>
@@ -75,11 +71,16 @@
                         Desc
                     </option>
                 </select>
+            </label>
+        % endif
+
+        % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
+            <span class="pull-right" style="margin-top: -2px">
+                <input class="form-control form-control-inline input-sm input200" type="search" data-column="2" placeholder="Search Show Name">
+                <button type="button" class="resetsorting btn btn-inline">Reset Search</button>
             </span>
-            &nbsp;
         % endif
     </div>
-
     % for curShowlist in showlists:
         <% curListType = curShowlist[0] %>
         <% myShowList = list(curShowlist[1]) %>
