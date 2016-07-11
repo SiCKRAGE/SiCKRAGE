@@ -14,33 +14,13 @@
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
-
-    <div id="HomeLayout" class="text-center hidden-print" style="margin-top: -50px">
+    <div class="h2footer pull-right">
         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-            <span class="pull-left" style="margin-top: -2px">
-                <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
-            </span>
+            <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
         % endif
 
-        <label class="badge" style="margin-top:-5px;background-color: #333333;">Layout:
-            <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-                <option value="/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}>
-                    Poster
-                </option>
-                <option value="/setHomeLayout/?layout=small" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'small']}>
-                    Small Poster
-                </option>
-                <option value="/setHomeLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'banner']}>
-                    Banner
-                </option>
-                <option value="/setHomeLayout/?layout=simple" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'simple']}>
-                    Simple
-                </option>
-            </select>
-        </label>
-
         % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
-            <label class="badge" style="margin-top:-5px;background-color: #333333;">Sort By:
+            <span class="badge" style="background-color: #333333;">Sort By:
                 <select id="postersort" class="form-control form-control-inline input-sm">
                     <option value="name"
                             data-sort="/setPosterSortBy/?sort=name" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTBY == 'name']}>
@@ -59,8 +39,9 @@
                         Progress
                     </option>
                 </select>
-            </label>
-            <label class="badge" style="margin-top:-5px;background-color: #333333;">Sort Order:
+            </span>
+
+            <span class="badge" style="background-color: #333333;">Sort Order:
                 <select id="postersortdirection" class="form-control form-control-inline input-sm">
                     <option value="true"
                             data-sort="/setPosterSortDir/?direction=1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTDIR == 1]}>
@@ -71,16 +52,36 @@
                         Desc
                     </option>
                 </select>
-            </label>
+            </span>
         % endif
 
-        % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-            <span class="pull-right" style="margin-top: -2px">
+        <span class="badge" style="background-color: #333333;">Layout:
+            <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
+                <option value="/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}>
+                    Poster
+                </option>
+                <option value="/setHomeLayout/?layout=small" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'small']}>
+                    Small Poster
+                </option>
+                <option value="/setHomeLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'banner']}>
+                    Banner
+                </option>
+                <option value="/setHomeLayout/?layout=simple" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'simple']}>
+                    Simple
+                </option>
+            </select>
+        </span>
+    </div>
+
+    % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
+        <div class="pull-right">
+            <span>
                 <input class="form-control form-control-inline input-sm input200" type="search" data-column="2" placeholder="Search Show Name">
                 <button type="button" class="resetsorting btn btn-inline">Reset Search</button>
             </span>
-        % endif
-    </div>
+        </div>
+    % endif
+
     % for curShowlist in showlists:
         <% curListType = curShowlist[0] %>
         <% myShowList = list(curShowlist[1]) %>
@@ -229,7 +230,8 @@
                 </div>
             </div>
         % else:
-            <table id="showListTable${curListType}" class="tablesorter" cellspacing="1" border="0" cellpadding="0">
+            <br><br>
+            <table id="showListTable${curListType}" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
                 <thead>
                     <tr>
                         <th class="nowrap">Next Ep</th>
