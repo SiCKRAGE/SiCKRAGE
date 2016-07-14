@@ -2130,7 +2130,7 @@ jQuery(document).ready(function ($) {
                         $('.dirCheck').not(this).prop('checked', this.checked);
                     });
 
-                    $('#submitShowDirs').click(function () {
+                    $('#submitShowDirs').on('click', function () {
                         var dirArr = [];
                         $('.dirCheck').each(function () {
                             if ($(this).prop('checked')) {
@@ -2153,7 +2153,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     var lastTxt = '';
-                    $('#rootDirText').change(function () {
+                    $('#rootDirText').on('change', function () {
                         if (lastTxt === $('#rootDirText').val()) {
                             return false;
                         } else {
@@ -2166,13 +2166,16 @@ jQuery(document).ready(function ($) {
                         SICKRAGE.home.add_existing_shows.loadContent();
                     });
 
-                    $('#rootDirStaticList').on('click', '.dir_check', SICKRAGE.home.add_existing_shows.loadContent());
+                    $('#rootDirStaticList').on('click', '.dir_check', SICKRAGE.home.add_existing_shows.loadContent);
 
                     $('#tableDiv').on('click', '.showManage', function (event) {
                         event.preventDefault();
                         $("#tabs").tabs('option', 'active', 0);
                         $('html,body').animate({scrollTop: 0}, 1000);
                     });
+
+                    $('#rootDirs option').attr('selected', 'selected').parent().focus();
+                    $('#rootDirs option').click();
                 },
 
                 loadContent: function () {
@@ -2361,7 +2364,7 @@ jQuery(document).ready(function ($) {
             },
 
             test_renaming: function () {
-                $('.seriesCheck').click(function () {
+                $('.seriesCheck').on('click', function () {
                     var serCheck = this;
 
                     $('.seasonCheck:visible').each(function () {
@@ -2386,7 +2389,7 @@ jQuery(document).ready(function ($) {
                     });
                 });
 
-                $('input[type=submit]').click(function () {
+                $('input[type=submit]').on('click', function () {
                     var epArr = [];
 
                     $('.epCheck').each(function () {
@@ -2439,7 +2442,6 @@ jQuery(document).ready(function ($) {
                         stepsOrientation: "vertical",
                         onStepChanging: function (event, currentIndex, newIndex) {
                             var show_name;
-
                             if (currentIndex > newIndex) {
                                 return true;
                             }
@@ -2447,6 +2449,7 @@ jQuery(document).ready(function ($) {
                             SICKRAGE.home.add_show_options();
                             SICKRAGE.root_dirs.init();
                             SICKRAGE.quality_chooser.init();
+
 
                             // if they've picked a radio button then use that
                             if ($('input:radio[name=whichSeries]:checked').length) {
@@ -2474,18 +2477,23 @@ jQuery(document).ready(function ($) {
                         $("#addShowForm").steps('getStep', '1');
                     }
 
-                    $('#searchName').click(function () {
+                    $('#searchName').on('click', function () {
                         $('#searchName').prop('disabled', true);
                         SICKRAGE.home.new_show.searchIndexers();
                         $('#searchName').prop('disabled', false);
                     });
 
-                    $('#skipShowButton').click(function () {
+                    $('#skipShowButton').on('click', function () {
                         $('#skipShow').val('1');
                         $('#addShowForm').submit();
                     });
 
                     $('#nameToSearch').focus();
+
+                    $('#indexerLang').bfhlanguages({
+                        language: SICKRAGE.getMeta('sickrage.DEFAULT_LANGUAGE'),
+                        available: SICKRAGE.getMeta('sickrage.LANGUAGES')
+                    });
                 },
 
                 searchIndexers: function () {
@@ -2556,7 +2564,7 @@ jQuery(document).ready(function ($) {
             },
 
             add_show_options: function () {
-                $('#saveDefaultsButton').click(function () {
+                $('#saveDefaultsButton').on('click', function () {
                     var anyQualArray = [];
                     var bestQualArray = [];
                     $('#anyQualities option:selected').each(function (i, d) {
@@ -2687,7 +2695,7 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $(".enabler").click(function () {
+                $(".enabler").on('click', function () {
                     if ($(this).prop('checked')) {
                         $('#content_' + $(this).attr('id')).fadeIn("fast", "linear");
                     } else {
@@ -2695,7 +2703,7 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $(".viewIf").click(function () {
+                $(".viewIf").on('click', function () {
                     if ($(this).prop('checked')) {
                         $('.hide_if_' + $(this).attr('id')).css('display', 'none');
                         $('.show_if_' + $(this).attr('id')).fadeIn("fast", "linear");
@@ -2705,7 +2713,7 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $(".datePresets").click(function () {
+                $(".datePresets").on('click', function () {
                     var def = $('#date_presets').val();
                     if ($(this).prop('checked') && '%x' === def) {
                         def = '%a, %b %d, %Y';
@@ -2728,11 +2736,11 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $('#api_key').click(function () {
+                $('#api_key').on('click', function () {
                     $('#api_key').select();
                 });
 
-                $("#generate_new_apikey").click(function () {
+                $("#generate_new_apikey").on('click', function () {
                     $.get('/config/general/generateApiKey',
                         function (data) {
                             if (data.error !== undefined) {
@@ -2743,11 +2751,11 @@ jQuery(document).ready(function ($) {
                         });
                 });
 
-                $('#branchCheckout').click(function () {
+                $('#branchCheckout').on('click', function () {
                     window.location.href = '/home/branchCheckout?branch=' + $("#branchVersion").val();
                 });
 
-                $('#google_link').click(function () {
+                $('#google_link').on('click', function () {
                     if (localStorage.getItem('google_token_type') === null || localStorage.getItem('google_access_token') === null) {
                         SICKRAGE.google.login();
                     } else {

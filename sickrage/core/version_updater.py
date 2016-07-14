@@ -663,7 +663,7 @@ class PipUpdateManager(UpdateManager):
 
     def _check_for_new_version(self):
         import xmlrpclib
-        pypi = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+        pypi = xmlrpclib.ServerProxy('https://pypi.python.org/pypi')
 
         import pip
         for dist in pip.get_installed_distributions():

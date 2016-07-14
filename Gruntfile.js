@@ -151,9 +151,6 @@ module.exports = function (grunt) {
             }
         },
         uglify: {
-            options: {
-                mangle: false
-            },
             bower: {
                 files: {
                     'sickrage/core/webserver/gui/default/js/bower.min.js': ['dist/bower.js']
