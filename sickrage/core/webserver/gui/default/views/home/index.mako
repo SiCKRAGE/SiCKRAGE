@@ -402,7 +402,7 @@
 
                             <td align="center">
                                 <span style="display: none;">${download_stat}</span>
-                                <div class="progressbar hidden-print" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}" data-progress-text="${download_stat}" data-progress-tip="${download_stat_tip}"></div>
+                                <div class="progressbar hidden-print" style="position:relative" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}" data-progress-text="${download_stat}" data-progress-tip="${download_stat_tip}"></div>
                                 ## <span class="visible-print-inline">${download_stat}</span>
                             </td>
 
