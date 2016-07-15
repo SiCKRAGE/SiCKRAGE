@@ -3,7 +3,6 @@
     import sickrage
 %>
 <%block name="content">
-
     <div id="newShowPortal">
         <div id="ui-components">
             <ul>

@@ -235,7 +235,7 @@
                             <li><a href="/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
                             <li><a href="/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                             <li><a href="/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
-                            <li><a href="http://gofund.me/sickrage" rel="noreferrer"
+                            <li><a href="https://www.everbutton.com/pay/7895" rel="noreferrer"
                                    onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
                                     class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                             <li role="separator" class="divider"></li>
@@ -273,7 +273,7 @@
 
     % if submenu:
         <div id="SubMenu" class="hidden-print">
-            <span class="btn-group btn-inline">
+            <span class="panel panel-default btn-group btn-inline">
             <% first = True %>
                 % for menuItem in submenu:
                     % if 'requires' not in menuItem or menuItem['requires']:

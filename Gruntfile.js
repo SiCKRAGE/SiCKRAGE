@@ -5,11 +5,11 @@ module.exports = function (grunt) {
         clean: {
             dist: 'dist',
             bower_components: 'bower_components',
-            fonts: 'sickrage/core/webserver/gui/default/fonts/',
-            images: [
-                'sickrage/core/webserver/gui/default/images/ui/',
-                'sickrage/core/webserver/gui/default/images/tablesorter/'
-            ],
+//            fonts: 'sickrage/core/webserver/gui/default/fonts/',
+//            images: [
+//                'sickrage/core/webserver/gui/default/images/ui/',
+//                'sickrage/core/webserver/gui/default/images/tablesorter/'
+//            ],
             sass: [
                 '.sass-cache',
                 'sickrage/core/webserver/gui/default/scss/'

@@ -14,31 +14,34 @@
 <%block name="content">
     <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
 
-    <div class="h2footer pull-right"><b>Limit:</b>
-        <select name="history_limit" id="history_limit" class="form-control form-control-inline input-sm">
-            <option value="10" ${('', 'selected="selected"')[limit == 10]}>10</option>
-            <option value="25" ${('', 'selected="selected"')[limit == 25]}>25</option>
-            <option value="50" ${('', 'selected="selected"')[limit == 50]}>50</option>
-            <option value="100" ${('', 'selected="selected"')[limit == 100]}>100</option>
-            <option value="250" ${('', 'selected="selected"')[limit == 250]}>250</option>
-            <option value="500" ${('', 'selected="selected"')[limit == 500]}>500</option>
-            <option value="750" ${('', 'selected="selected"')[limit == 750]}>750</option>
-            <option value="1000" ${('', 'selected="selected"')[limit == 1000]}>1000</option>
-            <option value="0"   ${('', 'selected="selected"')[limit == 0  ]}>All</option>
-        </select>
+    <div class="h2footer pull-right">
+        <span class="badge" style="background-color: #333333;">Limit:
+            <select name="history_limit" id="history_limit" class="form-control form-control-inline input-sm">
+                <option value="10" ${('', 'selected="selected"')[limit == 10]}>10</option>
+                <option value="25" ${('', 'selected="selected"')[limit == 25]}>25</option>
+                <option value="50" ${('', 'selected="selected"')[limit == 50]}>50</option>
+                <option value="100" ${('', 'selected="selected"')[limit == 100]}>100</option>
+                <option value="250" ${('', 'selected="selected"')[limit == 250]}>250</option>
+                <option value="500" ${('', 'selected="selected"')[limit == 500]}>500</option>
+                <option value="750" ${('', 'selected="selected"')[limit == 750]}>750</option>
+                <option value="1000" ${('', 'selected="selected"')[limit == 1000]}>1000</option>
+                <option value="0"   ${('', 'selected="selected"')[limit == 0  ]}>All</option>
+            </select>
+        </span>
 
-    <span> Layout:
-        <select name="HistoryLayout" class="form-control form-control-inline input-sm"
-                onchange="location = this.options[this.selectedIndex].value;">
-            <option value="/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
-                Compact
-            </option>
-            <option value="/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
-                Detailed
-            </option>
-        </select>
-    </span>
+        <span class="badge" style="background-color: #333333;"> Layout:
+            <select name="HistoryLayout" class="form-control form-control-inline input-sm"
+                    onchange="location = this.options[this.selectedIndex].value;">
+                <option value="/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
+                    Compact
+                </option>
+                <option value="/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
+                    Detailed
+                </option>
+            </select>
+        </span>
     </div>
+
     <br>
 
     % if sickrage.srCore.srConfig.HISTORY_LAYOUT == "detailed":
