@@ -67,7 +67,7 @@ class ShazbatCache(tv_cache.TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        rss_url = self.provider.urls['base_url'] + 'rss/recent?passkey=' + self.provider.passkey + '&fname=true'
+        rss_url = self.provider.urls['base_url'] + '/rss/recent?passkey=' + self.provider.passkey + '&fname=true'
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)

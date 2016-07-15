@@ -1064,6 +1064,7 @@ class NewznabProvider(NZBProvider):
     @classmethod
     def getDefaultProviders(cls):
         return [
+            cls('SickBeard', 'lolo.sickbeard.com', None, '5030,5040', 'eponly', False, False, False, True),
             cls('NZB.Cat', 'nzb.cat', None, '5030,5040,5010', 'eponly', True, True, True, True),
             cls('NZBGeek', 'api.nzbgeek.info', None, '5030,5040', 'eponly', False, False, False, True),
             cls('NZBs.org', 'nzbs.org', None, '5030,5040', 'eponly', False, False, False, True),
@@ -1078,12 +1079,12 @@ class TorrentRssCache(TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.url)
+        sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['base_url'])
 
         if self.provider.cookies:
             self.provider.headers.update({'Cookie': self.provider.cookies})
 
-        return self.getRSSFeed(self.provider.url)
+        return self.getRSSFeed(self.provider.urls['base_url'])
 
 
 class NewznabCache(TVCache):
@@ -1105,7 +1106,7 @@ class NewznabCache(TVCache):
         if self.provider.key:
             params['apikey'] = self.provider.key
 
-        rss_url = self.provider.url + 'api?' + urllib.urlencode(params)
+        rss_url = self.provider.urls['base_url'] + '/api?' + urllib.urlencode(params)
 
         while (datetime.datetime.now() - self.last_search).seconds < 5:
             time.sleep(1)

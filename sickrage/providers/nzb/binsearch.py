@@ -89,7 +89,7 @@ class BinSearchCache(tv_cache.TVCache):
             cl = []
             for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries',
                           'alt.binaries.teevee']:
-                url = self.provider.url + 'rss.php?'
+                url = self.provider.urls['base_url'] + '/rss.php?'
                 urlArgs = {'max': 1000, 'g': group}
 
                 url += urllib.urlencode(urlArgs)

@@ -122,7 +122,7 @@ class TokyoToshokanCache(tv_cache.TVCache):
             "filter": '1',
         }
 
-        url = self.provider.url + 'rss.php?' + urllib.urlencode(params)
+        url = self.provider.urls['base_url'] + '/rss.php?' + urllib.urlencode(params)
 
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % url)
 

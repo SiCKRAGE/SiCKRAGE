@@ -107,6 +107,6 @@ class animenzbCache(tv_cache.TVCache):
             "max": "100".encode('utf-8')
         }
 
-        rss_url = self.provider.url + 'rss?' + urllib.urlencode(params)
+        rss_url = self.provider.urls['base_url'] + '/rss?' + urllib.urlencode(params)
 
         return self.getRSSFeed(rss_url)
