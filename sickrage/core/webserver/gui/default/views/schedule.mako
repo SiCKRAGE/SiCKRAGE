@@ -22,7 +22,7 @@
 % if layout == 'list':
     <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
 % else:
-    <span>Sort By:
+    <span class="badge" style="background-color: #333333;">Sort By:
         <select name="sort" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
             <option value="/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'date']} >
                 Date
@@ -36,9 +36,8 @@
         </select>
     </span>
 % endif
-    &nbsp;
 
-    <span>View Paused:
+    <span class="badge" style="background-color: #333333;">View Paused:
         <select name="viewpaused" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
             <option value="/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                 Hidden
@@ -48,9 +47,8 @@
             </option>
         </select>
     </span>
-    &nbsp;
 
-    <span>Layout:
+    <span class="badge" style="background-color: #333333;">Layout:
         <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
             <option value="/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'poster']} >
                 Poster

@@ -307,9 +307,9 @@
     % endif
 
 <body data-controller="${controller}" data-action="${action}">
-<div style="padding-top: inherit" id="content">
-        <%block name="content" />
-</div>
+    <div style="padding-top: inherit;" id="content">
+            <%block name="content" />
+    </div>
 </body>
 
     % if current_user:
