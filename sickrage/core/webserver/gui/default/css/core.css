@@ -62,6 +62,10 @@
     font-size: 1em;
 }
 
+.ui-widget.ui-widget-content {
+	border: none;
+}
+
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {

@@ -42,8 +42,7 @@ module.exports = function (grunt) {
                     ],
                     'jquery-ui': [
                         'jquery-ui.min.js',
-                        'themes/dot-luv/jquery-ui.min.css',
-                        'themes/dot-luv/theme.css'
+                        'themes/base/jquery-ui.min.css'
                     ],
                     'bootstrap-formhelpers': [
                         'dist/js/bootstrap-formhelpers.min.js',
