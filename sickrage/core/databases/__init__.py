@@ -393,8 +393,6 @@ class SchemaUpgrade(Connection):
                         sickrage.srCore.srLogger.debug("Database upgrade required: {}".format(name))
                         instance.execute()
                         sickrage.srCore.srLogger.debug("{} upgrade completed".format(name))
-                    else:
-                        sickrage.srCore.srLogger.debug("{} upgrade not required".format(name))
 
                     return True
                 except sqlite3.DatabaseError:
