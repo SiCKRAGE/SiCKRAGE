@@ -594,7 +594,7 @@ class QueueItemUpdate(ShowQueueItem):
             self.show.saveToDB()
         except Exception as e:
             sickrage.srCore.srLogger.error("Error saving show info to the database: {}".format(e.message))
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            return
 
         # get episode list from DB
         DBEpList = self.show.loadEpisodesFromDB() if not self.force else {}

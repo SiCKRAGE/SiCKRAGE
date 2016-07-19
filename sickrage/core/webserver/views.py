@@ -1168,7 +1168,7 @@ class Home(WebRoot):
         try:
             showLoc = (showObj.location, True)
         except ShowDirectoryNotFoundException:
-            showLoc = (showObj.location, False)
+            showLoc = ("", False)
 
         show_message = ''
 

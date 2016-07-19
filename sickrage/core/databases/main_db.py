@@ -39,7 +39,6 @@ class MainDB(Connection):
     class SanityCheck(Connection):
         def __init__(self):
             super(MainDB.SanityCheck, self).__init__()
-            self.fix_missing_tables()
             self.fix_missing_table_indexes()
             self.fix_duplicate_shows()
             self.fix_duplicate_episodes()
@@ -334,38 +333,12 @@ class MainDB(Connection):
         def fix_show_nfo_lang(self):
             self.action("UPDATE tv_shows SET lang = '' WHERE lang = 0 OR lang = '0'")
 
-        def fix_missing_tables(self):
-            if self.checkDBVersion() == MAX_DB_VERSION:
-                if not self.hasTable('tmdb_info'):
-                    sickrage.srCore.srLogger.info("Missing tmdb_info table detected!, fixing...")
-                    MainDB.AddTmdbInfo().execute()
-
     class InitialSchema(SchemaUpgrade):
-
         def __init__(self, filename='sickrage.db', suffix=None, row_type=None):
             super(MainDB.InitialSchema, self).__init__(filename, suffix, row_type)
 
         def test(self):
-            if self.hasTable("db_version"):
-                cur_db_version = self.checkDBVersion()
-
-                if cur_db_version < MIN_DB_VERSION:
-                    sickrage.srCore.srLogger.log_error_and_exit("Your database version (" +
-                                                                str(
-                                                                    cur_db_version) + ") is too old to migrate from what this version of SiCKRAGE supports (" +
-                                                                str(
-                                                                    MIN_DB_VERSION) + ").\n" + "Remove database file to begin fresh."
-                                                                )
-
-                if cur_db_version > MAX_DB_VERSION:
-                    sickrage.srCore.srLogger.log_error_and_exit("Your database version (" +
-                                                                str(
-                                                                    cur_db_version) + ") has been incremented past what this version of SiCKRAGE supports (" +
-                                                                str(MAX_DB_VERSION) + ").\n" +
-                                                                "If you have used other forks of SiCKRAGE, your database may be unusable due to their modifications."
-                                                                )
-
-                return True
+            return self.hasTable("tv_shows") and self.hasTable("db_version") and self.checkDBVersion() >= MIN_DB_VERSION and self.checkDBVersion() <= MAX_DB_VERSION
 
         def execute(self, **kwargs):
             if not self.hasTable("tv_shows") and not self.hasTable("db_version"):
@@ -390,8 +363,27 @@ class MainDB(Connection):
                     "CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);",
                     "INSERT INTO db_version(db_version) VALUES (43);"
                 ]
+
                 for query in queries:
                     self.action(query)
+            else:
+                cur_db_version = self.checkDBVersion()
+
+                if cur_db_version < MIN_DB_VERSION:
+                    sickrage.srCore.srLogger.log_error_and_exit("Your database version (" +
+                                                                str(
+                                                                    cur_db_version) + ") is too old to migrate from what this version of SiCKRAGE supports (" +
+                                                                str(
+                                                                    MIN_DB_VERSION) + ").\n" + "Remove database file to begin fresh."
+                                                                )
+
+                if cur_db_version > MAX_DB_VERSION:
+                    sickrage.srCore.srLogger.log_error_and_exit("Your database version (" +
+                                                                str(
+                                                                    cur_db_version) + ") has been incremented past what this version of SiCKRAGE supports (" +
+                                                                str(MAX_DB_VERSION) + ").\n" +
+                                                                "If you have used other forks of SiCKRAGE, your database may be unusable due to their modifications."
+                                                                )
 
     class AddSizeAndSceneNameFields(InitialSchema):
         def test(self):

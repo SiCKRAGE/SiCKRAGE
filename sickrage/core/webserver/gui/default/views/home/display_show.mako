@@ -411,8 +411,8 @@
                     dfltEpNumbering = True
 
                 epLoc = epResult["location"]
-                if epLoc and show.location and epLoc.lower().startswith(show.location.lower()):
-                    epLoc = epLoc[len(show.location)+1:]
+                if epLoc and showLoc[1] and epLoc.lower().startswith(showLoc[0].lower()):
+                    epLoc = epLoc[len(showLoc[1])+1:]
             %>
             % if int(epResult["season"]) != curSeason:
                 % if curSeason == -1:

@@ -415,12 +415,12 @@ class TVShow(object):
         if any([sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS, os.path.isdir(self._location)]):
             return self._location
 
-        raise ShowDirectoryNotFoundException("Invalid folder for the show!")
+        raise ShowDirectoryNotFoundException("Invalid folder for the show: {}".format(self._location))
 
     @location.setter
     def location(self, new_location):
         if not any([sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR, os.path.isdir(new_location)]):
-            raise ShowDirectoryNotFoundException("Invalid folder for the show!")
+            raise ShowDirectoryNotFoundException("Invalid folder for the show: {}".format(new_location))
 
         sickrage.srCore.srLogger.debug("Show location set to " + new_location)
         self.dirty = True

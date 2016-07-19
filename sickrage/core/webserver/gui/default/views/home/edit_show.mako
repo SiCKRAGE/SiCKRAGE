@@ -4,6 +4,7 @@
     from sickrage.indexers import adba, srIndexerApi
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings, Quality
+    from sickrage.core.exceptions import ShowDirectoryNotFoundException
 %>
 
 <%block name="metas">
@@ -34,9 +35,15 @@
                                         <span class="component-title">Show Location</span>
                                 <span class="component-desc">
                                     <input type="hidden" name="show" value="${show.indexerid}"/>
-                                    <input type="text" name="location" id="location" value="${show.location}"
+                                    <%
+                                        try:
+                                            showLoc = show.location
+                                        except ShowDirectoryNotFoundException:
+                                            showLoc = ""
+                                    %>
+                                    <input type="text" name="location" id="location" value="${showLoc}"
                                            class="form-control form-control-inline input-sm input350"
-                                           autocapitalize="off"/>
+                                           autocapitalize="off" required=""/>
                                 </span>
                                     </label>
                                 </div>
