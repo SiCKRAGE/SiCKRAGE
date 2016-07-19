@@ -235,7 +235,7 @@
                             <li><a href="/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
                             <li><a href="/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                             <li><a href="/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
-                            <li><a href="https://www.everbutton.com/pay/7895" rel="noreferrer"
+                            <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
                                    onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
                                     class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                             <li role="separator" class="divider"></li>
