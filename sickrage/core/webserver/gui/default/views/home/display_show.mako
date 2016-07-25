@@ -412,7 +412,7 @@
 
                 epLoc = epResult["location"]
                 if epLoc and showLoc[1] and epLoc.lower().startswith(showLoc[0].lower()):
-                    epLoc = epLoc[len(showLoc[1])+1:]
+                    epLoc = epLoc[len(showLoc[0])+1:]
             %>
             % if int(epResult["season"]) != curSeason:
                 % if curSeason == -1:
