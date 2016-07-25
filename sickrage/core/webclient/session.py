@@ -96,8 +96,9 @@ class srSession(FuturesSession):
 
         # setup session caching
         if cache:
+            cache_file = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))
             cachecontrol.CacheControl(self,
-                                      cache=DBCache(os.path.join(tempfile.gettempdir(), 'cachecontrol.db')),
+                                      cache=DBCache(cache_file),
                                       heuristic=ExpiresAfter(days=7))
 
         # get result
