@@ -338,12 +338,11 @@ class MainDB(Connection):
             super(MainDB.InitialSchema, self).__init__(filename, suffix, row_type)
 
         def test(self):
-            return self.hasTable("tv_shows") and self.hasTable("db_version") and self.checkDBVersion() >= MIN_DB_VERSION and self.checkDBVersion() <= MAX_DB_VERSION
+            return self.hasTable("tv_shows") and self.checkDBVersion() >= MIN_DB_VERSION and self.checkDBVersion() <= MAX_DB_VERSION
 
         def execute(self, **kwargs):
-            if not self.hasTable("tv_shows") and not self.hasTable("db_version"):
+            if not self.hasTable("tv_shows"):
                 queries = [
-                    "CREATE TABLE db_version(db_version INTEGER);",
                     "CREATE TABLE history(action NUMERIC, date NUMERIC, showid NUMERIC, season NUMERIC, episode NUMERIC, quality NUMERIC, resource TEXT, provider TEXT, version NUMERIC DEFAULT -1);",
                     "CREATE TABLE imdb_info(indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC);",
                     "CREATE TABLE tmdb_info(indexer_id INTEGER PRIMARY KEY, tmdb_id TEXT, name TEXT, first_air_date NUMERIC, akas TEXT, episode_run_time NUMERIC, genres TEXT, origin_country TEXT, languages TEXT, production_companies TEXT, popularity TEXT, vote_count INTEGER, last_air_date NUMERIC);",
@@ -361,7 +360,7 @@ class MainDB(Connection):
                     "CREATE INDEX idx_sta_epi_sta_air ON tv_episodes(season, episode, status, airdate);",
                     "CREATE INDEX idx_status ON tv_episodes(status,season,episode,airdate);",
                     "CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);",
-                    "INSERT INTO db_version(db_version) VALUES (43);"
+                    "PRAGMA user_version = 43;"
                 ]
 
                 for query in queries:

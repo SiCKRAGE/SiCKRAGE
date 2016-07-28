@@ -6,6 +6,20 @@ from pip.download import PipSession
 from pip.req import parse_requirements
 from setuptools import setup, Command
 
+links = []
+requires = []
+
+for item in parse_requirements(
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt')),
+        session=PipSession()):
+    # we want to handle package names and also repo urls
+    if getattr(item, 'url', None):  # older pip has url
+        links.append(str(item.url))
+    elif getattr(item, 'link', None):  # newer pip has link
+        links.append(str(item.link))
+    elif item.req:
+        requires.append(str(item.req))
+
 # Get the version number
 with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
     version = f.read()
@@ -29,33 +43,28 @@ class CleanCommand(Command):
         shutil.rmtree(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage.egg-info')), ignore_errors=True)
 
 
-def requirements():
-    return [str(r.req) for r in parse_requirements(
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt')),
-        session=PipSession())]
-
-
 setup(
-    cmdclass={'clean': CleanCommand},
     name='sickrage',
     version=version,
     description='Automatic Video Library Manager for TV Shows',
     author='echel0n',
     author_email='echel0n@sickrage.ca',
+    license='GPLv3',
     url='https://git.sickrage.ca',
     keywords=['sickrage', 'sickragetv', 'tv', 'torrent', 'nzb', 'video', 'echel0n'],
-    packages=["sickrage"],
-    extras_require={"pip": ["pip"]},
-    tests_require=['pip'],
-    requires=['pip'],
-    install_requires=requirements(),
+    packages=['sickrage'],
+    install_requires=requires,
+    dependency_links=links,
     include_package_data=True,
     platforms='any',
     zip_safe=False,
     test_suite='tests',
+    cmdclass={
+        'clean': CleanCommand
+    },
     entry_points={
         "console_scripts": [
-            "sickrage=sickrage:main",
+            "sickrage=sickrage:main"
         ]
     }
 )

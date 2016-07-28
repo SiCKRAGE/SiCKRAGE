@@ -222,7 +222,10 @@ class Connection(object):
         """
         try:
             if self.hasTable('db_version'):
-                return self.select("SELECT db_version FROM db_version")[0]["db_version"]
+                db_version = self.select("SELECT db_version FROM db_version")[0]["db_version"]
+                self.action("PRAGMA user_version = {}".format(db_version))
+                self.action("DROP TABLE db_version")
+            return self.select("PRAGMA user_version")[0]["user_version"]
         except:
             return 0
 
@@ -368,7 +371,7 @@ class Connection(object):
         if not version:
             version = self.checkDBVersion() + 1
 
-        self.action("UPDATE db_version SET db_version = {}".format(version))
+        self.action("PRAGMA user_version = {}".format(version))
 
 
 class SchemaUpgrade(Connection):
@@ -382,17 +385,18 @@ class SchemaUpgrade(Connection):
 
         def _processUpgrade(upgradeClass, version):
             name = prettyName(upgradeClass.__name__)
+            filename = os.path.basename(self.filename)
 
             while (True):
-                sickrage.srCore.srLogger.debug("Checking {} database structure".format(name))
+                sickrage.srCore.srLogger.debug("{}:{} database structure being checked".format(filename, name))
 
                 try:
                     instance = upgradeClass()
 
                     if not instance.test():
-                        sickrage.srCore.srLogger.debug("Database upgrade required: {}".format(name))
+                        sickrage.srCore.srLogger.debug("{}:{} database upgrade required".format(filename, name))
                         instance.execute()
-                        sickrage.srCore.srLogger.debug("{} upgrade completed".format(name))
+                        sickrage.srCore.srLogger.debug("{}:{} database upgrade completed".format(filename, name))
 
                     return True
                 except sqlite3.DatabaseError:

@@ -33,7 +33,7 @@ class FailedDB(Connection):
             super(FailedDB.InitialSchema, self).__init__(filename, suffix, row_type)
 
         def test(self):
-            return self.hasTable('db_version')
+            return self.checkDBVersion() >= 1
 
         def execute(self, **kwargs):
             queries = [
@@ -41,9 +41,9 @@ class FailedDB(Connection):
                 ('CREATE TABLE history (date NUMERIC, size NUMERIC, release TEXT, provider TEXT, '
                  'old_status NUMERIC DEFAULT 0, showid NUMERIC DEFAULT -1, season NUMERIC DEFAULT -1, '
                  'episode NUMERIC DEFAULT -1);',),
-                ('CREATE TABLE db_version (db_version INTEGER);',),
-                ('INSERT INTO db_version (db_version) VALUES (1);',),
+                ("PRAGMA user_version = 1;",),
             ]
+
             for query in queries:
                 if len(query) == 1:
                     self.action(query[0])

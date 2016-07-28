@@ -32,7 +32,7 @@ class CacheDB(Connection):
             super(CacheDB.InitialSchema, self).__init__(filename, suffix, row_type)
 
         def test(self):
-            return self.hasTable("db_version")
+            return self.checkDBVersion() >= 1
 
         def execute(self, **kwargs):
             queries = [
@@ -43,9 +43,9 @@ class CacheDB(Connection):
                 ("CREATE TABLE scene_names (indexer_id INTEGER, name TEXT);",),
                 ("CREATE TABLE network_timezones (network_name TEXT PRIMARY KEY, timezone TEXT);",),
                 ("CREATE TABLE scene_exceptions_refresh (list TEXT PRIMARY KEY, last_refreshed INTEGER);",),
-                ("CREATE TABLE db_version (db_version INTEGER);",),
-                ("INSERT INTO db_version(db_version) VALUES (1);",),
+                ("PRAGMA user_version = 1;",),
             ]
+
             for query in queries:
                 if len(query) == 1:
                     self.action(query[0])
