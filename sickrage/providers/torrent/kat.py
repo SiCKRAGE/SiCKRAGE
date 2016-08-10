@@ -1,4 +1,3 @@
-
 # Author: Mr_Orange <mr_orange@hotmail.it>
 # URL: http://github.com/SiCKRAGETV/SickRage/
 #
@@ -33,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class KATProvider(TorrentProvider):
     def __init__(self):
-        super(KATProvider, self).__init__("KickAssTorrents", 'kickass.unblocked.la')
+        super(KATProvider, self).__init__("KickAssTorrents", 'kat.am')
 
         self.supportsBacklog = True
 
@@ -74,7 +73,7 @@ class KATProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
-                url_fmt_string = 'search' if mode != 'RSS' else search_string
+                url_fmt_string = 'usearch' if mode != 'RSS' else search_string
                 try:
                     searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
                     sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
