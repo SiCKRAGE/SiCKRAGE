@@ -74,7 +74,7 @@ class KATProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
-                url_fmt_string = 'usearch' if mode != 'RSS' else search_string
+                url_fmt_string = 'search' if mode != 'RSS' else search_string
                 try:
                     searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
                     sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
