@@ -46,16 +46,17 @@ class srQueue(PriorityQueue):
         self.min_priority = 0
         self.amActive = False
         self.stop = threading.Event()
+        self.threads  = []
 
     @property
     def name(self):
         return self.queue_name
 
+    def get(self, *args, **kwargs):
+        _, item = PriorityQueue.get(self, *args, **kwargs)
+        return item
 
-    def get(self, block=True, timeout=None):
-        return PriorityQueue.get(self, block, timeout)
-
-    def put(self, item, block=True, timeout=None):
+    def put(self, item, *args, **kwargs):
         """
         Adds an item to this queue
 
@@ -64,7 +65,7 @@ class srQueue(PriorityQueue):
         """
         item.name = "{}-{}".format(self.name, item.name)
         item.added = datetime.now()
-        PriorityQueue.put(self, (item.priority, item), block, timeout)
+        PriorityQueue.put(self, (item.priority, item), *args, **kwargs)
         return item
 
     def pause(self):
@@ -90,31 +91,26 @@ class srQueue(PriorityQueue):
         with self.lock:
             self.amActive = True
 
-            # if there's something in the queue then run it in a thread and take it out of the queue
-            while not self.empty():
-                if self.queue[0][0] < self.min_priority:
-                    return
-
-                # execute item in queue
-                with ThreadPoolExecutor(1) as executor:
-                    if self.stop.isSet():
-                        executor._threads.clear()
-                        thread._threads_queues.clear()
-                        executor.shutdown()
-                        return
-
-                    executor.submit(self.callback)
+            while not self.empty() and not self.stop.isSet():
+                if self.queue[0][0] >= self.min_priority:
+                    t = threading.Thread(name=self.name, target=self.callback)
+                    self.threads += [t]
+                    t.start()
 
             self.amActive = False
 
     def callback(self):
-        item = self.get()[1]
-        threading.currentThread().setName(self.name)
+        item = self.get()
         item.run()
         item.finish()
 
     def shutdown(self):
         self.stop.set()
+        for t in self.threads:
+            try:
+                t.join(10)
+            except Exception:
+                continue
 
 
 class QueueItem(object):
