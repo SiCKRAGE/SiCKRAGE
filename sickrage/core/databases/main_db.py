@@ -245,7 +245,7 @@ class MainDB(Connection):
 
             for cur_unaired in sqlResults:
                 sickrage.srCore.srLogger.info(
-                    "Fixing episode status for episode_id: {} to UNAIRED".format(cur_unaired["episode_id"]))
+                    "Setting episode status for episode_id: {} to UNAIRED".format(cur_unaired["episode_id"]))
                 self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
                             [UNAIRED, cur_unaired["episode_id"]])
 
@@ -255,7 +255,7 @@ class MainDB(Connection):
 
             for cur_unaired in sqlResults:
                 sickrage.srCore.srLogger.info(
-                    "Fixing episode status for episode_id: {} to WANTED".format(cur_unaired["episode_id"]))
+                    "Setting episode status for episode_id: {} to WANTED".format(cur_unaired["episode_id"]))
                 self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
                             [WANTED, cur_unaired["episode_id"]])
 

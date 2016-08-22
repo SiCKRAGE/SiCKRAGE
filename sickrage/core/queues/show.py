@@ -568,7 +568,7 @@ class QueueItemUpdate(ShowQueueItem):
             self.show.loadFromIndexer(cache=not self.force)
         except indexer_error as e:
             sickrage.srCore.srLogger.warning(
-                "Unable to contact " + srIndexerApi(self.show.indexer).name + ", aborting: {}".format(e))
+                "Unable to contact " + srIndexerApi(self.show.indexer).name + ", aborting: {}".format(e.message))
             return
         except indexer_attributenotfound as e:
             sickrage.srCore.srLogger.error(
