@@ -245,7 +245,7 @@ class MainDB(Connection):
 
             for cur_unaired in sqlResults:
                 sickrage.srCore.srLogger.info(
-                    "Setting episode status for episode_id: {} to UNAIRED".format(cur_unaired["episode_id"]))
+                    "Setting episode status for episode_id: {} to: UNAIRED".format(cur_unaired["episode_id"]))
                 self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
                             [UNAIRED, cur_unaired["episode_id"]])
 
@@ -253,11 +253,15 @@ class MainDB(Connection):
                 "SELECT * FROM tv_episodes WHERE status in (?,?) AND season > 0 AND (airdate <= ? AND airdate > 1)",
                 [UNAIRED, WANTED, curDate])
 
-            for cur_unaired in sqlResults:
+            for sqlEp in sqlResults:
+                default_ep_status = self.select(
+                    "SELECT default_ep_status FROM tv_shows WHERE show_id = ?", [sqlEp["showid"]])
+
                 sickrage.srCore.srLogger.info(
-                    "Setting episode status for episode_id: {} to WANTED".format(cur_unaired["episode_id"]))
+                    "Setting episode status for episode_id: {} to: {}".format(sqlEp["episode_id"], default_ep_status))
+
                 self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
-                            [WANTED, cur_unaired["episode_id"]])
+                            [default_ep_status, sqlEp["episode_id"]])
 
         def fix_tvrage_show_statues(self):
             status_map = {
@@ -348,7 +352,8 @@ class MainDB(Connection):
             super(MainDB.InitialSchema, self).__init__(filename, suffix, row_type)
 
         def test(self):
-            return self.hasTable("tv_shows") and self.checkDBVersion() >= MIN_DB_VERSION and self.checkDBVersion() <= MAX_DB_VERSION
+            return self.hasTable(
+                "tv_shows") and self.checkDBVersion() >= MIN_DB_VERSION and self.checkDBVersion() <= MAX_DB_VERSION
 
         def execute(self, **kwargs):
             if not self.hasTable("tv_shows"):

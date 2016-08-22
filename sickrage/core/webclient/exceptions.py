@@ -41,12 +41,12 @@ def handle_exception(func):
 
             if sickrage.srCore.srConfig.SSL_VERIFY:
                 sickrage.srCore.srLogger.info(
-                    "SSL Error requesting url: '{}' Try disabling Cert Verification under advanced settings")
+                    "SSL Error requesting url: '{}' Try disabling Cert Verification under advanced settings").format(e.request.url)
 
             sickrage.srCore.srLogger.error("SSL Error: {}".format(e.message))
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            #sickrage.srCore.srLogger.debug(traceback.format_exc())
         except requests.exceptions.RequestException as e:
             sickrage.srCore.srLogger.error("Request failed: {}".format(e.message))
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            #sickrage.srCore.srLogger.debug(traceback.format_exc())
 
     return handle
