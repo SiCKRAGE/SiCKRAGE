@@ -1231,23 +1231,13 @@ class TVShow(object):
             sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Obtained info from TMDb ->" + str(self.tmdb_info))
 
     def nextEpisode(self):
-        sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Finding the episode which airs next")
-
         curDate = datetime.date.today().toordinal()
         if not self.nextaired or self.nextaired and curDate > self.nextaired:
-
             sqlResults = main_db.MainDB().select(
                 "SELECT airdate, season, episode FROM tv_episodes WHERE showid = ? AND airdate >= ? AND status IN (?,?) ORDER BY airdate ASC LIMIT 1",
                 [self.indexerid, datetime.date.today().toordinal(), UNAIRED, WANTED])
 
-            if sqlResults is None or len(sqlResults) == 0:
-                sickrage.srCore.srLogger.debug(
-                    str(self.indexerid) + ": No episode found... need to implement a show status")
-                self.nextaired = ""
-            else:
-                sickrage.srCore.srLogger.debug("%s: Found episode S%02dE%02d" % (
-                    self.indexerid, sqlResults[0]["season"] or 0, sqlResults[0]["episode"] or 0))
-                self.nextaired = sqlResults[0]['airdate']
+            self.nextaired = sqlResults[0]['airdate'] if sqlResults else ''
 
         return self.nextaired
 

@@ -237,17 +237,27 @@ class MainDB(Connection):
 
         def fix_unaired_episodes(self):
 
-            curDate = datetime.date.today()
+            curDate = datetime.date.today().toordinal()
 
             sqlResults = self.select(
                 "SELECT episode_id FROM tv_episodes WHERE (airdate > ? OR airdate = 1) AND status IN (?,?) AND season > 0",
-                [curDate.toordinal(), SKIPPED, WANTED])
+                [curDate, SKIPPED, WANTED])
 
             for cur_unaired in sqlResults:
                 sickrage.srCore.srLogger.info(
-                    "Fixing unaired episode status for episode_id: %s" % cur_unaired["episode_id"])
+                    "Fixing episode status for episode_id: {} to UNAIRED".format(cur_unaired["episode_id"]))
                 self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
                             [UNAIRED, cur_unaired["episode_id"]])
+
+            sqlResults = self.select(
+                "SELECT * FROM tv_episodes WHERE status in (?,?) AND season > 0 AND (airdate <= ? AND airdate > 1)",
+                [UNAIRED, WANTED, curDate])
+
+            for cur_unaired in sqlResults:
+                sickrage.srCore.srLogger.info(
+                    "Fixing episode status for episode_id: {} to WANTED".format(cur_unaired["episode_id"]))
+                self.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
+                            [WANTED, cur_unaired["episode_id"]])
 
         def fix_tvrage_show_statues(self):
             status_map = {
