@@ -1,6 +1,7 @@
 # Changelog
 
-- * 18bfbbc - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
+- * b731c9e - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
+- * b96c56b - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
 - * 22d9c40 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
 - * e5b69c8 - 2016-08-24: Remove TorrentProject and btDigg torrent providers. Added back torrage with new url. 
 - * aa02f47 - 2016-08-22: Corrected session exception handler code. MainDB fixes for unaired shows now uses default ep statuses. 

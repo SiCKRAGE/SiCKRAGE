@@ -255,7 +255,7 @@ class MainDB(Connection):
 
             for sqlEp in sqlResults:
                 default_ep_status = self.select(
-                    "SELECT default_ep_status FROM tv_shows WHERE show_id = ?", [sqlEp["showid"]])["default_ep_status"]
+                    "SELECT * FROM tv_shows WHERE indexer_id = ?", [sqlEp["showid"]])[0]['default_ep_status']
 
                 sickrage.srCore.srLogger.info(
                     "Setting episode status for episode_id: {} to: {}".format(sqlEp["episode_id"], default_ep_status))
