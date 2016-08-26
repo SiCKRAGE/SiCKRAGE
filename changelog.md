@@ -1,6 +1,7 @@
 # Changelog
 
-- * b731c9e - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
+- * 07d07ad - 2016-08-25: Core queues use APScheduler now to execute jobs 
+- * 9fa8f46 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
 - * b96c56b - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
 - * 22d9c40 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
 - * e5b69c8 - 2016-08-24: Remove TorrentProject and btDigg torrent providers. Added back torrage with new url. 

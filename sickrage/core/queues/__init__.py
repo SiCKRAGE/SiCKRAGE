@@ -93,25 +93,22 @@ class srQueue(PriorityQueue):
 
             while not self.empty() and not self.stop.isSet():
                 if self.queue[0][0] >= self.min_priority:
-                    t = threading.Thread(name=self.name, target=self.callback)
-                    self.threads += [t]
-                    t.start()
+                    item = self.get()
+                    sickrage.srCore.srScheduler.add_job(
+                        self.callback,
+                        args=[item],
+                        name=item.name,
+                        id=item.name
+                    )
 
             self.amActive = False
 
-    def callback(self):
-        item = self.get()
+    def callback(self, item):
         item.run()
         item.finish()
 
     def shutdown(self):
         self.stop.set()
-        for t in self.threads:
-            try:
-                t.join(10)
-            except Exception:
-                continue
-
 
 class QueueItem(object):
     def __init__(self, name, action_id=0):
