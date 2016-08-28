@@ -1,6 +1,7 @@
 # Changelog
 
-- * e4c896e - 2016-08-27: Fixed issues with NZB searches and params 
+- * bee1fc2 - 2016-08-28: Updated version to 8.0.11 
+- * e2793c2 - 2016-08-27: Fixed issues with NZB searches and params 
 - * 9809565 - 2016-08-27: Updated to version 8.0.9 
 - * dd2394b - 2016-08-27: Corrected fixing of unaired statuses on startup 
 - * 10acd0e - 2016-08-27: Version updated to 8.0.8 
