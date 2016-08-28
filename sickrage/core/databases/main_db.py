@@ -250,8 +250,8 @@ class MainDB(Connection):
                             [UNAIRED, cur_unaired["episode_id"]])
 
             sqlResults = self.select(
-                "SELECT * FROM tv_episodes WHERE status in (?,?) AND season > 0 AND (airdate <= ? AND airdate > 1)",
-                [UNAIRED, WANTED, curDate])
+                "SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? AND airdate > 1)",
+                [UNAIRED, curDate])
 
             for sqlEp in sqlResults:
                 default_ep_status = self.select(
