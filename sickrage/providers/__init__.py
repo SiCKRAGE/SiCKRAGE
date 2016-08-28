@@ -849,8 +849,8 @@ class NewznabProvider(NZBProvider):
             params['apikey'] = self.key
 
         try:
-            data = xmltodict.parse(
-                sickrage.srCore.srWebSession.get("{}api?{}".format(self.urls['base_url'], urllib.urlencode(params))))
+            resp = sickrage.srCore.srWebSession.get("{}api?{}".format(self.urls['base_url'], urllib.urlencode(params)))
+            data = xmltodict.parse(resp.content)
 
             for category in data["caps"]["categories"]["category"]:
                 if category.get('@name') == 'TV':
@@ -858,7 +858,7 @@ class NewznabProvider(NZBProvider):
                     categories += [{"id": x["@id"], "name": x["@name"]} for x in category["subcat"]]
 
             success = True
-        except Exception:
+        except Exception as e:
             sickrage.srCore.srLogger.debug("[%s] failed to list categories" % self.name)
             message = "[%s] failed to list categories" % self.name
 
