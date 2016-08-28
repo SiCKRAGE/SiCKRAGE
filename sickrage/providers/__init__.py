@@ -71,12 +71,10 @@ class GenericProvider(object):
         self.private = False
 
         self.btCacheURLS = [
-            #'http://torcache.net/torrent/{torrent_hash}.torrent',
             'http://torrentproject.se/torrent/{torrent_hash}.torrent',
             'http://thetorrent.org/torrent/{torrent_hash}.torrent',
             'http://btdig.com/torrent/{torrent_hash}.torrent',
-            'http://torrage.info/torrent/{torrent_hash}.torrent',
-            # 'http://itorrents.org/torrent/{torrent_hash}.torrent',
+            'http://torrage.info/torrent/{torrent_hash}.torrent'
         ]
 
     @property
@@ -117,15 +115,15 @@ class GenericProvider(object):
         result.provider = self
         return result
 
-    def make_url(self, result):
+    def make_url(self, url):
         urls = []
-        filename = ''
-        if result.url.startswith('magnet'):
+
+        if url.startswith('magnet'):
             try:
-                torrent_hash = re.findall(r'urn:btih:([\w]{32,40})', result.url)[0].upper()
+                torrent_hash = re.findall(r'urn:btih:([\w]{32,40})', url)[0].upper()
 
                 try:
-                    torrent_name = re.findall('dn=([^&]+)', result.url)[0]
+                    torrent_name = re.findall('dn=([^&]+)', url)[0]
                 except Exception:
                     torrent_name = 'NO_DOWNLOAD_NAME'
 
@@ -133,18 +131,21 @@ class GenericProvider(object):
                     torrent_hash = b16encode(b32decode(torrent_hash)).upper()
 
                 if not torrent_hash:
-                    sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + result.url)
-                    return urls, filename
+                    sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
+                    return urls
 
-                urls = random.shuffle(
-                    [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS])
+                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS]
             except Exception:
-                sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + result.url)
-                return urls, filename
+                sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + url)
+                return urls
         else:
-            urls = [result.url]
+            urls = [url]
 
-        return urls, filename
+        random.shuffle(urls)
+        return urls
+
+    def make_filename(self, name):
+        return ""
 
     def downloadResult(self, result):
         """
@@ -155,7 +156,8 @@ class GenericProvider(object):
         if not self._doLogin:
             return False
 
-        urls, filename = self.make_url(result)
+        urls = self.make_url(result.url)
+        filename = self.make_filename(result.name)
 
         for url in urls:
             if 'NO_DOWNLOAD_NAME' in url:
@@ -408,10 +410,9 @@ class GenericProvider(object):
                     break
 
             if not wantEp:
-                sickrage.srCore.srLogger.info("RESULT:[{}] QUALITY:[{}] IGNORED!".format(title, Quality.qualityStrings[quality]))
+                sickrage.srCore.srLogger.info(
+                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(title, Quality.qualityStrings[quality]))
                 continue
-
-            sickrage.srCore.srLogger.debug("FOUND RESULT:[{}] URL:[{}]".format(title, url))
 
             # make a result object
             epObj = []
@@ -427,6 +428,15 @@ class GenericProvider(object):
             result.version = version
             result.content = None
             result.size = self._get_size(item)
+
+            if result.size > 0 and float(result.size / 1000000) > Quality.qualitySizes[quality]:
+                sickrage.srCore.srLogger.info(
+                    "RESULT:[{}] SIZE:[{}] IGNORED!".format(title, float(result.size / 1000000)))
+                continue
+
+            sickrage.srCore.srLogger.debug(
+                "FOUND RESULT:[{}] SIZE:[{}] QUALITY:[{}] URL:[{}]".format(title, float(result.size / 1000000),
+                                                                           Quality.qualityStrings[quality], url))
 
             if len(epObj) == 1:
                 epNum = epObj[0].episode
@@ -558,6 +568,24 @@ class TorrentProvider(GenericProvider):
         if not size or size < 1024 * 1024:
             size = -1
 
+        # If we still don't have a size then extract it from torrent file
+        if size == -1:
+            urls = self.make_url(item[1])
+            for url in urls:
+                try:
+                    resp = sickrage.srCore.srWebSession.get(url)
+                    torrent = bencode.bdecode(resp.content)
+
+                    total_length = 0
+                    for file in torrent['info']['files']:
+                        total_length += file['length']
+
+                    if total_length > 0:
+                        size = total_length
+                        break
+                except Exception:
+                    size = -1
+
         return size
 
     def _get_season_search_strings(self, ep_obj):
@@ -605,12 +633,12 @@ class TorrentProvider(GenericProvider):
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
 
-    def make_url(self, result):
-        urls, filename = super(TorrentProvider, self).make_url(result)
-        filename = os.path.join(sickrage.srCore.srConfig.TORRENT_DIR,
-                                sanitizeFileName(result.name) + '.' + self.type)
+    def make_url(self, url):
+        return super(TorrentProvider, self).make_url(url)
 
-        return urls, filename
+    def make_filename(self, name):
+        return os.path.join(sickrage.srCore.srConfig.TORRENT_DIR,
+                            '{}.{}'.format(sanitizeFileName(name), self.type))
 
     def findPropers(self, search_date=datetime.datetime.today()):
 
@@ -671,11 +699,12 @@ class NZBProvider(GenericProvider):
 
         return int(size)
 
-    def make_url(self, result):
-        urls, filename = super(NZBProvider, self).make_url(result)
-        filename = os.path.join(sickrage.srCore.srConfig.NZB_DIR,
-                                sanitizeFileName(result.name) + '.' + self.type)
-        return urls, filename
+    def make_url(self, url):
+        return super(NZBProvider, self).make_url(url)
+
+    def make_filename(self, name):
+        return os.path.join(sickrage.srCore.srConfig.NZB_DIR,
+                            '{}.{}'.format(sanitizeFileName(name), self.type))
 
     @classmethod
     def getProviders(cls):
@@ -973,7 +1002,7 @@ class NewznabProvider(NZBProvider):
             "offset": 0,
             "cat": self.catIDs.strip(', ') or '5030,5040'
         }
-        
+
         params.update(search_params)
 
         if self.key:

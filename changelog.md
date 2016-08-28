@@ -1,6 +1,7 @@
 # Changelog
 
-- * e4c896e - 2016-08-27: Fixed issues with NZB searches and params 
+- * 3aff30a - 2016-08-28: Added code to extract sizes of files from downloaded torrent files. Compares provider search result size against default quality sizes based on quality of result. 
+- * e2793c2 - 2016-08-27: Fixed issues with NZB searches and params 
 - * 9809565 - 2016-08-27: Updated to version 8.0.9 
 - * dd2394b - 2016-08-27: Corrected fixing of unaired statuses on startup 
 - * 10acd0e - 2016-08-27: Version updated to 8.0.8 

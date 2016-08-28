@@ -107,6 +107,18 @@ class Quality(object):
     # put these bits at the other end of the spectrum, far enough out that they shouldn't interfere
     UNKNOWN = 1 << 15  # 32768
 
+    qualitySizes = {NONE: 0,
+                    UNKNOWN: 0,
+                    SDTV: 700,
+                    SDDVD: 700,
+                    HDTV: 1200,
+                    RAWHDTV: 1200,
+                    FULLHDTV: 1200,
+                    HDWEBDL: 1200,
+                    FULLHDWEBDL: 1400,
+                    HDBLURAY: 1200,
+                    FULLHDBLURAY: 1400}
+
     qualityStrings = {NONE: "N/A",
                       UNKNOWN: "Unknown",
                       SDTV: "SDTV",
