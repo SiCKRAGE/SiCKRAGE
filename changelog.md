@@ -1,6 +1,7 @@
 # Changelog
 
-- * 297af0f - 2016-08-27: Corrected fixing of unaired statuses on startup 
+- * af5ad12 - 2016-08-27: Updated to version 8.0.9 
+- * dd2394b - 2016-08-27: Corrected fixing of unaired statuses on startup 
 - * 10acd0e - 2016-08-27: Version updated to 8.0.8 
 - * 11e2e41 - 2016-08-27: Fixed issues with NZB providers and retrieving categories 
 - * 97c64ec - 2016-08-25: Core queues use APScheduler now to execute jobs 
