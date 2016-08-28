@@ -1,6 +1,7 @@
 # Changelog
 
-- * 43c65b3 - 2016-08-27: Fixed issues with NZB providers and retrieving categories 
+- * 38dfaa6 - 2016-08-27: Version updated to 8.0.8 
+- * 11e2e41 - 2016-08-27: Fixed issues with NZB providers and retrieving categories 
 - * 97c64ec - 2016-08-25: Core queues use APScheduler now to execute jobs 
 - * 9fa8f46 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
 - * b96c56b - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
