@@ -972,7 +972,9 @@ class NewznabProvider(NZBProvider):
             "limit": 100,
             "offset": 0,
             "cat": self.catIDs.strip(', ') or '5030,5040'
-        }.update(search_params)
+        }
+        
+        params.update(search_params)
 
         if self.key:
             params['apikey'] = self.key

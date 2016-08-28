@@ -287,6 +287,7 @@ class GenericClient(object):
             except Exception:
                 sickrage.srCore.srLogger.error('Unable to find info field in torrent')
                 raise
+
             result.hash = sha1(bencode(info)).hexdigest()
 
         return result

@@ -26,6 +26,7 @@ import traceback
 
 import sickrage
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import convert_size
 from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
 
@@ -211,7 +212,7 @@ class RarbgProvider(TorrentProvider):
                         try:
                             title = item['title']
                             download_url = item['download']
-                            size = item['size']
+                            size = convert_size(item['size'])
                             seeders = item['seeders']
                             leechers = item['leechers']
                             # pubdate = item['pubdate']
