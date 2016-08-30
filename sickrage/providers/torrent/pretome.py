@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class PretomeProvider(TorrentProvider):
     def __init__(self):
-        super(PretomeProvider, self).__init__("Pretome",'pretome.info')
+        super(PretomeProvider, self).__init__("Pretome",'pretome.info', True)
 
         self.supportsBacklog = True
 

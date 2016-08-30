@@ -36,6 +36,7 @@ import xmltodict
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
+from pynzb import nzb_parser
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -54,9 +55,10 @@ from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
 class GenericProvider(object):
-    def __init__(self, name, url):
+    def __init__(self, name, url, private):
         self.name = name
         self.urls = {'base_url': url}
+        self.private = private
         self.show = None
         self.supportsBacklog = False
         self.supportsAbsoluteNumbering = False
@@ -68,7 +70,6 @@ class GenericProvider(object):
         self.enable_backlog = False
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
-        self.private = False
 
         self.btCacheURLS = [
             'http://torrentproject.se/torrent/{torrent_hash}.torrent',
@@ -107,20 +108,14 @@ class GenericProvider(object):
         """
         Returns a result of the correct type for this provider
         """
-        try:
-            result = {'nzb': NZBSearchResult, 'torrent': TorrentSearchResult}[getattr(self, 'type')](episodes)
-        except:
-            result = SearchResult(episodes)
-
-        result.provider = self
-        return result
+        return SearchResult(episodes)
 
     def make_url(self, url):
         urls = []
 
         if url.startswith('magnet'):
             try:
-                torrent_hash = re.findall(r'urn:btih:([\w]{32,40})', url)[0].upper()
+                torrent_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
 
                 try:
                     torrent_name = re.findall('dn=([^&]+)', url)[0]
@@ -243,7 +238,7 @@ class GenericProvider(object):
 
         return title, url
 
-    def _get_size(self, item):
+    def _get_size(self, url):
         """Gets the size from the item"""
         sickrage.srCore.srLogger.error("Provider type doesn't have _get_size() implemented yet")
         return -1
@@ -414,6 +409,7 @@ class GenericProvider(object):
                     "RESULT:[{}] QUALITY:[{}] IGNORED!".format(title, Quality.qualityStrings[quality]))
                 continue
 
+
             # make a result object
             epObj = []
             for curEp in actual_episodes:
@@ -427,16 +423,9 @@ class GenericProvider(object):
             result.release_group = release_group
             result.version = version
             result.content = None
-            result.size = self._get_size(item)
-
-            if result.size > 0 and float(result.size / 1000000) > Quality.qualitySizes[quality]:
-                sickrage.srCore.srLogger.info(
-                    "RESULT:[{}] SIZE:[{}] IGNORED!".format(title, float(result.size / 1000000)))
-                continue
 
             sickrage.srCore.srLogger.debug(
-                "FOUND RESULT:[{}] SIZE:[{}] QUALITY:[{}] URL:[{}]".format(title, float(result.size / 1000000),
-                                                                           Quality.qualityStrings[quality], url))
+                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(title, Quality.qualityStrings[quality], url))
 
             if len(epObj) == 1:
                 epNum = epObj[0].episode
@@ -523,8 +512,8 @@ class GenericProvider(object):
 class TorrentProvider(GenericProvider):
     type = 'torrent'
 
-    def __init__(self, name, url):
-        super(TorrentProvider, self).__init__(name, url)
+    def __init__(self, name, url, private):
+        super(TorrentProvider, self).__init__(name, url, private)
 
     @property
     def isActive(self):
@@ -535,6 +524,14 @@ class TorrentProvider(GenericProvider):
         if os.path.isfile(os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
             return self.id + '.png'
         return self.type + '.png'
+
+    def getResult(self, episodes):
+        """
+        Returns a result of the correct type for this provider
+        """
+        result = TorrentSearchResult(episodes)
+        result.provider = self
+        return result
 
     def _get_title_and_url(self, item):
         title, download_url = '', ''
@@ -556,35 +553,23 @@ class TorrentProvider(GenericProvider):
 
         return title, download_url
 
-    def _get_size(self, item):
-
+    def _get_size(self, url):
         size = -1
-        if isinstance(item, dict):
-            size = item.get('size', -1)
-        elif isinstance(item, (list, tuple)) and len(item) > 2:
-            size = item[2]
 
-        # Make sure we didn't select seeds/leechers by accident
-        if not size or size < 1024 * 1024:
-            size = -1
+        for url in self.make_url(url):
+            try:
+                resp = sickrage.srCore.srWebSession.get(url)
+                torrent = bencode.bdecode(resp.content)
 
-        # If we still don't have a size then extract it from torrent file
-        if size == -1:
-            urls = self.make_url(item[1])
-            for url in urls:
-                try:
-                    resp = sickrage.srCore.srWebSession.get(url)
-                    torrent = bencode.bdecode(resp.content)
+                total_length = 0
+                for file in torrent['info']['files']:
+                    total_length += file['length']
 
-                    total_length = 0
-                    for file in torrent['info']['files']:
-                        total_length += file['length']
-
-                    if total_length > 0:
-                        size = total_length
-                        break
-                except Exception:
-                    size = -1
+                if total_length > 0:
+                    size = total_length
+                    break
+            except Exception:
+                size = -1
 
         return size
 
@@ -673,8 +658,8 @@ class TorrentProvider(GenericProvider):
 class NZBProvider(GenericProvider):
     type = 'nzb'
 
-    def __init__(self, name, url):
-        super(NZBProvider, self).__init__(name, url)
+    def __init__(self, name, url, private):
+        super(NZBProvider, self).__init__(name, url, private)
         self.api_key = None
         self.username = None
 
@@ -688,10 +673,28 @@ class NZBProvider(GenericProvider):
             return self.id + '.png'
         return self.type + '.png'
 
-    def _get_size(self, item):
+    def getResult(self, episodes):
+        """
+        Returns a result of the correct type for this provider
+        """
+        result = NZBSearchResult(episodes)
+        result.provider = self
+        return result
+
+    def _get_size(self, url):
+        size = -1
+
         try:
-            size = item.get('links')[1].get('length', -1)
-        except IndexError:
+            resp = sickrage.srCore.srWebSession.get(url)
+
+            total_length = 0
+            for file in nzb_parser.parse(resp.content):
+                for segment in file.segments:
+                    total_length += segment.bytes
+
+            if total_length > 0:
+                size = total_length
+        except Exception:
             size = -1
 
         if not size:
@@ -717,14 +720,15 @@ class TorrentRssProvider(TorrentProvider):
     def __init__(self,
                  name,
                  url,
+                 private,
                  cookies='',
                  titleTAG='title',
                  search_mode='eponly',
                  search_fallback=False,
                  enable_daily=False,
                  enable_backlog=False,
-                 default=False):
-        super(TorrentRssProvider, self).__init__(name, url)
+                 default=False,):
+        super(TorrentRssProvider, self).__init__(name, url, private)
 
         self.cache = TorrentRssCache(self)
         self.ratio = None
@@ -830,7 +834,7 @@ class TorrentRssProvider(TorrentProvider):
     @classmethod
     def getDefaultProviders(cls):
         return [
-            cls('showRSS', 'showrss.info', None, 'title', 'eponly', True, True, True, True)
+            cls('showRSS', 'showrss.info', False, None, 'title', 'eponly', True, True, True, True)
         ]
 
 
@@ -840,6 +844,7 @@ class NewznabProvider(NZBProvider):
     def __init__(self,
                  name,
                  url,
+                 private,
                  key=None,
                  catIDs='5030,5040',
                  search_mode='eponly',
@@ -847,7 +852,7 @@ class NewznabProvider(NZBProvider):
                  enable_daily=False,
                  enable_backlog=False,
                  default=False):
-        super(NewznabProvider, self).__init__(name, url)
+        super(NewznabProvider, self).__init__(name, url, private)
 
         self.cache = NewznabCache(self)
         self.search_mode = search_mode
@@ -1000,7 +1005,7 @@ class NewznabProvider(NZBProvider):
             "maxage": min(age, sickrage.srCore.srConfig.USENET_RETENTION),
             "limit": 100,
             "offset": 0,
-            "cat": self.catIDs.strip(', ') or '5030,5040'
+            "cat": self.catIDs or '5030,5040'
         }
 
         params.update(search_params)
@@ -1096,12 +1101,11 @@ class NewznabProvider(NZBProvider):
     @classmethod
     def getDefaultProviders(cls):
         return [
-            cls('SickBeard', 'lolo.sickbeard.com', None, '5030,5040', 'eponly', False, False, False, True),
-            cls('NZB.Cat', 'nzb.cat', None, '5030,5040,5010', 'eponly', True, True, True, True),
-            cls('NZBGeek', 'api.nzbgeek.info', None, '5030,5040', 'eponly', False, False, False, True),
-            cls('NZBs.org', 'nzbs.org', None, '5030,5040', 'eponly', False, False, False, True),
-            cls('Usenet-Crawler', 'www.usenet-crawler.com', None, '5030,5040', 'eponly', False, False, False,
-                True)
+            cls('SickBeard', 'lolo.sickbeard.com', False, None, '5030,5040', 'eponly', False, False, False, True),
+            cls('NZB.Cat', 'nzb.cat', True, None, '5030,5040,5010', 'eponly', True, True, True, True),
+            cls('NZBGeek', 'api.nzbgeek.info', True, None, '5030,5040', 'eponly', False, False, False, True),
+            cls('NZBs.org', 'nzbs.org', True, None, '5030,5040', 'eponly', False, False, False, True),
+            cls('Usenet-Crawler', 'usenet-crawler.com', True, None, '5030,5040', 'eponly', False, False, False, True)
         ]
 
 
@@ -1131,7 +1135,7 @@ class NewznabCache(TVCache):
     def _getRSSData(self):
 
         params = {"t": "tvsearch",
-                  "cat": self.provider.catIDs.strip(',', ''),
+                  "cat": self.provider.catIDs,
                   "maxage": 4,
                   }
 

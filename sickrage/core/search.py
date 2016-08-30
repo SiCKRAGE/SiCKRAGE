@@ -245,10 +245,21 @@ def pickBestResult(results, show):
             continue
 
         if hasattr(cur_result, 'size'):
+            cur_result.size = cur_result.provider._get_size(cur_result.url)
+            if cur_result.size == -1:
+                sickrage.srCore.srLogger.info(
+                    "Ignoring " + cur_result.name + " because we could not determin the size of it, ignoring it")
+                continue
+
             if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS and FailedHistory.hasFailed(cur_result.name,
                                                                                          cur_result.size,
                                                                                          cur_result.provider.name):
                 sickrage.srCore.srLogger.info(cur_result.name + " has previously failed, rejecting it")
+                continue
+
+            if cur_result.size > 0 and float(cur_result.size / 1000000) > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
+                sickrage.srCore.srLogger.info(
+                    "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(float(cur_result.size / 1000000)))
                 continue
 
         if not bestResult:
@@ -525,7 +536,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                             foundResults[providerObj.name][curEp] += searchResults[curEp]
                         else:
                             foundResults[providerObj.name][curEp] = searchResults[curEp]
-
                     break
                 elif not providerObj.search_fallback or searchCount == 2:
                     break

@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class AlphaRatioProvider(TorrentProvider):
     def __init__(self):
-        super(AlphaRatioProvider, self).__init__("AlphaRatio", 'alpharatio.cc')
+        super(AlphaRatioProvider, self).__init__("AlphaRatio", 'alpharatio.cc', True)
         self.supportsBacklog = True
         self.username = None
         self.password = None

@@ -34,7 +34,7 @@ from sickrage.providers import TorrentProvider
 
 class BLUETIGERSProvider(TorrentProvider):
     def __init__(self):
-        super(BLUETIGERSProvider, self).__init__("BLUETIGERS",'www.bluetigers.ca')
+        super(BLUETIGERSProvider, self).__init__("BLUETIGERS",'www.bluetigers.ca', True)
 
         self.supportsBacklog = True
 

@@ -61,7 +61,6 @@ class CacheDBConnection(cache_db.CacheDB):
             # add version column to table if missing
             if not self.hasColumn(providerName, 'version'):
                 self.addColumn(providerName, 'version', "NUMERIC", "-1")
-
         except Exception as e:
             if str(e) != "table [" + providerName + "] already exists":
                 raise

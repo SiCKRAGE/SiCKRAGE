@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class BitCannonProvider(TorrentProvider):
     def __init__(self):
-        super(BitCannonProvider, self).__init__("BitCannon",'127.0.0.1:1337')
+        super(BitCannonProvider, self).__init__("BitCannon",'127.0.0.1:1337', False)
 
         self.supportsBacklog = True
 
