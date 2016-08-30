@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7f93a9b - 2016-08-30: Added handling of SAXParser exceptions. Cleaned up code for searching RSS cache. 
+- * 400840a - 2016-08-30: Added PyNZB to requirements file. Removed un-needed debug message. 
+- * 7e9de8e - 2016-08-30: Added handling of SAXParser exceptions. Cleaned up code for searching RSS cache. 
 - * a04f1d9 - 2016-08-30: Fixed several issues relating to NZB/Newznab providers and searches 
 - * 2d06621 - 2016-08-30: Fixed several issues relating to NZB/Newznab providers and searches 
 - * c45d6e5 - 2016-08-28: Added code to extract sizes of files from downloaded torrent files. Compares provider search result size against default quality sizes based on quality of result. 

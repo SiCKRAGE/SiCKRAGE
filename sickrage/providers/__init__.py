@@ -1066,8 +1066,6 @@ class NewznabProvider(NZBProvider):
             else:
                 break
 
-        sickrage.srCore.srLogger.debug('No more searches needed')
-
         return results
 
     def findPropers(self, search_date=datetime.datetime.today()):
