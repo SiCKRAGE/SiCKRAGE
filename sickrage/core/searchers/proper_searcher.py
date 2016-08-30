@@ -276,6 +276,7 @@ class srProperSearcher(object):
                 result.release_group = curProper.release_group
                 result.version = curProper.version
                 result.content = curProper.content
+                result.size = curProper.provider._get_size(curProper.url)
 
                 # snatch it
                 snatchEpisode(result, SNATCHED_PROPER)

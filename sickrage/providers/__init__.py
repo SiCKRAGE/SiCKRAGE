@@ -29,6 +29,7 @@ import time
 import urllib
 from base64 import b16encode, b32decode
 from collections import OrderedDict
+from xml.sax import SAXParseException
 
 import bencode
 import requests
@@ -200,9 +201,6 @@ class GenericProvider(object):
 
         return True
 
-    def searchRSS(self, episodes):
-        return self.cache.findNeededEpisodes(episodes)
-
     def getQuality(self, item, anime=False):
         """
         Figures out the quality of the given RSS item node
@@ -259,9 +257,9 @@ class GenericProvider(object):
             cacheResult = self.cache.searchCache(epObj, manualSearch, downCurQuality)
             if cacheResult:
                 if epObj.episode not in results:
-                    results[epObj.episode] = cacheResult
+                    results[epObj.episode] = cacheResult[epObj.episode]
                 else:
-                    results[epObj.episode].extend(cacheResult)
+                    results[epObj.episode].extend(cacheResult[epObj.episode])
 
                 # found result, search next episode
                 continue
@@ -286,7 +284,11 @@ class GenericProvider(object):
                 sickrage.srCore.srLogger.debug('First search_string has rid')
 
             for curString in search_strings:
-                itemList += self.search(curString, search_mode, len(episodes), epObj=epObj)
+                try:
+                    itemList += self.search(curString, search_mode, len(episodes), epObj=epObj)
+                except SAXParseException:
+                    continue
+
                 if first:
                     first = False
                     if itemList:
@@ -409,13 +411,12 @@ class GenericProvider(object):
                     "RESULT:[{}] QUALITY:[{}] IGNORED!".format(title, Quality.qualityStrings[quality]))
                 continue
 
-
             # make a result object
-            epObj = []
+            epObjs = []
             for curEp in actual_episodes:
-                epObj.append(showObj.getEpisode(actual_season, curEp))
+                epObjs.append(showObj.getEpisode(actual_season, curEp))
 
-            result = self.getResult(epObj)
+            result = self.getResult(epObjs)
             result.show = showObj
             result.url = url
             result.name = title
@@ -423,19 +424,20 @@ class GenericProvider(object):
             result.release_group = release_group
             result.version = version
             result.content = None
+            result.size = self._get_size(url)
 
             sickrage.srCore.srLogger.debug(
                 "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(title, Quality.qualityStrings[quality], url))
 
-            if len(epObj) == 1:
-                epNum = epObj[0].episode
+            if len(epObjs) == 1:
+                epNum = epObjs[0].episode
                 sickrage.srCore.srLogger.debug("Single episode result.")
-            elif len(epObj) > 1:
+            elif len(epObjs) > 1:
                 epNum = MULTI_EP_RESULT
                 sickrage.srCore.srLogger.debug(
                     "Separating multi-episode result to check for later - result contains episodes: " + str(
                         parse_result.episode_numbers))
-            elif len(epObj) == 0:
+            elif len(epObjs) == 0:
                 epNum = SEASON_RESULT
                 sickrage.srCore.srLogger.debug("Separating full season result to check for later")
 
@@ -727,7 +729,7 @@ class TorrentRssProvider(TorrentProvider):
                  search_fallback=False,
                  enable_daily=False,
                  enable_backlog=False,
-                 default=False,):
+                 default=False, ):
         super(TorrentRssProvider, self).__init__(name, url, private)
 
         self.cache = TorrentRssCache(self)
@@ -1062,8 +1064,9 @@ class NewznabProvider(NZBProvider):
                 sickrage.srCore.srLogger.debug('%d' % (total - offset) + ' more items to be fetched from provider.' +
                                                'Fetching another %d' % int(params['limit']) + ' items.')
             else:
-                sickrage.srCore.srLogger.debug('No more searches needed')
                 break
+
+        sickrage.srCore.srLogger.debug('No more searches needed')
 
         return results
 

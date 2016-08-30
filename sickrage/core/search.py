@@ -245,10 +245,9 @@ def pickBestResult(results, show):
             continue
 
         if hasattr(cur_result, 'size'):
-            cur_result.size = cur_result.provider._get_size(cur_result.url)
             if cur_result.size == -1:
                 sickrage.srCore.srLogger.info(
-                    "Ignoring " + cur_result.name + " because we could not determin the size of it, ignoring it")
+                    "Ignoring " + cur_result.name + " because we could not determine the size of it, ignoring it")
                 continue
 
             if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS and FailedHistory.hasFailed(cur_result.name,
@@ -257,9 +256,11 @@ def pickBestResult(results, show):
                 sickrage.srCore.srLogger.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 
-            if cur_result.size > 0 and float(cur_result.size / 1000000) > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
+            if cur_result.size > 0 and float(cur_result.size / 1000000) > sickrage.srCore.srConfig.QUALITY_SIZES[
+                cur_result.quality]:
                 sickrage.srCore.srLogger.info(
-                    "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(float(cur_result.size / 1000000)))
+                    "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(
+                        float(cur_result.size / 1000000)))
                 continue
 
         if not bestResult:
@@ -347,6 +348,7 @@ def wantedEpisodes(show, fromDate):
     :return: list of wanted episodes
     """
 
+    wanted = []
     anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
     allQualities = list(set(anyQualities + bestQualities))
 
@@ -356,10 +358,10 @@ def wantedEpisodes(show, fromDate):
         "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 AND airdate > ?",
         [show.indexerid, fromDate.toordinal()])
 
+    sickrage.srCore.srLogger.debug("Found {} episode(s) needed for {}".format(len(sqlResults), show.name))
+
     # check through the list of statuses to see if we want any
-    wanted = []
     for result in sqlResults:
-        sickrage.srCore.srLogger.debug("Found {} episode(s) needed for {}".format(len(sqlResults), show.name))
         curCompositeStatus = int(result["status"] or -1)
         curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
@@ -388,12 +390,6 @@ def searchForNeededEpisodes():
     origThreadName = threading.currentThread().getName()
 
     fromDate = date.fromordinal(1)
-    episodes = []
-
-    with threading.Lock():
-        for curShow in sickrage.srCore.SHOWLIST:
-            if not curShow.paused:
-                episodes.extend(wantedEpisodes(curShow, fromDate))
 
     # perform provider searchers
     def perform_searches():
@@ -414,8 +410,13 @@ def searchForNeededEpisodes():
             try:
                 threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
+                # update provider RSS cache
                 providerObj.cache.updateCache()
-                curFoundResults = dict(providerObj.searchRSS(episodes))
+
+                # get search results from RSS cache
+                curFoundResults = [providerObj.cache.searchCache(episode) for episode in
+                                   list(*[wantedEpisodes(curShow, fromDate) for curShow in
+                                          sickrage.srCore.SHOWLIST if not curShow.paused])]
             except AuthException as e:
                 sickrage.srCore.srLogger.error("Authentication error: {}".format(e.message))
             except Exception as e:
@@ -426,24 +427,29 @@ def searchForNeededEpisodes():
                 threading.currentThread().setName(origThreadName)
 
             # pick a single result for each episode, respecting existing results
-            for curEp in curFoundResults:
-                if not curEp.show or curEp.show.paused:
-                    sickrage.srCore.srLogger.debug("Skipping %s because the show is paused " % curEp.prettyName())
+            for curResult in curFoundResults:
+                if not curResult:
                     continue
 
-                bestResult = pickBestResult(curFoundResults[curEp], curEp.show)
+                for curEp in curResult.episodes:
+                    if not curEp.show or curEp.show.paused:
+                        sickrage.srCore.srLogger.debug("Skipping %s because the show is paused " % curEp.prettyName())
+                        continue
 
-                # if all results were rejected move on to the next episode
-                if not bestResult:
-                    sickrage.srCore.srLogger.debug(
-                        "All found results for " + curEp.prettyName() + " were rejected.")
-                    continue
+                    bestResult = pickBestResult(curFoundResults[curEp], curEp.show)
 
-                # if it's already in the list (from another provider) and the newly found quality is no better then skip it
-                if curEp in foundResults and bestResult.quality <= foundResults[curEp].quality:
-                    continue
+                    # if all results were rejected move on to the next episode
+                    if not bestResult:
+                        sickrage.srCore.srLogger.debug(
+                            "All found results for " + curEp.prettyName() + " were rejected.")
+                        continue
 
-                foundResults[curEp] = bestResult
+                    # if it's already in the list (from another provider) and the newly found quality is no better then skip it
+                    if curEp in foundResults and bestResult.quality <= foundResults[curEp].quality:
+                        continue
+
+                    foundResults[curEp] = bestResult
+
         return foundResults.values()
 
     return perform_searches()
@@ -459,7 +465,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     :param downCurQuality: Boolean, should we redownload currently avaialble quality file
     :return: results for search
     """
-
 
     if not len(sickrage.srCore.providersDict.enabled()):
         sickrage.srCore.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
@@ -522,7 +527,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 except Exception as e:
                     sickrage.srCore.srLogger.error(
                         "Error while searching " + providerObj.name + ", skipping: {}".format(e.message))
-                    sickrage.srCore.srLogger.debug(traceback.format_exc())
                     break
                 finally:
                     threading.currentThread().setName(origThreadName)
