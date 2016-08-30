@@ -25,7 +25,7 @@ from sickrage.providers import TorrentProvider
 
 class STRIKEProvider(TorrentProvider):
     def __init__(self):
-        super(STRIKEProvider, self).__init__("Strike",'getstrike.net')
+        super(STRIKEProvider, self).__init__("Strike",'getstrike.net', False)
 
         self.supportsBacklog = True
 

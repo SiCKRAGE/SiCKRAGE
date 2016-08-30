@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class FNTProvider(TorrentProvider):
     def __init__(self):
-        super(FNTProvider, self).__init__("FNT",'fnt.nu')
+        super(FNTProvider, self).__init__("FNT",'fnt.nu', True)
 
         self.supportsBacklog = True
 

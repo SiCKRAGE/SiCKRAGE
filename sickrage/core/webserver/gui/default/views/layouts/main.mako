@@ -20,6 +20,12 @@
 <html>
 <head>
     <title>SickRage - ${title}</title>
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,6 +36,7 @@
     % elif sickrage.srCore.srConfig.THEME_NAME == "light":
         <meta name="theme-color" content="#333333">
     % endif
+
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-TileImage" content="/images/ico/favicon-144.png">
     <meta name="msapplication-config" content="/browserconfig.xml">
@@ -76,19 +83,6 @@
     % endif
     <link rel="stylesheet" type="text/css" href="/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css?${srPID}"/>
     <%block name="css" />
-
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <script src="/js/bower.min.js"></script>
-    % if sickrage.DEVELOPER:
-        <script src="/js/core.js"></script>
-    % else:
-        <script src="/js/core.min.js"></script>
-    % endif
-    <%block name="scripts" />
 
 </head>
 <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
@@ -186,22 +180,39 @@
                                 src="/images/menu/system18.png" class="navbaricon hidden-xs"/>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a></li>
-                            <li><a href="/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a></li>
-                            <li><a href="/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup &amp;
-                                Restore</a>
+                            <li>
+                                <a href="/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a>
                             </li>
-                            <li><a href="/config/search/"><i class="menu-icon-config"></i>&nbsp;Search Clients</a></li>
-                            <li><a href="/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search Providers</a>
+                            <li>
+                                <a href="/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a>
                             </li>
-                            <li><a href="/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
-                                Settings</a>
+                            <li>
+                                <a href="/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup &amp;
+                                    Restore</a>
                             </li>
-                            <li><a href="/config/postProcessing/"><i class="menu-icon-config"></i>&nbsp;Post Processing</a>
+                            <li>
+                                <a href="/config/search/"><i class="menu-icon-config"></i>&nbsp;Search Clients</a>
                             </li>
-                            <li><a href="/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a>
+                            <li>
+                                <a href="/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search Providers</a>
                             </li>
-                            <li><a href="/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a></li>
+                            <li>
+                                <a href="/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
+                                    Settings</a>
+                            </li>
+                            <li>
+                                <a href="/config/qualitySettings/"><i class="menu-icon-config"></i>&nbsp;Quality
+                                    Settings</a>
+                            </li>
+                            <li>
+                                <a href="/config/postProcessing/"><i class="menu-icon-config"></i>&nbsp;Post Processing</a>
+                            </li>
+                            <li>
+                                <a href="/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a>
+                            </li>
+                            <li>
+                                <a href="/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a>
+                            </li>
                         </ul>
                         <div style="clear:both;"></div>
                     </li>
@@ -307,9 +318,9 @@
     % endif
 
 <body data-controller="${controller}" data-action="${action}">
-    <div style="padding-top: inherit;" id="content">
-            <%block name="content" />
-    </div>
+<div style="padding-top: inherit;" id="content">
+        <%block name="content" />
+</div>
 </body>
 
     % if current_user:
@@ -352,5 +363,12 @@
                 </div>
             </div>
         </footer>
+        <script src="/js/bower.min.js"></script>
+        % if sickrage.DEVELOPER:
+            <script src="/js/core.js"></script>
+        % else:
+            <script src="/js/core.min.js"></script>
+        % endif
+        <%block name="scripts" />
     % endif
 </html>

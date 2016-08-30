@@ -51,6 +51,7 @@ module.exports = function (grunt) {
                     'jquery.tablesorter': [
                         'dist/js/jquery.tablesorter.combined.min.js',
                         'dist/js/widgets/widget-columnSelector.min.js',
+                        'dist/js/widgets/widget-stickyHeaders.min.js',
                         'dist/css/theme.blue.min.css'
                     ],
                     'isotope': [
@@ -131,13 +132,13 @@ module.exports = function (grunt) {
             options: {
                 optimizationLevel: 3
             },
-            jqueryui: {
+            jquery_ui: {
                 files: [{
                     expand: true,
                     flatten: true,
-                    cwd: 'bower_components/jquery-ui/themes/',
+                    cwd: 'bower_components/jquery-ui/themes/base/images/',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/gui/default/images/ui/'
+                    dest: 'sickrage/core/webserver/gui/default/images/'
                 }]
             },
             tablesorter: {
@@ -147,6 +148,15 @@ module.exports = function (grunt) {
                     cwd: 'bower_components/jquery.tablesorter/dist/css/images/',
                     src: ['**/*.{png,jpg,gif}'],
                     dest: 'sickrage/core/webserver/gui/default/images/tablesorter/'
+                }]
+            },
+            boostrap_formhelpers: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    cwd: 'bower_components/bootstrap-formhelpers/img/',
+                    src: ['**/*.{png,jpg,gif}'],
+                    dest: 'sickrage/core/webserver/gui/default/images/bootstrap-formhelpers/'
                 }]
             }
         },

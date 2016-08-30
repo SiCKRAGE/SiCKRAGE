@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 class TORRENTZProvider(TorrentProvider):
     def __init__(self):
 
-        super(TORRENTZProvider, self).__init__("Torrentz", 'torrentz.eu')
+        super(TORRENTZProvider, self).__init__("Torrentz", 'torrentz.eu', False)
 
         self.supportsBacklog = True
         self.confirmed = True
