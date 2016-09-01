@@ -126,13 +126,11 @@ class BTNProvider(TorrentProvider):
         return results
 
     def _api_call(self, apikey, params=None, results_per_page=1000, offset=0):
-        if params is None:
-            params = {}
-
+        api = jsonrpclib.Server('http://' + self.urls['base_url'])
         parsedJSON = {}
 
         try:
-            parsedJSON = jsonrpclib.Server(self.urls['base_url']).getTorrents(apikey, params, int(results_per_page), int(offset))
+            parsedJSON = api.getTorrents(apikey, params or {}, int(results_per_page), int(offset))
             time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
         except jsonrpclib.jsonrpc.ProtocolError as error:
             if error.message == 'Call Limit Exceeded':
