@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0d2074d - 2016-08-31: Cleaned up search code. Compacted code for searching provider cache. Added a search cache only param to provider searches. 
+- * d9a49df - 2016-08-31: Added code to auto-install library requirements 
+- * 3f513cf - 2016-08-31: Cleaned up search code. Compacted code for searching provider cache. Added a search cache only param to provider searches. 
 - * 283a22f - 2016-08-30: Added PyNZB to requirements file. Removed un-needed debug message. 
 - * 7e9de8e - 2016-08-30: Added handling of SAXParser exceptions. Cleaned up code for searching RSS cache. 
 - * a04f1d9 - 2016-08-30: Fixed several issues relating to NZB/Newznab providers and searches 

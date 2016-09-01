@@ -21,8 +21,8 @@
 from __future__ import unicode_literals
 
 import os
-import sys
 import site
+import sys
 
 if __name__ == '__main__':
     # add sickrage libs path to python system path
@@ -32,5 +32,13 @@ if __name__ == '__main__':
         site.addsitedir(LIBS_DIR)
         sys.path.extend(remainder)
 
+    from subprocess import call
     from sickrage import main
+
+    # install requirements
+    req_file = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt'))
+    call("pip install --no-cache-dir -U pip", shell=True)
+    call("pip install --no-cache-dir -r {}".format(req_file), shell=True)
+
+    # start main app
     main()
