@@ -37,8 +37,7 @@ if __name__ == '__main__':
 
     # install requirements
     req_file = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'requirements.txt'))
-    call("pip install --no-cache-dir -U pip", shell=True)
-    call("pip install --no-cache-dir -r {}".format(req_file), shell=True)
+    call("pip install --no-cache-dir --user -r {}".format(req_file), shell=True)
 
     # start main app
     main()
