@@ -1,6 +1,7 @@
 # Changelog
 
-- * 400840a - 2016-08-30: Added PyNZB to requirements file. Removed un-needed debug message. 
+- * 0d2074d - 2016-08-31: Cleaned up search code. Compacted code for searching provider cache. Added a search cache only param to provider searches. 
+- * 283a22f - 2016-08-30: Added PyNZB to requirements file. Removed un-needed debug message. 
 - * 7e9de8e - 2016-08-30: Added handling of SAXParser exceptions. Cleaned up code for searching RSS cache. 
 - * a04f1d9 - 2016-08-30: Fixed several issues relating to NZB/Newznab providers and searches 
 - * 2d06621 - 2016-08-30: Fixed several issues relating to NZB/Newznab providers and searches 
@@ -11,8 +12,4 @@
 - * 10acd0e - 2016-08-27: Version updated to 8.0.8 
 - * 11e2e41 - 2016-08-27: Fixed issues with NZB providers and retrieving categories 
 - * 97c64ec - 2016-08-25: Core queues use APScheduler now to execute jobs 
-- * 9fa8f46 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
-- * b96c56b - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
-- * 22d9c40 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
-- * e5b69c8 - 2016-08-24: Remove TorrentProject and btDigg torrent providers. Added back torrage with new url. 
 

@@ -15,6 +15,7 @@
                             '${providerID}',
                             '${providerObj.name}',
                             '${providerObj.urls["base_url"]}',
+                            '${("false", "true")[providerObj.key > 0]}',
                             '${providerObj.key}',
                             '${providerObj.catIDs}',
                             '${int(providerObj.default)}',
@@ -28,6 +29,7 @@
                             '${providerID}',
                             '${providerObj.name}',
                             '${providerObj.urls["base_url"]}',
+                            '${("false", "true")[providerObj.cookies is not None]}',
                             '${providerObj.cookies}',
                             '${providerObj.titleTAG}',
                             '${("false", "true")[bool(sickrage.srCore.srConfig.USE_TORRENTS)]}');
@@ -128,7 +130,7 @@
 
                             <!-- start div for editing providers //-->
                             % for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
-                                <div class="providerDiv" id="${providerID}">
+                                <div class="providerDiv" id="${providerID}Div">
                                     % if not providerObj.default:
                                         <div class="field-pair">
                                             <label for="${providerID}_url">
@@ -141,6 +143,7 @@
                                                 </span>
                                             </label>
                                         </div>
+                                    % endif
 
                                         <div class="field-pair">
                                             <label for="${providerID}_hash">
@@ -154,7 +157,6 @@
                                                 </span>
                                             </label>
                                         </div>
-                                    % endif
 
                                     % if hasattr(providerObj, 'enable_daily'):
                                         <div class="field-pair">

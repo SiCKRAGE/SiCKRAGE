@@ -4368,7 +4368,6 @@ jQuery(document).ready(function ($) {
                         var name = $.trim($('#newznab_name').val());
                         var url = $.trim($('#newznab_url').val());
                         var key = $.trim($('#newznab_key').val());
-                        //var cat = $.trim($('#newznab_cat').val());
 
                         var cat = $.trim($('#newznab_cat option').map(function (i, opt) {
                             return $(opt).text();

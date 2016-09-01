@@ -23,7 +23,6 @@ import io
 import os
 import re
 import threading
-import traceback
 from datetime import date, timedelta
 
 import sickrage
@@ -256,11 +255,11 @@ def pickBestResult(results, show):
                 sickrage.srCore.srLogger.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 
-            if cur_result.size > 0 and float(cur_result.size / 1000000) > sickrage.srCore.srConfig.QUALITY_SIZES[
-                cur_result.quality]:
+            ep_size = float(cur_result.size / 1000000 / len(cur_result.episodes))
+            if ep_size > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
                 sickrage.srCore.srLogger.info(
                     "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(
-                        float(cur_result.size / 1000000)))
+                        ep_size))
                 continue
 
         if not bestResult:
@@ -387,75 +386,18 @@ def searchForNeededEpisodes():
     :return: episodes we have a search hit for
     """
 
-    origThreadName = threading.currentThread().getName()
+    results = []
 
-    fromDate = date.fromordinal(1)
+    for curShow in sickrage.srCore.SHOWLIST:
+        if curShow.paused:
+            continue
 
-    # perform provider searchers
-    def perform_searches():
-        foundResults = {}
+        episodes = wantedEpisodes(curShow, date.fromordinal(1))
+        results += searchProviders(curShow, episodes, cacheOnly=True)
 
-        for providerID, providerObj in sickrage.srCore.providersDict.sort(
-                randomize=sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS).items():
+    return results
 
-            # check provider type and provider is enabled
-            if not sickrage.srCore.srConfig.USE_NZBS and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
-                continue
-            elif not sickrage.srCore.srConfig.USE_TORRENTS and providerObj.type in [TorrentProvider.type,
-                                                                                    TorrentRssProvider.type]:
-                continue
-            elif not providerObj.isEnabled:
-                continue
-
-            try:
-                threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
-
-                # update provider RSS cache
-                providerObj.cache.updateCache()
-
-                # get search results from RSS cache
-                curFoundResults = [providerObj.cache.searchCache(episode) for episode in
-                                   list(*[wantedEpisodes(curShow, fromDate) for curShow in
-                                          sickrage.srCore.SHOWLIST if not curShow.paused])]
-            except AuthException as e:
-                sickrage.srCore.srLogger.error("Authentication error: {}".format(e.message))
-            except Exception as e:
-                sickrage.srCore.srLogger.error(
-                    "Error while searching " + providerObj.name + ", skipping: {}".format(e.message))
-                sickrage.srCore.srLogger.debug(traceback.format_exc())
-            finally:
-                threading.currentThread().setName(origThreadName)
-
-            # pick a single result for each episode, respecting existing results
-            for curResult in curFoundResults:
-                if not curResult:
-                    continue
-
-                for curEp in curResult.episodes:
-                    if not curEp.show or curEp.show.paused:
-                        sickrage.srCore.srLogger.debug("Skipping %s because the show is paused " % curEp.prettyName())
-                        continue
-
-                    bestResult = pickBestResult(curFoundResults[curEp], curEp.show)
-
-                    # if all results were rejected move on to the next episode
-                    if not bestResult:
-                        sickrage.srCore.srLogger.debug(
-                            "All found results for " + curEp.prettyName() + " were rejected.")
-                        continue
-
-                    # if it's already in the list (from another provider) and the newly found quality is no better then skip it
-                    if curEp in foundResults and bestResult.quality <= foundResults[curEp].quality:
-                        continue
-
-                    foundResults[curEp] = bestResult
-
-        return foundResults.values()
-
-    return perform_searches()
-
-
-def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
+def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, cacheOnly=False):
     """
     Walk providers for information on shows
 
@@ -515,12 +457,16 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 try:
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
-                    providerObj.cache.updateCache()
+                    # update provider RSS cache
+                    providerObj.cache. updateCache()
+
+                    # search provider for episodes
                     searchResults = providerObj.findSearchResults(show,
                                                                   episodes,
                                                                   search_mode,
                                                                   manualSearch,
-                                                                  downCurQuality)
+                                                                  downCurQuality,
+                                                                  cacheOnly)
                 except AuthException as e:
                     sickrage.srCore.srLogger.error("Authentication error: {}".format(e.message))
                     break
@@ -565,6 +511,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 for cur_result in foundResults[providerObj.name][cur_episode]:
                     if cur_result.quality != Quality.UNKNOWN and cur_result.quality > highest_quality_overall:
                         highest_quality_overall = cur_result.quality
+
             sickrage.srCore.srLogger.debug(
                 "The highest quality of any match is " + Quality.qualityStrings[highest_quality_overall])
 
@@ -588,6 +535,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 sickrage.srCore.srLogger.info(
                     "Executed query: [SELECT episode FROM tv_episodes WHERE showid = %s AND season in  %s]" % (
                         show.indexerid, ','.join(searchedSeasons)))
+
                 sickrage.srCore.srLogger.debug("Episode list: " + str(allEps))
 
                 allWanted = True
@@ -603,6 +551,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 if allWanted and bestSeasonResult.quality == highest_quality_overall:
                     sickrage.srCore.srLogger.info(
                         "Every ep in this season is needed, downloading the whole " + bestSeasonResult.provider.type + " " + bestSeasonResult.name)
+
                     epObjs = []
                     for curEpNum in allEps:
                         for season in set([x.season for x in episodes]):
@@ -614,9 +563,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 elif not anyWanted:
                     sickrage.srCore.srLogger.debug(
                         "No eps from this season are wanted at this quality, ignoring the result of " + bestSeasonResult.name)
-
                 else:
-
                     if bestSeasonResult.provider.type == NZBProvider.type:
                         sickrage.srCore.srLogger.debug(
                             "Breaking apart the NZB and adding the individual ones to our results")

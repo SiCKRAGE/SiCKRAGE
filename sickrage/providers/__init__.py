@@ -241,7 +241,7 @@ class GenericProvider(object):
         sickrage.srCore.srLogger.error("Provider type doesn't have _get_size() implemented yet")
         return -1
 
-    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
+    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
 
         if not self._checkAuth:
             return
@@ -270,6 +270,10 @@ class GenericProvider(object):
 
             # mark season searched for season pack searches so we can skip later on
             searched_scene_season = epObj.scene_season
+
+            # check if this is a cache only search
+            if cacheOnly:
+                continue
 
             search_strings = []
             if len(episodes) > 1 and search_mode == 'sponly':
@@ -992,7 +996,7 @@ class NewznabProvider(NZBProvider):
             elif int(err_code) == 102:
                 raise AuthException(
                     "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
-            raise Exception("Unknown error: %s" % err_desc)
+            raise Exception("Error {}: {}".format(err_code, err_desc))
         except (AttributeError, KeyError):
             pass
 

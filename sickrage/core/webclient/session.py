@@ -23,7 +23,6 @@ import io
 import os
 import random
 import shelve
-import tempfile
 import threading
 import urllib2
 from contextlib import closing
@@ -90,7 +89,8 @@ class srSession(FuturesSession):
         if 'Referer' not in kwargs.get('headers', {}) and sickrage.srCore.srConfig.PROXY_SETTING:
             sickrage.srCore.srLogger.debug("Using global proxy: " + sickrage.srCore.srConfig.PROXY_SETTING)
             scheme, address = urllib2.splittype(sickrage.srCore.srConfig.PROXY_SETTING)
-            address = ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING), sickrage.srCore.srConfig.PROXY_SETTING)[scheme]
+            address = \
+            ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING), sickrage.srCore.srConfig.PROXY_SETTING)[scheme]
             kwargs.setdefault('proxies', {}).update({"http": address, "https": address})
             kwargs.setdefault('headers', {}).update({'Referer': address})
 
