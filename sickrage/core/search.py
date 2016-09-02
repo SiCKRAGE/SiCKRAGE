@@ -255,7 +255,7 @@ def pickBestResult(results, show):
                 sickrage.srCore.srLogger.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 
-            ep_size = float(cur_result.size / 1000000 / len(cur_result.episodes))
+            ep_size = float(cur_result.size / 1000000)
             if ep_size > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
                 sickrage.srCore.srLogger.info(
                     "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(
@@ -556,6 +556,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     for curEpNum in allEps:
                         for season in set([x.season for x in episodes]):
                             epObjs.append(show.getEpisode(season, curEpNum))
+
                     bestSeasonResult.episodes = epObjs
 
                     return [bestSeasonResult]
@@ -583,10 +584,10 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
 
                     # If this is a torrent all we can do is leech the entire torrent, user will have to select which eps not do download in his torrent client
                     else:
-
                         # Season result from Torrent Provider must be a full-season torrent, creating multi-ep result for it.
                         sickrage.srCore.srLogger.info(
                             "Adding multi-ep result for full-season torrent. Set the episodes you don't want to 'don't download' in your torrent client if desired!")
+
                         epObjs = []
                         for curEpNum in allEps:
                             for season in set([x.season for x in episodes]):

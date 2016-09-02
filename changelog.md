@@ -1,6 +1,7 @@
 # Changelog
 
-- * ef15c6a - 2016-08-31: BTN Fixed json rpc code 
+- * e11899f - 2016-09-01: Fixed issues with core queue code 
+- * 4634875 - 2016-08-31: BTN Fixed json rpc code 
 - * c04c0a7 - 2016-08-31: Updated auto-install of requirements to use &#x27;--user&#x27; flag 
 - * 0c973a4 - 2016-08-31: Added code to auto-install library requirements 
 - * 3f513cf - 2016-08-31: Cleaned up search code. Compacted code for searching provider cache. Added a search cache only param to provider searches. 
@@ -14,5 +15,4 @@
 - * dd2394b - 2016-08-27: Corrected fixing of unaired statuses on startup 
 - * 10acd0e - 2016-08-27: Version updated to 8.0.8 
 - * 11e2e41 - 2016-08-27: Fixed issues with NZB providers and retrieving categories 
-- * 97c64ec - 2016-08-25: Core queues use APScheduler now to execute jobs 
 

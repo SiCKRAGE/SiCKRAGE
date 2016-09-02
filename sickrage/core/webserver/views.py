@@ -2431,8 +2431,8 @@ class HomeAddShows(Home):
 
                 showid = show_name = indexer = None
                 for cur_provider in sickrage.srCore.metadataProviderDict.values():
-                    if not cur_provider.enabled:
-                        continue
+                    #if not cur_provider.enabled:
+                    #    continue
 
                     if not (showid and show_name):
                         (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
