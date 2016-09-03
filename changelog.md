@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4c640aa - 2016-09-02: Fixed issues with getting overall size of search results. Added code to append list of files and sizes relating to the search results from the providers. Added code for quality definition video file size constaint checking. 
+- * 54f7279 - 2016-09-03: Disabled raising exceptions for getting file sizes during provider searches 
+- * cd19664 - 2016-09-02: Fixed issues with getting overall size of search results. Added code to append list of files and sizes relating to the search results from the providers. Added code for quality definition video file size constaint checking. 
 - * 321616e - 2016-09-01: Fixed issues with core queue code 
 - * 4634875 - 2016-08-31: BTN Fixed json rpc code 
 - * c04c0a7 - 2016-08-31: Updated auto-install of requirements to use &#x27;--user&#x27; flag 

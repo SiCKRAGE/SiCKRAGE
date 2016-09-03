@@ -73,7 +73,6 @@ class GenericProvider(object):
         self.proper_strings = ['PROPER|REPACK|REAL']
 
         self.btCacheURLS = [
-            'http://reflektor.karmorra.info/torrent/{torrent_hash}.torrent',
             'http://thetorrent.org/torrent/{torrent_hash}.torrent',
             'http://btdig.com/torrent/{torrent_hash}.torrent',
             'http://torrage.info/torrent/{torrent_hash}.torrent'
@@ -570,7 +569,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url)
+                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
                 torrent = bencode.bdecode(resp.content)
 
                 total_length = 0
@@ -590,7 +589,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url)
+                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
                 torrent = bencode.bdecode(resp.content)
 
                 for file in torrent['info']['files']:
@@ -712,7 +711,7 @@ class NZBProvider(GenericProvider):
         size = -1
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url)
+            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
 
             total_length = 0
             for file in nzb_parser.parse(resp.content):
@@ -730,7 +729,7 @@ class NZBProvider(GenericProvider):
         files = {}
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url)
+            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
 
             for file in nzb_parser.parse(resp.content):
                 total_length = 0
