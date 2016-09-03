@@ -1,6 +1,7 @@
 # Changelog
 
-- * e11899f - 2016-09-01: Fixed issues with core queue code 
+- * 4c640aa - 2016-09-02: Fixed issues with getting overall size of search results. Added code to append list of files and sizes relating to the search results from the providers. Added code for quality definition video file size constaint checking. 
+- * 321616e - 2016-09-01: Fixed issues with core queue code 
 - * 4634875 - 2016-08-31: BTN Fixed json rpc code 
 - * c04c0a7 - 2016-08-31: Updated auto-install of requirements to use &#x27;--user&#x27; flag 
 - * 0c973a4 - 2016-08-31: Added code to auto-install library requirements 

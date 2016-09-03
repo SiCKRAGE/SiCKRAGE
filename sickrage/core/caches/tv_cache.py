@@ -355,6 +355,7 @@ class TVCache(object):
             result.version = curVersion
             result.content = None
             result.size = self.provider._get_size(url)
+            result.files = self.provider._get_files(url)
 
             # add it to the list
             if epObj not in neededEps:

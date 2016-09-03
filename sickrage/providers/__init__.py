@@ -73,7 +73,7 @@ class GenericProvider(object):
         self.proper_strings = ['PROPER|REPACK|REAL']
 
         self.btCacheURLS = [
-            'http://torrentproject.se/torrent/{torrent_hash}.torrent',
+            'http://reflektor.karmorra.info/torrent/{torrent_hash}.torrent',
             'http://thetorrent.org/torrent/{torrent_hash}.torrent',
             'http://btdig.com/torrent/{torrent_hash}.torrent',
             'http://torrage.info/torrent/{torrent_hash}.torrent'
@@ -240,6 +240,11 @@ class GenericProvider(object):
         """Gets the size from the item"""
         sickrage.srCore.srLogger.error("Provider type doesn't have _get_size() implemented yet")
         return -1
+
+    def _get_files(self, url):
+        """Gets dict of files with sizes from the item"""
+        sickrage.srCore.srLogger.error("Provider type doesn't have _get_files() implemented yet")
+        return {}
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
 
@@ -428,7 +433,8 @@ class GenericProvider(object):
             result.release_group = release_group
             result.version = version
             result.content = None
-            result.size = self._get_size(url)
+            result.size = item[2] or self._get_size(url)
+            result.files = self._get_files(url)
 
             sickrage.srCore.srLogger.debug(
                 "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(title, Quality.qualityStrings[quality], url))
@@ -575,9 +581,24 @@ class TorrentProvider(GenericProvider):
                     size = total_length
                     break
             except Exception:
-                size = -1
+                pass
 
         return size
+
+    def _get_files(self, url):
+        files = {}
+
+        for url in self.make_url(url):
+            try:
+                resp = sickrage.srCore.srWebSession.get(url)
+                torrent = bencode.bdecode(resp.content)
+
+                for file in torrent['info']['files']:
+                    files[file['path'][0]] = file['length']
+            except Exception:
+                pass
+
+        return files
 
     def _get_season_search_strings(self, ep_obj):
 
@@ -703,10 +724,24 @@ class NZBProvider(GenericProvider):
         except Exception:
             size = -1
 
-        if not size:
-            sickrage.srCore.srLogger.debug("Size was not found in your provider response")
-
         return int(size)
+
+    def _get_files(self, url):
+        files = {}
+
+        try:
+            resp = sickrage.srCore.srWebSession.get(url)
+
+            for file in nzb_parser.parse(resp.content):
+                total_length = 0
+                for segment in file.segments:
+                    total_length += segment.bytes
+
+                files[files.subject] = total_length
+        except Exception:
+            pass
+
+        return files
 
     def make_url(self, url):
         return super(NZBProvider, self).make_url(url)

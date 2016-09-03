@@ -25,6 +25,8 @@ import re
 import threading
 from datetime import date, timedelta
 
+from guessit.patterns.extension import video_exts
+
 import sickrage
 from sickrage.clients import getClientIstance
 from sickrage.clients.nzbget import NZBGet
@@ -244,23 +246,25 @@ def pickBestResult(results, show):
             continue
 
         if hasattr(cur_result, 'size'):
-            if cur_result.size == -1:
-                sickrage.srCore.srLogger.info(
-                    "Ignoring " + cur_result.name + " because we could not determine the size of it, ignoring it")
-                continue
-
             if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS and FailedHistory.hasFailed(cur_result.name,
                                                                                          cur_result.size,
                                                                                          cur_result.provider.name):
                 sickrage.srCore.srLogger.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 
-            ep_size = float(cur_result.size / 1000000)
-            if ep_size > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
-                sickrage.srCore.srLogger.info(
-                    "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(
-                        ep_size))
-                continue
+        # quality definition video file size constraints check
+        try:
+            for file, file_size in cur_result.files.items():
+                if not file.endswith(tuple(video_exts)):
+                    continue
+
+                file_size = float(file_size / 1000000)
+                if file_size > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
+                    raise (
+                    "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(file_size))
+        except Exception as e:
+            sickrage.srCore.srLogger.info(e.message)
+            continue
 
         if not bestResult:
             bestResult = cur_result
@@ -397,6 +401,7 @@ def searchForNeededEpisodes():
 
     return results
 
+
 def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, cacheOnly=False):
     """
     Walk providers for information on shows
@@ -458,7 +463,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
                     # update provider RSS cache
-                    providerObj.cache. updateCache()
+                    providerObj.cache.updateCache()
 
                     # search provider for episodes
                     searchResults = providerObj.findSearchResults(show,

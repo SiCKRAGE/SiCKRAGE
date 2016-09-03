@@ -105,6 +105,7 @@ class srSession(FuturesSession):
         response = super(srSession, self).request(method, url, *args, **kwargs).result()
         if raise_exceptions:
             response.raise_for_status()
+
         return response
 
     def download(self, url, filename, **kwargs):
