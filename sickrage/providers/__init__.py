@@ -235,9 +235,9 @@ class GenericProvider(object):
 
         return title, url
 
-    def _get_size(self, url):
+    def _get_size(self, item):
         """Gets the size from the item"""
-        sickrage.srCore.srLogger.error("Provider type doesn't have _get_size() implemented yet")
+        sickrage.srCore.srLogger.error("Provider type doesn't have ability to provide download size implemented yet")
         return -1
 
     def _get_files(self, url):
@@ -432,7 +432,7 @@ class GenericProvider(object):
             result.release_group = release_group
             result.version = version
             result.content = None
-            result.size = item[2] or self._get_size(url)
+            result.size = self._get_size(url)
             result.files = self._get_files(url)
 
             sickrage.srCore.srLogger.debug(
@@ -574,7 +574,7 @@ class TorrentProvider(GenericProvider):
 
                 total_length = 0
                 for file in torrent['info']['files']:
-                    total_length += file['length']
+                    total_length += int(file['length'])
 
                 if total_length > 0:
                     size = total_length
@@ -593,7 +593,7 @@ class TorrentProvider(GenericProvider):
                 torrent = bencode.bdecode(resp.content)
 
                 for file in torrent['info']['files']:
-                    files[file['path'][0]] = file['length']
+                    files[file['path'][0]] = int(file['length'])
             except Exception:
                 pass
 
@@ -716,14 +716,14 @@ class NZBProvider(GenericProvider):
             total_length = 0
             for file in nzb_parser.parse(resp.content):
                 for segment in file.segments:
-                    total_length += segment.bytes
+                    total_length += int(segment.bytes)
 
             if total_length > 0:
                 size = total_length
         except Exception:
-            size = -1
+            pass
 
-        return int(size)
+        return size
 
     def _get_files(self, url):
         files = {}
@@ -734,7 +734,7 @@ class NZBProvider(GenericProvider):
             for file in nzb_parser.parse(resp.content):
                 total_length = 0
                 for segment in file.segments:
-                    total_length += segment.bytes
+                    total_length += int(segment.bytes)
 
                 files[files.subject] = total_length
         except Exception:
