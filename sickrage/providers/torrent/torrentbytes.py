@@ -33,7 +33,7 @@ from sickrage.providers import TorrentProvider
 class TorrentBytesProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentBytesProvider, self).__init__("TorrentBytes", 'www.torrentbytes.net')
+        super(TorrentBytesProvider, self).__init__("TorrentBytes", 'www.torrentbytes.net', True)
 
         self.supportsBacklog = True
 

@@ -60,7 +60,7 @@ category_excluded = {'Sport': 22,
 
 class TNTVillageProvider(TorrentProvider):
     def __init__(self):
-        super(TNTVillageProvider, self).__init__("TNTVillage", 'forum.tntvillage.scambioetico.org')
+        super(TNTVillageProvider, self).__init__("TNTVillage", 'forum.tntvillage.scambioetico.org', True)
 
         self.supportsBacklog = True
 

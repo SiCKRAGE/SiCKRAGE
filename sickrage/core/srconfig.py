@@ -23,6 +23,7 @@ import base64
 import datetime
 import os
 import os.path
+import pickle
 import platform
 import re
 import urlparse
@@ -33,7 +34,7 @@ from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.classes import srIntervalTrigger
-from sickrage.core.common import SD, WANTED, SKIPPED
+from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_temp_dir
 from sickrage.core.nameparser import validator
@@ -454,6 +455,8 @@ class srConfig(object):
 
         self.DEFAULT_SHOWUPDATE_HOUR = 3
         self.SHOWUPDATE_HOUR = None
+
+        self.QUALITY_SIZES = {}
 
     def defaults(self):
         sickrage.srCore.srLogger.debug("Loading default config values")
@@ -1322,7 +1325,6 @@ class srConfig(object):
     ################################################################################
     # Check_setting_str                                                            #
     ################################################################################
-
     def check_setting_str(self, section, key, def_val="", silent=True):
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
 
@@ -1330,6 +1332,17 @@ class srConfig(object):
             censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
             if censored_regex.search(key) or (section, key) in self.CENSORED_ITEMS:
                 self.CENSORED_ITEMS[section, key] = my_val
+
+        if not silent:
+            print(key + " -> " + my_val)
+
+        return my_val
+
+    ################################################################################
+    # Check_setting_pickle                                                           #
+    ################################################################################
+    def check_setting_pickle(self, section, key, def_val="", silent=True):
+        my_val = pickle.loads(self.CONFIG_OBJ.get(section, {section: key}).get(key, pickle.dumps(def_val)))
 
         if not silent:
             print(key + " -> " + my_val)
@@ -1871,6 +1884,8 @@ class srConfig(object):
         self.FILTER_ROW = bool(self.check_setting_int('GUI', 'filter_row', 1))
         self.DISPLAY_ALL_SEASONS = bool(self.check_setting_int('General', 'display_all_seasons', 1))
 
+        self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes', Quality.qualitySizes)
+
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             providerSettings = self.check_setting_str('Providers', providerID) or {}
             for k, v in providerSettings.items():
@@ -2312,6 +2327,9 @@ class srConfig(object):
 
         new_config['ANIME'] = {}
         new_config['ANIME']['anime_split_home'] = int(self.ANIME_SPLIT_HOME)
+
+        new_config['Quality'] = {}
+        new_config['Quality']['sizes'] = pickle.dumps(self.QUALITY_SIZES)
 
         new_config['Providers'] = {}
         new_config['Providers']['providers_order'] = sickrage.srCore.providersDict.provider_order

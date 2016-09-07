@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 class SpeedCDProvider(TorrentProvider):
     def __init__(self):
 
-        super(SpeedCDProvider, self).__init__("Speedcd",'speed.cd')
+        super(SpeedCDProvider, self).__init__("Speedcd",'speed.cd', True)
 
         self.supportsBacklog = True
 

@@ -21,7 +21,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import itertools
 import time
 import urllib2
 
@@ -61,7 +60,6 @@ class CacheDBConnection(cache_db.CacheDB):
             # add version column to table if missing
             if not self.hasColumn(providerName, 'version'):
                 self.addColumn(providerName, 'version', "NUMERIC", "-1")
-
         except Exception as e:
             if str(e) != "table [" + providerName + "] already exists":
                 raise
@@ -283,10 +281,6 @@ class TVCache(object):
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group,
                  version]]
 
-    def searchCache(self, episode, manualSearch=False, downCurQuality=False):
-        neededEps = self.findNeededEpisodes(episode, manualSearch, downCurQuality)
-        return neededEps[episode] if episode in neededEps else []
-
     def listPropers(self, date=None):
         myDB = self._getDB()
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
@@ -297,27 +291,15 @@ class TVCache(object):
         propers_results = myDB.select(sql)
         return [x for x in propers_results if x['indexerid']]
 
-    def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
-        sqlResults = []
+    def searchCache(self, episode=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
-        cl = []
 
         if not episode:
             sqlResults = self._getDB().select("SELECT * FROM [" + self.providerID + "]")
-        elif type(episode) != list:
+        else:
             sqlResults = self._getDB().select(
                     "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
                     [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"])
-        else:
-            for epObj in episode:
-                cl.append([
-                    "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ? AND quality IN (" + ",".join(
-                            [str(x) for x in epObj.wantedQuality]) + ")",
-                    [epObj.show.indexerid, epObj.season, "%|" + str(epObj.episode) + "|%"]])
-
-            if len(cl) > 0:
-                sqlResults = list(itertools.chain(*self._getDB().mass_action(cl)))
-                del cl  # cleanup
 
         # for each cache entry
         for curResult in sqlResults:
@@ -372,12 +354,14 @@ class TVCache(object):
             result.release_group = curReleaseGroup
             result.version = curVersion
             result.content = None
+            result.size = self.provider._get_size(url)
+            result.files = self.provider._get_files(url)
 
             # add it to the list
             if epObj not in neededEps:
-                neededEps[epObj] = [result]
+                neededEps[epObj.episode] = [result]
             else:
-                neededEps[epObj].append(result)
+                neededEps[epObj.episode].append(result)
 
         # datetime stamp this search so cache gets cleared
         self.setLastSearch()

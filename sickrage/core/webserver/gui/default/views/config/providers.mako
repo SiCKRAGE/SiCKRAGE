@@ -5,9 +5,8 @@
     from sickrage.providers.torrent import thepiratebay
     from sickrage.core.helpers import anon_url
 %>
-<%block name="content">
 
-
+<%block name="scripts">
     <script type="text/javascript">
         $(document).ready(function () {
             % if sickrage.srCore.srConfig.USE_NZBS:
@@ -16,6 +15,7 @@
                             '${providerID}',
                             '${providerObj.name}',
                             '${providerObj.urls["base_url"]}',
+                            '${("false", "true")[providerObj.key > 0]}',
                             '${providerObj.key}',
                             '${providerObj.catIDs}',
                             '${int(providerObj.default)}',
@@ -29,6 +29,7 @@
                             '${providerID}',
                             '${providerObj.name}',
                             '${providerObj.urls["base_url"]}',
+                            '${("false", "true")[providerObj.cookies is not None]}',
                             '${providerObj.cookies}',
                             '${providerObj.titleTAG}',
                             '${("false", "true")[bool(sickrage.srCore.srConfig.USE_TORRENTS)]}');
@@ -36,7 +37,9 @@
             % endif
         });
     </script>
+</%block>
 
+<%block name="content">
     <div id="config">
         <div id="ui-content">
 
@@ -68,8 +71,8 @@
                             % endif
 
                             <div>
-                                <p class="note">* Provider does not support backlog searches at this time.</p>
-                                <p class="note">! Provider is <b>NOT WORKING</b>.</p>
+                                <p class="note"><span class="red-text">*</span> Provider does not support backlog searches at this time.</p>
+                                <p class="note"><span class="red-text">!</span> Provider is <b>NOT WORKING</b>.</p>
                             </div>
                         </div>
 
@@ -87,9 +90,9 @@
                                                     src="/images/providers/${providerObj.imageName}"
                                                     alt="${providerObj.name}" title="${providerObj.name}" width="16"
                                                     height="16" style="vertical-align:middle;"/></a>
-                                            <span style="vertical-align:middle;">${providerObj.name}</span>
-                                            ${('*', '')[bool(providerObj.supportsBacklog)]}
-                                            <span class="ui-icon ui-icon-arrowthick-2-n-s pull-right"
+                                            <label for="enable_${providerID}" style="vertical-align:middle;">${providerObj.name}</label>
+                                            ${('<span class="red-text">*</span>', '')[bool(providerObj.supportsBacklog)]}
+                                            <span class="ui-icon ui-icon-gear pull-right"
                                                   style="vertical-align:middle;"></span>
                                             <span class="ui-icon ${('ui-icon-unlocked','ui-icon-locked')[bool(providerObj.private)]} pull-right"
                                                   style="vertical-align:middle;"></span>
@@ -127,7 +130,7 @@
 
                             <!-- start div for editing providers //-->
                             % for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
-                                <div class="providerDiv" id="${providerID}">
+                                <div class="providerDiv" id="${providerID}Div">
                                     % if not providerObj.default:
                                         <div class="field-pair">
                                             <label for="${providerID}_url">
@@ -140,6 +143,7 @@
                                                 </span>
                                             </label>
                                         </div>
+                                    % endif
 
                                         <div class="field-pair">
                                             <label for="${providerID}_hash">
@@ -153,13 +157,12 @@
                                                 </span>
                                             </label>
                                         </div>
-                                    % endif
 
                                     % if hasattr(providerObj, 'enable_daily'):
                                         <div class="field-pair">
                                             <label for="${providerID}_enable_daily">
                                                 <span class="component-title">Enable daily searches</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_daily"
                                                        id="${providerID}_enable_daily" ${('', 'checked="checked"')[bool(providerObj.enable_daily)]}/>
                                                 <p>enable provider to perform daily searches.</p>
@@ -172,7 +175,7 @@
                                         <div class="field-pair${(' hidden', '')[providerObj.supportsBacklog]}">
                                             <label for="${providerID}_enable_backlog">
                                                 <span class="component-title">Enable backlog searches</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_backlog"
                                                        id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supportsBacklog)]}/>
                                                 <p>enable provider to perform backlog searches.</p>
@@ -184,8 +187,8 @@
                                     % if hasattr(providerObj, 'search_fallback'):
                                         <div class="field-pair">
                                             <label for="${providerID}_search_fallback">
-                                                <span class="component-title">Season search fallback</span>
-                                            <span class="component-desc">
+                                                <span class="component-title">Search mode fallback</span>
+                                                <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_search_fallback"
                                                        id="${providerID}_search_fallback" ${('', 'checked="checked"')[bool(providerObj.search_fallback)]}/>
                                                 <p>when searching for a complete season depending on search mode you may
@@ -200,7 +203,7 @@
                                         <div class="field-pair">
                                             <label>
                                                 <span class="component-title">Season search mode</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <p>when searching for complete seasons you can choose to have it look
                                                     for season packs only, or choose to have it build a complete season
                                                     from just single episodes.</p>
@@ -208,7 +211,7 @@
                                             </label>
                                             <label>
                                                 <span class="component-title"></span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="radio" name="${providerID}_search_mode"
                                                        id="${providerID}_search_mode_sponly"
                                                        value="sponly" ${('', 'checked="checked"')[providerObj.search_mode=="sponly"]}/>season packs only.
@@ -216,7 +219,7 @@
                                             </label>
                                             <label>
                                                 <span class="component-title"></span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="radio" name="${providerID}_search_mode"
                                                        id="${providerID}_search_mode_eponly"
                                                        value="eponly" ${('', 'checked="checked"')[providerObj.search_mode=="eponly"]}/>episodes only.
@@ -233,7 +236,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_username">
                                                 <span class="component-title">Username:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="text" name="${providerID}_username"
                                                        value="${providerObj.username}"
                                                        class="form-control input-sm input350" autocapitalize="off"/>
@@ -246,7 +249,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_api_key">
                                                 <span class="component-title">API key:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="text" name="${providerID}_api_key"
                                                        value="${providerObj.api_key}"
                                                        class="form-control input-sm input350" autocapitalize="off"/>
@@ -260,7 +263,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_enable_daily">
                                                 <span class="component-title">Enable daily searches</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_daily"
                                                        id="${providerID}_enable_daily" ${('', 'checked="checked"')[bool(providerObj.enable_daily)]}/>
                                                 <p>enable provider to perform daily searches.</p>
@@ -273,7 +276,7 @@
                                         <div class="field-pair${(' hidden', '')[providerObj.supportsBacklog]}">
                                             <label for="${providerID}_enable_backlog">
                                                 <span class="component-title">Enable backlog searches</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_backlog"
                                                        id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supportsBacklog)]}/>
                                                 <p>enable provider to perform backlog searches.</p>
@@ -285,8 +288,8 @@
                                     % if hasattr(providerObj, 'search_fallback'):
                                         <div class="field-pair">
                                             <label for="${providerID}_search_fallback">
-                                                <span class="component-title">Season search fallback</span>
-                                            <span class="component-desc">
+                                                <span class="component-title">Search mode fallback</span>
+                                                <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_search_fallback"
                                                        id="${providerID}_search_fallback" ${('', 'checked="checked"')[bool(providerObj.search_fallback)]}/>
                                                 <p>when searching for a complete season depending on search mode you may
@@ -339,7 +342,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_api_key">
                                                 <span class="component-title">Api key:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="text" name="${providerID}_api_key"
                                                        id="${providerID}_api_key"
                                                        value="${providerObj.api_key}"
@@ -354,7 +357,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_digest">
                                                 <span class="component-title">Digest:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="text" name="${providerID}_digest" id="${providerID}_digest"
                                                        value="${providerObj.digest}"
                                                        class="form-control input-sm input350"
@@ -368,7 +371,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_hash">
                                                 <span class="component-title">Hash:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="text" name="${providerID}_hash" id="${providerID}_hash"
                                                        value="${providerObj.hash}"
                                                        class="form-control input-sm input350"
@@ -382,7 +385,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_username">
                                                 <span class="component-title">Username:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="text" name="${providerID}_username"
                                                        id="${providerID}_username"
                                                        value="${providerObj.username}"
@@ -397,7 +400,7 @@
                                         <div class="field-pair">
                                             <label for="${providerID}_password">
                                                 <span class="component-title">Password:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="password" name="${providerID}_password"
                                                        id="${providerID}_password" value="${providerObj.password}"
                                                        class="form-control input-sm input350" autocapitalize="off"/>
@@ -441,7 +444,7 @@
                                             <label for="${providerID}_ratio">
                                             <span class="component-title"
                                                   id="${providerID}_ratio_desc">Seed ratio:</span>
-                                            <span class="component-desc">
+                                                <span class="component-desc">
                                                 <input type="number" step="0.1" name="${providerID}_ratio"
                                                        id="${providerID}_ratio"
                                                        value="${providerObj.ratio}"
@@ -600,7 +603,7 @@
                                     % if hasattr(providerObj, 'search_fallback'):
                                         <div class="field-pair">
                                             <label for="${providerID}_search_fallback">
-                                                <span class="component-title">Season search fallback</span>
+                                                <span class="component-title">Search mode fallback</span>
                                                 <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_search_fallback"
                                                            id="${providerID}_search_fallback" ${('', 'checked="checked"')[bool(providerObj.search_fallback)]}/>
@@ -691,7 +694,7 @@
                                 <div class="field-pair">
                                     <label for="newznab_string">
                                         <span class="component-title">Select provider:</span>
-                                <span class="component-desc">
+                                        <span class="component-desc">
                                     <select id="editANewznabProvider" class="form-control input-sm">
                                         <option value="addNewznab">-- add new provider --</option>
                                     </select>
@@ -741,8 +744,10 @@
                                         </label>
                                         <label>
                                             <span class="component-title">&nbsp;</span>
-                                <span class="component-desc"><input class="btn" type="button" class="newznab_cat_update"
-                                                                    id="newznab_cat_update" value="Update Categories"/>
+                                            <span class="component-desc"><input class="btn" type="button"
+                                                                                class="newznab_cat_update"
+                                                                                id="newznab_cat_update"
+                                                                                value="Update Categories"/>
                                     <span class="updating_categories"></span>
                                 </span>
                                         </label>
@@ -775,7 +780,7 @@
                                 <div class="field-pair">
                                     <label for="torrentrss_string">
                                         <span class="component-title">Select provider:</span>
-                            <span class="component-desc">
+                                        <span class="component-desc">
                                 <select id="editATorrentRssProvider" class="form-control input-sm">
                                     <option value="addTorrentRss">-- add new provider --</option>
                                 </select>

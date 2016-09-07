@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class TitansOfTVProvider(TorrentProvider):
     def __init__(self):
-        super(TitansOfTVProvider, self).__init__('TitansOfTV','titansof.tv')
+        super(TitansOfTVProvider, self).__init__('TitansOfTV','titansof.tv', True)
         self.supportsBacklog = True
 
         self.supportsAbsoluteNumbering = True

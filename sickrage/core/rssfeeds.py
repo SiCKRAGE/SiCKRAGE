@@ -37,5 +37,5 @@ def getFeed(url, request_headers=None, handlers=None):
             request_headers=request_headers,
             handlers=handlers
         )
-    except Exception:
+    except Exception as e:
         return FeedParserDict()

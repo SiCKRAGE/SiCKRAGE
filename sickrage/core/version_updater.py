@@ -71,7 +71,7 @@ class srVersionUpdater(object):
                                 sickrage.srCore.srLogger.info("Update failed!")
                                 sickrage.srCore.srNotifications.message('Update failed!')
 
-                self.check_for_new_news(force)
+                self.check_for_new_news()
         finally:
             self.amActive = False
 
@@ -447,6 +447,7 @@ class GitUpdateManager(UpdateManager):
         if exit_status == 0:
             if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
                 srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
+            self.install_requirements()
             return True
 
         return False
@@ -477,9 +478,14 @@ class GitUpdateManager(UpdateManager):
 
             _, _, exit_status = self._run_git(self._find_working_git, 'checkout -f ' + branch)
             if exit_status == 0:
+                self.install_requirements()
                 return True
 
         return False
+
+    def install_requirements(self):
+        # install requirements
+        subprocess.call("pip install --no-cache-dir --user -r {}".format(sickrage.REQS_FILE), shell=True)
 
     @property
     def current_branch(self):

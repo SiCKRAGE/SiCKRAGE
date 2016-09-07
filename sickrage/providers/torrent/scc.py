@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class SCCProvider(TorrentProvider):
     def __init__(self):
 
-        super(SCCProvider, self).__init__("SceneAccess",'sceneaccess.eu')
+        super(SCCProvider, self).__init__("SceneAccess",'sceneaccess.eu', True)
 
         self.supportsBacklog = True
 

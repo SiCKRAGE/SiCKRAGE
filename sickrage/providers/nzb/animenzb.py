@@ -32,7 +32,7 @@ from sickrage.providers import NZBProvider
 
 class AnimeNZBProvider(NZBProvider):
     def __init__(self):
-        super(AnimeNZBProvider, self).__init__("AnimeNZB", 'animenzb.com')
+        super(AnimeNZBProvider, self).__init__("AnimeNZB", 'animenzb.com', False)
         self.supportsBacklog = False
         self.supportsAbsoluteNumbering = True
         self.anime_only = True

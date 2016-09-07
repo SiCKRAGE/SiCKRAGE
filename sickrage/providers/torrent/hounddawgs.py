@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
-        super(HoundDawgsProvider, self).__init__("HoundDawgs",'hounddawgs.org')
+        super(HoundDawgsProvider, self).__init__("HoundDawgs",'hounddawgs.org', True)
 
         self.supportsBacklog = True
 

@@ -46,7 +46,7 @@ class srQueue(PriorityQueue):
         self.min_priority = 0
         self.amActive = False
         self.stop = threading.Event()
-        self.threads  = []
+        self.threads = []
 
     @property
     def name(self):
@@ -85,30 +85,24 @@ class srQueue(PriorityQueue):
         :param force: Force queue processing (currently not implemented)
         """
 
-        if self.amActive:
-            return
+        self.amActive = True
 
         with self.lock:
-            self.amActive = True
-
-            while not self.empty() and not self.stop.isSet():
+            while not self.empty() and self.currentItem is None and not self.stop.isSet():
                 if self.queue[0][0] >= self.min_priority:
-                    item = self.get()
-                    sickrage.srCore.srScheduler.add_job(
-                        self.callback,
-                        args=[item],
-                        name=item.name,
-                        id=item.name
-                    )
+                    self.currentItem = self.get()
+                    sickrage.srCore.srScheduler.add_job(self.callback, name=self.currentItem.name)
 
-            self.amActive = False
+        self.amActive = False
 
-    def callback(self, item):
-        item.run()
-        item.finish()
+    def callback(self):
+        self.currentItem.run()
+        self.currentItem.finish()
+        self.currentItem = None
 
     def shutdown(self):
         self.stop.set()
+
 
 class QueueItem(object):
     def __init__(self, name, action_id=0):

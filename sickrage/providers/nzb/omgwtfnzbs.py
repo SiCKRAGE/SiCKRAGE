@@ -33,7 +33,7 @@ from sickrage.providers import NZBProvider
 
 class OmgwtfnzbsProvider(NZBProvider):
     def __init__(self):
-        super(OmgwtfnzbsProvider, self).__init__("omgwtfnzbs", 'omgwtfnzbs.org')
+        super(OmgwtfnzbsProvider, self).__init__("omgwtfnzbs", 'omgwtfnzbs.org', True)
 
         self.username = None
         self.api_key = None

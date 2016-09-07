@@ -15,7 +15,6 @@ jsonrpclib == 0.1.7
 Mako == 1.0.4
 markdown2 == 2.3.1
 oauth2 == 1.9.0.post1
-pip == 8.1.0
 setuptools == 20.2.2
 profilehooks == 1.8.1
 requests == 2.10.0
@@ -28,6 +27,7 @@ xmltodict == 0.10.1
 MultipartPostHandler == 0.1.0
 beautifulsoup4 == 4.4.1
 python_dateutil == 2.5.3
+pynzb == 0.1.0
 futures == 3.0.5
 gi == 1.2
 PyGithub == 1.26.0

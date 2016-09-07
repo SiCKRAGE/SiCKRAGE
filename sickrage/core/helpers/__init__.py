@@ -111,7 +111,7 @@ def autoType(s):
         except ValueError:
             pass
 
-    return (s, None)[s.lower() == "none"]
+    return (s, '')[s.lower() == "none"]
 
 
 def fixGlob(path):

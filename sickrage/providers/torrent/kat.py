@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class KATProvider(TorrentProvider):
     def __init__(self):
-        super(KATProvider, self).__init__("KickAssTorrents", 'kat.am')
+        super(KATProvider, self).__init__("KickAssTorrents", 'kat.am', False)
 
         self.supportsBacklog = True
 

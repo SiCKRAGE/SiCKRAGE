@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
-        super(IPTorrentsProvider, self).__init__("IPTorrents", 'iptorrents.eu')
+        super(IPTorrentsProvider, self).__init__("IPTorrents", 'iptorrents.eu', True)
 
         self.supportsBacklog = True
 

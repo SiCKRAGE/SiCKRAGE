@@ -155,7 +155,7 @@ class DailySearchQueueItem(QueueItem):
         self.started = True
 
         try:
-            sickrage.srCore.srLogger.info("Beginning daily search for new episodes")
+            sickrage.srCore.srLogger.info("Starting daily search for new episodes")
             foundResults = searchForNeededEpisodes()
             if foundResults:
                 for result in foundResults:
@@ -166,7 +166,7 @@ class DailySearchQueueItem(QueueItem):
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
             else:
-                sickrage.srCore.srLogger.info("No needed episodes found")
+                sickrage.srCore.srLogger.info("Finished daily search for new episodes")
         except Exception:
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
@@ -186,7 +186,7 @@ class ManualSearchQueueItem(QueueItem):
         self.started = True
 
         try:
-            sickrage.srCore.srLogger.info("Beginning manual search for: [" + self.segment.prettyName() + "]")
+            sickrage.srCore.srLogger.info("Starting manual search for: [" + self.segment.prettyName() + "]")
             searchResult = searchProviders(self.show, [self.segment], True, self.downCurQuality)
             if searchResult:
                 # just use the first result for now
@@ -224,7 +224,7 @@ class BacklogQueueItem(QueueItem):
 
         if not self.show.paused:
             try:
-                sickrage.srCore.srLogger.info("Beginning backlog search for: [" + self.show.name + "]")
+                sickrage.srCore.srLogger.info("Starting backlog search for: [" + self.show.name + "]")
                 searchResult = searchProviders(self.show, self.segment, False)
                 if searchResult:
                     for result in searchResult:
@@ -235,7 +235,7 @@ class BacklogQueueItem(QueueItem):
                         # give the CPU a break
                         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
                 else:
-                    sickrage.srCore.srLogger.info("No needed episodes found during backlog search for: [" + self.show.name + "]")
+                    sickrage.srCore.srLogger.info("Finished backlog search for: [" + self.show.name + "]")
             except Exception:
                 sickrage.srCore.srLogger.debug(traceback.format_exc())
 
@@ -265,7 +265,7 @@ class FailedQueueItem(QueueItem):
                     History.logFailed(epObj, release, provider)
 
                 FailedHistory.revertFailedEpisode(epObj)
-                sickrage.srCore.srLogger.info("Beginning failed download search for: [" + epObj.prettyName() + "]")
+                sickrage.srCore.srLogger.info("Starting failed download search for: [" + epObj.prettyName() + "]")
 
             # If it is wanted, self.downCurQuality doesnt matter
             # if it isnt wanted, we need to make sure to not overwrite the existing ep that we reverted to!

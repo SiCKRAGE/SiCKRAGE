@@ -21,8 +21,8 @@
 from __future__ import unicode_literals
 
 import os
-import sys
 import site
+import sys
 
 if __name__ == '__main__':
     # add sickrage libs path to python system path

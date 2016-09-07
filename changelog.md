@@ -1,20 +1,12 @@
 # Changelog
 
-- * bee1fc2 - 2016-08-28: Updated version to 8.0.11 
-- * e2793c2 - 2016-08-27: Fixed issues with NZB searches and params 
-- * 9809565 - 2016-08-27: Updated to version 8.0.9 
-- * dd2394b - 2016-08-27: Corrected fixing of unaired statuses on startup 
-- * 10acd0e - 2016-08-27: Version updated to 8.0.8 
-- * 11e2e41 - 2016-08-27: Fixed issues with NZB providers and retrieving categories 
-- * 97c64ec - 2016-08-25: Core queues use APScheduler now to execute jobs 
-- * 9fa8f46 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
-- * b96c56b - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
-- * 22d9c40 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
-- * e5b69c8 - 2016-08-24: Remove TorrentProject and btDigg torrent providers. Added back torrage with new url. 
-- * aa02f47 - 2016-08-22: Corrected session exception handler code. MainDB fixes for unaired shows now uses default ep statuses. 
-- * f4d6cd0 - 2016-08-21: Using error instead of exception for session wrapper 
-- * ed27f96 - 2016-08-21: Fixed some issues with formatting of error messages 
-- * 2b18135 - 2016-08-21: Fixed issues with episode statuses stuck on UNAIRED 
-- * bb5489d - 2016-08-21: Updated regexes file encoding 
-- * cb62854 - 2016-08-21: Updated Regexes. Best season search results uses set instead of list to be unique. 
+- * 6f76ac2 - 2016-09-07: Added code to install requirements via pip after a git update or git checkout is performed. 
+- * e4a8a8a - 2016-09-04: Fixed KeyError for get_size function 
+- * 5494ed7 - 2016-09-03: Disabled raising exceptions for getting file sizes during provider searches 
+- * cd19664 - 2016-09-02: Fixed issues with getting overall size of search results. Added code to append list of files and sizes relating to the search results from the providers. Added code for quality definition video file size constaint checking. 
+- * 321616e - 2016-09-01: Fixed issues with core queue code 
+- * 4634875 - 2016-08-31: BTN Fixed json rpc code 
+- * c04c0a7 - 2016-08-31: Updated auto-install of requirements to use &#x27;--user&#x27; flag 
+- * 0c973a4 - 2016-08-31: Added code to auto-install library requirements 
+- * 3f513cf - 2016-08-31: Cleaned up search code. Compacted code for searching provider cache. Added a search cache only param to provider searches. 
 

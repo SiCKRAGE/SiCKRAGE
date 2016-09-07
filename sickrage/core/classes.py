@@ -77,6 +77,9 @@ class SearchResult(object):
         # result type
         self.resultType = ''
 
+        # dict of files and their sizes
+        self.files = {}
+
     def __str__(self):
 
         if self.provider is None:
