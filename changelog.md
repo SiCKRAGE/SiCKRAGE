@@ -1,5 +1,6 @@
 # Changelog
 
+- * 010f0ac - 2016-09-07: Updated version to 8.1.0 
 - * 6f76ac2 - 2016-09-07: Added code to install requirements via pip after a git update or git checkout is performed. 
 - * e4a8a8a - 2016-09-04: Fixed KeyError for get_size function 
 - * 5494ed7 - 2016-09-03: Disabled raising exceptions for getting file sizes during provider searches 
