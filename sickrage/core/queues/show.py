@@ -106,7 +106,7 @@ class srShowQueue(srQueue):
             raise CantUpdateShowException(
                 str(show.name) + " is in the process of being updated, can't update again until it's done.")
 
-        return self.put((QueueItemUpdate(show), QueueItemForceUpdate(show))[force])
+        return self.put(QueueItemForceUpdate(show)) if force else self.put(QueueItemUpdate(show))
 
     def refreshShow(self, show, force=False):
 
@@ -199,7 +199,7 @@ class ShowQueueItem(QueueItem):
     - show being subtitled
     """
 
-    def __init__(self, action_id, show):
+    def __init__(self, show, action_id):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
         self.show = show
 
@@ -222,7 +222,7 @@ class ShowQueueItem(QueueItem):
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
                  scene, paused, blacklist, whitelist, default_status_after, archive):
-        super(QueueItemAdd, self).__init__(ShowQueueActions.ADD, None)
+        super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
         self.indexer = indexer
         self.indexer_id = indexer_id
         self.showDir = showDir
@@ -464,13 +464,12 @@ class QueueItemAdd(ShowQueueItem):
 
     def _finishEarly(self):
         if self.show:
-            super(QueueItemAdd, self).finish()
             sickrage.srCore.SHOWQUEUE.removeShow(self.show)
 
 
 class QueueItemRefresh(ShowQueueItem):
     def __init__(self, show=None, force=False):
-        super(QueueItemRefresh, self).__init__(ShowQueueActions.REFRESH, show)
+        super(QueueItemRefresh, self).__init__(show, ShowQueueActions.REFRESH)
 
         # do refreshes first because they're quick
         self.priority = QueuePriorities.NORMAL
@@ -499,7 +498,7 @@ class QueueItemRefresh(ShowQueueItem):
 
 class QueueItemRename(ShowQueueItem):
     def __init__(self, show=None):
-        super(QueueItemRename, self).__init__(ShowQueueActions.RENAME, show)
+        super(QueueItemRename, self).__init__(show, ShowQueueActions.RENAME)
 
     def run(self):
         super(QueueItemRename, self).run()
@@ -540,7 +539,7 @@ class QueueItemRename(ShowQueueItem):
 
 class QueueItemSubtitle(ShowQueueItem):
     def __init__(self, show=None):
-        super(QueueItemSubtitle, self).__init__(ShowQueueActions.SUBTITLE, show)
+        super(QueueItemSubtitle, self).__init__(show, ShowQueueActions.SUBTITLE)
 
     def run(self):
         super(QueueItemSubtitle, self).run()
@@ -551,8 +550,8 @@ class QueueItemSubtitle(ShowQueueItem):
 
 
 class QueueItemUpdate(ShowQueueItem):
-    def __init__(self, action_id=ShowQueueActions.UPDATE, show=None):
-        super(QueueItemUpdate, self).__init__(action_id, show)
+    def __init__(self, show=None, action_id=ShowQueueActions.UPDATE):
+        super(QueueItemUpdate, self).__init__(show, action_id)
         self.force = False
 
     def run(self):
@@ -636,20 +635,19 @@ class QueueItemUpdate(ShowQueueItem):
         scrub(IndexerEpList)
 
         sickrage.srCore.srLogger.info("Finished updates for show: {}".format(self.show.name))
-        super(QueueItemUpdate, self).finish()
 
         # refresh show
         sickrage.srCore.SHOWQUEUE.refreshShow(self.show, self.force)
 
 class QueueItemForceUpdate(QueueItemUpdate):
     def __init__(self, show=None):
-        super(QueueItemForceUpdate, self).__init__(ShowQueueActions.FORCEUPDATE, show)
+        super(QueueItemForceUpdate, self).__init__(show, ShowQueueActions.FORCEUPDATE)
         self.force = True
 
 
 class QueueItemRemove(ShowQueueItem):
     def __init__(self, show=None, full=False):
-        super(QueueItemRemove, self).__init__(ShowQueueActions.REMOVE, show)
+        super(QueueItemRemove, self).__init__(show, ShowQueueActions.REMOVE)
 
         # lets make sure this happens before any other high priority actions
         self.priority = QueuePriorities.HIGH + QueuePriorities.HIGH
