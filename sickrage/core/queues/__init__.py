@@ -88,7 +88,14 @@ class srQueue(PriorityQueue):
         self.amActive = True
 
         with self.lock:
-            while not self.empty() and self.currentItem is None and not self.stop.isSet():
+            # only start a new task if one isn't already going
+            if self.currentItem is None or self.currentItem.isAlive():
+                # if the thread is dead then the current item should be finished
+                if self.currentItem:
+                    self.currentItem.finish()
+                    self.currentItem = None
+
+            while not self.empty() and not self.stop.isSet():
                 if self.queue[0][0] >= self.min_priority:
                     self.currentItem = self.get()
                     sickrage.srCore.srScheduler.add_job(self.callback, name=self.currentItem.name)
@@ -98,7 +105,6 @@ class srQueue(PriorityQueue):
     def callback(self):
         self.currentItem.run()
         self.currentItem.finish()
-        self.currentItem = None
 
     def shutdown(self):
         self.stop.set()
