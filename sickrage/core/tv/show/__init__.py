@@ -475,7 +475,8 @@ class TVShow(object):
 
         return ep_list
 
-    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, forceIndexer=False):
+    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None,
+                   forceIndexer=False):
 
         # if we get an anime get the real season and episode
         if self.is_anime and absolute_number and not season and not episode:
@@ -1183,9 +1184,11 @@ class TVShow(object):
 
         tmdbsimple.base.TMDB._request = _request
         if not self.tmdbid:
-            tmdb_result = tmdbsimple.Search().tv(query=self.name)['results']
-            if len(tmdb_result) > 0:
-                self.tmdbid = tmdb_result[0]['id']
+            tmdb_query = tmdbsimple.Search().tv(query=self.name)
+            if 'results' in tmdb_query:
+                self.tmdbid = tmdb_query['results'][0]['id']
+            elif 'errors' in tmdb_query:
+                sickrage.srCore.srLogger.debug(str(self.indexerid) + ": TMDb Error: {}".format(tmdb_query['errors']))
 
         if self.tmdbid:
             tmdb_info['tmdb_id'] = self.tmdbid
