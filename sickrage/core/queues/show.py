@@ -106,8 +106,7 @@ class srShowQueue(srQueue):
             raise CantUpdateShowException(
                 str(show.name) + " is in the process of being updated, can't update again until it's done.")
 
-        self.put((QueueItemUpdate(show), QueueItemForceUpdate(show))[force])
-        return self.put(QueueItemRefresh(show, force=force))
+        return self.put((QueueItemUpdate(show), QueueItemForceUpdate(show))[force])
 
     def refreshShow(self, show, force=False):
 
@@ -209,8 +208,7 @@ class ShowQueueItem(QueueItem):
         super(ShowQueueItem, self).finish()
 
     def isInQueue(self):
-        return self in sickrage.srCore.SHOWQUEUE.queue + [
-            sickrage.srCore.SHOWQUEUE.currentItem]  # @UndefinedVariable
+        return self in sickrage.srCore.SHOWQUEUE.queue + [sickrage.srCore.SHOWQUEUE.currentItem]
 
     @property
     def show_name(self):
@@ -466,6 +464,7 @@ class QueueItemAdd(ShowQueueItem):
 
     def _finishEarly(self):
         if self.show:
+            super(QueueItemAdd, self).finish()
             sickrage.srCore.SHOWQUEUE.removeShow(self.show)
 
 
@@ -637,6 +636,10 @@ class QueueItemUpdate(ShowQueueItem):
         scrub(IndexerEpList)
 
         sickrage.srCore.srLogger.info("Finished updates for show: {}".format(self.show.name))
+        super(QueueItemUpdate, self).finish()
+
+        # refresh show
+        sickrage.srCore.SHOWQUEUE.refreshShow(self.show, self.force)
 
 class QueueItemForceUpdate(QueueItemUpdate):
     def __init__(self, show=None):
