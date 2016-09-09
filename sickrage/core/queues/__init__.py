@@ -90,7 +90,7 @@ class srQueue(PriorityQueue):
         with self.lock:
             while not self.empty() and not self.stop.isSet():
                 # only start a new task if one isn't already going
-                if self.currentItem is None or not self.currentItem.isAlive():
+                if self.currentItem is None or not self.currentItem.inProgress():
                     # if the thread is dead then the current item should be finished
                     if self.currentItem:
                         self.currentItem.finish()
