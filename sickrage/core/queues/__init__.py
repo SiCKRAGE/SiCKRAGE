@@ -88,17 +88,17 @@ class srQueue(PriorityQueue):
         self.amActive = True
 
         with self.lock:
-            # only start a new task if one isn't already going
-            if self.currentItem is None or self.currentItem.isAlive():
-                # if the thread is dead then the current item should be finished
-                if self.currentItem:
-                    self.currentItem.finish()
-                    self.currentItem = None
-
             while not self.empty() and not self.stop.isSet():
-                if self.queue[0][0] >= self.min_priority:
-                    self.currentItem = self.get()
-                    sickrage.srCore.srScheduler.add_job(self.callback, name=self.currentItem.name)
+                # only start a new task if one isn't already going
+                if self.currentItem is None or not self.currentItem.isAlive():
+                    # if the thread is dead then the current item should be finished
+                    if self.currentItem:
+                        self.currentItem.finish()
+                        self.currentItem = None
+
+                    if self.queue[0][0] >= self.min_priority:
+                        self.currentItem = self.get()
+                        sickrage.srCore.srScheduler.add_job(self.callback, name=self.currentItem.name)
 
         self.amActive = False
 
