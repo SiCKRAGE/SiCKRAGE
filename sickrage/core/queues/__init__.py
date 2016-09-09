@@ -90,9 +90,6 @@ class srQueue(PriorityQueue):
         with self.lock:
             while not self.empty() and not self.stop.isSet():
                 if self.currentItem is None or not self.currentItem.inProgress:
-                    if self.currentItem:
-                        self.currentItem = None
-
                     if self.queue[0][0] >= self.min_priority:
                         self.currentItem = self.get()
                         sickrage.srCore.srScheduler.add_job(self.callback, name=self.currentItem.name)
@@ -102,6 +99,7 @@ class srQueue(PriorityQueue):
     def callback(self):
         self.currentItem.run()
         self.currentItem.finish()
+        self.currentItem = None
 
     def shutdown(self):
         self.stop.set()
