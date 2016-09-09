@@ -1,6 +1,7 @@
 # Changelog
 
-- * 060d29b - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
+- * 943a3be - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
+- * 577c75a - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
 - * 06f398c - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
 - * 3663dd7 - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
 - * 4ded8bb - 2016-09-07: Updated version to 8.1.0 
