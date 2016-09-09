@@ -93,8 +93,12 @@ class srQueue(PriorityQueue):
                 if self.currentItem is None or not self.currentItem.inProgress:
                     try:
                         self.currentItem = self.get()
-                        if self.currentItem.priority >= self.min_priority:
-                            sickrage.srCore.srScheduler.add_job(self.callback, name=self.currentItem.name)
+                        if self.currentItem.priority < self.min_priority:
+                            self.put(self.currentItem)
+                            self.currentItem = None
+                            continue
+
+                        sickrage.srCore.srScheduler.add_job(self.callback, name=self.currentItem.name)
                     except Exception:
                         self.currentItem = None
                 sleep(1)
