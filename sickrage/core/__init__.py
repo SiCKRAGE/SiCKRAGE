@@ -29,11 +29,10 @@ import sys
 import threading
 import traceback
 
-import sickrage
-
 from apscheduler.schedulers.tornado import TornadoScheduler
 from tornado.ioloop import IOLoop
 
+import sickrage
 from sickrage.core.caches.name_cache import srNameCache
 from sickrage.core.classes import AttrDict, srIntervalTrigger
 from sickrage.core.common import SD, SKIPPED, WANTED
@@ -329,7 +328,7 @@ class Core(object):
         # add show queue job
         self.srScheduler.add_job(
             self.SHOWQUEUE.run,
-            srIntervalTrigger(**{'seconds': 5}),
+            srIntervalTrigger(**{'seconds': 1}),
             name="SHOWQUEUE",
             id="SHOWQUEUE"
         )
@@ -337,7 +336,7 @@ class Core(object):
         # add search queue job
         self.srScheduler.add_job(
             self.SEARCHQUEUE.run,
-            srIntervalTrigger(**{'seconds': 5}),
+            srIntervalTrigger(**{'seconds': 1}),
             name="SEARCHQUEUE",
             id="SEARCHQUEUE"
         )
