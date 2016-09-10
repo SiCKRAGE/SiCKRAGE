@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3f58fd7 - 2016-09-09: Fixed core queue minimum priority checking code 
+- * 199495d - 2016-09-09: Fixed core queue minimum priority checking code 
+- * ce154cb - 2016-09-09: Fixed core queue minimum priority checking code 
 - * aa14dc0 - 2016-09-09: Fixed core queue minimum priority checking code 
 - * e0300f1 - 2016-09-09: Fixed core queue minimum priority checking code 
 - * e0a1420 - 2016-09-09: Fixed core queue code issues related to adding of shows Updated version to 8.1.1 
