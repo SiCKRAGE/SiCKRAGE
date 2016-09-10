@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import threading
 from Queue import PriorityQueue, Empty
 from datetime import datetime
+from time import sleep
 
 try:
     from futures import ThreadPoolExecutor, thread
@@ -94,11 +95,12 @@ class srQueue(PriorityQueue):
                         if self.currentItem.priority < self.min_priority:
                             self.put(self.currentItem)
                             self.currentItem = None
-                            continue
-
-                        sickrage.srCore.srScheduler.add_job(self.worker, name=self.currentItem.name)
+                        else:
+                            sickrage.srCore.srScheduler.add_job(self.worker, name=self.currentItem.name)
                     except Empty:
                         self.currentItem = None
+
+                sleep(1)
 
         self.amActive = False
 

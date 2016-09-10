@@ -1,6 +1,7 @@
 # Changelog
 
-- * badf303 - 2016-09-09: Fixed core queue minimum priority checking code 
+- * 3f58fd7 - 2016-09-09: Fixed core queue minimum priority checking code 
+- * aa14dc0 - 2016-09-09: Fixed core queue minimum priority checking code 
 - * e0300f1 - 2016-09-09: Fixed core queue minimum priority checking code 
 - * e0a1420 - 2016-09-09: Fixed core queue code issues related to adding of shows Updated version to 8.1.1 
 - * 6ea6a06 - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
