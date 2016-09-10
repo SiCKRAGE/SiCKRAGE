@@ -1,6 +1,7 @@
 # Changelog
 
-- * aae29e4 - 2016-09-09: Updated to version 8.1.2 
+- * 271f3f1 - 2016-09-09: Updated url for torrentz torrent provider 
+- * 3942052 - 2016-09-09: Updated to version 8.1.2 
 - * d3106ff - 2016-09-09: Changed queue interval timers from 5s to 1s 
 - * 5772348 - 2016-09-09: Removed version check from web gui footer mako code 
 - * dc6f6d2 - 2016-09-09: Fixed core queue minimum priority checking code 
