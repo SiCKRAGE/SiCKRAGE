@@ -214,6 +214,7 @@ module.exports = function (grunt) {
                 options: {
                     fileHeader: '# Changelog',
                     dest: 'changelog.md',
+                    insertType: 'append',
                     logArguments: [
                         '--pretty=* %h - %ad: %s',
                         '--no-merges',
