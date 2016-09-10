@@ -30,9 +30,8 @@ import urlparse
 import uuid
 from itertools import izip, cycle
 
-from configobj import ConfigObj
-
 import sickrage
+from configobj import ConfigObj
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.databases import main_db
@@ -425,7 +424,6 @@ class srConfig(object):
         self.CALENDAR_UNPROTECTED = False
         self.CALENDAR_ICONS = False
         self.NO_RESTART = False
-        self.TMDB_API_KEY = 'edc5f123313769de83a71e157758030b'
         self.THETVDB_APITOKEN = None
         self.TRAKT_API_KEY = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.TRAKT_API_SECRET = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'

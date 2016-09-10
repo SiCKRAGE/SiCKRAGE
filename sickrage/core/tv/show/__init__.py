@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 
 import datetime
 import glob
-import json
 import os
 import re
 import stat
@@ -29,10 +28,7 @@ import threading
 import traceback
 
 import imdbpie
-import requests
 import send2trash
-import tmdbsimple
-
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches import image_cache
@@ -65,13 +61,11 @@ class TVShow(object):
         self._indexer = int(indexer)
         self._name = ""
         self._imdbid = ""
-        self._tmdbid = ""
         self._network = ""
         self._genre = ""
         self._classification = 'Scripted'
         self._runtime = 0
         self._imdb_info = {}
-        self._tmdb_info = {}
         self._quality = tryInt(sickrage.srCore.srConfig.QUALITY_DEFAULT, UNKNOWN)
         self._flatten_folders = int(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT)
         self._status = "Unknown"
@@ -142,16 +136,6 @@ class TVShow(object):
         self._imdbid = value
 
     @property
-    def tmdbid(self):
-        return self._tmdbid
-
-    @tmdbid.setter
-    def tmdbid(self, value):
-        if self._tmdbid != value:
-            self.dirty = True
-        self._tmdbid = value
-
-    @property
     def network(self):
         return self._network
 
@@ -200,16 +184,6 @@ class TVShow(object):
         if self._imdb_info != value:
             self.dirty = True
         self._imdb_info = value
-
-    @property
-    def tmdb_info(self):
-        return self._tmdb_info
-
-    @tmdb_info.setter
-    def tmdb_info(self, value):
-        if self._tmdb_info != value:
-            self.dirty = True
-        self._tmdb_info = value
 
     @property
     def quality(self):
@@ -998,7 +972,6 @@ class TVShow(object):
         self._rls_require_words = sqlResults[0]["rls_require_words"] or self.rls_require_words
         self._default_ep_status = tryInt(sqlResults[0]["default_ep_status"], self.default_ep_status)
         self._imdbid = sqlResults[0]["imdb_id"] or self.imdbid
-        self._tmdbid = sqlResults[0]["tmdb_id"] or self.tmdbid
         self._location = sqlResults[0]["location"] or self.location
 
         if self.is_anime:
@@ -1006,12 +979,6 @@ class TVShow(object):
 
         if not skipNFO:
             foundNFO = False
-
-            # Get TMDb_info from database
-            sqlResults = main_db.MainDB().select("SELECT * FROM tmdb_info WHERE indexer_id = ?", [self.indexerid])
-            if len(sqlResults):
-                self._tmdb_info = dict(zip(sqlResults[0].keys(), sqlResults[0])) or self.tmdb_info
-                foundNFO = True
 
             # Get IMDb_info from database
             sqlResults = main_db.MainDB().select("SELECT * FROM imdb_info WHERE indexer_id = ?", [self.indexerid])
@@ -1058,7 +1025,6 @@ class TVShow(object):
             self.network = safe_getattr(myEp, 'network', self.network)
             self.runtime = safe_getattr(myEp, 'runtime', self.runtime)
             self.imdbid = safe_getattr(myEp, 'imdb_id', self.imdbid)
-            self.tmdbid = safe_getattr(myEp, 'tmdb_id', self.tmdbid)
 
             try:
                 self.airs = safe_getattr(myEp, 'airs_dayofweek') + " " + safe_getattr(myEp, 'airs_time')
@@ -1152,86 +1118,7 @@ class TVShow(object):
             self.imdb_info = dict(
                 (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in imdb_info.items())
             sickrage.srCore.srLogger.debug(
-                str(self.indexerid) + ": Obtained IMDb info from TMDb ->" + str(self.imdb_info))
-
-    def loadTMDbInfo(self, tmdbapi=None):
-        tmdb_info = {'tmdb_id': self.tmdbid,
-                     'name': '',
-                     'first_air_date': '',
-                     'akas': [],
-                     'episode_run_time': [],
-                     'genres': [],
-                     'origin_country': [],
-                     'languages': [],
-                     'production_companies': [],
-                     'popularity': '',
-                     'vote_count': '',
-                     'last_air_date': ''}
-
-        tmdbsimple.API_KEY = sickrage.srCore.srConfig.TMDB_API_KEY
-
-        def _request(self, method, path, params=None, payload=None):
-            url = self._get_complete_url(path)
-            params = self._get_params(params)
-
-            requests.packages.urllib3.disable_warnings()
-            response = requests.request(method, url, params=params, data=json.dumps(payload)
-            if payload else payload, verify=False)
-
-            # response.raise_for_status()
-            response.encoding = 'utf-8'
-            return response.json()
-
-        tmdbsimple.base.TMDB._request = _request
-        if not self.tmdbid:
-            tmdb_query = tmdbsimple.Search().tv(query=self.name)
-            if 'results' in tmdb_query:
-                self.tmdbid = tmdb_query['results'][0]['id']
-            elif 'errors' in tmdb_query:
-                sickrage.srCore.srLogger.debug(str(self.indexerid) + ": TMDb Error: {}".format(tmdb_query['errors']))
-
-        if self.tmdbid:
-            tmdb_info['tmdb_id'] = self.tmdbid
-            tmdbInfo = tmdbsimple.TV(id=self.tmdbid).info()
-            sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Loading show info from TMDb")
-            for key in tmdb_info.keys():
-                # Store only the first value for string type
-                if isinstance(tmdb_info[key], basestring) and isinstance(tmdbInfo.get(key), list):
-                    tmdb_info[key] = tmdbInfo.get(key)[0] or []
-                else:
-                    tmdb_info[key] = tmdbInfo.get(key) or ''
-
-            # Filter only the value
-            try:
-                tmdb_info['episode_run_time'] = re.search(r'\d+', str(tmdb_info['episode_run_time'])).group(0)
-            except AttributeError:
-                tmdb_info['episode_run_time'] = self.runtime
-
-            tmdb_info['akas'] = tmdbInfo.get('alternaive_titles', [])
-            tmdb_info['akas'] = '|'.join([x['name'] for x in tmdb_info['akas']]) or ''
-
-            tmdb_info['origin_country'] = '|'.join(tmdb_info['origin_country']) or ''
-            tmdb_info['genres'] = '|'.join([x['name'] for x in tmdb_info['genres']]) or ''
-            tmdb_info['languages'] = '|'.join(tmdb_info['languages']) or ''
-            tmdb_info['last_air_date'] = datetime.date.today().toordinal()
-
-            # Get only the production country certificate if any
-            if tmdb_info['production_companies'] and tmdb_info['production_companies']:
-                try:
-                    dct = {}
-                    for item in tmdb_info['production_companies']:
-                        dct[item.split(':')[0]] = item.split(':')[1]
-
-                    tmdb_info['production_companies'] = dct[tmdb_info['production_companies']]
-                except Exception:
-                    tmdb_info['production_companies'] = ''
-            else:
-                tmdb_info['production_companies'] = ''
-
-            # Rename dict keys without spaces for DB upsert
-            self.tmdb_info = dict(
-                (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in tmdb_info.items())
-            sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Obtained info from TMDb ->" + str(self.tmdb_info))
+                str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
 
     def nextEpisode(self):
         curDate = datetime.date.today().toordinal()
@@ -1440,7 +1327,6 @@ class TVShow(object):
                         "startyear": self.startyear,
                         "lang": self.lang,
                         "imdb_id": self.imdbid,
-                        "tmdb_id": self.tmdbid,
                         "last_update_indexer": self.last_update_indexer,
                         "rls_ignore_words": self.rls_ignore_words,
                         "rls_require_words": self.rls_require_words,
@@ -1454,11 +1340,6 @@ class TVShow(object):
             controlValueDict = {"indexer_id": self.indexerid}
             newValueDict = self.imdb_info
             main_db.MainDB().upsert("imdb_info", newValueDict, controlValueDict)
-
-        if self.tmdbid and self.tmdb_info:
-            controlValueDict = {"indexer_id": self.indexerid}
-            newValueDict = self.tmdb_info
-            main_db.MainDB().upsert("tmdb_info", newValueDict, controlValueDict)
 
     def __str__(self):
         toReturn = ""

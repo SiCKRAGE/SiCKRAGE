@@ -19,16 +19,11 @@
 from __future__ import unicode_literals
 
 import io
-import json
 import os
 import re
 import sys
 from xml.etree.ElementTree import ElementTree, SubElement
 
-import requests
-
-import fanart
-import fanart.core
 import sickrage
 from helpers import getShowImage
 from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension
@@ -751,7 +746,7 @@ class GenericMetadata(object):
 
     def _retrieve_show_image(self, image_type, show_obj, which=None):
         """
-        Gets an image URL from theTVDB.com and TMDB.com, downloads it and returns the data.
+        Gets an image URL from theTVDB.com and fanart.tv, downloads it and returns the data.
 
         image_type: type of image to retrieve (currently supported: fanart, poster, banner)
         show_obj: a TVShow object to use when searching for the image
@@ -796,9 +791,6 @@ class GenericMetadata(object):
             if not image_url:
                 # Try and get images from Fanart.TV
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
-            if not image_url:
-                # Try and get images from TMDB
-                image_url = self._retrieve_show_images_from_tmdb(show_obj, image_type)
         elif image_type == 'banner_thumb':
             if getattr(indexer_show_obj, 'banner', None):
                 image_url = re.sub('graphical', '_cache/graphical', indexer_show_obj['banner'])
@@ -811,9 +803,6 @@ class GenericMetadata(object):
             if not image_url:
                 # Try and get images from Fanart.TV
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
-            if not image_url:
-                # Try and get images from TMDB
-                image_url = self._retrieve_show_images_from_tmdb(show_obj, image_type)
 
         if image_url:
             image_data = getShowImage(image_url, which)
@@ -1001,53 +990,6 @@ class GenericMetadata(object):
 
         return indexer_id, name, indexer
 
-    @staticmethod
-    def _retrieve_show_images_from_tmdb(show, img_type):
-        types = {'poster': 'poster_path',
-                 'banner': None,
-                 'fanart': 'backdrop_path',
-                 'poster_thumb': 'poster_path',
-                 'banner_thumb': None}
-
-        def _request(self, method, path, params=None, payload=None):
-            url = self._get_complete_url(path)
-            params = self._get_params(params)
-
-            requests.packages.urllib3.disable_warnings()
-            response = requests.request(method, url, params=params, data=json.dumps(payload)
-            if payload else payload, verify=False)
-
-            #response.raise_for_status()
-            response.encoding = 'utf-8'
-            return response.json()
-
-        from tmdbsimple.base import TMDB
-        TMDB._request = _request
-
-        # get TMDB configuration info
-        tmdb.API_KEY = sickrage.srCore.srConfig.TMDB_API_KEY
-        response = tmdb.Configuration().info()
-        base_url = response['images']['base_url']
-        sizes = response['images']['poster_sizes']
-
-        def size_str_to_int(x):
-            return float("inf") if x == 'original' else int(x[1:])
-
-        max_size = max(sizes, key=size_str_to_int)
-
-        sickrage.srCore.srLogger.debug("Searching for any " + img_type + " images on TMDB for " + show.name)
-
-        try:
-            search = tmdb.Search()
-            from sickrage.core.helpers.show_names import allPossibleShowNames
-            for show_name in set(allPossibleShowNames(show)):
-                for result in search.collection(query=show_name)['results'] + search.tv(query=show_name)['results']:
-                    if types[img_type] and getattr(result, types[img_type]):
-                        return "{0}{1}{2}".format(base_url, max_size, result[types[img_type]])
-        except:
-            pass
-
-        sickrage.srCore.srLogger.debug("Could not find any " + img_type + " images on TMDB for " + show.name)
 
     @staticmethod
     def _retrieve_show_images_from_fanart(show, img_type, thumb=False):

@@ -387,16 +387,11 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.srCore.srLogger.debug(traceback.format_exc())
             raise self._finishEarly()
 
-        sickrage.srCore.srLogger.debug("Retrieving show info from TMDb")
         try:
-            self.show.loadTMDbInfo()
+            sickrage.srCore.srLogger.debug("Attempting to retrieve show info from IMDb")
+            self.show.loadIMDbInfo()
         except Exception as e:
-            sickrage.srCore.srLogger.error("Error loading TMDb info: {}".format(e.message))
-            try:
-                sickrage.srCore.srLogger.debug("Attempting to retrieve show info from IMDb")
-                self.show.loadIMDbInfo()
-            except Exception as e:
-                sickrage.srCore.srLogger.error("Error loading IMDb info: {}".format(e.message))
+            sickrage.srCore.srLogger.error("Error loading IMDb info: {}".format(e.message))
 
         # Load XEM data to DB for show
         xem_refresh(self.show.indexerid, self.show.indexer, force=True)
@@ -572,17 +567,11 @@ class QueueItemUpdate(ShowQueueItem):
             return
 
         try:
-            sickrage.srCore.srLogger.debug("Retrieving show info from TMDb")
-            self.show.loadTMDbInfo()
+            sickrage.srCore.srLogger.debug("Attempting to retrieve show info from IMDb")
+            self.show.loadIMDbInfo()
         except Exception as e:
-            sickrage.srCore.srLogger.error("Error loading TMDb info: {}".format(e.message))
+            sickrage.srCore.srLogger.error("Error loading IMDb info: {}".format(e.message))
             sickrage.srCore.srLogger.debug(traceback.format_exc())
-            try:
-                sickrage.srCore.srLogger.debug("Attempting to retrieve show info from IMDb")
-                self.show.loadIMDbInfo()
-            except Exception as e:
-                sickrage.srCore.srLogger.error("Error loading IMDb info: {}".format(e.message))
-                sickrage.srCore.srLogger.debug(traceback.format_exc())
 
         # have to save show before reading episodes from db
         try:
