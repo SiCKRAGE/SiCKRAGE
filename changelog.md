@@ -1,6 +1,7 @@
 # Changelog
 
-- * d4338ef - 2016-09-09: Fixed core queue minimum priority checking code 
+- * 5125f48 - 2016-09-09: Fixed core queue minimum priority checking code 
+- * eb9f718 - 2016-09-09: Fixed core queue minimum priority checking code 
 - * d9d2ce0 - 2016-09-09: Fixed core queue minimum priority checking code 
 - * e57cb6a - 2016-09-09: Fixed core queue minimum priority checking code 
 - * ce154cb - 2016-09-09: Fixed core queue minimum priority checking code 

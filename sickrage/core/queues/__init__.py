@@ -87,7 +87,7 @@ class srQueue(PriorityQueue):
         self.amActive = True
 
         with self.lock:
-            while not self.stop.is_set():
+            if not self.stop.is_set():
                 if self.currentItem is None or not self.currentItem.inProgress:
                     try:
                         self.currentItem = self.get(False)
@@ -96,7 +96,7 @@ class srQueue(PriorityQueue):
                         else:
                             sickrage.srCore.srScheduler.add_job(self.worker, name=self.currentItem.name)
                     except Empty:
-                        continue
+                        pass
 
         self.amActive = False
 
