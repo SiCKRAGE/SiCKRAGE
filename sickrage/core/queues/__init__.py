@@ -89,6 +89,9 @@ class srQueue(PriorityQueue):
         with self.lock:
             if not self.stop.is_set():
                 if self.currentItem is None or not self.currentItem.inProgress:
+                    if self.currentItem:
+                        self.currentItem = None
+
                     try:
                         self.currentItem = self.get(False)
                         if self.currentItem.priority < self.min_priority:
