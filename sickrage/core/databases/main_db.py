@@ -28,7 +28,7 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, Quality, SKIPPED, \
 from sickrage.core.databases import Connection, SchemaUpgrade
 
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
-MAX_DB_VERSION = 43
+MAX_DB_VERSION = 44
 
 
 class MainDB(Connection):
@@ -373,7 +373,7 @@ class MainDB(Connection):
                     "CREATE INDEX idx_sta_epi_sta_air ON tv_episodes(season, episode, status, airdate);",
                     "CREATE INDEX idx_status ON tv_episodes(status,season,episode,airdate);",
                     "CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);",
-                    "PRAGMA user_version = 43;"
+                    "PRAGMA user_version = 44;"
                 ]
 
                 for query in queries:
@@ -1133,10 +1133,10 @@ class MainDB(Connection):
 
             self.incDBVersion(42)
 
-    class BumpToVer43(AlterTvShowsFieldTypes):
+    class BumpToVer44(AlterTvShowsFieldTypes):
         def test(self):
             return self.checkDBVersion() >= 43
 
         def execute(self, **kwargs):
-            self.backup(43)
-            self.incDBVersion(43)
+            self.backup(44)
+            self.incDBVersion(44)
