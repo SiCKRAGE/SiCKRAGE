@@ -1,35 +1,7 @@
 # Changelog
 
-# Changelog
-
-- * 271f3f1 - 2016-09-09: Updated url for torrentz torrent provider 
-- * 3942052 - 2016-09-09: Updated to version 8.1.2 
-- * d3106ff - 2016-09-09: Changed queue interval timers from 5s to 1s 
-- * 5772348 - 2016-09-09: Removed version check from web gui footer mako code 
-- * dc6f6d2 - 2016-09-09: Fixed core queue minimum priority checking code 
-- * 1d630dc - 2016-09-09: Fixed core queue minimum priority checking code 
-- * eb9f718 - 2016-09-09: Fixed core queue minimum priority checking code 
-- * d9d2ce0 - 2016-09-09: Fixed core queue minimum priority checking code 
-- * e57cb6a - 2016-09-09: Fixed core queue minimum priority checking code 
-- * ce154cb - 2016-09-09: Fixed core queue minimum priority checking code 
-- * aa14dc0 - 2016-09-09: Fixed core queue minimum priority checking code 
-- * e0300f1 - 2016-09-09: Fixed core queue minimum priority checking code 
-- * e0a1420 - 2016-09-09: Fixed core queue code issues related to adding of shows Updated version to 8.1.1 
-- * 6ea6a06 - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
-- * a2e97e8 - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
-- * 3904a3c - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
-- * dfa5e99 - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
-- * 577c75a - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
-- * 06f398c - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
-- * 3663dd7 - 2016-09-08: Fixed code in queue&#x27;s for handling currentItem 
-- * 4ded8bb - 2016-09-07: Updated version to 8.1.0 
-- * 6f76ac2 - 2016-09-07: Added code to install requirements via pip after a git update or git checkout is performed. 
-- * e4a8a8a - 2016-09-04: Fixed KeyError for get_size function 
-- * 5494ed7 - 2016-09-03: Disabled raising exceptions for getting file sizes during provider searches 
-- * cd19664 - 2016-09-02: Fixed issues with getting overall size of search results. Added code to append list of files and sizes relating to the search results from the providers. Added code for quality definition video file size constaint checking. 
-
-
-- * 82ab5ca - 2016-09-09: Updated changelog grunt task to append to changelog 
+- * 71cbd77 - 2016-09-10: new: Version 8.1.3 new: Fanart.tv API module added into metadata module fix: Removed python-fanart from requirements.txt to resolve requirements breaking 
+- * 15fe75d - 2016-09-09: Updated changelog grunt task to append to changelog 
 - * 201af10 - 2016-09-09: Updated url for torrentz torrent provider 
 - * 3942052 - 2016-09-09: Updated to version 8.1.2 
 - * d3106ff - 2016-09-09: Changed queue interval timers from 5s to 1s 
@@ -55,4 +27,334 @@
 - * e4a8a8a - 2016-09-04: Fixed KeyError for get_size function 
 - * 5494ed7 - 2016-09-03: Disabled raising exceptions for getting file sizes during provider searches 
 - * cd19664 - 2016-09-02: Fixed issues with getting overall size of search results. Added code to append list of files and sizes relating to the search results from the providers. Added code for quality definition video file size constaint checking. 
+- * 321616e - 2016-09-01: Fixed issues with core queue code 
+- * 4634875 - 2016-08-31: BTN Fixed json rpc code 
+- * c04c0a7 - 2016-08-31: Updated auto-install of requirements to use &#x27;--user&#x27; flag 
+- * 0c973a4 - 2016-08-31: Added code to auto-install library requirements 
+- * 3f513cf - 2016-08-31: Cleaned up search code. Compacted code for searching provider cache. Added a search cache only param to provider searches. 
+- * 283a22f - 2016-08-30: Added PyNZB to requirements file. Removed un-needed debug message. 
+- * 7e9de8e - 2016-08-30: Added handling of SAXParser exceptions. Cleaned up code for searching RSS cache. 
+- * a04f1d9 - 2016-08-30: Fixed several issues relating to NZB/Newznab providers and searches 
+- * 2d06621 - 2016-08-30: Fixed several issues relating to NZB/Newznab providers and searches 
+- * dbf8ac3 - 2016-08-28: Updated version to 8.0.11 
+- * c45d6e5 - 2016-08-28: Added code to extract sizes of files from downloaded torrent files. Compares provider search result size against default quality sizes based on quality of result. 
+- * e2793c2 - 2016-08-27: Fixed issues with NZB searches and params 
+- * 9809565 - 2016-08-27: Updated to version 8.0.9 
+- * dd2394b - 2016-08-27: Corrected fixing of unaired statuses on startup 
+- * 10acd0e - 2016-08-27: Version updated to 8.0.8 
+- * 11e2e41 - 2016-08-27: Fixed issues with NZB providers and retrieving categories 
+- * 97c64ec - 2016-08-25: Core queues use APScheduler now to execute jobs 
+- * 9fa8f46 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
+- * b96c56b - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
+- * 22d9c40 - 2016-08-24: Fixed issue with mainDB code for fixing unaired statuses on episodes. 
+- * e5b69c8 - 2016-08-24: Remove TorrentProject and btDigg torrent providers. Added back torrage with new url. 
+- * aa02f47 - 2016-08-22: Corrected session exception handler code. MainDB fixes for unaired shows now uses default ep statuses. 
+- * f4d6cd0 - 2016-08-21: Using error instead of exception for session wrapper 
+- * ed27f96 - 2016-08-21: Fixed some issues with formatting of error messages 
+- * 2b18135 - 2016-08-21: Fixed issues with episode statuses stuck on UNAIRED 
+- * bb5489d - 2016-08-21: Updated regexes file encoding 
+- * cb62854 - 2016-08-21: Updated Regexes. Best season search results uses set instead of list to be unique. 
+- * 99f9724 - 2016-08-15: Switched back to using built-in threading for queues Removed TorCache and added TorProject 
+- * c9c5107 - 2016-08-15: VERSION: 8.0.7 
+- * a65d191 - 2016-08-10: FIXED: Corrected search url for kickass torrents 
+- * 0037fd9 - 2016-08-10: FIXED: Corrected search url for kickass torrents 
+- * 80f7ca7 - 2016-07-27: FIXED: Requirement issues with setup.py when using git links FIXED: DB issues with versioning and logging VERSION: 8.0.6 
+- * baab633 - 2016-07-25: FIXED: Session cache DB file now resides in data folder 
+- * 824464f - 2016-07-25: FIXED: Issue with displaying episode location in display_show template 
+- * 1556458 - 2016-07-19: UPDATE: GUI Layout template 
+- * 6c9f5a4 - 2016-07-19: UPDATE: Version 8.0.6 
+- * 13dc799 - 2016-07-19: FIXED: Displaying/Editing shows with missing or invalid show directories is now possible FIXED: Saving shows with missing or invalid show directories will properly error out 
+- * a1d4e6e - 2016-07-18: FIXED: DB Version checks now occur before Initial Scheme check is done, helps detect unsupported forks and db files that are told old to migrate 
+- * 2fc2d22 - 2016-07-18: FIXED: Removed border around ui widgets 
+- * ec60cd0 - 2016-07-15: ADDED: Missing gui image files FIXED: CSS Styles 
+- * d2669af - 2016-07-15: FIXED: Outlines around jquery tab panels removed FIXED: History dropdowns badged 
+- * d3044d3 - 2016-07-14: FIXED: References to old code changed to reflect new code, handling of provider urls 
+- * a6a399a - 2016-07-14: FIXED: Language selector for add new shows page FIXED: Root dir auto-selected on load of add existing shows page UPDATE: JS compnents and core code 
+- * 55ce7cb - 2016-07-11: FIXED: Placement of dropdown boxes on home page for listing shows centered properly 
+- * 4f1d53e - 2016-07-10: FIXED: Placement of dropdown boxes on home page for listing shows centered properly 
+- * a249f72 - 2016-07-10: FIXED: Placement of dropdown boxes on home page for listing shows centered properly 
+- * e06dee3 - 2016-07-03: FIXED: Config file argument when passed in is now checked to be absolute or not and corrected accordingly FIXED: PID file argument when passed in is now checked to be absolute or not and corrected accordingly ADDED: Version function to parse version.txt for proper version information 
+- * 3cf50cb - 2016-06-30: HOTFIX:Corrected issues with cache, log, and config placement UPDATE: Bumped to version 8.0.3 
+- * ecb16e1 - 2016-06-28: FIXED: Issues with daemonizing and unicode resolved. UPDATE: Grunt tasks run UPDATE: Version bumped to 8.0.2 
+- * 9f53481 - 2016-06-28: FIXED: Issues with daemonizing and unicode resolved. UPDATE: Grunt tasks run 
+- * 099e0ad - 2016-06-28: FIXED: Requirements slimmed down and replaced python-fanart with updated version using newer requests FIXED: Added a requirements check to inform end-user of certain libs that could be installed to improve overall app performance and security UPDATE: Bumped to version 8.0.1 
+- * eee6b67 - 2016-06-23: UPDATE: Added instructs for installation requirements via pip 
+- * 61d00a4 - 2016-06-23: UPDATE: Added instructs for installation requirements via pip 
+- * 99fb18b - 2016-06-23: HOTFIX: Removed code in regards to auto-installation of requirements/depends due to inconsistent operational results 
+- * 0a82473 - 2016-06-23: HOTFIX: Removed code in regards to auto-installation of requirements/depends due to inconsistent operational results 
+- * 790ae8f - 2016-06-23: HOTFIX: Removed code in regards to auto-installation of requirements/depends due to inconsistent operational results 
+- * 7c2b5e2 - 2016-06-20: HOTFIX: Corrected pathes in travis-cl scripts 
+- * 9df8562 - 2016-06-20: HOTFIX: Corrected pathes in travis-cl scripts 
+- * 9b07c19 - 2016-06-08: FIX: Corrected issue with email notifier and unicoded username/passwords FIX: Removed redundant namecache builder from load shows function to speed up startup time of app 
+- * 57240f6 - 2016-06-08: FIX: Corrected minor issues with backup and restore of config/db files for app when porting backups from other forks FIX: Corrected issue with migration from sickbeard.db to sickrage.db filenames FIX: Added sanity check for missing tables in main db FIX: DB Function for increase version now takes version numbers so we can be sure the correct version is set to when upgrading DB version numbers 
+- * 3e4a7ca - 2016-06-07: FIX: Updated web site url FIX: Requirements are now installed to data directory to help prevent issues with non-root installs 
+- * 8cae227 - 2016-06-06: FIXED: Email notification erros 
+- * 9fd9e93 - 2016-05-18: FIXED: Small code correction for bool conversion 
+- * 5874376 - 2016-05-18: FIXED: Torrent auth by token was not correctly working due to raising exception handler incorrectly 
+- * 6a92de2 - 2016-05-17: FIXED: JS Issue with tablesorter parsers, caused issues with sorting of columns 
+- * e83d29a - 2016-05-15: Fixed issue with anon_url whereby if the URI began with https:// it added http:// + existing_url, so http://https://domain.com.... This normally results in a broken link in most browsers 
+- * f9331f4 - 2016-05-12: ADDED: Exception handling for socket errors during startup on tornado web server 
+- * 0a6a028 - 2016-05-12: FIXED: Issue with new pip upgrades and requirements installations 
+- * f202a22 - 2016-05-12: ADDED: Google API Client requirement 
+- * a8568d4 - 2016-05-12: FIXED: Removed PyDrive from requirements and constraints files, using custom internal methods instead 
+- * 5dd094d - 2016-05-11: UPDATES: Code added to prepare for new API server coming online shortly to link in new service features FIXED: Torrent clients having issues with username/password authentication such as uTorrent and others alike 
+- * 729bfd3 - 2016-05-09: FEATURE: Google device linking 
+- * b388f40 - 2016-05-08: GRUNT: Updated JS core files 
+- * 020d273 - 2016-05-08: ADDED: Limit to number of shows allowed to be added at once for existing shows feature 
+- * 9b0d49d - 2016-05-08: FIXED: JS Core code for root directory function FIXED: Status template code, corrected for new queue system 
+- * aa47a34 - 2016-05-08: UPDATES: Javascript core components 
+- * 25725c2 - 2016-05-08: FIXED: API Builder was not properly referencing help for api calls, added application and request values to template attributes 
+- * 9d32ac0 - 2016-05-08: FIXED: Added space between regex names displayed via nameparser FIXED: When setting location on either show or episode it now displays a message detailing as to which location was infact set FIXED: Core JS code for mass_update and mass_edit templates was incorrectly placed resulting in certain JS features to not work correctly 
+- * b5caac0 - 2016-05-08: FIXED: Expand/Collaspe button for episode status manager 
+- * 082c883 - 2016-05-07: FIXED: Queue was to slow with previous shutdown implementation so added a new improved stop event 
+- * 7a80c07 - 2016-05-07: FIXED: Shutdown issue caused by executor thread pools not terminating properly FIXED: Executor pools for queues are now limited to 10 tasks at a time to help with resources FIXED: Removed standard absolute regex, not very accurate 
+- * e7e7340 - 2016-05-07: FIXED: Incorrect filename specified for constraints if performing a install via setup.py 
+- * dedb2e8 - 2016-05-07: FIXED: Added worker queues to database mass queries and mass upserts to better handle multi-threading, also moved connection commits to transaction context and we delete threaded connection object once done with it to help solve too many open connections to the database files. 
+- * ba14b9d - 2016-05-07: FIXED: References to sleep in some modules where incorrectly specified 
+- * 40c8042 - 2016-05-07: UPDATED:  Changelog 
+- * 6c82baf - 2016-05-07: FIXED: Disabled same-thread checks for databases to fix issues with more then one thread opening the database files FIXED: Config migrations where storing values inside class but never returning them back to config object FEATURE: Metadata providers now can optionally be enabled or disabled from post-processing config settings UPDATE: Performed grunt tasks to update js core files 
+- * 553cd75 - 2016-05-06: FIXED: Issue with shutdowns and queues resolved. 
+- * ef60c54 - 2016-05-06: Updated changelog 
+- * 13b9977 - 2016-05-06: FIXED: Queue was not properly looping through tasks, corrected by adding a while statement FIXED: Corrupted indexer show cache files caused indexer to throw exception and fail to complete tasks 
+- * 31334ab - 2016-05-05: REVAMPED: Queue system now subclasses builtin PriorityQueue to help with multi-threading and properly offload tasks to thread executor FIXED: Database transactions are now tasked by a queue system which resolves data being lost during db calls 
+- * 3a69945 - 2016-05-05: FIXED: Object comparison used when trying to compare boolean against text incorrectly in provider modules, caused issues with updating cache from RSS feeds 
+- * c69a161 - 2016-05-05: FIXED: Show episode file locations were not being set due to missing code runs 
+- * 9e208da - 2016-05-05: FIXED: Error loading IMDb and TMDb info caused by lack of exception handling and checking of attributes 
+- * cc235d9 - 2016-05-04: FIXED: Thread names for searches were not being properly set 
+- * 2f61a1b - 2016-05-04: FEATURE: Added Google OAuth2 to be used instead of username/password if wanted 
+- * 9418082 - 2016-05-04: FIXED: General settings during save was missing new stale shows variable causing settings not to be saved. 
+- * 310f701 - 2016-05-04: UPDATED: Changed Put.io client-id and redirect-uri UPDATED: Grunt JS tasks run 
+- * ae35575 - 2016-05-04: FEATURE: Added a rotating error log file handler to seperate errors logs into there own file for easier capture 
+- * fa6a00d - 2016-05-04: FIXED: Web client exception handling now logs via exception not error 
+- * 6fd09bb - 2016-05-04: FIXED: Transmission client was not sending username and password into web client sessions, code was left out during upgrades by mistake 
+- * 6fd10db - 2016-05-03: FIXED: When disabling torrent or nzb functionality for searches but not disabling individual providers under those categories the non-disabled providers were still being used for searches even if the main classification of them was disabled 
+- * b0a313c - 2016-05-03: FIXED: Small code correction for boolean logic during transmission client authentication 
+- * c5a6d08 - 2016-05-03: FIXED: Custom requests exception handling added for theTVDB indexer to resolved premature exception handling from primary requests exception handler 
+- * d293d32 - 2016-05-03: FIXED: Requests exceptional handler can optionally be turned off to allow custom handling of certain exceptions FIXED: Transmission authentication issues caused by premature requests exception handling resolved by custom exception handling code 
+- * c46fbc6 - 2016-05-03: FIXED: Daily searches now set shows airing on the day of the performed search to wanted instead of including hours and mintues as a deciding factor FIXED: Womble nzb provider urls corrected FEATURE: Network Timezone datetime parser now allows for results being returned as dates not just datetime 
+- * d13fb3d - 2016-05-03: REFACTORED: Renamed files pertaining to indexers 
+- * 580b217 - 2016-05-03: FIXED: Detects VirtualEnv properly during pip and requirements installations FIXED: More detailed constraints file used to ensure requirements installations go smoother FIXED: InsecurePlatformWarning messages during requirements installs now surpressed 
+- * 5bf6fc9 - 2016-05-03: FIXED: Detects VirtualEnv properly during pip and requirements installations FIXED: More detailed constraints file used to ensure requirements installations go smoother FIXED: InsecurePlatformWarning messages during requirements installs now surpressed 
+- * 874eda1 - 2016-05-02: FEATURE: Added new Putio torrent search client FEATURE: Added request web client exception decorator for handling of requests exceptions properly 
+- * f1919a1 - 2016-05-01: FIXED: Requirements installation now recursive 
+- * 8aa69f5 - 2016-05-01: Updated readme.md 
+- * 7d0a498 - 2016-05-01: Added changelog generator 
+- * 9bd21fc - 2016-05-01: More responsive-ui fixes applied 
+- * a31ee71 - 2016-05-01: Added check to determin if config settings have been loaded or not so we don&#x27;t attempt saving them if not required. 
+- * 4239c9e - 2016-05-01: Fixed issues with show updates/refreshes both auto and forced, enforced to skip grabbing info from DB to ensure new data takes properly and repairs damaged shows/episodes. 
+- * b053953 - 2016-05-01: Corrected code issues with new indexer persistent show cache, works now! 
+- * e74e982 - 2016-05-01: Updated WebUI via Grunt 
+- * 0d2e6e0 - 2016-05-01: Fixed redundant loading of network timezone data from database. 
+- * 2b3eb60 - 2016-05-01: Corrected standard_absolute regex 
+- * b2010b8 - 2016-05-01: Fixed boolean issue with theTVDB showcache 
+- * 2668d7e - 2016-04-30: Fixed theTVDB persistent show cache, code was borked. 
+- * 717f469 - 2016-04-30: Added persistant show data cache for theTVDB indexer. Added back language selector for adding new shows. Shows not found on theTVDB by seriesname get searched by imdbId automatically. Fixed metadata issue with TMDB provider and retrieval of images. 
+- * 28641dc - 2016-04-29: Corrected exception messaging handling for refreshing shows from folders. 
+- * f73c439 - 2016-04-29: Updated donation link in templates. 
+- * 40942e5 - 2016-04-29: Added new &quot;standard absolute&quot; regex to name parser 
+- * 1c81a44 - 2016-04-29: Added exception handling to print error messages during requirements installations. 
+- * 4ca63b4 - 2016-04-29: Fixed responsive mobile layout. Removed unrequired error message. 
+- * 1866bfa - 2016-04-29: Fixed issue with snatching torrent magnet links. 
+- * f5a81d7 - 2016-04-29: Fixed several issues with database operations including upgrading of database versions. 
+- * f3897a7 - 2016-04-29: Small correction to requirements installation function code. 
+- * d5b3d69 - 2016-04-29: Fixed issues with sys.stdout during installation of requirements. 
+- * 3c5d7c4 - 2016-04-27: Added constraints file for pip requirement installs and upgrades to ensure certain packages maintain there required version. 
+- * 782dd7c - 2016-04-24: Updated setup.cfg 
+- * 4e28dee - 2016-04-24: Updated readme 
+- * f8779a1 - 2016-04-24: Added spinning cursor to indicate app is still running during requirements installation task. 
+- * bce2784 - 2016-04-24: Changed code for pip installation of requirements. 
+- * ca72c0a - 2016-04-24: Added requirements to setup.py for pip installs so requirements are automatically installed. Added run option &quot;--requirements&quot; for installation of all app requirements via pip. Reworked installation code for pip requirements on startup. 
+- * f4d5cd5 - 2016-04-24: Added stale show update/refresh option for daily show updates to be now optional. 
+- * 2cf472e - 2016-04-23: Grunt JS updates. Fixed restart issues in js core code and web views. Fixed webui and version updater restart issues. Fixed jsonp callback issues in web server. 
+- * 1a428b2 - 2016-04-23: Update web views code for restarting, added 5 sec timer for restarts. 
+- * 4cadf49 - 2016-04-23: Grunt updates. Version updater webui corrections. 
+- * 4c00838 - 2016-04-23: Fixed str type error in version updater. 
+- * 690343c - 2016-04-23: Fixed a type error issue in version updater. 
+- * bed123b - 2016-04-23: Small correction to general mako template for git branch checkouts. 
+- * 22911d3 - 2016-04-23: Fixed issues with git branch checkouts. Fixed issues with git updates. Restructured some core class code for better handling of initalization of core module classes. 
+- * 3edf3b8 - 2016-04-23: Fixed incorrect refences to srConfig class in mako templates. 
+- * f33bc7a - 2016-04-23: Misc small fixes for provider classes. Queues now use python futures for performing tasks/jobs in the background. Fixed issues with databases python futures tasks handling. Web server uses python futures to run async jobs on now. Misc small fixes for srWebSession handling through app code. 
+- * 0d52dc9 - 2016-04-21: Fixed issue with ioloop exception caused by sleeping being called from different thread then main. 
+- * 8baaba7 - 2016-04-21: Small code referencing correction for srLogger instances 
+- * db8e33c - 2016-04-21: Fixed several code issues relating to restarts of sickrage app. 
+- * 02f30d0 - 2016-04-21: Small code addition to notify end-user that sickrage is checking for updates when done from WebUI 
+- * eef41d3 - 2016-04-21: Moved WebUI notification queue instance to core instance. 
+- * c83c93a - 2016-04-21: Testing version updater 
+- * 8845cff - 2016-04-21: Updated name cache to save show to db when building internal cache. 
+- * ee11333 - 2016-04-21: Misc fixes for version updater 
+- * 2cef20f - 2016-04-20: Updated T411 torrent url extension from .in to .ch 
+- * 3de2a0e - 2016-04-20: Updated name cache to re-load saved data from database and save to database on successful builds. 
+- * 15d1fb6 - 2016-04-20: Added thread locking to nameparser, fixes multithreading issue. Grunt updates. 
+- * f4b88ac - 2016-04-20: Misc WebUI changes. 
+- * ce1e345 - 2016-04-20: Fixed WebUI issues with threads being blocked when heavy tasks are executed in the background. Misc code moved around out of main. 
+- * 358bd5c - 2016-04-17: Grunt updates to core js files. 
+- * cb7f6b1 - 2016-04-17: Added new custom cachecontrol cache that uses shelve to store cache objects to avoid &quot;too many files open&quot; 
+- * aa5a0e9 - 2016-04-16: Added new webclient code to make requests sessions persistent and more reliable. Fixed issue with NoneType errors on provider searches when no results returned. 
+- * 4b81746 - 2016-04-14: Updated repo readme file 
+- * a81b7cb - 2016-04-14: Updated repo readme file 
+- * b342c50 - 2016-04-14: Small code correction made for schedule&#x27;s mako view 
+- * 9fdf493 - 2016-04-13: Removed gitlab-ci runner config, moved to pages branch 
+- * ed89f88 - 2016-04-13: Added gitlab-ci runner config for pages 
+- * 9183662 - 2016-04-13: Added code to create md5 checksums from remote files. 
+- * c76c77b - 2016-04-13: updated permissions 
+- * 8e8551c - 2016-04-13: Small change to test git hooks 
+- * 6349231 - 2016-04-13: Small change to test git hooks 
+- * e97d758 - 2016-04-13: Updated permissions, set executable bit 
+- * 1508342 - 2016-04-12: Updated pip manifest. Updated git ignores. 
+- * 7b8d27b - 2016-04-12: More updates made to version checker 
+- * 17356ed - 2016-04-12: Small code correction to version checker class. 
+- * 24224c2 - 2016-04-12: Fixed issue with transmission torrent client ratio feature, confirms ratio is a integer or long. 
+- * 15f2dd5 - 2016-04-12: Fixed issue with auto-detecting git executable path. 
+- * c3536f3 - 2016-04-12: Update git ignores 
+- * e78d324 - 2016-04-12: Testing git updates 
+- * df6068f - 2016-04-12: Fixed several small issues in version updater class. 
+- * 85fe032 - 2016-04-12: Fixed issue with version updater not properly determining install type. 
+- * 5f896e3 - 2016-04-12: Fixed more issues with git mako code template. 
+- * 13f9245 - 2016-04-12: Fixed issue with git mako code template. 
+- * 89180e2 - 2016-04-12: Improved updater checker code. Removed unrequired github static code. 
+- * f6121fe - 2016-04-12: Testing Update System 
+- * 090ea5d - 2016-04-12: Fixed issue with API call handling. Fixed issue with update checking via API. Fixed issue with displaying media images via API. 
+- * 0848dd4 - 2016-04-11: Updated resources for checking if pid exists. 
+- * 9005b83 - 2016-04-11: Fixed issue with stale pidfiles, checks if proc exists then removes from filesystem. Changed shutdown sequence. 
+- * 6bbb744 - 2016-04-11: Fixed issue with daemonizing app to background on linux. Fixed issue with creation of pidfiles on startup. 
+- * 04059de - 2016-04-10: Removed &quot;publish&quot; cmd from setup.py 
+- * 34a558a - 2016-04-10: Fixed issues with custom requests session class code to properly handle kwargs and updating of them when required. Fixed issues with download client classes when making requests after a successful search has occured. Fixed issues with theTVDB v2 api token refreshes. 
+- * 402e47c - 2016-04-02: Added in new code to handle web requests/sessions via threaded futures to help prevent IO blocking of Tornado web server. Corrected misc code to use new web session caching handler. 
+- * 2a5dfad - 2016-03-31: Misc fixes for anidb connection code, removed setup function from helpers. Numerous corrections to session handling code. 
+- * 4e0ac4b - 2016-03-27: All settings get encrypted/decrypted if set to from general advanced settings. 
+- * 11011b5 - 2016-03-27: Provider settings are now pickled. All provider module classes now require both name and url when creating a instance of it self. Fixed issue with search and show queues that caused app to lock up if more then 1 queue item was added before first item finished. NZB, Torrent, NewzNab, and TorrentRSS properly typed instead of doing so from genericprovider class. Misc fixes applied to core js code and main app core code. 
+- * 715ae67 - 2016-03-18: Fixed file browser js code. Fixed issues with edit show template and corresponding js code 
+- * 8fc3fea - 2016-03-17: Fixed add new shows js code and mako templates Improved navbar and sub-navbar template code Fixed namecache builder to store lastupdate by show name into dictionary object 
+- * 70fb084 - 2016-03-17: Fixed missing srIndexerApi references Fixed adding of new shows. 
+- * a4f17c3 - 2016-03-09: Updated bower requirements and core js code. 
+- * cb6ecf1 - 2016-02-25: Restruct of javascript routines and imports. Added in javascript router to handler controller actions and proper routing of them. Version bump to 8.0.0 
+- * cb52ac7 - 2016-02-08: Converted all &quot;from datetime&quot; imports to relevant imports. Fixed issues with newznab and rss torrent providers not correctly working as intended. Version bump to 7.0.23 
+- * c1879b3 - 2016-02-08: Converted all &quot;from datetime&quot; imports to relevant imports. 
+- * a58ca53 - 2016-02-08: Fixed issues with running as a daemon, moved logging calls to start after daemonizing. Bumped to version 7.0.22 
+- * bccbe2d - 2016-02-08: Added no cache option to pip installs to fix stuck packages on startup. Bumped to version 7.0.21 
+- * 9e1c098 - 2016-02-08: Replaced IMDBPy with imdbpie to avoid requirement of lxml. Fixed issue with tmdb and imdb imports. Version bump to 7.0.18 
+- * 146ad83 - 2016-02-08: Removed requirements module and moved code into main module for startup. Combined all requirement texts into requirements.txt and moved to top-level of main module. Fixed a few unresolved references to modules and functions. Fixed issues with setting show/episode attributes when populating data from indexers. Version bumped to 7.0.17 
+- * 108aadd - 2016-02-07: Added new file metadata parser code for gather video quality based on height, credit goes to couchpotato as its based on there code. Added code in to correct episodes that have a quality setting of UNKNOWN, helps resolve previously downloaded episode statuses using new file metadata parser Fixed issues with database upserts not working. Version bump to 7.0.16 
+- * 0fa7edc - 2016-02-07: Added new file metadata parser code for gather video quality based on height, credit goes to couchpotato as its based on there code. Added code in to correct episodes that have a quality setting of UNKNOWN, helps resolve previously downloaded episode statuses using new file metadata parser Fixed issues with database upserts not working. 
+- * f352ff9 - 2016-02-07: Reverted all tornado gen.sleep calls to time.sleep calls. Fixed issue with specifying custom web port on startup. Moved srCore notifiers to __init__ section to fix startup issues. Bump to version 7.0.12 
+- * db8ad5b - 2016-02-07: Reverted database back to using concurrent futures for multithreading. Added new safe_getattr function to helpers module to handle attribute errors when retrieving data from indexers. Version bump to 7.0.10 
+- * fd1f005 - 2016-02-06: Changed database queries and upserts to use multithreading correctly so to not block the web-ui. Changed queues to use multithreading properly to prevent blocking of the web-ui and always execute finish when completed. Fixed issues with set/get attributes on shows and episode objects, resolves issues with show airdates ... requires show refresh to take effect. 
+- * 5adef32 - 2016-02-06: Moved a few constants to the top-level of main module. Corrected code for reversing log files when viewing log files from web ui to start newest to oldest for log entries. Fixed issue with ssl pip package installs and constraints file. Moved elevated privs checker function to requirements module. Fixed issue where db mass action calls where performing upserts when they were to perform queries instead. Fixed issue with adding multiple existing shows, async_caller was incorrectly flattening lists when length was greater then one. Version bump to 7.0.3 
+- * 832840a - 2016-02-06: Fixed issues viewing schedules regarding datetime problems. Fixed issues with viewing log files from web interface. Fixed logfiles to be properly references by there full paths not just there filenames. Version bump to 7.0.2 
+- * a6e82cb - 2016-02-06: Release version 7.0.0 
+- * 383f1f3 - 2016-02-06: Small fix to daemonizing code. Version bump to 6.0.59 
+- * 1edbb2a - 2016-02-06: New daemonizing code added Version bump to 6.0.58 
+- * e00e5f0 - 2016-02-06: Corrected issues with daemonizing sickrage on startup Version bump to 6.0.57 
+- * 9f8f618 - 2016-02-06: Version bump to 6.0.56 
+- * 991c4d4 - 2016-02-06: Fixed issue that was causing logger to duplicate log messages. 
+- * 13be08c - 2016-02-06: Fixed more issues found with startup and pip installs/upgrades of required packages when running as a non-root/admin user 
+- * 35607d0 - 2016-02-05: Corrected path issue for tests and travis-cl 
+- * c5e4a38 - 2016-02-05: Updated travis-cl run script for tests. 
+- * bc5a7bb - 2016-02-05: Added in constraints for pip installs and upgrades. Version bumped 6.0.55 
+- * 6a1bf8b - 2016-02-05: Added install exception handling for pip upgrades. Version bumped 6.0.52 
+- * 23a7f73 - 2016-02-05: Fixed issues with pip updates on startup. Fixed issues with adding new shows. Fixed issues with network timezones. Fixed issues with updating of shows. Version bumped 6.0.50 
+- * a1c6c88 - 2016-02-03: Stabilizing master branch Version bumped 6.0.45 
+- * 4e4a780 - 2016-02-03: Stabilizing master branch Version bumped 6.0.45 
+- * 07e336e - 2016-01-19: Small import reference fix. Version bumped 6.0.34 
+- * dbb0550 - 2016-01-19: Fixed issues with installed/upgraded packages not being detected properly and re-installed anyways. Fixed placeholder startup files and there imports. Initial imports are forced now to ensure they install correctly. Moved crypto module to ssl requirements file. Added &#x27;--ssl&#x27; option to startup options, this option enables ssl/https from startup of sickrage and overrides config values. SSL package installs now optional. Bumped to version 6.0.33 
+- * 7a522f1 - 2016-01-19: Fixed module import error on startup files. Fixed issue with instance compare against wrong type. 
+- * 7c4d0f0 - 2016-01-19: Restructured folder layout to conform to pip install standards and fix startup issues. 
+- * 38df002 - 2016-01-19: Fixed issues with setup.py for pip installs. Removed requirements for setup.py. Bump to version v6.0.30 
+- * f49d861 - 2016-01-19: Bump to version v6.0.29 
+- * 3ae3625 - 2016-01-19: Pip installs now use Install class for installs/upgrades during startup, this fixes more startup related issues. 
+- * ae7cfb4 - 2016-01-19: Removed unrequired logging entry from theTVDB api. Fixed bug in show class. Fixed lock in database class. 
+- * 698c913 - 2016-01-19: Set executable bits on files 
+- * 19c425a - 2016-01-18: Bumped version to v6.0.28 
+- * de05f45 - 2016-01-18: Fixed issue with thread naming and instances not being classes 
+- * 22a357a - 2016-01-18: Fixed beautifulsoup issues with html5lib and parser, resolves several issues in relation to torrent providers Fixed remaining issue with tests. 
+- * 015e69f - 2016-01-18: Fixed issue with privs checker at startup Bumped version to v6.0.27 
+- * 22bb3b6 - 2016-01-18: Bumped version to v6.0.26 
+- * 2ac8b30 - 2016-01-18: HOTFIX: Auto-detect user rights and takes its path from there 
+- * 57149b3 - 2016-01-18: Fixed 2 more bs4 issues 
+- * 064970e - 2016-01-18: Fixed issues with BS4Parser and travis-ci builds. 
+- * b6ab8a3 - 2016-01-18: Fixed startup issue related to pip installs 
+- * 5eaefcf - 2016-01-18: Added pip install for configobj to travis-ci builds 
+- * bf3aecb - 2016-01-18: Added travis-ci build files to .gitignore file 
+- * f75ba3f - 2016-01-18: Need more coffee 
+- * 3419df4 - 2016-01-18: Set executable bit 
+- * 08e2ab6 - 2016-01-18: Added run.sh script for travis-ci builds 
+- * ededc5f - 2016-01-18: Correct path mistake for travis-ci builds. 
+- * d2cc69a - 2016-01-18: Changed executable bit on install.sh 
+- * 2fd8e86 - 2016-01-18: Added special folder for travis-ci tests to contain custom install scripts for handling pip installs of packages 
+- * 74a6bf3 - 2016-01-18: Added special folder for travis-ci tests to contain custom install scripts for handling pip installs of packages 
+- * fdef5c7 - 2016-01-18: Updated travis-ci tests to install requirements via pip before performing tests. 
+- * 8d71dbb - 2016-01-18: Fixed issue with pip installs being unable to locate get-pip.py 
+- * 2a73bc9 - 2016-01-18: Fixed database call issues for daily searches 
+- * b911bf7 - 2016-01-18: Fixed issues with status view 
+- * e2067d7 - 2016-01-18: Fixed issues with detailed history views 
+- * ef7facd - 2016-01-18: Version bumped to v6.0.23 
+- * 1ca8e96 - 2016-01-18: HOTFIX: Added in call to install required packages for tests. 
+- * f38a07c - 2016-01-18: Fixed provider result parsing, added in html5lib required by BeautifulSoup parser. Fixed tests so they actually work again! 
+- * 0ad39f2 - 2016-01-18: Version bump to v6.0.22 
+- * 0107af8 - 2016-01-18: Fixed several bugs with sql database calls and connectors. Fixed bug in post-processor. Fixed WebAPI calls. 
+- * d3761be - 2016-01-17: Corrected a startup issue with installation/upgrade of pip 
+- * f4a2533 - 2016-01-17: Fixed startup to automatically install and upgrade pip to latest version. SSL and Optional packages are NOT enforced by setup.py anymore to prevent install issues that can be resolved later on if they occur. Bump to version v6.0.20 
+- * 15c6060 - 2016-01-17: Added &#x27;--user&#x27; to startup options, installs all package depends as regular user without admin/root pirvs. Bumped version to 6.0.16 
+- * e538324 - 2016-01-17: Fixed issue with queues by switching from apscheduler to ioloop events, Bumped version to v6.0.14 
+- * e0333fc - 2016-01-17: Version bump to v6.0.13 
+- * ece5ec8 - 2016-01-17: Fixed issues with history view 
+- * 9567b1c - 2016-01-17: Fixed date issues with scheduler 
+- * c2cb8e1 - 2016-01-17: Fixed issue with adding shows and quality presets 
+- * cca222e - 2016-01-17: Version bump to v6.0.12 
+- * e74d2c4 - 2016-01-17: Fixed more unresolved references to imports and more issues revolving around naming of episodes and setting of qualities. 
+- * 6bf50fe - 2016-01-17: Fixed class naming issue between validator and tv classes 
+- * 279374c - 2016-01-17: Fixed issues with removing a show via mass edit when show variable is None 
+- * 669f506 - 2016-01-17: Fixed TypeError: can&#x27;t compare offset-naive and offset-aware datetimes in scheduler mako view 
+- * c36f208 - 2016-01-17: Fixed all unresolved references to imports. Fixed quality settings for editing shows. Fixed several anime issues including unresolved imports. 
+- * b60ad73 - 2016-01-17: Fixed timezone issue for windows users causing a mako exception. Fixed startup issues realted to pip install/upgrading routines. Added in command arg &#x27;--install-optional&#x27; to allow installing of optional package modules if needed. Bumped to version 6.0.10 
+- * cfc022e - 2016-01-16: python-daemon&gt;&#x3D;2.1 has initgroups&#x3D;True by default but it requires root privs, this corrects issues caused by that. 
+- * bda28a2 - 2016-01-16: Fixed paths for requirements 
+- * 7c81090 - 2016-01-16: Fixed startup issues related to patching of ssl sni contexts for pip install of required library files. Added in progress status bar for required files installation. Moved IMDb package to optionals as TMDb package is now used instead, faster and better performance. On startup packages are automatically installed or upgraded. 
+- * 2dafcc7 - 2016-01-15: Added SNI requirements file. Created custom AttrDIct class to forgo needing import of external outside AttrDict module. 
+- * d75b834 - 2016-01-15: Version bump to v6.0.5 
+- * 3005b23 - 2016-01-15: Fixed startup issues relating to version checks 
+- * c917dab - 2016-01-15: Fix for MoreThanTV provider. 
+- * 45b38cb - 2016-01-15: Version bump to v6.0.4 
+- * 8260170 - 2016-01-15: Added virtualenv to requirements. Added code into startup to update setuptools. 
+- * 3c89ae4 - 2016-01-15: Fixed setup.cfg 
+- * 747734e - 2016-01-15: Version bump to v6.0.3 
+- * 22693cc - 2016-01-15: Fixed requirements file 
+- * 9a8d283 - 2016-01-15: Further fixes for restart/shutown of app. Improved queue handling and searchers 
+- * 168db6b - 2016-01-15: Fixed restart issues 
+- * 125a0c7 - 2016-01-15: FIXED: Threading issues causing memory leak. UPDATED: Queues now use APScheduler which is ioloop event friendly. 
+- * f589e49 - 2016-01-14: Rename History.py to history.py 
+- * c975d90 - 2016-01-14: CLEANUP: main init script 
+- * ad6f7ba - 2016-01-14: FIX: removed logger calls that were to early in the code 
+- * 6bd2f45 - 2016-01-14: FIXED: permissions on init scripts 
+- * dac5b49 - 2016-01-14: FIX: permissions on main executables. 
+- * 546201a - 2016-01-14: Chmod +x SickBeard.py legacy file 
+- * 94d6d35 - 2016-01-14: Updated init scripts. Chmod +x SiCKRAGE.py 
+- * 3238b91 - 2016-01-14: Updated to version 6.0.0, restructing completed. 
+- * ac85744 - 2016-01-13: Updated templates 
+- * 505022f - 2016-01-13: Updated git ignore file 
+- * 3fd9dbd - 2016-01-13: Complete restructuring of modules and code and changed all sickbeard references to sickrage 
+- * b4c4aad - 2016-01-13: Complete restructuring of modules and code and changed all sickbeard references to sickrage 
+- * 0be25da - 2016-01-11: Complete restructuring of modules and code and changed all sickbeard references to sickrage 
+- * 7f709eb - 2016-01-10: UPDATED: nzbToMedia updated to latest master 
+- * ef72b4e - 2016-01-10: FIX: Fixed issue with parsing air-by-date shows and displaying results. 
+- * b583a6e - 2016-01-10: FIX: Corrected namecache freq FIX: Corrected search provider removal issues 
+- * 4ee4a0f - 2016-01-10: FIX: Corrected status web view 
+- * 4a62a6f - 2016-01-10: FIX: Corrected several more bugs in notifiers including plex 
+- * 234ec95 - 2016-01-10: FIX: Bug in login template corrected. 
+- * f8621be - 2016-01-10: FIX: Corrected several cyclic depends. UPDATE: Moved code from notifiers __init__ to sickrage core module. FIX: Fixed numerous module import issues. 
+- * b19e4d1 - 2016-01-10: FIX: Missing import in common 
+- * 4f2d081 - 2016-01-10: UPDATED: further updates to requirements.txt 
+- * 8c15642 - 2016-01-10: UPDATED: requirements text 
+- * 0957c98 - 2016-01-10: FIX: Made lxml a optional requirement 
+- * c7bacf4 - 2016-01-10: FIXED: Auto-pip install code corrected 
+- * c4f9512 - 2016-01-10: UPDATE: Updated requirements.txt file 
+- * 072e10a - 2016-01-10: ADDED: Pip is now automatically installed if it does not exist. 
+- * 8237e9f - 2016-01-10: FIX: Corrected DB code to handle list instances when performing fetchall and fetchone. FIX: Small code-correction for web api param handler. FIX: Corrected code to utilize tornado&#x27;s non-blocking sleep function instead of time&#x27;s UPDATE: Added profilehooks to requirements.txt 
+- * 853668b - 2016-01-10: FIX: Corrected DB code to handle list instances when performing fetchall and fetchone. UPDATE: Added profilehooks to requirements.txt FIX: Small code-correction for web api param handler. 
+- * 67e09f6 - 2016-01-10: FIX: synoindex_notifier code correction that was preventing post-processing from working 
+- * 1c39d11 - 2016-01-10: FIX: Corrected provider result bug 
+- * 0b201a9 - 2016-01-10: FIX: Corrected missing seedratio attribute for provider results 
+- * ee97067 - 2016-01-10: FIX: Corrected issue in requirements.txt file 
+- * f1f73a4 - 2015-12-20: NEW: Rewrote the startup/restat/shutdown of the app to utilize tornado&#x27;s ioloop and autoreload features. NEW: Replaced scheduler with APScheduler. NEW: Rewrote provider modules to create dynamic instances on the fly and switched to using dicts. NEW: Removed libs folder and created requirements.txt for installing required libs NEW: Added in v2 API access for theTVDB.com to support better searches. FIX: Corrected several filenaming pep8 issues. FIX: Seperated variables from core code in main __init__ file. FIX: Fixed several bugs related to metadata parsing. 
+
 

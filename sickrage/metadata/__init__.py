@@ -25,11 +25,10 @@ import re
 import sys
 from xml.etree.ElementTree import ElementTree, SubElement
 
+import requests
+
 import fanart
 import fanart.core
-import requests
-import tmdbsimple as tmdb
-
 import sickrage
 from helpers import getShowImage
 from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension

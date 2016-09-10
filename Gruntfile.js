@@ -210,22 +210,24 @@ module.exports = function (grunt) {
             ]
         },
         changelog: {
-            sample: {
+            release: {
                 options: {
-                    fileHeader: '# Changelog',
-                    dest: 'changelog.md',
-                    insertType: 'append',
+                    after: '256',
                     logArguments: [
                         '--pretty=* %h - %ad: %s',
                         '--no-merges',
                         '--date=short'
                     ],
-                    template: '{{> features}}',
+                    fileHeader: '# Changelog',
                     featureRegex: /^(.*)$/gim,
                     partials: {
-                        features: '{{#if features}}{{#each features}}{{> feature}}{{/each}}{{else}}{{> empty}}{{/if}}\n',
-                        feature: '- {{this}} {{this.date}}\n'
-                    }
+                        features: '{{#each features}}{{> feature}}{{/each}}\n',
+                        feature: '- {{this}} {{this.date}}\n',
+                        fixes: '{{#each fixes}}{{> fix}}{{/each}}\n',
+                        fix: '- {{this}} {{this.date}}\n'
+
+                    },
+                    dest: "changelog.md"
                 }
             }
         }

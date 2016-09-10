@@ -2,27 +2,16 @@ import io
 import os
 import shutil
 
-from pip.download import PipSession
-from pip.req import parse_requirements
 from setuptools import setup, Command
-
-links = []
-requires = []
-
-for item in parse_requirements(
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt')),
-        session=PipSession()):
-    # we want to handle package names and also repo urls
-    if getattr(item, 'url', None):  # older pip has url
-        links.append(str(item.url))
-    elif getattr(item, 'link', None):  # newer pip has link
-        links.append(str(item.link))
-    elif item.req:
-        requires.append(str(item.req))
 
 # Get the version number
 with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
     version = f.read()
+
+
+def requires():
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))) as f:
+        return f.read().splitlines()
 
 
 class CleanCommand(Command):
@@ -53,8 +42,7 @@ setup(
     url='https://git.sickrage.ca',
     keywords=['sickrage', 'sickragetv', 'tv', 'torrent', 'nzb', 'video', 'echel0n'],
     packages=['sickrage'],
-    install_requires=requires,
-    dependency_links=links,
+    install_requires=requires(),
     include_package_data=True,
     platforms='any',
     zip_safe=False,
