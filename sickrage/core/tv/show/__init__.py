@@ -1068,13 +1068,12 @@ class TVShow(object):
             sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Loading show info from IMDb")
 
             imdbTv = i.get_title_by_id(self.imdbid)
-
-            for key in [x for x in imdb_info.keys() if x.replace('_', ' ') in imdbTv]:
+            for key in [x for x in imdb_info.keys() if hasattr(imdbTv, x.replace('_', ' '))]:
                 # Store only the first value for string type
-                if isinstance(imdb_info[key], basestring) and isinstance(imdbTv.get(key.replace('_', ' ')), list):
-                    imdb_info[key] = imdbTv.get(key.replace('_', ' '))[0]
+                if isinstance(imdb_info[key], basestring) and isinstance(getattr(imdbTv, key.replace('_', ' ')), list):
+                    imdb_info[key] = getattr(imdbTv, key.replace('_', ' '))[0]
                 else:
-                    imdb_info[key] = imdbTv.get(key.replace('_', ' '))
+                    imdb_info[key] = getattr(imdbTv, key.replace('_', ' '))
 
             # Filter only the value
             if imdb_info['runtimes']:
@@ -1117,6 +1116,7 @@ class TVShow(object):
             # Rename dict keys without spaces for DB upsert
             self.imdb_info = dict(
                 (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in imdb_info.items())
+
             sickrage.srCore.srLogger.debug(
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
 
