@@ -50,7 +50,7 @@ from sickrage.core.searchers.backlog_searcher import srBacklogSearcher, \
 from sickrage.core.searchers.daily_searcher import srDailySearcher
 from sickrage.core.searchers.proper_searcher import srProperSearcher
 from sickrage.core.searchers.subtitle_searcher import srSubtitleSearcher
-from sickrage.core.searchers.trakt_searcher import srTraktSearcher
+from sickrage.core.searchers.trakt_searcher import srTraktSearcher, srTraktRolling
 from sickrage.core.srconfig import srConfig
 from sickrage.core.srlogger import srLogger
 from sickrage.core.tv.show import TVShow
@@ -163,6 +163,7 @@ class Core(object):
         self.BACKLOGSEARCHER = srBacklogSearcher()
         self.PROPERSEARCHER = srProperSearcher()
         self.TRAKTSEARCHER = srTraktSearcher()
+        self.TRAKTROLLING = srTraktRolling()
         self.SUBTITLESEARCHER = srSubtitleSearcher()
 
         # auto postprocessor
@@ -306,6 +307,9 @@ class Core(object):
         if self.srConfig.SUBTITLE_SEARCHER_FREQ < self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ:
             self.srConfig.SUBTITLE_SEARCHER_FREQ = self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ
 
+        if self.srConfig.TRAKT_ROLLING_FREQUENCY < self.srConfig.MIN_TRAKTROLLING_FREQ:
+            self.srConfig.TRAKT_ROLLING_FREQUENCY = self.srConfig.MIN_TRAKTROLLING_FREQ
+
         self.srConfig.NEWS_LATEST = self.srConfig.NEWS_LAST_READ
 
         if self.srConfig.SUBTITLES_LANGUAGES[0] == '':
@@ -415,12 +419,37 @@ class Core(object):
             id="PROPERSEARCHER"
         )
 
+        now_second = datetime.datetime.now().second
+        second_start = now_second + 5
+        minute_start = datetime.datetime.now().minute
+        if second_start > 59:
+           second_start = second_start - 60
+           minute_start = minute_start + 1 
+           date_start = datetime.datetime.now().replace(minute=minute_start, second=second_start)
+        else:
+           date_start = datetime.datetime.now().replace(second=second_start)
+
         # add trakt.tv checker job
         self.srScheduler.add_job(
             self.TRAKTSEARCHER.run,
-            srIntervalTrigger(**{'hours': 1}),
+            srIntervalTrigger(**{'hours': 1,
+                                 'start_date': date_start
+                                }
+                             ),
             name="TRAKTSEARCHER",
             id="TRAKTSEARCHER"
+        )
+
+        # add trakt.tv rolling download job
+        self.srScheduler.add_job(
+            self.TRAKTROLLING.run,
+            srIntervalTrigger(**{'minutes': self.srConfig.TRAKT_ROLLING_FREQUENCY, 
+                                 'min': self.srConfig.MIN_TRAKTROLLING_FREQ,
+                                 'start_date': date_start
+                                }
+                             ),
+            name="TRAKTROLLING",
+            id="TRAKTROLLING"
         )
 
         # add subtitles finder job
@@ -443,6 +472,11 @@ class Core(object):
         (self.srScheduler.get_job('TRAKTSEARCHER').pause,
          self.srScheduler.get_job('TRAKTSEARCHER').resume
          )[self.srConfig.USE_TRAKT]()
+
+        # Pause/Resume TRAKTSEARCHER job
+        (self.srScheduler.get_job('TRAKTROLLING').pause,
+         self.srScheduler.get_job('TRAKTROLLING').resume
+         )[self.srConfig.TRAKT_USE_ROLLING_DOWNLOAD]()
 
         # Pause/Resume SUBTITLESEARCHER job
         (self.srScheduler.get_job('SUBTITLESEARCHER').pause,

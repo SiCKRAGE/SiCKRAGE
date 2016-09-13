@@ -193,7 +193,7 @@
                                     output_html = '?'
                                     display_status = curShow.status
                                     if display_status:
-                                        if 'nded' not in display_status and 1 == int(curShow.paused):
+                                        if 'nded' not in display_status and 1 == int(curShow.paused) and not (sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD and sickrage.srCore.srConfig.USE_TRAKT):
                                           output_html = 'Paused'
                                         elif display_status:
                                             output_html = display_status

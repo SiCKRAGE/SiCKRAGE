@@ -341,7 +341,10 @@ class QueueItemAdd(ShowQueueItem):
             self.show.anime = self.anime or sickrage.srCore.srConfig.ANIME_DEFAULT
             self.show.scene = self.scene or sickrage.srCore.srConfig.SCENE_DEFAULT
             self.show.archive_firstmatch = self.archive or sickrage.srCore.srConfig.ARCHIVE_DEFAULT
-            self.show.paused = self.paused or False
+            if sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD and sickrage.srCore.srConfig.USE_TRAKT:
+                self.show.paused = sickrage.srCore.srConfig.TRAKT_ROLLING_ADD_PAUSED or False
+            else:
+                self.show.paused = self.paused or False
 
             # set up default new/missing episode status
             sickrage.srCore.srLogger.info(
@@ -423,6 +426,10 @@ class QueueItemAdd(ShowQueueItem):
         except Exception as e:
             sickrage.srCore.srLogger.debug("Error searching dir for episodes: {}".format(e.message))
             sickrage.srCore.srLogger.debug(traceback.format_exc())
+
+        if sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD:
+            # if there are specific active show to monitor with trakt
+            sickrage.srCore.TRAKTROLLING.updateWantedList(self.show.indexerid)
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if self.show.default_ep_status == WANTED:

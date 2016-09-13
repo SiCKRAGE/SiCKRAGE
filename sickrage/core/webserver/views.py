@@ -1479,6 +1479,11 @@ class Home(WebRoot):
                 except CantRefreshShowException as e:
                     errors.append("Unable to refresh this show: {}".format(e.message))
 
+            if showObj.paused == paused:
+               do_update_rolling = False
+            else:
+               do_update_rolling = True
+
             showObj.paused = paused
             showObj.scene = scene
             showObj.anime = anime
@@ -1534,6 +1539,12 @@ class Home(WebRoot):
             except CantUpdateShowException as e:
                 errors.append("Unable to force an update on scene exceptions of the show.")
 
+        if do_update_rolling and (sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD and sickrage.srCore.srConfig.USE_TRAKT):
+            # Checking if trakt and rolling_download are enable because updateWantedList()
+            # doesn't do the distinction between a failuire and being not activated(Return false)
+            if not sickrage.srCore.TRAKTROLLING.updateWantedList(showObj.indexerid):
+                errors.append("Unable to force an update on wanted episode")
+
         if do_update_scene_numbering:
             try:
                 xem_refresh(showObj.indexerid, showObj.indexer)
@@ -1556,6 +1567,12 @@ class Home(WebRoot):
 
         if error is not None:
             return self._genericMessage('Error', error)
+
+        if not show.paused and (sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD and sickrage.srCore.srConfig.USE_TRAKT):
+            # Checking if trakt and rolling_download are enable because updateWantedList()
+            # doesn't do the distinction between a failuire and being not activated(Return false)
+            if not sickrage.srCore.TRAKTROLLING.updateWantedList(show.indexerid):
+                errors.append("Unable to force an update on wanted episode")
 
         sickrage.srCore.srNotifications.message('%s has been %s' % (show.name, ('resumed', 'paused')[show.paused]))
 
@@ -4614,7 +4631,8 @@ class ConfigNotifications(Config):
                           trakt_method_add=None,
                           trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None, trakt_sync_remove=None,
                           trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_timeout=None,
-                          trakt_blacklist_name=None,
+                          trakt_blacklist_name=None, trakt_use_rolling_download=None, trakt_rolling_num_ep=None, trakt_rolling_frequency=None, 
+                          trakt_rolling_add_paused=None,
                           use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
                           synologynotifier_notify_ondownload=None, synologynotifier_notify_onsubtitledownload=None,
                           use_pytivo=None, pytivo_notify_onsnatch=None, pytivo_notify_ondownload=None,
@@ -4768,6 +4786,7 @@ class ConfigNotifications(Config):
             synologynotifier_notify_onsubtitledownload)
 
         sickrage.srCore.srConfig.change_use_trakt(use_trakt)
+        sickrage.srCore.srConfig.change_use_trakt_rolling(trakt_use_rolling_download)
         sickrage.srCore.srConfig.TRAKT_USERNAME = trakt_username
         sickrage.srCore.srConfig.TRAKT_REMOVE_WATCHLIST = sickrage.srCore.srConfig.checkbox_to_value(
             trakt_remove_watchlist)
@@ -4785,6 +4804,11 @@ class ConfigNotifications(Config):
         sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER = int(trakt_default_indexer)
         sickrage.srCore.srConfig.TRAKT_TIMEOUT = int(trakt_timeout)
         sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME = trakt_blacklist_name
+        sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(trakt_use_rolling_download)
+        sickrage.srCore.srConfig.TRAKT_ROLLING_NUM_EP = int(trakt_rolling_num_ep)
+        sickrage.srCore.srConfig.TRAKT_ROLLING_FREQUENCY = int(trakt_rolling_frequency)
+        sickrage.srCore.srConfig.TRAKT_ROLLING_ADD_PAUSED = sickrage.srCore.srConfig.checkbox_to_value(trakt_rolling_add_paused)
+
 
         sickrage.srCore.srConfig.USE_EMAIL = sickrage.srCore.srConfig.checkbox_to_value(use_email)
         sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(

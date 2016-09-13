@@ -25,7 +25,7 @@ import traceback
 from datetime import date
 
 import sickrage
-from sickrage.core.common import Quality
+from sickrage.core.common import Quality, statusStrings
 from sickrage.core.common import SKIPPED, WANTED, ARCHIVED, UNKNOWN
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import findCertainShow, sanitizeFileName, makeDir, chmodAsParent
@@ -736,3 +736,190 @@ class srTraktSearcher(object):
                 traktShowList.append(show)
 
         return {'shows': traktShowList}
+
+
+class srTraktRolling(object):
+    def __init__(self, *args, **kwargs):
+        self.name = "TRAKTROLLING"
+        self.trakt_api = None
+        self.todoWanted = []
+        self.EpisodeWatched = []
+        self.amActive = False
+
+    def run(self, force=False):
+        if self.amActive:
+            return
+
+        self.amActive = True
+
+        # set thread name
+        threading.currentThread().setName(self.name)
+
+        # init trakt api
+        self.trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
+
+        sickrage.srCore.srLogger.debug(u"Start getting list from Traktv")
+
+        sickrage.srCore.srLogger.debug(u"Getting EpisodeWatched")
+        if not self._getEpisodeWatched():
+            return
+
+        self.updateWantedList()
+
+        self.amActive = False
+
+    def _getEpisodeWatched(self):
+
+        try:
+            self.EpisodeWatched = self.trakt_api.traktRequest("sync/watched/shows")
+        except traktException as e:
+            sickrage.srCore.srLogger.error(u"Could not connect to trakt service, cannot download show from library: %s" % repr(e))
+            return False
+
+        return True
+
+    def refreshEpisodeWatched(self):
+
+        if not (sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD and sickrage.srCore.srConfig.USE_TRAKT):
+            return False
+
+        if not self._getEpisodeWatched():
+            return False
+
+        return True
+
+    def updateWantedList(self, indexer_id = None):
+
+        if not (sickrage.srCore.srConfig.TRAKT_USE_ROLLING_DOWNLOAD and sickrage.srCore.srConfig.USE_TRAKT):
+            return False
+
+        if not self.refreshEpisodeWatched():
+            return False
+
+        if self.amActive:
+            return
+
+        num_of_download = sickrage.srCore.srConfig.TRAKT_ROLLING_NUM_EP
+
+        if not len(self.EpisodeWatched) or num_of_download == 0:
+            return True
+
+        sickrage.srCore.srLogger.debug(u"Start looking if having %02d episode(s) not watched", num_of_download)
+
+        sql_selection="SELECT indexer, indexer_id, imdb_id, show_name, season, episode, paused FROM (SELECT * FROM tv_shows s,tv_episodes e WHERE s.indexer_id = e.showid) T1 WHERE T1.episode_id IN (SELECT T2.episode_id FROM tv_episodes T2 WHERE T2.showid = T1.indexer_id and T2.status in (" + ",".join([str(x) for x in [SKIPPED]]) + ") and T2.season!=0 and airdate is not null ORDER BY T2.season,T2.episode LIMIT 1)"
+
+        if indexer_id is not None:
+            sql_selection=sql_selection + " and indexer_id = " + str(indexer_id)
+        else:
+            sql_selection=sql_selection + " and T1.paused = 0"
+
+        sql_selection=sql_selection + " ORDER BY T1.show_name,season,episode"
+
+        results = main_db.MainDB().select(sql_selection)
+
+        for cur_result in results:
+
+            indexer_id = str(cur_result["indexer_id"])
+            show_name = (cur_result["show_name"])
+            sn_sb = cur_result["season"]
+            ep_sb = cur_result["episode"]
+
+            newShow = findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id))
+            imdb_id = cur_result["imdb_id"]
+
+            num_of_ep=0
+            season = 1
+            episode = 0
+
+            last_per_season = self.trakt_api.traktRequest("shows/" + str(imdb_id) + "/seasons?extended=full")
+            if not last_per_season:
+                sickrage.srCore.srLogger.error(u"Could not connect to trakt service, cannot download last season for show")
+                return False
+
+            sickrage.srCore.srLogger.debug(u"indexer_id: %s, Show: %s - First skipped/available Episode: Season %02d, Episode %02d", indexer_id, show_name, sn_sb, ep_sb)
+
+            if imdb_id not in (show['show']['ids']['imdb'] for show in self.EpisodeWatched):
+                sickrage.srCore.srLogger.debug(u"Show not founded in Watched list")
+                if (sn_sb*100+ep_sb) > 100+num_of_download:
+                    sickrage.srCore.srLogger.debug(u"First %02d episode already downloaded", num_of_download)
+                    continue
+                else:
+                    sn_sb = 1
+                    ep_sb = 1
+                    num_of_ep = num_of_download
+            else:
+                sickrage.srCore.srLogger.debug(u"Show founded in Watched list")
+
+                show_watched = [show for show in self.EpisodeWatched if show['show']['ids']['imdb'] == imdb_id]
+
+                season = show_watched[0]['seasons'][-1]['number']
+                episode = show_watched[0]['seasons'][-1]['episodes'][-1]['number']
+                sickrage.srCore.srLogger.debug(u"Last watched, Season: %02d - Episode: %02d", season, episode)
+
+                num_of_ep = num_of_download - (self._num_ep_for_season(last_per_season, sn_sb, ep_sb) - self._num_ep_for_season(last_per_season, season, episode)) + 1
+
+            sickrage.srCore.srLogger.debug(u"Number of Episode to Download: %02d", num_of_ep)
+
+            s = sn_sb
+            e = ep_sb
+
+            for x in range(0,num_of_ep):
+
+                last_s = [last_x_s for last_x_s in last_per_season if last_x_s['number'] == s]
+                if last_s is None:
+                    break
+                if episode == 0 or (s*100+e) <= (int(last_s[0]['number'])*100+int(last_s[0]['episode_count'])): 
+
+                    if (s*100+e) > (season*100+episode):
+                        if not cur_result["paused"]:
+                            if newShow is not None:
+                                setEpisodeToWanted(newShow, s, e)
+                            else:
+                                self.todoWanted.append(int(indexer_id), s, e)
+                    else:
+                        self.setEpisodeToDefaultWatched(newShow, s, e)
+
+                    if (s*100+e) == (int(last_s[0]['number'])*100+int(last_s[0]['episode_count'])):
+                        s = s + 1
+                        e = 1
+                    else:
+                        e = e + 1
+
+        sickrage.srCore.srLogger.debug(u"Stop looking if having %02d episode not watched", num_of_download)
+        return True
+
+    def setEpisodeToDefaultWatched(self, show, s, e):
+        """
+        Sets an episode to ignored, only if it is currently skipped or failed
+        """
+        epObj = show.getEpisode(int(s), int(e))
+        if epObj:
+
+            with epObj.lock:
+                if epObj.status != SKIPPED:
+                    return
+
+                sickrage.srCore.srLogger.debug(u"Setting episode S%02dE%02d of show %s to %s", s, e, show.name, statusStrings[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS])
+
+                epObj.status = sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS
+                epObj.saveToDB()
+
+    def _num_ep_for_season(self, show, season, episode):
+
+        num_ep = 0
+
+        for curSeason in show:
+
+            sn = int(curSeason["number"])
+            ep = int(curSeason["episode_count"])
+
+            if (sn < season):
+                num_ep = num_ep + (ep)
+            elif (sn == season):
+                num_ep = num_ep + episode
+            elif (sn == 0):
+                continue
+            else:
+                continue
+
+        return num_ep
