@@ -152,6 +152,13 @@ class BaseHandler(RequestHandler):
                                </html>""".format(error, error, trace_info, request_info,
                                                  sickrage.srCore.srConfig.WEB_ROOT))
 
+    def redirect(self, url, permanent=False, status=None):
+        if not url.startswith(sickrage.srCore.srConfig.WEB_ROOT):
+            url = sickrage.srCore.srConfig.WEB_ROOT + url
+            permanent = True
+
+        super(BaseHandler, self).redirect(url, permanent, status)
+
     def get_current_user(self):
         return self.get_secure_cookie('user')
 
@@ -239,7 +246,7 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie('user', json_encode(sickrage.srCore.srConfig.API_KEY),
                                        expires_days=30 if remember_me > 0 else None)
                 sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
-                #return self.redirect(self.get_argument("next", "/"))
+                # return self.redirect(self.get_argument("next", "/"))
                 return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
             elif username and password:
                 sickrage.srCore.srLogger.warning(
@@ -2432,7 +2439,7 @@ class HomeAddShows(Home):
 
                 showid = show_name = indexer = None
                 for cur_provider in sickrage.srCore.metadataProviderDict.values():
-                    #if not cur_provider.enabled:
+                    # if not cur_provider.enabled:
                     #    continue
 
                     if not (showid and show_name):
@@ -4011,7 +4018,7 @@ class ConfigGeneral(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration','<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
         else:
             sickrage.srCore.srNotifications.message('[GENERAL] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -4176,7 +4183,7 @@ class ConfigSearch(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration','<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
         else:
             sickrage.srCore.srNotifications.message('[SEARCH] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -4310,7 +4317,7 @@ class ConfigPostProcessing(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.warning(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration','<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
         else:
             sickrage.srCore.srNotifications.message('[POST-PROCESSING] Configuration Saved',
                                                     os.path.join(sickrage.CONFIG_FILE))
@@ -4539,7 +4546,6 @@ class ConfigProviders(Config):
             except Exception as e:
                 continue
 
-
         # sort providers
         sickrage.srCore.providersDict.sort(re.findall(r'\w+[^\W\s]', provider_order))
 
@@ -4548,7 +4554,7 @@ class ConfigProviders(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration','<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
         else:
             sickrage.srCore.srNotifications.message('[PROVIDERS] Configuration Saved',
                                                     os.path.join(sickrage.CONFIG_FILE))
@@ -4839,7 +4845,7 @@ class ConfigNotifications(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration','<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
         else:
             sickrage.srCore.srNotifications.message('[NOTIFICATIONS] Configuration Saved',
                                                     os.path.join(sickrage.CONFIG_FILE))
@@ -4911,7 +4917,7 @@ class ConfigSubtitles(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration','<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
         else:
             sickrage.srCore.srNotifications.message('[SUBTITLES] Configuration Saved',
                                                     os.path.join(sickrage.CONFIG_FILE))
@@ -4950,11 +4956,12 @@ class ConfigAnime(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration','<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
         else:
             sickrage.srCore.srNotifications.message('[ANIME] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
+
 
 @Route('/config/qualitySettings(/?.*)')
 class ConfigQualitySettings(Config):
@@ -4972,15 +4979,16 @@ class ConfigQualitySettings(Config):
             action='quality_settings'
         )
 
-
     def saveQualities(self, **kwargs):
-        sickrage.srCore.srConfig.QUALITY_SIZES.update(dict((int(k),int(v)) for k,v in kwargs.items()))
+        sickrage.srCore.srConfig.QUALITY_SIZES.update(dict((int(k), int(v)) for k, v in kwargs.items()))
 
         sickrage.srCore.srConfig.save()
 
-        sickrage.srCore.srNotifications.message('[QUALITY SETTINGS] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+        sickrage.srCore.srNotifications.message('[QUALITY SETTINGS] Configuration Saved',
+                                                os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/qualitySettings/")
+
 
 @Route('/logs(/?.*)')
 class Logs(WebRoot):
