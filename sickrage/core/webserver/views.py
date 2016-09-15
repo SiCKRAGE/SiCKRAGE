@@ -241,7 +241,7 @@ class LoginHandler(BaseHandler):
                                        expires_days=30 if remember_me > 0 else None)
                 sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
                 #return self.redirect(self.get_argument("next", "/"))
-                return self.redirect('/' + sickrage.srCore.DEFAULT_PAGE + '/')
+                return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
             elif username and password:
                 sickrage.srCore.srLogger.warning(
                     'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
@@ -269,7 +269,7 @@ class LogoutHandler(BaseHandler):
     def prepare(self, *args, **kwargs):
         self.clear_cookie("user")
         #return self.redirect(self.get_argument("next", "/"))
-        return self.redirect('/' + sickrage.srCore.DEFAULT_PAGE + '/')
+        return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
 
 class CalendarHandler(BaseHandler):
