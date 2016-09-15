@@ -32,6 +32,7 @@ from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
+from tornado.process import cpu_count
 from tornado.web import RequestHandler
 
 try:
@@ -116,7 +117,7 @@ class ApiHandler(RequestHandler):
 
     def initialize(self):
         self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = ThreadPoolExecutor(cpu_count())
 
     @coroutine
     def prepare(self, *args, **kwargs):

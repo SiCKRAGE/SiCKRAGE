@@ -35,6 +35,7 @@ from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
+from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
 try:
@@ -107,7 +108,7 @@ class BaseHandler(RequestHandler):
 
     def initialize(self):
         self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(max_workers=10)
+        self.executor = ThreadPoolExecutor(cpu_count())
 
     def write_error(self, status_code, **kwargs):
         # handle 404 http errors
@@ -239,7 +240,8 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie('user', json_encode(sickrage.srCore.srConfig.API_KEY),
                                        expires_days=30 if remember_me > 0 else None)
                 sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
-                return self.redirect(self.get_argument("next", "/"))
+                #return self.redirect(self.get_argument("next", "/"))
+                return self.redirect('/' + sickrage.srCore.DEFAULT_PAGE + '/')
             elif username and password:
                 sickrage.srCore.srLogger.warning(
                     'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
@@ -266,7 +268,8 @@ class LogoutHandler(BaseHandler):
 
     def prepare(self, *args, **kwargs):
         self.clear_cookie("user")
-        return self.redirect(self.get_argument("next", "/"))
+        #return self.redirect(self.get_argument("next", "/"))
+        return self.redirect('/' + sickrage.srCore.DEFAULT_PAGE + '/')
 
 
 class CalendarHandler(BaseHandler):
