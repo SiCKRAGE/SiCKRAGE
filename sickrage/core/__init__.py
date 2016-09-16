@@ -27,12 +27,9 @@ import shutil
 import socket
 import sys
 import threading
-import traceback
-
-from apscheduler.schedulers.tornado import TornadoScheduler
-from tornado.ioloop import IOLoop
 
 import sickrage
+from apscheduler.schedulers.tornado import TornadoScheduler
 from sickrage.core.caches.name_cache import srNameCache
 from sickrage.core.classes import AttrDict, srIntervalTrigger
 from sickrage.core.common import SD, SKIPPED, WANTED
@@ -85,6 +82,7 @@ from sickrage.notifiers.synologynotifier import synologyNotifier
 from sickrage.notifiers.trakt import TraktNotifier
 from sickrage.notifiers.tweet import TwitterNotifier
 from sickrage.providers import providersDict
+from tornado.ioloop import IOLoop
 
 
 class Core(object):
@@ -530,10 +528,8 @@ class Core(object):
             try:
                 curshow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
                 self.srLogger.debug("Loading data for show: [{}]".format(curshow.name))
-                #self.NAMECACHE.buildNameCache(curshow)
                 curshow.nextEpisode()
                 self.SHOWLIST += [curshow]
             except Exception as e:
                 self.srLogger.error(
-                    "There was an error creating the show in {}: {}".format(sqlShow["location"], e.message))
-                self.srLogger.debug(traceback.format_exc())
+                    "Show error in [{}]: {}".format(sqlShow["location"], e.message))

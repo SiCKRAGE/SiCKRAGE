@@ -633,9 +633,10 @@ class TVEpisode(object):
                     raise NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.iter('episodedetails'):
-                    if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or \
-                                    epDetails.findtext('episode') is None or int(
-                        epDetails.findtext('episode')) != self.episode:
+                    if epDetails.findtext('season') is None or int(
+                            epDetails.findtext('season')) != self.season or epDetails.findtext(
+                            'episode') is None or int(epDetails.findtext('episode')) != self.episode:
+
                         sickrage.srCore.srLogger.debug(
                             "%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got S%02dE%02d" %
                             (

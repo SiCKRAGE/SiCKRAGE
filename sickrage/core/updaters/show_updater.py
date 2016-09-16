@@ -59,8 +59,8 @@ class srShowUpdater(object):
 
             # last_update_date <= 90 days, sorted ASC because dates are ordinal
             sql_result = main_db.MainDB().select(
-                    "SELECT indexer_id FROM tv_shows WHERE status = 'Ended' AND last_update_indexer <= ? ORDER BY last_update_indexer ASC LIMIT 10;",
-                    [stale_update_date])
+                "SELECT indexer_id FROM tv_shows WHERE status = 'Ended' AND last_update_indexer <= ? ORDER BY last_update_indexer ASC LIMIT 10;",
+                [stale_update_date])
 
             # list of stale shows
             [stale_should_update.append(int(cur_result['indexer_id'])) for cur_result in sql_result]
@@ -69,20 +69,11 @@ class srShowUpdater(object):
         sickrage.srCore.srLogger.info("Performing daily updates for all shows")
         for curShow in sickrage.srCore.SHOWLIST:
             try:
-                # get next episode airdate
                 curShow.nextEpisode()
-
-                # if should_update returns True (not 'Ended') or show is selected stale 'Ended' then update, otherwise just refresh
                 if curShow.should_update(update_date=update_date) or curShow.indexerid in stale_should_update:
-                    try:
-                        piList.append(
-                                sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
-                    except CantUpdateShowException as e:
-                        sickrage.srCore.srLogger.debug("Unable to update show: {}".format(e.message))
+                    piList.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
                 else:
-                    piList.append(
-                            sickrage.srCore.SHOWQUEUE.refreshShow(curShow, True))
-
+                    piList.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
                 sickrage.srCore.srLogger.error("Daily show update failed: {}".format(e.message))
 
