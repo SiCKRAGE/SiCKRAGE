@@ -245,7 +245,7 @@ class Connection(object):
             with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
                 sqlResults += [executor.submit(tx.upsert, *q.get()).result()]
 
-        sickrage.srCore.srLogger.db("{} Upserts executed".format(len(sqlResults)))
+        sickrage.srCore.srLogger.db("{} UPSERTS executed".format(len(sqlResults)))
 
         return sqlResults
 

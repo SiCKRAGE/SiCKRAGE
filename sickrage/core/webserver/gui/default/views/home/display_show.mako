@@ -324,7 +324,7 @@
 
     <div class="pull-left">
         <div style="padding-bottom: 5px;">
-            Change selected episodes to:</br>
+            Change selected episodes to:<br/>
             <select id="statusSelect" class="form-control form-control-inline input-sm">
                 <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
                 % if not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
@@ -346,7 +346,7 @@
         </div>
     </div>
 
-    </br>
+    <br/>
 
     <div class="pull-right clearfix" id="checkboxControls">
         <div style="padding-bottom: 5px;">
@@ -449,7 +449,7 @@
                     </thead>
                     <tbody class="tablesorter-no-sort">
                     <tr style="height: 60px;">
-                        <th class="row-seasonheader displayShowTable" colspan="13"
+                        <th class="row-seasonheader displayShowTable" colspan="15"
                             style="vertical-align: bottom; width: auto;">
                             <h3 style="display: inline;"><a
                                     name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[int(epResult["season"]) > 0]}
@@ -497,7 +497,7 @@
                 </tbody>
                     <tbody class="tablesorter-no-sort">
                     <tr style="height: 60px;">
-                        <th class="row-seasonheader displayShowTable" colspan="13"
+                        <th class="row-seasonheader displayShowTable" colspan="15"
                             style="vertical-align: bottom; width: auto;">
                             <h3 style="display: inline;"><a
                                     name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}
@@ -710,7 +710,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Failed</button>
                 </div>
             </div>
         </div>
