@@ -23,7 +23,6 @@ import time
 import traceback
 
 import requests
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt, bs4_parser
@@ -56,14 +55,14 @@ class FreshOnTVProvider(TorrentProvider):
 
         self.cookies = None
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password:
             sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
-    def _doLogin(self):
+    def login(self):
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
@@ -111,7 +110,7 @@ class FreshOnTVProvider(TorrentProvider):
 
         freeleech = '3' if self.freeleech else '0'
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -251,6 +250,6 @@ class FreshOnTVCache(tv_cache.TVCache):
         # poll delay in minutes
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

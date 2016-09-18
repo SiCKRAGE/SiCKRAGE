@@ -25,7 +25,6 @@ import time
 import traceback
 
 import sickrage
-from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import convert_size
 from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
@@ -69,9 +68,7 @@ class RarbgProvider(TorrentProvider):
 
         self.next_request = datetime.datetime.now()
 
-        self.cache = RarbgCache(self)
-
-    def _doLogin(self):
+    def login(self):
         if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
@@ -97,7 +94,7 @@ class RarbgProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         if epObj is not None:
@@ -182,7 +179,7 @@ class RarbgProvider(TorrentProvider):
                             retry = retry - 1
                             self.token = None
                             self.tokenExpireDate = None
-                            if not self._doLogin():
+                            if not self.login():
                                 sickrage.srCore.srLogger.debug("Failed retrieving new token")
                                 return results
                             sickrage.srCore.srLogger.debug("Using new token")
@@ -239,15 +236,3 @@ class RarbgProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class RarbgCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll RARBG every 10 minutes max
-        self.minTime = 10
-
-    def _getRSSData(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

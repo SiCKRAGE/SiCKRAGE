@@ -54,14 +54,14 @@ class PretomeProvider(TorrentProvider):
 
         self.cache = PretomeCache(self)
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password or not self.pin:
             sickrage.srCore.srLogger.warning("Invalid username or password or pin. Check your settings")
 
         return True
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {'username': self.username,
                         'password': self.password,
@@ -84,7 +84,7 @@ class PretomeProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -182,6 +182,6 @@ class PretomeCache(tv_cache.TVCache):
         # only poll Pretome every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

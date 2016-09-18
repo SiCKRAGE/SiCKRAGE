@@ -117,7 +117,7 @@ class TokyoToshokanCache(tv_cache.TVCache):
         # only poll NyaaTorrents every 15 minutes max
         self.minTime = 15
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         params = {
             "filter": '1',
         }

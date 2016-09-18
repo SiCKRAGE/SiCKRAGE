@@ -23,9 +23,8 @@ from __future__ import unicode_literals
 import time
 import traceback
 
-from requests.auth import AuthBase
-
 import sickrage
+from requests.auth import AuthBase
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
 
@@ -57,7 +56,7 @@ class T411Provider(TorrentProvider):
         self.minleech = 0
         self.confirmed = False
 
-    def _doLogin(self):
+    def login(self):
 
         if self.token is not None:
             if time.time() < (self.tokenLastUpdate + 30 * 60):
@@ -86,7 +85,7 @@ class T411Provider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -192,6 +191,6 @@ class T411Cache(tv_cache.TVCache):
         # Only poll T411 every 10 minutes max
         self.minTime = 10
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

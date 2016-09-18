@@ -44,7 +44,7 @@ class TitansOfTVProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-    def _checkAuth(self):
+    def _check_auth(self):
         if not self.api_key:
             raise AuthException('Your authentication credentials for ' + self.name + ' are missing, check your config.')
 
@@ -60,7 +60,7 @@ class TitansOfTVProvider(TorrentProvider):
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
         # FIXME ADD MODE
-        self._checkAuth()
+        self._check_auth()
         results = []
         params = {}
 
@@ -147,6 +147,6 @@ class TitansOfTVCache(tv_cache.TVCache):
         # At least 10 minutes between queries
         self.minTime = 10
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'limit': 100}
         return self.provider.search(search_params)

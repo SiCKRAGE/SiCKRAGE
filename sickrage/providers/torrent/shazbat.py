@@ -41,7 +41,7 @@ class ShazbatProvider(TorrentProvider):
             'login': '{base_url}/login'.format(base_url=self.urls['base_url'])
         })
 
-    def _checkAuth(self):
+    def _check_auth(self):
         if not self.passkey:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
@@ -49,7 +49,7 @@ class ShazbatProvider(TorrentProvider):
 
     def _checkAuthFromData(self, data):
         if not self.passkey:
-            self._checkAuth()
+            self._check_auth()
         elif not (data['entries'] and data['feed']):
             sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
@@ -66,11 +66,11 @@ class ShazbatCache(tv_cache.TVCache):
         # only poll Shazbat feed every 15 minutes max
         self.minTime = 15
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         rss_url = self.provider.urls['base_url'] + '/rss/recent?passkey=' + self.provider.passkey + '&fname=true'
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)
 
-    def _checkAuth(self, data):
+    def _check_auth(self, data):
         return self.provider._checkAuthFromData(data)

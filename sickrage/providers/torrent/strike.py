@@ -97,6 +97,6 @@ class StrikeCache(tv_cache.TVCache):
 
         self.minTime = 30
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['x264']}
         return {'entries': self.provider.search(search_params)}

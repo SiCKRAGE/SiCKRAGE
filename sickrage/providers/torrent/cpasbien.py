@@ -134,6 +134,6 @@ class CpasbienCache(tv_cache.TVCache):
 
         self.minTime = 30
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         # search_strings = {'RSS': ['']}
         return {'entries': {}}

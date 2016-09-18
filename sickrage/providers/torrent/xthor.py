@@ -24,7 +24,6 @@ import re
 import urllib
 
 import requests
-
 import sickrage
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
@@ -49,7 +48,7 @@ class XthorProvider(TorrentProvider):
         self.password = None
         self.ratio = None
 
-    def _doLogin(self):
+    def login(self):
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
@@ -75,7 +74,7 @@ class XthorProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         # check for auth
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():

@@ -117,7 +117,7 @@ class BitCannonCache(tv_cache.TVCache):
         # only poll KickAss every 10 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         return {'entries': []}
         # search_strings = {'RSS': ['']}
         # return {'entries': self.provider.search(search_strings)}

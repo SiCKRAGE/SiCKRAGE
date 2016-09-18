@@ -43,7 +43,7 @@ class HDBitsProvider(TorrentProvider):
             'download': '{base_url}/download.php?'.format(base_url=self.urls['base_url'])
         })
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.passkey:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
@@ -83,7 +83,7 @@ class HDBitsProvider(TorrentProvider):
 
         sickrage.srCore.srLogger.debug("Search string: %s" % search_params)
 
-        self._checkAuth()
+        self._check_auth()
 
         try:
             parsedJSON = sickrage.srCore.srWebSession.post(self.urls['search'], data=search_params).json()
@@ -187,7 +187,7 @@ class HDBitsCache(tv_cache.TVCache):
         # only poll HDBits every 15 minutes max
         self.minTime = 15
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         results = []
 
         try:

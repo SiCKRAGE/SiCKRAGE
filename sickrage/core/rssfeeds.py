@@ -21,16 +21,17 @@ from __future__ import unicode_literals
 import random
 
 import feedparser
-from feedparser import FeedParserDict
-
 import sickrage
+from feedparser import FeedParserDict
 from sickrage.core.webclient import USER_AGENTS
 
 
-def getFeed(url, request_headers=None, handlers=None):
+def getFeed(url, params=None, request_headers=None, handlers=None):
     try:
+        data = sickrage.srCore.srWebSession.get(url, params=params).text
+
         return feedparser.parse(
-            sickrage.srCore.srWebSession.normalize_url(url),
+            data,
             agent=random.choice(USER_AGENTS),
             etag=False,
             modified=False,

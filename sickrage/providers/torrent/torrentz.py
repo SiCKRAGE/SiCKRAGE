@@ -114,5 +114,5 @@ class TORRENTZCache(tv_cache.TVCache):
         # only poll every 15 minutes max
         self.minTime = 15
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         return {'entries': self.provider.search({'RSS': ['']})}

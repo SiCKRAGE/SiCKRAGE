@@ -23,7 +23,6 @@ import re
 import traceback
 
 import requests
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser
@@ -56,7 +55,7 @@ class FNTProvider(TorrentProvider):
             "visible": 1, "freeleech": 0, "nuke": 1, "3D": 0, "sort": "size", "order": "desc"
         }
 
-    def _doLogin(self):
+    def login(self):
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
@@ -83,7 +82,7 @@ class FNTProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         # check for auth
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_strings.keys():
@@ -174,6 +173,6 @@ class FNTCache(tv_cache.TVCache):
         # Only poll FNT every 10 minutes max
         self.minTime = 10
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

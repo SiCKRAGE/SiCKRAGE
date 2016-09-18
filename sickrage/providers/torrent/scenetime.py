@@ -52,7 +52,7 @@ class SceneTimeProvider(TorrentProvider):
 
         self.categories = "&c2=1&c43=13&c9=1&c63=1&c77=1&c79=1&c100=1&c101=1"
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {'username': self.username,
                         'password': self.password}
@@ -74,7 +74,7 @@ class SceneTimeProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -168,6 +168,6 @@ class SceneTimeCache(tv_cache.TVCache):
         # only poll SceneTime every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

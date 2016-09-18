@@ -23,18 +23,19 @@ import io
 import os
 import random
 import shelve
+import ssl
 import threading
+import traceback
 import urllib2
 from contextlib import closing
 
 import cachecontrol
 import certifi
+import requests
+import sickrage
 from cachecontrol.heuristics import ExpiresAfter
 from requests_futures.sessions import FuturesSession
-
-import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
-from sickrage.core.webclient.exceptions import handle_exception
 from sickrage.core.webclient.useragents import USER_AGENTS
 
 
@@ -66,8 +67,7 @@ class DBCache(object):
 
 
 class srSession(FuturesSession):
-    @handle_exception
-    def request(self, method, url, headers=None, params=None, cache=True, raise_exceptions=True, *args, **kwargs):
+    def request(self, method, url, headers=None, params=None, cache=True, *args, **kwargs):
         url = self.normalize_url(url)
         kwargs.setdefault('params', {}).update(params or {})
         kwargs.setdefault('headers', {}).update(headers or {})
@@ -90,7 +90,8 @@ class srSession(FuturesSession):
             sickrage.srCore.srLogger.debug("Using global proxy: " + sickrage.srCore.srConfig.PROXY_SETTING)
             scheme, address = urllib2.splittype(sickrage.srCore.srConfig.PROXY_SETTING)
             address = \
-            ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING), sickrage.srCore.srConfig.PROXY_SETTING)[scheme]
+                ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING), sickrage.srCore.srConfig.PROXY_SETTING)[
+                    scheme]
             kwargs.setdefault('proxies', {}).update({"http": address, "https": address})
             kwargs.setdefault('headers', {}).update({'Referer': address})
 
@@ -103,8 +104,76 @@ class srSession(FuturesSession):
 
         # get result
         response = super(srSession, self).request(method, url, *args, **kwargs).result()
-        if raise_exceptions:
+
+        try:
             response.raise_for_status()
+        except requests.exceptions.SSLError as e:
+            if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
+                sickrage.srCore.srLogger.info(
+                    "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(
+                        e.request.url, ssl.OPENSSL_VERSION))
+
+            if sickrage.srCore.srConfig.SSL_VERIFY:
+                sickrage.srCore.srLogger.info(
+                    "SSL Error requesting url: '{}' Try disabling Cert Verification on the advanced tab of /config/general".format(
+                        e.request.url))
+
+            sickrage.srCore.srLogger.debug(e.message)
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
+
+            return
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404 and e.response.headers.get('X-Content-Type-Options') == 'nosniff':
+                pass
+            elif e.response.status_code == 409:
+                pass
+            else:
+                sickrage.srCore.srLogger.info(e.message)
+                return
+        except requests.exceptions.TooManyRedirects as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.ConnectTimeout as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.ReadTimeout as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.ProxyError as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.ConnectionError as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.ContentDecodingError as e:
+            sickrage.srCore.srLogger.info(e.message)
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            return
+        except requests.exceptions.ChunkedEncodingError as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.InvalidURL as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.InvalidSchema as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.MissingSchema as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.RetryError as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.StreamConsumedError as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except requests.exceptions.URLRequired as e:
+            sickrage.srCore.srLogger.info(e.message)
+            return
+        except Exception as e:
+            sickrage.srCore.srLogger.error(e.message)
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            return
 
         return response
 

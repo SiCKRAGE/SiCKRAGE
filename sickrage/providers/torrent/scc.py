@@ -54,7 +54,7 @@ class SCCProvider(TorrentProvider):
                            # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
                            'eponly': 'c27=27&c17=17&c44=44&c45=45&c33=33&c34=34'}  # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {'username': self.username,
                         'password': self.password,
@@ -82,7 +82,7 @@ class SCCProvider(TorrentProvider):
 
         results = []
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -165,6 +165,6 @@ class SCCCache(tv_cache.TVCache):
         # only poll SCC every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

@@ -52,7 +52,7 @@ class AlphaRatioProvider(TorrentProvider):
 
         self.cache = AlphaRatioCache(self)
 
-    def _doLogin(self):
+    def login(self):
         login_params = {'username': self.username,
                         'password': self.password,
                         'remember_me': 'on',
@@ -76,7 +76,7 @@ class AlphaRatioProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_strings.keys():
@@ -158,6 +158,6 @@ class AlphaRatioCache(tv_cache.TVCache):
         # only poll AlphaRatio every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

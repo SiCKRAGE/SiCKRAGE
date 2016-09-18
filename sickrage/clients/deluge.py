@@ -43,7 +43,6 @@ class DelugeAPI(GenericClient):
         try:
             self.response = sickrage.srCore.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
-                                                              raise_exceptions=False,
                                                               verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
         except Exception:
@@ -58,7 +57,6 @@ class DelugeAPI(GenericClient):
         try:
             self.response = sickrage.srCore.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
-                                                              raise_exceptions=False,
                                                               verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
         except Exception:
@@ -73,7 +71,6 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
-                                                                  raise_exceptions=False,
                                                                   verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
@@ -91,7 +88,6 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
-                                                                  raise_exceptions=False,
                                                                   verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
@@ -104,7 +100,6 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
-                                                                  raise_exceptions=False,
                                                                   verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:

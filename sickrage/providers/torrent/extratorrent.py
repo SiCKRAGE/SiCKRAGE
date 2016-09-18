@@ -22,9 +22,8 @@ import re
 import traceback
 from xml.parsers.expat import ExpatError
 
-import xmltodict
-
 import sickrage
+import xmltodict
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt
 from sickrage.providers import TorrentProvider
@@ -141,6 +140,6 @@ class ExtraTorrentCache(tv_cache.TVCache):
 
         self.minTime = 30
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

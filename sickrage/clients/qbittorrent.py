@@ -18,9 +18,8 @@
 
 from __future__ import unicode_literals
 
-from requests.auth import HTTPDigestAuth
-
 import sickrage
+from requests.auth import HTTPDigestAuth
 from sickrage.clients import GenericClient
 
 
@@ -34,7 +33,6 @@ class qbittorrentAPI(GenericClient):
         try:
             self.response = sickrage.srCore.srWebSession.get(self.host,
                                                              auth=HTTPDigestAuth(self.username, self.password),
-                                                             raise_exceptions=False,
                                                              verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             self.auth = self.response.text

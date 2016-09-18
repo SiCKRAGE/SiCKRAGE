@@ -22,9 +22,8 @@ import traceback
 from urllib import urlencode
 from xml.parsers.expat import ExpatError
 
-import xmltodict
-
 import sickrage
+import xmltodict
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
@@ -166,6 +165,6 @@ class KATCache(tv_cache.TVCache):
         # only poll KickAss every 10 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['tv', 'anime']}
         return {'entries': self.provider.search(search_params)}

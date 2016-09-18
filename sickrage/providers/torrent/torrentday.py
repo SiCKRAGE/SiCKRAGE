@@ -23,7 +23,6 @@ from __future__ import unicode_literals
 import re
 
 import requests
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
@@ -58,7 +57,7 @@ class TorrentDayProvider(TorrentProvider):
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1},
                            'RSS': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c14': 1}}
 
-    def _doLogin(self):
+    def login(self):
 
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
@@ -98,7 +97,7 @@ class TorrentDayProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -166,6 +165,6 @@ class TorrentDayCache(tv_cache.TVCache):
         # Only poll IPTorrents every 10 minutes max
         self.minTime = 10
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

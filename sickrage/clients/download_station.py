@@ -36,7 +36,6 @@ class DownloadStationAPI(GenericClient):
 
         try:
             self.response = sickrage.srCore.srWebSession.get(auth_url,
-                                                             raise_exceptions=False,
                                                              verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             self.auth = self.response.json()['data']['sid']

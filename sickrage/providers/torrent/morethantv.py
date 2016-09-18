@@ -22,7 +22,6 @@ import re
 import traceback
 
 import requests
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
@@ -58,14 +57,14 @@ class MoreThanTVProvider(TorrentProvider):
 
         self.cache = MoreThanTVCache(self)
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
-    def _doLogin(self):
+    def login(self):
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
@@ -96,7 +95,7 @@ class MoreThanTVProvider(TorrentProvider):
 
         # freeleech = '3' if self.freeleech else '0'
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -194,6 +193,6 @@ class MoreThanTVCache(tv_cache.TVCache):
         # poll delay in minutes
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

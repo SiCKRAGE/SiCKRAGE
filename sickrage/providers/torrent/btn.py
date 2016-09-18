@@ -25,7 +25,6 @@ import socket
 import time
 
 import jsonrpclib
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
@@ -49,7 +48,7 @@ class BTNProvider(TorrentProvider):
 
         self.cache = BTNCache(self)
 
-    def _checkAuth(self):
+    def _check_auth(self):
         if not self.api_key:
             sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
 
@@ -58,7 +57,7 @@ class BTNProvider(TorrentProvider):
     def _checkAuthFromData(self, parsedJSON):
 
         if parsedJSON is None:
-            return self._checkAuth()
+            return self._check_auth()
 
         if 'api-error' in parsedJSON:
             sickrage.srCore.srLogger.debug("Incorrect authentication credentials: % s" % parsedJSON['api-error'])
@@ -69,7 +68,7 @@ class BTNProvider(TorrentProvider):
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
-        self._checkAuth()
+        self._check_auth()
 
         results = []
         params = {}
@@ -291,7 +290,7 @@ class BTNCache(tv_cache.TVCache):
         # At least 15 minutes between queries
         self.minTime = 15
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         # Get the torrents uploaded since last check.
         seconds_since_last_update = math.ceil(time.time() - time.mktime(self._getLastUpdate().timetuple()))
 

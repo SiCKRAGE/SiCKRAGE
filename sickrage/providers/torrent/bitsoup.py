@@ -52,13 +52,13 @@ class BitSoupProvider(TorrentProvider):
             "c42": 1, "c45": 1, "c49": 1, "c7": 1
         }
 
-    def _checkAuth(self):
+    def _check_auth(self):
         if not self.username or not self.password:
             sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {
             'username': self.username,
@@ -83,7 +83,7 @@ class BitSoupProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_strings.keys():
@@ -163,6 +163,6 @@ class BitSoupCache(tv_cache.TVCache):
         # only poll TorrentBytes every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

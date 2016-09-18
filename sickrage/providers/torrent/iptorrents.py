@@ -49,14 +49,14 @@ class IPTorrentsProvider(TorrentProvider):
 
         self.categories = '73=&60='
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {'username': self.username,
                         'password': self.password,
@@ -85,7 +85,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         freeleech = '&free=on' if self.freeleech else ''
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -173,6 +173,6 @@ class IPTorrentsCache(tv_cache.TVCache):
         # Only poll IPTorrents every 10 minutes max
         self.minTime = 10
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

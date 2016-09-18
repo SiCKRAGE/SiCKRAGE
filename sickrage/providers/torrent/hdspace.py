@@ -24,7 +24,6 @@ import re
 import urllib
 
 import requests
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser, convert_size
@@ -57,14 +56,14 @@ class HDSpaceProvider(TorrentProvider):
             self.urls['rss'] += '&cat[]=' + str(cat)
         self.urls['search'] = self.urls['search'][:-4]  # remove extra %%3B
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password:
             sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
-    def _doLogin(self):
+    def login(self):
 
         if 'pass' in requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies):
             return True
@@ -89,7 +88,7 @@ class HDSpaceProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_strings.keys():
@@ -182,6 +181,6 @@ class HDSpaceCache(tv_cache.TVCache):
         # only poll HDSpace every 10 minutes max
         self.minTime = 10
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

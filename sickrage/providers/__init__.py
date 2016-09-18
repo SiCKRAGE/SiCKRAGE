@@ -33,13 +33,12 @@ from xml.sax import SAXParseException
 
 import bencode
 import requests
+import sickrage
 import xmltodict
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
 from pynzb import nzb_parser
-
-import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
@@ -90,10 +89,10 @@ class GenericProvider(object):
     def imageName(self):
         return ""
 
-    def _checkAuth(self):
+    def _check_auth(self):
         return True
 
-    def _doLogin(self):
+    def login(self):
         return True
 
     @classmethod
@@ -148,7 +147,7 @@ class GenericProvider(object):
         """
 
         # check for auth
-        if not self._doLogin:
+        if not self.login:
             return False
 
         urls = self.make_url(result.url)
@@ -247,7 +246,7 @@ class GenericProvider(object):
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
 
-        if not self._checkAuth:
+        if not self._check_auth:
             return
 
         self.show = show
@@ -457,7 +456,7 @@ class GenericProvider(object):
 
         # check if we have items to add to cache
         if len(cl) > 0:
-            self.cache._getDB().mass_action(cl)
+            self.cache._get_db().mass_action(cl)
             del cl  # cleanup
 
         return results
@@ -569,7 +568,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+                resp = sickrage.srCore.srWebSession.get(url)
                 torrent = bencode.bdecode(resp.content)
 
                 total_length = 0
@@ -589,7 +588,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+                resp = sickrage.srCore.srWebSession.get(url)
                 torrent = bencode.bdecode(resp.content)
 
                 for file in torrent['info']['files']:
@@ -711,7 +710,7 @@ class NZBProvider(GenericProvider):
         size = -1
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+            resp = sickrage.srCore.srWebSession.get(url)
 
             total_length = 0
             for file in nzb_parser.parse(resp.content):
@@ -729,7 +728,7 @@ class NZBProvider(GenericProvider):
         files = {}
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+            resp = sickrage.srCore.srWebSession.get(url)
 
             for file in nzb_parser.parse(resp.content):
                 total_length = 0
@@ -815,7 +814,7 @@ class TorrentRssProvider(TorrentProvider):
 
             # pylint: disable=W0212
             # Access to a protected member of a client class
-            data = self.cache._getRSSData()['entries']
+            data = self.cache._get_rss_data()['entries']
             if not data:
                 return False, 'No items found in the RSS feed ' + self.urls['base_url']
 
@@ -916,7 +915,7 @@ class NewznabProvider(NZBProvider):
         categories = []
         message = ""
 
-        self._checkAuth()
+        self._check_auth()
 
         params = {"t": "caps"}
         if self.key:
@@ -1001,7 +1000,7 @@ class NewznabProvider(NZBProvider):
     def _doGeneralSearch(self, search_string):
         return self.search({'q': search_string})
 
-    def _checkAuth(self):
+    def _check_auth(self):
         return True
 
     def _checkAuthFromData(self, data):
@@ -1011,7 +1010,7 @@ class NewznabProvider(NZBProvider):
         :type data: dict
         """
         if not all([x in data for x in ['feed', 'entries']]):
-            return self._checkAuth()
+            return self._check_auth()
 
         try:
             if int(data['bozo']) == 1:
@@ -1038,7 +1037,7 @@ class NewznabProvider(NZBProvider):
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
-        self._checkAuth()
+        self._check_auth()
 
         params = {
             "t": "tvsearch",
@@ -1153,7 +1152,7 @@ class TorrentRssCache(TVCache):
         TVCache.__init__(self, provider_obj)
         self.minTime = 15
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['base_url'])
 
         if self.provider.cookies:
@@ -1171,7 +1170,7 @@ class NewznabCache(TVCache):
         self.minTime = 30
         self.last_search = datetime.datetime.now()
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
 
         params = {"t": "tvsearch",
                   "cat": self.provider.catIDs,
@@ -1193,13 +1192,13 @@ class NewznabCache(TVCache):
 
         return data
 
-    def _checkAuth(self, data):
+    def _check_auth(self, data):
         return self.provider._checkAuthFromData(data)
 
-    def _parseItem(self, item):
+    def _parse_item(self, item):
         title, url = self._get_title_and_url(item)
 
-        self._checkItemAuth(title, url)
+        self._check_item_auth(title, url)
 
         if not title or not url:
             return None

@@ -47,14 +47,14 @@ class TransmitTheNetProvider(TorrentProvider):
             "active": 1
         }
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {
             'uid': self.username,
@@ -80,7 +80,7 @@ class TransmitTheNetProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_strings.keys():
@@ -167,6 +167,6 @@ class TransmitTheNetCache(tv_cache.TVCache):
         # Only poll TransmitTheNet every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

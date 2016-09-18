@@ -505,7 +505,6 @@ class Tvdb:
                                                     cache=self.config['cache_enabled'],
                                                     headers=self.config['headers'],
                                                     params=params,
-                                                    raise_exceptions=False,
                                                     timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT)
             # handle requests exceptions
             resp.raise_for_status()

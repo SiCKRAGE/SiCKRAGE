@@ -101,7 +101,7 @@ class animenzbCache(tv_cache.TVCache):
         # only poll animenzb every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         params = {
             "cat": "anime".encode('utf-8'),
             "max": "100".encode('utf-8')

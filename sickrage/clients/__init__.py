@@ -23,9 +23,8 @@ import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
 
-from bencode import BTFailure, bdecode, bencode
-
 import sickrage
+from bencode import BTFailure, bdecode, bencode
 
 __all__ = [
     'utorrent',
@@ -192,7 +191,6 @@ class GenericClient(object):
             self.response = sickrage.srCore.srWebSession.request(method.upper(),
                                                                  self.url,
                                                                  auth=(self.username, self.password),
-                                                                 raise_exceptions=False,
                                                                  timeout=120,
                                                                  *args,
                                                                  **kwargs)
@@ -349,7 +347,6 @@ class GenericClient(object):
             # verify valid url
             self.response = sickrage.srCore.srWebSession.get(self.url,
                                                              timeout=120,
-                                                             raise_exceptions=False,
                                                              verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             # get auth

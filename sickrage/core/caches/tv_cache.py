@@ -74,58 +74,59 @@ class CacheDBConnection(cache_db.CacheDB):
 
 
 class TVCache(object):
-    def __init__(self, provider):
+    def __init__(self, provider, minTime=10, search_params=None):
         self.provider = provider
         self.providerID = self.provider.id
         self.providerDB = None
-        self.minTime = 10
+        self.minTime = minTime
+        self.search_params = search_params or {'RSS':['']}
 
-    def _getDB(self):
+    def _get_db(self):
         # init provider database if not done already
         if not self.providerDB:
             self.providerDB = CacheDBConnection(self.providerID)
 
         return self.providerDB
 
-    def _clearCache(self):
+    def _clear_cache(self):
         if self.shouldClearCache():
-            myDB = self._getDB()
+            myDB = self._get_db()
             myDB.action("DELETE FROM [{}] WHERE 1".format(self.providerID))
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
 
-    def _getRSSData(self):
-        return None
+    def _get_rss_data(self):
+        return {'entries': self.provider.search(self.search_params)} if self.search_params else None
 
-    def _checkAuth(self, data):
+    def _check_auth(self, data):
         return True
 
-    def _checkItemAuth(self, title, url):
+    def _check_item_auth(self, title, url):
         return True
 
     def updateCache(self):
         # check if we should update
-        if self.shouldUpdate():
+        if self.should_update():
             try:
-                data = self._getRSSData()
-                if not self._checkAuth(data):
+                data = self._get_rss_data()
+                if not data or not self._check_auth(data):
                     return False
 
                 # clear cache
-                self._clearCache()
+                self._clear_cache()
 
                 # set updated
                 self.setLastUpdate()
 
                 cl = []
                 for item in data['entries']:
-                    ci = self._parseItem(item)
+                    ci = self._parse_item(item)
                     if ci is not None:
                         cl.append(ci)
 
                 if len(cl) > 0:
-                    self._getDB().mass_action(cl)
+                    self._get_db().mass_action(cl)
                     del cl  # cleanup
 
             except AuthException as e:
@@ -137,7 +138,7 @@ class TVCache(object):
 
         return True
 
-    def getRSSFeed(self, url):
+    def getRSSFeed(self, url, params=None):
         handlers = []
 
         if sickrage.srCore.srConfig.PROXY_SETTING:
@@ -146,22 +147,25 @@ class TVCache(object):
             address = sickrage.srCore.srConfig.PROXY_SETTING if scheme else 'http://' + sickrage.srCore.srConfig.PROXY_SETTING
             handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
 
-        return getFeed(url, handlers=handlers)
+        self.provider.login()
+        return getFeed(url, params=params, handlers=handlers)
 
-    def _translateTitle(self, title):
+    @staticmethod
+    def _translate_title(title):
         return '' + title.replace(' ', '.')
 
-    def _translateLinkURL(self, url):
+    @staticmethod
+    def _translate_link_url(url):
         return url.replace('&amp;', '&')
 
-    def _parseItem(self, item):
+    def _parse_item(self, item):
         title, url = self._get_title_and_url(item)
 
-        self._checkItemAuth(title, url)
+        self._check_item_auth(title, url)
 
         if title and url:
-            title = self._translateTitle(title)
-            url = self._translateLinkURL(url)
+            title = self._translate_title(title)
+            url = self._translate_link_url(url)
             return self._addCacheEntry(title, url)
 
         else:
@@ -171,7 +175,7 @@ class TVCache(object):
         return False
 
     def _getLastUpdate(self):
-        myDB = self._getDB()
+        myDB = self._get_db()
         sqlResults = myDB.select("SELECT time FROM lastUpdate WHERE provider = ?", [self.providerID])
 
         if sqlResults:
@@ -184,7 +188,7 @@ class TVCache(object):
         return datetime.datetime.fromtimestamp(lastTime)
 
     def _getLastSearch(self):
-        myDB = self._getDB()
+        myDB = self._get_db()
         sqlResults = myDB.select("SELECT time FROM lastSearch WHERE provider = ?", [self.providerID])
 
         if sqlResults:
@@ -200,7 +204,7 @@ class TVCache(object):
         if not toDate:
             toDate = datetime.datetime.today()
 
-        myDB = self._getDB()
+        myDB = self._get_db()
         myDB.upsert("lastUpdate",
                     {'time': int(time.mktime(toDate.timetuple()))},
                     {'provider': self.providerID})
@@ -209,7 +213,7 @@ class TVCache(object):
         if not toDate:
             toDate = datetime.datetime.today()
 
-        myDB = self._getDB()
+        myDB = self._get_db()
         myDB.upsert("lastSearch",
                     {'time': int(time.mktime(toDate.timetuple()))},
                     {'provider': self.providerID})
@@ -217,7 +221,7 @@ class TVCache(object):
     lastUpdate = property(_getLastUpdate)
     lastSearch = property(_getLastSearch)
 
-    def shouldUpdate(self):
+    def should_update(self):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
             sickrage.srCore.srLogger.debug(
@@ -282,7 +286,7 @@ class TVCache(object):
                  version]]
 
     def listPropers(self, date=None):
-        myDB = self._getDB()
+        myDB = self._get_db()
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
         if date is not None:
@@ -295,9 +299,9 @@ class TVCache(object):
         neededEps = {}
 
         if not episode:
-            sqlResults = self._getDB().select("SELECT * FROM [" + self.providerID + "]")
+            sqlResults = self._get_db().select("SELECT * FROM [" + self.providerID + "]")
         else:
-            sqlResults = self._getDB().select(
+            sqlResults = self._get_db().select(
                     "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
                     [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"])
 

@@ -46,7 +46,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         self.supportsBacklog = True
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.api_key:
             sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
@@ -56,7 +56,7 @@ class OmgwtfnzbsProvider(NZBProvider):
     def _checkAuthFromData(self, parsed_data, is_XML=True):
 
         if parsed_data is None:
-            return self._checkAuth()
+            return self._check_auth()
 
         if is_XML:
             # provider doesn't return xml on error
@@ -98,7 +98,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
     def search(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
 
-        self._checkAuth()
+        self._check_auth()
 
         params = {'user': self.username,
                   'api': self.api_key,
@@ -170,7 +170,7 @@ class OmgwtfnzbsCache(TVCache):
 
         return (title, url)
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         params = {'user': self.provider.username,
                   'api': self.provider.api_key,
                   'eng': 1,

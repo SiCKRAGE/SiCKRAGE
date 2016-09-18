@@ -22,7 +22,6 @@ import re
 import traceback
 
 import requests
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
@@ -56,14 +55,14 @@ class GFTrackerProvider(TorrentProvider):
 
         self.cache = GFTrackerCache(self)
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {'username': self.username,
                         'password': self.password}
@@ -90,7 +89,7 @@ class GFTrackerProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -183,6 +182,6 @@ class GFTrackerCache(tv_cache.TVCache):
         # Poll delay in minutes
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}

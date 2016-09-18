@@ -52,7 +52,7 @@ class TVChaosUKProvider(TorrentProvider):
             'include_dead_torrents': 'no',
         }
 
-    def _checkAuth(self):
+    def _check_auth(self):
         if self.username and self.password:
             return True
 
@@ -103,7 +103,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         return [search_string]
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {'username': self.username, 'password': self.password}
 
@@ -124,7 +124,7 @@ class TVChaosUKProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_strings.keys():
@@ -204,6 +204,6 @@ class TVChaosUKCache(tv_cache.TVCache):
         # only poll TVChaosUK every 20 minutes max
         self.minTime = 20
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

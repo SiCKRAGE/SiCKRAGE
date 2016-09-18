@@ -114,14 +114,14 @@ class TNTVillageProvider(TorrentProvider):
 
         self.cache = TNTVillageCache(self)
 
-    def _checkAuth(self):
+    def _check_auth(self):
 
         if not self.username or not self.password:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
-    def _doLogin(self):
+    def login(self):
 
         login_params = {'UserName': self.username,
                         'PassWord': self.password,
@@ -287,7 +287,7 @@ class TNTVillageProvider(TorrentProvider):
 
         self.categories = "cat=" + str(self.cat)
 
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -427,6 +427,6 @@ class TNTVillageCache(tv_cache.TVCache):
         # only poll TNTVillage every 30 minutes max
         self.minTime = 30
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': []}
         return {'entries': self.provider.search(search_params)}

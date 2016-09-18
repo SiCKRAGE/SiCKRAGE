@@ -26,7 +26,6 @@ import re
 import urllib
 
 import requests
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser
@@ -55,7 +54,7 @@ class LibertaliaProvider(TorrentProvider):
 
         self.cache = LibertaliaCache(self)
 
-    def _doLogin(self):
+    def login(self):
 
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
@@ -81,7 +80,7 @@ class LibertaliaProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         # check for auth
-        if not self._doLogin():
+        if not self.login():
             return results
 
         for mode in search_params.keys():
@@ -152,6 +151,6 @@ class LibertaliaCache(tv_cache.TVCache):
 
         self.minTime = 10
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider.search(search_strings)}

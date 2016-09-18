@@ -133,6 +133,6 @@ class ThePirateBayCache(tv_cache.TVCache):
         # only poll ThePirateBay every 30 minutes max
         self.minTime = 30
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider.search(search_params)}
