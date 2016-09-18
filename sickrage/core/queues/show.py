@@ -56,7 +56,7 @@ class srShowQueue(srQueue):
         if not show:
             return False
 
-        return show.indexerid in [x.show.indexerid if x.show else 0 for p,x in self.queue if x.action_id in actions]
+        return show.indexerid in [x.show.indexerid if x.show else 0 for p, x in self.queue if x.action_id in actions]
 
     def _isBeingSomethinged(self, show, actions):
         return self.currentItem is not None and show == self.currentItem.show and self.currentItem.action_id in actions
@@ -117,14 +117,14 @@ class srShowQueue(srQueue):
                 "A refresh was attempted but there is already an update queued or in progress. Since updates do a refresh at the end anyway I'm skipping this request.")
             return
 
-        sickrage.srCore.srLogger.debug("Queueing show refresh for " + show.name)
+        sickrage.srCore.srLogger.debug("Queueing show refresh for {}".format(show.name))
 
         return self.put(QueueItemRefresh(show, force=force))
 
-    def renameShowEpisodes(self, show, force=False):
+    def renameShowEpisodes(self, show):
         return self.put(QueueItemRename(show))
 
-    def downloadSubtitles(self, show, force=False):
+    def downloadSubtitles(self, show):
         return self.put(QueueItemSubtitle(show))
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
@@ -626,6 +626,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # refresh show
         sickrage.srCore.SHOWQUEUE.refreshShow(self.show, self.force)
+
 
 class QueueItemForceUpdate(QueueItemUpdate):
     def __init__(self, show=None):
