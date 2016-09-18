@@ -60,7 +60,7 @@ class TORRENTZProvider(TorrentProvider):
             for search_string in search_strings[mode]:
                 search_url = self.urls['verified'] if self.confirmed else self.urls['feed']
                 if mode != 'RSS':
-                    search_url += '?q=' + quote_plus(search_string)
+                    search_url += '?f=' + quote_plus(search_string)
                     sickrage.srCore.srLogger.info(search_url)
 
                 try:
