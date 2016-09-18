@@ -72,7 +72,7 @@ class srShowUpdater(object):
                 else:
                     piList.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.srCore.srLogger.error("Daily updates failed: {}".format(e.message))
+                continue
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))
 
