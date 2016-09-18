@@ -473,7 +473,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             url = "http://thexem.de/map/havemap?origin=%s" % srIndexerApi(indexer).config['xem_origin']
             parsedJSON = sickrage.srCore.srWebSession.get(url).json()
             if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON['result'] \
-                    or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON['data']:
+                    or 'data' not in parsedJSON or indexer_id not in map(int, parsedJSON['data']):
                 return
 
             # XEM API URL
@@ -515,9 +515,9 @@ def xem_refresh(indexer_id, indexer, force=False):
 
         except Exception as e:
             sickrage.srCore.srLogger.warning(
-                "Exception while refreshing XEM data for show " + str(
-                    indexer_id) + " on " + srIndexerApi(
-                    indexer).name + ": {}".format(e.message))
+                "Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id,
+                                                                                   srIndexerApi(indexer).name,
+                                                                                   e.message))
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
 
@@ -549,7 +549,7 @@ def fix_xem_numbering(indexer_id, indexer):
 
     sickrage.srCore.srLogger.debug(
         'Fixing any XEM scene mapping issues for show %s on %s' % (
-        indexer_id, srIndexerApi(indexer).name))
+            indexer_id, srIndexerApi(indexer).name))
 
     cl = []
     for row in rows:
