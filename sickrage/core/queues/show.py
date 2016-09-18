@@ -108,14 +108,12 @@ class srShowQueue(srQueue):
         return self.put(QueueItemForceUpdate(show)) if force else self.put(QueueItemUpdate(show))
 
     def refreshShow(self, show, force=False):
-
-        if self.isBeingRefreshed(show) and not force:
-            raise CantRefreshShowException("This show is already being refreshed, not refreshing again.")
-
-        if (self.isBeingUpdated(show) or self.isInUpdateQueue(show)) and not force:
-            sickrage.srCore.srLogger.debug(
+        if (self.isBeingRefreshed(show) or self.isInRefreshQueue(show)) and not force:
+            raise CantRefreshShowException(
+                "This show is already being refreshed or queued to be refreshed, skipping this request.")
+        elif (self.isBeingUpdated(show) or self.isInUpdateQueue(show)) and not force:
+            raise CantRefreshShowException(
                 "A refresh was attempted but there is already an update queued or in progress. Since updates do a refresh at the end anyway I'm skipping this request.")
-            return
 
         sickrage.srCore.srLogger.debug("Queueing show refresh for {}".format(show.name))
 
