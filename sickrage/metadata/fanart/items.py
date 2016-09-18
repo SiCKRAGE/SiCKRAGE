@@ -2,8 +2,8 @@ import json
 import os
 
 import requests
-from fanart.core import Request
-from fanart.immutable import Immutable
+from sickrage.metadata.fanart.core import Request
+from sickrage.metadata.fanart.immutable import Immutable
 
 
 class LeafItem(Immutable):

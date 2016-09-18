@@ -20,13 +20,15 @@ from __future__ import unicode_literals
 
 import datetime
 import threading
+import time
 
 import sickrage
-from sickrage.core.databases import main_db
+from sickrage.core.databases import cache_db
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException
 from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
+from sickrage.indexers import srIndexerApi
 
 
 class srShowUpdater(object):
@@ -44,41 +46,37 @@ class srShowUpdater(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        piList = []
-        stale_should_update = []
+        update_timestamp = time.mktime(datetime.datetime.now().timetuple())
 
-        update_datetime = datetime.datetime.now()
-        update_date = update_datetime.date()
+        sqlResult = cache_db.CacheDB().select('SELECT `time` FROM lastUpdate WHERE provider = ?', ['theTVDB'])
+        if sqlResult:
+            last_update = sqlResult[0]['time']
+        else:
+            last_update = time.mktime(datetime.datetime.min.timetuple())
+            cache_db.CacheDB().action('INSERT INTO lastUpdate (provider, `time`) VALUES (?, ?)',
+                                      ['theTVDB', long(last_update)])
 
         if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        if sickrage.srCore.srConfig.SHOWUPDATE_STALE:
-            # select 10 'Ended' tv_shows updated more than 90 days ago to include in this update
-            stale_update_date = (update_date - datetime.timedelta(days=90)).toordinal()
-
-            # last_update_date <= 90 days, sorted ASC because dates are ordinal
-            sql_result = main_db.MainDB().select(
-                "SELECT indexer_id FROM tv_shows WHERE status = 'Ended' AND last_update_indexer <= ? ORDER BY last_update_indexer ASC LIMIT 10;",
-                [stale_update_date])
-
-            # list of stale shows
-            [stale_should_update.append(int(cur_result['indexer_id'])) for cur_result in sql_result]
+        # get indexer updated show ids
+        updated_shows = srIndexerApi(1).indexer(**srIndexerApi(1).api_params.copy()).updated(long(last_update))
 
         # start update process
-        sickrage.srCore.srLogger.info("Performing daily updates for all shows")
+        piList = []
         for curShow in sickrage.srCore.SHOWLIST:
             try:
                 curShow.nextEpisode()
-                if curShow.should_update(update_date=update_date) or curShow.indexerid in stale_should_update:
+                if curShow.indexerid in set(d["id"] for d in updated_shows or {}):
                     piList.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
                 else:
                     piList.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.srCore.srLogger.error("Daily show update failed: {}".format(e.message))
+                sickrage.srCore.srLogger.error("Daily updates failed: {}".format(e.message))
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))
 
-        sickrage.srCore.srLogger.info("Completed daily updates for all shows")
+        cache_db.CacheDB().action('UPDATE lastUpdate SET `time` = ? WHERE provider=?',
+                                  [long(update_timestamp), 'theTVDB'])
 
         self.amActive = False

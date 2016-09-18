@@ -1,5 +1,5 @@
-import fanart
-from fanart.items import LeafItem, Immutable, ResourceItem
+import sickrage.metadata.fanart
+from sickrage.metadata.fanart.items import LeafItem, Immutable, ResourceItem
 __all__ = (
     'CharacterItem',
     'ArtItem',
@@ -30,47 +30,47 @@ class SeasonedTvItem(TvItem):
 
 
 class CharacterItem(TvItem):
-    KEY = fanart.TYPE.TV.CHARACTER
+    KEY = sickrage.metadata.fanart.TYPE.TV.CHARACTER
 
 
 class ArtItem(TvItem):
-    KEY = fanart.TYPE.TV.ART
+    KEY = sickrage.metadata.fanart.TYPE.TV.ART
 
 
 class LogoItem(TvItem):
-    KEY = fanart.TYPE.TV.LOGO
+    KEY = sickrage.metadata.fanart.TYPE.TV.LOGO
 
 
 class BackgroundItem(SeasonedTvItem):
-    KEY = fanart.TYPE.TV.BACKGROUND
+    KEY = sickrage.metadata.fanart.TYPE.TV.BACKGROUND
 
 
 class SeasonItem(SeasonedTvItem):
-    KEY = fanart.TYPE.TV.SEASONTHUMB
+    KEY = sickrage.metadata.fanart.TYPE.TV.SEASONTHUMB
 
 
 class ThumbItem(TvItem):
-    KEY = fanart.TYPE.TV.THUMB
+    KEY = sickrage.metadata.fanart.TYPE.TV.THUMB
 
 
 class HdLogoItem(TvItem):
-    KEY = fanart.TYPE.TV.HDLOGO
+    KEY = sickrage.metadata.fanart.TYPE.TV.HDLOGO
 
 
 class HdArtItem(TvItem):
-    KEY = fanart.TYPE.TV.HDART
+    KEY = sickrage.metadata.fanart.TYPE.TV.HDART
 
 
 class PosterItem(TvItem):
-    KEY = fanart.TYPE.TV.POSTER
+    KEY = sickrage.metadata.fanart.TYPE.TV.POSTER
 
 
 class BannerItem(TvItem):
-    KEY = fanart.TYPE.TV.BANNER
+    KEY = sickrage.metadata.fanart.TYPE.TV.BANNER
 
 
 class TvShow(ResourceItem):
-    WS = fanart.WS.TV
+    WS = sickrage.metadata.fanart.WS.TV
 
     @Immutable.mutablemethod
     def __init__(self, name, tvdbid, backgrounds, characters, arts, logos, seasons, thumbs, hdlogos, hdarts, posters,

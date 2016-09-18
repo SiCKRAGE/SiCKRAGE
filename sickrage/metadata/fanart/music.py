@@ -1,5 +1,5 @@
-import fanart
-from fanart.items import Immutable, LeafItem, ResourceItem, CollectableItem
+import sickrage.metadata.fanart
+from sickrage.metadata.fanart.items import Immutable, LeafItem, ResourceItem, CollectableItem
 
 __all__ = (
     'BackgroundItem',
@@ -13,23 +13,23 @@ __all__ = (
 
 
 class BackgroundItem(LeafItem):
-    KEY = fanart.TYPE.MUSIC.BACKGROUND
+    KEY = sickrage.metadata.fanart.TYPE.MUSIC.BACKGROUND
 
 
 class CoverItem(LeafItem):
-    KEY = fanart.TYPE.MUSIC.COVER
+    KEY = sickrage.metadata.fanart.TYPE.MUSIC.COVER
 
 
 class LogoItem(LeafItem):
-    KEY = fanart.TYPE.MUSIC.LOGO
+    KEY = sickrage.metadata.fanart.TYPE.MUSIC.LOGO
 
 
 class ThumbItem(LeafItem):
-    KEY = fanart.TYPE.MUSIC.THUMB
+    KEY = sickrage.metadata.fanart.TYPE.MUSIC.THUMB
 
 
 class DiscItem(LeafItem):
-    KEY = fanart.TYPE.MUSIC.DISC
+    KEY = sickrage.metadata.fanart.TYPE.MUSIC.DISC
 
     @Immutable.mutablemethod
     def __init__(self, id, url, likes, disc, size):
@@ -39,7 +39,7 @@ class DiscItem(LeafItem):
 
 
 class Artist(ResourceItem):
-    WS = fanart.WS.MUSIC
+    WS = sickrage.metadata.fanart.WS.MUSIC
 
     @Immutable.mutablemethod
     def __init__(self, name, mbid, albums, backgrounds, logos, thumbs):

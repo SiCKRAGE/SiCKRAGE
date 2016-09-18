@@ -502,17 +502,17 @@ class TVEpisode(object):
             return False
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
-        if not getattr(myEp, 'episodename'):
+        if not myEp.get('episodename'):
             sickrage.srCore.srLogger.info("This episode {} - S{}E{} has no name on {}. Setting to an empty string"
                                           .format(self.show.name, season or 0, episode or 0, indexer_name))
 
-        if not getattr(myEp, 'absolute_number'):
+        if not myEp.get('absolutenumber'):
             sickrage.srCore.srLogger.debug("This episode {} - S{}E{} has no absolute number on {}".format(
                 self.show.name, season or 0, episode or 0, indexer_name))
         else:
             sickrage.srCore.srLogger.debug("{}: The absolute_number for S{}E{} is: {}".format(
-                self.show.indexerid, season or 0, episode or 0, myEp["absolute_number"]))
-            self.absolute_number = tryInt(safe_getattr(myEp, 'absolute_number'), self.absolute_number)
+                self.show.indexerid, season or 0, episode or 0, myEp["absolutenumber"]))
+            self.absolute_number = tryInt(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
 
         self.season = season
         self.episode = episode

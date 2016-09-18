@@ -1,5 +1,5 @@
-import fanart
-from fanart.items import LeafItem, Immutable, ResourceItem
+import sickrage.metadata.fanart
+from sickrage.metadata.fanart.items import LeafItem, Immutable, ResourceItem
 __all__ = (
     'ArtItem',
     'DiscItem',
@@ -23,7 +23,7 @@ class MovieItem(LeafItem):
 
 
 class DiscItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.DISC
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.DISC
 
     @Immutable.mutablemethod
     def __init__(self, id, url, likes, lang, disc, disc_type):
@@ -33,39 +33,39 @@ class DiscItem(MovieItem):
 
 
 class ArtItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.ART
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.ART
 
 
 class LogoItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.LOGO
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.LOGO
 
 
 class PosterItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.POSTER
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.POSTER
 
 
 class BackgroundItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.BACKGROUND
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.BACKGROUND
 
 
 class HdLogoItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.HDLOGO
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.HDLOGO
 
 
 class HdArtItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.HDART
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.HDART
 
 
 class BannerItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.BANNER
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.BANNER
 
 
 class ThumbItem(MovieItem):
-    KEY = fanart.TYPE.MOVIE.THUMB
+    KEY = sickrage.metadata.fanart.TYPE.MOVIE.THUMB
 
 
 class Movie(ResourceItem):
-    WS = fanart.WS.MOVIE
+    WS = sickrage.metadata.fanart.WS.MOVIE
 
     @Immutable.mutablemethod
     def __init__(self, name, imdbid, tmdbid, arts, logos, discs, posters, backgrounds, hdlogos, hdarts,
