@@ -219,8 +219,10 @@ class WebHandler(BaseHandler):
     @authenticated
     def prepare(self, *args, **kwargs):
         # route -> method obj
-        method = getattr(self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
-                         getattr(self, 'index'))
+        method = getattr(
+            self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
+            getattr(self, 'index')
+        )
 
         result = yield self.callback(method, **self.request.arguments)
         self.finish(result)
@@ -359,8 +361,7 @@ class CalendarHandler(BaseHandler):
 
         return ical
 
-
-@Route('(.*)(/?)')
+@Route('(.*)(/?.*)')
 class WebRoot(WebHandler):
     def __init__(self, *args, **kwargs):
         super(WebRoot, self).__init__(*args, **kwargs)
@@ -539,7 +540,7 @@ class WebRoot(WebHandler):
 
 
 @Route('/google(/?.*)')
-class GoogleAuth(WebRoot):
+class GoogleAuth(WebHandler):
     def __init__(self, *args, **kwargs):
         super(GoogleAuth, self).__init__(*args, **kwargs)
 
@@ -562,7 +563,7 @@ class GoogleAuth(WebRoot):
 
 
 @Route('/ui(/?.*)')
-class UI(WebRoot):
+class UI(WebHandler):
     def __init__(self, *args, **kwargs):
         super(UI, self).__init__(*args, **kwargs)
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -590,7 +591,7 @@ class UI(WebRoot):
 
 
 @Route('/browser(/?.*)')
-class WebFileBrowser(WebRoot):
+class WebFileBrowser(WebHandler):
     def __init__(self, *args, **kwargs):
         super(WebFileBrowser, self).__init__(*args, **kwargs)
 
@@ -609,7 +610,7 @@ class WebFileBrowser(WebRoot):
 
 
 @Route('/home(/?.*)')
-class Home(WebRoot):
+class Home(WebHandler):
     def __init__(self, *args, **kwargs):
         super(Home, self).__init__(*args, **kwargs)
 
@@ -2217,7 +2218,7 @@ class Home(WebRoot):
 
 
 @Route('/IRC(/?.*)')
-class irc(WebRoot):
+class irc(WebHandler):
     def __init__(self, *args, **kwargs):
         super(irc, self).__init__(*args, **kwargs)
 
@@ -2233,7 +2234,7 @@ class irc(WebRoot):
 
 
 @Route('/news(/?.*)')
-class news(WebRoot):
+class news(WebHandler):
     def __init__(self, *args, **kwargs):
         super(news, self).__init__(*args, **kwargs)
 
@@ -2264,7 +2265,7 @@ class news(WebRoot):
 
 
 @Route('/changes(/?.*)')
-class changelog(WebRoot):
+class changelog(WebHandler):
     def __init__(self, *args, **kwargs):
         super(changelog, self).__init__(*args, **kwargs)
 
@@ -3729,7 +3730,7 @@ class ManageSearches(Manage):
 
 
 @Route('/history(/?.*)')
-class History(WebRoot):
+class History(WebHandler):
     def __init__(self, *args, **kwargs):
         super(History, self).__init__(*args, **kwargs)
         self.historyTool = HistoryTool()
@@ -3820,7 +3821,7 @@ class History(WebRoot):
 
 
 @Route('/config(/?.*)')
-class Config(WebRoot):
+class Config(WebHandler):
     def __init__(self, *args, **kwargs):
         super(Config, self).__init__(*args, **kwargs)
 
@@ -4533,6 +4534,8 @@ class ConfigProviders(Config):
                 providerObj.sorting = str(kwargs.get(providerID + '_sorting', 'seeders')).strip()
                 providerObj.freeleech = sickrage.srCore.srConfig.checkbox_to_value(
                     kwargs.get(providerID + '_freeleech') or 0)
+                providerObj.reject_m2ts = sickrage.srCore.srConfig.checkbox_to_value(
+                    kwargs.get(providerID + '_reject_m2ts') or 0)
                 providerObj.search_mode = str(kwargs.get(providerID + '_search_mode', 'eponly')).strip()
                 providerObj.search_fallback = sickrage.srCore.srConfig.checkbox_to_value(
                     kwargs.get(providerID + '_search_fallback') or 0)
@@ -4991,7 +4994,7 @@ class ConfigQualitySettings(Config):
 
 
 @Route('/logs(/?.*)')
-class Logs(WebRoot):
+class Logs(WebHandler):
     def __init__(self, *args, **kwargs):
         super(Logs, self).__init__(*args, **kwargs)
 
