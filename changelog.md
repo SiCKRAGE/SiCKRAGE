@@ -1,6 +1,7 @@
 # Changelog
 
-- * 778c279 - 2016-09-18: fix: Changed routing code for web view methods to return None if unable to locate correct route and skip rendering web view 
+- * 00115e3 - 2016-09-18: new: Version 8.1.9 
+- * 436b17f - 2016-09-18: fix: Changed routing code for web view methods to return None if unable to locate correct route and skip rendering web view 
 - * 9ebc502 - 2016-09-18: fix: Fixed order of web view routes on restarts to resolve &quot;Too many redirects&quot; issue new: Version 8.1.8 
 - * ead21f0 - 2016-09-18: new: Added reject m2ts provider option to ignore Blu-ray MPEG-2 Transport Stream container releases 
 - * 37e526d - 2016-09-18: new: Version 8.1.7 
