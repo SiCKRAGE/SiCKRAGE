@@ -221,11 +221,12 @@ class WebHandler(BaseHandler):
         # route -> method obj
         method = getattr(
             self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
-            getattr(self, 'index')
+            getattr(self, 'index', None)
         )
 
-        result = yield self.callback(method, **self.request.arguments)
-        self.finish(result)
+        if method:
+            result = yield self.callback(method, **self.request.arguments)
+            self.finish(result)
 
 
 class LoginHandler(BaseHandler):
