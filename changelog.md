@@ -1,6 +1,7 @@
 # Changelog
 
-- * 575b9c1 - 2016-09-18: new: Added reject m2ts provider option to ignore Blu-ray MPEG-2 Transport Stream container releases 
+- * 7138c40 - 2016-09-18: fix: Fixed order of web view routes on restarts to resolve &quot;Too many redirects&quot; issue new: Version 8.1.8 
+- * ead21f0 - 2016-09-18: new: Added reject m2ts provider option to ignore Blu-ray MPEG-2 Transport Stream container releases 
 - * 37e526d - 2016-09-18: new: Version 8.1.7 
 - * b773e6d - 2016-09-18: fix: Correct column span for display shows to fix background 
 - * 1a0c428 - 2016-09-18: fix: Added check for refresh queue during show refreshes to prevent duplicate show refresh requests 
