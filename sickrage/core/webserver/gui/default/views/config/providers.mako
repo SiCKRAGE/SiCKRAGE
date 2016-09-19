@@ -587,6 +587,19 @@
                                         </div>
                                     % endif
 
+                                    % if hasattr(providerObj, 'reject_m2ts'):
+                                        <div class="field-pair">
+                                            <label for="${providerID}_reject_m2ts">
+                                                <span class="component-title">Reject Blu-ray M2TS releases</span>
+                                                <span class="component-desc">
+                                                    <input type="checkbox" name="${providerID}_reject_m2ts"
+                                                           id="${providerID}_reject_m2ts" ${('', 'checked="checked"')[bool(providerObj.reject_m2ts)]}/>
+                                                    <p>enable to ignore Blu-ray MPEG-2 Transport Stream container releases</p>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    % endif
+
                                     % if hasattr(providerObj, 'enable_backlog'):
                                         <div class="field-pair${(' hidden', '')[providerObj.supportsBacklog]}">
                                             <label for="${providerID}_enable_backlog">

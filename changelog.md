@@ -1,6 +1,25 @@
 # Changelog
 
-- * 71cbd77 - 2016-09-10: new: Version 8.1.3 new: Fanart.tv API module added into metadata module fix: Removed python-fanart from requirements.txt to resolve requirements breaking 
+- * 575b9c1 - 2016-09-18: new: Added reject m2ts provider option to ignore Blu-ray MPEG-2 Transport Stream container releases 
+- * 37e526d - 2016-09-18: new: Version 8.1.7 
+- * b773e6d - 2016-09-18: fix: Correct column span for display shows to fix background 
+- * 1a0c428 - 2016-09-18: fix: Added check for refresh queue during show refreshes to prevent duplicate show refresh requests 
+- * cdc9e5a - 2016-09-18: fix: Removed error logging during automatic daily show updates 
+- * e87deb5 - 2016-09-17: fix: Corrected query variable 
+- * d088fcc - 2016-09-17: fix: mapped parsed json data from XEM to integer, helps checking for indexer id 
+- * f34195f - 2016-09-17: new: Version 8.1.6 
+- * 44669f2 - 2016-09-17: new: theTVDB indexer has been upgraded to API v2 new: Fanart.tv has been upgraded to API v3 fix: Fanart is properly parsed and grabbed 
+- * 6021a02 - 2016-09-15: fix: Changed show refreshes to not be forced during automatic show updates 
+- * 84f1285 - 2016-09-14: new: Version 8.1.5 
+- * 5eb95e8 - 2016-09-14: fix: Added back old redirect routine override with additional code to set a redirect url as perm 
+- * cf2b15d - 2016-09-14: fix: Removed redirect routine override fix: Added prepare routine override for Base class to check url for presence of correct webroot 
+- * d6bb6ea - 2016-09-14: new: Version 8.1.4 
+- * bf6777d - 2016-09-14: fix: Fixed reference to DEFAULT_PAGE variable 
+- * 181765e - 2016-09-14: fix: Added cpu_count call to determine number of max workers for Tornado executor pool fix: Changed redirect code for login/logout routines 
+- * 93c2b78 - 2016-09-12: fix: Fixed issue with IMDb during adding and updating of shows 
+- * b1d4247 - 2016-09-10: fix: Bumped DB version to 44 to be compatible with other forks 
+- * b98ec92 - 2016-09-10: fix: Removed TMDb usage from core code, resolves issues with requirements 
+- * 2dbae19 - 2016-09-10: new: Version 8.1.3 new: Fanart.tv API module added into metadata module fix: Removed python-fanart from requirements.txt to resolve requirements breaking 
 - * 15fe75d - 2016-09-09: Updated changelog grunt task to append to changelog 
 - * 201af10 - 2016-09-09: Updated url for torrentz torrent provider 
 - * 3942052 - 2016-09-09: Updated to version 8.1.2 

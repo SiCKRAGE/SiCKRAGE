@@ -4533,6 +4533,8 @@ class ConfigProviders(Config):
                 providerObj.sorting = str(kwargs.get(providerID + '_sorting', 'seeders')).strip()
                 providerObj.freeleech = sickrage.srCore.srConfig.checkbox_to_value(
                     kwargs.get(providerID + '_freeleech') or 0)
+                providerObj.reject_m2ts = sickrage.srCore.srConfig.checkbox_to_value(
+                    kwargs.get(providerID + '_reject_m2ts') or 0)
                 providerObj.search_mode = str(kwargs.get(providerID + '_search_mode', 'eponly')).strip()
                 providerObj.search_fallback = sickrage.srCore.srConfig.checkbox_to_value(
                     kwargs.get(providerID + '_search_fallback') or 0)

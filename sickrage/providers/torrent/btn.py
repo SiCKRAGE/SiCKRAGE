@@ -21,11 +21,11 @@ from __future__ import unicode_literals
 
 import datetime
 import math
+import re
 import socket
 import time
 
 import jsonrpclib
-
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
@@ -46,6 +46,8 @@ class BTNProvider(TorrentProvider):
 
         self.api_key = None
         self.ratio = None
+
+        self.reject_m2ts = False
 
         self.cache = BTNCache(self)
 
@@ -90,10 +92,9 @@ class BTNProvider(TorrentProvider):
 
         if self._checkAuthFromData(parsedJSON):
 
+            found_torrents = {}
             if 'torrents' in parsedJSON:
                 found_torrents = parsedJSON['torrents']
-            else:
-                found_torrents = {}
 
             # We got something, we know the API sends max 1000 results at a time.
             # See if there are more than 1000 results for our query, if not we
@@ -116,8 +117,10 @@ class BTNProvider(TorrentProvider):
                         found_torrents.update(parsedJSON['torrents'])
 
             for torrentid, torrent_info in found_torrents.items():
-                (title, url) = self._get_title_and_url(torrent_info)
+                if self.reject_m2ts and re.match(r'(?i)m2?ts', torrent_info.get('Container', '')):
+                    continue
 
+                (title, url) = self._get_title_and_url(torrent_info)
                 if title and url:
                     sickrage.srCore.srLogger.debug("Found result: %s " % title)
                     results.append(torrent_info)

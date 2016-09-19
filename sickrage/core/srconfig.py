@@ -888,7 +888,7 @@ class srConfig(object):
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin']
+                         'passkey', 'pin', 'reject_m2ts']
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             defaults['Providers'][providerID] = dict(
@@ -2335,7 +2335,7 @@ class srConfig(object):
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin']
+                         'passkey', 'pin', 'reject_m2ts']
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             new_config['Providers'][providerID] = dict(
