@@ -23,11 +23,6 @@ import threading
 from Queue import PriorityQueue, Empty
 from datetime import datetime
 
-try:
-    from futures import ThreadPoolExecutor, thread
-except ImportError:
-    from concurrent.futures import ThreadPoolExecutor, thread
-
 import sickrage
 
 
@@ -97,16 +92,14 @@ class srQueue(PriorityQueue):
                         if self.currentItem.priority < self.min_priority:
                             self.put(self.currentItem)
                         else:
-                            sickrage.srCore.srScheduler.add_job(self.worker, name=self.currentItem.name)
+                            threading.Thread(target=self.worker, name=self.currentItem.name).start()
                     except Empty:
                         pass
 
         self.amActive = False
 
     def worker(self):
-        self.currentItem.run()
-        self.currentItem.finish()
-        self.task_done()
+        self.currentItem.run() and self.currentItem.finish()
 
     def shutdown(self):
         self.stop.set()

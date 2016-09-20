@@ -2925,7 +2925,9 @@ class HomeAddShows(Home):
 
             if indexer is not None and indexer_id is not None:
                 # add the show
-                sickrage.srCore.SHOWQUEUE.addShow(indexer, indexer_id, show_dir,
+                sickrage.srCore.SHOWQUEUE.addShow(indexer,
+                                                  indexer_id,
+                                                  show_dir,
                                                   default_status=sickrage.srCore.srConfig.STATUS_DEFAULT,
                                                   quality=sickrage.srCore.srConfig.QUALITY_DEFAULT,
                                                   flatten_folders=sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT,
