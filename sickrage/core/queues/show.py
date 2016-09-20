@@ -259,7 +259,7 @@ class QueueItemAdd(ShowQueueItem):
     def run(self):
         super(QueueItemAdd, self).run()
 
-        sickrage.srCore.srLogger.info("Started adding show {}".format(self.showDir))
+        sickrage.srCore.srLogger.info("Started adding show {}".format(self.show_name))
 
         index_name = srIndexerApi(self.indexer).name
 
