@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f23007 - 2016-09-20: new: Version 8.2.0 fix: Switched queue&#x27;s back to use python&#x27;s built-in threading module to handle running tasks, resolves issues for Synology users 
+- * 6f820ed - 2016-09-21: fix: Queue tasks are now put into the background to prevent blocking tornado web calls 
+- * 4f6c1d6 - 2016-09-20: new: Version 8.2.0 fix: Switched queue&#x27;s back to use python&#x27;s built-in threading module to handle running tasks, resolves issues for Synology users 
 - * 3e79a8f - 2016-09-18: new: Version 8.1.9 
 - * 436b17f - 2016-09-18: fix: Changed routing code for web view methods to return None if unable to locate correct route and skip rendering web view 
 - * 9ebc502 - 2016-09-18: fix: Fixed order of web view routes on restarts to resolve &quot;Too many redirects&quot; issue new: Version 8.1.8 
@@ -9,6 +10,7 @@
 - * b773e6d - 2016-09-18: fix: Correct column span for display shows to fix background 
 - * 1a0c428 - 2016-09-18: fix: Added check for refresh queue during show refreshes to prevent duplicate show refresh requests 
 - * cdc9e5a - 2016-09-18: fix: Removed error logging during automatic daily show updates 
+- * 462c9e2 - 2016-09-17: fix: performed several PEP8 changes fix: moved exception handling for requests into module function and added exception handing for 409 errors 
 - * e87deb5 - 2016-09-17: fix: Corrected query variable 
 - * d088fcc - 2016-09-17: fix: mapped parsed json data from XEM to integer, helps checking for indexer id 
 - * f34195f - 2016-09-17: new: Version 8.1.6 

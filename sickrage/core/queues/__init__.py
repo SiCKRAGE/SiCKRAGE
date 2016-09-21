@@ -92,13 +92,16 @@ class srQueue(PriorityQueue):
                         if self.currentItem.priority < self.min_priority:
                             self.put(self.currentItem)
                         else:
-                            threading.Thread(target=self.worker, name=self.currentItem.name).start()
+                            t = threading.Thread(target=self.worker, name=self.currentItem.name)
+                            t.daemon = True
+                            t.start()
                     except Empty:
                         pass
 
         self.amActive = False
 
     def worker(self):
+        #threading.currentThread().setName(self.currentItem.name)
         self.currentItem.run() and self.currentItem.finish()
 
     def shutdown(self):
