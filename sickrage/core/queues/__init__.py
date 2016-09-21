@@ -98,7 +98,7 @@ class srQueue(PriorityQueue):
                             self.put(self.currentItem)
                         else:
                             with ThreadPoolExecutor(1) as executor:
-                                return executor.submit(self.worker)
+                                executor.submit(self.worker)
                     except Empty:
                         pass
 

@@ -1,5 +1,6 @@
 # Changelog
 
+- * 258e91d - 2016-09-21: fix: Removed un-needed return statement in code 
 - * 2d1806b - 2016-09-21: fix: Switched queue&#x27;s to use ThreadPool executor from futures 
 - * ad6760a - 2016-09-21: fix: Queue tasks are now put into the background to prevent blocking tornado web calls 
 - * 4f6c1d6 - 2016-09-20: new: Version 8.2.0 fix: Switched queue&#x27;s back to use python&#x27;s built-in threading module to handle running tasks, resolves issues for Synology users 
