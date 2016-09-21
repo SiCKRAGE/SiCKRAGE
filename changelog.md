@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f23007 - 2016-09-20: new: Version 8.2.0 fix: Switched queue&#x27;s back to use python&#x27;s built-in threading module to handle running tasks, resolves issues for Synology users 
+- * 691398d - 2016-09-21: fix: Switched queue&#x27;s to use ThreadPool executor from futures 
+- * 4f6c1d6 - 2016-09-20: new: Version 8.2.0 fix: Switched queue&#x27;s back to use python&#x27;s built-in threading module to handle running tasks, resolves issues for Synology users 
 - * 3e79a8f - 2016-09-18: new: Version 8.1.9 
 - * 436b17f - 2016-09-18: fix: Changed routing code for web view methods to return None if unable to locate correct route and skip rendering web view 
 - * 9ebc502 - 2016-09-18: fix: Fixed order of web view routes on restarts to resolve &quot;Too many redirects&quot; issue new: Version 8.1.8 
