@@ -19,6 +19,11 @@
 
 from __future__ import unicode_literals
 
+try:
+    from futures import ThreadPoolExecutor
+except ImportError:
+    from concurrent.futures import ThreadPoolExecutor
+
 import threading
 from Queue import PriorityQueue, Empty
 from datetime import datetime
@@ -92,16 +97,15 @@ class srQueue(PriorityQueue):
                         if self.currentItem.priority < self.min_priority:
                             self.put(self.currentItem)
                         else:
-                            t = threading.Thread(target=self.worker, name=self.currentItem.name)
-                            t.daemon = True
-                            t.start()
+                            with ThreadPoolExecutor(1) as executor:
+                                return executor.submit(self.worker)
                     except Empty:
                         pass
 
         self.amActive = False
 
     def worker(self):
-        #threading.currentThread().setName(self.currentItem.name)
+        threading.currentThread().setName(self.currentItem.name)
         self.currentItem.run() and self.currentItem.finish()
 
     def shutdown(self):
