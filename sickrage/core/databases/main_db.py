@@ -25,17 +25,17 @@ import babelfish
 import sickrage
 from sickrage.core.common import ARCHIVED, DOWNLOADED, Quality, SKIPPED, \
     UNAIRED, UNKNOWN, WANTED, dateTimeFormat, statusStrings
-from sickrage.core.databases import Connection, SchemaUpgrade
+from sickrage.core.databases import srDatabase, SchemaUpgrade
 
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
 MAX_DB_VERSION = 44
 
 
-class MainDB(Connection):
+class MainDB(srDatabase):
     def __init__(self, filename='sickrage.db', suffix=None, row_type=None):
         super(MainDB, self).__init__(filename, suffix, row_type)
 
-    class SanityCheck(Connection):
+    class SanityCheck(srDatabase):
         def __init__(self):
             super(MainDB.SanityCheck, self).__init__()
             self.fix_missing_table_indexes()

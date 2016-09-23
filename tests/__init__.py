@@ -31,7 +31,7 @@ import unittest
 import sickrage
 from sickrage.core import Core
 from sickrage.core.caches import tv_cache
-from sickrage.core.databases import Connection, main_db, cache_db, failed_db
+from sickrage.core.databases import srDatabase, main_db, cache_db, failed_db
 from sickrage.core.tv import episode
 
 # =================
@@ -74,7 +74,7 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
             tearDown_test_web_server()
 
 
-class TestCacheDBConnection(Connection, object):
+class TestCacheDBConnection(srDatabase, object):
     def __init__(self, providerName):
         super(TestCacheDBConnection, self).__init__(providerName)
 

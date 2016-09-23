@@ -18,10 +18,10 @@
 
 from __future__ import unicode_literals
 
-from sickrage.core.databases import Connection, SchemaUpgrade
+from sickrage.core.databases import srDatabase, SchemaUpgrade
 
 
-class CacheDB(Connection):
+class CacheDB(srDatabase):
     def __init__(self, filename='cache.db', suffix=None, row_type=None):
         super(CacheDB, self).__init__(filename, suffix, row_type)
 
