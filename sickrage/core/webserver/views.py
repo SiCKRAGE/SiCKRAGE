@@ -91,6 +91,9 @@ class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
 
+        self.io_loop = IOLoop.current()
+        self.executor = ThreadPoolExecutor(cpu_count())
+
         # template settings
         self.mako_lookup = TemplateLookup(
             directories=[os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'views{}'.format(os.sep))],
@@ -105,10 +108,6 @@ class BaseHandler(RequestHandler):
 
         # start time
         self.startTime = time.time()
-
-    def initialize(self):
-        self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(cpu_count())
 
     def prepare(self):
         if not self.request.full_url().startswith(sickrage.srCore.srConfig.WEB_ROOT):
@@ -361,6 +360,7 @@ class CalendarHandler(BaseHandler):
         ical += 'END:VCALENDAR'
 
         return ical
+
 
 @Route('(.*)(/?.*)')
 class WebRoot(WebHandler):

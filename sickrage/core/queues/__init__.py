@@ -20,39 +20,60 @@
 from __future__ import unicode_literals
 
 try:
-    from futures import ThreadPoolExecutor
+    from Queue import PriorityQueue, Empty
 except ImportError:
-    from concurrent.futures import ThreadPoolExecutor
+    from queue import PriorityQueue, Empty
 
 import threading
-from Queue import PriorityQueue, Empty
 from datetime import datetime
 
 import sickrage
 
 
-class QueuePriorities(object):
+class srQueuePriorities(object):
     LOW = 10
     NORMAL = 20
     HIGH = 30
 
-
-class srQueue(PriorityQueue):
-    def __init__(self, maxsize=0):
-        PriorityQueue.__init__(self, maxsize)
-        self.queue_name = "QUEUE"
-        self.lock = threading.Lock()
+class srQueue(threading.Thread):
+    def __init__(self, name="QUEUE"):
+        super(srQueue, self).__init__(name=name)
+        self._queue = PriorityQueue()
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
+        self.lock = threading.Lock()
         self.stop = threading.Event()
+        self.daemon = True
+
+    def run(self):
+        """
+        Process items in this queue
+        """
+
+        while not self.stop.is_set():
+            with self.lock:
+                self.amActive = True
+
+                if self.currentItem is None or not self.currentItem.inProgress:
+                    if self.currentItem:
+                        self.currentItem = None
+
+                    self.currentItem = self.get()
+                    if self.currentItem.priority < self.min_priority:
+                        self.put(self.currentItem)
+                        self.currentItem = None
+                    else:
+                        self.currentItem.run() and self.currentItem.finish()
+
+                self.amActive = False
 
     @property
-    def name(self):
-        return self.queue_name
+    def queue(self):
+        return self._queue.queue
 
     def get(self, *args, **kwargs):
-        _, item = PriorityQueue.get(self, *args, **kwargs)
+        _, item = self._queue.get(*args, **kwargs)
         return item
 
     def put(self, item, *args, **kwargs):
@@ -64,7 +85,7 @@ class srQueue(PriorityQueue):
         """
         item.name = "{}-{}".format(self.name, item.name)
         item.added = datetime.now()
-        PriorityQueue.put(self, (item.priority, item), *args, **kwargs)
+        self._queue.put((item.priority, item), *args, **kwargs)
         return item
 
     def pause(self):
@@ -77,47 +98,16 @@ class srQueue(PriorityQueue):
         sickrage.srCore.srLogger.info("Unpausing queue")
         self.min_priority = 0
 
-    def run(self, force=False):
-        """
-        Process items in this queue
-
-        :param force: Force queue processing (currently not implemented)
-        """
-
-        self.amActive = True
-
-        with self.lock:
-            if not self.stop.is_set():
-                if self.currentItem is None or not self.currentItem.inProgress:
-                    if self.currentItem:
-                        self.currentItem = None
-
-                    try:
-                        self.currentItem = self.get(False)
-                        if self.currentItem.priority < self.min_priority:
-                            self.put(self.currentItem)
-                        else:
-                            with ThreadPoolExecutor(1) as executor:
-                                executor.submit(self.worker)
-                    except Empty:
-                        pass
-
-        self.amActive = False
-
-    def worker(self):
-        threading.currentThread().setName(self.currentItem.name)
-        self.currentItem.run() and self.currentItem.finish()
-
     def shutdown(self):
         self.stop.set()
 
 
-class QueueItem(object):
+class srQueueItem(object):
     def __init__(self, name, action_id=0):
         self.lock = threading.Lock()
         self.name = name.replace(" ", "-").upper()
         self.inProgress = False
-        self.priority = QueuePriorities.NORMAL
+        self.priority = srQueuePriorities.NORMAL
         self.action_id = action_id
         self.stop = threading.Event()
         self.added = None

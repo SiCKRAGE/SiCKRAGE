@@ -323,22 +323,6 @@ class Core(object):
 
             self.metadataProviderDict[tmp_provider.name] = tmp_provider
 
-        # add show queue job
-        self.srScheduler.add_job(
-            self.SHOWQUEUE.run,
-            srIntervalTrigger(**{'seconds': 1}),
-            name="SHOWQUEUE",
-            id="SHOWQUEUE"
-        )
-
-        # add search queue job
-        self.srScheduler.add_job(
-            self.SEARCHQUEUE.run,
-            srIntervalTrigger(**{'seconds': 1}),
-            name="SEARCHQUEUE",
-            id="SEARCHQUEUE"
-        )
-
         # add version checker job
         self.srScheduler.add_job(
             self.VERSIONUPDATER.run,
@@ -451,6 +435,10 @@ class Core(object):
         (self.srScheduler.get_job('POSTPROCESSOR').pause,
          self.srScheduler.get_job('POSTPROCESSOR').resume
          )[self.srConfig.PROCESS_AUTOMATICALLY]()
+
+        # start queue's
+        self.SEARCHQUEUE.start()
+        self.SHOWQUEUE.start()
 
         # start webserver
         self.srWebServer.start()

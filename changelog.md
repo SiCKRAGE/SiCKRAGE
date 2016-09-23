@@ -1,5 +1,6 @@
 # Changelog
 
+- * b8b6d0b - 2016-09-22: fix: Revamped core queue code 
 - * 258e91d - 2016-09-21: fix: Removed un-needed return statement in code 
 - * 2d1806b - 2016-09-21: fix: Switched queue&#x27;s to use ThreadPool executor from futures 
 - * ad6760a - 2016-09-21: fix: Queue tasks are now put into the background to prevent blocking tornado web calls 

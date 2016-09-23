@@ -24,7 +24,7 @@ import traceback
 
 import sickrage
 from sickrage.core.common import cpu_presets
-from sickrage.core.queues import srQueue, QueueItem, QueuePriorities
+from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
     snatchEpisode
 from sickrage.core.tv.show.history import FailedHistory, History
@@ -47,11 +47,7 @@ def fifo(myList, item, maxSize=100):
 
 class srSearchQueue(srQueue):
     def __init__(self):
-        srQueue.__init__(self)
-        self.queue_name = "SEARCHQUEUE"
-
-    def run(self, force=False):
-        srQueue.run(self, force)
+        srQueue.__init__(self, "SEARCHQUEUE")
 
     def is_in_queue(self, show, segment):
         for cur_priority, cur_item in self.queue:
@@ -79,7 +75,7 @@ class srSearchQueue(srQueue):
         return ep_obj_list
 
     def pause_backlog(self):
-        self.min_priority = QueuePriorities.HIGH
+        self.min_priority = srQueuePriorities.HIGH
         sickrage.srCore.srScheduler.pause_job('BACKLOG')
 
     def unpause_backlog(self):
@@ -88,7 +84,7 @@ class srSearchQueue(srQueue):
 
     def is_backlog_paused(self):
         # backlog priorities are NORMAL, this should be done properly somewhere
-        return self.min_priority >= QueuePriorities.NORMAL
+        return self.min_priority >= srQueuePriorities.NORMAL
 
     def is_manualsearch_in_progress(self):
         # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!
@@ -144,7 +140,7 @@ class srSearchQueue(srQueue):
             sickrage.srCore.srLogger.debug("Not adding item, it's already in the queue")
 
 
-class DailySearchQueueItem(QueueItem):
+class DailySearchQueueItem(srQueueItem):
     def __init__(self):
         super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
         self.success = False
@@ -170,7 +166,7 @@ class DailySearchQueueItem(QueueItem):
         except Exception:
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
-class ManualSearchQueueItem(QueueItem):
+class ManualSearchQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
         self.name = 'MANUAL-' + str(show.indexerid)
@@ -178,7 +174,7 @@ class ManualSearchQueueItem(QueueItem):
         self.segment = segment
         self.success = False
         self.started = False
-        self.priority = QueuePriorities.HIGH
+        self.priority = srQueuePriorities.HIGH
         self.downCurQuality = downCurQuality
 
     def run(self):
@@ -208,7 +204,7 @@ class ManualSearchQueueItem(QueueItem):
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
 
-class BacklogQueueItem(QueueItem):
+class BacklogQueueItem(srQueueItem):
     def __init__(self, show, segment):
         super(BacklogQueueItem, self).__init__('Backlog', BACKLOG_SEARCH)
         self.show = show
@@ -216,7 +212,7 @@ class BacklogQueueItem(QueueItem):
         self.success = False
         self.started = False
         self.segment = segment
-        self.priority = QueuePriorities.LOW
+        self.priority = srQueuePriorities.LOW
 
     def run(self):
         super(BacklogQueueItem, self).run()
@@ -239,7 +235,7 @@ class BacklogQueueItem(QueueItem):
             except Exception:
                 sickrage.srCore.srLogger.debug(traceback.format_exc())
 
-class FailedQueueItem(QueueItem):
+class FailedQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
         self.show = show
@@ -247,7 +243,7 @@ class FailedQueueItem(QueueItem):
         self.success = False
         self.started = False
         self.segment = segment
-        self.priority = QueuePriorities.HIGH
+        self.priority = srQueuePriorities.HIGH
         self.downCurQuality = downCurQuality
 
     def run(self):

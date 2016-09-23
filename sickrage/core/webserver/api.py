@@ -114,8 +114,6 @@ class ApiHandler(RequestHandler):
 
     def __init__(self, application, request, *args, **kwargs):
         super(ApiHandler, self).__init__(application, request)
-
-    def initialize(self):
         self.io_loop = IOLoop.current()
         self.executor = ThreadPoolExecutor(cpu_count())
 
