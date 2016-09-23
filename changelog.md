@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5b2e50f - 2016-09-23: fix: Changed code for restarts and shutdowns 
+- * dea15a3 - 2016-09-23: fix: Added exception handling of closing IOLoop fd&#x27;s 
+- * 6b4c6f5 - 2016-09-23: fix: Changed code for restarts and shutdowns 
 - * d968bf8 - 2016-09-22: fix: Corrected core queue code shutdown function 
 - * b8b6d0b - 2016-09-22: fix: Revamped core queue code 
 - * 258e91d - 2016-09-21: fix: Removed un-needed return statement in code 

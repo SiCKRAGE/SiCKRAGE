@@ -198,7 +198,8 @@ class Core(object):
                                                       datetime.datetime.now().strftime(
                                                           '%Y%m%d_%H%M%S'))))
 
-            helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')), os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
+            helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')),
+                             os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
 
         # load config
         self.srConfig.load()
@@ -485,7 +486,10 @@ class Core(object):
         if sickrage.DAEMONIZE:
             sickrage.delpid(sickrage.PID_FILE)
 
-        IOLoop.current().close(all_fds = True)
+        try:
+            IOLoop.current().close(all_fds=True)
+        except:
+            pass
 
     def save_all(self):
         # write all shows
