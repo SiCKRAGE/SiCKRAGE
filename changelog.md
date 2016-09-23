@@ -1,5 +1,6 @@
 # Changelog
 
+- * d968bf8 - 2016-09-22: fix: Corrected core queue code shutdown function 
 - * b8b6d0b - 2016-09-22: fix: Revamped core queue code 
 - * 258e91d - 2016-09-21: fix: Removed un-needed return statement in code 
 - * 2d1806b - 2016-09-21: fix: Switched queue&#x27;s to use ThreadPool executor from futures 
