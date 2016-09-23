@@ -174,7 +174,8 @@ class srWebServer(object):
         ] + [(r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
               {"path": self.video_root})])
 
-        self.server = HTTPServer(self.app)
+        self.server = HTTPServer(self.app, no_keep_alive=True)
+
         if sickrage.srCore.srConfig.ENABLE_HTTPS:
             self.server.ssl_options = {"certfile": sickrage.srCore.srConfig.HTTPS_CERT,
                                        "keyfile": sickrage.srCore.srConfig.HTTPS_KEY}

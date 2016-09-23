@@ -81,7 +81,6 @@ from sickrage.notifiers.synologynotifier import synologyNotifier
 from sickrage.notifiers.trakt import TraktNotifier
 from sickrage.notifiers.tweet import TwitterNotifier
 from sickrage.providers import providersDict
-from tornado.autoreload import add_reload_hook
 from tornado.ioloop import IOLoop
 
 
@@ -445,12 +444,7 @@ class Core(object):
         self.srWebServer.start()
 
         # start ioloop event handler
-        add_reload_hook(self.reload_hook)
-        IOLoop.instance().start()
-
-    # Reload hook
-    def reload_hook(self):
-        self.shutdown()
+        IOLoop.current().start()
 
     def shutdown(self):
         if self.started:
@@ -486,10 +480,9 @@ class Core(object):
         if sickrage.DAEMONIZE:
             sickrage.delpid(sickrage.PID_FILE)
 
-        try:
-            IOLoop.current().close(all_fds=True)
-        except:
-            pass
+        # close ioloop and clear it
+        IOLoop.current().close(all_fds=True)
+        IOLoop.current().clear_current()
 
     def save_all(self):
         # write all shows
