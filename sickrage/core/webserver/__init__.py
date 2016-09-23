@@ -26,14 +26,13 @@ import socket
 import threading
 import webbrowser
 
-from tornado.httpserver import HTTPServer
-from tornado.web import Application, RedirectHandler, StaticFileHandler
-
 import sickrage
 from sickrage.core.helpers import create_https_certificates, generateApiKey, get_lan_ip
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+from tornado.httpserver import HTTPServer
+from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 
 def launch_browser(protocol=None, host=None, startport=None):
@@ -209,5 +208,6 @@ class srWebServer(object):
 
     def shutdown(self):
         if self.started:
+            self.server.close_all_connections()
             self.server.stop()
             self.started = False

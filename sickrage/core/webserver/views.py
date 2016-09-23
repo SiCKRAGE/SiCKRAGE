@@ -1091,7 +1091,8 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
-        sickrage.srCore.shutdown()
+        sickrage.restart = False
+        IOLoop.current().stop()
 
     def restart(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
@@ -1101,7 +1102,7 @@ class Home(WebHandler):
 
         self.io_loop.add_timeout(
             datetime.timedelta(seconds=10),
-            lambda: sickrage.srCore.shutdown(restart=True))
+            IOLoop.current().stop)
 
         return self.render(
             "/home/restart.mako",

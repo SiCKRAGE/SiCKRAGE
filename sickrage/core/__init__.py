@@ -25,7 +25,6 @@ import os
 import re
 import shutil
 import socket
-import sys
 import threading
 
 import sickrage
@@ -82,6 +81,7 @@ from sickrage.notifiers.synologynotifier import synologyNotifier
 from sickrage.notifiers.trakt import TraktNotifier
 from sickrage.notifiers.tweet import TwitterNotifier
 from sickrage.providers import providersDict
+from tornado.autoreload import add_reload_hook
 from tornado.ioloop import IOLoop
 
 
@@ -444,16 +444,18 @@ class Core(object):
         self.srWebServer.start()
 
         # start ioloop event handler
+        add_reload_hook(self.reload_hook)
         IOLoop.instance().start()
 
-    def shutdown(self, status=None, restart=False):
+    # Reload hook
+    def reload_hook(self):
+        self.shutdown()
+
+    def shutdown(self):
         if self.started:
             self.started = False
 
-            if restart:
-                self.srLogger.info('SiCKRAGE IS PERFORMING A RESTART!')
-            else:
-                self.srLogger.info('SiCKRAGE IS PERFORMING A SHUTDOWN!')
+            self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
             # shutdown/restart webserver
             self.srWebServer.shutdown()
@@ -476,11 +478,6 @@ class Core(object):
             # save all settings
             self.save_all()
 
-            if restart:
-                self.srLogger.info('SiCKRAGE IS RESTARTING!')
-            else:
-                self.srLogger.info('SiCKRAGE IS SHUTDOWN!')
-
             # shutdown logging
             self.srLogger.shutdown()
 
@@ -488,12 +485,7 @@ class Core(object):
         if sickrage.DAEMONIZE:
             sickrage.delpid(sickrage.PID_FILE)
 
-        # system exit with status
-        if not restart:
-            sys.exit(status)
-
-        # stop ioloop event handler
-        IOLoop.current().stop()
+        IOLoop.current().close(all_fds = True)
 
     def save_all(self):
         # write all shows

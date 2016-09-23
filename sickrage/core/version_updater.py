@@ -31,10 +31,10 @@ import time
 import traceback
 
 import github
-
 import sickrage
 from sickrage.core.helpers import backupSR, removetree
 from sickrage.notifiers import srNotifiers
+from tornado.ioloop import IOLoop
 
 
 class srVersionUpdater(object):
@@ -66,7 +66,7 @@ class srVersionUpdater(object):
                             if self.update():
                                 sickrage.srCore.srLogger.info("Update was successful!")
                                 sickrage.srCore.srNotifications.message('Update was successful')
-                                sickrage.srCore.shutdown(restart=True)
+                                IOLoop.current().stop()
                             else:
                                 sickrage.srCore.srLogger.info("Update failed!")
                                 sickrage.srCore.srNotifications.message('Update failed!')
