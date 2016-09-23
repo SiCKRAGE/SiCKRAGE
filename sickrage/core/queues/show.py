@@ -31,7 +31,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, ShowDirectoryNotFoundException
 from sickrage.core.helpers import scrub
-from sickrage.core.queues import srQueue, QueueItem, QueuePriorities
+from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.trakt import TraktAPI
 from sickrage.core.tv.show import TVShow
@@ -42,11 +42,7 @@ from sickrage.indexers.exceptions import indexer_attributenotfound, \
 
 class srShowQueue(srQueue):
     def __init__(self):
-        srQueue.__init__(self)
-        self.queue_name = "SHOWQUEUE"
-
-    def run(self, force=False):
-        srQueue.run(self, force)
+        srQueue.__init__(self, "SHOWQUEUE")
 
     @property
     def loadingShowList(self):
@@ -184,7 +180,7 @@ class ShowQueueActions(object):
     }
 
 
-class ShowQueueItem(QueueItem):
+class ShowQueueItem(srQueueItem):
     """
     Represents an item in the queue waiting to be executed
 
@@ -235,7 +231,7 @@ class QueueItemAdd(ShowQueueItem):
         self.whitelist = whitelist
         self.default_status_after = default_status_after
         self.archive = archive
-        self.priority = QueuePriorities.HIGH
+        self.priority = srQueuePriorities.HIGH
 
     @property
     def show_name(self):
@@ -464,7 +460,7 @@ class QueueItemRefresh(ShowQueueItem):
         super(QueueItemRefresh, self).__init__(show, ShowQueueActions.REFRESH)
 
         # do refreshes first because they're quick
-        self.priority = QueuePriorities.NORMAL
+        self.priority = srQueuePriorities.NORMAL
 
         # force refresh certain items
         self.force = force
@@ -637,7 +633,7 @@ class QueueItemRemove(ShowQueueItem):
         super(QueueItemRemove, self).__init__(show, ShowQueueActions.REMOVE)
 
         # lets make sure this happens before any other high priority actions
-        self.priority = QueuePriorities.HIGH + QueuePriorities.HIGH
+        self.priority = srQueuePriorities.HIGH + srQueuePriorities.HIGH
         self.full = full
 
     def run(self):
