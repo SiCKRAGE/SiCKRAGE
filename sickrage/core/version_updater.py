@@ -445,6 +445,7 @@ class GitUpdateManager(UpdateManager):
 
         _, _, exit_status = self._run_git(self._find_working_git, 'pull -f origin ' + self.current_branch)
         if exit_status == 0:
+            sickrage.srCore.srLogger.info("Updating SiCKRAGE from GIT servers")
             if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
                 srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
             self.install_requirements()
@@ -651,6 +652,92 @@ class PipUpdateManager(UpdateManager):
     def get_newest_version(self):
         return self._check_for_new_version()
 
+    @staticmethod
+    def _pip_error():
+        error_message = 'Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini.'
+        sickrage.srCore.NEWEST_VERSION_STRING = error_message
+
+    @property
+    def _find_working_pip(self):
+        test_cmd = '-V'
+
+        main_pip = sickrage.srCore.srConfig.PIP_PATH or 'pip'
+
+        sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
+        _, _, exit_status = self._run_pip(main_pip, test_cmd)
+
+        if exit_status == 0:
+            sickrage.srCore.srLogger.debug("Using: " + main_pip)
+            return main_pip
+        else:
+            sickrage.srCore.srLogger.debug("Not using: " + main_pip)
+
+        # trying alternatives
+        alternative_pip = []
+
+        # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
+        if platform.system().lower() == 'darwin':
+            alternative_pip.append('/usr/local/python2.7/bin/pip')
+
+        if platform.system().lower() == 'windows':
+            if main_pip != main_pip.lower():
+                alternative_pip.append(main_pip.lower())
+
+        if alternative_pip:
+            sickrage.srCore.srLogger.debug("Trying known alternative pip locations")
+
+            for cur_pip in alternative_pip:
+                sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + cur_pip + ' ' + test_cmd)
+                _, _, exit_status = self._run_pip(cur_pip, test_cmd)
+
+                if exit_status == 0:
+                    sickrage.srCore.srLogger.debug("Using: " + cur_pip)
+                    return cur_pip
+                else:
+                    sickrage.srCore.srLogger.debug("Not using: " + cur_pip)
+
+        # Still haven't found a working git
+        error_message = 'Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini'
+        sickrage.srCore.NEWEST_VERSION_STRING = error_message
+
+        return None
+
+    @staticmethod
+    def _run_pip(pip_path, args):
+
+        output = err = None
+
+        if not pip_path:
+            sickrage.srCore.srLogger.warning("No pip specified, can't use pip commands")
+            exit_status = 1
+            return output, err, exit_status
+
+        cmd = pip_path + ' ' + args
+
+        try:
+            sickrage.srCore.srLogger.debug("Executing " + cmd + " with your shell in " + sickrage.PROG_DIR)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                 shell=True, cwd=sickrage.PROG_DIR)
+            output, err = p.communicate()
+            exit_status = p.returncode
+
+            if output:
+                output = output.strip()
+
+
+        except OSError:
+            sickrage.srCore.srLogger.info("Command " + cmd + " didn't work")
+            exit_status = 1
+
+        if exit_status == 0:
+            sickrage.srCore.srLogger.debug(cmd + " : returned successful")
+            exit_status = 0
+        else:
+            sickrage.srCore.srLogger.error(cmd + " returned : " + str(output) + ", treat as error for now")
+            exit_status = 1
+
+        return output, err, exit_status
+
     def _find_installed_version(self):
         with io.open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
@@ -661,7 +748,7 @@ class PipUpdateManager(UpdateManager):
             pypi_version = self.get_newest_version
             if self._find_installed_version() != pypi_version:
                 sickrage.srCore.srLogger.debug(
-                    "Version upgrade: " + self._find_installed_version() + "->" + pypi_version)
+                    "Version upgrade: " + self._find_installed_version() + " -> " + pypi_version)
                 return True
         except Exception as e:
             sickrage.srCore.srLogger.warning("Unable to contact PyPi, can't check for update: " + repr(e))
@@ -707,20 +794,11 @@ class PipUpdateManager(UpdateManager):
         """
         Performs pip upgrade
         """
-        # Notify update successful
-        sickrage.srCore.srLogger.info("Updating SiCKRAGE from PyPi servers")
-        srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
+        _, _, exit_status = self._run_pip(self._find_working_pip, 'install -U --no-cache-dir sickrage')
+        if exit_status == 0:
+            sickrage.srCore.srLogger.info("Updating SiCKRAGE from PyPi servers")
+            if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
+                srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
+            return True
 
-        from pip.commands.install import InstallCommand
-        options = InstallCommand().parse_args([])[0]
-        options.use_user_site = all([not sickrage.isElevatedUser(), not sickrage.isVirtualEnv()])
-        options.cache_dir = None
-        options.upgrade = True
-        options.quiet = 1
-
-        options.ignore_dependencies = True
-        InstallCommand().run(options, ['sickrage'])
-        options.ignore_dependencies = False
-        InstallCommand().run(options, ['sickrage'])
-
-        return True
+        return False

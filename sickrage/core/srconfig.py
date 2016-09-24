@@ -76,6 +76,7 @@ class srConfig(object):
         self.VERSION_NOTIFY = False
         self.AUTO_UPDATE = False
         self.NOTIFY_ON_UPDATE = False
+        self.PIP_PATH = ""
         self.GIT_RESET = True
         self.GIT_USERNAME = ""
         self.GIT_PASSWORD = ""
@@ -573,6 +574,7 @@ class srConfig(object):
         defaults['General']['create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
         defaults['General']['add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
         defaults['General']['extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
+        defaults['General']['pip_path'] = self.PIP_PATH
         defaults['General']['git_path'] = self.GIT_PATH
         defaults['General']['ignore_words'] = self.IGNORE_WORDS
         defaults['General']['require_words'] = self.REQUIRE_WORDS
@@ -1392,6 +1394,8 @@ class srConfig(object):
 
         self.DEFAULT_PAGE = self.check_setting_str('General', 'default_page', 'home')
 
+        self.PIP_PATH = self.check_setting_str('General', 'pip_path', 'pip')
+
         self.GIT_PATH = self.check_setting_str('General', 'git_path', 'git')
         self.GIT_AUTOISSUES = bool(self.check_setting_int('General', 'git_autoissues', 0))
         self.GIT_USERNAME = self.check_setting_str('General', 'git_username', '')
@@ -2017,6 +2021,7 @@ class srConfig(object):
         new_config['General']['create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
         new_config['General']['add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
         new_config['General']['extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
+        new_config['General']['pip_path'] = self.PIP_PATH
         new_config['General']['git_path'] = self.GIT_PATH
         new_config['General']['ignore_words'] = self.IGNORE_WORDS
         new_config['General']['require_words'] = self.REQUIRE_WORDS
