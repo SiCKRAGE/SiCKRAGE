@@ -64,7 +64,10 @@ class srQueue(threading.Thread):
                         self.put(self.currentItem)
                         self.currentItem = None
                     else:
-                        self.currentItem.run() and self.currentItem.finish()
+                        try:
+                            self.currentItem.run()
+                        finally:
+                            self.currentItem.finish()
 
                 self.amActive = False
 
