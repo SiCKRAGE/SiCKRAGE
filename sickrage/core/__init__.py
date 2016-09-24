@@ -25,7 +25,6 @@ import os
 import re
 import shutil
 import socket
-import sys
 import threading
 
 import sickrage
@@ -198,7 +197,8 @@ class Core(object):
                                                       datetime.datetime.now().strftime(
                                                           '%Y%m%d_%H%M%S'))))
 
-            helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')), os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
+            helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')),
+                             os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
 
         # load config
         self.srConfig.load()
@@ -444,16 +444,13 @@ class Core(object):
         self.srWebServer.start()
 
         # start ioloop event handler
-        IOLoop.instance().start()
+        IOLoop.current().start()
 
-    def shutdown(self, status=None, restart=False):
+    def shutdown(self):
         if self.started:
             self.started = False
 
-            if restart:
-                self.srLogger.info('SiCKRAGE IS PERFORMING A RESTART!')
-            else:
-                self.srLogger.info('SiCKRAGE IS PERFORMING A SHUTDOWN!')
+            self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
             # shutdown/restart webserver
             self.srWebServer.shutdown()
@@ -462,24 +459,23 @@ class Core(object):
             self.srLogger.info("Shutting down scheduler")
             self.srScheduler.shutdown()
 
-            # shutdown queues
-            self.srLogger.info("Shutting down queues")
+            # shutdown show queue
             if self.SHOWQUEUE:
+                self.srLogger.info("Shutting down show queue")
                 self.SHOWQUEUE.shutdown()
+
+            # shutdown search queue
             if self.SEARCHQUEUE:
+                self.srLogger.info("Shutting down search queue")
                 self.SEARCHQUEUE.shutdown()
 
+            # log out of ADBA
             if sickrage.srCore.ADBA_CONNECTION:
                 self.srLogger.info("Logging out ANIDB connection")
                 sickrage.srCore.ADBA_CONNECTION.logout()
 
-            # save all settings
+            # save all show and config settings
             self.save_all()
-
-            if restart:
-                self.srLogger.info('SiCKRAGE IS RESTARTING!')
-            else:
-                self.srLogger.info('SiCKRAGE IS SHUTDOWN!')
 
             # shutdown logging
             self.srLogger.shutdown()
@@ -487,13 +483,6 @@ class Core(object):
         # delete pid file
         if sickrage.DAEMONIZE:
             sickrage.delpid(sickrage.PID_FILE)
-
-        # system exit with status
-        if not restart:
-            sys.exit(status)
-
-        # stop ioloop event handler
-        IOLoop.current().stop()
 
     def save_all(self):
         # write all shows

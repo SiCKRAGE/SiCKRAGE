@@ -1,6 +1,17 @@
 # Changelog
 
-- * e44349a - 2016-09-23: migrate: Started migrating sqlite code to CodernityDB 
+- * 7115c4e - 2016-09-23: new: Version 8.2.4 
+- * f2457c9 - 2016-09-23: fix: Fixed PIP upgrade code and added a PIP_PATH variable to sickrage config 
+- * d988a71 - 2016-09-23: new: Version 8.2.3 fix: Fixed issue with queuing multiple items and only one getting executed 
+- * 29d7d25 - 2016-09-23: new: Version 8.2.2 
+- * 329f2ef - 2016-09-23: fix: removed clearing of ioloop, caused fd value errors 
+- * 9617086 - 2016-09-23: fix: moved shutdown of web server to last before ioloop closing 
+- * 405ea0e - 2016-09-23: fix: clear ioloop instance instead of current 
+- * 2a49dbc - 2016-09-23: update: Updated tornado requirement to version 4.4.1 
+- * caee32d - 2016-09-23: fix: Added code to clear ioloop current 
+- * ed37c6f - 2016-09-23: fix: Added exception handling of closing IOLoop fd&#x27;s 
+- * 6b4c6f5 - 2016-09-23: fix: Changed code for restarts and shutdowns 
+- * 0a8b972 - 2016-09-23: migrate: Started migrating sqlite code to CodernityDB 
 - * d968bf8 - 2016-09-22: fix: Corrected core queue code shutdown function 
 - * b8b6d0b - 2016-09-22: fix: Revamped core queue code 
 - * 258e91d - 2016-09-21: fix: Removed un-needed return statement in code 
