@@ -1,6 +1,7 @@
 # Changelog
 
-- * 61b914f - 2016-09-23: fix: removed clearing of ioloop, caused fd value errors 
+- * 1f52b83 - 2016-09-23: new: Version 8.2.2 
+- * 329f2ef - 2016-09-23: fix: removed clearing of ioloop, caused fd value errors 
 - * 9617086 - 2016-09-23: fix: moved shutdown of web server to last before ioloop closing 
 - * 405ea0e - 2016-09-23: fix: clear ioloop instance instead of current 
 - * 2a49dbc - 2016-09-23: update: Updated tornado requirement to version 4.4.1 

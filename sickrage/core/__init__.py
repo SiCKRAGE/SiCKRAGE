@@ -452,22 +452,29 @@ class Core(object):
 
             self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
+            # shutdown/restart webserver
+            self.srWebServer.shutdown()
+
             # shutdown scheduler
             self.srLogger.info("Shutting down scheduler")
             self.srScheduler.shutdown()
 
-            # shutdown queues
-            self.srLogger.info("Shutting down queues")
+            # shutdown show queue
             if self.SHOWQUEUE:
+                self.srLogger.info("Shutting down show queue")
                 self.SHOWQUEUE.shutdown()
+
+            # shutdown search queue
             if self.SEARCHQUEUE:
+                self.srLogger.info("Shutting down search queue")
                 self.SEARCHQUEUE.shutdown()
 
+            # log out of ADBA
             if sickrage.srCore.ADBA_CONNECTION:
                 self.srLogger.info("Logging out ANIDB connection")
                 sickrage.srCore.ADBA_CONNECTION.logout()
 
-            # save all settings
+            # save all show and config settings
             self.save_all()
 
             # shutdown logging
@@ -476,13 +483,6 @@ class Core(object):
         # delete pid file
         if sickrage.DAEMONIZE:
             sickrage.delpid(sickrage.PID_FILE)
-
-        # shutdown/restart webserver
-        self.srWebServer.shutdown()
-
-        # close ioloop and clear it
-        #IOLoop.current().close(all_fds=True)
-        #IOLoop.current().clear_current()
 
     def save_all(self):
         # write all shows
