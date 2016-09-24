@@ -481,8 +481,8 @@ class Core(object):
         self.srWebServer.shutdown()
 
         # close ioloop and clear it
-        IOLoop.current().close(all_fds=True)
-        IOLoop.current().clear_current()
+        #IOLoop.current().close(all_fds=True)
+        #IOLoop.current().clear_current()
 
     def save_all(self):
         # write all shows
