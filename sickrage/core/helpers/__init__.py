@@ -16,6 +16,7 @@ import re
 import shutil
 import socket
 import stat
+import string
 import tempfile
 import time
 import traceback
@@ -25,10 +26,9 @@ import uuid
 import zipfile
 from contextlib import contextmanager
 
+import sickrage
 import six
 from bs4 import BeautifulSoup
-
-import sickrage
 from sickrage.core.exceptions import MultipleShowObjectsException
 
 mediaExtensions = [
@@ -1189,9 +1189,9 @@ def restoreSR(srcDir, dstDir):
         if os.path.exists(os.path.join(srcDir, 'cache')):
             if os.path.exists(os.path.join(dstDir, 'cache')):
                 moveFile(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
-                                                                        .format('cache',
-                                                                                datetime.datetime.now().strftime(
-                                                                                    '%Y%m%d_%H%M%S'))))
+                                                                     .format('cache',
+                                                                             datetime.datetime.now().strftime(
+                                                                                 '%Y%m%d_%H%M%S'))))
             moveFile(os.path.join(srcDir, 'cache'), dstDir)
 
         return True
@@ -1626,3 +1626,7 @@ def convert_size(size, default=0):
     size *= 1024 ** units.index(unit.upper())
 
     return max(long(size), 0)
+
+
+def randomString(size=8, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for x in range(size))

@@ -29,7 +29,7 @@ import traceback
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, SNATCHED_PROPER, \
     cpu_presets
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import remove_non_release_groups
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -185,7 +185,7 @@ class srProperSearcher(object):
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            sqlResults = main_db.MainDB().select(
+            sqlResults = MainDB().select(
                 "SELECT status FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
                 [bestResult.indexerid, bestResult.season, bestResult.episode])
             if not sqlResults:
@@ -198,7 +198,7 @@ class srProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if bestResult.show.is_anime:
-                sqlResults = main_db.MainDB().select(
+                sqlResults = MainDB().select(
                     "SELECT release_group, version FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
                     [bestResult.indexerid, bestResult.season, bestResult.episode])
 
@@ -236,7 +236,7 @@ class srProperSearcher(object):
             historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            historyResults = main_db.MainDB().select(
+            historyResults = MainDB().select(
                 "SELECT resource FROM history " +
                 "WHERE showid = ? AND season = ? AND episode = ? AND quality = ? AND date >= ? " +
                 "AND action IN (" + ",".join([str(x) for x in Quality.SNATCHED + Quality.DOWNLOADED]) + ")",
@@ -295,13 +295,13 @@ class srProperSearcher(object):
 
         sickrage.srCore.srLogger.debug("Setting the last Proper search in the DB to " + str(when))
 
-        sqlResults = main_db.MainDB().select("SELECT * FROM info")
+        sqlResults = MainDB().select("SELECT * FROM info")
 
         if len(sqlResults) == 0:
-            main_db.MainDB().action("INSERT INTO info (last_backlog, last_indexer, last_proper_search) VALUES (?,?,?)",
+            MainDB().action("INSERT INTO info (last_backlog, last_indexer, last_proper_search) VALUES (?,?,?)",
                                     [0, 0, str(when)])
         else:
-            main_db.MainDB().action("UPDATE info SET last_proper_search=" + str(when))
+            MainDB().action("UPDATE info SET last_proper_search=" + str(when))
 
     @staticmethod
     def _get_lastProperSearch():
@@ -309,7 +309,7 @@ class srProperSearcher(object):
         Find last propersearch from DB
         """
 
-        sqlResults = main_db.MainDB().select("SELECT * FROM info")
+        sqlResults = MainDB().select("SELECT * FROM info")
 
         try:
             last_proper_search = datetime.date.fromordinal(int(sqlResults[0]["last_proper_search"]))

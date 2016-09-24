@@ -26,7 +26,7 @@ import traceback
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, ShowDirectoryNotFoundException
@@ -598,7 +598,7 @@ class QueueItemUpdate(ShowQueueItem):
                         sql_l.append(sql_q)
 
             if len(sql_l) > 0:
-                main_db.MainDB().mass_upsert(sql_l)
+                MainDB().mass_upsert(sql_l)
                 del sql_l  # cleanup
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB

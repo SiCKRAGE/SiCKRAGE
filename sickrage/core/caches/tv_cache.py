@@ -26,7 +26,7 @@ import urllib2
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.databases import cache_db
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import findCertainShow, show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -34,7 +34,7 @@ from sickrage.core.nameparser import InvalidNameException, InvalidShowException,
 from sickrage.core.rssfeeds import getFeed
 
 
-class CacheDBConnection(cache_db.CacheDB):
+class CacheDBConnection(CacheDB):
     def __init__(self, providerName):
         super(CacheDBConnection, self).__init__()
 

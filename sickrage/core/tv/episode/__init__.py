@@ -29,7 +29,7 @@ from xml.etree.ElementTree import ElementTree
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
@@ -399,7 +399,7 @@ class TVEpisode(object):
         sickrage.srCore.srLogger.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
-        sqlResults = main_db.MainDB().select(
+        sqlResults = MainDB().select(
             "SELECT * FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
             [self.show.indexerid, season, episode])
 
@@ -747,7 +747,7 @@ class TVEpisode(object):
 
         sql = "DELETE FROM tv_episodes WHERE showid=" + str(self.show.indexerid) + " AND season=" + str(
             self.season) + " AND episode=" + str(self.episode)
-        main_db.MainDB().action(sql)
+        MainDB().action(sql)
 
         data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST and data:
@@ -813,7 +813,7 @@ class TVEpisode(object):
         if not execute:
             return "tv_episodes", newValueDict, controlValueDict
 
-        main_db.MainDB().upsert("tv_episodes", newValueDict, controlValueDict)
+        MainDB().upsert("tv_episodes", newValueDict, controlValueDict)
 
     def fullPath(self):
         if self.location is None or self.location == "":
@@ -966,7 +966,7 @@ class TVEpisode(object):
                     sql_l.append(sql_q)
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
+            MainDB().mass_upsert(sql_l)
             del sql_l  # cleanup
 
     def airdateModifyStamp(self):

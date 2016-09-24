@@ -24,9 +24,8 @@ import os
 import re
 import time
 
-from dateutil import parser
-
 import sickrage
+from dateutil import parser
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, \
     get_all_episodes_from_absolute_number, remove_extension
@@ -258,9 +257,9 @@ class NameParser(object):
 
             # if we have an air-by-date show then get the real season/episode numbers
             if bestResult.is_air_by_date:
-                from sickrage.core.databases import main_db
+                from sickrage.core.databases.main import MainDB
                 airdate = bestResult.air_date.toordinal()
-                sql_result = main_db.MainDB().select(
+                sql_result = MainDB().select(
                     "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
                     [bestResult.show.indexerid, bestResult.show.indexer, airdate])
 

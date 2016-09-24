@@ -27,7 +27,7 @@ from functools import partial
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitizeSceneName
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -199,7 +199,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                     seasonStrings.append("%02d" % ab_number)
 
     else:
-        numseasonsSQlResult = main_db.MainDB().select(
+        numseasonsSQlResult = MainDB().select(
                 "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and season != 0",
                 [show.indexerid])
 
@@ -235,7 +235,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 def makeSceneSearchString(show, ep_obj):
     numseasons = 0
 
-    numseasonsSQlResult = main_db.MainDB().select(
+    numseasonsSQlResult = MainDB().select(
             "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and season != 0",
             [show.indexerid])
     if numseasonsSQlResult:
@@ -411,7 +411,7 @@ def searchDBForShow(regShowName, log=False):
 
     for showName in showNames:
 
-        sqlResults = main_db.MainDB().select("SELECT * FROM tv_shows WHERE show_name LIKE ?",
+        sqlResults = MainDB().select("SELECT * FROM tv_shows WHERE show_name LIKE ?",
                                              [showName])
 
         if len(sqlResults) == 1:
@@ -422,7 +422,7 @@ def searchDBForShow(regShowName, log=False):
             if match and match.group(1):
                 if log:
                     sickrage.srCore.srLogger.debug("Unable to match original name but trying to manually strip and specify show year")
-                sqlResults = main_db.MainDB().select(
+                sqlResults = MainDB().select(
                         "SELECT * FROM tv_shows WHERE (show_name LIKE ?) AND startyear = ?",
                         [match.group(1) + '%', match.group(3)])
 

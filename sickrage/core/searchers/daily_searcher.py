@@ -24,7 +24,7 @@ import threading
 
 import sickrage
 from sickrage.core.common import UNAIRED, SKIPPED, statusStrings, WANTED
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import findCertainShow
 from sickrage.core.queues.search import DailySearchQueueItem
@@ -63,7 +63,7 @@ class srDailySearcher(object):
             curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
 
         curTime = datetime.datetime.now(tz_updater.sr_timezone)
-        sqlResults = main_db.MainDB().select(
+        sqlResults = MainDB().select(
             "SELECT * FROM tv_episodes WHERE status in (?,?) AND season > 0 AND (airdate <= ? AND airdate > 1)",
             [UNAIRED, WANTED, curDate])
 
@@ -108,7 +108,7 @@ class srDailySearcher(object):
                     sql_l.append(sql_q)
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
+            MainDB().mass_upsert(sql_l)
             del sql_l
         else:
             sickrage.srCore.srLogger.info("No new released episodes found ...")

@@ -21,7 +21,7 @@
 from __future__ import unicode_literals
 
 import sickrage
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 
@@ -51,7 +51,7 @@ class BlackAndWhiteList(object):
         :param values: Values to be inserted in table
         """
         for value in values:
-            main_db.MainDB().action('INSERT INTO [' + table + '] (show_id, keyword) VALUES (?,?)',
+            MainDB().action('INSERT INTO [' + table + '] (show_id, keyword) VALUES (?,?)',
                                     [self.show_id, value])
 
     def set_black_keywords(self, values):
@@ -82,7 +82,7 @@ class BlackAndWhiteList(object):
 
         :param table: SQL table remove keywords from
         """
-        main_db.MainDB().action('DELETE FROM [' + table + '] WHERE show_id = ?', [self.show_id])
+        MainDB().action('DELETE FROM [' + table + '] WHERE show_id = ?', [self.show_id])
 
     def _load_list(self, table):
         """
@@ -92,7 +92,7 @@ class BlackAndWhiteList(object):
 
         :return: keywords in list
         """
-        sqlResults = main_db.MainDB().select('SELECT keyword FROM [' + table + '] WHERE show_id = ?', [self.show_id])
+        sqlResults = MainDB().select('SELECT keyword FROM [' + table + '] WHERE show_id = ?', [self.show_id])
         if not sqlResults or not len(sqlResults):
             return []
         groups = []

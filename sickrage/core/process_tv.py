@@ -23,12 +23,11 @@ import os
 import stat
 
 import UnRAR2
+import sickrage
 from UnRAR2.rar_exceptions import ArchiveHeaderBroken, FileOpenError, \
     IncorrectRARPassword, InvalidRARArchive, InvalidRARArchiveUsage
-
-import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException
 from sickrage.core.helpers import isMediaFile, isRarFile, isSyncFile, \
@@ -341,7 +340,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         return False
 
     # make sure the dir isn't inside a show dir
-    for sqlShow in main_db.MainDB().select("SELECT * FROM tv_shows"):
+    for sqlShow in MainDB().select("SELECT * FROM tv_shows"):
         if dirName.lower().startswith(os.path.realpath(sqlShow["location"]).lower() + os.sep) or \
                         dirName.lower() == os.path.realpath(sqlShow["location"]).lower():
             result.output += logHelper(
@@ -490,12 +489,12 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if main_db.MainDB().select("SELECT * FROM tv_episodes WHERE release_name = ?", [dirName]):
+    if MainDB().select("SELECT * FROM tv_episodes WHERE release_name = ?", [dirName]):
         # result.output += logHelper(u"You're trying to post process a dir that's already been processed, skipping", LOGGER.DEBUG)
         return True
 
     else:
-        if main_db.MainDB().select("SELECT * FROM tv_episodes WHERE release_name = ?",
+        if MainDB().select("SELECT * FROM tv_episodes WHERE release_name = ?",
                                    [videofile.rpartition('.')[0]]):
             # result.output += logHelper(u"You're trying to post process a video that's already been processed, skipping", LOGGER.DEBUG)
             return True
@@ -520,7 +519,7 @@ def already_postprocessed(dirName, videofile, force, result):
 
         search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in Quality.DOWNLOADED]) + ")"
         search_sql += " and history.resource LIKE ?"
-        if main_db.MainDB().select(search_sql, ['%' + videofile]):
+        if MainDB().select(search_sql, ['%' + videofile]):
             # result.output += logHelper(u"You're trying to post process a video that's already been processed, skipping", LOGGER.DEBUG)
             return True
 

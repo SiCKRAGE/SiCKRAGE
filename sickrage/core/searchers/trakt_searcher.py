@@ -27,7 +27,7 @@ from datetime import date
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, ARCHIVED, UNKNOWN
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import findCertainShow, sanitizeFileName, makeDir, chmodAsParent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.trakt import TraktAPI, traktException
@@ -202,7 +202,7 @@ class srTraktSearcher(object):
             sickrage.srCore.srLogger.debug("COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
             sql_selection = 'SELECT tv_shows.indexer, tv_shows.startyear, showid, show_name, season, episode, tv_episodes.status, tv_episodes.location FROM tv_episodes,tv_shows WHERE tv_shows.indexer_id = tv_episodes.showid'
-            episodes = main_db.MainDB().select(sql_selection)
+            episodes = MainDB().select(sql_selection)
 
             if episodes is not None:
                 trakt_data = []
@@ -235,7 +235,7 @@ class srTraktSearcher(object):
 
             sql_selection = 'SELECT tv_shows.indexer, tv_shows.startyear, showid, show_name, season, episode FROM tv_episodes,tv_shows WHERE tv_shows.indexer_id = tv_episodes.showid AND tv_episodes.status IN (' + ','.join(
                     [str(x) for x in Quality.DOWNLOADED + [ARCHIVED]]) + ')'
-            episodes = main_db.MainDB().select(sql_selection)
+            episodes = MainDB().select(sql_selection)
 
             if episodes is not None:
                 trakt_data = []
@@ -280,7 +280,7 @@ class srTraktSearcher(object):
             sickrage.srCore.srLogger.debug("WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
             sql_selection = 'SELECT tv_shows.indexer, tv_shows.startyear, showid, show_name, season, episode, tv_episodes.status FROM tv_episodes,tv_shows WHERE tv_shows.indexer_id = tv_episodes.showid'
-            episodes = main_db.MainDB().select(sql_selection)
+            episodes = MainDB().select(sql_selection)
 
             if episodes is not None:
                 trakt_data = []
@@ -312,7 +312,7 @@ class srTraktSearcher(object):
 
             sql_selection = 'SELECT tv_shows.indexer, tv_shows.startyear, showid, show_name, season, episode FROM tv_episodes,tv_shows WHERE tv_shows.indexer_id = tv_episodes.showid AND tv_episodes.status IN (' + ','.join(
                     [str(x) for x in Quality.SNATCHED + Quality.SNATCHED_PROPER + [WANTED]]) + ')'
-            episodes = main_db.MainDB().select(sql_selection)
+            episodes = MainDB().select(sql_selection)
 
             if episodes is not None:
                 trakt_data = []

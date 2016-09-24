@@ -22,10 +22,9 @@ from __future__ import unicode_literals
 import re
 from datetime import datetime
 
-from dateutil import tz
-
 import sickrage
-from sickrage.core.databases import cache_db
+from dateutil import tz
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import tryInt
 
 
@@ -76,7 +75,7 @@ def update_network_dict():
             ['DELETE FROM network_timezones WHERE network_name IN (%s);' % ','.join(['?'] * len(purged)), purged])
 
     if len(queries) > 0:
-        cache_db.CacheDB().mass_action(queries)
+        CacheDB().mass_action(queries)
         del queries  # cleanup
 
 
@@ -86,7 +85,7 @@ def load_network_dict():
     Return network timezones from db
     """
     try:
-        cur_network_list = cache_db.CacheDB().select('SELECT * FROM network_timezones;')
+        cur_network_list = CacheDB().select('SELECT * FROM network_timezones;')
         if cur_network_list:
             return dict(cur_network_list)
     except Exception:

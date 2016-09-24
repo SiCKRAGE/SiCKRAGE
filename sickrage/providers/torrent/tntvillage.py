@@ -24,7 +24,7 @@ import traceback
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.common import Quality
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -276,7 +276,7 @@ class TNTVillageProvider(TorrentProvider):
             return False
 
         sql_selection = "SELECT count(*) AS count FROM tv_episodes WHERE showid = ? AND season = ?"
-        episodes = main_db.MainDB().select(sql_selection, [parse_result.show.indexerid, parse_result.season_number])
+        episodes = MainDB().select(sql_selection, [parse_result.show.indexerid, parse_result.season_number])
         if int(episodes[0]['count']) == len(parse_result.episode_numbers):
             return True
 

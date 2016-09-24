@@ -23,7 +23,7 @@ import threading
 import time
 
 import sickrage
-from sickrage.core.databases import cache_db
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException
 from sickrage.core.tv.show.history import FailedHistory
@@ -48,12 +48,12 @@ class srShowUpdater(object):
 
         update_timestamp = time.mktime(datetime.datetime.now().timetuple())
 
-        sqlResult = cache_db.CacheDB().select('SELECT `time` FROM lastUpdate WHERE provider = ?', ['theTVDB'])
+        sqlResult = CacheDB().select('SELECT `time` FROM lastUpdate WHERE provider = ?', ['theTVDB'])
         if sqlResult:
             last_update = sqlResult[0]['time']
         else:
             last_update = time.mktime(datetime.datetime.min.timetuple())
-            cache_db.CacheDB().action('INSERT INTO lastUpdate (provider, `time`) VALUES (?, ?)',
+            CacheDB().action('INSERT INTO lastUpdate (provider, `time`) VALUES (?, ?)',
                                       ['theTVDB', long(last_update)])
 
         if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
@@ -76,7 +76,7 @@ class srShowUpdater(object):
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))
 
-        cache_db.CacheDB().action('UPDATE lastUpdate SET `time` = ? WHERE provider=?',
+        CacheDB().action('UPDATE lastUpdate SET `time` = ? WHERE provider=?',
                                   [long(update_timestamp), 'theTVDB'])
 
         self.amActive = False

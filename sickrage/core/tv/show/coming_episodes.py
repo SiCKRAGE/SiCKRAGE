@@ -22,7 +22,7 @@ import datetime
 
 import sickrage
 from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.updaters.tz_updater import parse_date_time
 
@@ -76,7 +76,7 @@ class ComingEpisodes:
                 ['airdate', 'airs', 'description', 'episode', 'imdb_id', 'e.indexer', 'indexer_id', 'name', 'network',
                  'paused', 'quality', 'runtime', 'season', 'show_name', 'showid', 's.status']
         )
-        results = main_db.MainDB().select(
+        results = MainDB().select(
                 'SELECT %s ' % fields_to_select +
                 'FROM tv_episodes e, tv_shows s '
                 'WHERE season != 0 '
@@ -92,7 +92,7 @@ class ComingEpisodes:
         placeholder2 = ','.join(
                 ['?'] * len(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER))
 
-        results += main_db.MainDB().select(
+        results += MainDB().select(
                 'SELECT %s ' % fields_to_select +
                 'FROM tv_episodes e, tv_shows s '
                 'WHERE season != 0 '
@@ -109,7 +109,7 @@ class ComingEpisodes:
                     next_week] + Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
         )
 
-        results += main_db.MainDB().select(
+        results += MainDB().select(
                 'SELECT %s ' % fields_to_select +
                 'FROM tv_episodes e, tv_shows s '
                 'WHERE season != 0 '

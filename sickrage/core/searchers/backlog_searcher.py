@@ -23,7 +23,7 @@ import threading
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.ui import ProgressIndicator
 
@@ -129,7 +129,7 @@ class srBacklogSearcher(object):
 
         sickrage.srCore.srLogger.debug("Retrieving the last check time from the DB")
 
-        sqlResults = main_db.MainDB().select("SELECT * FROM info")
+        sqlResults = MainDB().select("SELECT * FROM info")
 
         if len(sqlResults) == 0:
             lastBacklog = 1
@@ -151,7 +151,7 @@ class srBacklogSearcher(object):
 
         sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
-        sqlResults = main_db.MainDB().select(
+        sqlResults = MainDB().select(
             "SELECT status, season, episode FROM tv_episodes WHERE season > 0 AND airdate > ? AND showid = ?",
             [fromDate.toordinal(), show.indexerid])
 
@@ -187,12 +187,12 @@ class srBacklogSearcher(object):
 
         sickrage.srCore.srLogger.debug("Setting the last backlog in the DB to " + str(when))
 
-        sqlResults = main_db.MainDB().select("SELECT * FROM info")
+        sqlResults = MainDB().select("SELECT * FROM info")
 
         if len(sqlResults) == 0:
-            main_db.MainDB().action("INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [str(when), 0])
+            MainDB().action("INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [str(when), 0])
         else:
-            main_db.MainDB().action("UPDATE info SET last_backlog=" + str(when))
+            MainDB().action("UPDATE info SET last_backlog=" + str(when))
 
 
 def get_backlog_cycle_time():

@@ -1,5 +1,6 @@
 # Changelog
 
+- * 53949b7 - 2016-09-24: migrate: Migrated from SQLite to CodernityDB 
 - * 7115c4e - 2016-09-23: new: Version 8.2.4 
 - * f2457c9 - 2016-09-23: fix: Fixed PIP upgrade code and added a PIP_PATH variable to sickrage config 
 - * d988a71 - 2016-09-23: new: Version 8.2.3 fix: Fixed issue with queuing multiple items and only one getting executed 

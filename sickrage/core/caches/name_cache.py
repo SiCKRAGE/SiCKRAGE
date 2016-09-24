@@ -24,7 +24,7 @@ import time
 from datetime import datetime, timedelta
 
 import sickrage
-from sickrage.core.databases import cache_db
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitizeSceneName
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
@@ -76,7 +76,7 @@ class srNameCache(object):
         name = full_sanitizeSceneName(name)
         if name not in self.cache:
             self.cache[name] = int(indexer_id)
-            cache_db.CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
+            CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
                                       [indexer_id, name])
 
     def retrieveNameFromCache(self, name):
@@ -94,14 +94,14 @@ class srNameCache(object):
         """
         Deletes all "unknown" entries from the cache (names with indexer_id of 0).
         """
-        cache_db.CacheDB().action("DELETE FROM scene_names WHERE indexer_id = ? OR indexer_id = ?", (indexerid, 0))
+        CacheDB().action("DELETE FROM scene_names WHERE indexer_id = ? OR indexer_id = ?", (indexerid, 0))
 
         toRemove = [key for key, value in self.cache.items() if value == 0 or value == indexerid]
         for key in toRemove:
             del self.cache[key]
 
     def loadNameCacheFromDB(self):
-        sqlResults = cache_db.CacheDB(row_type='dict').select(
+        sqlResults = CacheDB().select(
             "SELECT indexer_id, name FROM scene_names")
 
         return dict((row["name"], int(row["indexer_id"])) for row in sqlResults)
@@ -110,7 +110,7 @@ class srNameCache(object):
         """Commit cache to database file"""
 
         for name, indexer_id in self.cache.items():
-            cache_db.CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
+            CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
                                       [indexer_id, name])
 
     def buildNameCache(self, show=None, force=False):

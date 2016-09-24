@@ -47,7 +47,9 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
-from sickrage.core.databases import cache_db, failed_db, main_db
+from sickrage.core.databases.main import MainDB
+from sickrage.core.databases.failed import FailedDB
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import CantUpdateShowException, \
     ShowDirectoryNotFoundException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
@@ -744,7 +746,7 @@ class CMD_Episode(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        sqlResults = main_db.MainDB(row_type="dict").select(
+        sqlResults = MainDB().select(
             "SELECT name, description, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND episode = ? AND season = ?",
             [self.indexerid, self.e, self.s])
         if not len(sqlResults) == 1:
@@ -939,7 +941,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                 ep_results.append(_epResult(RESULT_SUCCESS, epObj))
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
+            MainDB().mass_upsert(sql_l)
             del sql_l  # cleanup
 
         extra_msg = ""
@@ -1036,7 +1038,7 @@ class CMD_Exceptions(ApiCall):
         """ Get the scene exceptions for all or a given show """
 
         if self.indexerid is None:
-            sqlResults = cache_db.CacheDB(row_type='dict').select(
+            sqlResults = CacheDB().select(
                 "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
             scene_exceptions = {}
             for row in sqlResults:
@@ -1050,7 +1052,7 @@ class CMD_Exceptions(ApiCall):
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
-            sqlResults = cache_db.CacheDB(row_type='dict').select(
+            sqlResults = CacheDB().select(
                 "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions WHERE indexer_id = ?",
                 [self.indexerid])
             scene_exceptions = []
@@ -1164,9 +1166,9 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            sqlResults = failed_db.FailedDB(row_type='dict').select("SELECT * FROM failed")
+            sqlResults = FailedDB().select("SELECT * FROM failed")
         else:
-            sqlResults = failed_db.FailedDB(row_type='dict').select("SELECT * FROM failed LIMIT ?", [ulimit])
+            sqlResults = FailedDB().select("SELECT * FROM failed LIMIT ?", [ulimit])
 
         return _responds(RESULT_SUCCESS, sqlResults)
 
@@ -1190,7 +1192,7 @@ class CMD_Backlog(ApiCall):
 
             showEps = []
 
-            sqlResults = main_db.MainDB(row_type='dict').select(
+            sqlResults = MainDB().select(
                 "SELECT tv_episodes.*, tv_shows.paused FROM tv_episodes INNER JOIN tv_shows ON tv_episodes.showid = tv_shows.indexer_id WHERE showid = ? AND paused = 0 ORDER BY season DESC, episode DESC",
                 [curShow.indexerid])
 
@@ -1425,7 +1427,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
 
     def run(self):
         """ Get information about the scheduler """
-        sqlResults = main_db.MainDB(row_type='dict').select("SELECT last_backlog FROM info")
+        sqlResults = MainDB().select("SELECT last_backlog FROM info")
 
         backlogPaused = sickrage.srCore.SEARCHQUEUE.is_backlog_paused()  # @UndefinedVariable
         backlogRunning = sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress()  # @UndefinedVariable
@@ -2590,11 +2592,11 @@ class CMD_ShowSeasonList(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.sort == "asc":
-            sqlResults = main_db.MainDB(row_type='dict').select(
+            sqlResults = MainDB().select(
                 "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season ASC",
                 [self.indexerid])
         else:
-            sqlResults = main_db.MainDB(row_type='dict').select(
+            sqlResults = MainDB().select(
                 "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC",
                 [self.indexerid])
         seasonList = []  # a list with all season numbers
@@ -2632,7 +2634,7 @@ class CMD_ShowSeasons(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.season is None:
-            sqlResults = main_db.MainDB(row_type='dict').select(
+            sqlResults = MainDB().select(
                 "SELECT name, episode, airdate, status, release_name, season, location, file_size, subtitles FROM tv_episodes WHERE showid = ?",
                 [self.indexerid])
             seasons = {}
@@ -2655,7 +2657,7 @@ class CMD_ShowSeasons(ApiCall):
                 seasons[curSeason][curEpisode] = row
 
         else:
-            sqlResults = main_db.MainDB(row_type='dict').select(
+            sqlResults = MainDB().select(
                 "SELECT name, episode, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND season = ?",
                 [self.indexerid, self.season])
             if len(sqlResults) is 0:
@@ -2798,7 +2800,7 @@ class CMD_ShowStats(ApiCall):
                 continue
             episode_qualities_counts_snatch[statusCode] = 0
 
-        sqlResults = main_db.MainDB(row_type='dict').select(
+        sqlResults = MainDB().select(
             "SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?", [self.indexerid])
         # the main loop that goes through all episodes
         for row in sqlResults:

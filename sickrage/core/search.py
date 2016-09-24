@@ -25,15 +25,14 @@ import re
 import threading
 from datetime import date, timedelta
 
-from guessit.patterns.extension import video_exts
-
 import sickrage
+from guessit.patterns.extension import video_exts
 from sickrage.clients import getClientIstance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
@@ -189,7 +188,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
 
     if len(sql_l) > 0:
-        main_db.MainDB().mass_upsert(sql_l)
+        MainDB().mass_upsert(sql_l)
         del sql_l  # cleanup
 
     return True
@@ -357,7 +356,7 @@ def wantedEpisodes(show, fromDate):
 
     sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
-    sqlResults = main_db.MainDB().select(
+    sqlResults = MainDB().select(
         "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 AND airdate > ?",
         [show.indexerid, fromDate.toordinal()])
 
@@ -532,7 +531,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                         seasonQual])
 
                 allEps = [int(x["episode"])
-                          for x in main_db.MainDB().select(
+                          for x in MainDB().select(
                         "SELECT episode FROM tv_episodes WHERE showid = ? AND ( season IN ( " + ','.join(
                             searchedSeasons) + " ) )",
                         [show.indexerid])]

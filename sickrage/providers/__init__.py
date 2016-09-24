@@ -33,18 +33,17 @@ from xml.sax import SAXParseException
 
 import bencode
 import requests
+import sickrage
 import xmltodict
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
 from pynzb import nzb_parser
-
-import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import chmodAsParent, \
     findCertainShow, remove_file_failed, \
@@ -386,7 +385,7 @@ class GenericProvider(object):
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    sql_results = main_db.MainDB().select(
+                    sql_results = MainDB().select(
                         "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
                         [showObj.indexerid, airdate])
 
@@ -655,7 +654,7 @@ class TorrentProvider(GenericProvider):
 
         results = []
 
-        sqlResults = main_db.MainDB().select(
+        sqlResults = MainDB().select(
             'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
             ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
             ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
@@ -1109,7 +1108,7 @@ class NewznabProvider(NZBProvider):
     def findPropers(self, search_date=datetime.datetime.today()):
         results = []
 
-        sqlResults = main_db.MainDB().select(
+        sqlResults = MainDB().select(
             'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
             ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
             ' WHERE e.airdate >= ' + str(search_date.toordinal()) +

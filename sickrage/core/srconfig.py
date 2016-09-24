@@ -34,7 +34,7 @@ import sickrage
 from configobj import ConfigObj
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_temp_dir
 from sickrage.core.nameparser import validator
 from sickrage.core.nameparser.validator import check_force_season_folders
@@ -2531,7 +2531,7 @@ class ConfigMigrator(srConfig):
             self.check_setting_int('General', 'NAMING_MULTI_EP_TYPE', 1))
 
         # see if any of their shows used season folders
-        season_folder_shows = main_db.MainDB().select("SELECT * FROM tv_shows WHERE flatten_folders = 0")
+        season_folder_shows = MainDB().select("SELECT * FROM tv_shows WHERE flatten_folders = 0")
 
         # if any shows had season folders on then prepend season folder to the pattern
         if season_folder_shows:
@@ -2560,7 +2560,7 @@ class ConfigMigrator(srConfig):
                 "No shows were using season folders before so I'm disabling flattening on all shows")
 
             # don't flatten any shows at all
-            main_db.MainDB().action("UPDATE tv_shows SET flatten_folders = 0")
+            MainDB().action("UPDATE tv_shows SET flatten_folders = 0")
 
         self.CONFIG_OBJ['General']['naming_force_folders'] = check_force_season_folders()
 

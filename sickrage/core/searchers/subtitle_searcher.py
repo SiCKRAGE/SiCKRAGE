@@ -28,12 +28,11 @@ import traceback
 
 import babelfish
 import pkg_resources
+import sickrage
 import subliminal
 from enzyme import MKV, MalformedMKVError
-
-import sickrage
 from sickrage.core.common import dateTimeFormat
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import findCertainShow, chmodAsParent, fixSetGroupID, makeDir
 
 distribution = pkg_resources.Distribution(location=os.path.dirname(os.path.dirname(__file__)),
@@ -419,7 +418,7 @@ class srSubtitleSearcher(object):
         # you have 5 minutes to understand that one. Good luck
 
 
-        sqlResults = main_db.MainDB().select(
+        sqlResults = MainDB().select(
             'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.subtitles, ' +
             'e.subtitles_searchcount AS searchcount, e.subtitles_lastsearch AS lastsearch, e.location, (? - e.airdate) AS airdate_daydiff ' +
             'FROM tv_episodes AS e INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id) ' +

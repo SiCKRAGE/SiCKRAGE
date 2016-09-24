@@ -32,7 +32,9 @@ from apscheduler.schedulers.tornado import TornadoScheduler
 from sickrage.core.caches.name_cache import srNameCache
 from sickrage.core.classes import AttrDict, srIntervalTrigger
 from sickrage.core.common import SD, SKIPPED, WANTED
-from sickrage.core.databases import main_db, cache_db, failed_db
+from sickrage.core.databases.cache import CacheDB
+from sickrage.core.databases.failed import FailedDB
+from sickrage.core.databases.main import MainDB
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, removetree, get_lan_ip, restoreSR
@@ -216,17 +218,17 @@ class Core(object):
         # start logger
         self.srLogger.start()
 
-        # initialize the main SB database
-        main_db.MainDB().InitialSchema().upgrade()
+        # initialize the main database
+        MainDB().initialize()
 
         # initialize the cache database
-        cache_db.CacheDB().InitialSchema().upgrade()
+        CacheDB().initialize()
 
         # initialize the failed downloads database
-        failed_db.FailedDB().InitialSchema().upgrade()
+        FailedDB().initialize()
 
-        # fix up any db problems
-        main_db.MainDB().SanityCheck()
+        # migrate the main database
+        MainDB().migrate()
 
         # load data for shows from database
         self.load_shows()
@@ -501,7 +503,7 @@ class Core(object):
         Populates the showlist with shows from the database
         """
 
-        for sqlShow in main_db.MainDB().select("SELECT * FROM tv_shows"):
+        for sqlShow in MainDB().select("SELECT * FROM tv_shows"):
             try:
                 curshow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
                 self.srLogger.debug("Loading data for show: [{}]".format(curshow.name))

@@ -29,7 +29,7 @@ import subprocess
 
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException, \
     EpisodePostProcessingFailedException, ShowDirectoryNotFoundException
 from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
@@ -452,7 +452,7 @@ class PostProcessor(object):
 
         for curName in names:
             search_name = re.sub(r"[\.\- ]", "_", curName)
-            sql_results = main_db.MainDB().select("SELECT * FROM history WHERE resource LIKE ?", [search_name])
+            sql_results = MainDB().select("SELECT * FROM history WHERE resource LIKE ?", [search_name])
 
             if len(sql_results) == 0:
                 continue
@@ -640,7 +640,7 @@ class PostProcessor(object):
                 airdate = episodes[0].toordinal()
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
-                sql_result = main_db.MainDB().select(
+                sql_result = MainDB().select(
                         "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ? AND season != 0",
                         [show.indexerid, show.indexer, airdate])
 
@@ -649,7 +649,7 @@ class PostProcessor(object):
                     episodes = [int(sql_result[0][1])]
                 else:
                     # Found no result, try with season 0
-                    sql_result = main_db.MainDB().select(
+                    sql_result = MainDB().select(
                             "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
                             [show.indexerid, show.indexer, airdate])
                     if sql_result:
@@ -666,7 +666,7 @@ class PostProcessor(object):
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
 
-                numseasonsSQlResult = main_db.MainDB().select(
+                numseasonsSQlResult = MainDB().select(
                         "SELECT COUNT(DISTINCT season) AS numseasons FROM tv_episodes WHERE showid = ? AND indexer = ? AND season != 0",
                         [show.indexerid, show.indexer])
                 if int(numseasonsSQlResult[0][0]) == 1 and season is None:
@@ -1098,7 +1098,7 @@ class PostProcessor(object):
 
         # now that processing has finished, we can put the info in the DB. If we do it earlier, then when processing fails, it won't try again.
         if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
+            MainDB().mass_upsert(sql_l)
             del sql_l  # cleanup
 
         # put the new location in the database
@@ -1111,7 +1111,7 @@ class PostProcessor(object):
                     sql_l.append(sql_q)
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
+            MainDB().mass_upsert(sql_l)
             del sql_l  # cleanup
 
         # set file modify stamp to show airdate
