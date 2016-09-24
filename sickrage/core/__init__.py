@@ -452,9 +452,6 @@ class Core(object):
 
             self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
-            # shutdown/restart webserver
-            self.srWebServer.shutdown()
-
             # shutdown scheduler
             self.srLogger.info("Shutting down scheduler")
             self.srScheduler.shutdown()
@@ -480,9 +477,12 @@ class Core(object):
         if sickrage.DAEMONIZE:
             sickrage.delpid(sickrage.PID_FILE)
 
+        # shutdown/restart webserver
+        self.srWebServer.shutdown()
+
         # close ioloop and clear it
         IOLoop.current().close(all_fds=True)
-        IOLoop.current().clear_instance()
+        IOLoop.current().clear_current()
 
     def save_all(self):
         # write all shows

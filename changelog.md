@@ -1,6 +1,7 @@
 # Changelog
 
-- * f025869 - 2016-09-23: fix: clear ioloop instance instead of current 
+- * dbfa8b6 - 2016-09-23: fix: moved shutdown of web server to last before ioloop closing 
+- * 405ea0e - 2016-09-23: fix: clear ioloop instance instead of current 
 - * 2a49dbc - 2016-09-23: update: Updated tornado requirement to version 4.4.1 
 - * caee32d - 2016-09-23: fix: Added code to clear ioloop current 
 - * ed37c6f - 2016-09-23: fix: Added exception handling of closing IOLoop fd&#x27;s 
