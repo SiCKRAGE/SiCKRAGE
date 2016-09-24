@@ -482,7 +482,7 @@ class Core(object):
 
         # close ioloop and clear it
         IOLoop.current().close(all_fds=True)
-        IOLoop.current().clear_current()
+        IOLoop.current().clear_instance()
 
     def save_all(self):
         # write all shows
