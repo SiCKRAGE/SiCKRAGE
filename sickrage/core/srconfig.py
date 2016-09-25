@@ -170,6 +170,7 @@ class srConfig(object):
         self.MIN_BACKLOG_SEARCHER_FREQ = 10
         self.MIN_VERSION_UPDATER_FREQ = 1
         self.MIN_SUBTITLE_SEARCHER_FREQ = 1
+        self.MIN_TRAKTROLLING_FREQ = 1
         self.BACKLOG_DAYS = 7
         self.ADD_SHOWS_WO_DIR = False
         self.CREATE_MISSING_SHOW_DIRS = False
@@ -343,6 +344,10 @@ class srConfig(object):
         self.TRAKT_DEFAULT_INDEXER = None
         self.TRAKT_TIMEOUT = None
         self.TRAKT_BLACKLIST_NAME = None
+        self.TRAKT_USE_ROLLING_DOWNLOAD = False
+        self.TRAKT_ROLLING_NUM_EP = None
+        self.TRAKT_ROLLING_FREQUENCY = None
+        self.TRAKT_ROLLING_ADD_PAUSED = False
         self.USE_PYTIVO = False
         self.PYTIVO_NOTIFY_ONSNATCH = False
         self.PYTIVO_NOTIFY_ONDOWNLOAD = False
@@ -801,6 +806,10 @@ class srConfig(object):
         defaults['Trakt']['trakt_default_indexer'] = int(self.TRAKT_DEFAULT_INDEXER)
         defaults['Trakt']['trakt_timeout'] = int(self.TRAKT_TIMEOUT)
         defaults['Trakt']['trakt_blacklist_name'] = self.TRAKT_BLACKLIST_NAME
+        defaults['Trakt']['trakt_use_rolling_download'] = int(self.TRAKT_USE_ROLLING_DOWNLOAD)
+        defaults['Trakt']['trakt_rolling_num_ep'] = int(self.TRAKT_ROLLING_NUM_EP)
+        defaults['Trakt']['trakt_rolling_frequency'] = int(self.TRAKT_ROLLING_FREQUENCY)
+        defaults['Trakt']['trakt_rolling_add_paused'] = int(self.TRAKT_ROLLING_ADD_PAUSED)
 
         defaults['pyTivo'] = {}
         defaults['pyTivo']['use_pytivo'] = int(self.USE_PYTIVO)
@@ -1143,6 +1152,17 @@ class srConfig(object):
         self.USE_TRAKT = self.checkbox_to_value(use_trakt)
         job = sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER')
         (job.pause, job.resume)[self.USE_TRAKT]()
+
+    def change_use_trakt_rolling(self, trakt_use_rolling_download):
+        """
+        Enable/disable trakt rolling thread
+        TODO: Make this return true/false on success/failure
+    
+        :param trakt_use_rolling_download: New desired state
+        """
+        self.TRAKT_USE_ROLLING_DOWNLOAD = self.checkbox_to_value(trakt_use_rolling_download)
+        job = sickrage.srCore.srScheduler.get_job('TRAKTROLLING')
+        (job.pause, job.resume)[self.TRAKT_USE_ROLLING_DOWNLOAD]()
 
     def change_use_subtitles(self, use_subtitles):
         """
@@ -1748,6 +1768,10 @@ class srConfig(object):
         self.TRAKT_DEFAULT_INDEXER = self.check_setting_int('Trakt', 'trakt_default_indexer', 1)
         self.TRAKT_TIMEOUT = self.check_setting_int('Trakt', 'trakt_timeout', 30)
         self.TRAKT_BLACKLIST_NAME = self.check_setting_str('Trakt', 'trakt_blacklist_name', '')
+        self.TRAKT_USE_ROLLING_DOWNLOAD = bool(self.check_setting_int('Trakt', 'trakt_use_rolling_download', 0))
+        self.TRAKT_ROLLING_NUM_EP = self.check_setting_int('Trakt', 'trakt_rolling_num_ep', 1)
+        self.TRAKT_ROLLING_FREQUENCY = self.check_setting_int('Trakt', 'trakt_rolling_frequency', 30)
+        self.TRAKT_ROLLING_ADD_PAUSED = bool(self.check_setting_int('Trakt', 'trakt_rolling_add_paused', 1))
 
         self.USE_PYTIVO = bool(self.check_setting_int('pyTivo', 'use_pytivo', 0))
         self.PYTIVO_NOTIFY_ONSNATCH = bool(
@@ -2248,6 +2272,10 @@ class srConfig(object):
         new_config['Trakt']['trakt_default_indexer'] = int(self.TRAKT_DEFAULT_INDEXER)
         new_config['Trakt']['trakt_timeout'] = int(self.TRAKT_TIMEOUT)
         new_config['Trakt']['trakt_blacklist_name'] = self.TRAKT_BLACKLIST_NAME
+        new_config['Trakt']['trakt_use_rolling_download'] = int(self.TRAKT_USE_ROLLING_DOWNLOAD)
+        new_config['Trakt']['trakt_rolling_num_ep'] = int(self.TRAKT_ROLLING_NUM_EP)
+        new_config['Trakt']['trakt_rolling_frequency'] = int(self.TRAKT_ROLLING_FREQUENCY)
+        new_config['Trakt']['trakt_rolling_add_paused'] = int(self.TRAKT_ROLLING_ADD_PAUSED)
 
         new_config['pyTivo'] = {}
         new_config['pyTivo']['use_pytivo'] = int(self.USE_PYTIVO)
@@ -2408,7 +2436,8 @@ class ConfigMigrator(srConfig):
             7: 'Use version 2 for password encryption',
             8: 'Convert config provider settings to new provider object database style',
             9: 'Rename slick gui template name to default',
-            10: 'Metadata update'
+            10: 'Metadata update',
+            11: 'Adde Trakt Rolling'
         }
 
     def migrate_config(self):

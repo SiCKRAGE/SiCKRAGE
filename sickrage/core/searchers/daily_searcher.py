@@ -94,14 +94,27 @@ class srDailySearcher(object):
 
             ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
             with ep.lock:
-                if ep.season == 0:
-                    sickrage.srCore.srLogger.info(
-                        "New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
-                    ep.status = SKIPPED
-                else:
+                if ep.show.paused:
+                    ep.status = common.ep.show.default_ep_status
+                elif ep.season == 0:
                     sickrage.srCore.srLogger.info("New episode %s airs today, setting to default episode status for this show: %s" % (
                         ep.prettyName(), statusStrings[ep.show.default_ep_status]))
-                    ep.status = ep.show.default_ep_status
+                    ep.status = common.ep.show.default_ep_status
+                else:
+                    if not sickbeard.TRAKT_USE_ROLLING_DOWNLOAD or not sickbeard.USE_TRAKT:
+                        sickrage.srCore.srLogger.info("New episode %s airs today, setting status to WANTED", ep.prettyName())
+                        ep.status = common.WANTED
+                    else:
+                        myDB = db.DBConnection()
+                        sql_selection="SELECT show_name, indexer_id, season, episode, paused FROM (SELECT * FROM tv_shows s,tv_episodes e WHERE s.indexer_id = e.showid) T1 WHERE T1.paused = 0 and T1.episode_id IN (SELECT T2.episode_id FROM tv_episodes T2 WHERE T2.showid = T1.indexer_id and T2.status in (" + ",".join([str(x) for x in Quality.AVAILABLE + [SKIPPED]]) + ") and T2.season != 0 ORDER BY T2.season,T2.episode LIMIT 1) and airdate is not null and indexer_id = ? ORDER BY T1.show_name,season,episode"
+                        results = myDB.select(sql_selection, [ep.show.indexerid])
+                        if len(results):
+                            sickrage.srCore.srLogger.info("New episode %s airs today, setting to default episode status for this show: %s" % (
+                                ep.prettyName(), statusStrings[ep.show.default_ep_status]))
+                            ep.status = ep.show.default_ep_status
+                        else:
+                            sickrage.srCore.srLogger.info("New episode %s airs today, setting status to WANTED", ep.prettyName())
+                            ep.status = common.WANTED
 
                 sql_q = ep.saveToDB(False)
                 if sql_q:
