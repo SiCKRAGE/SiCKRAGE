@@ -1,6 +1,7 @@
 # Changelog
 
-- * 053f436 - 2016-09-24: fix: Added worker thread to queue code 
+- * 97395eb - 2016-09-24: fix: Fixed core queue code thread naming 
+- * c89a3ea - 2016-09-24: fix: Added worker thread to queue code 
 - * 7115c4e - 2016-09-23: new: Version 8.2.4 
 - * f2457c9 - 2016-09-23: fix: Fixed PIP upgrade code and added a PIP_PATH variable to sickrage config 
 - * d988a71 - 2016-09-23: new: Version 8.2.3 fix: Fixed issue with queuing multiple items and only one getting executed 
