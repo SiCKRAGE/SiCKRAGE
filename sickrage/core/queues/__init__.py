@@ -35,9 +35,11 @@ class srQueuePriorities(object):
     NORMAL = 20
     HIGH = 30
 
+
 class srQueue(threading.Thread):
     def __init__(self, name="QUEUE"):
         super(srQueue, self).__init__(name=name)
+        self.queue_name = name
         self._queue = PriorityQueue()
         self.currentItem = None
         self.min_priority = 0
@@ -64,10 +66,13 @@ class srQueue(threading.Thread):
                         self.put(self.currentItem)
                         self.currentItem = None
                     else:
+                        origThreadName = threading.currentThread().getName()
                         try:
+                            threading.currentThread().setName(self.currentItem.name)
                             self.currentItem.run()
                         finally:
                             self.currentItem.finish()
+                            threading.currentThread().setName(origThreadName)
 
                 self.amActive = False
 
@@ -117,7 +122,6 @@ class srQueueItem(object):
         self.added = None
 
     def run(self):
-        threading.currentThread().setName(self.name)
         self.inProgress = True
 
     def finish(self):

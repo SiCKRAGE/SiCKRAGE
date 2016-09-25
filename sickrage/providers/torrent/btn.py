@@ -1,4 +1,3 @@
-
 # Author: Daniel Heimans
 # URL: http://code.google.com/p/sickrage
 #
@@ -30,7 +29,6 @@ import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
 from sickrage.core.common import cpu_presets
-from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import sanitizeSceneName
 from sickrage.core.scene_exceptions import get_scene_exceptions
 from sickrage.providers import TorrentProvider
@@ -38,7 +36,7 @@ from sickrage.providers import TorrentProvider
 
 class BTNProvider(TorrentProvider):
     def __init__(self):
-        super(BTNProvider, self).__init__("BTN",'api.btnapps.net', True)
+        super(BTNProvider, self).__init__("BTN", 'api.btnapps.net', True)
 
         self.supportsBacklog = True
 
@@ -58,14 +56,8 @@ class BTNProvider(TorrentProvider):
         return True
 
     def _checkAuthFromData(self, parsedJSON):
-
         if parsedJSON is None:
             return self._checkAuth()
-
-        if 'api-error' in parsedJSON:
-            sickrage.srCore.srLogger.debug("Incorrect authentication credentials: % s" % parsedJSON['api-error'])
-            raise AuthException(
-                    "Your authentication credentials for " + self.name + " are incorrect, check your config.")
 
         return True
 
@@ -135,25 +127,20 @@ class BTNProvider(TorrentProvider):
         try:
             parsedJSON = api.getTorrents(apikey, params or {}, int(results_per_page), int(offset))
             time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
-        except jsonrpclib.jsonrpc.ProtocolError as error:
-            if error.message == 'Call Limit Exceeded':
+        except jsonrpclib.jsonrpc.ProtocolError as e:
+            if 'Call Limit Exceeded' in e.message:
                 sickrage.srCore.srLogger.warning(
-                        "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
+                    "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
             else:
-                sickrage.srCore.srLogger.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
-
-            parsedJSON = {'api-error': error}
+                sickrage.srCore.srLogger.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(e))
         except socket.timeout:
             sickrage.srCore.srLogger.warning("Timeout while accessing provider")
-
-        except socket.error as error:
+        except socket.error as e:
             # Note that sometimes timeouts are thrown as socket errors
-            sickrage.srCore.srLogger.warning("Socket error while accessing provider. Error: %s " % error[1])
-
-        except Exception as error:
-            errorstring = str(error)
-            if errorstring.startswith('<') and errorstring.endswith('>'):
-                errorstring = errorstring[1:-1]
+            sickrage.srCore.srLogger.warning("Socket error while accessing provider. Error: %s " % e[1])
+        except Exception as e:
+            errorstring = str(e)
+            if errorstring.startswith('<') and errorstring.endswith('>'): errorstring = errorstring[1:-1]
 
             sickrage.srCore.srLogger.warning("Unknown error while accessing provider. Error: %s " % errorstring)
 
@@ -214,7 +201,7 @@ class BTNProvider(TorrentProvider):
             search_params.append(current_params)
         else:
             name_exceptions = list(
-                    set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+                set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
             for name in name_exceptions:
                 # Search by name if we don't have tvdb id
                 current_params['series'] = sanitizeSceneName(name)
@@ -251,7 +238,7 @@ class BTNProvider(TorrentProvider):
         else:
             # add new query string for every exception
             name_exceptions = list(
-                    set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+                set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
             for cur_exception in name_exceptions:
                 search_params['series'] = sanitizeSceneName(cur_exception)
                 to_return.append(search_params)
@@ -306,7 +293,7 @@ class BTNCache(tv_cache.TVCache):
         # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will need to be done through backlog
         if seconds_since_last_update > 86400:
             sickrage.srCore.srLogger.debug(
-                    "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
+                "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
             seconds_since_last_update = 86400
 
         return {'entries': self.provider.search(search_params=None, age=seconds_since_last_update)}

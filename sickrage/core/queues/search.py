@@ -152,6 +152,7 @@ class DailySearchQueueItem(srQueueItem):
 
         try:
             sickrage.srCore.srLogger.info("Starting daily search for new episodes")
+
             foundResults = searchForNeededEpisodes()
             if foundResults:
                 for result in foundResults:
@@ -161,10 +162,10 @@ class DailySearchQueueItem(srQueueItem):
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
-            else:
-                sickrage.srCore.srLogger.info("Finished daily search for new episodes")
         except Exception:
             sickrage.srCore.srLogger.debug(traceback.format_exc())
+        finally:
+            sickrage.srCore.srLogger.info("Finished daily search for new episodes")
 
 class ManualSearchQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
@@ -183,6 +184,7 @@ class ManualSearchQueueItem(srQueueItem):
 
         try:
             sickrage.srCore.srLogger.info("Starting manual search for: [" + self.segment.prettyName() + "]")
+
             searchResult = searchProviders(self.show, [self.segment], True, self.downCurQuality)
             if searchResult:
                 # just use the first result for now
@@ -200,6 +202,8 @@ class ManualSearchQueueItem(srQueueItem):
 
         except Exception:
             sickrage.srCore.srLogger.debug(traceback.format_exc())
+        finally:
+            sickrage.srCore.srLogger.info("Finished manual search for: [" + self.segment.prettyName() + "]")
 
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
@@ -221,6 +225,7 @@ class BacklogQueueItem(srQueueItem):
         if not self.show.paused:
             try:
                 sickrage.srCore.srLogger.info("Starting backlog search for: [" + self.show.name + "]")
+
                 searchResult = searchProviders(self.show, self.segment, False)
                 if searchResult:
                     for result in searchResult:
@@ -230,10 +235,10 @@ class BacklogQueueItem(srQueueItem):
 
                         # give the CPU a break
                         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
-                else:
-                    sickrage.srCore.srLogger.info("Finished backlog search for: [" + self.show.name + "]")
             except Exception:
                 sickrage.srCore.srLogger.debug(traceback.format_exc())
+            finally:
+                sickrage.srCore.srLogger.info("Finished backlog search for: [" + self.show.name + "]")
 
 class FailedQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
@@ -251,6 +256,8 @@ class FailedQueueItem(srQueueItem):
         self.started = True
 
         try:
+            sickrage.srCore.srLogger.info("Starting failed download search for: [" + self.show.name + "]")
+
             for epObj in self.segment:
                 sickrage.srCore.srLogger.info("Marking episode as bad: [" + epObj.prettyName() + "]")
 
@@ -261,10 +268,7 @@ class FailedQueueItem(srQueueItem):
                     History.logFailed(epObj, release, provider)
 
                 FailedHistory.revertFailedEpisode(epObj)
-                sickrage.srCore.srLogger.info("Starting failed download search for: [" + epObj.prettyName() + "]")
 
-            # If it is wanted, self.downCurQuality doesnt matter
-            # if it isnt wanted, we need to make sure to not overwrite the existing ep that we reverted to!
             searchResult = searchProviders(self.show, self.segment, True, False)
             if searchResult:
                 for result in searchResult:
@@ -276,6 +280,8 @@ class FailedQueueItem(srQueueItem):
                     time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
         except Exception:
             sickrage.srCore.srLogger.debug(traceback.format_exc())
+        finally:
+            sickrage.srCore.srLogger.info("Finished failed download search for: [" + self.show.name + "]")
 
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
