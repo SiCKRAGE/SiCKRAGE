@@ -27,6 +27,7 @@ import threading
 import time
 
 import sickrage
+from CodernityDB.database import RecordNotFound
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
 from sickrage.indexers import srIndexerApi
@@ -51,11 +52,11 @@ def shouldRefresh(exList):
     """
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
-    rows = CacheDB().select("SELECT last_refreshed FROM scene_exceptions_refresh WHERE list = ?", [exList])
-    if rows:
-        lastRefresh = int(rows[0]['last_refreshed'])
+    try:
+        dbData = CacheDB().db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
+        lastRefresh = int(dbData['last_refreshed'])
         return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
-    else:
+    except RecordNotFound:
         return True
 
 
@@ -65,9 +66,16 @@ def setLastRefresh(exList):
 
     :param exList: exception list to set refresh time
     """
-    CacheDB().upsert("scene_exceptions_refresh",
-                              {'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
-                              {'list': exList})
+    try:
+        dbData = CacheDB().db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
+        dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
+        CacheDB().db.update(dbData)
+    except RecordNotFound:
+        CacheDB().db.insert({
+            '_t': 'scene_exceptions_refresh',
+            'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
+            'list': exList
+        })
 
 
 def retrieve_exceptions(get_xem=True, get_anidb=True):
@@ -75,6 +83,8 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
     Looks up the exceptions on github, parses them into a dict, and inserts them into the
     scene_exceptions table in cache.db. Also clears the scene name cache.
     """
+
+    updated_exceptions = False
 
     for indexer in srIndexerApi().indexers:
         indexer_name = srIndexerApi(indexer).name
@@ -112,24 +122,27 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
     if get_anidb:
         _anidb_exceptions_fetcher()
 
-    sql_l = []
-    for cur_indexer_id in exception_dict:
-        sql_ex = CacheDB().select("SELECT * FROM scene_exceptions WHERE indexer_id = ?;", [cur_indexer_id])
-        existing_exceptions = [x["show_name"] for x in sql_ex]
-        if not cur_indexer_id in exception_dict:
+    for cur_indexer_id, cur_exception_dict in exception_dict.items():
+        if not len(cur_exception_dict): continue
+
+        try:
+            existing_exceptions = [x['doc']["show_name"] for x in
+                                   CacheDB().db.get_many('scene_exceptions', cur_indexer_id, with_doc=True)]
+        except RecordNotFound:
             continue
 
-        for cur_exception_dict in exception_dict[cur_indexer_id]:
-            for ex in cur_exception_dict.items():
-                cur_exception, curSeason = ex
-                if cur_exception not in existing_exceptions:
-                    sql_l.append(
-                        ["INSERT OR IGNORE INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?);",
-                         [cur_indexer_id, cur_exception, curSeason]])
-    if len(sql_l) > 0:
-        CacheDB().mass_action(sql_l)
+        for cur_exception, curSeason in dict([(key, d[key]) for d in cur_exception_dict for key in d]).items():
+            if cur_exception not in existing_exceptions:
+                updated_exceptions = True
+                CacheDB().db.insert({
+                    '_t': 'scene_exceptions',
+                    'indexer_id': cur_indexer_id,
+                    'show_name': cur_exception,
+                    'season': curSeason
+                })
+
+    if updated_exceptions:
         sickrage.srCore.srLogger.debug("Updated scene exceptions")
-        del sql_l  # cleanup
     else:
         sickrage.srCore.srLogger.debug("No scene exceptions update needed")
 
@@ -147,15 +160,19 @@ def get_scene_exceptions(indexer_id, season=-1):
     exceptionsList = []
 
     if indexer_id not in exceptionsCache or season not in exceptionsCache[indexer_id]:
-        exceptions = CacheDB().select(
-            "SELECT show_name FROM scene_exceptions WHERE indexer_id = ? AND season = ?",
-            [indexer_id, season])
-        if exceptions:
-            exceptionsList = list(set([cur_exception["show_name"] for cur_exception in exceptions]))
+        try:
+            exceptionsList = list(set([cur_exception['show_name'] for cur_exception in [x['doc'] for x in
+                                                                                        CacheDB().db.get_many(
+                                                                                            'scene_exceptions',
+                                                                                            indexer_id, with_doc=True)]
+                                       if cur_exception['season'] == season]))
 
             if not indexer_id in exceptionsCache:
                 exceptionsCache[indexer_id] = {}
+
             exceptionsCache[indexer_id][season] = exceptionsList
+        except RecordNotFound:
+            pass
     else:
         exceptionsList = exceptionsCache[indexer_id][season]
 
@@ -174,14 +191,10 @@ def get_all_scene_exceptions(indexer_id):
     """
     exceptionsDict = {}
 
-    exceptions = CacheDB().select("SELECT show_name,season FROM scene_exceptions WHERE indexer_id = ?",
-                                           [indexer_id])
-
-    if exceptions:
-        for cur_exception in exceptions:
-            if not cur_exception["season"] in exceptionsDict:
-                exceptionsDict[cur_exception["season"]] = []
-            exceptionsDict[cur_exception["season"]].append(cur_exception["show_name"])
+    for cur_exception in [x['doc'] for x in CacheDB().db.get_many('scene_exceptions', indexer_id, with_doc=True)]:
+        if not cur_exception['season'] in exceptionsDict:
+            exceptionsDict[cur_exception['season']] = []
+        exceptionsDict[cur_exception['season']].append(cur_exception['show_name'])
 
     return exceptionsDict
 
@@ -193,16 +206,13 @@ def get_scene_seasons(indexer_id):
     exceptionsSeasonList = []
 
     if indexer_id not in exceptionsSeasonCache:
-        sqlResults = CacheDB().select(
-            "SELECT DISTINCT(season) AS season FROM scene_exceptions WHERE indexer_id = ?",
-            [indexer_id])
-        if sqlResults:
-            exceptionsSeasonList = list(set([int(x["season"]) for x in sqlResults]))
+        dbData = [x['doc'] for x in CacheDB().db.get_many('scene_exceptions', indexer_id, with_doc=True)]
 
-            if not indexer_id in exceptionsSeasonCache:
-                exceptionsSeasonCache[indexer_id] = {}
+        exceptionsSeasonList = list(set([int(x['season']) for x in dbData]))
+        if not indexer_id in exceptionsSeasonCache:
+            exceptionsSeasonCache[indexer_id] = {}
 
-            exceptionsSeasonCache[indexer_id] = exceptionsSeasonList
+        exceptionsSeasonCache[indexer_id] = exceptionsSeasonList
     else:
         exceptionsSeasonList = exceptionsSeasonCache[indexer_id]
 
@@ -219,31 +229,30 @@ def get_scene_exception_by_name_multiple(show_name):
     is present.
     """
 
-    # try the obvious case first
-    exception_result = CacheDB().select(
-        "SELECT indexer_id, season FROM scene_exceptions WHERE LOWER(show_name) = ? ORDER BY season ASC",
-        [show_name.lower()])
-    if exception_result:
-        return [(int(x["indexer_id"]), int(x["season"])) for x in exception_result]
-
     out = []
-    all_exception_results = CacheDB().select("SELECT show_name, indexer_id, season FROM scene_exceptions")
 
-    for cur_exception in all_exception_results:
+    dbData = [x['doc'] for x in CacheDB().db.all('scene_exceptions', with_doc=True)]
+    dbData.sort(key=lambda x: x['season'])
 
-        cur_exception_name = cur_exception["show_name"]
-        cur_indexer_id = int(cur_exception["indexer_id"])
-        cur_season = int(cur_exception["season"])
+    # try the obvious case first
+    exception_result = [x for x in dbData if x['show_name'].lower() == show_name.lower()]
+    if exception_result:
+        return [(int(x['indexer_id']), int(x['season'])) for x in exception_result]
+
+    for cur_exception in dbData:
+        cur_exception_name = cur_exception['show_name']
+        cur_indexer_id = int(cur_exception['indexer_id'])
+        cur_season = int(cur_exception['season'])
 
         if show_name.lower() in (
                 cur_exception_name.lower(),
                 sanitizeSceneName(cur_exception_name).lower().replace('.', ' ')):
-            sickrage.srCore.srLogger.debug("Scene exception lookup got indexer id " + str(cur_indexer_id) + ", using that")
+            sickrage.srCore.srLogger.debug(
+                "Scene exception lookup got indexer id " + str(cur_indexer_id) + ", using that")
             out.append((cur_indexer_id, cur_season))
 
     if out:
         return out
-
     return [(None, None)]
 
 
@@ -251,18 +260,23 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
     """
-    CacheDB().action('DELETE FROM scene_exceptions WHERE indexer_id=? AND season=?', [indexer_id, season])
+    [CacheDB().db.delete(x['doc']) for x in CacheDB().db.get_many('scene_exceptions', indexer_id, with_doc=True)
+     if x['doc']['season'] == season]
 
     sickrage.srCore.srLogger.info("Updating scene exceptions")
 
     # A change has been made to the scene exception list. Let's clear the cache, to make this visible
     if indexer_id in exceptionsCache:
         exceptionsCache[indexer_id] = {}
-        exceptionsCache[indexer_id][season] = scene_exceptions
+    exceptionsCache[indexer_id][season] = scene_exceptions
 
     for cur_exception in scene_exceptions:
-        CacheDB().action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
-                                  [indexer_id, cur_exception, season])
+        CacheDB().db.insert({
+            '_t': 'scene_exceptions',
+            'indexer_id': indexer_id,
+            'show_name': cur_exception,
+            'season': season
+        })
 
 
 def _anidb_exceptions_fetcher():
@@ -312,7 +326,8 @@ def _xem_exceptions_fetcher():
                 try:
                     xem_exception_dict[int(indexerid)] = names
                 except Exception as e:
-                    sickrage.srCore.srLogger.warning("XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
+                    sickrage.srCore.srLogger.warning(
+                        "XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
                     sickrage.srCore.srLogger.debug("XEM: Rejected entry error message:{0}".format(str(e)))
 
         setLastRefresh('xem')
@@ -328,9 +343,7 @@ def _xem_exceptions_fetcher():
 
 def getSceneSeasons(indexer_id):
     """get a list of season numbers that have scene exceptions"""
-    seasons = CacheDB().select("SELECT DISTINCT season FROM scene_exceptions WHERE indexer_id = ?",
-                                        [indexer_id])
-    return [cur_exception["season"] for cur_exception in seasons]
+    return [x['doc']['season'] for x in CacheDB().db.get_many('scene_exceptions', indexer_id, with_doc=True)]
 
 
 def check_against_names(nameInQuestion, show, season=-1):

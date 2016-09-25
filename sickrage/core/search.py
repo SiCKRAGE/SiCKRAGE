@@ -363,7 +363,8 @@ def wantedEpisodes(show, fromDate):
     sickrage.srCore.srLogger.debug("Found {} episode(s) needed for {}".format(len(sqlResults), show.name))
 
     # check through the list of statuses to see if we want any
-    for result in sqlResults:
+    for result in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                   if]:
         curCompositeStatus = int(result["status"] or -1)
         curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
@@ -417,7 +418,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
         return
 
     # build name cache for show
-    sickrage.srCore.NAMECACHE.buildNameCache(show)
+    sickrage.srCore.NAMECACHE.build(show)
 
     origThreadName = threading.currentThread().getName()
 

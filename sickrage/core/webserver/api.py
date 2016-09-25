@@ -1038,26 +1038,20 @@ class CMD_Exceptions(ApiCall):
         """ Get the scene exceptions for all or a given show """
 
         if self.indexerid is None:
-            sqlResults = CacheDB().select(
-                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
             scene_exceptions = {}
-            for row in sqlResults:
-                indexerid = row["indexerid"]
-                if not indexerid in scene_exceptions:
+            for dbData in [x['doc'] for x in CacheDB().db.all('scene_exceptions', with_doc=True)]:
+                indexerid = dbData['indexer_id']
+                if indexerid not in scene_exceptions:
                     scene_exceptions[indexerid] = []
-                scene_exceptions[indexerid].append(row["show_name"])
-
+                scene_exceptions[indexerid].append(dbData['show_name'])
         else:
             showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(self.indexerid))
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
-            sqlResults = CacheDB().select(
-                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions WHERE indexer_id = ?",
-                [self.indexerid])
             scene_exceptions = []
-            for row in sqlResults:
-                scene_exceptions.append(row["show_name"])
+            for dbData in [x['doc'] for x in CacheDB().db.all('scene_exceptions', self.indexerid, with_doc=True)]:
+                scene_exceptions.append(dbData['show_name'])
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
 
@@ -1166,11 +1160,11 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            sqlResults = FailedDB().select("SELECT * FROM failed")
+            dbData = [x['doc'] for x in FailedDB().db.all('failed', with_doc=True)]
         else:
-            sqlResults = FailedDB().select("SELECT * FROM failed LIMIT ?", [ulimit])
+            dbData = [x['doc'] for x in FailedDB().db.all('failed', ulimit, with_doc=True)]
 
-        return _responds(RESULT_SUCCESS, sqlResults)
+        return _responds(RESULT_SUCCESS, dbData)
 
 
 class CMD_Backlog(ApiCall):
@@ -1933,9 +1927,9 @@ class CMD_Show(ApiCall):
             showDict["network"] = ""
         showDict["status"] = showObj.status
 
-        if tryInt(showObj.nextaired, 1) > 693595:
+        if tryInt(showObj.next_aired, 1) > 693595:
             dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
-                tz_updater.parse_date_time(showObj.nextaired, showDict['airs'], showDict['network']))
+                tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']))
             showDict['airs'] = srdatetime.srDateTime.srftime(dtEpisodeAirs, t_preset=timeFormat).lstrip('0').replace(
                 ' 0', ' ')
             showDict['next_ep_airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
@@ -2937,9 +2931,9 @@ class CMD_Shows(ApiCall):
                 "subtitles": (0, 1)[curShow.subtitles],
             }
 
-            if tryInt(curShow.nextaired, 1) > 693595:  # 1900
+            if tryInt(curShow.next_aired, 1) > 693595:  # 1900
                 dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
-                    tz_updater.parse_date_time(curShow.nextaired, curShow.airs, showDict['network']))
+                    tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']))
                 showDict['next_ep_airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
             else:
                 showDict['next_ep_airdate'] = ''

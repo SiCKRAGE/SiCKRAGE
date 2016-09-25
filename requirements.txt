@@ -36,4 +36,4 @@ urllib3 == 1.16
 py-unrar2 == 0.99.6
 lockfile == 0.12.2
 requests == 2.11.1
-CodernityDB
+codernitydb == 0.5.0

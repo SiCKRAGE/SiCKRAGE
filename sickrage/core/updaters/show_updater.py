@@ -23,6 +23,7 @@ import threading
 import time
 
 import sickrage
+from CodernityDB.database import RecordNotFound
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException
@@ -48,13 +49,16 @@ class srShowUpdater(object):
 
         update_timestamp = time.mktime(datetime.datetime.now().timetuple())
 
-        sqlResult = CacheDB().select('SELECT `time` FROM lastUpdate WHERE provider = ?', ['theTVDB'])
-        if sqlResult:
-            last_update = sqlResult[0]['time']
-        else:
+        try:
+            dbData = CacheDB().db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
+            last_update = dbData['time']
+        except RecordNotFound:
             last_update = time.mktime(datetime.datetime.min.timetuple())
-            CacheDB().action('INSERT INTO lastUpdate (provider, `time`) VALUES (?, ?)',
-                                      ['theTVDB', long(last_update)])
+            dbData = CacheDB().db.insert({
+                '_t': 'lastUpdate',
+                'provider': 'theTVDB',
+                'time': long(last_update)
+            })
 
         if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
@@ -76,7 +80,7 @@ class srShowUpdater(object):
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))
 
-        CacheDB().action('UPDATE lastUpdate SET `time` = ? WHERE provider=?',
-                                  [long(update_timestamp), 'theTVDB'])
+        dbData['time'] = long(update_timestamp)
+        CacheDB().db.update(dbData)
 
         self.amActive = False

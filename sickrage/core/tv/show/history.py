@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: http://github.com/SiCKRAGETV/SickRage/
 #
@@ -38,11 +37,7 @@ class History:
         """
         Clear all the history
         """
-        MainDB().action(
-                'DELETE '
-                'FROM history '
-                'WHERE 1 = 1'
-        )
+        [MainDB().db.delete(dbData) for dbData in MainDB().db.all('history')]
 
     def get(self, limit=100, action=None):
         """
@@ -51,6 +46,8 @@ class History:
                         no value will return everything (up to ``limit``)
         :return: The last ``limit`` elements of type ``action`` in the history
         """
+
+        data = []
 
         action = action.lower() if isinstance(action, str) else ''
         limit = int(limit)
@@ -62,37 +59,36 @@ class History:
         else:
             actions = []
 
-        common_sql = 'SELECT action, date, episode, provider, h.quality, resource, season, show_name, showid ' \
-                     'FROM history h, tv_shows s ' \
-                     'WHERE h.showid = s.indexer_id '
-        filter_sql = 'AND action in (' + ','.join(['?'] * len(actions)) + ') '
-        order_sql = 'ORDER BY date DESC '
-
-        if limit == 0:
-            if len(actions) > 0:
-                results = MainDB().select(common_sql + filter_sql + order_sql, actions)
+        for tv_show in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+            if limit == 0:
+                if len(actions) > 0:
+                    dbData = [x['doc'] for x in MainDB().db.get_many('history', tv_show['indexer_id'], with_doc=True)
+                              if x['doc']['action'] in actions]
+                else:
+                    dbData = [x['doc'] for x in MainDB().db.get_many('history', tv_show['indexer_id'], with_doc=True)]
             else:
-                results = MainDB().select(common_sql + order_sql)
-        else:
-            if len(actions) > 0:
-                results = MainDB().select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
-            else:
-                results = MainDB().select(common_sql + order_sql + 'LIMIT ?', [limit])
+                if len(actions) > 0:
+                    dbData = [x['doc'] for x in
+                              MainDB().db.get_many('history', tv_show['indexer_id'], limit, with_doc=True)
+                              if x['doc']['action'] in actions]
+                else:
+                    dbData = [x['doc'] for x in
+                              MainDB().db.get_many('history', tv_show['indexer_id'], limit, with_doc=True)]
 
-        data = []
-        for result in results:
-            data.append({
-                'action': result['action'],
-                'date': result['date'],
-                'episode': result['episode'],
-                'provider': result['provider'],
-                'quality': result['quality'],
-                'resource': result['resource'],
-                'season': result['season'],
-                'show_id': result['showid'],
-                'show_name': result['show_name']
-            })
+            for result in dbData:
+                data.append({
+                    'action': result['action'],
+                    'date': result['date'],
+                    'episode': result['episode'],
+                    'provider': result['provider'],
+                    'quality': result['quality'],
+                    'resource': result['resource'],
+                    'season': result['season'],
+                    'show_id': result['showid'],
+                    'show_name': result['show_name']
+                })
 
+        if len(data): data.sort(key=lambda x: x['date'], reverse=True)
         return data
 
     def trim(self):
@@ -100,12 +96,10 @@ class History:
         Remove all elements older than 30 days from the history
         """
 
-        MainDB().action(
-                'DELETE '
-                'FROM history '
-                'WHERE date < ?',
-                [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
-        )
+        date = (datetime.today() - timedelta(days=30)).strftime(History.date_format)
+        for dbData in [x['doc'] for x in MainDB().db.all('history', with_doc=True)
+                       if x['doc']['date'] < date]:
+            MainDB().db.delete(dbData)
 
     @staticmethod
     def _logHistoryItem(action, showid, season, episode, quality, resource, provider, version=-1):
@@ -124,9 +118,18 @@ class History:
         logDate = datetime.today().strftime(History.date_format)
         resource = resource
 
-        MainDB().action(
-                "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider, version) VALUES (?,?,?,?,?,?,?,?,?)",
-                [action, logDate, showid, season, episode, quality, resource, provider, version])
+        MainDB().db.insert({
+            '_t': 'history',
+            'action': action,
+            'date': logDate,
+            'showid': showid,
+            'season': season,
+            'episode': episode,
+            'quality': quality,
+            'resource': resource,
+            'provider': provider,
+            'version': version
+        })
 
     @staticmethod
     def logSnatch(searchResult):
@@ -218,6 +221,7 @@ class History:
 
         History._logHistoryItem(action, showid, season, epNum, quality, release, provider)
 
+
 class FailedHistory(object):
     @staticmethod
     def prepareFailedName(release):
@@ -240,33 +244,38 @@ class FailedHistory(object):
 
         release = FailedHistory.prepareFailedName(release)
 
-        sql_results = FailedDB().select("SELECT * FROM history WHERE release=?", [release])
+        dbData = [x['doc'] for x in FailedDB().db.get_many('history', release, with_doc=True)]
 
-        if len(sql_results) == 0:
+        if len(dbData) == 0:
             sickrage.srCore.srLogger.warning(
-                    "Release not found in snatch history.")
-        elif len(sql_results) > 1:
+                "Release not found in snatch history.")
+        elif len(dbData) > 1:
             sickrage.srCore.srLogger.warning("Multiple logged snatches found for release")
-            sizes = len(set(x["size"] for x in sql_results))
-            providers = len(set(x["provider"] for x in sql_results))
+            sizes = len(set(x["size"] for x in dbData))
+            providers = len(set(x["provider"] for x in dbData))
             if sizes == 1:
                 sickrage.srCore.srLogger.warning("However, they're all the same size. Continuing with found size.")
-                size = sql_results[0]["size"]
+                size = dbData[0]["size"]
             else:
                 sickrage.srCore.srLogger.warning(
-                        "They also vary in size. Deleting the logged snatches and recording this release with no size/provider")
-                for result in sql_results:
+                    "They also vary in size. Deleting the logged snatches and recording this release with no size/provider")
+                for result in dbData:
                     FailedHistory.deleteLoggedSnatch(result["release"], result["size"], result["provider"])
 
             if providers == 1:
                 sickrage.srCore.srLogger.info("They're also from the same provider. Using it as well.")
-                provider = sql_results[0]["provider"]
+                provider = dbData[0]["provider"]
         else:
-            size = sql_results[0]["size"]
-            provider = sql_results[0]["provider"]
+            size = dbData[0]["size"]
+            provider = dbData[0]["provider"]
 
         if not FailedHistory.hasFailed(release, size, provider):
-            FailedDB().action("INSERT INTO failed (release, size, provider) VALUES (?, ?, ?)", [release, size, provider])
+            FailedDB().db.insert({
+                '_t': 'failed',
+                'release': release,
+                'size': size,
+                'provider': provider
+            })
 
         FailedHistory.deleteLoggedSnatch(release, size, provider)
 
@@ -275,8 +284,9 @@ class FailedHistory(object):
     @staticmethod
     def logSuccess(release):
         release = FailedHistory.prepareFailedName(release)
-
-        FailedDB().action("DELETE FROM history WHERE release=?", [release])
+        for dbData in [x['doc'] for x in FailedDB().db.all('history', with_doc=True)
+                       if x['doc']['release'] == release]:
+            FailedDB().db.delete(dbData)
 
     @staticmethod
     def hasFailed(release, size, provider="%"):
@@ -294,19 +304,20 @@ class FailedHistory(object):
         """
 
         release = FailedHistory.prepareFailedName(release)
+        dbData = [x['doc'] for x in FailedDB().db.get_many('failed', release, with_doc=True)
+                  if x['doc']['size'] == size
+                  and x['doc']['provider'] == provider]
 
-        sql_results = FailedDB().select(
-                "SELECT * FROM failed WHERE release=? AND size=? AND provider LIKE ?", [release, size, provider])
-
-        return (len(sql_results) > 0)
+        return len(dbData) > 0
 
     @staticmethod
     def revertFailedEpisode(epObj):
         """Restore the episodes of a failed download to their original state"""
-        sql_results = FailedDB().select("SELECT * FROM history WHERE showid=? AND season=?",
-                                  [epObj.show.indexerid, epObj.season])
+        dbData = [x['doc'] for x in FailedDB().db.all('history', with_doc=True)
+                  if x['doc']['showid'] == epObj.show.indexerid
+                  and x['doc']['season'] == epObj.season]
 
-        history_eps = dict([(res["episode"], res) for res in sql_results])
+        history_eps = dict([(res["episode"], res) for res in dbData])
 
         try:
             sickrage.srCore.srLogger.info("Reverting episode (%s, %s): %s" % (epObj.season, epObj.episode, epObj.name))
@@ -320,7 +331,8 @@ class FailedHistory(object):
                     epObj.saveToDB()
 
         except EpisodeNotFoundException as e:
-            sickrage.srCore.srLogger.warning("Unable to create episode, please set its status manually: {}".format(e.message))
+            sickrage.srCore.srLogger.warning(
+                "Unable to create episode, please set its status manually: {}".format(e.message))
 
     @staticmethod
     def markFailed(epObj):
@@ -339,7 +351,8 @@ class FailedHistory(object):
                 epObj.saveToDB()
 
         except EpisodeNotFoundException as e:
-            sickrage.srCore.srLogger.warning("Unable to get episode, please set its status manually: {}".format(e.message))
+            sickrage.srCore.srLogger.warning(
+                "Unable to get episode, please set its status manually: {}".format(e.message))
 
         return log_str
 
@@ -362,11 +375,17 @@ class FailedHistory(object):
         show_obj = searchResult.episodes[0].show
 
         for episode in searchResult.episodes:
-            FailedDB().action(
-                    "INSERT INTO history (date, size, release, provider, showid, season, episode, old_status)"
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    [logDate, searchResult.size, release, provider, show_obj.indexerid, episode.season, episode.episode,
-                     episode.status])
+            FailedDB().db.insert({
+                '_t': 'history',
+                'date': logDate,
+                'size': searchResult.size,
+                'release': release,
+                'provider': provider,
+                'showid': show_obj.indexerid,
+                'season': episode.season,
+                'episode': episode.episode,
+                'old_status': episode.status
+            })
 
     @staticmethod
     def deleteLoggedSnatch(release, size, provider):
@@ -378,15 +397,18 @@ class FailedHistory(object):
         :param provider: Provider to delete it from
         """
         release = FailedHistory.prepareFailedName(release)
-
-        FailedDB().action("DELETE FROM history WHERE release=? AND size=? AND provider=?",
-                    [release, size, provider])
+        for dbData in [x['doc'] for x in FailedDB().db.all('history', with_doc=True)
+                       if x['doc']['release'] == release
+                       and x['doc']['size'] == size
+                       and x['doc']['provider'] == provider]:
+            FailedDB().db.delete(dbData)
 
     @staticmethod
     def trimHistory():
         """Trims history table to 1 month of history from today"""
-        FailedDB().action("DELETE FROM history WHERE date < " + str(
-                (datetime.today() - timedelta(days=30)).strftime(History.date_format)))
+        date = str((datetime.today() - timedelta(days=30)).strftime(History.date_format))
+        for dbData in [x['doc'] for x in FailedDB().db.all('history', with_doc=True) if x['doc']['date'] < date]:
+            FailedDB().db.delete(dbData)
 
     @staticmethod
     def findFailedRelease(epObj):
@@ -399,27 +421,32 @@ class FailedHistory(object):
         provider = None
 
         # Clear old snatches for this release if any exist
-        FailedDB().action("DELETE FROM history WHERE showid=" + str(epObj.show.indexerid) + " AND season=" + str(
-                epObj.season) + " AND episode=" + str(
-                epObj.episode) + " AND date < (SELECT max(date) FROM history WHERE showid=" + str(
-                epObj.show.indexerid) + " AND season=" + str(epObj.season) + " AND episode=" + str(epObj.episode) + ")")
+        dbData = [x['doc'] for x in FailedDB().db.get_many('history', epObj.show.indexerid, with_doc=True)
+                  if x['doc']['season'] == epObj.season
+                  and x['doc']['episode'] == epObj.episode]
+        dbData.sort(key=lambda x: x['date'])
+        [FailedDB().db.delete(x) for x in dbData[1::]]
 
         # Search for release in snatch history
-        results = FailedDB().select("SELECT release, provider, DATE FROM history WHERE showid=? AND season=? AND episode=?",
-                              [epObj.show.indexerid, epObj.season, epObj.episode])
+        for dbData in [x['doc'] for x in FailedDB().db.get_many('history', epObj.show.indexerid, with_doc=True)
+                       if x['doc']['season'] == epObj.season
+                       and x['doc']['episode'] == epObj.episode]:
 
-        for result in results:
-            release = str(result["release"])
-            provider = str(result["provider"])
-            date = result["date"]
+            release = str(dbData["release"])
+            provider = str(dbData["provider"])
+            date = dbData["date"]
 
             # Clear any incomplete snatch records for this release if any exist
-            FailedDB().action("DELETE FROM history WHERE release=? AND DATE!=?", [release, date])
+            for x in [x['doc'] for x in FailedDB().db.all('history', with_doc=True)]:
+                if x['release'] == release and x['date'] != date:
+                    FailedDB().db.delete(x)
 
             # Found a previously failed release
-            sickrage.srCore.srLogger.debug("Failed release found for season (%s): (%s)" % (epObj.season, result["release"]))
-            return (release, provider)
+            sickrage.srCore.srLogger.debug(
+                "Failed release found for season (%s): (%s)" % (epObj.season, dbData["release"]))
+            return release, provider
 
         # Release was not found
-        sickrage.srCore.srLogger.debug("No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid))
-        return (release, provider)
+        sickrage.srCore.srLogger.debug(
+            "No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid))
+        return release, provider

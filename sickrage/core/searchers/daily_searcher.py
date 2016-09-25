@@ -51,7 +51,6 @@ class srDailySearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-
         # trim failed download history
         if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
@@ -63,28 +62,27 @@ class srDailySearcher(object):
             curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
 
         curTime = datetime.datetime.now(tz_updater.sr_timezone)
-        sqlResults = MainDB().select(
-            "SELECT * FROM tv_episodes WHERE status in (?,?) AND season > 0 AND (airdate <= ? AND airdate > 1)",
-            [UNAIRED, WANTED, curDate])
 
         show = None
-        sql_l = []
-        for sqlEp in sqlResults:
+        for dbData in [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True) if
+                      x['doc']['status'] in [UNAIRED, WANTED] and x['doc']['season'] > 0 and x['doc'][
+                          'airdate'] <= curDate and x['doc']['airdate'] > 1]:
             try:
-                if not show or int(sqlEp["showid"]) != show.indexerid:
-                    show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlEp["showid"]))
+                if not show or int(dbData['showid']) != show.indexerid:
+                    show = findCertainShow(sickrage.srCore.SHOWLIST, int(dbData['showid']))
 
                 # for when there is orphaned series in the database but not loaded into our showlist
                 if not show or show.paused:
                     continue
 
             except MultipleShowObjectsException:
-                sickrage.srCore.srLogger.info("ERROR: expected to find a single show matching " + str(sqlEp['showid']))
+                sickrage.srCore.srLogger.info("ERROR: expected to find a single show matching " + str(dbData['showid']))
                 continue
 
             if show.airs and show.network:
                 # This is how you assure it is always converted to local time
-                air_time = tz_updater.parse_date_time(sqlEp['airdate'], show.airs, show.network, dateOnly=True).astimezone(tz_updater.sr_timezone)
+                air_time = tz_updater.parse_date_time(dbData['airdate'], show.airs, show.network,
+                                                      dateOnly=True).astimezone(tz_updater.sr_timezone)
 
                 # filter out any episodes that haven't started airing yet,
                 # but set them to the default status while they are airing
@@ -92,24 +90,19 @@ class srDailySearcher(object):
                 if air_time > curTime:
                     continue
 
-            ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
+            ep = show.getEpisode(int(dbData['season']), int(dbData['episode']))
             with ep.lock:
                 if ep.season == 0:
                     sickrage.srCore.srLogger.info(
                         "New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
                     ep.status = SKIPPED
                 else:
-                    sickrage.srCore.srLogger.info("New episode %s airs today, setting to default episode status for this show: %s" % (
-                        ep.prettyName(), statusStrings[ep.show.default_ep_status]))
+                    sickrage.srCore.srLogger.info(
+                        "New episode %s airs today, setting to default episode status for this show: %s" % (
+                            ep.prettyName(), statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
-                sql_q = ep.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
-
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l
+                ep.saveToDB()
         else:
             sickrage.srCore.srLogger.info("No new released episodes found ...")
 

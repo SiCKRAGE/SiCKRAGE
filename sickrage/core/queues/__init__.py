@@ -108,7 +108,10 @@ class srQueue(threading.Thread):
 
     def shutdown(self):
         self.stop.set()
-        self.join(10)
+        try:
+            self.join(10)
+        except:
+            pass
 
 
 class srQueueItem(object):

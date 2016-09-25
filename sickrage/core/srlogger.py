@@ -31,10 +31,9 @@ import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
-# logging.basicConfig()
 import sickrage
-
 from sickrage.core import makeDir
+
 
 class srLogger(logging.getLoggerClass()):
     logging.captureWarnings(True)
@@ -199,8 +198,8 @@ class srLogger(logging.getLoggerClass()):
 
         from sickrage.core.classes import ErrorViewer
         if not (
-                    sickrage.srCore.srConfig.GIT_USERNAME and sickrage.srCore.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
-                ErrorViewer.errors) > 0):
+                            sickrage.srCore.srConfig.GIT_USERNAME and sickrage.srCore.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
+                    ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 

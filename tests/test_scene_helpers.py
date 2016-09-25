@@ -142,10 +142,10 @@ class SceneExceptionTestCase(SiCKRAGETestDBCase):
         CacheDB().action("DELETE FROM scene_exceptions")
 
         # put something in the cache
-        sickrage.srCore.NAMECACHE.addNameToCache('Cached Name', 0)
+        sickrage.srCore.NAMECACHE.put('Cached Name', 0)
 
         # updating should not clear the cache this time since our exceptions didn't change
-        self.assertEqual(sickrage.srCore.NAMECACHE.retrieveNameFromCache('Cached Name'), 0)
+        self.assertEqual(sickrage.srCore.NAMECACHE.get('Cached Name'), 0)
 
 
 if __name__ == '__main__':

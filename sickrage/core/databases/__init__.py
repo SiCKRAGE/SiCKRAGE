@@ -24,27 +24,34 @@ import shutil
 import tarfile
 import time
 import traceback
+from sqlite3 import OperationalError
 
 import sickrage
-from CodernityDB.database import Database
+from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
 from CodernityDB.index import IndexException, IndexNotFoundException, IndexConflict
+from sickrage.core.helpers import randomString
 
 
 class srDatabase(object):
     _database = {}
+    _migrate_list = {}
+    _indexes = {}
 
     def __init__(self, name=''):
-        self.db_path = os.path.join(sickrage.DATA_DIR, 'database', name)
-        self.db = Database(self.db_path)
-        self.indexes = {}
+        self.name = name
+        self.old_db_path = ''
+
+        self.db_path = os.path.join(sickrage.DATA_DIR, 'database', self.name)
+        self.db = SuperThreadSafeDatabase(self.db_path)
+
+        if self.db.exists():
+            self.db.open()
 
     def initialize(self):
         # Remove database folder if both exists
-        if os.path.isdir(self.db_path) and os.path.isfile(os.path.join(sickrage.DATA_DIR, 'sickrage.db')):
-            self.db.open()
+        if self.db.exists() and os.path.isfile(self.old_db_path):
             self.db.destroy()
 
-        # Check if database exists
         if self.db.exists():
             # Backup before start and cleanup old backups
             backup_path = os.path.join(sickrage.DATA_DIR, 'db_backup')
@@ -81,8 +88,6 @@ class srDatabase(object):
                     for zfilename in files:
                         zipf.add(os.path.join(root, zfilename),
                                  arcname='database/%s' % os.path.join(root[len(self.db_path) + 1:], zfilename))
-
-            self.db.open()
         else:
             self.db.create()
 
@@ -91,14 +96,8 @@ class srDatabase(object):
             klass = self._database[index_name]
             self.setupIndex(index_name, klass)
 
-        # compact database
-        self.compact()
-
-    def close(self):
-        self.db.close()
-
     def setupIndex(self, index_name, klass):
-        self.indexes[index_name] = klass
+        self._indexes[index_name] = klass
 
         # Category index
         index_instance = klass(self.db.path, index_name)
@@ -143,7 +142,6 @@ class srDatabase(object):
 
     def compact(self, try_repair=True, **kwargs):
         # Removing left over compact files
-
         for f in os.listdir(self.db.path):
             for x in ['_compact_buck', '_compact_stor']:
                 if f[-len(x):] == x:
@@ -152,18 +150,25 @@ class srDatabase(object):
         try:
             start = time.time()
             size = float(self.db.get_db_details().get('size', 0))
-            sickrage.srCore.srLogger.debug('Compacting database, current size: {}MB'.format(round(size / 1048576, 2)))
+            sickrage.srCore.srLogger.debug(
+                'Compacting {} database, current size: {}MB'.format(self.name, round(size / 1048576, 2)))
 
             self.db.compact()
             new_size = float(self.db.get_db_details().get('size', 0))
-            sickrage.srCore.srLogger.debug('Done compacting database in %ss, new size: {}MB, saved: {}MB'.format(
-                round(time.time() - start, 2), round(new_size / 1048576, 2), round((size - new_size) / 1048576, 2)))
+            sickrage.srCore.srLogger.debug(
+                'Done compacting {} database in {}s, new size: {}MB, saved: {}MB'.format(self.name,
+                                                                                         round(time.time() - start, 2),
+                                                                                         round(new_size / 1048576, 2),
+                                                                                         round(
+                                                                                             (
+                                                                                                 size - new_size) / 1048576,
+                                                                                             2)))
         except (IndexException, AttributeError):
             if try_repair:
                 sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
 
                 # Remove all indexes
-                old_indexes = self.indexes.keys()
+                old_indexes = self._indexes.keys()
                 for index_name in old_indexes:
                     try:
                         self.db.destroy_index(index_name)
@@ -173,8 +178,8 @@ class srDatabase(object):
                         sickrage.srCore.srLogger.error('Failed removing old index {}'.format(index_name))
 
                 # Add them again
-                for index_name in self.indexes:
-                    klass = self.indexes[index_name]
+                for index_name in self._indexes:
+                    klass = self._indexes[index_name]
 
                     # Category index
                     index_instance = klass(self.db.path, index_name)
@@ -194,5 +199,83 @@ class srDatabase(object):
         except:
             sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
 
+    def close(self):
+        self.db.close()
+
     def migrate(self):
-        pass
+        if os.path.isfile(self.old_db_path):
+            sickrage.srCore.srLogger.info('=' * 30)
+            sickrage.srCore.srLogger.info('Migrating %s database, please wait...', self.name)
+            migrate_start = time.time()
+
+            import sqlite3
+            conn = sqlite3.connect(self.old_db_path)
+
+            migrate_data = {}
+            rename_old = False
+
+            try:
+                c = conn.cursor()
+
+                for ml in self._migrate_list:
+                    migrate_data[ml] = {}
+                    rows = self._migrate_list[ml]
+
+                    try:
+                        c.execute('SELECT {} FROM `{}`'.format('`' + '`,`'.join(rows) + '`', ml))
+                    except:
+                        # ignore faulty destination_id database
+                        rename_old = True
+                        raise
+
+                    for p in c.fetchall():
+                        columns = {}
+                        for row in self._migrate_list[ml]:
+                            columns[row] = p[rows.index(row)]
+
+                        if not migrate_data[ml].get(p[0]):
+                            migrate_data[ml][p[0]] = columns
+                        else:
+                            if not isinstance(migrate_data[ml][p[0]], list):
+                                migrate_data[ml][p[0]] = [migrate_data[ml][p[0]]]
+                            migrate_data[ml][p[0]].append(columns)
+
+                conn.close()
+
+                sickrage.srCore.srLogger.info('Getting data took %s', (time.time() - migrate_start))
+
+                if not self.db.opened:
+                    return
+
+                for t_name in migrate_data:
+                    t_data = migrate_data.get(t_name, {})
+                    sickrage.srCore.srLogger.info('Importing %s %s' % (len(t_data), t_name))
+                    for k, v in t_data.items():
+                        if isinstance(v, list):
+                            for d in v:
+                                d.update({'_t': t_name})
+                                self.db.insert(d)
+                        else:
+                            v.update({'_t': t_name})
+                            self.db.insert(v)
+
+                sickrage.srCore.srLogger.info('Total migration took %s', (time.time() - migrate_start))
+                sickrage.srCore.srLogger.info('=' * 30)
+
+                rename_old = True
+            except OperationalError:
+                sickrage.srCore.srLogger.error('Migrating from unsupported/corrupt %s database version', self.name)
+                rename_old = True
+            except:
+                sickrage.srCore.srLogger.error('Migration of %s database failed', self.name)
+
+            # rename old database
+            if rename_old and not sickrage.DEVELOPER:
+                random = randomString()
+                sickrage.srCore.srLogger.info('Renaming old database to %s.%s_old' % (self.old_db_path, random))
+                os.rename(self.old_db_path, '{}.{}_old'.format(self.old_db_path, random))
+
+                if os.path.isfile(self.old_db_path + '-wal'):
+                    os.rename(self.old_db_path + '-wal', '{}-wal.{}_old'.format(self.old_db_path, random))
+                if os.path.isfile(self.old_db_path + '-shm'):
+                    os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))

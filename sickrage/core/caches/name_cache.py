@@ -24,6 +24,7 @@ import time
 from datetime import datetime, timedelta
 
 import sickrage
+from CodernityDB.database import RecordNotFound
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitizeSceneName
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
@@ -51,21 +52,21 @@ class srNameCache(object):
         self.minTime = sickrage.srCore.srConfig.NAMECACHE_FREQ
 
         # init cache
-        self.cache = self.loadNameCacheFromDB()
+        self.cache = self.load()
 
         # build name cache
-        self.buildNameCache()
+        self.build()
 
         # unset active
         self.amActive = False
 
-    def shouldUpdate(self, show):
+    def should_update(self, show):
         # if we've updated recently then skip the update
         if datetime.today() - getattr(self.lastUpdate, show.name, datetime.fromtimestamp(
                 int(time.mktime(datetime.today().timetuple())))) < timedelta(minutes=self.minTime):
             return True
 
-    def addNameToCache(self, name, indexer_id=0):
+    def put(self, name, indexer_id=0):
         """
         Adds the show & tvdb id to the scene_names table in cache.db.
 
@@ -76,10 +77,27 @@ class srNameCache(object):
         name = full_sanitizeSceneName(name)
         if name not in self.cache:
             self.cache[name] = int(indexer_id)
-            CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
-                                      [indexer_id, name])
 
-    def retrieveNameFromCache(self, name):
+            try:
+                dbData = [x['doc'] for x in CacheDB().db.get_many('scene_names', name, with_doc=True) if
+                          x['doc']['indexer_id'] == indexer_id]
+
+                if not len(dbData):
+                    # insert name into cache
+                    CacheDB().db.insert({
+                        '_t': 'scene_names',
+                        'indexer_id': indexer_id,
+                        'name': name
+                    })
+            except RecordNotFound:
+                # insert name into cache
+                CacheDB().db.insert({
+                    '_t': 'scene_names',
+                    'indexer_id': indexer_id,
+                    'name': name
+                })
+
+    def get(self, name):
         """
         Looks up the given name in the scene_names table in cache.db.
 
@@ -90,30 +108,37 @@ class srNameCache(object):
         if name in self.cache:
             return int(self.cache[name])
 
-    def clearCache(self, indexerid=0):
+    def clear(self, indexerid=0):
         """
         Deletes all "unknown" entries from the cache (names with indexer_id of 0).
         """
-        CacheDB().action("DELETE FROM scene_names WHERE indexer_id = ? OR indexer_id = ?", (indexerid, 0))
+        [CacheDB().db.delete(x['doc']) for x in CacheDB().db.all('scene_names', with_doc=True)
+         if x['doc']['indexer_id'] in [indexerid, 0]]
 
-        toRemove = [key for key, value in self.cache.items() if value == 0 or value == indexerid]
-        for key in toRemove:
-            del self.cache[key]
+        for item in [self.cache[key] for key, value in self.cache.items() if value == 0 or value == indexerid]:
+            del item
 
-    def loadNameCacheFromDB(self):
-        sqlResults = CacheDB().select(
-            "SELECT indexer_id, name FROM scene_names")
+    def load(self):
+        return [x['doc'] for x in CacheDB().db.all('scene_names', with_doc=True)]
 
-        return dict((row["name"], int(row["indexer_id"])) for row in sqlResults)
-
-    def saveNameCacheToDb(self):
+    def save(self):
         """Commit cache to database file"""
-
         for name, indexer_id in self.cache.items():
-            CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
-                                      [indexer_id, name])
+            try:
+                dbData = [x['doc'] for x in CacheDB().db.get_many('scene_names', name, with_doc=True) if
+                          x['doc']['indexer_id'] == indexer_id]
+                if len(dbData): continue
+            except RecordNotFound:
+                pass
 
-    def buildNameCache(self, show=None, force=False):
+            # insert name into cache
+            CacheDB().db.insert({
+                '_t': 'scene_names',
+                'indexer_id': indexer_id,
+                'name': name
+            })
+
+    def build(self, show=None, force=False):
         """Build internal name cache
 
         :param show: Specify show to build name cache for, if None, just do all shows
@@ -122,15 +147,15 @@ class srNameCache(object):
         if not show:
             retrieve_exceptions()
             for show in sickrage.srCore.SHOWLIST:
-                self.buildNameCache(show)
-        elif self.shouldUpdate(show):
+                self.build(show)
+        elif self.should_update(show):
             self.lastUpdate[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
             sickrage.srCore.srLogger.debug("Building internal name cache for [{}]".format(show.name))
-            self.clearCache(show.indexerid)
+            self.clear(show.indexerid)
             for curSeason in [-1] + get_scene_seasons(show.indexerid):
                 for name in list(set(get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
-                    self.addNameToCache(name, show.indexerid)
+                    self.put(name, show.indexerid)
 
             sickrage.srCore.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
                 show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))

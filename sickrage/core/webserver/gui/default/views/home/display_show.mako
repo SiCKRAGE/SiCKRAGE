@@ -46,7 +46,7 @@
 
     % if seasonResults:
         ##There is a special/season_0?##
-        % if int(seasonResults[-1]["season"]) == 0:
+        % if int(seasonResults[-1]) == 0:
                     <% season_special = 1 %>
         % else:
                     <% season_special = 0 %>
@@ -68,17 +68,17 @@
                     <select id="seasonJump" class="form-control input-sm" style="position: relative; top: -4px;">
                         <option value="jump">Jump to Season</option>
                         % for seasonNum in seasonResults:
-                            <option value="#season-${seasonNum["season"]}"
-                                    data-season="${seasonNum["season"]}">${('Specials', 'Season ' + str(seasonNum["season"]))[int(seasonNum["season"]) > 0]}</option>
+                            <option value="#season-${seasonNum}"
+                                    data-season="${seasonNum}">${('Specials', 'Season ' + str(seasonNum))[int(seasonNum) > 0]}</option>
                         % endfor
                     </select>
                 % else:
                     Season:
                 % for seasonNum in seasonResults:
-                    % if int(seasonNum["season"]) == 0:
-                        <a href="#season-${seasonNum["season"]}">Specials</a>
+                    % if int(seasonNum) == 0:
+                        <a href="#season-${seasonNum}">Specials</a>
                     % else:
-                        <a href="#season-${seasonNum["season"]}">${str(seasonNum["season"])}</a>
+                        <a href="#season-${seasonNum}">${str(seasonNum)}</a>
                     % endif
                     % if seasonNum != seasonResults[-1]:
                         <span class="separator">|</span>

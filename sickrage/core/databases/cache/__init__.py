@@ -18,9 +18,33 @@
 
 from __future__ import unicode_literals
 
+import os
+
+import sickrage
 from sickrage.core.databases import srDatabase
+from sickrage.core.databases.cache.index import LastUpdateIndex, LastSearchIndex, SceneExceptionsIndex, SceneNamesIndex, \
+    NetworkTimezonesIndex, SceneExceptionsRefreshIndex
 
 
 class CacheDB(srDatabase):
+    _database = {
+        'lastUpdate': LastUpdateIndex,
+        'lastSearch': LastSearchIndex,
+        'scene_exceptions': SceneExceptionsIndex,
+        'scene_names': SceneNamesIndex,
+        'network_timezones': NetworkTimezonesIndex,
+        'scene_exceptions_refresh': SceneExceptionsRefreshIndex,
+    }
+
+    _migrate_list = {
+        'lastUpdate': ['provider', 'time'],
+        'lastSearch': ['provider', 'time'],
+        'scene_exceptions': ['exception_id', 'indexer_id', 'show_name', 'season', 'custom'],
+        'scene_names': ['indexer_id', 'name'],
+        'network_timezones': ['network_name', 'timezone'],
+        'scene_exceptions_refresh': ['list', 'last_refreshed'],
+    }
+
     def __init__(self, name='cache'):
         super(CacheDB, self).__init__(name)
+        self.old_db_path = os.path.join(sickrage.DATA_DIR, 'cache.db')

@@ -19,13 +19,10 @@
 
 from __future__ import unicode_literals
 
-from hashlib import md5
-
 from CodernityDB.hash_index import HashIndex
-from CodernityDB.tree_index import TreeBasedIndex
 
 
-class TVShowsIndex(TreeBasedIndex):
+class TVShowsIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
@@ -36,11 +33,11 @@ class TVShowsIndex(TreeBasedIndex):
         return key
 
     def make_key_value(self, data):
-        if data.get('_t') == 'tv_shows' and data.get('show_id'):
-            return data.get('show_id'), None
+       if data.get('_t') == 'tv_shows' and data.get('indexer_id'):
+            return data.get('indexer_id'), None
 
 
-class TVEpisodesIndex(TreeBasedIndex):
+class TVEpisodesIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
@@ -51,11 +48,11 @@ class TVEpisodesIndex(TreeBasedIndex):
         return key
 
     def make_key_value(self, data):
-        if data.get('_t') == 'tv_episodes' and data.get('episode_id'):
-            return data.get('episode_id'), None
+        if data.get('_t') == 'tv_episodes' and data.get('showid'):
+            return data.get('showid'), None
 
 
-class IMDBInfoIndex(TreeBasedIndex):
+class IMDBInfoIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
@@ -78,16 +75,14 @@ class SceneNumberingIndex(HashIndex):
         super(SceneNumberingIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return key
 
     def make_key_value(self, data):
-        if data.get('_t') == 'scene_numbering' and data.get('indexer_id') and data.get('season') and data.get(
-                'episode'):
-            return md5(('{}-{}-{}'.format(data.get('indexer_id'), data.get('season'),
-                                          data.get('episode'))).lower()).hexdigest(), None
+        if data.get('_t') == 'scene_numbering' and data.get('indexer_id'):
+            return data.get('indexer_id'), None
 
 
-class XEMRefreshIndex(TreeBasedIndex):
+class XEMRefreshIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
@@ -110,8 +105,68 @@ class IndexerMappingIndex(HashIndex):
         super(IndexerMappingIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return key
 
     def make_key_value(self, data):
-        if data.get('_t') == 'indexer_mapping' and data.get('indexer_id') and data.get('indexer'):
-            return md5(('{}-{}'.format(data.get('indexer_id'), data.get('indexer'))).lower()).hexdigest(), None
+        if data.get('_t') == 'indexer_mapping' and data.get('indexer_id'):
+            return data.get('indexer_id'), None
+
+
+class HistoryIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = 'I'
+        super(HistoryIndex, self).__init__(*args, **kwargs)
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'history' and data.get('_id'):
+            return data.get('_id'), None
+
+    def make_key(self, key):
+        return key
+
+
+class InfoIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = 'I'
+        super(InfoIndex, self).__init__(*args, **kwargs)
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'info' and data.get('_id'):
+            return data.get('_id'), None
+
+    def make_key(self, key):
+        return key
+
+
+class BlacklistIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = 'I'
+        super(BlacklistIndex, self).__init__(*args, **kwargs)
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'blacklist' and data.get('show_id'):
+            return data.get('show_id'), None
+
+    def make_key(self, key):
+        return key
+
+
+class WhitelistIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = 'I'
+        super(WhitelistIndex, self).__init__(*args, **kwargs)
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'whitelist' and data.get('show_id'):
+            return data.get('show_id'), None
+
+    def make_key(self, key):
+        return key

@@ -18,9 +18,24 @@
 
 from __future__ import unicode_literals
 
+import os
+
+import sickrage
 from sickrage.core.databases import srDatabase
+from sickrage.core.databases.failed.index import FailedIndex, HistoryIndex
 
 
 class FailedDB(srDatabase):
+    _database = {
+        'failed': FailedIndex,
+        'history': HistoryIndex,
+    }
+
+    _migrate_list = {
+        'failed': ['release', 'size', 'provider'],
+        'history': ['date', 'size', 'release', 'provider', 'old_status', 'showid', 'season', 'episode'],
+    }
+
     def __init__(self, name='failed'):
         super(FailedDB, self).__init__(name)
+        self.old_db_path = os.path.join(sickrage.DATA_DIR, 'failed.db')

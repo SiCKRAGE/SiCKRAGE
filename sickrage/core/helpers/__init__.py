@@ -17,6 +17,7 @@ import shutil
 import socket
 import stat
 import string
+import sys
 import tempfile
 import time
 import traceback
@@ -1432,6 +1433,37 @@ def getDiskSpaceUsage(diskPath=None):
     else:
         return False
 
+def getFreeSpace(directories):
+
+    single = not isinstance(directories, (tuple, list))
+    if single:
+        directories = [directories]
+
+    free_space = {}
+    for folder in directories:
+
+        size = None
+        if os.path.isdir(folder):
+            if os.name == 'nt':
+                _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
+                                   ctypes.c_ulonglong()
+                if sys.version_info >= (3,) or isinstance(folder, unicode):
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW #@UndefinedVariable
+                else:
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA #@UndefinedVariable
+                ret = fun(folder, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
+                if ret == 0:
+                    raise ctypes.WinError()
+                return [total.value, free.value]
+            else:
+                s = os.statvfs(folder)
+                size = [s.f_blocks * s.f_frsize / (1024 * 1024), (s.f_bavail * s.f_frsize) / (1024 * 1024)]
+
+        if single: return size
+
+        free_space[folder] = size
+
+    return free_space
 
 def removetree(tgt):
     def error_handler(func, path, execinfo):

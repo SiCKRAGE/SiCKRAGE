@@ -69,7 +69,7 @@ class NameParser(object):
 
         try:
             # check cache for show
-            cache = sickrage.srCore.NAMECACHE.retrieveNameFromCache(name)
+            cache = sickrage.srCore.NAMECACHE.get(name)
             if cache:
                 fromCache = True
                 showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(cache))
@@ -87,7 +87,7 @@ class NameParser(object):
 
             # add show to cache
             if showObj and not fromCache:
-                sickrage.srCore.NAMECACHE.addNameToCache(name, showObj.indexerid)
+                sickrage.srCore.NAMECACHE.put(name, showObj.indexerid)
         except Exception as e:
             sickrage.srCore.srLogger.debug(
                 "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))

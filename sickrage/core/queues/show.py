@@ -446,7 +446,7 @@ class QueueItemAdd(ShowQueueItem):
 
         self.show.saveToDB()
 
-        sickrage.srCore.NAMECACHE.buildNameCache(self.show)
+        sickrage.srCore.NAMECACHE.build(self.show)
 
         sickrage.srCore.srLogger.info("Finished adding show {}".format(self.showDir))
 

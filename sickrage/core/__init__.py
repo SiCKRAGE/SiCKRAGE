@@ -26,6 +26,7 @@ import re
 import shutil
 import socket
 import threading
+import traceback
 
 import sickrage
 from apscheduler.schedulers.tornado import TornadoScheduler
@@ -37,12 +38,13 @@ from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
-    generateCookieSecret, makeDir, removetree, get_lan_ip, restoreSR
+    generateCookieSecret, makeDir, removetree, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
 from sickrage.core.queues.search import srSearchQueue
 from sickrage.core.queues.show import srShowQueue
+from sickrage.core.scene_exceptions import retrieve_exceptions
 from sickrage.core.searchers.backlog_searcher import srBacklogSearcher, \
     get_backlog_cycle_time
 from sickrage.core.searchers.daily_searcher import srDailySearcher
@@ -218,17 +220,28 @@ class Core(object):
         # start logger
         self.srLogger.start()
 
-        # initialize the main database
-        MainDB().initialize()
+        # Check available space
+        try:
+            total_space, available_space = getFreeSpace(sickrage.DATA_DIR)
+            if available_space < 100:
+                self.srLogger.error(
+                    'Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left',
+                    available_space)
+                sickrage.restart = False
+                return
+        except:
+            self.srLogger.error('Failed getting diskspace: %s', traceback.format_exc())
 
-        # initialize the cache database
-        CacheDB().initialize()
+        # perform database startup actions
+        for db in [MainDB, CacheDB, FailedDB]:
+            # initialize the database
+            db().initialize()
 
-        # initialize the failed downloads database
-        FailedDB().initialize()
+            # migrate the database
+            db().migrate()
 
-        # migrate the main database
-        MainDB().migrate()
+            # compact the main database
+            db().compact()
 
         # load data for shows from database
         self.load_shows()
@@ -237,9 +250,9 @@ class Core(object):
             self.srConfig.DEFAULT_PAGE = 'home'
 
         # cleanup cache folder
-        for dir in ['mako', 'sessions', 'indexers']:
+        for folder in ['mako', 'sessions', 'indexers']:
             try:
-                shutil.rmtree(os.path.join(self.srConfig.CACHE_DIR, dir), ignore_errors=True)
+                shutil.rmtree(os.path.join(self.srConfig.CACHE_DIR, folder), ignore_errors=True)
             except Exception:
                 continue
 
@@ -503,12 +516,11 @@ class Core(object):
         Populates the showlist with shows from the database
         """
 
-        for sqlShow in MainDB().select("SELECT * FROM tv_shows"):
+        for dbData in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
             try:
-                curshow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
-                self.srLogger.debug("Loading data for show: [{}]".format(curshow.name))
-                curshow.nextEpisode()
-                self.SHOWLIST += [curshow]
+                show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
+                self.srLogger.debug("Loading data for show: [%s]", show.name)
+                show.nextEpisode()
+                self.SHOWLIST += [show]
             except Exception as e:
-                self.srLogger.error(
-                    "Show error in [{}]: {}".format(sqlShow["location"], e.message))
+                self.srLogger.error("Show error in [%s]: %s" % (dbData['location'], e.message))
