@@ -66,12 +66,13 @@ class srQueue(threading.Thread):
                         self.put(self.currentItem)
                         self.currentItem = None
                     else:
+                        origThreadName = threading.currentThread().getName()
                         try:
                             threading.currentThread().setName(self.currentItem.name)
                             self.currentItem.run()
                         finally:
-                            threading.currentThread().setName(self.queue_name)
                             self.currentItem.finish()
+                            threading.currentThread().setName(origThreadName)
 
                 self.amActive = False
 
