@@ -1,6 +1,7 @@
 # Changelog
 
-- * 06b14cd - 2016-09-24: fix: Fixed core queue code thread naming 
+- * e9ac4cd - 2016-09-24: fix: BTN API Call limit exception handling fixed 
+- * cde2043 - 2016-09-24: fix: Fixed core queue code thread naming 
 - * 1f4bfc0 - 2016-09-24: fix: Fixed core queue code thread naming 
 - * c89a3ea - 2016-09-24: fix: Added worker thread to queue code 
 - * 7115c4e - 2016-09-23: new: Version 8.2.4 
