@@ -1001,7 +1001,6 @@ class PostProcessor(object):
             ep_obj.show.writeMetadata(True)
 
         # update the ep info before we rename so the quality & release name go into the name properly
-        sql_l = []
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
 
@@ -1031,9 +1030,7 @@ class PostProcessor(object):
                 else:
                     cur_ep.release_group = ""
 
-                sql_q = cur_ep.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
+                cur_ep.saveToDB()
 
         # Just want to keep this consistent for failed handling right now
         releaseName = show_names.determineReleaseName(self.folder_path, self.nzb_name)
@@ -1107,23 +1104,11 @@ class PostProcessor(object):
                     cur_ep.refreshSubtitles()
                     cur_ep.downloadSubtitles(force=True)
 
-        # now that processing has finished, we can put the info in the DB. If we do it earlier, then when processing fails, it won't try again.
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
-
         # put the new location in the database
-        sql_l = []
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
                 cur_ep.location = os.path.join(dest_path, new_file_name)
-                sql_q = cur_ep.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
-
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
+                cur_ep.saveToDB()
 
         # set file modify stamp to show airdate
         if sickrage.srCore.srConfig.AIRDATE_EPISODES:

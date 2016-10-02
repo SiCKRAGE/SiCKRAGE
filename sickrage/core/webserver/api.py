@@ -899,7 +899,6 @@ class CMD_EpisodeSetStatus(ApiCall):
         start_backlog = False
         segments = {}
 
-        sql_l = []
         for epObj in ep_list:
             with epObj.lock:
                 if self.status == WANTED:
@@ -931,18 +930,12 @@ class CMD_EpisodeSetStatus(ApiCall):
                     continue
 
                 epObj.status = self.status
-                sql_q = epObj.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
+                epObj.saveToDB()
 
                 if self.status == WANTED:
                     start_backlog = True
 
                 ep_results.append(_epResult(RESULT_SUCCESS, epObj))
-
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
 
         extra_msg = ""
         if start_backlog:

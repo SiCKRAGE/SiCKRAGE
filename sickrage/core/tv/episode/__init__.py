@@ -958,16 +958,9 @@ class TVEpisode(object):
             curEp.checkForMetaFiles()
 
         # save any changes to the databas
-        sql_l = []
         with self.lock:
             for relEp in [self] + self.relatedEps:
-                sql_q = relEp.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
-
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
+                relEp.saveToDB()
 
     def airdateModifyStamp(self):
         """

@@ -156,7 +156,6 @@ def snatchEpisode(result, endStatus=SNATCHED):
     History.logSnatch(result)
 
     # don't notify when we re-download an episode
-    sql_l = []
     trakt_data = []
     for curEpObj in result.episodes:
         with curEpObj.lock:

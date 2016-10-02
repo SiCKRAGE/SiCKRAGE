@@ -638,7 +638,6 @@ class TVShow(object):
                                        (self.indexerid, mediaFiles))
 
         # create TVEpisodes from each media file (if possible)
-        sql_l = []
         for mediaFile in mediaFiles:
             curEpisode = None
 
@@ -678,13 +677,7 @@ class TVShow(object):
                     sickrage.srCore.srLogger.error("%s: Could not refresh subtitles" % self.indexerid)
                     sickrage.srCore.srLogger.debug(traceback.format_exc())
 
-            sql_q = curEpisode.saveToDB(False)
-            if sql_q:
-                sql_l.append(sql_q)
-
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
+            curEpisode.saveToDB()
 
     def loadEpisodesFromDB(self):
         scannedEps = {}
@@ -735,7 +728,6 @@ class TVShow(object):
             str(self.indexerid) + ": Loading all episodes from " + srIndexerApi(
                 self.indexer).name + "..")
 
-        sql_l = []
         for season in showObj:
             if season not in scannedEps:
                 scannedEps[season] = {}
@@ -754,18 +746,12 @@ class TVShow(object):
                         raise EpisodeNotFoundException
 
                     with curEp.lock:
-                        sql_q = curEp.saveToDB(False)
-                        if sql_q:
-                            sql_l.append(sql_q)
+                        curEp.saveToDB()
 
                     scannedEps[season][episode] = True
                 except EpisodeNotFoundException:
                     sickrage.LOGGER.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
                         self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
-
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
 
         # Done updating save last update date
         self.last_update_indexer = datetime.date.today().toordinal()
@@ -822,7 +808,6 @@ class TVShow(object):
         episodes = parse_result.episode_numbers
         rootEp = None
 
-        sql_l = []
         for curEpNum in episodes:
 
             episode = int(curEpNum)
@@ -930,13 +915,7 @@ class TVShow(object):
                         curEp.status = Quality.compositeStatus(newStatus, newQuality)
 
             with curEp.lock:
-                sql_q = curEp.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
-
-        if len(sql_l) > 0:
-            MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
+                curEp.saveToDB()
 
         # creating metafiles on the root should be good enough
         if rootEp:

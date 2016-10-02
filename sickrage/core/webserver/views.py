@@ -1751,7 +1751,6 @@ class Home(WebHandler):
         segments = {}
         trakt_data = []
         if eps:
-            sql_l = []
             for curEp in eps.split('|'):
 
                 if not curEp:

@@ -376,7 +376,7 @@ def get_scene_numbering_for_show(indexer_id, indexer):
         episode = int(dbData['episode'] or 0)
         scene_season = int(dbData['scene_season'] or 0)
         scene_episode = int(dbData['scene_episode'] or 0)
-        if dbData['indexer'] != indexer or (scene_season or scene_episode) == 0: continue
+        if int(dbData['indexer']) != indexer or (scene_season or scene_episode) == 0: continue
 
         result[(season, episode)] = (scene_season, scene_episode)
 
@@ -403,7 +403,7 @@ def get_xem_numbering_for_show(indexer_id, indexer):
         episode = int(dbData['episode'] or 0)
         scene_season = int(dbData['scene_season'] or 0)
         scene_episode = int(dbData['scene_episode'] or 0)
-        if dbData['indexer'] != indexer or (scene_season or scene_episode) == 0: continue
+        if int(dbData['indexer']) != indexer or (scene_season or scene_episode) == 0: continue
 
         result[(season, episode)] = (scene_season, scene_episode)
 
@@ -426,7 +426,7 @@ def get_scene_absolute_numbering_for_show(indexer_id, indexer):
     for dbData in [x['doc'] for x in MainDB().db.get_many('scene_numbering', indexer_id, with_doc=True)]:
         absolute_number = int(dbData['absolute_number'] or 0)
         scene_absolute_number = int(dbData['scene_absolute_number'] or 0)
-        if dbData['indexer'] != indexer or scene_absolute_number == 0: continue
+        if int(dbData['indexer']) != indexer or scene_absolute_number == 0: continue
 
         result[absolute_number] = scene_absolute_number
 
@@ -451,7 +451,7 @@ def get_xem_absolute_numbering_for_show(indexer_id, indexer):
     for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', indexer_id, with_doc=True)]:
         absolute_number = int(dbData['absolute_number'] or 0)
         scene_absolute_number = int(dbData['scene_absolute_number'] or 0)
-        if dbData['indexer'] != indexer or scene_absolute_number == 0: continue
+        if int(dbData['indexer']) != indexer or scene_absolute_number == 0: continue
 
         result[absolute_number] = scene_absolute_number
 
@@ -499,9 +499,12 @@ def xem_refresh(indexer_id, indexer, force=False):
         try:
             # XEM MAP URL
             url = "http://thexem.de/map/havemap?origin=%s" % srIndexerApi(indexer).config['xem_origin']
+
             parsedJSON = sickrage.srCore.srWebSession.get(url).json()
-            if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON['result'] \
-                    or 'data' not in parsedJSON or indexer_id not in map(int, parsedJSON['data']):
+            try:
+                if indexer_id not in map(int, parsedJSON['data']):
+                    raise
+            except:
                 return
 
             # XEM API URL
@@ -509,9 +512,11 @@ def xem_refresh(indexer_id, indexer, force=False):
                 indexer_id, srIndexerApi(indexer).config['xem_origin'])
 
             parsedJSON = sickrage.srCore.srWebSession.get(url).json()
-            if not ((parsedJSON and 'result' in parsedJSON) and 'success' in parsedJSON['result']):
-                sickrage.srCore.srLogger.info(
-                    'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
+            try:
+                if 'success' not in parsedJSON['result']:
+                    raise
+            except:
+                sickrage.srCore.srLogger.info('No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
                 return
 
             for entry in parsedJSON['data']:

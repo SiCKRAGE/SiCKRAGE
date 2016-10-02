@@ -26,7 +26,6 @@ import traceback
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, ShowDirectoryNotFoundException
@@ -590,16 +589,9 @@ class QueueItemUpdate(ShowQueueItem):
                 self.show.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on the Indexer not in the DB list add to DB
-            sql_l = []
             for curSeason in IndexerEpList:
                 for curEpisode in set(IndexerEpList[curSeason]).difference(DBEpList.get(curSeason, {})):
-                    sql_q = self.show.getEpisode(curSeason, curEpisode, forceIndexer=True).saveToDB(False)
-                    if sql_q:
-                        sql_l.append(sql_q)
-
-            if len(sql_l) > 0:
-                MainDB().mass_upsert(sql_l)
-                del sql_l  # cleanup
+                    self.show.getEpisode(curSeason, curEpisode, forceIndexer=True).saveToDB()
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in DBEpList:
