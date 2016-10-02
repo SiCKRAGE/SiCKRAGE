@@ -356,16 +356,14 @@ def wantedEpisodes(show, fromDate):
 
     sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
-    sqlResults = MainDB().select(
-        "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 AND airdate > ?",
-        [show.indexerid, fromDate.toordinal()])
-
     sickrage.srCore.srLogger.debug("Found {} episode(s) needed for {}".format(len(sqlResults), show.name))
 
     # check through the list of statuses to see if we want any
-    for result in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                   if]:
-        curCompositeStatus = int(result["status"] or -1)
+    for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                   if x['doc']['season '] > 0
+                   and x['doc']['airdate'] > fromDate.toordinal()]:
+
+        curCompositeStatus = int(dbData["status"] or -1)
         curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
         if bestQualities:
@@ -376,7 +374,7 @@ def wantedEpisodes(show, fromDate):
         # if we need a better one then say yes
         if (curStatus in (DOWNLOADED, SNATCHED,
                           SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
-            epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
+            epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
             epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
             wanted.append(epObj)
 
@@ -531,11 +529,8 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     Quality.qualityStrings[
                         seasonQual])
 
-                allEps = [int(x["episode"])
-                          for x in MainDB().select(
-                        "SELECT episode FROM tv_episodes WHERE showid = ? AND ( season IN ( " + ','.join(
-                            searchedSeasons) + " ) )",
-                        [show.indexerid])]
+                allEps = [int(x['doc']["episode"]) for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True),
+                          if x['doc']['season'] in searchedSeasons]
 
                 sickrage.srCore.srLogger.info(
                     "Executed query: [SELECT episode FROM tv_episodes WHERE showid = %s AND season in  %s]" % (

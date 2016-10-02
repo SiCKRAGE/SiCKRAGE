@@ -385,18 +385,17 @@ class GenericProvider(object):
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    sql_results = MainDB().select(
-                        "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
-                        [showObj.indexerid, airdate])
+                    dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
+                              if x['doc']['airdate'] == airdate]
 
-                    if len(sql_results) != 1:
+                    if len(dbData) != 1:
                         sickrage.srCore.srLogger.warning(
                             "Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it")
                         addCacheEntry = True
 
                 if not addCacheEntry:
-                    actual_season = int(sql_results[0]["season"])
-                    actual_episodes = [int(sql_results[0]["episode"])]
+                    actual_season = int(dbData[0]["season"])
+                    actual_episodes = [int(dbData[0]["episode"])]
 
             # add parsed result to cache for usage later on
             if addCacheEntry:
@@ -651,21 +650,19 @@ class TorrentProvider(GenericProvider):
                             '{}.{}'.format(sanitizeFileName(name), self.type))
 
     def findPropers(self, search_date=datetime.datetime.today()):
-
         results = []
+        dbData = []
 
-        sqlResults = MainDB().select(
-            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-            ' AND e.status IN (' + ','.join(
-                [str(x) for x in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]) + ')'
-        )
+        for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
+            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)
+                            if e['airdate'] >= str(search_date.toordinal())
+                            and e['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]:
+                dbData += [episode]
 
-        for sqlshow in sqlResults or []:
-            show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow["showid"]))
+        for show in dbData:
+            show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
             if show:
-                curEp = show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
+                curEp = show.getEpisode(int(show["season"]), int(show["episode"]))
                 for term in self.proper_strings:
                     searchString = self._get_episode_search_strings(curEp, add_string=term)
 
@@ -1107,28 +1104,24 @@ class NewznabProvider(NZBProvider):
 
     def findPropers(self, search_date=datetime.datetime.today()):
         results = []
+        dbData = []
 
-        sqlResults = MainDB().select(
-            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-            ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
-            ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
-        )
+        for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
+            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)
+                            if e['airdate'] >= str(search_date.toordinal())
+                            and e['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]:
+                dbData += [episode]
 
-        if not sqlResults:
-            return []
-
-        for sqlshow in sqlResults:
-            self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow["showid"]))
+        for show in dbData:
+            self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
             if self.show:
-                curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
+                curEp = self.show.getEpisode(int(show["season"]), int(show["episode"]))
                 searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
                 for searchString in searchStrings:
                     for item in self.search(searchString):
                         title, url = self._get_title_and_url(item)
                         if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                            results.append(Proper(title, url, datetime.datetime.today(), self.show))
+                            results += [Proper(title, url, datetime.datetime.today(), self.show)]
 
         return results
 
