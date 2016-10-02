@@ -1004,9 +1004,9 @@ class Home(WebHandler):
 
     @staticmethod
     def loadShowNotifyLists():
-
         tv_shows = [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]
-        tv_shows.sort(key=lambda x: x['show_name'])
+
+        tv_shows.sort(key=lambda d: d['show_name'])
 
         data = {}
         size = 0
@@ -1170,7 +1170,7 @@ class Home(WebHandler):
                 return self._genericMessage("Error", "Show not in show list")
 
         episodeResults = [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)]
-        episodeResults.sort(key=lambda x: (x['season'], x['episode']), reverse=True)
+        episodeResults.sort(key=lambda d: (d['season'], d['episode']), reverse=True)
         seasonResults = list({x['season'] for x in episodeResults})
 
         submenu = [
@@ -1941,16 +1941,16 @@ class Home(WebHandler):
 
             epInfo = curEp.split('x')
 
-            # this is probably the worst possible way to deal with double eps but I've kinda painted myself into a corner here with this stupid database
-            ep_result = MainDB().select(
-                "SELECT * FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? AND 5=5",
-                [show, epInfo[0], epInfo[1]])
+            ep_result = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show, with_doc=True)
+                         if x['doc']['season'] == epInfo[0] and x['doc']['episode'] == epInfo[1]]
+
             if not ep_result:
                 sickrage.srCore.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
-            related_eps_result = MainDB().select(
-                "SELECT * FROM tv_episodes WHERE location = ? AND episode != ?",
-                [ep_result[0]["location"], epInfo[1]])
+
+            related_eps_result = [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
+                                  if x['doc']['location'] == ep_result[0]['location']
+                                  and x['doc']['episode'] != epInfo[1]]
 
             root_ep_obj = show_obj.getEpisode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
@@ -2401,9 +2401,7 @@ class HomeAddShows(Home):
                     pass
 
                 # see if the folder is in KODI already
-                dirResults = MainDB().select("SELECT * FROM tv_shows WHERE location = ?", [cur_path])
-
-                if dirResults:
+                if [x for x in MainDB().db.all('tv_shows', with_doc=True) if x['doc']['location'] == cur_path]:
                     cur_dir['added_already'] = True
                 else:
                     cur_dir['added_already'] = False
@@ -2431,9 +2429,7 @@ class HomeAddShows(Home):
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
-                if showid and findCertainShow(sickrage.srCore.SHOWLIST, showid):
-                    cur_dir['added_already'] = True
-
+                if showid and findCertainShow(sickrage.srCore.SHOWLIST, showid): cur_dir['added_already'] = True
         return self.render(
             "/home/mass_add_table.mako",
             dirList=dir_list,
@@ -2936,19 +2932,17 @@ class Manage(Home, WebRoot):
         if status_list[0] == SNATCHED:
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
-        cur_show_results = MainDB().select(
-            "SELECT season, episode, name FROM tv_episodes WHERE showid = ? AND season != 0 AND status IN (" + ','.join(
-                ['?'] * len(status_list)) + ")", [int(indexer_id)] + status_list)
-
         result = {}
-        for cur_result in cur_show_results:
-            cur_season = int(cur_result["season"])
-            cur_episode = int(cur_result["episode"])
+        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       if x['doc']['season'] != 0 and x['doc']['status'] in status_list]:
+
+            cur_season = int(dbData["season"])
+            cur_episode = int(dbData["episode"])
 
             if cur_season not in result:
                 result[cur_season] = {}
 
-            result[cur_season][cur_episode] = cur_result["name"]
+            result[cur_season][cur_episode] = dbData["name"]
 
         return json_encode(result)
 
@@ -2965,12 +2959,11 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
+            status_results = [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)
+                              for e in MainDB().db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
+                              if e['doc']['status'] in status_list and e['doc']['season'] != 0]
 
-            status_results = MainDB().select(
-                "SELECT show_name, tv_shows.indexer_id AS indexer_id FROM tv_episodes, tv_shows WHERE tv_episodes.status IN (" + ','.join(
-                    ['?'] * len(
-                        status_list)) + ") AND season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name",
-                status_list)
+            status_results.sort(key=lambda d: d['show_name'])
 
             for cur_status_result in status_results:
                 cur_indexer_id = int(cur_status_result["indexer_id"])
@@ -3017,13 +3010,11 @@ class Manage(Home, WebRoot):
             to_change[indexer_id].append(what)
 
         for cur_indexer_id in to_change:
-
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
-                all_eps_results = MainDB().select(
-                    "SELECT season, episode FROM tv_episodes WHERE status IN (" + ','.join(
-                        ['?'] * len(status_list)) + ") AND season != 0 AND showid = ?",
-                    status_list + [cur_indexer_id])
+                all_eps_results = [x['doc'] for x in MainDB().db.get_many('tv_episodes', cur_indexer_id, with_doc=True)
+                                   if x['doc']['status'] in status_list and x['doc']['season'] != 0]
+
                 all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
                 to_change[cur_indexer_id] = all_eps
 
@@ -3033,21 +3024,18 @@ class Manage(Home, WebRoot):
 
     @staticmethod
     def showSubtitleMissed(indexer_id, whichSubs):
-
-        cur_show_results = MainDB().select(
-            "SELECT season, episode, name, subtitles FROM tv_episodes WHERE showid = ? AND season != 0 AND status LIKE '%4'",
-            [int(indexer_id)])
-
         result = {}
-        for cur_result in cur_show_results:
+        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]:
+
             if whichSubs == 'all':
-                if not frozenset(subtitle_searcher.wantedLanguages()).difference(cur_result["subtitles"].split(',')):
+                if not frozenset(subtitle_searcher.wantedLanguages()).difference(dbData["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_result["subtitles"]:
+            elif whichSubs in dbData["subtitles"]:
                 continue
 
-            cur_season = int(cur_result["season"])
-            cur_episode = int(cur_result["episode"])
+            cur_season = int(dbData["season"])
+            cur_episode = int(dbData["episode"])
 
             if cur_season not in result:
                 result[cur_season] = {}
@@ -3055,9 +3043,9 @@ class Manage(Home, WebRoot):
             if cur_episode not in result[cur_season]:
                 result[cur_season][cur_episode] = {}
 
-            result[cur_season][cur_episode]["name"] = cur_result["name"]
+            result[cur_season][cur_episode]["name"] = dbData["name"]
 
-            result[cur_season][cur_episode]["subtitles"] = cur_result["subtitles"]
+            result[cur_season][cur_episode]["subtitles"] = dbData["subtitles"]
 
         return json_encode(result)
 
@@ -3073,11 +3061,18 @@ class Manage(Home, WebRoot):
                 action='subtitles_missed'
             )
 
-        status_results = MainDB().select(
-            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles " +
-            "FROM tv_episodes, tv_shows " +
-            "WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND tv_episodes.season != 0 " +
-            "AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
+        status_results = []
+        for s in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+            if not s['subtitles'] == 1: continue
+            for e in [x['doc'] for x in MainDB().db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                if e['status'].endswith('4') and e['season'] != 0:
+                    status_results += [{
+                        'show_name': s['show_name'],
+                        'indexer_id': s['indexer_id'],
+                        'subtitles': e['subtitles']
+                    }]
+
+        status_results.sort(key=lambda d: d['show_name'])
 
         ep_counts = {}
         show_names = {}
@@ -3132,10 +3127,10 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_download:
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
-                all_eps_results = MainDB().select(
-                    "SELECT season, episode FROM tv_episodes WHERE status LIKE '%4' AND season != 0 AND showid = ?",
-                    [cur_indexer_id])
-                to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
+                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', cur_indexer_id, with_doc=True)
+                          if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]
+
+                to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
 
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
@@ -3169,11 +3164,13 @@ class Manage(Home, WebRoot):
             epCounts[Overview.UNAIRED] = 0
             epCounts[Overview.SNATCHED] = 0
 
-            sqlResults = MainDB().select(
-                "SELECT * FROM tv_episodes WHERE tv_episodes.showid IN (SELECT tv_shows.indexer_id FROM tv_shows WHERE tv_shows.indexer_id = ? AND paused = 0) ORDER BY tv_episodes.season DESC, tv_episodes.episode DESC",
-                [curShow.indexerid])
+            dbData = [e['doc'] for x in MainDB().db.get_many('tv_shows', curShow.indexerid, with_doc=True)
+                      for e in MainDB().db.get_many('tv_episodes', x['doc']['indexer_id'], with_doc=True)
+                      if x['doc']['paused'] == 0]
 
-            for curResult in sqlResults:
+            dbData.sort(key=lambda d: (d['season'], d['episode']), reverse=True)
+
+            for curResult in dbData:
                 curEpCat = curShow.getOverview(int(curResult["status"] or -1))
                 if curEpCat:
                     epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
@@ -3181,7 +3178,7 @@ class Manage(Home, WebRoot):
 
             showCounts[curShow.indexerid] = epCounts
             showCats[curShow.indexerid] = epCats
-            showSQLResults[curShow.indexerid] = sqlResults
+            showSQLResults[curShow.indexerid] = dbData
 
         return self.render(
             "/manage/backlog_overview.mako",
@@ -3760,7 +3757,8 @@ class History(WebHandler):
                          item['quality'] == row['quality']][0]
                 history = compact[index]
                 history['actions'].append(action)
-                history['actions'].sort(key=lambda x: x['time'], reverse=True)
+
+                history['actions'].sort(key=lambda d: d['time'], reverse=True)
 
         submenu = [
             {'title': 'Clear History', 'path': '/history/clearHistory', 'icon': 'ui-icon ui-icon-trash',

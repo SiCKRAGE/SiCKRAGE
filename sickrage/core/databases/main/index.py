@@ -120,8 +120,8 @@ class HistoryIndex(HashIndex):
         super(HistoryIndex, self).__init__(*args, **kwargs)
 
     def make_key_value(self, data):
-        if data.get('_t') == 'history' and data.get('_id'):
-            return data.get('_id'), None
+        if data.get('_t') == 'history' and data.get('showid'):
+            return data.get('showid'), None
 
     def make_key(self, key):
         return key
@@ -135,8 +135,8 @@ class InfoIndex(HashIndex):
         super(InfoIndex, self).__init__(*args, **kwargs)
 
     def make_key_value(self, data):
-        if data.get('_t') == 'info' and data.get('_id'):
-            return data.get('_id'), None
+        if data.get('_t') == 'info' and data.get('last_indexer'):
+            return data.get('last_indexer'), None
 
     def make_key(self, key):
         return key

@@ -23,7 +23,7 @@ import os
 import sickrage
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.cache.index import LastUpdateIndex, LastSearchIndex, SceneExceptionsIndex, SceneNamesIndex, \
-    NetworkTimezonesIndex, SceneExceptionsRefreshIndex
+    NetworkTimezonesIndex, SceneExceptionsRefreshIndex, ProvidersIndex
 
 
 class CacheDB(srDatabase):
@@ -34,6 +34,7 @@ class CacheDB(srDatabase):
         'scene_names': SceneNamesIndex,
         'network_timezones': NetworkTimezonesIndex,
         'scene_exceptions_refresh': SceneExceptionsRefreshIndex,
+        'providers': ProvidersIndex,
     }
 
     _migrate_list = {

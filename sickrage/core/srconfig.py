@@ -2559,7 +2559,9 @@ class ConfigMigrator(srConfig):
                 "No shows were using season folders before so I'm disabling flattening on all shows")
 
             # don't flatten any shows at all
-            MainDB().action("UPDATE tv_shows SET flatten_folders = 0")
+            for dbData in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+                dbData['flatten_folders'] = 0
+                MainDB().db.update(dbData)
 
         self.CONFIG_OBJ['General']['naming_force_folders'] = check_force_season_folders()
 

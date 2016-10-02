@@ -744,9 +744,8 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.srCore.srLogger.debug("Deleting myself from the database")
 
-        sql = "DELETE FROM tv_episodes WHERE showid=" + str(self.show.indexerid) + " AND season=" + str(
-            self.season) + " AND episode=" + str(self.episode)
-        MainDB().action(sql)
+        [MainDB().db.delete(x) for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+         if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
         data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST and data:

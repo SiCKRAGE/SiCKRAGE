@@ -455,7 +455,7 @@ class GenericProvider(object):
 
         # check if we have items to add to cache
         if len(cl) > 0:
-            self.cache._getDB().mass_action(cl)
+            self.cache.ProviderDB().mass_action(cl)
             del cl  # cleanup
 
         return results

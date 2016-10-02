@@ -94,9 +94,14 @@ class SceneTests(SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
+        CacheDB().db.insert({
+            '_t': 'scene_exceptions',
+            'indexer_id': -1,
+            'show_name': 'Exception Test',
+            'season': -1
+        })
+
         exceptionsCache[-1] = ['Exception Test']
-        CacheDB().action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
-                    [-1, 'Exception Test', -1])
         countryList['Full Country Name'] = 'FCN'
 
         self._test_allPossibleShowNames('Show Name', expected=['Show Name'])
@@ -139,7 +144,7 @@ class SceneExceptionTestCase(SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        CacheDB().action("DELETE FROM scene_exceptions")
+        [CacheDB().db.delete(x) for x in CacheDB().db.all('scene_exceptions')]
 
         # put something in the cache
         sickrage.srCore.NAMECACHE.put('Cached Name', 0)

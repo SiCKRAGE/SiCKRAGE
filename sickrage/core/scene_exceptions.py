@@ -232,7 +232,8 @@ def get_scene_exception_by_name_multiple(show_name):
     out = []
 
     dbData = [x['doc'] for x in CacheDB().db.all('scene_exceptions', with_doc=True)]
-    dbData.sort(key=lambda x: x['season'])
+
+    dbData.sort(key=lambda d: d['season'])
 
     # try the obvious case first
     exception_result = [x for x in dbData if x['show_name'].lower() == show_name.lower()]

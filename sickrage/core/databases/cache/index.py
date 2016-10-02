@@ -112,3 +112,17 @@ class SceneExceptionsRefreshIndex(HashIndex):
 
     def make_key(self, key):
         return md5(key).hexdigest()
+
+class ProvidersIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = '32s'
+        super(ProvidersIndex, self).__init__(*args, **kwargs)
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'providers' and data.get('provider'):
+            return md5(data.get('provider')).hexdigest(), None
+
+    def make_key(self, key):
+        return md5(key).hexdigest()

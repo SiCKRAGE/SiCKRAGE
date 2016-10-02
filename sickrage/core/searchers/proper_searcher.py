@@ -185,27 +185,24 @@ class srProperSearcher(object):
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            sqlResults = MainDB().select(
-                "SELECT status FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
-                [bestResult.indexerid, bestResult.season, bestResult.episode])
-            if not sqlResults:
-                continue
+            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
+                      if x['doc']['season'] == bestResult.season and x['doc']['episode'] == bestResult.episode]
+            if not dbData: continue
 
             # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
-            oldStatus, oldQuality = Quality.splitCompositeStatus(int(sqlResults[0]["status"]))
+            oldStatus, oldQuality = Quality.splitCompositeStatus(int(dbData[0]["status"]))
             if oldStatus not in (DOWNLOADED, SNATCHED) or oldQuality != bestResult.quality:
                 continue
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if bestResult.show.is_anime:
-                sqlResults = MainDB().select(
-                    "SELECT release_group, version FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
-                    [bestResult.indexerid, bestResult.season, bestResult.episode])
+                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
+                          if x['doc']['season'] == bestResult.season and x['doc']['episode'] == bestResult.episode]
 
-                oldVersion = int(sqlResults[0]["version"])
-                oldRelease_group = (sqlResults[0]["release_group"])
+                oldVersion = int(dbData[0]["version"])
+                oldRelease_group = (dbData[0]["release_group"])
 
-                if oldVersion > -1 and oldVersion < bestResult.version:
+                if -1 < oldVersion < bestResult.version:
                     sickrage.srCore.srLogger.info(
                         "Found new anime v" + str(bestResult.version) + " to replace existing v" + str(oldVersion))
                 else:
@@ -232,16 +229,14 @@ class srProperSearcher(object):
         """
 
         for curProper in properList:
-
             historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            historyResults = MainDB().select(
-                "SELECT resource FROM history " +
-                "WHERE showid = ? AND season = ? AND episode = ? AND quality = ? AND date >= ? " +
-                "AND action IN (" + ",".join([str(x) for x in Quality.SNATCHED + Quality.DOWNLOADED]) + ")",
-                [curProper.indexerid, curProper.season, curProper.episode, curProper.quality,
-                 historyLimit.strftime(History.date_format)])
+            historyResults = [x for x in MainDB().db.get_many('history', curProper.indexerid, with_doc=True)
+                              if x['doc']['season'] == curProper.season and x['doc']['episode'] == curProper.episode
+                              and x['doc']['quality'] == curProper.quality
+                              and x['doc']['date'] >= historyLimit.strftime(History.date_format)
+                              and x['doc']['action'] in Quality.SNATCHED + Quality.DOWNLOADED]
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper so we can't do it
             if len(historyResults) == 0:
@@ -295,13 +290,17 @@ class srProperSearcher(object):
 
         sickrage.srCore.srLogger.debug("Setting the last Proper search in the DB to " + str(when))
 
-        sqlResults = MainDB().select("SELECT * FROM info")
-
-        if len(sqlResults) == 0:
-            MainDB().action("INSERT INTO info (last_backlog, last_indexer, last_proper_search) VALUES (?,?,?)",
-                                    [0, 0, str(when)])
+        dbData = [x['doc'] for x in MainDB().db.all('info', with_doc=True)]
+        if len(dbData) == 0:
+            MainDB().db.insert({
+                '_t': 'info',
+                'last_backlog': 0,
+                'last_indexer': 0,
+                'last_proper_search': str(when)
+            })
         else:
-            MainDB().action("UPDATE info SET last_proper_search=" + str(when))
+            dbData[0]['last_proper_search'] = str(when)
+            MainDB().db.update(dbData[0])
 
     @staticmethod
     def _get_lastProperSearch():
@@ -309,11 +308,10 @@ class srProperSearcher(object):
         Find last propersearch from DB
         """
 
-        sqlResults = MainDB().select("SELECT * FROM info")
-
         try:
-            last_proper_search = datetime.date.fromordinal(int(sqlResults[0]["last_proper_search"]))
+            dbData = [x['doc'] for x in MainDB().db.all('info', with_doc=True)]
+            last_proper_search = datetime.date.fromordinal(int(dbData[0]["last_proper_search"]))
         except:
-            return datetime.date.fromordinal(1)
+            last_proper_search = datetime.date.fromordinal(1)
 
         return last_proper_search

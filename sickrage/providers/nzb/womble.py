@@ -36,11 +36,11 @@ class WombleCache(tv_cache.TVCache):
         # only poll Womble's Index every 15 minutes max
         self.minTime = 15
 
-    def updateCache(self):
+    def update(self):
         # check if we should update
         if self.shouldUpdate():
             # clear cache
-            self._clearCache()
+            self.clear()
 
             # set updated
             self.setLastUpdate()
@@ -58,7 +58,7 @@ class WombleCache(tv_cache.TVCache):
                         cl.append(ci)
 
             if len(cl) > 0:
-                self._getDB().mass_action(cl)
+                self.db().mass_action(cl)
                 del cl  # cleanup
 
         return True
