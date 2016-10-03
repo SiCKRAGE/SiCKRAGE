@@ -144,7 +144,7 @@ class SceneExceptionTestCase(SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        [CacheDB().db.delete(x) for x in CacheDB().db.all('scene_exceptions')]
+        [CacheDB().db.delete(x['doc']) for x in CacheDB().db.all('scene_exceptions', with_doc=True)]
 
         # put something in the cache
         sickrage.srCore.NAMECACHE.put('Cached Name', 0)

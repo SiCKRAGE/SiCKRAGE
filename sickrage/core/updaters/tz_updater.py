@@ -80,8 +80,7 @@ def update_network_dict():
     if network_timezones:
         for x in network_timezones:
             try:
-                dbData = CacheDB().db.get('network_timezones', x)
-                CacheDB().db.delete(dbData)
+                CacheDB().db.delete(CacheDB().db.get('network_timezones', x, with_doc=True)['doc'])
             except RecordNotFound:
                 continue
 

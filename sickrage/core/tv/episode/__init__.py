@@ -27,7 +27,6 @@ from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
 import sickrage
-from CodernityDB.database import RecordNotFound
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.databases.main import MainDB
@@ -744,7 +743,7 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.srCore.srLogger.debug("Deleting myself from the database")
 
-        [MainDB().db.delete(x) for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
          if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
         data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
@@ -786,6 +785,7 @@ class TVEpisode(object):
 
         tv_episode = {
             '_t': 'tv_episodes',
+            "showid": self.show.indexerid,
             "season": self.season,
             "episode": self.episode,
             "indexerid": self.indexerid,
@@ -809,10 +809,12 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = MainDB().db.get('tv_episodes', self.show.indexerid, with_doc=True)['doc']
+            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+                      if x['doc']['indexerid'] == self.indexerid][0]
+
             dbData.update(tv_episode)
             MainDB().db.update(dbData)
-        except RecordNotFound:
+        except:
             MainDB().db.insert(tv_episode)
 
     def fullPath(self):

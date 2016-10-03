@@ -3619,7 +3619,7 @@ class Manage(Home, WebRoot):
 
         for release in toRemove:
             try:
-                MainDB().db.delete(MainDB().db.get('failed', release))
+                MainDB().db.delete(MainDB().db.get('failed', release, with_doc=True)['doc'])
             except RecordNotFound:
                 continue
 

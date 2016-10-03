@@ -86,7 +86,7 @@ class BlackAndWhiteList(object):
         :param table: SQL table remove keywords from
         """
         try:
-            MainDB().db.delete(MainDB().db.get(table, self.show_id))
+            MainDB().db.delete(MainDB().db.get(table, self.show_id, with_doc=True)['doc'])
         except RecordNotFound:
             pass
 

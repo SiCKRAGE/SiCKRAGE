@@ -522,5 +522,6 @@ class Core(object):
                 self.srLogger.debug("Loading data for show: [%s]", show.name)
                 show.nextEpisode()
                 self.SHOWLIST += [show]
+                self.NAMECACHE.clear(show.indexerid)
             except Exception as e:
                 self.srLogger.error("Show error in [%s]: %s" % (dbData['location'], e.message))

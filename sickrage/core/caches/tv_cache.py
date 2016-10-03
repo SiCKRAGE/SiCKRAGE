@@ -43,7 +43,7 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [CacheDB().db.delete(x) for x in CacheDB().db.get_many(self.providerID)]
+            [CacheDB().db.delete(x['doc']) for x in CacheDB().db.get_many(self.providerID, with_doc=True)]
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -226,7 +226,7 @@ class TVCache(object):
             # get version
             version = parse_result.version
 
-            if not len([x for x in CacheDB().db.get('providers', self.providerID, with_doc=True)
+            if not len([x for x in CacheDB().db.get_many('providers', self.providerID, with_doc=True)
                         if x['doc']['url'] == url]):
                 CacheDB().db.insert({
                     '_t': 'providers',
