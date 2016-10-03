@@ -254,7 +254,7 @@
 
                     <tr>
                         <td class="showLegend">Size:</td>
-                        <td>${pretty_filesize(get_size(showLoc[0]))}</td>
+                        <td>${pretty_filesize(get_size(showLoc))}</td>
                     </tr>
 
                 </table>
@@ -412,8 +412,8 @@
                     dfltEpNumbering = True
 
                 epLoc = epResult["location"]
-                if epLoc and showLoc[1] and epLoc.lower().startswith(showLoc[0].lower()):
-                    epLoc = epLoc[len(showLoc[0])+1:]
+                if epLoc and os.path.isdir(showLoc) and epLoc.lower().startswith(showLoc.lower()):
+                    epLoc = epLoc[len(showLoc)+1:]
             %>
             % if int(epResult["season"]) != curSeason:
                 % if curSeason == -1:
