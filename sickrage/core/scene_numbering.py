@@ -125,7 +125,7 @@ def find_scene_absolute_numbering(indexer_id, indexer, absolute_number):
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    dbData = [x['doc'] for x in MainDB().db.get_many('scene_absolute_number', indexer_id, with_doc=True)
+    dbData = [x['doc'] for x in MainDB().db.get_many('scene_numbering', indexer_id, with_doc=True)
               if x['doc']['indexer'] == indexer
               and x['doc']['absolute_number'] == absolute_number
               and x['doc']['scene_absolute_number'] != 0]

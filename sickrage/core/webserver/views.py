@@ -1169,9 +1169,9 @@ class Home(WebHandler):
             if showObj is None:
                 return self._genericMessage("Error", "Show not in show list")
 
-        episodeResults = [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)]
-        episodeResults.sort(key=lambda d: (d['season'], d['episode']), reverse=True)
-        seasonResults = list({x['season'] for x in episodeResults})
+        episodeResults = []
+        #episodeResults.sort(key=lambda d: (d['season'], d['episode']), reverse=True)
+        seasonResults = {x['season'] for x in episodeResults}
 
         submenu = [
             {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
