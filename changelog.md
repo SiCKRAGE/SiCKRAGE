@@ -1,6 +1,7 @@
 # Changelog
 
-- * 009ca84 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 4902afe - 2016-10-03: migrate: SQLite -&gt; CodernityDB fix: Fixed issues with show path validation 
+- * e285dd9 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 152d87a - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 88641f4 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * fe72bf4 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 

@@ -19,14 +19,14 @@
 from __future__ import unicode_literals
 
 import datetime
+import os
 import threading
 import time
 
 import sickrage
 from CodernityDB.database import RecordNotFound
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.exceptions import CantRefreshShowException, \
-    CantUpdateShowException
+from sickrage.core.exceptions import CantRefreshShowException, CantUpdateShowException
 from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
 from sickrage.indexers import srIndexerApi
@@ -71,11 +71,15 @@ class srShowUpdater(object):
         for curShow in sickrage.srCore.SHOWLIST:
             try:
                 curShow.nextEpisode()
+
+                if not os.path.isdir(curShow.location):
+                    continue
+
                 if curShow.indexerid in set(d["id"] for d in updated_shows or {}):
                     piList.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
                 else:
                     piList.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
-            except (CantUpdateShowException, CantRefreshShowException) as e:
+            except (CantUpdateShowException, CantRefreshShowException):
                 continue
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))

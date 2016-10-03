@@ -4,7 +4,7 @@
     from sickrage.indexers import adba, srIndexerApi
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings, Quality
-    from sickrage.core.exceptions import ShowDirectoryNotFoundException
+    from sickrage.core.exceptions import ShowDirInvalid
 %>
 
 <%block name="metas">
@@ -38,7 +38,7 @@
                                     <%
                                         try:
                                             showLoc = show.location
-                                        except ShowDirectoryNotFoundException:
+                                        except ShowDirInvalid:
                                             showLoc = ""
                                     %>
                                     <input type="text" name="location" id="location" value="${showLoc}"

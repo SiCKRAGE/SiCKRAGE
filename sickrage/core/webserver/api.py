@@ -50,8 +50,7 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
 from sickrage.core.databases.main import MainDB
 from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.exceptions import CantUpdateShowException, \
-    ShowDirectoryNotFoundException
+from sickrage.core.exceptions import CantUpdateShowException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
     pretty_filesize, sanitizeFileName, srdatetime, tryInt, readFileBuffered
 from sickrage.core.media.banner import Banner
@@ -752,21 +751,18 @@ class CMD_Episode(ApiCall):
         if not len(sqlResults) == 1:
             raise ApiError("Episode not found")
         episode = sqlResults[0]
+
+        showPath = showObj.location
+
         # handle path options
         # absolute vs relative vs broken
-        showPath = None
-        try:
-            showPath = showObj.location
-        except ShowDirectoryNotFoundException:
+        if bool(self.fullPath) is True and os.path.isdir(showPath):
             pass
-
-        if bool(self.fullPath) == True and showPath:
-            pass
-        elif bool(self.fullPath) == False and showPath:
+        elif bool(self.fullPath) is False and os.path.isdir(showPath):
             # using the length because lstrip removes to much
             showPathLength = len(showPath) + 1  # the / or \ yeah not that nice i know
             episode["location"] = episode["location"][showPathLength:]
-        elif not showPath:  # show dir is broken ... episode path will be empty
+        elif not os.path.isdir(showPath):  # show dir is broken ... episode path will be empty
             episode["location"] = ""
 
         # convert stuff to human form
@@ -1882,11 +1878,7 @@ class CMD_Show(ApiCall):
         anyQualities, bestQualities = _mapQuality(showObj.quality)
         showDict["quality_details"] = {"initial": anyQualities, "archive": bestQualities}
 
-        try:
-            showDict["location"] = showObj.location
-        except ShowDirectoryNotFoundException:
-            showDict["location"] = ""
-
+        showDict["location"] = showObj.location
         showDict["language"] = showObj.lang
         showDict["show_name"] = showObj.name
         showDict["paused"] = (0, 1)[showObj.paused]

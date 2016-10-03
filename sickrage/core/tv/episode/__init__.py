@@ -809,7 +809,7 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = MainDB().db.get('tv_episodes', self.show.indexerid)['doc']
+            dbData = MainDB().db.get('tv_episodes', self.show.indexerid, with_doc=True)['doc']
             dbData.update(tv_episode)
             MainDB().db.update(dbData)
         except RecordNotFound:

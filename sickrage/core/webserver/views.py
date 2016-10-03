@@ -57,8 +57,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.databases.failed import FailedDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException, NoNFOException, \
-    ShowDirectoryNotFoundException
+    MultipleShowObjectsException, NoNFOException
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
@@ -1176,10 +1175,7 @@ class Home(WebHandler):
         submenu = [
             {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
 
-        try:
-            showLoc = (showObj.location, True)
-        except ShowDirectoryNotFoundException:
-            showLoc = ("", False)
+        showLoc = showObj.location
 
         show_message = ''
 
@@ -1484,7 +1480,7 @@ class Home(WebHandler):
             if os.path.normpath(showObj.location) != os.path.normpath(location):
                 sickrage.srCore.srLogger.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
                 if not os.path.isdir(location) and not sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS:
-                    errors.append("New location <tt>%s</tt> does not exist" % location)
+                    errors.append("New location <tt>{}</tt> does not exist".format(location))
 
                 # don't bother if we're going to update anyway
                 elif not do_update:
@@ -1875,9 +1871,7 @@ class Home(WebHandler):
         if showObj is None:
             return self._genericMessage("Error", "Show not in show list")
 
-        try:
-            showObj.location  # @UnusedVariable
-        except ShowDirectoryNotFoundException:
+        if not os.path.isdir(showObj.location):
             return self._genericMessage("Error", "Can't rename episodes when the show dir is missing.")
 
         ep_obj_rename_list = []
@@ -1928,9 +1922,7 @@ class Home(WebHandler):
             errMsg = "Error", "Show not in show list"
             return self._genericMessage("Error", errMsg)
 
-        try:
-            show_obj.location  # @UnusedVariable
-        except ShowDirectoryNotFoundException:
+        if not os.path.isdir(show_obj.location):
             return self._genericMessage("Error", "Can't rename episodes when the show dir is missing.")
 
         if eps is None:

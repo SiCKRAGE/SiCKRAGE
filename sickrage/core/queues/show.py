@@ -28,7 +28,7 @@ from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException, ShowDirectoryNotFoundException
+    MultipleShowObjectsException
 from sickrage.core.helpers import scrub
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
@@ -324,6 +324,7 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             self.show = TVShow(self.indexer, self.indexer_id, self.lang)
+
             self.show.loadFromIndexer()
 
             # set up initial values
@@ -492,11 +493,8 @@ class QueueItemRename(ShowQueueItem):
 
         sickrage.srCore.srLogger.info("Performing renames for show: {}".format(self.show.name))
 
-        try:
-            self.show.location
-        except ShowDirectoryNotFoundException:
-            sickrage.srCore.srLogger.warning(
-                "Can't perform rename on " + self.show.name + " when the show dir is missing.")
+        if not os.path.isdir(self.show.location):
+            sickrage.srCore.srLogger.warning("Can't perform rename on " + self.show.name + " when the show dir is missing.")
             return
 
         ep_obj_rename_list = []

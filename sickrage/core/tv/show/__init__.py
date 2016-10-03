@@ -30,6 +30,7 @@ import traceback
 import imdbpie
 import send2trash
 import sickrage
+from CodernityDB.database import RecordNotFound
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
@@ -40,8 +41,7 @@ from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, 
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException
-from sickrage.core.exceptions import MultipleShowObjectsException, ShowDirectoryNotFoundException, \
-    ShowNotFoundException, \
+from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
 from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, \
     safe_getattr
@@ -386,19 +386,15 @@ class TVShow(object):
 
     @property
     def location(self):
-        if any([sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS, os.path.isdir(self._location)]):
+        if sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS or os.path.isdir(self._location):
             return self._location
-
-        raise ShowDirectoryNotFoundException("Invalid folder for the show: {}".format(self._location))
 
     @location.setter
     def location(self, new_location):
-        if not any([sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR, os.path.isdir(new_location)]):
-            raise ShowDirectoryNotFoundException("Invalid folder for the show: {}".format(new_location))
-
-        sickrage.srCore.srLogger.debug("Show location set to " + new_location)
-        self.dirty = True
-        self._location = new_location
+        if sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR or os.path.isdir(new_location):
+            sickrage.srCore.srLogger.debug("Show location set to " + new_location)
+            self.dirty = True
+            self._location = new_location
 
     # delete references to anything that's not in the internal lists
     def flushEpisodes(self):
@@ -1142,7 +1138,12 @@ class TVShow(object):
         # remove entire show folder
         if full:
             try:
+                if not os.path.isdir(self.location):
+                    sickrage.srCore.srLogger.warning("Show folder does not exist, no need to %s %s" % (action, self.location))
+                    return
+
                 sickrage.srCore.srLogger.info('Attempt to %s show folder %s' % (action, self.location))
+
                 # check first the read-only attribute
                 file_attribute = os.stat(self.location)[0]
                 if not file_attribute & stat.S_IWRITE:
@@ -1162,10 +1163,6 @@ class TVShow(object):
                 sickrage.srCore.srLogger.info('%s show folder %s' %
                                               (('Deleted', 'Trashed')[sickrage.srCore.srConfig.TRASH_REMOVE_SHOW],
                                                self.location))
-
-            except ShowDirectoryNotFoundException:
-                sickrage.srCore.srLogger.warning(
-                    "Show folder does not exist, no need to %s %s" % (action, self.location))
             except OSError as e:
                 sickrage.srCore.srLogger.warning('Unable to %s %s: %s / %s' % (action, self.location, repr(e), str(e)))
 
@@ -1314,7 +1311,7 @@ class TVShow(object):
         try:
             dbData = MainDB().db.get('tv_shows', self.indexerid, with_doc=True)['doc']
             dbData.update(tv_show)
-            MainDB().db.update(tv_show)
+            MainDB().db.update(dbData)
         except RecordNotFound:
             MainDB().db.insert(tv_show)
 
@@ -1326,7 +1323,7 @@ class TVShow(object):
             })
 
             try:
-                dbData = MainDB().db.get('imdb_info', self.indexerid)['doc']
+                dbData = MainDB().db.get('imdb_info', self.indexerid, with_doc=True)['doc']
                 dbData.update(self.imdb_info)
                 MainDB().db.update(dbData)
             except RecordNotFound:

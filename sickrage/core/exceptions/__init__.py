@@ -103,12 +103,6 @@ class NoNFOException(SickRageException):
     """
 
 
-class ShowDirectoryNotFoundException(SickRageException):
-    """
-    The show directory was not found
-    """
-
-
 class ShowNotFoundException(SickRageException):
     """
     The show wasn't found on the Indexer

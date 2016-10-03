@@ -30,8 +30,7 @@ import subprocess
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodeNotFoundException, \
-    EpisodePostProcessingFailedException, ShowDirectoryNotFoundException
+from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException
 from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs
@@ -1040,14 +1039,13 @@ class PostProcessor(object):
             self._log("Couldn't find release in snatch history", sickrage.srCore.srLogger.WARNING)
 
         # find the destination folder
-        try:
-            proper_path = ep_obj.proper_path()
-            proper_absolute_path = os.path.join(ep_obj.show.location, proper_path)
-
-            dest_path = os.path.dirname(proper_absolute_path)
-        except ShowDirectoryNotFoundException:
+        if not os.path.isdir(ep_obj.show.location):
             raise EpisodePostProcessingFailedException(
                 "Unable to post-process an episode if the show dir doesn't exist, quitting")
+
+        proper_path = ep_obj.proper_path()
+        proper_absolute_path = os.path.join(ep_obj.show.location, proper_path)
+        dest_path = os.path.dirname(proper_absolute_path)
 
         self._log("Destination folder for this episode: " + dest_path, sickrage.srCore.srLogger.DEBUG)
 
