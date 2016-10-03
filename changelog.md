@@ -1,6 +1,8 @@
 # Changelog
 
-- * f5e1102 - 2016-10-02: migrate: SQLite -&gt; CodernityDB 
+- * f679050 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 68adab8 - 2016-10-02: migrate: SQLite -&gt; CodernityDB 
+- * 2715e66 - 2016-10-02: migrate: SQLite -&gt; CodernityDB 
 - * de6a283 - 2016-10-01: migrate: SQLite -&gt; CodernityDB 
 - * 32e04d1 - 2016-09-24: migrate: SQLite -&gt; CodernityDB 
 - * c8f9875 - 2016-09-24: fix: BTN API Call limit exception handling fixed 

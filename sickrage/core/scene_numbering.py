@@ -544,7 +544,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                 "Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id,
                                                                                    srIndexerApi(indexer).name,
                                                                                    e.message))
-    sickrage.srCore.srLogger.debug(traceback.format_exc())
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
 
 
 def get_absolute_number_from_season_and_episode(show, season, episode):
