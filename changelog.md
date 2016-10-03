@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4a0f1b9 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 009ca84 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 152d87a - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 88641f4 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * fe72bf4 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 80ad7aa - 2016-10-03: migrate: SQLite -&gt; CodernityDB 

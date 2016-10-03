@@ -85,7 +85,7 @@ class History:
                     'resource': result['resource'],
                     'season': result['season'],
                     'show_id': result['showid'],
-                    'show_name': result['show_name']
+                    'show_name': tv_show['show_name']
                 })
 
         return sorted(data, key=lambda d: d['date'], reverse=True)
