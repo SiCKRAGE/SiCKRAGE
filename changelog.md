@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4902afe - 2016-10-03: migrate: SQLite -&gt; CodernityDB fix: Fixed issues with show path validation 
+- * 07e697d - 2016-10-03: migrate: SQLite -&gt; CodernityDB add: Added code to check for development mode and use regular FileHandler for logs instead of RotatingFileHandler 
+- * 173149c - 2016-10-03: migrate: SQLite -&gt; CodernityDB fix: Fixed issues with show path validation 
 - * e285dd9 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 152d87a - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 88641f4 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 

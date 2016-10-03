@@ -1,5 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
+    import os
     import datetime
     import urllib
     import ntpath
@@ -210,15 +211,15 @@
                         <td class="showLegend">Default EP Status:</td>
                         <td>${statusStrings[show.default_ep_status]}</td>
                     </tr>
-                    % if showLoc[1]:
+                    % if os.path.isdir(showLoc):
                         <tr>
                             <td class="showLegend">Location:</td>
-                            <td>${showLoc[0]}</td>
+                            <td>${showLoc}</td>
                         </tr>
                     % else:
                         <tr>
                             <td class="showLegend"><span style="color: red;">Location: </span></td>
-                            <td><span style="color: red;">${showLoc[0]}</span> (Missing)</td>
+                            <td><span style="color: red;">${showLoc}</span> (Missing)</td>
                         </tr>
                     % endif
                     <tr>

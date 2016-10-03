@@ -386,8 +386,7 @@ class TVShow(object):
 
     @property
     def location(self):
-        if sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS or os.path.isdir(self._location):
-            return self._location
+        return self._location
 
     @location.setter
     def location(self, new_location):

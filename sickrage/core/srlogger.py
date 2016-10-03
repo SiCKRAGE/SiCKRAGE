@@ -29,6 +29,7 @@ import re
 import sys
 import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
+from logging import FileHandler
 from logging.handlers import RotatingFileHandler
 
 import sickrage
@@ -114,13 +115,18 @@ class srLogger(logging.getLoggerClass()):
             console.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
             self.addHandler(console)
 
-        # rotating log file handlers
+        # file log handlers
         if self.logFile and makeDir(os.path.dirname(self.logFile)):
-            rfh = RotatingFileHandler(
-                filename=self.logFile,
-                maxBytes=self.logSize,
-                backupCount=self.logNr
-            )
+            if sickrage.DEVELOPER:
+                rfh = FileHandler(
+                    filename=self.logFile,
+                )
+            else:
+                rfh = RotatingFileHandler(
+                    filename=self.logFile,
+                    maxBytes=self.logSize,
+                    backupCount=self.logNr
+                )
 
             rfh_errors = RotatingFileHandler(
                 filename=self.logFile.replace('.log', '.error.log'),
