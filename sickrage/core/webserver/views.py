@@ -1004,12 +1004,10 @@ class Home(WebHandler):
 
     @staticmethod
     def loadShowNotifyLists():
-        tv_shows = [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]
-
-        tv_shows.sort(key=lambda d: d['show_name'])
-
         data = {}
         size = 0
+
+        tv_shows = sorted([x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)], key=lambda d: d['show_name'])
 
         for s in tv_shows:
             data[s['show_id']] = {'id': s['show_id'], 'name': s['show_name'], 'list': s['notify_list']}
@@ -1169,9 +1167,11 @@ class Home(WebHandler):
             if showObj is None:
                 return self._genericMessage("Error", "Show not in show list")
 
-        episodeResults = []
-        #episodeResults.sort(key=lambda d: (d['season'], d['episode']), reverse=True)
-        seasonResults = {x['season'] for x in episodeResults}
+        episodeResults = sorted(
+            [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
+            key=lambda d: (d['season'], d['episode']), reverse=True)
+
+        seasonResults = list({x['season'] for x in episodeResults})
 
         submenu = [
             {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
@@ -2958,11 +2958,10 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            status_results = [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)
-                              for e in MainDB().db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
-                              if e['doc']['status'] in status_list and e['doc']['season'] != 0]
-
-            status_results.sort(key=lambda d: d['show_name'])
+            status_results = sorted([s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)
+                                     for e in MainDB().db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
+                                     if e['doc']['status'] in status_list and e['doc']['season'] != 0],
+                                    key=lambda d: d['show_name'])
 
             for cur_status_result in status_results:
                 cur_indexer_id = int(cur_status_result["indexer_id"])
@@ -3071,7 +3070,7 @@ class Manage(Home, WebRoot):
                         'subtitles': e['subtitles']
                     }]
 
-        status_results.sort(key=lambda d: d['show_name'])
+        status_results = sorted(status_results, key=lambda d: d['show_name'])
 
         ep_counts = {}
         show_names = {}
@@ -3163,11 +3162,9 @@ class Manage(Home, WebRoot):
             epCounts[Overview.UNAIRED] = 0
             epCounts[Overview.SNATCHED] = 0
 
-            dbData = [e['doc'] for x in MainDB().db.get_many('tv_shows', curShow.indexerid, with_doc=True)
+            dbData = sorted([e['doc'] for x in MainDB().db.get_many('tv_shows', curShow.indexerid, with_doc=True)
                       for e in MainDB().db.get_many('tv_episodes', x['doc']['indexer_id'], with_doc=True)
-                      if x['doc']['paused'] == 0]
-
-            dbData.sort(key=lambda d: (d['season'], d['episode']), reverse=True)
+                      if x['doc']['paused'] == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
             for curResult in dbData:
                 curEpCat = curShow.getOverview(int(curResult["status"] or -1))
@@ -3737,6 +3734,7 @@ class History(WebHandler):
                                 history['season'] == row['season'] and
                                 history['episode'] == row['episode'] and
                                 history['quality'] == row['quality']) for history in compact):
+
                 history = {
                     'actions': [action],
                     'episode': row['episode'],
@@ -3754,6 +3752,7 @@ class History(WebHandler):
                          item['season'] == row['season'] and
                          item['episode'] == row['episode'] and
                          item['quality'] == row['quality']][0]
+
                 history = compact[index]
                 history['actions'].append(action)
 

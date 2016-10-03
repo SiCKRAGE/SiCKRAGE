@@ -449,19 +449,14 @@ class TVShow(object):
                         and r['location'] != '' and r['location'] == cur_result['location']
                         and r['episode'] != cur_result['episode']]) > 0:
 
-                    related_eps_result = [x['doc'] for x in
-                                          MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                                          if x['doc']['season'] == cur_ep.season
-                                          and x['doc']['location'] == cur_ep.location
-                                          and x['doc']['episode'] == cur_ep.episode]
-
-                    related_eps_result.sort(key=lambda d: d['episode'])
+                    related_eps_result = sorted([x['doc'] for x in
+                                                 MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                                                 if x['doc']['season'] == cur_ep.season
+                                                 and x['doc']['location'] == cur_ep.location
+                                                 and x['doc']['episode'] == cur_ep.episode], key=lambda d: d['episode'])
 
                     for cur_related_ep in related_eps_result:
-
-                        related_ep = self.getEpisode(int(cur_related_ep["season"]),
-                                                     int(cur_related_ep["episode"]))
-
+                        related_ep = self.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
                         if related_ep and related_ep not in cur_ep.relatedEps:
                             cur_ep.relatedEps.append(related_ep)
 
@@ -522,21 +517,21 @@ class TVShow(object):
         last_airdate = datetime.date.fromordinal(1)
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
-        dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                  if x['doc']['season'] > 0 and x['doc']['airdate'] > 1 and x['doc']['status'] == 1]
+        dbData = sorted([x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                         if x['doc']['season'] > 0 and x['doc']['airdate'] > 1 and x['doc']['status'] == 1],
+                        key=lambda d: d['airdate'], reverse=True)
 
         if dbData:
-            dbData.sort(key=lambda d: d['airdate'], reverse=True)
             last_airdate = datetime.date.fromordinal(dbData[0]['airdate'])
             if (update_date - graceperiod) <= last_airdate <= (update_date + graceperiod):
                 return True
 
         # get next upcoming UNAIRED episode to compare against today + graceperiod
-        dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                  if x['doc']['season'] > 0 and x['doc']['airdate'] > 1 and x['doc']['status'] == 1]
+        dbData = sorted([x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                         if x['doc']['season'] > 0 and x['doc']['airdate'] > 1 and x['doc']['status'] == 1],
+                        key=lambda d: d['airdate'])
 
         if dbData:
-            dbData.sort(key=lambda d: d['airdate'])
             next_airdate = datetime.date.fromordinal(dbData[0]['airdate'])
             if next_airdate <= (update_date + graceperiod):
                 return True

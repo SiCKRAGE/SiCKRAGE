@@ -88,9 +88,7 @@ class History:
                     'show_name': result['show_name']
                 })
 
-        if len(data): data.sort(key=lambda d: d['date'], reverse=True)
-
-        return data
+        return sorted(data, key=lambda d: d['date'], reverse=True)
 
     def trim(self):
         """
@@ -422,11 +420,9 @@ class FailedHistory(object):
         provider = None
 
         # Clear old snatches for this release if any exist
-        dbData = [x['doc'] for x in FailedDB().db.get_many('history', epObj.show.indexerid, with_doc=True)
+        dbData = sorted([x['doc'] for x in FailedDB().db.get_many('history', epObj.show.indexerid, with_doc=True)
                   if x['doc']['season'] == epObj.season
-                  and x['doc']['episode'] == epObj.episode]
-
-        dbData.sort(key=lambda d: d['date'])
+                  and x['doc']['episode'] == epObj.episode], key=lambda d: d['date'])
 
         [FailedDB().db.delete(x) for x in dbData[1::]]
 
