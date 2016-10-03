@@ -171,7 +171,7 @@ def get_scene_exceptions(indexer_id, season=-1):
                 exceptionsCache[indexer_id] = {}
 
             exceptionsCache[indexer_id][season] = exceptionsList
-        except RecordNotFound:
+        except:
             pass
     else:
         exceptionsList = exceptionsCache[indexer_id][season]
