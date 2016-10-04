@@ -745,12 +745,13 @@ class CMD_Episode(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        sqlResults = MainDB().select(
-            "SELECT name, description, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND episode = ? AND season = ?",
-            [self.indexerid, self.e, self.s])
-        if not len(sqlResults) == 1:
+        dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                  if x['doc']['season'] == self.s and x['doc']['episode'] == self.e]
+
+        if not len(dbData) == 1:
             raise ApiError("Episode not found")
-        episode = sqlResults[0]
+
+        episode = dbData[0]
 
         showPath = showObj.location
 

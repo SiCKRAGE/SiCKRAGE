@@ -501,10 +501,11 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
-        if x['doc']['release_name'] == dirName]: return True
+    if [x for x in MainDB().db.all('tv_episodes', with_doc=True)
+        if x['doc']['release_name'] == dirName]:
+        return True
     else:
-        if [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
+        if [x for x in MainDB().db.all('tv_episodes', with_doc=True)
             if x['doc']['release_name'] == [videofile.rpartition('.')[0]]]: return True
 
         # Needed if we have downloaded the same episode @ different quality
@@ -515,21 +516,20 @@ def already_postprocessed(dirName, videofile, force, result):
         except:
             parse_result = False
 
-        search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid"  # This part is always the same
-        search_sql += " WHERE history.season=tv_episodes.season and history.episode=tv_episodes.episode"
-        # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
-        if parse_result and (
-                        parse_result.show.indexerid and parse_result.episode_numbers and parse_result.season_number):
-            search_sql += " and tv_episodes.showid = '" + str(
-                parse_result.show.indexerid) + "' and tv_episodes.season = '" + str(
-                parse_result.season_number) + "' and tv_episodes.episode = '" + str(
-                parse_result.episode_numbers[0]) + "'"
+        for h in [h['doc'] for h in MainDB().db.all('history', with_doc=True)]:
+            for e in [e['doc'] for e in MainDB().db.get_many('tv_episodes', h['showid'], with_doc=True)
+                      if h['season'] == e['season'] and h['episode'] == e['episode']
+                      and e['status'] in Quality.DOWNLOADED and h['resource'].endswith(videofile)]:
 
-        search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in Quality.DOWNLOADED]) + ")"
-        search_sql += " and history.resource LIKE ?"
-        if MainDB().select(search_sql, ['%' + videofile]):
-            # result.output += logHelper(u"You're trying to post process a video that's already been processed, skipping", LOGGER.DEBUG)
-            return True
+                # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
+                if parse_result and (
+                        parse_result.show.indexerid and parse_result.episode_numbers and parse_result.season_number):
+                    if e['showid'] == int(parse_result.show.indexerid) and e['season'] == int(
+                                    parse_result.season_number and e['episode']) == int(
+                            parse_result.episode_numbers[0]):
+                        return True
+                else:
+                    return True
 
     return False
 

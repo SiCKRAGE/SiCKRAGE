@@ -1,6 +1,7 @@
 # Changelog
 
-- * e52b8bf - 2016-10-03: fix: Corrected missing DOC variable indexes 
+- * a79f891 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 987c3ee - 2016-10-03: fix: Corrected missing DOC variable indexes 
 - * 2363878 - 2016-10-03: fix: Corrected missing DOC variable indexes 
 - * ad28896 - 2016-10-03: fix: Corrected old code for show location to new-style 
 - * a0de263 - 2016-10-03: migrate: SQLite -&gt; CodernityDB add: Added code to check for development mode and use regular FileHandler for logs instead of RotatingFileHandler 

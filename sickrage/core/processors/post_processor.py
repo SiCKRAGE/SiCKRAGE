@@ -650,28 +650,29 @@ class PostProcessor(object):
                 airdate = episodes[0].toordinal()
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
-                sql_result = MainDB().select(
-                    "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ? AND season != 0",
-                    [show.indexerid, show.indexer, airdate])
+                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          if x['doc']['indexer'] == show.indexer
+                          and x['doc']['airdate'] == airdate
+                          and x['doc']['season'] != 0]
 
-                if sql_result:
-                    season = int(sql_result[0][0])
-                    episodes = [int(sql_result[0][1])]
+                if dbData:
+                    season = int(dbData[0]['season'])
+                    episodes = [int(dbData[0]['episode'])]
                 else:
                     # Found no result, try with season 0
-                    sql_result = MainDB().select(
-                        "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
-                        [show.indexerid, show.indexer, airdate])
-                    if sql_result:
-                        season = int(sql_result[0][0])
-                        episodes = [int(sql_result[0][1])]
+                    dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                              if x['doc']['indexer'] == show.indexer and x['doc']['airdate'] == airdate]
+
+                    if dbData:
+                        season = int(dbData[0]['season'])
+                        episodes = [int(dbData[0]['episode'])]
                     else:
+                        # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
+                        episodes = []
                         self._log(
                             "Unable to find episode with date " +
                             str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping",
                             sickrage.srCore.srLogger.DEBUG)
-                        # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
-                        episodes = []
                         continue
 
             # if there's no season then we can hopefully just use 1 automatically

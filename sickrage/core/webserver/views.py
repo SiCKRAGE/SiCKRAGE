@@ -376,17 +376,12 @@ class WebRoot(WebHandler):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.srCore.srConfig.SORT_ARTICLE]
 
-        myDB = MainDB()
         shows = sorted(sickrage.srCore.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
-        results = myDB.select(
-            'SELECT episode, season, showid '
-            'FROM tv_episodes '
-            'ORDER BY season ASC, episode ASC'
-        )
+        for result in sorted([x['doc'] for x in MainDB().db.all('tv_episodes')],
+                             key=lambda d: (d['season'], d['episode'])):
 
-        for result in results:
             if result['showid'] not in episodes:
                 episodes[result['showid']] = {}
 
@@ -3155,8 +3150,8 @@ class Manage(Home, WebRoot):
             epCounts[Overview.SNATCHED] = 0
 
             dbData = sorted([e['doc'] for x in MainDB().db.get_many('tv_shows', curShow.indexerid, with_doc=True)
-                      for e in MainDB().db.get_many('tv_episodes', x['doc']['indexer_id'], with_doc=True)
-                      if x['doc']['paused'] == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
+                             for e in MainDB().db.get_many('tv_episodes', x['doc']['indexer_id'], with_doc=True)
+                             if x['doc']['paused'] == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
             for curResult in dbData:
                 curEpCat = curShow.getOverview(int(curResult["status"] or -1))
