@@ -32,7 +32,6 @@ from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
-from tornado.process import cpu_count
 from tornado.web import RequestHandler
 
 try:
@@ -116,7 +115,7 @@ class ApiHandler(RequestHandler):
     def __init__(self, application, request, *args, **kwargs):
         super(ApiHandler, self).__init__(application, request)
         self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(cpu_count())
+        self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
     @coroutine
     def prepare(self, *args, **kwargs):

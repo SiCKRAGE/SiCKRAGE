@@ -36,7 +36,6 @@ from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
-from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
 try:
@@ -92,7 +91,7 @@ class BaseHandler(RequestHandler):
         super(BaseHandler, self).__init__(application, request, **kwargs)
 
         self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(cpu_count())
+        self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
         # template settings
         self.mako_lookup = TemplateLookup(

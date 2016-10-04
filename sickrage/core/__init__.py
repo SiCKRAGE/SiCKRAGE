@@ -27,6 +27,7 @@ import shutil
 import socket
 import threading
 import traceback
+from multiprocessing import cpu_count
 
 import sickrage
 from apscheduler.schedulers.tornado import TornadoScheduler
@@ -94,6 +95,9 @@ class Core(object):
 
         # process id
         self.PID = os.getpid()
+
+        # cpu count
+        self.CPU_COUNT = cpu_count()
 
         # generate notifiers dict
         self.notifiersDict = AttrDict(
