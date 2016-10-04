@@ -1,6 +1,7 @@
 # Changelog
 
-- * a79f891 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 14ddc3c - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * b823f09 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 987c3ee - 2016-10-03: fix: Corrected missing DOC variable indexes 
 - * 2363878 - 2016-10-03: fix: Corrected missing DOC variable indexes 
 - * ad28896 - 2016-10-03: fix: Corrected old code for show location to new-style 

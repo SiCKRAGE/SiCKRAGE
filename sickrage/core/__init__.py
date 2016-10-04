@@ -518,8 +518,8 @@ class Core(object):
 
         for dbData in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
             try:
+                self.srLogger.debug("Loading data for show: [%s]", dbData['show_name'])
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
-                self.srLogger.debug("Loading data for show: [%s]", show.name)
                 show.nextEpisode()
                 self.SHOWLIST += [show]
             except Exception as e:
