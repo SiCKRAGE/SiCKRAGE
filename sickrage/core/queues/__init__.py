@@ -39,7 +39,6 @@ class srQueuePriorities(object):
 class srQueue(threading.Thread):
     def __init__(self, name="QUEUE"):
         super(srQueue, self).__init__(name=name)
-        self.queue_name = name
         self._queue = PriorityQueue()
         self.currentItem = None
         self.min_priority = 0
@@ -66,13 +65,13 @@ class srQueue(threading.Thread):
                         self.put(self.currentItem)
                         self.currentItem = None
                     else:
-                        origThreadName = threading.currentThread().getName()
+                        _ = threading.currentThread().getName()
                         try:
-                            threading.currentThread().setName(self.currentItem.name)
+                            threading.currentThread().setName("{}-{}".format(self.name, self.currentItem.name))
                             self.currentItem.run()
                         finally:
                             self.currentItem.finish()
-                            threading.currentThread().setName(origThreadName)
+                            threading.currentThread().setName(_)
 
                 self.amActive = False
 
@@ -91,7 +90,6 @@ class srQueue(threading.Thread):
         :param item: Queue object to add
         :return: item
         """
-        item.name = "{}-{}".format(self.name, item.name)
         item.added = datetime.now()
         self._queue.put((item.priority, item), *args, **kwargs)
         return item
