@@ -439,9 +439,11 @@ class FailedHistory(object):
             # Found a previously failed release
             sickrage.srCore.srLogger.debug(
                 "Failed release found for season (%s): (%s)" % (epObj.season, dbData["release"]))
+
             return release, provider
 
         # Release was not found
         sickrage.srCore.srLogger.debug(
             "No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid))
+
         return release, provider
