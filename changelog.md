@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6fe369f - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * a7e84af - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 3b0920d - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 3f17b67 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * b823f09 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 987c3ee - 2016-10-03: fix: Corrected missing DOC variable indexes 

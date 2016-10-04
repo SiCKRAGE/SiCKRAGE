@@ -541,6 +541,7 @@ def _ordinal_to_dateForm(ordinal):
         date = datetime.datetime.now().date().fromordinal(ordinal)
     else:
         return ""
+
     return date.strftime(dateFormat)
 
 
@@ -1172,25 +1173,20 @@ class CMD_Backlog(ApiCall):
 
         shows = []
 
-        for curShow in sickrage.srCore.SHOWLIST:
-
+        for s in sickrage.srCore.SHOWLIST:
             showEps = []
+            for e in sorted([e['doc'] for e in MainDB().db.get_many('tv_episodes', s.indexerid, with_doc=True) if
+                             s.paused == 0], key=lambda x: (x['season'], x['episode']), reverse=True):
 
-            sqlResults = MainDB().select(
-                "SELECT tv_episodes.*, tv_shows.paused FROM tv_episodes INNER JOIN tv_shows ON tv_episodes.showid = tv_shows.indexer_id WHERE showid = ? AND paused = 0 ORDER BY season DESC, episode DESC",
-                [curShow.indexerid])
-
-            for curResult in sqlResults:
-
-                curEpCat = curShow.getOverview(int(curResult["status"] or -1))
+                curEpCat = s.getOverview(int(e["status"] or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
-                    showEps.append(curResult)
+                    showEps += [e]
 
             if showEps:
                 shows.append({
-                    "indexerid": curShow.indexerid,
-                    "show_name": curShow.name,
-                    "status": curShow.status,
+                    "indexerid": s.indexerid,
+                    "show_name": s.name,
+                    "status": s.status,
                     "episodes": showEps
                 })
 
@@ -1411,15 +1407,20 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
 
     def run(self):
         """ Get information about the scheduler """
-        sqlResults = MainDB().select("SELECT last_backlog FROM info")
+
+        try:
+            last_backlog = [x['doc'] for x in MainDB().db.all('info', with_doc=True)][0]["last_backlog"]
+        except:
+            last_backlog = 1
 
         backlogPaused = sickrage.srCore.SEARCHQUEUE.is_backlog_paused()  # @UndefinedVariable
         backlogRunning = sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress()  # @UndefinedVariable
         nextBacklog = sickrage.srCore.BACKLOGSEARCHER.nextRun().strftime(dateFormat).decode(sickrage.SYS_ENCODING)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
-                "last_backlog": _ordinal_to_dateForm(sqlResults[0]["last_backlog"]),
+                "last_backlog": _ordinal_to_dateForm(last_backlog),
                 "next_backlog": nextBacklog}
+
         return _responds(RESULT_SUCCESS, data)
 
 
@@ -2572,16 +2573,13 @@ class CMD_ShowSeasonList(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.sort == "asc":
-            sqlResults = MainDB().select(
-                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season ASC",
-                [self.indexerid])
+            seasonList = sorted(
+                [x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                key=lambda d: d['season'])
         else:
-            sqlResults = MainDB().select(
-                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC",
-                [self.indexerid])
-        seasonList = []  # a list with all season numbers
-        for row in sqlResults:
-            seasonList.append(int(row["season"]))
+            seasonList = sorted(
+                [x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                key=lambda d: d['season'], reverse=True)
 
         return _responds(RESULT_SUCCESS, seasonList)
 
@@ -2614,36 +2612,40 @@ class CMD_ShowSeasons(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.season is None:
-            sqlResults = MainDB().select(
-                "SELECT name, episode, airdate, status, release_name, season, location, file_size, subtitles FROM tv_episodes WHERE showid = ?",
-                [self.indexerid])
             seasons = {}
-            for row in sqlResults:
+
+            for row in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)
+
                 if tryInt(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                         tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network))
                     row['airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
+
                 curSeason = int(row["season"])
                 curEpisode = int(row["episode"])
+
                 del row["season"]
                 del row["episode"]
+
                 if not curSeason in seasons:
                     seasons[curSeason] = {}
+
                 seasons[curSeason][curEpisode] = row
 
         else:
-            sqlResults = MainDB().select(
-                "SELECT name, episode, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND season = ?",
-                [self.indexerid, self.season])
-            if len(sqlResults) is 0:
+            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                      if x['season'] == self.season]
+
+            if len(dbData) is 0:
                 return _responds(RESULT_FAILURE, msg="Season not found")
+
             seasons = {}
-            for row in sqlResults:
+            for row in dbData:
                 curEpisode = int(row["episode"])
                 del row["episode"]
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
@@ -2774,16 +2776,15 @@ class CMD_ShowStats(ApiCall):
         # add all snatched qualities
         episode_qualities_counts_snatch = {}
         episode_qualities_counts_snatch["total"] = 0
+
         for statusCode in Quality.SNATCHED + Quality.SNATCHED_PROPER:
             status, quality = Quality.splitCompositeStatus(statusCode)
-            if quality in [Quality.NONE]:
-                continue
-            episode_qualities_counts_snatch[statusCode] = 0
+            if quality not in [Quality.NONE]: episode_qualities_counts_snatch[statusCode] = 0
 
-        sqlResults = MainDB().select(
-            "SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?", [self.indexerid])
         # the main loop that goes through all episodes
-        for row in sqlResults:
+        for row in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                    if x['doc']['season'] != 0]:
+
             status, quality = Quality.splitCompositeStatus(int(row["status"]))
 
             episode_status_counts_total["total"] += 1
