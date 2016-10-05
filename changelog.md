@@ -1,6 +1,7 @@
 # Changelog
 
-- * 86e7aa2 - 2016-10-04: migrate: SQLite -&gt; CodernityDB 
+- * a14e483 - 2016-10-05: new: Added last_refresh and last_update variables to TVShow object to keep track of updates and refreshes of shows helping prevent overlaps 
+- * d375af0 - 2016-10-04: migrate: SQLite -&gt; CodernityDB 
 - * 97190f8 - 2016-10-04: migrate: SQLite -&gt; CodernityDB 
 - * d24cd75 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
 - * 8abb1fb - 2016-10-03: migrate: SQLite -&gt; CodernityDB 

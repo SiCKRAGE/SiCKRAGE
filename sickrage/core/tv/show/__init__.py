@@ -77,7 +77,8 @@ class TVShow(object):
         self._dvdorder = 0
         self._archive_firstmatch = 0
         self._lang = lang
-        self._last_update_indexer = datetime.datetime.now().toordinal()
+        self._last_update = datetime.datetime.now().toordinal()
+        self._last_refresh = datetime.datetime.now().toordinal()
         self._sports = 0
         self._anime = 0
         self._scene = 0
@@ -296,14 +297,24 @@ class TVShow(object):
         self._lang = value
 
     @property
-    def last_update_indexer(self):
-        return self._last_update_indexer
+    def last_update(self):
+        return self._last_update
 
-    @last_update_indexer.setter
-    def last_update_indexer(self, value):
-        if self._last_update_indexer != value:
+    @last_update.setter
+    def last_update(self, value):
+        if self._last_update != value:
             self.dirty = True
-        self._last_update_indexer = value
+        self._last_update = value
+
+    @property
+    def last_refresh(self):
+        return self._last_refresh
+
+    @last_refresh.setter
+    def last_refresh(self, value):
+        if self._last_refresh != value:
+            self.dirty = True
+        self._last_refresh = value
 
     @property
     def sports(self):
@@ -533,7 +544,7 @@ class TVShow(object):
 
         # in the first year after ended (last airdate), update every 30 days
         if (update_date - last_airdate) < datetime.timedelta(days=450) and (
-                    update_date - datetime.date.fromordinal(self.last_update_indexer)) > datetime.timedelta(days=30):
+                    update_date - datetime.date.fromordinal(self.last_update)) > datetime.timedelta(days=30):
             return True
 
         return False
@@ -744,7 +755,7 @@ class TVShow(object):
                         self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
 
         # Done updating save last update date
-        self.last_update_indexer = datetime.date.today().toordinal()
+        self.last_update = datetime.date.today().toordinal()
 
         self.saveToDB()
 
@@ -946,7 +957,8 @@ class TVShow(object):
         self._flatten_folders = tryInt(dbData[0]["flatten_folders"], self.flatten_folders)
         self._paused = tryInt(dbData[0]["paused"], self.paused)
         self._lang = dbData[0]["lang"] or self.lang
-        self._last_update_indexer = dbData[0]["last_update_indexer"] or self.last_update_indexer
+        self._last_update = dbData[0]["last_update"] or self.last_update
+        self._last_refresh = dbData[0]["last_refresh"] or self.last_refresh
         self._rls_ignore_words = dbData[0]["rls_ignore_words"] or self.rls_ignore_words
         self._rls_require_words = dbData[0]["rls_require_words"] or self.rls_require_words
         self._default_ep_status = tryInt(dbData[0]["default_ep_status"], self.default_ep_status)
@@ -1301,7 +1313,8 @@ class TVShow(object):
             "startyear": self.startyear,
             "lang": self.lang,
             "imdb_id": self.imdbid,
-            "last_update_indexer": self.last_update_indexer,
+            "last_update": self.last_update,
+            "last_refresh": self.last_refresh,
             "rls_ignore_words": self.rls_ignore_words,
             "rls_require_words": self.rls_require_words,
             "default_ep_status": self.default_ep_status

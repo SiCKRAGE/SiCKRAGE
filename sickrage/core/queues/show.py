@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import traceback
 
@@ -471,6 +472,7 @@ class QueueItemRefresh(ShowQueueItem):
         sickrage.srCore.srLogger.info("Performing refresh for show: {}".format(self.show.name))
 
         self.show.refreshDir()
+
         self.show.writeMetadata()
 
         if self.force:
@@ -480,6 +482,8 @@ class QueueItemRefresh(ShowQueueItem):
 
         # Load XEM data to DB for show
         xem_refresh(self.show.indexerid, self.show.indexer)
+
+        self.show.last_refresh = datetime.date.today().toordinal()
 
         sickrage.srCore.srLogger.info("Finished refresh for show: {}".format(self.show.name))
 

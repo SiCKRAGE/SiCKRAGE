@@ -77,7 +77,7 @@ class srShowUpdater(object):
 
                 if curShow.indexerid in set(d["id"] for d in updated_shows or {}):
                     piList.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
-                else:
+                elif datetime.date.fromordinal(curShow.last_refresh) > datetime.timedelta(days=1):
                     piList.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException):
                 continue
