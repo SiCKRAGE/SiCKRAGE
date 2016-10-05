@@ -249,6 +249,8 @@ class Core(object):
 
         # load data for shows from database
         self.load_shows()
+
+        # build name cache
         self.NAMECACHE.build()
 
         if self.srConfig.DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):

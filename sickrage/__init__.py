@@ -309,7 +309,10 @@ def main():
             srCore.start()
             srCore.shutdown()
     except KeyboardInterrupt:
-        pass
+        try:
+            srCore.shutdown()
+        except:
+            pass
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):

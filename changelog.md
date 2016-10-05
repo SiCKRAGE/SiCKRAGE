@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2b483f8 - 2016-10-05: fix: Corrected name cache code for clearing cache and properly loading database items into dict 
+- * 628fe9d - 2016-10-05: fix: Ctrl+C now performs proper shutdowns 
+- * 9101f35 - 2016-10-05: fix: Corrected name cache code for clearing cache and properly loading database items into dict 
 - * cdf2d4a - 2016-10-05: fix: Misc code corrections and fixes 
 - * 2217279 - 2016-10-05: fix: Corrected code for getting data from db during creation of TVShow objects for when index keys don&#x27;t exist 
 - * 9a1dc2c - 2016-10-05: new: Added last_refresh and last_update variables to TVShow object to keep track of updates and refreshes of shows helping prevent overlaps 
