@@ -415,22 +415,6 @@ class TVShow(object):
                 del myEp
 
     def getAllEpisodes(self, season=None, has_location=False):
-
-        sql_selection = "SELECT season, episode,"
-
-        # subselection to detect multi-episodes early, share_location > 0
-        sql_selection += " (SELECT COUNT (*) FROM tv_episodes WHERE showid = tve.showid AND season = tve.season AND location != '' AND location = tve.location AND episode != tve.episode) AS share_location"
-        sql_selection += " FROM tv_episodes tve WHERE showid = " + str(self.indexerid)
-
-        if season is not None:
-            sql_selection += " AND season = " + str(season)
-
-        if has_location:
-            sql_selection += " AND location != '' "
-
-        # need ORDER episode ASC to rename multi-episodes in order S01E01-02
-        sql_selection += " ORDER BY season ASC, episode ASC"
-
         results = []
         for x in MainDB().db.get_many('tv_episodes', self.indexerid):
             if season is not None and x['doc']['season'] != season:

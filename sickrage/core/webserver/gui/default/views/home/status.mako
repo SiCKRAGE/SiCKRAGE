@@ -27,12 +27,12 @@
     <table id="queueStatusTable" class="tablesorter" width="100%">
         <thead>
             <tr>
-                <th>Show id</th>
-                <th>Show name</th>
+                <th>Show ID</th>
+                <th>Show Name</th>
                 <th>In Progress</th>
                 <th>Priority</th>
                 <th>Added</th>
-                <th>Queue type</th>
+                <th>Queue Type</th>
             </tr>
         </thead>
         <tbody>

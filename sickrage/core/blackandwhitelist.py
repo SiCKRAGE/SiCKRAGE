@@ -47,7 +47,7 @@ class BlackAndWhiteList(object):
         """
         DB: Adds keywords into database for current show
 
-        :param table: SQL table to add keywords to
+        :param table: database table to add keywords to
         :param values: Values to be inserted in table
         """
         for value in values:
@@ -83,7 +83,7 @@ class BlackAndWhiteList(object):
         """
         DB: Remove all keywords for current show
 
-        :param table: SQL table remove keywords from
+        :param table: database table remove keywords from
         """
         try:
             MainDB().db.delete(MainDB().db.get(table, self.show_id, with_doc=True)['doc'])
