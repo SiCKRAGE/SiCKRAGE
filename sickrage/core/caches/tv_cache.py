@@ -43,7 +43,7 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [CacheDB().db.delete(x['doc']) for x in CacheDB().db.get_many(self.providerID, with_doc=True)]
+            [CacheDB().db.delete(x['doc']) for x in CacheDB().db.get_many('providers', self.providerID, with_doc=True)]
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
