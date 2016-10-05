@@ -938,13 +938,13 @@ class TVShow(object):
             return False
 
         self._indexer = tryInt(dbData[0]["indexer"], self.indexer)
-        self._name = dbData[0]["show_name"] or self.name
-        self._network = dbData[0]["network"] or self.network
-        self._genre = dbData[0]["genre"] or self.genre
-        self._classification = dbData[0]["classification"] or self.classification
-        self._runtime = dbData[0]["runtime"] or self.runtime
-        self._status = dbData[0]["status"] or self.status
-        self._airs = dbData[0]["airs"] or self.airs
+        self._name = dbData[0].get("show_name", self.name)
+        self._network = dbData[0].get("network", self.network)
+        self._genre = dbData[0].get("genre", self.genre)
+        self._classification = dbData[0].get("classification", self.classification)
+        self._runtime = dbData[0].get("runtime", self.runtime)
+        self._status = dbData[0].get("status", self.status)
+        self._airs = dbData[0].get("airs", self.airs)
         self._startyear = tryInt(dbData[0]["startyear"], self.startyear)
         self._air_by_date = tryInt(dbData[0]["air_by_date"], self.air_by_date)
         self._anime = tryInt(dbData[0]["anime"], self.anime)
@@ -956,14 +956,14 @@ class TVShow(object):
         self._quality = tryInt(dbData[0]["quality"], self.quality)
         self._flatten_folders = tryInt(dbData[0]["flatten_folders"], self.flatten_folders)
         self._paused = tryInt(dbData[0]["paused"], self.paused)
-        self._lang = dbData[0]["lang"] or self.lang
-        self._last_update = dbData[0]["last_update"] or self.last_update
-        self._last_refresh = dbData[0]["last_refresh"] or self.last_refresh
-        self._rls_ignore_words = dbData[0]["rls_ignore_words"] or self.rls_ignore_words
-        self._rls_require_words = dbData[0]["rls_require_words"] or self.rls_require_words
+        self._lang = dbData[0].get("lang", self.lang)
+        self._last_update = dbData[0].get("last_update", self.last_update)
+        self._last_refresh = dbData[0].get("last_refresh", self.last_refresh)
+        self._rls_ignore_words = dbData[0].get("rls_ignore_words", self.rls_ignore_words)
+        self._rls_require_words = dbData[0].get("rls_require_words", self.rls_require_words)
         self._default_ep_status = tryInt(dbData[0]["default_ep_status"], self.default_ep_status)
-        self._imdbid = dbData[0]["imdb_id"] or self.imdbid
-        self._location = dbData[0]["location"] or self.location
+        self._imdbid = dbData[0].get("imdb_id", self.imdbid)
+        self._location = dbData[0].get("location", self.location)
 
         if self.is_anime:
             self._release_groups = BlackAndWhiteList(self.indexerid)
