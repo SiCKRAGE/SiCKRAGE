@@ -119,7 +119,7 @@ class srNameCache(object):
             del item
 
     def load(self):
-        return [x['doc'] for x in CacheDB().db.all('scene_names', with_doc=True)]
+        return dict([(key, d['doc'][key]) for d in CacheDB().db.all('scene_names', with_doc=True) for key in d['doc']])
 
     def save(self):
         """Commit cache to database file"""
