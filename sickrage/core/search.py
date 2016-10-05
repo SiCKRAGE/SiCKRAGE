@@ -353,7 +353,7 @@ def wantedEpisodes(show, fromDate):
 
     # check through the list of statuses to see if we want any
     for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                   if x['doc']['season '] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
+                   if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
 
         curCompositeStatus = int(dbData["status"] or -1)
         curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
