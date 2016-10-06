@@ -1,6 +1,7 @@
 # Changelog
 
-- * fbae298 - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
+- * f64d4bd - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
+- * c22d84d - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
 - * 2d9625e - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
 - * d4c2bb7 - 2016-10-05: fix: Fixed issues with scene season, episode, and absolute numbering for database 
 - * 1e41339 - 2016-10-05: fix: Using get calls for loading episode values from database to prevent key errors 

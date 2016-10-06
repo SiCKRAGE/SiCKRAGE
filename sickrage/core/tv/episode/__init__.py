@@ -279,7 +279,7 @@ class TVEpisode(object):
     @location.setter
     def location(self, new_location):
         if os.path.isfile(new_location):
-            sickrage.srCore.srLogger.debug("Episode location set to " + new_location)
+            sickrage.srCore.srLogger.debug("{}: Episode location set to {}".format(self.show.indexerid, new_location))
             self.dirty = True
         self._location = new_location
 
