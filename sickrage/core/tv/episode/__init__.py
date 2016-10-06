@@ -411,20 +411,20 @@ class TVEpisode(object):
         else:
             self._season = season
             self._episode = episode
-            self._name = dbData[0]["name"] or self.name
-            self._absolute_number = dbData[0]["absolute_number"] or self.absolute_number
-            self._description = dbData[0]["description"] or self.description
-            self._subtitles = dbData[0]["subtitles"].split(",") or self.subtitles
-            self._subtitles_searchcount = dbData[0]["subtitles_searchcount"] or self.subtitles_searchcount
-            self._subtitles_lastsearch = dbData[0]["subtitles_lastsearch"] or self.subtitles_lastsearch
-            self._airdate = datetime.date.fromordinal(int(dbData[0]["airdate"])) or self.airdate
+            self._name = dbData[0].get("name", self.name)
+            self._absolute_number = dbData[0].get("absolute_number", self.absolute_number)
+            self._description = dbData[0].get("description", self.description)
+            self._subtitles = dbData[0].get("subtitles", self.subtitles).split(",")
+            self._subtitles_searchcount = dbData[0].get("subtitles_searchcount", self.subtitles_searchcount)
+            self._subtitles_lastsearch = dbData[0].get("subtitles_lastsearch", self.subtitles_lastsearch)
+            self._airdate = datetime.date.fromordinal(int(dbData[0].get("airdate", self.airdate)))
             self._status = tryInt(dbData[0]["status"], self.status)
-            self.location = dbData[0]["location"] or self.location
+            self.location = dbData[0].get("location", self.location)
             self._file_size = tryInt(dbData[0]["file_size"], self.file_size)
             self._indexerid = tryInt(dbData[0]["indexerid"], self.indexerid)
             self._indexer = tryInt(dbData[0]["indexer"], self.indexer)
-            self._release_name = dbData[0]["release_name"] or self.release_name
-            self._release_group = dbData[0]["release_group"] or self.release_group
+            self._release_name = dbData[0].get("release_name", self.release_name)
+            self._release_group = dbData[0].get("release_group", self.release_group)
             self._is_proper = tryInt(dbData[0]["is_proper"], self.is_proper)
             self._version = tryInt(dbData[0]["version"], self.version)
 
