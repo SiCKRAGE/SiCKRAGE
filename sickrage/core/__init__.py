@@ -363,7 +363,9 @@ class Core(object):
         self.srScheduler.add_job(
             self.DAILYSEARCHER.run,
             srIntervalTrigger(
-                **{'minutes': self.srConfig.DAILY_SEARCHER_FREQ, 'min': self.srConfig.MIN_DAILY_SEARCHER_FREQ}),
+                **{'minutes': self.srConfig.DAILY_SEARCHER_FREQ,
+				'min': self.srConfig.MIN_DAILY_SEARCHER_FREQ,
+				'start_date': datetime.datetime.now() + timedelta(minutes=5)}),
             name="DAILYSEARCHER",
             id="DAILYSEARCHER"
         )
