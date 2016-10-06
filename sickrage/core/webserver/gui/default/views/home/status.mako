@@ -54,7 +54,7 @@
                             <td></td>
                         % endif
                     % endtry
-                        <td>${sickrage.srCore.SHOWQUEUE.currentItem.inProgress}</td>
+                        <td>${sickrage.srCore.SHOWQUEUE.currentItem.is_alive()}</td>
                         % if sickrage.srCore.SHOWQUEUE.currentItem.priority == 10:
                         <td>LOW</td>
                         % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 20:
@@ -86,7 +86,7 @@
                             <td></td>
                         % endif
                     % endtry
-                    <td>${item.inProgress}</td>
+                    <td>${item.is_alive()}</td>
                     % if item.priority == 10:
                         <td>LOW</td>
                     % elif item.priority == 20:

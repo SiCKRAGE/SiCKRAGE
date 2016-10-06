@@ -1,6 +1,7 @@
 # Changelog
 
-- * e40045f - 2016-10-05: fix: Fixed issues with scene season, episode, and absolute numbering for database 
+- * a8b630e - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
+- * d4c2bb7 - 2016-10-05: fix: Fixed issues with scene season, episode, and absolute numbering for database 
 - * 1e41339 - 2016-10-05: fix: Using get calls for loading episode values from database to prevent key errors 
 - * c8a3b77 - 2016-10-05: fix: Ctrl+C now performs proper shutdowns 
 - * 9101f35 - 2016-10-05: fix: Corrected name cache code for clearing cache and properly loading database items into dict 

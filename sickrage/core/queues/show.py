@@ -253,8 +253,6 @@ class QueueItemAdd(ShowQueueItem):
             return True
 
     def run(self):
-        super(QueueItemAdd, self).run()
-
         sickrage.srCore.srLogger.info("Started adding show {}".format(self.show_name))
 
         index_name = srIndexerApi(self.indexer).name
@@ -467,8 +465,6 @@ class QueueItemRefresh(ShowQueueItem):
         self.force = force
 
     def run(self):
-        super(QueueItemRefresh, self).run()
-
         sickrage.srCore.srLogger.info("Performing refresh for show: {}".format(self.show.name))
 
         self.show.refreshDir()
@@ -493,8 +489,6 @@ class QueueItemRename(ShowQueueItem):
         super(QueueItemRename, self).__init__(show, ShowQueueActions.RENAME)
 
     def run(self):
-        super(QueueItemRename, self).run()
-
         sickrage.srCore.srLogger.info("Performing renames for show: {}".format(self.show.name))
 
         if not os.path.isdir(self.show.location):
@@ -531,8 +525,6 @@ class QueueItemSubtitle(ShowQueueItem):
         super(QueueItemSubtitle, self).__init__(show, ShowQueueActions.SUBTITLE)
 
     def run(self):
-        super(QueueItemSubtitle, self).run()
-
         sickrage.srCore.srLogger.info("Started downloading subtitles for show: {}".format(self.show.name))
         self.show.downloadSubtitles()
         sickrage.srCore.srLogger.info("Finished downloading subtitles for show: {}".format(self.show.name))
@@ -544,8 +536,6 @@ class QueueItemUpdate(ShowQueueItem):
         self.force = False
 
     def run(self):
-        super(QueueItemUpdate, self).run()
-
         sickrage.srCore.srLogger.info("Performing updates for show: {}".format(self.show.name))
 
         try:
@@ -631,8 +621,6 @@ class QueueItemRemove(ShowQueueItem):
         self.full = full
 
     def run(self):
-        super(QueueItemRemove, self).run()
-
         sickrage.srCore.srLogger.info("Removing show: {}".format(self.show.name))
 
         self.show.deleteShow(full=self.full)

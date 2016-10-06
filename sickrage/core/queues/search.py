@@ -147,7 +147,6 @@ class DailySearchQueueItem(srQueueItem):
         self.started = False
 
     def run(self):
-        super(DailySearchQueueItem, self).run()
         self.started = True
 
         try:
@@ -179,7 +178,6 @@ class ManualSearchQueueItem(srQueueItem):
         self.downCurQuality = downCurQuality
 
     def run(self):
-        super(ManualSearchQueueItem, self).run()
         self.started = True
 
         try:
@@ -219,7 +217,6 @@ class BacklogQueueItem(srQueueItem):
         self.priority = srQueuePriorities.LOW
 
     def run(self):
-        super(BacklogQueueItem, self).run()
         self.started = True
 
         if not self.show.paused:
@@ -252,7 +249,6 @@ class FailedQueueItem(srQueueItem):
         self.downCurQuality = downCurQuality
 
     def run(self):
-        super(FailedQueueItem, self).run()
         self.started = True
 
         try:
