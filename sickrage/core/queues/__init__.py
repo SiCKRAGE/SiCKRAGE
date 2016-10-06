@@ -109,10 +109,8 @@ class srQueue(threading.Thread):
 
 class srQueueItem(threading.Thread):
     def __init__(self, name, action_id=0):
-        super(srQueueItem, self).__init__(name)
+        super(srQueueItem, self).__init__(name=name.replace(" ", "-").upper())
         self.lock = threading.Lock()
-        self.name = name.replace(" ", "-").upper()
-        self.inProgress = False
         self.priority = srQueuePriorities.NORMAL
         self.action_id = action_id
         self.stop = threading.Event()
