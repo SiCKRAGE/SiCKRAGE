@@ -788,6 +788,8 @@ class TVEpisode(object):
             "showid": self.show.indexerid,
             "season": self.season,
             "episode": self.episode,
+            "scene_season": self.scene_season,
+            "scene_episode": self.scene_episode,
             "indexerid": self.indexerid,
             "indexer": self.indexer,
             "name": self.name,
@@ -804,6 +806,7 @@ class TVEpisode(object):
             "release_name": self.release_name,
             "is_proper": self.is_proper,
             "absolute_number": self.absolute_number,
+            "scene_absolute_number": self.scene_absolute_number,
             "version": self.version,
             "release_group": self.release_group
         }

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5b3c284 - 2016-10-05: fix: Using get calls for loading episode values from database to prevent key errors 
+- * e40045f - 2016-10-05: fix: Fixed issues with scene season, episode, and absolute numbering for database 
+- * 1e41339 - 2016-10-05: fix: Using get calls for loading episode values from database to prevent key errors 
 - * c8a3b77 - 2016-10-05: fix: Ctrl+C now performs proper shutdowns 
 - * 9101f35 - 2016-10-05: fix: Corrected name cache code for clearing cache and properly loading database items into dict 
 - * cdf2d4a - 2016-10-05: fix: Misc code corrections and fixes 
