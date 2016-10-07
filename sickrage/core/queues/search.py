@@ -117,25 +117,20 @@ class srSearchQueue(srQueue):
                 length['failed'] += 1
         return length
 
-    @property
-    def queue(self):
-        return self.queue
-
-    @queue.setter
-    def queue(self, item):
+    def put(self, item, *args, **kwargs):
         if not len(sickrage.srCore.providersDict.enabled()):
             sickrage.srCore.srLogger.warning("Search Failed, No NZB/Torrent providers enabled")
             return
 
         if isinstance(item, DailySearchQueueItem):
             # daily searches
-            self.put(item)
+            super(srSearchQueue, self).put(item)
         elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show, item.segment):
             # backlog searches
-            self.put(item)
+            super(srSearchQueue, self).put(item)
         elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.segment):
             # manual and failed searches
-            self.put(item)
+            super(srSearchQueue, self).put(item)
         else:
             sickrage.srCore.srLogger.debug("Not adding item, it's already in the queue")
 

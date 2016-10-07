@@ -1,6 +1,7 @@
 # Changelog
 
-- * ebb6bf1 - 2016-10-06: new: Version 8.3.0 
+- * 83da936 - 2016-10-06: fix: Corrected search queue code for putting search items into queue 
+- * 8dad800 - 2016-10-06: new: Version 8.3.0 
 - * 60d2c66 - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
 - * c22d84d - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
 - * 2d9625e - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
