@@ -1,6 +1,7 @@
 # Changelog
 
-- * 39c3f06 - 2016-10-06: fix: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
+- * 8310d75 - 2016-10-06: reverted: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
+- * d4c8621 - 2016-10-06: fix: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
 - * 1d4be98 - 2016-10-06: fix: Corrected search queue code for putting search items into queue 
 - * 8dad800 - 2016-10-06: new: Version 8.3.0 
 - * 60d2c66 - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
