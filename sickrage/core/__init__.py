@@ -365,7 +365,7 @@ class Core(object):
             srIntervalTrigger(
                 **{'minutes': self.srConfig.DAILY_SEARCHER_FREQ,
 				'min': self.srConfig.MIN_DAILY_SEARCHER_FREQ,
-				'start_date': datetime.datetime.now() + timedelta(minutes=5)}),
+				'start_date': datetime.datetime.now() + datetime.timedelta(minutes=5)}),
             name="DAILYSEARCHER",
             id="DAILYSEARCHER"
         )
