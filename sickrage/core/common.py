@@ -34,9 +34,9 @@ else:
     from UserDict import UserDict
 
 cpu_presets = {
-    'HIGH': 5,
-    'NORMAL': 2,
-    'LOW': 1
+    'HIGH': 0.05,
+    'NORMAL': 0.02,
+    'LOW': 0.01
 }
 
 ### Other constants
