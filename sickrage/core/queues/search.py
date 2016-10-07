@@ -29,7 +29,6 @@ from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
     snatchEpisode
 from sickrage.core.tv.show.history import FailedHistory, History
 
-
 search_queue_lock = threading.Lock()
 
 BACKLOG_SEARCH = 10
@@ -40,10 +39,12 @@ MANUAL_SEARCH = 40
 MANUAL_SEARCH_HISTORY = []
 MANUAL_SEARCH_HISTORY_SIZE = 100
 
+
 def fifo(myList, item, maxSize=100):
     if len(myList) >= maxSize:
         myList.pop(0)
     myList.append(item)
+
 
 class srSearchQueue(srQueue):
     def __init__(self):
@@ -90,18 +91,21 @@ class srSearchQueue(srQueue):
         # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!
         if isinstance(self.currentItem, (ManualSearchQueueItem, FailedQueueItem)):
             return True
+
         return False
 
     def is_backlog_in_progress(self):
         for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
+
         return False
 
     def is_dailysearch_in_progress(self):
         for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
+
         return False
 
     def queue_length(self):
@@ -115,6 +119,7 @@ class srSearchQueue(srQueue):
                 length['manual'] += 1
             elif isinstance(cur_item, FailedQueueItem):
                 length['failed'] += 1
+
         return length
 
     def put(self, item, *args, **kwargs):
@@ -161,6 +166,7 @@ class DailySearchQueueItem(srQueueItem):
         finally:
             sickrage.srCore.srLogger.info("Finished daily search for new episodes")
 
+
 class ManualSearchQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         super(ManualSearchQueueItem, self).__init__('Manual Search', MANUAL_SEARCH)
@@ -181,7 +187,8 @@ class ManualSearchQueueItem(srQueueItem):
             searchResult = searchProviders(self.show, [self.segment], True, self.downCurQuality)
             if searchResult:
                 # just use the first result for now
-                sickrage.srCore.srLogger.info("Downloading " + searchResult[0].name + " from " + searchResult[0].provider.name)
+                sickrage.srCore.srLogger.info(
+                    "Downloading " + searchResult[0].name + " from " + searchResult[0].provider.name)
                 self.success = snatchEpisode(searchResult[0])
 
                 # give the CPU a break
@@ -189,7 +196,7 @@ class ManualSearchQueueItem(srQueueItem):
 
             else:
                 sickrage.srCore.srNotifications.message('No downloads were found',
-                                      "Couldn't find a download for <i>%s</i>" % self.segment.prettyName())
+                                                        "Couldn't find a download for <i>%s</i>" % self.segment.prettyName())
 
                 sickrage.srCore.srLogger.info("Unable to find a download for: [" + self.segment.prettyName() + "]")
 
@@ -200,6 +207,7 @@ class ManualSearchQueueItem(srQueueItem):
 
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
+
 
 class BacklogQueueItem(srQueueItem):
     def __init__(self, show, segment):
@@ -231,6 +239,7 @@ class BacklogQueueItem(srQueueItem):
                 sickrage.srCore.srLogger.debug(traceback.format_exc())
             finally:
                 sickrage.srCore.srLogger.info("Finished backlog search for: [" + self.show.name + "]")
+
 
 class FailedQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):

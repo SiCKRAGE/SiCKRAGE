@@ -64,9 +64,10 @@ class srDailySearcher(object):
         curTime = datetime.datetime.now(tz_updater.sr_timezone)
 
         show = None
-        for dbData in [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True) if
-                      x['doc']['status'] in [UNAIRED, WANTED] and x['doc']['season'] > 0 and x['doc'][
-                          'airdate'] <= curDate and x['doc']['airdate'] > 1]:
+        for dbData in [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
+                       if x['doc']['status'] in [UNAIRED, WANTED]
+                       and x['doc']['season'] > 0
+                       and curDate >= x['doc']['airdate'] > 1]:
             try:
                 if not show or int(dbData['showid']) != show.indexerid:
                     show = findCertainShow(sickrage.srCore.SHOWLIST, int(dbData['showid']))

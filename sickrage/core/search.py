@@ -387,7 +387,7 @@ def searchForNeededEpisodes():
             continue
 
         episodes = wantedEpisodes(curShow, date.fromordinal(1))
-        results += searchProviders(curShow, episodes, cacheOnly=True)
+        if len(episodes): results += searchProviders(curShow, episodes, cacheOnly=True)
 
     return results
 
@@ -405,6 +405,8 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
 
     if not len(sickrage.srCore.providersDict.enabled()):
         sickrage.srCore.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
+        return
+    elif not len(episodes):
         return
 
     # build name cache for show

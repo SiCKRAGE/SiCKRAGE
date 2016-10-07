@@ -27,7 +27,6 @@ import sickrage
 from CodernityDB.database import RecordNotFound
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import CantRefreshShowException, CantUpdateShowException
-from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
 from sickrage.indexers import srIndexerApi
 
@@ -59,9 +58,6 @@ class srShowUpdater(object):
                 'provider': 'theTVDB',
                 'time': long(last_update)
             })
-
-        if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-            FailedHistory.trimHistory()
 
         # get indexer updated show ids
         updated_shows = srIndexerApi(1).indexer(**srIndexerApi(1).api_params.copy()).updated(long(last_update))
