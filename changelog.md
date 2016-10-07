@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8310d75 - 2016-10-06: reverted: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
+- * 8373d5c - 2016-10-06: fix: Check result returned for dailyer searches to prevent issues with adding to results list 
+- * 6ab6982 - 2016-10-06: reverted: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
 - * d4c8621 - 2016-10-06: fix: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
 - * 1d4be98 - 2016-10-06: fix: Corrected search queue code for putting search items into queue 
 - * 8dad800 - 2016-10-06: new: Version 8.3.0 

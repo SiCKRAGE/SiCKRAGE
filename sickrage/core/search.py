@@ -387,7 +387,8 @@ def searchForNeededEpisodes():
             continue
 
         episodes = wantedEpisodes(curShow, date.fromordinal(1))
-        results += searchProviders(curShow, episodes, cacheOnly=True)
+        result = searchProviders(curShow, episodes, cacheOnly=True)
+        if result: results += result
 
     return results
 
