@@ -28,11 +28,11 @@ import re
 import six
 
 if six.PY3:
-    # noinspection PyUnresolvedReferences
     from collections import UserDict
 else:
     from UserDict import UserDict
 
+### CPU Presets for sleep timers
 cpu_presets = {
     'HIGH': 0.05,
     'NORMAL': 0.02,
