@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8c16af3 - 2016-10-06: new: Updated images 
+- * 1f8d019 - 2016-10-07: fix: Fixed IMDB Popular shows page 
+- * 7d3fbea - 2016-10-06: new: Updated images 
 - * 9eb4be1 - 2016-10-06: new: Updated network logos 
 - * f632cef - 2016-10-06: fix: Adjusted CPU PRESETS for sleep timers 
 - * c3fbb84 - 2016-10-06: fix: Lowered sleep timer 

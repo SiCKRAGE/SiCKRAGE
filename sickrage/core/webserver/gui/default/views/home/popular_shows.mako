@@ -46,14 +46,14 @@
                             <br style="clear:both"/>
                         </td>
                         <td align="center">
-                            % if 'rating' in cur_result:
+                            % if cur_result.get('rating'):
                                 <span class="rating">
                                     ${cur_result['rating']}/10
                                 </span>
                             % endif
                         </td>
                         <td align="center">
-                            % if 'votes' in cur_result:
+                            % if cur_result.get('votes'):
                                 ${cur_result['votes'].replace('votes', '')}
                             % endif
                         </td>
