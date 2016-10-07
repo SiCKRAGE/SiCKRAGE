@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8373d5c - 2016-10-06: fix: Check result returned for dailyer searches to prevent issues with adding to results list 
+- * c2bc2b5 - 2016-10-06: fix: Lowered sleep timer 
+- * dd02f40 - 2016-10-06: fix: Check result returned for dailyer searches to prevent issues with adding to results list 
 - * 6ab6982 - 2016-10-06: reverted: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
 - * d4c8621 - 2016-10-06: fix: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
 - * 1d4be98 - 2016-10-06: fix: Corrected search queue code for putting search items into queue 

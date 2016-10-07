@@ -370,7 +370,7 @@ class NameParser(object):
                     "Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
-        time.sleep(1)
+        time.sleep(0.02)
 
         return bestResult
 
