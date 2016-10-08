@@ -3135,7 +3135,7 @@ class Manage(Home, WebRoot):
     def backlogOverview(self):
         showCounts = {}
         showCats = {}
-        showSQLResults = {}
+        showResults = {}
 
         for curShow in sickrage.srCore.SHOWLIST:
 
@@ -3160,13 +3160,13 @@ class Manage(Home, WebRoot):
 
             showCounts[curShow.indexerid] = epCounts
             showCats[curShow.indexerid] = epCats
-            showSQLResults[curShow.indexerid] = dbData
+            showResults[curShow.indexerid] = dbData
 
         return self.render(
             "/manage/backlog_overview.mako",
             showCounts=showCounts,
             showCats=showCats,
-            showSQLResults=showSQLResults,
+            showResults=showResults,
             title='Backlog Overview',
             header='Backlog Overview',
             topmenu='manage',

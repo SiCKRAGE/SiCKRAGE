@@ -1,5 +1,6 @@
 # Changelog
 
+- * b387686 - 2016-10-07: fix: Removed last reference to SQL code, minor impact 
 - * f425aca - 2016-10-07: fix: Fixed scene time provider search 
 - * 4244405 - 2016-10-07: fix: Fixed IMDB Popular shows page 
 - * 7d3fbea - 2016-10-06: new: Updated images 

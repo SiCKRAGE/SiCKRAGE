@@ -54,7 +54,7 @@ Jump to Show
 
     <tr class="seasoncols"><th>Episode</th><th>Name</th><th class="nowrap">Airdate</th></tr>
 
-    % for curResult in showSQLResults[curShow.indexerid]:
+    % for curResult in showResults[curShow.indexerid]:
         <% whichStr = str(curResult['season']) + 'x' + str(curResult['episode']) %>
         % try:
             <% overview = showCats[curShow.indexerid][whichStr] %>
