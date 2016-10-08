@@ -60,7 +60,7 @@ class srShowUpdater(object):
             })
 
         # get indexer updated show ids
-        updated_shows = srIndexerApi(1).indexer(**srIndexerApi(1).api_params.copy()).updated(long(last_update))
+        updated_shows = srIndexerApi().indexer(**srIndexerApi().api_params.copy()).updated(long(last_update))
 
         # start update process
         piList = []
