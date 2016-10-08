@@ -22,7 +22,6 @@ import functools
 import getpass
 import json
 import os
-import pickle
 import tempfile
 import time
 import zipfile
@@ -87,24 +86,10 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
 
 
 class ShowCache(dict):
-    def __init__(self, filename, maxsize=100):
+    def __init__(self, maxsize=100):
         super(ShowCache, self).__init__()
-        self.filename = filename
         self.maxsize = maxsize
         self._stack = []
-
-    def load(self):
-        if os.path.isfile(self.filename):
-            try:
-                return pickle.load(open(self.filename, 'rb'))
-            except:
-                os.remove(self.filename)
-                return pickle.load(open(self.filename, 'rb'))
-
-        return self
-
-    def save(self):
-        pickle.dump(self, open(self.filename, 'wb'))
 
     def __setitem__(self, key, value):
         self._stack.append(key)
@@ -379,7 +364,7 @@ class Tvdb:
         if headers is None:
             headers = {}
 
-        self.shows = ShowCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'))).load()
+        self.shows = ShowCache()
 
         self.config = {}
 
@@ -416,6 +401,8 @@ class Tvdb:
         else:
             raise ValueError("Invalid value for Cache %r (type was {})".format(cache, type(cache)))
 
+        self.config['headers'].update({'Content-type': 'application/json'})
+
         self.config['images_enabled'] = images
         self.config['actors_enabled'] = actors
 
@@ -444,6 +431,11 @@ class Tvdb:
         self.config['language'] = language
         if language not in self.languages():
             self.config['language'] = None
+
+        if self.config['language']:
+            self.config['headers'].update({
+                'Accept-Language': self.config['language']
+            })
 
     def _getTempDir(self):
         """Returns the [system temp dir]/thetvdb-u501 (or
@@ -487,11 +479,6 @@ class Tvdb:
         try:
             # get api v2 token
             self.getToken()
-
-            if self.config['language']:
-                self.config['headers'].update({
-                    'Accept-Language': self.config['language']
-                })
 
             sickrage.srCore.srLogger.debug("Retrieving URL {}".format(url))
 
@@ -539,20 +526,20 @@ class Tvdb:
         """Loads a URL using caching, returns an ElementTree of the source
         """
 
-        def keys2lower(in_dict):
-            if type(in_dict) is dict:
-                out_dict = {}
-                for key, item in in_dict.items():
-                    out_dict[key.lower()] = keys2lower(item)
-                return out_dict
-            elif type(in_dict) is list:
-                return [keys2lower(obj) for obj in in_dict]
-
-            return in_dict
+        def renameKeys(iterable):
+            if type(iterable) is dict:
+                for key in iterable.keys():
+                    iterable[key.lower()] = iterable.pop(key)
+                    if type(iterable[key.lower()]) is dict or type(iterable[key.lower()]) is list:
+                        iterable[key.lower()] = renameKeys(iterable[key.lower()])
+            elif type(iterable) is list:
+                for item in iterable:
+                    item = renameKeys(item)
+            return iterable
 
         try:
             resp = self._loadUrl(url, params=params)
-            if resp: return keys2lower(resp).values()[0]
+            if resp: return renameKeys(resp)['data']
         except Exception as e:
             raise tvdb_error(e.message)
 
@@ -687,9 +674,6 @@ class Tvdb:
 
             self._setShowData(sid, "_images", images)
 
-        # save persistent data
-        self.shows.save()
-
     def _parseActors(self, sid):
         sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
 
@@ -716,9 +700,6 @@ class Tvdb:
             cur_actors.append(curActor)
 
         self._setShowData(sid, '_actors', cur_actors)
-
-        # save persistent data
-        self.shows.save()
 
     def _getShowData(self, sid, getEpInfo=False):
         """Takes a series ID, gets the episodes URL and parses the TVDB
@@ -761,9 +742,6 @@ class Tvdb:
             if not episodes:
                 sickrage.srCore.srLogger.debug('Series results incomplete')
                 return
-            elif 'invalidlanguage' in episodes:
-                sickrage.srCore.srLogger.debug(episodes['invalidlanguage'])
-                return
 
             for cur_ep in episodes:
                 # cur_ep = self._getetsrc(self.config['api']['episode_info'].format(eid))
@@ -800,16 +778,13 @@ class Tvdb:
 
                     self._setItem(sid, seas_no, ep_no, k, v)
 
-        # save persistent data
-        self.shows.save()
-
         return self.shows[int(sid)]
 
     def updated(self, fromTime):
         return self._getetsrc(self.config['api']['updated'].format(fromTime))
 
     def languages(self):
-        return {l['abbreviation']:l['id'] for l in self._getetsrc(self.config['api']['languages'])}
+        return {l['abbreviation']: l['id'] for l in self._getetsrc(self.config['api']['languages'])}
 
     def __getitem__(self, key):
         """
