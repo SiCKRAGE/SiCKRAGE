@@ -31,12 +31,14 @@ import unittest
 import sickrage
 from sickrage.core import Core
 from sickrage.core.caches import tv_cache
-from sickrage.core.databases import Connection, main_db, cache_db, failed_db
+from sickrage.core.databases import srDatabase
+from sickrage.core.databases.cache import CacheDB
+from sickrage.core.databases.failed import FailedDB
+from sickrage.core.databases.main import MainDB
 from sickrage.core.tv import episode
+from tornado.ioloop import IOLoop
 
-# =================
-# prepare env functions
-# =================
+
 def createFolder(dirname):
     if not os.path.isdir(dirname):
         os.mkdir(dirname)
@@ -74,7 +76,7 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
             tearDown_test_web_server()
 
 
-class TestCacheDBConnection(Connection, object):
+class TestCacheDBConnection(srDatabase, object):
     def __init__(self, providerName):
         super(TestCacheDBConnection, self).__init__(providerName)
 
@@ -128,16 +130,13 @@ def setUp_test_db(force=False):
         tearDown_test_db()
 
         # upgrade main
-        main_db.MainDB().InitialSchema().upgrade()
-
-        # sanity check main
-        main_db.MainDB().SanityCheck()
+        MainDB().initialize()
 
         # upgrade cache
-        cache_db.CacheDB().InitialSchema().upgrade()
+        CacheDB().initialize()
 
         # upgrade failed
-        failed_db.FailedDB().InitialSchema().upgrade()
+        FailedDB().initialize()
 
         # populate scene exceiptions table
         # retrieve_exceptions(False, False)
@@ -190,7 +189,7 @@ def setUp_test_web_server():
 
 def tearDown_test_web_server():
     if sickrage.srCore:
-        sickrage.srCore.srWebServer.shutdown()
+        IOLoop.current().stop()
 
 
 def load_tests(loader, tests):

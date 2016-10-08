@@ -18,419 +18,264 @@
 
 from __future__ import unicode_literals
 
-from Queue import Queue
-from time import sleep
-
-try:
-    from futures import ThreadPoolExecutor
-except ImportError:
-    from concurrent.futures import ThreadPoolExecutor
-
-__all__ = ["main_db", "cache_db", "failed_db"]
-
 import os
 import re
-import sqlite3
-import threading
-from contextlib import contextmanager
-from collections import defaultdict
+import shutil
+import tarfile
+import time
+import traceback
+from sqlite3 import OperationalError
 
 import sickrage
-from sickrage.core.helpers import backupVersionedFile, restoreVersionedFile
-
-
-def prettyName(class_name):
-    return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
-
-
-def dbFilename(filename=None, suffix=None):
-    """
-    @param filename: The sqlite database filename to use. If not specified,
-                     will be made to be sickrage.db
-    @param suffix: The suffix to append to the filename. A '.' will be added
-                   automatically, i.e. suffix='v0' will make dbfile.db.v0
-    @return: the correct location of the database file.
-    """
-
-    filename = filename or 'sickrage.db'
-
-    if suffix:
-        filename = filename + ".{}".format(suffix)
-    return os.path.join(sickrage.DATA_DIR, filename)
-
-
-class UniRow(sqlite3.Row):
-    def __init__(self, *args, **kwargs):
-        super(UniRow, self).__init__(*args, **kwargs)
-
-    def __getitem__(self, y):
-        return super(UniRow, self).__getitem__(str(y))
-
-
-class Transaction(object):
-    """A context manager for safe, concurrent access to the database.
-    All SQL commands should be executed through a transaction.
-    """
-
-    def __init__(self, db):
-        self.db = db
-
-    def __enter__(self):
-        """Begin a transaction. This transaction may be created while
-        another is active in a different thread.
-        """
-        with self.db._tx_stack() as stack:
-            first = not stack
-            stack.append(self)
-        if first:
-            # Beginning a "root" transaction, which corresponds to an
-            # SQLite transaction.
-            self.db._db_lock.acquire()
-
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        """Complete a transaction. This must be the most recently
-        entered but not yet exited transaction. If it is the last active
-        transaction, the database updates are committed.
-        """
-        with self.db._tx_stack() as stack:
-            assert stack.pop() is self
-            empty = not stack
-        if empty:
-            self.db._db_lock.release()
-
-    def query(self, query):
-        """Execute an SQL statement with substitution values and return
-        a list of rows from the database.
-        """
-        result = []
-        with self.db._conn_cursor() as (conn, cursor):
-            attempt = 0
-            while attempt <= 5:
-                attempt += 1
-
-                try:
-                    # execute query
-                    cursor.execute(*query)
-
-                    # get result
-                    result = cursor.fetchall()
-                except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
-                    conn.rollback()
-                    sleep(1)
-                except Exception as e:
-                    sickrage.srCore.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
-                finally:
-                    return result
-
-    def upsert(self, tableName, valueDict, keyDict):
-        """
-        Update values, or if no updates done, insert values
-
-        :param tableName: table to update/insert
-        :param valueDict: values in table to update/insert
-        :param keyDict:  columns in table to update
-        """
-
-        with self.db._conn_cursor() as (conn, cursor):
-            # update existing row if exists
-            genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
-            query = ["UPDATE [" + tableName + "] SET " + ", ".join(
-                genParams(valueDict)) + " WHERE " + " AND ".join(genParams(keyDict)),
-                     valueDict.values() + keyDict.values()]
-
-            cursor.execute(*query)
-            if not conn.total_changes:
-                # insert new row if update failed
-                query = ["INSERT INTO [" + tableName + "] (" + ", ".join(
-                    valueDict.keys() + keyDict.keys()) + ")" + " VALUES (" + ", ".join(
-                    ["?"] * len(valueDict.keys() + keyDict.keys())) + ")", valueDict.values() + keyDict.values()]
-                cursor.execute(*query)
-
-            return (False, True)[conn.total_changes > 0]
-
-
-class Connection(object):
-    def __init__(self, filename=None, suffix=None, row_type=None, timeout=None):
-        self.filename = dbFilename(filename, suffix)
-        self.row_type = row_type or UniRow
-        self._shared_map_lock = threading.Lock()
-        self._db_lock = threading.Lock()
-        self._connections = {}
-        self._tx_stacks = defaultdict(list)
-        self.last_id = 0
-        self.timeout = timeout or 20
-
-    @contextmanager
-    def _conn(self):
-        with self._shared_map_lock:
-            thread_id = threading.current_thread().ident
-
-            if thread_id not in self._connections:
-                with sqlite3.connect(self.filename, timeout=self.timeout, check_same_thread=False) as conn:
-                    conn.row_factory = (self._dict_factory, self.row_type)[self.row_type != 'dict']
-                    conn.execute("PRAGMA journal_mode=WAL")
-                    self._connections[thread_id] = conn
-
-            # yield database connection
-            try:
-                yield self._connections[thread_id]
-            finally:
-                del self._connections[thread_id]
-
-    @contextmanager
-    def _conn_cursor(self):
-        with self._conn() as conn:
-            cursor = conn.cursor()
-            try:
-                yield (conn, cursor)
-            finally:
-                cursor.close()
-                conn.commit()
-
-    @contextmanager
-    def _tx_stack(self):
-        """A context manager providing access to the current thread's
-        transaction stack. The context manager synchronizes access to
-        the stack map. Transactions should never migrate across threads.
-        """
-        thread_id = threading.current_thread().ident
-        with self._shared_map_lock:
-            yield self._tx_stacks[thread_id]
-
-    @contextmanager
-    def transaction(self):
-        """Get a :class:`Transaction` object for interacting directly
-        with the underlying SQLite database.
-        """
-        _ = threading.currentThread().getName()
-        threading.currentThread().setName("DB")
-        yield Transaction(self)
-        threading.currentThread().setName(_)
-
-    def _get_id(self):
-        with self._db_lock:
-            self.last_id += 1
-            return self.last_id
-
-    def checkDBVersion(self):
-        """
-        Fetch database version
-
-        :return: Integer inidicating current DB version
-        """
-        try:
-            if self.hasTable('db_version'):
-                db_version = self.select("SELECT db_version FROM db_version")[0]["db_version"]
-                self.action("PRAGMA user_version = {}".format(db_version))
-                self.action("DROP TABLE db_version")
-            return self.select("PRAGMA user_version")[0]["user_version"]
-        except:
-            return 0
-
-    def mass_upsert(self, upserts):
-        """
-        Execute multiple upserts
-
-        :param upserts: list of upserts
-        :return: list of results
-        """
-
-        sqlResults = []
-
-        q = Queue()
-        map(q.put, upserts)
-        while not q.empty():
-            with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
-                sqlResults += [executor.submit(tx.upsert, *q.get()).result()]
-
-        sickrage.srCore.srLogger.db("{} UPSERTS executed".format(len(sqlResults)))
-
-        return sqlResults
-
-    def mass_action(self, queries):
-        """
-        Execute multiple queries
-
-        :param queries: list of queries
-        :return: list of results
-        """
-
-        sqlResults = []
-
-        q = Queue()
-        map(q.put, queries)
-        while not q.empty():
-            with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
-                sqlResults += [executor.submit(tx.query, q.get()).result()]
-
-        sickrage.srCore.srLogger.db("{} Transactions executed".format(len(sqlResults)))
-        return sqlResults
-
-    def action(self, query, *args):
-        """
-        Execute single query
-
-        :rtype: query results
-        :param query: Query string
-        """
-
-        sickrage.srCore.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
-
-        with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
-            return executor.submit(tx.query, [query, list(*args)]).result()
-
-    def upsert(self, tableName, valueDict, keyDict):
-        """
-        Update values, or if no updates done, insert values
-        TODO: Make this return true/false on success/error
-
-        :param tableName: table to update/insert
-        :param valueDict: values in table to update/insert
-        :param keyDict:  columns in table to update
-        """
-
-        with ThreadPoolExecutor(1) as executor, self.transaction() as tx:
-            return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
-
-    def select(self, query, *args):
-        """
-        Perform single select query on database
-
-        :param query: query string
-        :param args:  arguments to query string
-        :return: query results
-        """
-        return self.action(query, *args)
-
-    def tableInfo(self, tableName):
-        """
-        Return information on a database table
-
-        :param tableName: name of table
-        :return: array of name/type info
-        """
-        columns = {}
-
-        sqlResult = self.select("PRAGMA table_info(`{}`)".format(tableName))
-
-        for column in sqlResult:
-            columns[column['name']] = {'type': column['type']}
-
-        return columns
-
-    def _dict_factory(self, cursor, row):
-        d = {}
-        for idx, col in enumerate(cursor.description):
-            d[col[0]] = row[idx]
-        return d
-
-    def hasIndex(self, indexName):
-        """
-        Check if a index exists in database
-
-        :param indexName: index name to check
-        :return: True if table exists, False if it does not
-        """
-        return (False, True)[len(self.select("PRAGMA index_info('{}')".format(indexName))) > 0]
-
-    def hasTable(self, tableName):
-        """
-        Check if a table exists in database
-
-        :param tableName: table name to check
-        :return: True if table exists, False if it does not
-        """
-        return (False, True)[len(self.select("SELECT 1 FROM sqlite_master WHERE name = ?;", [tableName])) > 0]
-
-    def hasColumn(self, tableName, column):
-        """
-        Check if a table has a column
-
-        :param tableName: Table to check
-        :param column: Column to check for
-        :return: True if column exists, False if it does not
-        """
-        return column in self.tableInfo(tableName)
-
-    def addColumn(self, table, column, type="NUMERIC", default=0):
-        """
-        Adds a column to a table, default column type is NUMERIC
-        TODO: Make this return true/false on success/failure
-
-        :param table: Table to add column too
-        :param column: Column name to add
-        :param type: Column type to add
-        :param default: Default value for column
-        """
-        self.action("ALTER TABLE [{}] ADD {} {}".format(table, column, type))
-        self.action("UPDATE [{}] SET {} = ?".format(table, column), [default])
-
-    def incDBVersion(self, version=None):
-        if not version:
-            version = self.checkDBVersion() + 1
-
-        self.action("PRAGMA user_version = {}".format(version))
-
-
-class SchemaUpgrade(Connection):
-    def __init__(self, filename=None, suffix=None, row_type=None):
-        super(SchemaUpgrade, self).__init__(filename, suffix, row_type)
-
-    def upgrade(self):
-        """
-        Perform database upgrade and provide logging
-        """
-
-        def _processUpgrade(upgradeClass, version):
-            name = prettyName(upgradeClass.__name__)
-            filename = os.path.basename(self.filename)
-
-            while (True):
-                sickrage.srCore.srLogger.debug("{}:{} database structure being checked".format(filename, name))
-
-                try:
-                    instance = upgradeClass()
-
-                    if not instance.test():
-                        sickrage.srCore.srLogger.debug("{}:{} database upgrade required".format(filename, name))
-                        instance.execute()
-                        sickrage.srCore.srLogger.debug("{}:{} database upgrade completed".format(filename, name))
-
-                    return True
-                except sqlite3.DatabaseError:
-                    if not self.restore(version):
-                        break
-
-        for klass in self.get_subclasses():
-            _processUpgrade(klass, self.checkDBVersion())
-
-    def restore(self, version):
-        """
-        Restores a database to a previous version (backup file of version must still exist)
-
-        :param version: Version to restore to
-        :return: True if restore succeeds, False if it fails
-        """
-
-        sickrage.srCore.srLogger.info("Restoring database before trying upgrade again")
-        if not restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
-            sickrage.srCore.srLogger.info("Database restore failed, abort upgrading database")
-            return False
-        return True
-
-    def backup(self, version):
-        sickrage.srCore.srLogger.info("Backing up database before upgrade")
-        if not backupVersionedFile(dbFilename(), version):
-            sickrage.srCore.srLogger.log_error_and_exit("Database backup failed, abort upgrading database")
+from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
+from CodernityDB.index import IndexException, IndexNotFoundException, IndexConflict
+from sickrage.core.helpers import randomString
+
+
+class srDatabase(object):
+    _database = {}
+    _migrate_list = {}
+    _indexes = {}
+
+    def __init__(self, name=''):
+        self.name = name
+        self.old_db_path = ''
+
+        self.db_path = os.path.join(sickrage.DATA_DIR, 'database', self.name)
+        self.db = SuperThreadSafeDatabase(self.db_path)
+
+        if self.db.exists():
+            self.db.open()
+
+    def initialize(self):
+        # Remove database folder if both exists
+        if self.db.exists() and os.path.isfile(self.old_db_path):
+            self.db.destroy()
+
+        if self.db.exists():
+            # Backup before start and cleanup old backups
+            backup_path = os.path.join(sickrage.DATA_DIR, 'db_backup')
+            backup_count = 5
+            existing_backups = []
+            if not os.path.isdir(backup_path): os.makedirs(backup_path)
+
+            for root, dirs, files in os.walk(backup_path):
+                # Only consider files being a direct child of the backup_path
+                if root == backup_path:
+                    for backup_file in sorted(files):
+                        ints = re.findall('\d+', backup_file)
+
+                        # Delete non zip files
+                        if len(ints) != 1:
+                            try:
+                                os.remove(os.path.join(root, backup_file))
+                            except:
+                                pass
+                        else:
+                            existing_backups.append((int(ints[0]), backup_file))
+                else:
+                    # Delete stray directories.
+                    shutil.rmtree(root)
+
+            # Remove all but the last 5
+            for eb in existing_backups[:-backup_count]:
+                os.remove(os.path.join(backup_path, eb[1]))
+
+            # Create new backup
+            new_backup = os.path.join(backup_path, '%s.tar.gz' % int(time.time()))
+            with tarfile.open(new_backup, 'w:gz') as zipf:
+                for root, dirs, files in os.walk(self.db_path):
+                    for zfilename in files:
+                        zipf.add(os.path.join(root, zfilename),
+                                 arcname='database/%s' % os.path.join(root[len(self.db_path) + 1:], zfilename))
         else:
-            sickrage.srCore.srLogger.info("Proceeding with upgrade")
+            self.db.create()
 
-    @classmethod
-    def get_subclasses(cls):
-        yield cls
-        if cls.__subclasses__():
-            for sub in cls.__subclasses__():
-                for s in sub.get_subclasses():
-                    yield s
+        # setup database indexes
+        for index_name in self._database:
+            klass = self._database[index_name]
+            self.setupIndex(index_name, klass)
+
+    def setupIndex(self, index_name, klass):
+        self._indexes[index_name] = klass
+
+        # Category index
+        index_instance = klass(self.db.path, index_name)
+        try:
+
+            # Make sure store and bucket don't exist
+            exists = []
+            for x in ['buck', 'stor']:
+                full_path = os.path.join(self.db.path, '%s_%s' % (index_name, x))
+                if os.path.exists(full_path):
+                    exists.append(full_path)
+
+            if index_name not in self.db.indexes_names:
+                # Remove existing buckets if index isn't there
+                for x in exists:
+                    os.unlink(x)
+
+                # Add index (will restore buckets)
+                self.db.add_index(index_instance)
+                self.db.reindex_index(index_name)
+            else:
+                # Previous info
+                previous = self.db.indexes_names[index_name]
+                previous_version = previous._version
+                current_version = klass._version
+
+                # Only edit index if versions are different
+                if previous_version < current_version:
+                    sickrage.srCore.srLogger.debug('Index [{}] exists, updating and reindexing'.format(index_name))
+                    self.db.destroy_index(previous)
+                    self.db.add_index(index_instance)
+                    self.db.reindex_index(index_name)
+
+        except:
+            sickrage.srCore.srLogger.error('Failed adding index {}: {}'.format(index_name, traceback.format_exc()))
+
+    def reindex(self):
+        try:
+            self.db.reindex()
+        except:
+            sickrage.srCore.srLogger.error('Failed index: %s', traceback.format_exc())
+
+    def compact(self, try_repair=True, **kwargs):
+        # Removing left over compact files
+        for f in os.listdir(self.db.path):
+            for x in ['_compact_buck', '_compact_stor']:
+                if f[-len(x):] == x:
+                    os.unlink(os.path.join(self.db.path, f))
+
+        try:
+            start = time.time()
+            size = float(self.db.get_db_details().get('size', 0))
+            sickrage.srCore.srLogger.debug(
+                'Compacting {} database, current size: {}MB'.format(self.name, round(size / 1048576, 2)))
+
+            self.db.compact()
+            new_size = float(self.db.get_db_details().get('size', 0))
+            sickrage.srCore.srLogger.debug(
+                'Done compacting {} database in {}s, new size: {}MB, saved: {}MB'.format(self.name,
+                                                                                         round(time.time() - start, 2),
+                                                                                         round(new_size / 1048576, 2),
+                                                                                         round(
+                                                                                             (
+                                                                                                 size - new_size) / 1048576,
+                                                                                             2)))
+        except (IndexException, AttributeError):
+            if try_repair:
+                sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
+
+                # Remove all indexes
+                old_indexes = self._indexes.keys()
+                for index_name in old_indexes:
+                    try:
+                        self.db.destroy_index(index_name)
+                    except IndexNotFoundException:
+                        pass
+                    except:
+                        sickrage.srCore.srLogger.error('Failed removing old index {}'.format(index_name))
+
+                # Add them again
+                for index_name in self._indexes:
+                    klass = self._indexes[index_name]
+
+                    # Category index
+                    index_instance = klass(self.db.path, index_name)
+                    try:
+                        self.db.add_index(index_instance)
+                        self.db.reindex_index(index_name)
+                    except IndexConflict:
+                        pass
+                    except:
+                        sickrage.srCore.srLogger.error('Failed adding index {}'.format(index_name))
+                        raise
+
+                self.compact(try_repair=False)
+            else:
+                sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
+
+        except:
+            sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
+
+    def close(self):
+        self.db.close()
+
+    def migrate(self):
+        if os.path.isfile(self.old_db_path):
+            sickrage.srCore.srLogger.info('=' * 30)
+            sickrage.srCore.srLogger.info('Migrating %s database, please wait...', self.name)
+            migrate_start = time.time()
+
+            import sqlite3
+            conn = sqlite3.connect(self.old_db_path)
+
+            migrate_data = {}
+            rename_old = False
+
+            try:
+                c = conn.cursor()
+
+                for ml in self._migrate_list:
+                    migrate_data[ml] = {}
+                    rows = self._migrate_list[ml]
+
+                    try:
+                        c.execute('SELECT {} FROM `{}`'.format('`' + '`,`'.join(rows) + '`', ml))
+                    except:
+                        # ignore faulty destination_id database
+                        rename_old = True
+                        raise
+
+                    for p in c.fetchall():
+                        columns = {}
+                        for row in self._migrate_list[ml]:
+                            columns[row] = p[rows.index(row)]
+
+                        if not migrate_data[ml].get(p[0]):
+                            migrate_data[ml][p[0]] = columns
+                        else:
+                            if not isinstance(migrate_data[ml][p[0]], list):
+                                migrate_data[ml][p[0]] = [migrate_data[ml][p[0]]]
+                            migrate_data[ml][p[0]].append(columns)
+
+                conn.close()
+
+                sickrage.srCore.srLogger.info('Getting data took %s', (time.time() - migrate_start))
+
+                if not self.db.opened:
+                    return
+
+                for t_name in migrate_data:
+                    t_data = migrate_data.get(t_name, {})
+                    sickrage.srCore.srLogger.info('Importing %s %s' % (len(t_data), t_name))
+                    for k, v in t_data.items():
+                        if isinstance(v, list):
+                            for d in v:
+                                d.update({'_t': t_name})
+                                self.db.insert(d)
+                        else:
+                            v.update({'_t': t_name})
+                            self.db.insert(v)
+
+                sickrage.srCore.srLogger.info('Total migration took %s', (time.time() - migrate_start))
+                sickrage.srCore.srLogger.info('=' * 30)
+
+                rename_old = True
+            except OperationalError:
+                sickrage.srCore.srLogger.error('Migrating from unsupported/corrupt %s database version', self.name)
+                rename_old = True
+            except:
+                sickrage.srCore.srLogger.error('Migration of %s database failed', self.name)
+
+            # rename old database
+            if rename_old and not sickrage.DEVELOPER:
+                random = randomString()
+                sickrage.srCore.srLogger.info('Renaming old database to %s.%s_old' % (self.old_db_path, random))
+                os.rename(self.old_db_path, '{}.{}_old'.format(self.old_db_path, random))
+
+                if os.path.isfile(self.old_db_path + '-wal'):
+                    os.rename(self.old_db_path + '-wal', '{}-wal.{}_old'.format(self.old_db_path, random))
+                if os.path.isfile(self.old_db_path + '-shm'):
+                    os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))

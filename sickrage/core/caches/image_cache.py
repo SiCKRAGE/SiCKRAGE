@@ -22,13 +22,11 @@ from __future__ import unicode_literals
 import io
 import os
 
+import sickrage
 from hachoir_core import config as hachoir_config
 from hachoir_core.stream import StringInputStream
 from hachoir_metadata import extractMetadata
 from hachoir_parser import guessParser
-
-import sickrage
-from sickrage.core.exceptions import ShowDirectoryNotFoundException
 from sickrage.core.helpers import copyFile
 from sickrage.metadata import GenericMetadata
 
@@ -277,33 +275,34 @@ class ImageCache(object):
 
         # check the show dir for poster or banner images and use them
         if need_images[self.POSTER] or need_images[self.BANNER] or need_images[self.FANART]:
-            try:
-                for cur_provider in sickrage.srCore.metadataProviderDict.values():
-                    if not cur_provider.enabled:
+            if not os.path.isdir(show_obj.location):
+                sickrage.srCore.srLogger.warning("Unable to search for images in show dir because it doesn't exist")
+                return
+
+            for cur_provider in sickrage.srCore.metadataProviderDict.values():
+                if not cur_provider.enabled:
+                    continue
+
+                sickrage.srCore.srLogger.debug("Checking if we can use the show image from the " + cur_provider.name + " metadata")
+                if os.path.isfile(cur_provider.get_poster_path(show_obj)):
+                    cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
+                    cur_file_type = self.which_type(cur_file_name)
+
+                    if cur_file_type is None:
+                        sickrage.srCore.srLogger.warning(
+                            "Unable to retrieve image type {}, not using the image from {}".format(
+                                unicode(cur_file_type), cur_file_name))
                         continue
 
-                    sickrage.srCore.srLogger.debug("Checking if we can use the show image from the " + cur_provider.name + " metadata")
-                    if os.path.isfile(cur_provider.get_poster_path(show_obj)):
-                        cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
-                        cur_file_type = self.which_type(cur_file_name)
+                    sickrage.srCore.srLogger.debug("Checking if image " + cur_file_name + " (type " + str(
+                            cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
 
-                        if cur_file_type is None:
-                            sickrage.srCore.srLogger.warning(
-                                "Unable to retrieve image type {}, not using the image from {}".format(
-                                    unicode(cur_file_type), cur_file_name))
-                            continue
-
-                        sickrage.srCore.srLogger.debug("Checking if image " + cur_file_name + " (type " + str(
-                                cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
-
-                        if cur_file_type in need_images and need_images[cur_file_type]:
-                            sickrage.srCore.srLogger.debug(
-                                    "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
-                                            cur_file_type))
-                            self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
-                            need_images[cur_file_type] = False
-            except ShowDirectoryNotFoundException:
-                sickrage.srCore.srLogger.warning("Unable to search for images in show dir because it doesn't exist")
+                    if cur_file_type in need_images and need_images[cur_file_type]:
+                        sickrage.srCore.srLogger.debug(
+                                "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
+                                        cur_file_type))
+                        self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
+                        need_images[cur_file_type] = False
 
         # download from indexer for missing ones
         for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:

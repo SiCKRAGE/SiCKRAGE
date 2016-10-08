@@ -16,6 +16,8 @@ import re
 import shutil
 import socket
 import stat
+import string
+import sys
 import tempfile
 import time
 import traceback
@@ -25,10 +27,9 @@ import uuid
 import zipfile
 from contextlib import contextmanager
 
+import sickrage
 import six
 from bs4 import BeautifulSoup
-
-import sickrage
 from sickrage.core.exceptions import MultipleShowObjectsException
 
 mediaExtensions = [
@@ -1189,9 +1190,9 @@ def restoreSR(srcDir, dstDir):
         if os.path.exists(os.path.join(srcDir, 'cache')):
             if os.path.exists(os.path.join(dstDir, 'cache')):
                 moveFile(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
-                                                                        .format('cache',
-                                                                                datetime.datetime.now().strftime(
-                                                                                    '%Y%m%d_%H%M%S'))))
+                                                                     .format('cache',
+                                                                             datetime.datetime.now().strftime(
+                                                                                 '%Y%m%d_%H%M%S'))))
             moveFile(os.path.join(srcDir, 'cache'), dstDir)
 
         return True
@@ -1432,6 +1433,37 @@ def getDiskSpaceUsage(diskPath=None):
     else:
         return False
 
+def getFreeSpace(directories):
+
+    single = not isinstance(directories, (tuple, list))
+    if single:
+        directories = [directories]
+
+    free_space = {}
+    for folder in directories:
+
+        size = None
+        if os.path.isdir(folder):
+            if os.name == 'nt':
+                _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
+                                   ctypes.c_ulonglong()
+                if sys.version_info >= (3,) or isinstance(folder, unicode):
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW #@UndefinedVariable
+                else:
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA #@UndefinedVariable
+                ret = fun(folder, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
+                if ret == 0:
+                    raise ctypes.WinError()
+                return [total.value, free.value]
+            else:
+                s = os.statvfs(folder)
+                size = [s.f_blocks * s.f_frsize / (1024 * 1024), (s.f_bavail * s.f_frsize) / (1024 * 1024)]
+
+        if single: return size
+
+        free_space[folder] = size
+
+    return free_space
 
 def removetree(tgt):
     def error_handler(func, path, execinfo):
@@ -1626,3 +1658,7 @@ def convert_size(size, default=0):
     size *= 1024 ** units.index(unit.upper())
 
     return max(long(size), 0)
+
+
+def randomString(size=8, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for x in range(size))

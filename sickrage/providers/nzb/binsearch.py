@@ -77,11 +77,11 @@ class BinSearchCache(tv_cache.TVCache):
 
         return (title, url)
 
-    def updateCache(self):
+    def update(self):
         # check if we should update
-        if self.should_update():
+        if self.shouldUpdate():
             # clear cache
-            self._clear_cache()
+            self.clear()
 
             # set updated
             self.setLastUpdate()
@@ -97,15 +97,15 @@ class BinSearchCache(tv_cache.TVCache):
                 sickrage.srCore.srLogger.debug("Cache update URL: %s " % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
-                    ci = self._parse_item(item)
+                    ci = self._parseItem(item)
                     if ci is not None:
                         cl.append(ci)
 
             if len(cl) > 0:
-                self._get_db().mass_action(cl)
+                self.db().mass_action(cl)
                 del cl  # cleanup
 
         return True
 
-    def _check_auth(self, data):
+    def _checkAuth(self, data):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

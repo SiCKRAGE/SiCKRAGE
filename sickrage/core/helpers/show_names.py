@@ -27,12 +27,11 @@ from functools import partial
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitizeSceneName
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
-
 
 resultFilters = [
     "sub(bed|ed|pack|s)",
@@ -107,8 +106,9 @@ def filterBadReleases(name, parse=True):
     if sickrage.srCore.srConfig.REQUIRE_WORDS:
         require_words = sickrage.srCore.srConfig.REQUIRE_WORDS
         if not containsAtLeastOneWord(name, require_words):
-            sickrage.srCore.srLogger.debug("Invalid scene release: " + name + " doesn't contain any of " + sickrage.srCore.srConfig.REQUIRE_WORDS +
-                        ", ignoring it")
+            sickrage.srCore.srLogger.debug(
+                "Invalid scene release: " + name + " doesn't contain any of " + sickrage.srCore.srConfig.REQUIRE_WORDS +
+                ", ignoring it")
             return False
 
     return True
@@ -199,12 +199,9 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                     seasonStrings.append("%02d" % ab_number)
 
     else:
-        numseasonsSQlResult = main_db.MainDB().select(
-                "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and season != 0",
-                [show.indexerid])
+        numseasons = len({x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          if x['doc']['season'] != 0})
 
-        if numseasonsSQlResult:
-            numseasons = int(numseasonsSQlResult[0][0])
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
 
     showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
@@ -233,13 +230,8 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 
 
 def makeSceneSearchString(show, ep_obj):
-    numseasons = 0
-
-    numseasonsSQlResult = main_db.MainDB().select(
-            "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and season != 0",
-            [show.indexerid])
-    if numseasonsSQlResult:
-        numseasons = int(numseasonsSQlResult[0][0])
+    numseasons = len({x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                      if x['doc']['season'] != 0})
 
     # see if we should use dates instead of episodes
     if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):
@@ -305,7 +297,7 @@ def isGoodResult(name, show, log=True, season=-1):
 
     if log:
         sickrage.srCore.srLogger.info(
-                "Provider gave result " + name + " but that doesn't seem like a valid result for " + show.name + " so I'm ignoring it")
+            "Provider gave result " + name + " but that doesn't seem like a valid result for " + show.name + " so I'm ignoring it")
     return False
 
 
@@ -410,29 +402,29 @@ def searchDBForShow(regShowName, log=False):
     yearRegex = r"([^()]+?)\s*(\()?(\d{4})(?(2)\))$"
 
     for showName in showNames:
-
-        sqlResults = main_db.MainDB().select("SELECT * FROM tv_shows WHERE show_name LIKE ?",
-                                             [showName])
-
-        if len(sqlResults) == 1:
-            return int(sqlResults[0]["indexer_id"])
+        dbData = [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True) if x['doc']['show_name'] == showName]
+        if len(dbData) == 1:
+            return int(dbData[0]["indexer_id"])
         else:
             # if we didn't get exactly one result then try again with the year stripped off if possible
             match = re.match(yearRegex, showName)
             if match and match.group(1):
                 if log:
-                    sickrage.srCore.srLogger.debug("Unable to match original name but trying to manually strip and specify show year")
-                sqlResults = main_db.MainDB().select(
-                        "SELECT * FROM tv_shows WHERE (show_name LIKE ?) AND startyear = ?",
-                        [match.group(1) + '%', match.group(3)])
+                    sickrage.srCore.srLogger.debug(
+                        "Unable to match original name but trying to manually strip and specify show year")
 
-            if len(sqlResults) == 0:
+                dbData = [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)
+                          if match.group(1) in x['doc']['show_name']
+                          and x['doc']['startyear'] == match.group(3)]
+
+            if len(dbData) == 0:
                 if log:
                     sickrage.srCore.srLogger.debug("Unable to match a record in the DB for " + showName)
                 continue
-            elif len(sqlResults) > 1:
+            elif len(dbData) > 1:
                 if log:
-                    sickrage.srCore.srLogger.debug("Multiple results for " + showName + " in the DB, unable to match show name")
+                    sickrage.srCore.srLogger.debug(
+                        "Multiple results for " + showName + " in the DB, unable to match show name")
                 continue
             else:
-                return int(sqlResults[0]["indexer_id"])
+                return int(dbData[0]["indexer_id"])

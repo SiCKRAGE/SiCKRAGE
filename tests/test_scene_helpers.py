@@ -24,7 +24,7 @@ import unittest
 
 import sickrage
 from sickrage.core.common import countryList
-from sickrage.core.databases import cache_db
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import show_names
 from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
     get_scene_exception_by_name
@@ -94,9 +94,14 @@ class SceneTests(SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
+        CacheDB().db.insert({
+            '_t': 'scene_exceptions',
+            'indexer_id': -1,
+            'show_name': 'Exception Test',
+            'season': -1
+        })
+
         exceptionsCache[-1] = ['Exception Test']
-        cache_db.CacheDB().action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
-                    [-1, 'Exception Test', -1])
         countryList['Full Country Name'] = 'FCN'
 
         self._test_allPossibleShowNames('Show Name', expected=['Show Name'])
@@ -139,13 +144,13 @@ class SceneExceptionTestCase(SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        cache_db.CacheDB().action("DELETE FROM scene_exceptions")
+        [CacheDB().db.delete(x['doc']) for x in CacheDB().db.all('scene_exceptions', with_doc=True)]
 
         # put something in the cache
-        sickrage.srCore.NAMECACHE.addNameToCache('Cached Name', 0)
+        sickrage.srCore.NAMECACHE.put('Cached Name', 0)
 
         # updating should not clear the cache this time since our exceptions didn't change
-        self.assertEqual(sickrage.srCore.NAMECACHE.retrieveNameFromCache('Cached Name'), 0)
+        self.assertEqual(sickrage.srCore.NAMECACHE.get('Cached Name'), 0)
 
 
 if __name__ == '__main__':

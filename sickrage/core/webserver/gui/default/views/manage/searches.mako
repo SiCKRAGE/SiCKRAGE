@@ -25,7 +25,7 @@
 
             <h4>
                 Daily
-                Search: ${('<span style="color: red; ">Not in progress</span>', '<span style="color: green; ">In Progress</span>')[dailySearchStatus]}
+                Search: ${('<span style="color: red; ">Not in progress</span>', '<span style="color: green; ">In Progress</span>')[bool(dailySearchStatus)]}
                 <br/>
             </h4>
             <a class="btn" href="/manage/manageSearches/forceSearch"><i class="icon-exclamation-sign"></i> Force</a>

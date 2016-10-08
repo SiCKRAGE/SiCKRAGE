@@ -43,7 +43,7 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import chmodAsParent, \
     findCertainShow, remove_file_failed, \
@@ -89,10 +89,10 @@ class GenericProvider(object):
     def imageName(self):
         return ""
 
-    def _check_auth(self):
+    def _checkAuth(self):
         return True
 
-    def login(self):
+    def _doLogin(self):
         return True
 
     @classmethod
@@ -147,7 +147,7 @@ class GenericProvider(object):
         """
 
         # check for auth
-        if not self.login:
+        if not self._doLogin:
             return False
 
         urls = self.make_url(result.url)
@@ -246,7 +246,7 @@ class GenericProvider(object):
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
 
-        if not self._check_auth:
+        if not self._checkAuth:
             return
 
         self.show = show
@@ -385,18 +385,17 @@ class GenericProvider(object):
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    sql_results = main_db.MainDB().select(
-                        "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
-                        [showObj.indexerid, airdate])
+                    dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
+                              if x['doc']['airdate'] == airdate]
 
-                    if len(sql_results) != 1:
+                    if len(dbData) != 1:
                         sickrage.srCore.srLogger.warning(
                             "Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it")
                         addCacheEntry = True
 
                 if not addCacheEntry:
-                    actual_season = int(sql_results[0]["season"])
-                    actual_episodes = [int(sql_results[0]["episode"])]
+                    actual_season = int(dbData[0]["season"])
+                    actual_episodes = [int(dbData[0]["episode"])]
 
             # add parsed result to cache for usage later on
             if addCacheEntry:
@@ -456,7 +455,7 @@ class GenericProvider(object):
 
         # check if we have items to add to cache
         if len(cl) > 0:
-            self.cache._get_db().mass_action(cl)
+            self.cache.ProviderDB().mass_action(cl)
             del cl  # cleanup
 
         return results
@@ -568,7 +567,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url)
+                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
                 torrent = bencode.bdecode(resp.content)
 
                 total_length = 0
@@ -588,7 +587,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url)
+                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
                 torrent = bencode.bdecode(resp.content)
 
                 for file in torrent['info']['files']:
@@ -651,21 +650,19 @@ class TorrentProvider(GenericProvider):
                             '{}.{}'.format(sanitizeFileName(name), self.type))
 
     def findPropers(self, search_date=datetime.datetime.today()):
-
         results = []
+        dbData = []
 
-        sqlResults = main_db.MainDB().select(
-            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-            ' AND e.status IN (' + ','.join(
-                [str(x) for x in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]) + ')'
-        )
+        for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
+            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)
+                            if e['airdate'] >= str(search_date.toordinal())
+                            and e['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]:
+                dbData += [episode]
 
-        for sqlshow in sqlResults or []:
-            show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow["showid"]))
+        for show in dbData:
+            show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
             if show:
-                curEp = show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
+                curEp = show.getEpisode(int(show["season"]), int(show["episode"]))
                 for term in self.proper_strings:
                     searchString = self._get_episode_search_strings(curEp, add_string=term)
 
@@ -710,7 +707,7 @@ class NZBProvider(GenericProvider):
         size = -1
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url)
+            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
 
             total_length = 0
             for file in nzb_parser.parse(resp.content):
@@ -728,7 +725,7 @@ class NZBProvider(GenericProvider):
         files = {}
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url)
+            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
 
             for file in nzb_parser.parse(resp.content):
                 total_length = 0
@@ -814,7 +811,7 @@ class TorrentRssProvider(TorrentProvider):
 
             # pylint: disable=W0212
             # Access to a protected member of a client class
-            data = self.cache._get_rss_data()['entries']
+            data = self.cache._getRSSData()['entries']
             if not data:
                 return False, 'No items found in the RSS feed ' + self.urls['base_url']
 
@@ -915,7 +912,7 @@ class NewznabProvider(NZBProvider):
         categories = []
         message = ""
 
-        self._check_auth()
+        self._checkAuth()
 
         params = {"t": "caps"}
         if self.key:
@@ -1000,7 +997,7 @@ class NewznabProvider(NZBProvider):
     def _doGeneralSearch(self, search_string):
         return self.search({'q': search_string})
 
-    def _check_auth(self):
+    def _checkAuth(self):
         return True
 
     def _checkAuthFromData(self, data):
@@ -1010,7 +1007,7 @@ class NewznabProvider(NZBProvider):
         :type data: dict
         """
         if not all([x in data for x in ['feed', 'entries']]):
-            return self._check_auth()
+            return self._checkAuth()
 
         try:
             if int(data['bozo']) == 1:
@@ -1037,7 +1034,7 @@ class NewznabProvider(NZBProvider):
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
-        self._check_auth()
+        self._checkAuth()
 
         params = {
             "t": "tvsearch",
@@ -1107,28 +1104,24 @@ class NewznabProvider(NZBProvider):
 
     def findPropers(self, search_date=datetime.datetime.today()):
         results = []
+        dbData = []
 
-        sqlResults = main_db.MainDB().select(
-            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-            ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
-            ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
-        )
+        for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
+            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)
+                            if e['airdate'] >= str(search_date.toordinal())
+                            and e['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]:
+                dbData += [episode]
 
-        if not sqlResults:
-            return []
-
-        for sqlshow in sqlResults:
-            self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow["showid"]))
+        for show in dbData:
+            self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
             if self.show:
-                curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
+                curEp = self.show.getEpisode(int(show["season"]), int(show["episode"]))
                 searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
                 for searchString in searchStrings:
                     for item in self.search(searchString):
                         title, url = self._get_title_and_url(item)
                         if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                            results.append(Proper(title, url, datetime.datetime.today(), self.show))
+                            results += [Proper(title, url, datetime.datetime.today(), self.show)]
 
         return results
 
@@ -1152,7 +1145,7 @@ class TorrentRssCache(TVCache):
         TVCache.__init__(self, provider_obj)
         self.minTime = 15
 
-    def _get_rss_data(self):
+    def _getRSSData(self):
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['base_url'])
 
         if self.provider.cookies:
@@ -1170,7 +1163,7 @@ class NewznabCache(TVCache):
         self.minTime = 30
         self.last_search = datetime.datetime.now()
 
-    def _get_rss_data(self):
+    def _getRSSData(self):
 
         params = {"t": "tvsearch",
                   "cat": self.provider.catIDs,
@@ -1192,13 +1185,13 @@ class NewznabCache(TVCache):
 
         return data
 
-    def _check_auth(self, data):
+    def _checkAuth(self, data):
         return self.provider._checkAuthFromData(data)
 
-    def _parse_item(self, item):
+    def _parseItem(self, item):
         title, url = self._get_title_and_url(item)
 
-        self._check_item_auth(title, url)
+        self._checkItemAuth(title, url)
 
         if not title or not url:
             return None

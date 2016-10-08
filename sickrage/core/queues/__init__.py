@@ -35,6 +35,7 @@ class srQueuePriorities(object):
     NORMAL = 20
     HIGH = 30
 
+
 class srQueue(threading.Thread):
     def __init__(self, name="QUEUE"):
         super(srQueue, self).__init__(name=name)
@@ -55,7 +56,7 @@ class srQueue(threading.Thread):
             with self.lock:
                 self.amActive = True
 
-                if self.currentItem is None or not self.currentItem.inProgress:
+                if self.currentItem is None or not self.currentItem.is_alive():
                     if self.currentItem:
                         self.currentItem = None
 
@@ -64,7 +65,7 @@ class srQueue(threading.Thread):
                         self.put(self.currentItem)
                         self.currentItem = None
                     else:
-                        self.currentItem.run() and self.currentItem.finish()
+                        self.currentItem.start()
 
                 self.amActive = False
 
@@ -83,8 +84,8 @@ class srQueue(threading.Thread):
         :param item: Queue object to add
         :return: item
         """
-        item.name = "{}-{}".format(self.name, item.name)
         item.added = datetime.now()
+        item.name = "{}-{}".format(self.name, item.name)
         self._queue.put((item.priority, item), *args, **kwargs)
         return item
 
@@ -100,22 +101,17 @@ class srQueue(threading.Thread):
 
     def shutdown(self):
         self.stop.set()
-        self.join(10)
+        try:
+            self.join(10)
+        except:
+            pass
 
 
-class srQueueItem(object):
+class srQueueItem(threading.Thread):
     def __init__(self, name, action_id=0):
+        super(srQueueItem, self).__init__(name=name.replace(" ", "-").upper())
         self.lock = threading.Lock()
-        self.name = name.replace(" ", "-").upper()
-        self.inProgress = False
+        self.stop = threading.Event()
         self.priority = srQueuePriorities.NORMAL
         self.action_id = action_id
-        self.stop = threading.Event()
         self.added = None
-
-    def run(self):
-        threading.currentThread().setName(self.name)
-        self.inProgress = True
-
-    def finish(self):
-        self.inProgress = False

@@ -23,7 +23,7 @@ import threading
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.ui import ProgressIndicator
 
@@ -99,8 +99,8 @@ class srBacklogSearcher(object):
 
         if not which_shows and not ((curDate - self._lastBacklog) >= self.cycleTime):
             sickrage.srCore.srLogger.info(
-                    "Running limited backlog on missed episodes " + str(
-                            sickrage.srCore.srConfig.BACKLOG_DAYS) + " day(s) and older only")
+                "Running limited backlog on missed episodes " + str(
+                    sickrage.srCore.srConfig.BACKLOG_DAYS) + " day(s) and older only")
             fromDate = datetime.date.today() - datetime.timedelta(days=sickrage.srCore.srConfig.BACKLOG_DAYS)
 
         # go through non air-by-date shows and see if they need any episodes
@@ -115,7 +115,8 @@ class srBacklogSearcher(object):
                 self.currentSearchInfo = {'title': curShow.name + " Season " + str(season)}
                 sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(curShow, segment))  # @UndefinedVariable
             else:
-                sickrage.srCore.srLogger.debug("Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name))
+                sickrage.srCore.srLogger.debug(
+                    "Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name))
 
         # don't consider this an actual backlog search if we only did recent eps
         # or if we only did certain shows
@@ -129,14 +130,14 @@ class srBacklogSearcher(object):
 
         sickrage.srCore.srLogger.debug("Retrieving the last check time from the DB")
 
-        sqlResults = main_db.MainDB().select("SELECT * FROM info")
+        dbData = [x['doc'] for x in MainDB().db.all('info', with_doc=True)]
 
-        if len(sqlResults) == 0:
+        if len(dbData) == 0:
             lastBacklog = 1
-        elif sqlResults[0]["last_backlog"] is None or sqlResults[0]["last_backlog"] == "":
+        elif dbData[0]["last_backlog"] is None or dbData[0]["last_backlog"] == "":
             lastBacklog = 1
         else:
-            lastBacklog = int(sqlResults[0]["last_backlog"])
+            lastBacklog = int(dbData[0]["last_backlog"])
             if lastBacklog > datetime.date.today().toordinal():
                 lastBacklog = 1
 
@@ -144,20 +145,18 @@ class srBacklogSearcher(object):
 
     def _get_segments(self, show, fromDate):
         if show.paused:
-            sickrage.srCore.srLogger.debug("Skipping backlog for {show_name} because the show is paused".format(show_name=show.name))
+            sickrage.srCore.srLogger.debug(
+                "Skipping backlog for {show_name} because the show is paused".format(show_name=show.name))
             return {}
 
         anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
 
         sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
-        sqlResults = main_db.MainDB().select(
-            "SELECT status, season, episode FROM tv_episodes WHERE season > 0 AND airdate > ? AND showid = ?",
-            [fromDate.toordinal(), show.indexerid])
-
         # check through the list of statuses to see if we want any
         wanted = {}
-        for result in sqlResults:
+        for result in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                       if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
             curCompositeStatus = int(result["status"] or -1)
             curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
@@ -187,12 +186,16 @@ class srBacklogSearcher(object):
 
         sickrage.srCore.srLogger.debug("Setting the last backlog in the DB to " + str(when))
 
-        sqlResults = main_db.MainDB().select("SELECT * FROM info")
-
-        if len(sqlResults) == 0:
-            main_db.MainDB().action("INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [str(when), 0])
+        dbData = [x['doc'] for x in MainDB().db.all('info', with_doc=True)]
+        if len(dbData) == 0:
+            MainDB().db.insert({
+                '_t': 'info',
+                'last_backlog': str(when),
+                'last_indexer': 0
+            })
         else:
-            main_db.MainDB().action("UPDATE info SET last_backlog=" + str(when))
+            dbData[0]['last_backlog'] = str(when)
+            MainDB().db.update(dbData[0])
 
 
 def get_backlog_cycle_time():

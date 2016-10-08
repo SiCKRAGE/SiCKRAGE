@@ -27,12 +27,12 @@
     <table id="queueStatusTable" class="tablesorter" width="100%">
         <thead>
             <tr>
-                <th>Show id</th>
-                <th>Show name</th>
+                <th>Show ID</th>
+                <th>Show Name</th>
                 <th>In Progress</th>
                 <th>Priority</th>
                 <th>Added</th>
-                <th>Queue type</th>
+                <th>Queue Type</th>
             </tr>
         </thead>
         <tbody>
@@ -54,7 +54,7 @@
                             <td></td>
                         % endif
                     % endtry
-                        <td>${sickrage.srCore.SHOWQUEUE.currentItem.inProgress}</td>
+                        <td>${sickrage.srCore.SHOWQUEUE.currentItem.is_alive()}</td>
                         % if sickrage.srCore.SHOWQUEUE.currentItem.priority == 10:
                         <td>LOW</td>
                         % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 20:
@@ -86,7 +86,7 @@
                             <td></td>
                         % endif
                     % endtry
-                    <td>${item.inProgress}</td>
+                    <td>${item.is_alive()}</td>
                     % if item.priority == 10:
                         <td>LOW</td>
                     % elif item.priority == 20:

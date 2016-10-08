@@ -29,7 +29,7 @@ from xml.etree.ElementTree import ElementTree
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
@@ -279,7 +279,7 @@ class TVEpisode(object):
     @location.setter
     def location(self, new_location):
         if os.path.isfile(new_location):
-            sickrage.srCore.srLogger.debug("Episode location set to " + new_location)
+            sickrage.srCore.srLogger.debug("{}: Episode location set to {}".format(self.show.indexerid, new_location))
             self.dirty = True
         self._location = new_location
 
@@ -399,41 +399,40 @@ class TVEpisode(object):
         sickrage.srCore.srLogger.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
-        sqlResults = main_db.MainDB().select(
-            "SELECT * FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
-            [self.show.indexerid, season, episode])
+        dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+                  if x['doc']['season'] == season and x['doc']['episode'] == episode]
 
-        if len(sqlResults) > 1:
+        if len(dbData) > 1:
             raise MultipleEpisodesInDatabaseException("Your DB has two records for the same show somehow.")
-        elif len(sqlResults) == 0:
+        elif len(dbData) == 0:
             sickrage.srCore.srLogger.debug("%s: Episode S%02dE%02d not found in the database" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
             return False
         else:
             self._season = season
             self._episode = episode
-            self._name = sqlResults[0]["name"] or self.name
-            self._absolute_number = sqlResults[0]["absolute_number"] or self.absolute_number
-            self._description = sqlResults[0]["description"] or self.description
-            self._subtitles = sqlResults[0]["subtitles"].split(",") or self.subtitles
-            self._subtitles_searchcount = sqlResults[0]["subtitles_searchcount"] or self.subtitles_searchcount
-            self._subtitles_lastsearch = sqlResults[0]["subtitles_lastsearch"] or self.subtitles_lastsearch
-            self._airdate = datetime.date.fromordinal(int(sqlResults[0]["airdate"])) or self.airdate
-            self._status = tryInt(sqlResults[0]["status"], self.status)
-            self.location = sqlResults[0]["location"] or self.location
-            self._file_size = tryInt(sqlResults[0]["file_size"], self.file_size)
-            self._indexerid = tryInt(sqlResults[0]["indexerid"], self.indexerid)
-            self._indexer = tryInt(sqlResults[0]["indexer"], self.indexer)
-            self._release_name = sqlResults[0]["release_name"] or self.release_name
-            self._release_group = sqlResults[0]["release_group"] or self.release_group
-            self._is_proper = tryInt(sqlResults[0]["is_proper"], self.is_proper)
-            self._version = tryInt(sqlResults[0]["version"], self.version)
+            self._name = dbData[0].get("name", self.name)
+            self._absolute_number = dbData[0].get("absolute_number", self.absolute_number)
+            self._description = dbData[0].get("description", self.description)
+            self._subtitles = dbData[0].get("subtitles", self.subtitles).split(",")
+            self._subtitles_searchcount = dbData[0].get("subtitles_searchcount", self.subtitles_searchcount)
+            self._subtitles_lastsearch = dbData[0].get("subtitles_lastsearch", self.subtitles_lastsearch)
+            self._airdate = datetime.date.fromordinal(int(dbData[0].get("airdate", self.airdate)))
+            self._status = tryInt(dbData[0]["status"], self.status)
+            self.location = dbData[0].get("location", self.location)
+            self._file_size = tryInt(dbData[0]["file_size"], self.file_size)
+            self._indexerid = tryInt(dbData[0]["indexerid"], self.indexerid)
+            self._indexer = tryInt(dbData[0]["indexer"], self.indexer)
+            self._release_name = dbData[0].get("release_name", self.release_name)
+            self._release_group = dbData[0].get("release_group", self.release_group)
+            self._is_proper = tryInt(dbData[0]["is_proper"], self.is_proper)
+            self._version = tryInt(dbData[0]["version"], self.version)
 
             xem_refresh(self.show.indexerid, self.show.indexer)
 
-            self.scene_season = tryInt(sqlResults[0]["scene_season"], self.scene_season)
-            self.scene_episode = tryInt(sqlResults[0]["scene_episode"], self.scene_episode)
-            self.scene_absolute_number = tryInt(sqlResults[0]["scene_absolute_number"], self.scene_absolute_number)
+            self.scene_season = tryInt(dbData[0]["scene_season"], self.scene_season)
+            self.scene_episode = tryInt(dbData[0]["scene_episode"], self.scene_episode)
+            self.scene_absolute_number = tryInt(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
 
             if self.scene_absolute_number == 0:
                 self.scene_absolute_number = get_scene_absolute_numbering(
@@ -635,8 +634,7 @@ class TVEpisode(object):
                 for epDetails in showXML.iter('episodedetails'):
                     if epDetails.findtext('season') is None or int(
                             epDetails.findtext('season')) != self.season or epDetails.findtext(
-                            'episode') is None or int(epDetails.findtext('episode')) != self.episode:
-
+                        'episode') is None or int(epDetails.findtext('episode')) != self.episode:
                         sickrage.srCore.srLogger.debug(
                             "%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got S%02dE%02d" %
                             (
@@ -745,9 +743,8 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.srCore.srLogger.debug("Deleting myself from the database")
 
-        sql = "DELETE FROM tv_episodes WHERE showid=" + str(self.show.indexerid) + " AND season=" + str(
-            self.season) + " AND episode=" + str(self.episode)
-        main_db.MainDB().action(sql)
+        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+         if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
         data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST and data:
@@ -763,7 +760,7 @@ class TVEpisode(object):
 
         raise EpisodeDeletedException()
 
-    def saveToDB(self, execute=True, forceSave=False):
+    def saveToDB(self, forceSave=False):
         """
         Saves this episode to the database if any of its data has been changed since the last save.
 
@@ -786,34 +783,42 @@ class TVEpisode(object):
         if sickrage.srCore.srConfig.SUBTITLES_MULTI or not self.subtitles:
             self.subtitles = ",".join(self.subtitles)
 
-        newValueDict = {"indexerid": self.indexerid,
-                        "indexer": self.indexer,
-                        "name": self.name,
-                        "description": self.description,
-                        "subtitles": self.subtitles,
-                        "subtitles_searchcount": self.subtitles_searchcount,
-                        "subtitles_lastsearch": self.subtitles_lastsearch,
-                        "airdate": self.airdate.toordinal(),
-                        "hasnfo": self.hasnfo,
-                        "hastbn": self.hastbn,
-                        "status": self.status,
-                        "location": self.location,
-                        "file_size": self.file_size,
-                        "release_name": self.release_name,
-                        "is_proper": self.is_proper,
-                        "absolute_number": self.absolute_number,
-                        "version": self.version,
-                        "release_group": self.release_group}
+        tv_episode = {
+            '_t': 'tv_episodes',
+            "showid": self.show.indexerid,
+            "season": self.season,
+            "episode": self.episode,
+            "scene_season": self.scene_season,
+            "scene_episode": self.scene_episode,
+            "indexerid": self.indexerid,
+            "indexer": self.indexer,
+            "name": self.name,
+            "description": self.description,
+            "subtitles": self.subtitles,
+            "subtitles_searchcount": self.subtitles_searchcount,
+            "subtitles_lastsearch": self.subtitles_lastsearch,
+            "airdate": self.airdate.toordinal(),
+            "hasnfo": self.hasnfo,
+            "hastbn": self.hastbn,
+            "status": self.status,
+            "location": self.location,
+            "file_size": self.file_size,
+            "release_name": self.release_name,
+            "is_proper": self.is_proper,
+            "absolute_number": self.absolute_number,
+            "scene_absolute_number": self.scene_absolute_number,
+            "version": self.version,
+            "release_group": self.release_group
+        }
 
-        controlValueDict = {"showid": self.show.indexerid,
-                            "season": self.season,
-                            "episode": self.episode}
+        try:
+            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+                      if x['doc']['indexerid'] == self.indexerid][0]
 
-        # use a custom update/insert method to get the data into the DB
-        if not execute:
-            return "tv_episodes", newValueDict, controlValueDict
-
-        main_db.MainDB().upsert("tv_episodes", newValueDict, controlValueDict)
+            dbData.update(tv_episode)
+            MainDB().db.update(dbData)
+        except:
+            MainDB().db.insert(tv_episode)
 
     def fullPath(self):
         if self.location is None or self.location == "":
@@ -958,16 +963,9 @@ class TVEpisode(object):
             curEp.checkForMetaFiles()
 
         # save any changes to the databas
-        sql_l = []
         with self.lock:
             for relEp in [self] + self.relatedEps:
-                sql_q = relEp.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
-
-        if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
+                relEp.saveToDB()
 
     def airdateModifyStamp(self):
         """

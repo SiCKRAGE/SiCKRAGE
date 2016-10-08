@@ -34,7 +34,7 @@ import sickrage
 from configobj import ConfigObj
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_temp_dir
 from sickrage.core.nameparser import validator
 from sickrage.core.nameparser.validator import check_force_season_folders
@@ -76,6 +76,7 @@ class srConfig(object):
         self.VERSION_NOTIFY = False
         self.AUTO_UPDATE = False
         self.NOTIFY_ON_UPDATE = False
+        self.PIP_PATH = ""
         self.GIT_RESET = True
         self.GIT_USERNAME = ""
         self.GIT_PASSWORD = ""
@@ -573,6 +574,7 @@ class srConfig(object):
         defaults['General']['create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
         defaults['General']['add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
         defaults['General']['extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
+        defaults['General']['pip_path'] = self.PIP_PATH
         defaults['General']['git_path'] = self.GIT_PATH
         defaults['General']['ignore_words'] = self.IGNORE_WORDS
         defaults['General']['require_words'] = self.REQUIRE_WORDS
@@ -1392,6 +1394,8 @@ class srConfig(object):
 
         self.DEFAULT_PAGE = self.check_setting_str('General', 'default_page', 'home')
 
+        self.PIP_PATH = self.check_setting_str('General', 'pip_path', 'pip')
+
         self.GIT_PATH = self.check_setting_str('General', 'git_path', 'git')
         self.GIT_AUTOISSUES = bool(self.check_setting_int('General', 'git_autoissues', 0))
         self.GIT_USERNAME = self.check_setting_str('General', 'git_username', '')
@@ -2017,6 +2021,7 @@ class srConfig(object):
         new_config['General']['create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
         new_config['General']['add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
         new_config['General']['extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
+        new_config['General']['pip_path'] = self.PIP_PATH
         new_config['General']['git_path'] = self.GIT_PATH
         new_config['General']['ignore_words'] = self.IGNORE_WORDS
         new_config['General']['require_words'] = self.REQUIRE_WORDS
@@ -2526,13 +2531,12 @@ class ConfigMigrator(srConfig):
             self.check_setting_int('General', 'NAMING_MULTI_EP_TYPE', 1))
 
         # see if any of their shows used season folders
-        season_folder_shows = main_db.MainDB().select("SELECT * FROM tv_shows WHERE flatten_folders = 0")
+        season_folder_shows = [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)
+                               if x['flatten_folders'] == 0]
 
         # if any shows had season folders on then prepend season folder to the pattern
         if season_folder_shows:
-
-            old_season_format = self.check_setting_str('General', 'season_folders_format',
-                                                       'Season %02d')
+            old_season_format = self.check_setting_str('General', 'season_folders_format', 'Season %02d')
 
             if old_season_format:
                 try:
@@ -2555,7 +2559,9 @@ class ConfigMigrator(srConfig):
                 "No shows were using season folders before so I'm disabling flattening on all shows")
 
             # don't flatten any shows at all
-            main_db.MainDB().action("UPDATE tv_shows SET flatten_folders = 0")
+            for dbData in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+                dbData['flatten_folders'] = 0
+                MainDB().db.update(dbData)
 
         self.CONFIG_OBJ['General']['naming_force_folders'] = check_force_season_folders()
 

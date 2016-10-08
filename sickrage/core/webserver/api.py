@@ -32,7 +32,6 @@ from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
-from tornado.process import cpu_count
 from tornado.web import RequestHandler
 
 try:
@@ -47,9 +46,10 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
-from sickrage.core.databases import cache_db, failed_db, main_db
-from sickrage.core.exceptions import CantUpdateShowException, \
-    ShowDirectoryNotFoundException
+from sickrage.core.databases.main import MainDB
+from sickrage.core.databases.failed import FailedDB
+from sickrage.core.databases.cache import CacheDB
+from sickrage.core.exceptions import CantUpdateShowException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
     pretty_filesize, sanitizeFileName, srdatetime, tryInt, readFileBuffered
 from sickrage.core.media.banner import Banner
@@ -115,7 +115,7 @@ class ApiHandler(RequestHandler):
     def __init__(self, application, request, *args, **kwargs):
         super(ApiHandler, self).__init__(application, request)
         self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(cpu_count())
+        self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
     @coroutine
     def prepare(self, *args, **kwargs):
@@ -540,6 +540,7 @@ def _ordinal_to_dateForm(ordinal):
         date = datetime.datetime.now().date().fromordinal(ordinal)
     else:
         return ""
+
     return date.strftime(dateFormat)
 
 
@@ -744,27 +745,25 @@ class CMD_Episode(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        sqlResults = main_db.MainDB(row_type="dict").select(
-            "SELECT name, description, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND episode = ? AND season = ?",
-            [self.indexerid, self.e, self.s])
-        if not len(sqlResults) == 1:
+        dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                  if x['doc']['season'] == self.s and x['doc']['episode'] == self.e]
+
+        if not len(dbData) == 1:
             raise ApiError("Episode not found")
-        episode = sqlResults[0]
+
+        episode = dbData[0]
+
+        showPath = showObj.location
+
         # handle path options
         # absolute vs relative vs broken
-        showPath = None
-        try:
-            showPath = showObj.location
-        except ShowDirectoryNotFoundException:
+        if bool(self.fullPath) is True and os.path.isdir(showPath):
             pass
-
-        if bool(self.fullPath) == True and showPath:
-            pass
-        elif bool(self.fullPath) == False and showPath:
+        elif bool(self.fullPath) is False and os.path.isdir(showPath):
             # using the length because lstrip removes to much
             showPathLength = len(showPath) + 1  # the / or \ yeah not that nice i know
             episode["location"] = episode["location"][showPathLength:]
-        elif not showPath:  # show dir is broken ... episode path will be empty
+        elif not os.path.isdir(showPath):  # show dir is broken ... episode path will be empty
             episode["location"] = ""
 
         # convert stuff to human form
@@ -897,7 +896,6 @@ class CMD_EpisodeSetStatus(ApiCall):
         start_backlog = False
         segments = {}
 
-        sql_l = []
         for epObj in ep_list:
             with epObj.lock:
                 if self.status == WANTED:
@@ -929,18 +927,12 @@ class CMD_EpisodeSetStatus(ApiCall):
                     continue
 
                 epObj.status = self.status
-                sql_q = epObj.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
+                epObj.saveToDB()
 
                 if self.status == WANTED:
                     start_backlog = True
 
                 ep_results.append(_epResult(RESULT_SUCCESS, epObj))
-
-        if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
 
         extra_msg = ""
         if start_backlog:
@@ -1036,26 +1028,20 @@ class CMD_Exceptions(ApiCall):
         """ Get the scene exceptions for all or a given show """
 
         if self.indexerid is None:
-            sqlResults = cache_db.CacheDB(row_type='dict').select(
-                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
             scene_exceptions = {}
-            for row in sqlResults:
-                indexerid = row["indexerid"]
-                if not indexerid in scene_exceptions:
+            for dbData in [x['doc'] for x in CacheDB().db.all('scene_exceptions', with_doc=True)]:
+                indexerid = dbData['indexer_id']
+                if indexerid not in scene_exceptions:
                     scene_exceptions[indexerid] = []
-                scene_exceptions[indexerid].append(row["show_name"])
-
+                scene_exceptions[indexerid].append(dbData['show_name'])
         else:
             showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(self.indexerid))
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
-            sqlResults = cache_db.CacheDB(row_type='dict').select(
-                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions WHERE indexer_id = ?",
-                [self.indexerid])
             scene_exceptions = []
-            for row in sqlResults:
-                scene_exceptions.append(row["show_name"])
+            for dbData in [x['doc'] for x in CacheDB().db.all('scene_exceptions', self.indexerid, with_doc=True)]:
+                scene_exceptions.append(dbData['show_name'])
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
 
@@ -1164,11 +1150,11 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            sqlResults = failed_db.FailedDB(row_type='dict').select("SELECT * FROM failed")
+            dbData = [x['doc'] for x in FailedDB().db.all('failed', with_doc=True)]
         else:
-            sqlResults = failed_db.FailedDB(row_type='dict').select("SELECT * FROM failed LIMIT ?", [ulimit])
+            dbData = [x['doc'] for x in FailedDB().db.all('failed', ulimit, with_doc=True)]
 
-        return _responds(RESULT_SUCCESS, sqlResults)
+        return _responds(RESULT_SUCCESS, dbData)
 
 
 class CMD_Backlog(ApiCall):
@@ -1186,25 +1172,20 @@ class CMD_Backlog(ApiCall):
 
         shows = []
 
-        for curShow in sickrage.srCore.SHOWLIST:
-
+        for s in sickrage.srCore.SHOWLIST:
             showEps = []
+            for e in sorted([e['doc'] for e in MainDB().db.get_many('tv_episodes', s.indexerid, with_doc=True) if
+                             s.paused == 0], key=lambda x: (x['season'], x['episode']), reverse=True):
 
-            sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT tv_episodes.*, tv_shows.paused FROM tv_episodes INNER JOIN tv_shows ON tv_episodes.showid = tv_shows.indexer_id WHERE showid = ? AND paused = 0 ORDER BY season DESC, episode DESC",
-                [curShow.indexerid])
-
-            for curResult in sqlResults:
-
-                curEpCat = curShow.getOverview(int(curResult["status"] or -1))
+                curEpCat = s.getOverview(int(e["status"] or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
-                    showEps.append(curResult)
+                    showEps += [e]
 
             if showEps:
                 shows.append({
-                    "indexerid": curShow.indexerid,
-                    "show_name": curShow.name,
-                    "status": curShow.status,
+                    "indexerid": s.indexerid,
+                    "show_name": s.name,
+                    "status": s.status,
                     "episodes": showEps
                 })
 
@@ -1425,15 +1406,20 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
 
     def run(self):
         """ Get information about the scheduler """
-        sqlResults = main_db.MainDB(row_type='dict').select("SELECT last_backlog FROM info")
+
+        try:
+            last_backlog = [x['doc'] for x in MainDB().db.all('info', with_doc=True)][0]["last_backlog"]
+        except:
+            last_backlog = 1
 
         backlogPaused = sickrage.srCore.SEARCHQUEUE.is_backlog_paused()  # @UndefinedVariable
         backlogRunning = sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress()  # @UndefinedVariable
         nextBacklog = sickrage.srCore.BACKLOGSEARCHER.nextRun().strftime(dateFormat).decode(sickrage.SYS_ENCODING)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
-                "last_backlog": _ordinal_to_dateForm(sqlResults[0]["last_backlog"]),
+                "last_backlog": _ordinal_to_dateForm(last_backlog),
                 "next_backlog": nextBacklog}
+
         return _responds(RESULT_SUCCESS, data)
 
 
@@ -1596,7 +1582,7 @@ class CMD_SiCKRAGERestart(ApiCall):
 
     def run(self):
         """ Restart SiCKRAGE """
-        sickrage.srCore.shutdown(restart=True)
+        IOLoop.current().stop()
         return _responds(RESULT_SUCCESS, msg="SiCKRAGE is restarting...")
 
 
@@ -1821,7 +1807,8 @@ class CMD_SiCKRAGEShutdown(ApiCall):
     def run(self):
         """ Shutdown SiCKRAGE """
         if sickrage.srCore.srWebServer:
-            sickrage.srCore.srWebServer.shutdown()
+            sickrage.restart = False
+            IOLoop.current().stop()
             return _responds(RESULT_SUCCESS, msg="SiCKRAGE is shutting down...")
         return _responds(RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
 
@@ -1892,11 +1879,7 @@ class CMD_Show(ApiCall):
         anyQualities, bestQualities = _mapQuality(showObj.quality)
         showDict["quality_details"] = {"initial": anyQualities, "archive": bestQualities}
 
-        try:
-            showDict["location"] = showObj.location
-        except ShowDirectoryNotFoundException:
-            showDict["location"] = ""
-
+        showDict["location"] = showObj.location
         showDict["language"] = showObj.lang
         showDict["show_name"] = showObj.name
         showDict["paused"] = (0, 1)[showObj.paused]
@@ -1930,9 +1913,9 @@ class CMD_Show(ApiCall):
             showDict["network"] = ""
         showDict["status"] = showObj.status
 
-        if tryInt(showObj.nextaired, 1) > 693595:
+        if tryInt(showObj.next_aired, 1) > 693595:
             dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
-                tz_updater.parse_date_time(showObj.nextaired, showDict['airs'], showDict['network']))
+                tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']))
             showDict['airs'] = srdatetime.srDateTime.srftime(dtEpisodeAirs, t_preset=timeFormat).lstrip('0').replace(
                 ' 0', ' ')
             showDict['next_ep_airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
@@ -2589,16 +2572,13 @@ class CMD_ShowSeasonList(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.sort == "asc":
-            sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season ASC",
-                [self.indexerid])
+            seasonList = sorted(
+                [x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                key=lambda d: d['season'])
         else:
-            sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC",
-                [self.indexerid])
-        seasonList = []  # a list with all season numbers
-        for row in sqlResults:
-            seasonList.append(int(row["season"]))
+            seasonList = sorted(
+                [x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                key=lambda d: d['season'], reverse=True)
 
         return _responds(RESULT_SUCCESS, seasonList)
 
@@ -2631,36 +2611,40 @@ class CMD_ShowSeasons(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         if self.season is None:
-            sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT name, episode, airdate, status, release_name, season, location, file_size, subtitles FROM tv_episodes WHERE showid = ?",
-                [self.indexerid])
             seasons = {}
-            for row in sqlResults:
+
+            for row in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)
+
                 if tryInt(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                         tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network))
                     row['airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
+
                 curSeason = int(row["season"])
                 curEpisode = int(row["episode"])
+
                 del row["season"]
                 del row["episode"]
+
                 if not curSeason in seasons:
                     seasons[curSeason] = {}
+
                 seasons[curSeason][curEpisode] = row
 
         else:
-            sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT name, episode, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND season = ?",
-                [self.indexerid, self.season])
-            if len(sqlResults) is 0:
+            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                      if x['season'] == self.season]
+
+            if len(dbData) is 0:
                 return _responds(RESULT_FAILURE, msg="Season not found")
+
             seasons = {}
-            for row in sqlResults:
+            for row in dbData:
                 curEpisode = int(row["episode"])
                 del row["episode"]
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
@@ -2791,16 +2775,15 @@ class CMD_ShowStats(ApiCall):
         # add all snatched qualities
         episode_qualities_counts_snatch = {}
         episode_qualities_counts_snatch["total"] = 0
+
         for statusCode in Quality.SNATCHED + Quality.SNATCHED_PROPER:
             status, quality = Quality.splitCompositeStatus(statusCode)
-            if quality in [Quality.NONE]:
-                continue
-            episode_qualities_counts_snatch[statusCode] = 0
+            if quality not in [Quality.NONE]: episode_qualities_counts_snatch[statusCode] = 0
 
-        sqlResults = main_db.MainDB(row_type='dict').select(
-            "SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?", [self.indexerid])
         # the main loop that goes through all episodes
-        for row in sqlResults:
+        for row in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+                    if x['doc']['season'] != 0]:
+
             status, quality = Quality.splitCompositeStatus(int(row["status"]))
 
             episode_status_counts_total["total"] += 1
@@ -2934,9 +2917,9 @@ class CMD_Shows(ApiCall):
                 "subtitles": (0, 1)[curShow.subtitles],
             }
 
-            if tryInt(curShow.nextaired, 1) > 693595:  # 1900
+            if tryInt(curShow.next_aired, 1) > 693595:  # 1900
                 dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
-                    tz_updater.parse_date_time(curShow.nextaired, curShow.airs, showDict['network']))
+                    tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']))
                 showDict['next_ep_airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
             else:
                 showDict['next_ep_airdate'] = ''

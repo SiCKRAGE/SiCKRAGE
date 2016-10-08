@@ -198,7 +198,7 @@ class Connection(threading.Thread):
         """
 
         if not all([username, password]):
-            sickrage.srCore.srLogger.debug("anidb username and/or password are not set. Aborting anidb lookup.")
+            sickrage.srCore.srLogger.debug("AniDB username and/or password are not set. Aborting AniDB lookup.")
             return False
 
         authed = self.authed()

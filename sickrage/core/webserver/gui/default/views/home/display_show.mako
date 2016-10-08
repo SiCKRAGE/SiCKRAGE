@@ -1,5 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
+    import os
     import datetime
     import urllib
     import ntpath
@@ -46,7 +47,7 @@
 
     % if seasonResults:
         ##There is a special/season_0?##
-        % if int(seasonResults[-1]["season"]) == 0:
+        % if int(seasonResults[-1]) == 0:
                     <% season_special = 1 %>
         % else:
                     <% season_special = 0 %>
@@ -68,17 +69,17 @@
                     <select id="seasonJump" class="form-control input-sm" style="position: relative; top: -4px;">
                         <option value="jump">Jump to Season</option>
                         % for seasonNum in seasonResults:
-                            <option value="#season-${seasonNum["season"]}"
-                                    data-season="${seasonNum["season"]}">${('Specials', 'Season ' + str(seasonNum["season"]))[int(seasonNum["season"]) > 0]}</option>
+                            <option value="#season-${seasonNum}"
+                                    data-season="${seasonNum}">${('Specials', 'Season ' + str(seasonNum))[int(seasonNum) > 0]}</option>
                         % endfor
                     </select>
                 % else:
                     Season:
                 % for seasonNum in seasonResults:
-                    % if int(seasonNum["season"]) == 0:
-                        <a href="#season-${seasonNum["season"]}">Specials</a>
+                    % if int(seasonNum) == 0:
+                        <a href="#season-${seasonNum}">Specials</a>
                     % else:
-                        <a href="#season-${seasonNum["season"]}">${str(seasonNum["season"])}</a>
+                        <a href="#season-${seasonNum}">${str(seasonNum)}</a>
                     % endif
                     % if seasonNum != seasonResults[-1]:
                         <span class="separator">|</span>
@@ -210,15 +211,15 @@
                         <td class="showLegend">Default EP Status:</td>
                         <td>${statusStrings[show.default_ep_status]}</td>
                     </tr>
-                    % if showLoc[1]:
+                    % if os.path.isdir(showLoc):
                         <tr>
                             <td class="showLegend">Location:</td>
-                            <td>${showLoc[0]}</td>
+                            <td>${showLoc}</td>
                         </tr>
                     % else:
                         <tr>
                             <td class="showLegend"><span style="color: red;">Location: </span></td>
-                            <td><span style="color: red;">${showLoc[0]}</span> (Missing)</td>
+                            <td><span style="color: red;">${showLoc}</span> (Missing)</td>
                         </tr>
                     % endif
                     <tr>
@@ -253,7 +254,7 @@
 
                     <tr>
                         <td class="showLegend">Size:</td>
-                        <td>${pretty_filesize(get_size(showLoc[0]))}</td>
+                        <td>${pretty_filesize(get_size(showLoc))}</td>
                     </tr>
 
                 </table>
@@ -411,8 +412,8 @@
                     dfltEpNumbering = True
 
                 epLoc = epResult["location"]
-                if epLoc and showLoc[1] and epLoc.lower().startswith(showLoc[0].lower()):
-                    epLoc = epLoc[len(showLoc[0])+1:]
+                if epLoc and os.path.isdir(showLoc) and epLoc.lower().startswith(showLoc.lower()):
+                    epLoc = epLoc[len(showLoc)+1:]
             %>
             % if int(epResult["season"]) != curSeason:
                 % if curSeason == -1:

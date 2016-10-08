@@ -1,5 +1,64 @@
 # Changelog
 
+- * f425aca - 2016-10-07: fix: Fixed scene time provider search 
+- * 4244405 - 2016-10-07: fix: Fixed IMDB Popular shows page 
+- * 7d3fbea - 2016-10-06: new: Updated images 
+- * 9eb4be1 - 2016-10-06: new: Updated network logos 
+- * f632cef - 2016-10-06: fix: Adjusted CPU PRESETS for sleep timers 
+- * c3fbb84 - 2016-10-06: fix: Lowered sleep timer 
+- * dd02f40 - 2016-10-06: fix: Check result returned for dailyer searches to prevent issues with adding to results list 
+- * 6ab6982 - 2016-10-06: reverted: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
+- * d4c8621 - 2016-10-06: fix: Corrected search queue code from executing search function when wanted episode list is empty, prevents excessive RSS caching 
+- * 1d4be98 - 2016-10-06: fix: Corrected search queue code for putting search items into queue 
+- * 8dad800 - 2016-10-06: new: Version 8.3.0 
+- * 60d2c66 - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
+- * c22d84d - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
+- * 2d9625e - 2016-10-05: fix: Core queue is now multi-threaded as well as queue items 
+- * d4c2bb7 - 2016-10-05: fix: Fixed issues with scene season, episode, and absolute numbering for database 
+- * 1e41339 - 2016-10-05: fix: Using get calls for loading episode values from database to prevent key errors 
+- * c8a3b77 - 2016-10-05: fix: Ctrl+C now performs proper shutdowns 
+- * 9101f35 - 2016-10-05: fix: Corrected name cache code for clearing cache and properly loading database items into dict 
+- * cdf2d4a - 2016-10-05: fix: Misc code corrections and fixes 
+- * 2217279 - 2016-10-05: fix: Corrected code for getting data from db during creation of TVShow objects for when index keys don&#x27;t exist 
+- * 9a1dc2c - 2016-10-05: new: Added last_refresh and last_update variables to TVShow object to keep track of updates and refreshes of shows helping prevent overlaps 
+- * d375af0 - 2016-10-04: migrate: SQLite -&gt; CodernityDB 
+- * 97190f8 - 2016-10-04: migrate: SQLite -&gt; CodernityDB 
+- * d24cd75 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 8abb1fb - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 3b0920d - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 3f17b67 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * b823f09 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 987c3ee - 2016-10-03: fix: Corrected missing DOC variable indexes 
+- * 2363878 - 2016-10-03: fix: Corrected missing DOC variable indexes 
+- * ad28896 - 2016-10-03: fix: Corrected old code for show location to new-style 
+- * a0de263 - 2016-10-03: migrate: SQLite -&gt; CodernityDB add: Added code to check for development mode and use regular FileHandler for logs instead of RotatingFileHandler 
+- * 173149c - 2016-10-03: migrate: SQLite -&gt; CodernityDB fix: Fixed issues with show path validation 
+- * e285dd9 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 152d87a - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 88641f4 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * fe72bf4 - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 80ad7aa - 2016-10-03: migrate: SQLite -&gt; CodernityDB 
+- * 68adab8 - 2016-10-02: migrate: SQLite -&gt; CodernityDB 
+- * 2715e66 - 2016-10-02: migrate: SQLite -&gt; CodernityDB 
+- * de6a283 - 2016-10-01: migrate: SQLite -&gt; CodernityDB 
+- * 32e04d1 - 2016-09-24: migrate: SQLite -&gt; CodernityDB 
+- * c8f9875 - 2016-09-24: fix: BTN API Call limit exception handling fixed 
+- * cde2043 - 2016-09-24: fix: Fixed core queue code thread naming 
+- * 1f4bfc0 - 2016-09-24: fix: Fixed core queue code thread naming 
+- * c89a3ea - 2016-09-24: fix: Added worker thread to queue code 
+- * 59f73cb - 2016-09-24: migrate: Migrated from SQLite to CodernityDB 
+- * 7115c4e - 2016-09-23: new: Version 8.2.4 
+- * f2457c9 - 2016-09-23: fix: Fixed PIP upgrade code and added a PIP_PATH variable to sickrage config 
+- * d988a71 - 2016-09-23: new: Version 8.2.3 fix: Fixed issue with queuing multiple items and only one getting executed 
+- * 29d7d25 - 2016-09-23: new: Version 8.2.2 
+- * 329f2ef - 2016-09-23: fix: removed clearing of ioloop, caused fd value errors 
+- * 9617086 - 2016-09-23: fix: moved shutdown of web server to last before ioloop closing 
+- * 405ea0e - 2016-09-23: fix: clear ioloop instance instead of current 
+- * 2a49dbc - 2016-09-23: update: Updated tornado requirement to version 4.4.1 
+- * caee32d - 2016-09-23: fix: Added code to clear ioloop current 
+- * ed37c6f - 2016-09-23: fix: Added exception handling of closing IOLoop fd&#x27;s 
+- * 6b4c6f5 - 2016-09-23: fix: Changed code for restarts and shutdowns 
+- * 0a8b972 - 2016-09-23: migrate: Started migrating sqlite code to CodernityDB 
 - * d968bf8 - 2016-09-22: fix: Corrected core queue code shutdown function 
 - * b8b6d0b - 2016-09-22: fix: Revamped core queue code 
 - * 258e91d - 2016-09-21: fix: Removed un-needed return statement in code 

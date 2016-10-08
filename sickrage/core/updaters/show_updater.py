@@ -19,14 +19,14 @@
 from __future__ import unicode_literals
 
 import datetime
+import os
 import threading
 import time
 
 import sickrage
-from sickrage.core.databases import cache_db
-from sickrage.core.exceptions import CantRefreshShowException, \
-    CantUpdateShowException
-from sickrage.core.tv.show.history import FailedHistory
+from CodernityDB.database import RecordNotFound
+from sickrage.core.databases.cache import CacheDB
+from sickrage.core.exceptions import CantRefreshShowException, CantUpdateShowException
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
 from sickrage.indexers import srIndexerApi
 
@@ -48,16 +48,16 @@ class srShowUpdater(object):
 
         update_timestamp = time.mktime(datetime.datetime.now().timetuple())
 
-        sqlResult = cache_db.CacheDB().select('SELECT `time` FROM lastUpdate WHERE provider = ?', ['theTVDB'])
-        if sqlResult:
-            last_update = sqlResult[0]['time']
-        else:
+        try:
+            dbData = CacheDB().db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
+            last_update = dbData['time']
+        except RecordNotFound:
             last_update = time.mktime(datetime.datetime.min.timetuple())
-            cache_db.CacheDB().action('INSERT INTO lastUpdate (provider, `time`) VALUES (?, ?)',
-                                      ['theTVDB', long(last_update)])
-
-        if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-            FailedHistory.trimHistory()
+            dbData = CacheDB().db.insert({
+                '_t': 'lastUpdate',
+                'provider': 'theTVDB',
+                'time': long(last_update)
+            })
 
         # get indexer updated show ids
         updated_shows = srIndexerApi(1).indexer(**srIndexerApi(1).api_params.copy()).updated(long(last_update))
@@ -67,16 +67,20 @@ class srShowUpdater(object):
         for curShow in sickrage.srCore.SHOWLIST:
             try:
                 curShow.nextEpisode()
+
+                if not os.path.isdir(curShow.location):
+                    continue
+
                 if curShow.indexerid in set(d["id"] for d in updated_shows or {}):
                     piList.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
-                else:
+                elif datetime.date.fromordinal(curShow.last_refresh) > datetime.timedelta(days=1):
                     piList.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
-            except (CantUpdateShowException, CantRefreshShowException) as e:
+            except (CantUpdateShowException, CantRefreshShowException):
                 continue
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))
 
-        cache_db.CacheDB().action('UPDATE lastUpdate SET `time` = ? WHERE provider=?',
-                                  [long(update_timestamp), 'theTVDB'])
+        dbData['time'] = long(update_timestamp)
+        CacheDB().db.update(dbData)
 
         self.amActive = False

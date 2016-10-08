@@ -20,16 +20,16 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import traceback
 
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
-from sickrage.core.databases import main_db
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException, ShowDirectoryNotFoundException
+    MultipleShowObjectsException
 from sickrage.core.helpers import scrub
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
@@ -198,7 +198,6 @@ class ShowQueueItem(srQueueItem):
 
     def finish(self):
         self.show.flushEpisodes()
-        super(ShowQueueItem, self).finish()
 
     def isInQueue(self):
         return self in sickrage.srCore.SHOWQUEUE.queue + [sickrage.srCore.SHOWQUEUE.currentItem]
@@ -253,8 +252,6 @@ class QueueItemAdd(ShowQueueItem):
             return True
 
     def run(self):
-        super(QueueItemAdd, self).run()
-
         sickrage.srCore.srLogger.info("Started adding show {}".format(self.show_name))
 
         index_name = srIndexerApi(self.indexer).name
@@ -325,6 +322,7 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             self.show = TVShow(self.indexer, self.indexer_id, self.lang)
+
             self.show.loadFromIndexer()
 
             # set up initial values
@@ -446,13 +444,14 @@ class QueueItemAdd(ShowQueueItem):
 
         self.show.saveToDB()
 
-        sickrage.srCore.NAMECACHE.buildNameCache(self.show)
+        sickrage.srCore.NAMECACHE.build(self.show)
+
+        self.finish()
 
         sickrage.srCore.srLogger.info("Finished adding show {}".format(self.showDir))
 
     def _finishEarly(self):
-        if self.show:
-            sickrage.srCore.SHOWQUEUE.removeShow(self.show)
+        if self.show: sickrage.srCore.SHOWQUEUE.removeShow(self.show)
 
 
 class QueueItemRefresh(ShowQueueItem):
@@ -466,11 +465,10 @@ class QueueItemRefresh(ShowQueueItem):
         self.force = force
 
     def run(self):
-        super(QueueItemRefresh, self).run()
-
         sickrage.srCore.srLogger.info("Performing refresh for show: {}".format(self.show.name))
 
         self.show.refreshDir()
+
         self.show.writeMetadata()
 
         if self.force:
@@ -481,6 +479,10 @@ class QueueItemRefresh(ShowQueueItem):
         # Load XEM data to DB for show
         xem_refresh(self.show.indexerid, self.show.indexer)
 
+        self.show.last_refresh = datetime.date.today().toordinal()
+
+        self.finish()
+
         sickrage.srCore.srLogger.info("Finished refresh for show: {}".format(self.show.name))
 
 
@@ -489,13 +491,9 @@ class QueueItemRename(ShowQueueItem):
         super(QueueItemRename, self).__init__(show, ShowQueueActions.RENAME)
 
     def run(self):
-        super(QueueItemRename, self).run()
-
         sickrage.srCore.srLogger.info("Performing renames for show: {}".format(self.show.name))
 
-        try:
-            self.show.location
-        except ShowDirectoryNotFoundException:
+        if not os.path.isdir(self.show.location):
             sickrage.srCore.srLogger.warning(
                 "Can't perform rename on " + self.show.name + " when the show dir is missing.")
             return
@@ -522,6 +520,8 @@ class QueueItemRename(ShowQueueItem):
         for cur_ep_obj in ep_obj_rename_list:
             cur_ep_obj.rename()
 
+        self.finish()
+
         sickrage.srCore.srLogger.info("Finished renames for show: {}".format(self.show.name))
 
 
@@ -530,10 +530,12 @@ class QueueItemSubtitle(ShowQueueItem):
         super(QueueItemSubtitle, self).__init__(show, ShowQueueActions.SUBTITLE)
 
     def run(self):
-        super(QueueItemSubtitle, self).run()
-
         sickrage.srCore.srLogger.info("Started downloading subtitles for show: {}".format(self.show.name))
+
         self.show.downloadSubtitles()
+
+        self.finish()
+
         sickrage.srCore.srLogger.info("Finished downloading subtitles for show: {}".format(self.show.name))
 
 
@@ -543,8 +545,6 @@ class QueueItemUpdate(ShowQueueItem):
         self.force = False
 
     def run(self):
-        super(QueueItemUpdate, self).run()
-
         sickrage.srCore.srLogger.info("Performing updates for show: {}".format(self.show.name))
 
         try:
@@ -590,16 +590,9 @@ class QueueItemUpdate(ShowQueueItem):
                 self.show.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on the Indexer not in the DB list add to DB
-            sql_l = []
             for curSeason in IndexerEpList:
                 for curEpisode in set(IndexerEpList[curSeason]).difference(DBEpList.get(curSeason, {})):
-                    sql_q = self.show.getEpisode(curSeason, curEpisode, forceIndexer=True).saveToDB(False)
-                    if sql_q:
-                        sql_l.append(sql_q)
-
-            if len(sql_l) > 0:
-                main_db.MainDB().mass_upsert(sql_l)
-                del sql_l  # cleanup
+                    self.show.getEpisode(curSeason, curEpisode, forceIndexer=True).saveToDB()
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in DBEpList:
@@ -615,6 +608,8 @@ class QueueItemUpdate(ShowQueueItem):
         # cleanup
         scrub(DBEpList)
         scrub(IndexerEpList)
+
+        self.finish()
 
         sickrage.srCore.srLogger.info("Finished updates for show: {}".format(self.show.name))
 
@@ -637,8 +632,6 @@ class QueueItemRemove(ShowQueueItem):
         self.full = full
 
     def run(self):
-        super(QueueItemRemove, self).run()
-
         sickrage.srCore.srLogger.info("Removing show: {}".format(self.show.name))
 
         self.show.deleteShow(full=self.full)
@@ -649,5 +642,7 @@ class QueueItemRemove(ShowQueueItem):
             except Exception as e:
                 sickrage.srCore.srLogger.warning(
                     "Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
+
+        self.finish()
 
         sickrage.srCore.srLogger.info("Finished removing show: {}".format(self.show.name))

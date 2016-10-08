@@ -24,13 +24,12 @@ import argparse
 import codecs
 import io
 import locale
-import logging
 import os
+import site
 import sys
 import threading
 import time
 import traceback
-import site
 
 __all__ = [
     'srCore',
@@ -42,7 +41,7 @@ __all__ = [
     'PID_FILE'
 ]
 
-status = None
+restart = True
 srCore = None
 
 MAIN_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -305,24 +304,21 @@ def main():
             daemonize(PID_FILE)
 
         # main app loop
-        while True:
+        while restart:
             srCore = core.Core()
             srCore.start()
+            srCore.shutdown()
+    except KeyboardInterrupt:
+        try:
+            srCore.shutdown()
+        except:
+            pass
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
             print("Failed to import required libs, please run 'pip install -r {}' from console".format(REQS_FILE))
-    except KeyboardInterrupt:
-        pass
     except Exception as e:
         traceback.print_exc()
-        if srCore:
-            srCore.srLogger.debug(traceback.format_exc())
-            status = e.message
-    finally:
-        if srCore:
-            srCore.shutdown(status)
-
 
 if __name__ == '__main__':
     main()

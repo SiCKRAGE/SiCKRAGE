@@ -25,15 +25,14 @@ import re
 import threading
 from datetime import date, timedelta
 
-from guessit.patterns.extension import video_exts
-
 import sickrage
+from guessit.patterns.extension import video_exts
 from sickrage.clients import getClientIstance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT
-from sickrage.core.databases import main_db
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
@@ -157,7 +156,6 @@ def snatchEpisode(result, endStatus=SNATCHED):
     History.logSnatch(result)
 
     # don't notify when we re-download an episode
-    sql_l = []
     trakt_data = []
     for curEpObj in result.episodes:
         with curEpObj.lock:
@@ -166,9 +164,8 @@ def snatchEpisode(result, endStatus=SNATCHED):
             else:
                 curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
 
-            sql_q = curEpObj.saveToDB(False)
-            if sql_q:
-                sql_l.append(sql_q)
+            # save episode to DB
+            curEpObj.saveToDB()
 
         if curEpObj.status not in Quality.DOWNLOADED:
             try:
@@ -187,10 +184,6 @@ def snatchEpisode(result, endStatus=SNATCHED):
                 result.show.name) + " to Traktv Watchlist")
         if data:
             sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
-
-    if len(sql_l) > 0:
-        main_db.MainDB().mass_upsert(sql_l)
-        del sql_l  # cleanup
 
     return True
 
@@ -261,7 +254,8 @@ def pickBestResult(results, show):
                 file_size = float(file_size / 1000000)
                 if file_size > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
                     raise (
-                    "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(file_size))
+                        "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(
+                            file_size))
         except Exception as e:
             sickrage.srCore.srLogger.info(e.message)
             continue
@@ -357,15 +351,11 @@ def wantedEpisodes(show, fromDate):
 
     sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
-    sqlResults = main_db.MainDB().select(
-        "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 AND airdate > ?",
-        [show.indexerid, fromDate.toordinal()])
-
-    sickrage.srCore.srLogger.debug("Found {} episode(s) needed for {}".format(len(sqlResults), show.name))
-
     # check through the list of statuses to see if we want any
-    for result in sqlResults:
-        curCompositeStatus = int(result["status"] or -1)
+    for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                   if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
+
+        curCompositeStatus = int(dbData["status"] or -1)
         curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
         if bestQualities:
@@ -376,7 +366,7 @@ def wantedEpisodes(show, fromDate):
         # if we need a better one then say yes
         if (curStatus in (DOWNLOADED, SNATCHED,
                           SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
-            epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
+            epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
             epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
             wanted.append(epObj)
 
@@ -397,7 +387,8 @@ def searchForNeededEpisodes():
             continue
 
         episodes = wantedEpisodes(curShow, date.fromordinal(1))
-        results += searchProviders(curShow, episodes, cacheOnly=True)
+        result = searchProviders(curShow, episodes, cacheOnly=True)
+        if result: results += result
 
     return results
 
@@ -418,7 +409,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
         return
 
     # build name cache for show
-    sickrage.srCore.NAMECACHE.buildNameCache(show)
+    sickrage.srCore.NAMECACHE.build(show)
 
     origThreadName = threading.currentThread().getName()
 
@@ -463,7 +454,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
                     # update provider RSS cache
-                    providerObj.cache.updateCache()
+                    providerObj.cache.update()
 
                     # search provider for episodes
                     searchResults = providerObj.findSearchResults(show,
@@ -531,11 +522,9 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     Quality.qualityStrings[
                         seasonQual])
 
-                allEps = [int(x["episode"])
-                          for x in main_db.MainDB().select(
-                        "SELECT episode FROM tv_episodes WHERE showid = ? AND ( season IN ( " + ','.join(
-                            searchedSeasons) + " ) )",
-                        [show.indexerid])]
+                allEps = [int(x['doc']["episode"]) for x in
+                          MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          if x['doc']['season'] in searchedSeasons]
 
                 sickrage.srCore.srLogger.info(
                     "Executed query: [SELECT episode FROM tv_episodes WHERE showid = %s AND season in  %s]" % (

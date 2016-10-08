@@ -52,7 +52,7 @@
                 <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
 
                 % for curShow in myShowList:
-                    <% curEp = curShow.nextaired %>
+                    <% curEp = curShow.next_aired %>
 
                     <tr>
                         <td align="center">

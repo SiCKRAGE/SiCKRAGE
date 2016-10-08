@@ -26,14 +26,13 @@ import socket
 import threading
 import webbrowser
 
-from tornado.httpserver import HTTPServer
-from tornado.web import Application, RedirectHandler, StaticFileHandler
-
 import sickrage
 from sickrage.core.helpers import create_https_certificates, generateApiKey, get_lan_ip
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+from tornado.httpserver import HTTPServer
+from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 
 def launch_browser(protocol=None, host=None, startport=None):
@@ -175,7 +174,8 @@ class srWebServer(object):
         ] + [(r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
               {"path": self.video_root})])
 
-        self.server = HTTPServer(self.app)
+        self.server = HTTPServer(self.app, no_keep_alive=True)
+
         if sickrage.srCore.srConfig.ENABLE_HTTPS:
             self.server.ssl_options = {"certfile": sickrage.srCore.srConfig.HTTPS_CERT,
                                        "keyfile": sickrage.srCore.srConfig.HTTPS_KEY}
@@ -209,5 +209,6 @@ class srWebServer(object):
 
     def shutdown(self):
         if self.started:
+            self.server.close_all_connections()
             self.server.stop()
             self.started = False

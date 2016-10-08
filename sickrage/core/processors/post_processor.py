@@ -29,9 +29,8 @@ import subprocess
 
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
-from sickrage.core.databases import main_db
-from sickrage.core.exceptions import EpisodeNotFoundException, \
-    EpisodePostProcessingFailedException, ShowDirectoryNotFoundException
+from sickrage.core.databases.main import MainDB
+from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException
 from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs
@@ -120,7 +119,8 @@ class PostProcessor(object):
         """
 
         if not existing_file:
-            self._log("There is no existing file so there's no worries about replacing it", sickrage.srCore.srLogger.DEBUG)
+            self._log("There is no existing file so there's no worries about replacing it",
+                      sickrage.srCore.srLogger.DEBUG)
             return PostProcessor.DOESNT_EXIST
 
         # if the new file exists, return the appropriate code depending on the size
@@ -132,11 +132,13 @@ class PostProcessor(object):
                 return PostProcessor.EXISTS_LARGER
 
             elif os.path.getsize(existing_file) == os.path.getsize(self.file_path):
-                self._log("File " + existing_file + " is the same size as " + self.file_path, sickrage.srCore.srLogger.DEBUG)
+                self._log("File " + existing_file + " is the same size as " + self.file_path,
+                          sickrage.srCore.srLogger.DEBUG)
                 return PostProcessor.EXISTS_SAME
 
             else:
-                self._log("File " + existing_file + " is smaller than " + self.file_path, sickrage.srCore.srLogger.DEBUG)
+                self._log("File " + existing_file + " is smaller than " + self.file_path,
+                          sickrage.srCore.srLogger.DEBUG)
                 return PostProcessor.EXISTS_SMALLER
 
         else:
@@ -239,7 +241,8 @@ class PostProcessor(object):
             file_list = file_list + self.list_associated_files(file_path, base_name_only=True, subfolders=True)
 
         if not file_list:
-            self._log("There were no files associated with " + file_path + ", not deleting anything", sickrage.srCore.srLogger.DEBUG)
+            self._log("There were no files associated with " + file_path + ", not deleting anything",
+                      sickrage.srCore.srLogger.DEBUG)
             return
 
         # delete the file and any other files which we want to delete
@@ -250,7 +253,8 @@ class PostProcessor(object):
                 file_attribute = os.stat(cur_file)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
-                    self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable', sickrage.srCore.srLogger.DEBUG)
+                    self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable',
+                              sickrage.srCore.srLogger.DEBUG)
                     try:
                         os.chmod(cur_file, stat.S_IWRITE)
                     except:
@@ -286,7 +290,8 @@ class PostProcessor(object):
             file_list = file_list + self.list_associated_files(file_path, subtitles_only=True)
 
         if not file_list:
-            self._log("There were no files associated with " + file_path + ", not moving anything", sickrage.srCore.srLogger.DEBUG)
+            self._log("There were no files associated with " + file_path + ", not moving anything",
+                      sickrage.srCore.srLogger.DEBUG)
             return
 
         # create base name with file_path (media_file without .extension)
@@ -372,7 +377,8 @@ class PostProcessor(object):
                 copyFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                sickrage.srCore.srLogger.error("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message))
+                sickrage.srCore.srLogger.error(
+                    "Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message))
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
@@ -390,12 +396,14 @@ class PostProcessor(object):
 
         def _int_hard_link(cur_file_path, new_file_path):
 
-            self._log("Hard linking file from " + cur_file_path + " to " + new_file_path, sickrage.srCore.srLogger.DEBUG)
+            self._log("Hard linking file from " + cur_file_path + " to " + new_file_path,
+                      sickrage.srCore.srLogger.DEBUG)
             try:
                 hardlinkFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to link file {} to {}: {}".format(cur_file_path, new_file_path, e)), sickrage.srCore.srLogger.ERROR
+                self._log("Unable to link file {} to {}: {}".format(cur_file_path, new_file_path,
+                                                                    e)), sickrage.srCore.srLogger.ERROR
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_hard_link,
@@ -413,7 +421,8 @@ class PostProcessor(object):
 
         def _int_move_and_sym_link(cur_file_path, new_file_path):
 
-            self._log("Moving then symbolic linking file from " + cur_file_path + " to " + new_file_path, sickrage.srCore.srLogger.DEBUG)
+            self._log("Moving then symbolic linking file from " + cur_file_path + " to " + new_file_path,
+                      sickrage.srCore.srLogger.DEBUG)
             try:
                 moveAndSymlinkFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
@@ -443,24 +452,24 @@ class PostProcessor(object):
         names = []
         if self.nzb_name:
             names.append(self.nzb_name)
-            if '.' in self.nzb_name:
-                names.append(self.nzb_name.rpartition(".")[0])
-        if self.folder_name:
-            names.append(self.folder_name)
+            if '.' in self.nzb_name: names.append(self.nzb_name.rpartition(".")[0])
+        if self.folder_name: names.append(self.folder_name)
 
         # search the database for a possible match and return immediately if we find one
 
         for curName in names:
             search_name = re.sub(r"[\.\- ]", "_", curName)
-            sql_results = main_db.MainDB().select("SELECT * FROM history WHERE resource LIKE ?", [search_name])
 
-            if len(sql_results) == 0:
+            dbData = [x['doc'] for x in MainDB().db.all('history', with_doc=True)
+                      if search_name in x['doc']['resource']]
+
+            if len(dbData) == 0:
                 continue
 
-            indexer_id = int(sql_results[0]["showid"])
-            season = int(sql_results[0]["season"])
-            quality = int(sql_results[0]["quality"])
-            version = int(sql_results[0]["version"])
+            indexer_id = int(dbData[0]["showid"])
+            season = int(dbData[0]["season"])
+            quality = int(dbData[0]["quality"])
+            version = int(dbData[0]["version"])
 
             if quality == Quality.UNKNOWN:
                 quality = None
@@ -497,10 +506,11 @@ class PostProcessor(object):
 
             if not self.release_name:
                 self.release_name = remove_non_release_groups(
-                        remove_extension(os.path.basename(parse_result.original_name)))
+                    remove_extension(os.path.basename(parse_result.original_name)))
 
         else:
-            sickrage.srCore.srLogger.debug("Parse result not sufficient (all following have to be set). will not save release name")
+            sickrage.srCore.srLogger.debug(
+                "Parse result not sufficient (all following have to be set). will not save release name")
             sickrage.srCore.srLogger.debug("Parse result(series_name): " + str(parse_result.series_name))
             sickrage.srCore.srLogger.debug("Parse result(season_number): " + str(parse_result.season_number))
             sickrage.srCore.srLogger.debug("Parse result(episode_numbers): " + str(parse_result.episode_numbers))
@@ -555,8 +565,8 @@ class PostProcessor(object):
         :return: episode object
         """
         ep = aniDBAbstracter.Episode(connection, filePath=filePath,
-                          paramsF=["quality", "anidb_file_name", "crc32"],
-                          paramsA=["epno", "english_name", "short_name_list", "other_name", "synonym_list"])
+                                     paramsF=["quality", "anidb_file_name", "crc32"],
+                                     paramsA=["epno", "english_name", "short_name_list", "other_name", "synonym_list"])
 
         return ep
 
@@ -635,45 +645,44 @@ class PostProcessor(object):
             # for air-by-date shows we need to look up the season/episode from database
             if season == -1 and show and episodes:
                 self._log(
-                        "Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
-                        sickrage.srCore.srLogger.DEBUG)
+                    "Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
+                    sickrage.srCore.srLogger.DEBUG)
                 airdate = episodes[0].toordinal()
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
-                sql_result = main_db.MainDB().select(
-                        "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ? AND season != 0",
-                        [show.indexerid, show.indexer, airdate])
+                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          if x['doc']['indexer'] == show.indexer
+                          and x['doc']['airdate'] == airdate
+                          and x['doc']['season'] != 0]
 
-                if sql_result:
-                    season = int(sql_result[0][0])
-                    episodes = [int(sql_result[0][1])]
+                if dbData:
+                    season = int(dbData[0]['season'])
+                    episodes = [int(dbData[0]['episode'])]
                 else:
                     # Found no result, try with season 0
-                    sql_result = main_db.MainDB().select(
-                            "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
-                            [show.indexerid, show.indexer, airdate])
-                    if sql_result:
-                        season = int(sql_result[0][0])
-                        episodes = [int(sql_result[0][1])]
+                    dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                              if x['doc']['indexer'] == show.indexer and x['doc']['airdate'] == airdate]
+
+                    if dbData:
+                        season = int(dbData[0]['season'])
+                        episodes = [int(dbData[0]['episode'])]
                     else:
-                        self._log(
-                                "Unable to find episode with date " +
-                                str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping", sickrage.srCore.srLogger.DEBUG)
                         # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
                         episodes = []
+                        self._log(
+                            "Unable to find episode with date " +
+                            str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping",
+                            sickrage.srCore.srLogger.DEBUG)
                         continue
 
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
-
-                numseasonsSQlResult = main_db.MainDB().select(
-                        "SELECT COUNT(DISTINCT season) AS numseasons FROM tv_episodes WHERE showid = ? AND indexer = ? AND season != 0",
-                        [show.indexerid, show.indexer])
-                if int(numseasonsSQlResult[0][0]) == 1 and season is None:
-                    self._log(
-                            "Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
-                            sickrage.srCore.srLogger.DEBUG)
+                if len({x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                        if x['doc']['season'] != 0 and x['doc']['indexer'] == show.indexer}) == 1 and season is None:
                     season = 1
+                    self._log(
+                        "Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
+                        sickrage.srCore.srLogger.DEBUG)
 
             if show and season and episodes:
                 return show, season, episodes, quality, version
@@ -694,7 +703,8 @@ class PostProcessor(object):
 
         root_ep = None
         for cur_episode in episodes:
-            self._log("Retrieving episode object for " + str(season) + "x" + str(cur_episode), sickrage.srCore.srLogger.DEBUG)
+            self._log("Retrieving episode object for " + str(season) + "x" + str(cur_episode),
+                      sickrage.srCore.srLogger.DEBUG)
 
             # now that we've figured out which episode this file is just load it manually
             try:
@@ -728,8 +738,8 @@ class PostProcessor(object):
             _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
             if ep_quality != Quality.UNKNOWN:
                 self._log(
-                        "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
-                        sickrage.srCore.srLogger.DEBUG)
+                    "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
+                    sickrage.srCore.srLogger.DEBUG)
                 return ep_quality
 
         # nzb name is the most reliable if it exists, followed by folder name and lastly file name
@@ -744,8 +754,8 @@ class PostProcessor(object):
 
             ep_quality = Quality.nameQuality(cur_name, ep_obj.show.is_anime)
             self._log(
-                    "Looking up quality for name " + cur_name + ", got " + Quality.qualityStrings[ep_quality],
-                    sickrage.srCore.srLogger.DEBUG)
+                "Looking up quality for name " + cur_name + ", got " + Quality.qualityStrings[ep_quality],
+                sickrage.srCore.srLogger.DEBUG)
 
             # if we find a good one then use it
             if ep_quality != Quality.UNKNOWN:
@@ -758,15 +768,15 @@ class PostProcessor(object):
             _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
             if ep_quality != Quality.UNKNOWN:
                 self._log(
-                        "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
-                        sickrage.srCore.srLogger.DEBUG)
+                    "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
+                    sickrage.srCore.srLogger.DEBUG)
                 return ep_quality
 
         # Try guessing quality from the file name
         ep_quality = Quality.assumeQuality(self.file_path)
         self._log(
-                "Guessing quality for name " + self.file_name + ", got " + Quality.qualityStrings[ep_quality],
-                sickrage.srCore.srLogger.DEBUG)
+            "Guessing quality for name " + self.file_name + ", got " + Quality.qualityStrings[ep_quality],
+            sickrage.srCore.srLogger.DEBUG)
 
         if ep_quality != Quality.UNKNOWN:
             sickrage.srCore.srLogger.debug(self.file_name + " looks like it has quality " + Quality.qualityStrings[
@@ -834,8 +844,8 @@ class PostProcessor(object):
 
             if self.is_proper and new_ep_quality >= old_ep_quality and new_ep_quality != Quality.UNKNOWN:
                 self._log(
-                        "SR snatched this episode and it is a proper of equal or higher quality so I'm marking it as priority",
-                        sickrage.srCore.srLogger.DEBUG)
+                    "SR snatched this episode and it is a proper of equal or higher quality so I'm marking it as priority",
+                    sickrage.srCore.srLogger.DEBUG)
                 return True
 
             return False
@@ -843,8 +853,8 @@ class PostProcessor(object):
         # if the user downloaded it manually and it's higher quality than the existing episode then it's priority
         if new_ep_quality > old_ep_quality and new_ep_quality != Quality.UNKNOWN:
             self._log(
-                    "This was manually downloaded but it appears to be better quality than what we have so I'm marking it as priority",
-                    sickrage.srCore.srLogger.DEBUG)
+                "This was manually downloaded but it appears to be better quality than what we have so I'm marking it as priority",
+                sickrage.srCore.srLogger.DEBUG)
             return True
 
         # if the user downloaded it manually and it appears to be a PROPER/REPACK then it's priority
@@ -935,7 +945,7 @@ class PostProcessor(object):
             if existing_file_status == PostProcessor.EXISTS_LARGER:
                 if self.is_proper:
                     self._log(
-                            "File exists and new file is smaller, new file is a proper/repack, marking it safe to replace")
+                        "File exists and new file is smaller, new file is a proper/repack, marking it safe to replace")
                     return True
 
                 else:
@@ -949,7 +959,7 @@ class PostProcessor(object):
         # if the file is priority then we're going to replace it even if it exists
         else:
             self._log(
-                    "This download is marked a priority download so I'm going to replace an existing file if I find one")
+                "This download is marked a priority download so I'm going to replace an existing file if I find one")
 
         # try to find out if we have enough space to perform the copy or move action.
         if not isFileLocked(self.file_path, False):
@@ -985,13 +995,12 @@ class PostProcessor(object):
                 sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(ep_obj.show.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
-                        "Unable to create the show directory: " + ep_obj.show.location)
+                    "Unable to create the show directory: " + ep_obj.show.location)
 
             # get metadata for the show (but not episode because it hasn't been fully processed)
             ep_obj.show.writeMetadata(True)
 
         # update the ep info before we rename so the quality & release name go into the name properly
-        sql_l = []
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
 
@@ -1021,9 +1030,7 @@ class PostProcessor(object):
                 else:
                     cur_ep.release_group = ""
 
-                sql_q = cur_ep.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
+                cur_ep.saveToDB()
 
         # Just want to keep this consistent for failed handling right now
         releaseName = show_names.determineReleaseName(self.folder_path, self.nzb_name)
@@ -1033,14 +1040,13 @@ class PostProcessor(object):
             self._log("Couldn't find release in snatch history", sickrage.srCore.srLogger.WARNING)
 
         # find the destination folder
-        try:
-            proper_path = ep_obj.proper_path()
-            proper_absolute_path = os.path.join(ep_obj.show.location, proper_path)
-
-            dest_path = os.path.dirname(proper_absolute_path)
-        except ShowDirectoryNotFoundException:
+        if not os.path.isdir(ep_obj.show.location):
             raise EpisodePostProcessingFailedException(
-                    "Unable to post-process an episode if the show dir doesn't exist, quitting")
+                "Unable to post-process an episode if the show dir doesn't exist, quitting")
+
+        proper_path = ep_obj.proper_path()
+        proper_absolute_path = os.path.join(ep_obj.show.location, proper_path)
+        dest_path = os.path.dirname(proper_absolute_path)
 
         self._log("Destination folder for this episode: " + dest_path, sickrage.srCore.srLogger.DEBUG)
 
@@ -1080,7 +1086,8 @@ class PostProcessor(object):
             elif self.process_method == "symlink":
                 if isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
-                self._moveAndSymlink(self.file_path, dest_path, new_base_name, sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
+                self._moveAndSymlink(self.file_path, dest_path, new_base_name,
+                                     sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
                                      sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
             else:
                 sickrage.srCore.srLogger.error("Unknown process method: " + str(self.process_method))
@@ -1096,23 +1103,11 @@ class PostProcessor(object):
                     cur_ep.refreshSubtitles()
                     cur_ep.downloadSubtitles(force=True)
 
-        # now that processing has finished, we can put the info in the DB. If we do it earlier, then when processing fails, it won't try again.
-        if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
-
         # put the new location in the database
-        sql_l = []
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
                 cur_ep.location = os.path.join(dest_path, new_file_name)
-                sql_q = cur_ep.saveToDB(False)
-                if sql_q:
-                    sql_l.append(sql_q)
-
-        if len(sql_l) > 0:
-            main_db.MainDB().mass_upsert(sql_l)
-            del sql_l  # cleanup
+                cur_ep.saveToDB()
 
         # set file modify stamp to show airdate
         if sickrage.srCore.srConfig.AIRDATE_EPISODES:

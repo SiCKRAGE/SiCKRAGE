@@ -22,12 +22,11 @@ from __future__ import unicode_literals
 import re
 from datetime import datetime
 
-from dateutil import tz
-
 import sickrage
-from sickrage.core.databases import cache_db
+from CodernityDB.database import RecordNotFound
+from dateutil import tz
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import tryInt
-
 
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
@@ -62,22 +61,28 @@ def update_network_dict():
     for network, timezone in d.items():
         existing = network in network_timezones
         if not existing:
-            queries.append(['INSERT OR IGNORE INTO network_timezones VALUES (?,?);', [network, timezone]])
+            CacheDB().db.insert({
+                '_t': 'network_timezones',
+                'network_name': network,
+                'timezone': timezone
+            })
         elif network_timezones[network] is not timezone:
-            queries.append(['UPDATE OR IGNORE network_timezones SET timezone = ? WHERE network_name = ?;',
-                            [timezone, network]])
+            try:
+                dbData = CacheDB().db.get('network_timezones', network, with_doc=True)['doc']
+                dbData['timezone'] = timezone
+                CacheDB().db.update(dbData)
+            except RecordNotFound:
+                continue
 
         if existing:
             del network_timezones[network]
 
     if network_timezones:
-        purged = [x for x in network_timezones]
-        queries.append(
-            ['DELETE FROM network_timezones WHERE network_name IN (%s);' % ','.join(['?'] * len(purged)), purged])
-
-    if len(queries) > 0:
-        cache_db.CacheDB().mass_action(queries)
-        del queries  # cleanup
+        for x in network_timezones:
+            try:
+                CacheDB().db.delete(CacheDB().db.get('network_timezones', x, with_doc=True)['doc'])
+            except RecordNotFound:
+                continue
 
 
 # load network timezones from db into dict
@@ -85,14 +90,10 @@ def load_network_dict():
     """
     Return network timezones from db
     """
-    try:
-        cur_network_list = cache_db.CacheDB().select('SELECT * FROM network_timezones;')
-        if cur_network_list:
-            return dict(cur_network_list)
-    except Exception:
-        pass
 
-    return {}
+    return dict([(x['doc']['network_name'], x['doc']['timezone']) for x in
+                 CacheDB().db.all('network_timezones', with_doc=True)])
+
 
 # get timezone of a network or return default timezone
 def get_network_timezone(network, _network_dict):

@@ -27,8 +27,6 @@ class WombleProvider(NZBProvider):
     def __init__(self):
         super(WombleProvider, self).__init__("Womble's Index", 'newshost.co.za', False)
 
-        self.urls.update({'rss': '{base_url}/rss'.format(base_url=self.urls['base_url'])})
-
         self.cache = WombleCache(self)
 
 
@@ -38,32 +36,32 @@ class WombleCache(tv_cache.TVCache):
         # only poll Womble's Index every 15 minutes max
         self.minTime = 15
 
-    def updateCache(self):
+    def update(self):
         # check if we should update
-        if self.should_update():
+        if self.shouldUpdate():
             # clear cache
-            self._clear_cache()
+            self.clear()
 
             # set updated
             self.setLastUpdate()
 
             cl = []
-            search_params_list = [{'sec': 'tv-x264'}, {'sec': 'tv-hd'}, {'sec': 'tv-sd'}, {'sec': 'tv-dvd'}]
-            for search_params in search_params_list:
-                search_params.update({'fr': 'false'})
+            for url in [self.provider.urls['base_url'] + '/rss/?sec=tv-x264&fr=false',
+                        self.provider.urls['base_url'] + '/rss/?sec=tv-sd&fr=false',
+                        self.provider.urls['base_url'] + '/rss/?sec=tv-dvd&fr=false',
+                        self.provider.urls['base_url'] + '/rss/?sec=tv-hd&fr=false']:
+                sickrage.srCore.srLogger.debug("Cache update URL: %s" % url)
 
-                sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['rss'])
-
-                for item in self.getRSSFeed(self.provider.urls['rss'], params=search_params)['entries'] or []:
-                    ci = self._parse_item(item)
+                for item in self.getRSSFeed(url)['entries'] or []:
+                    ci = self._parseItem(item)
                     if ci is not None:
                         cl.append(ci)
 
             if len(cl) > 0:
-                self._get_db().mass_action(cl)
+                self.db().mass_action(cl)
                 del cl  # cleanup
 
         return True
 
-    def _check_auth(self, data):
+    def _checkAuth(self, data):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

@@ -27,6 +27,7 @@ import traceback
 import urllib
 
 import markdown2
+from CodernityDB.database import RecordNotFound
 from UnRAR2 import RarFile
 from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
@@ -35,7 +36,6 @@ from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
-from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
 try:
@@ -52,11 +52,11 @@ from sickrage.core.classes import ErrorViewer, AllShowsListUI, AttrDict
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
-from sickrage.core.databases import failed_db, main_db
+from sickrage.core.databases.main import MainDB
+from sickrage.core.databases.failed import FailedDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException, NoNFOException, \
-    ShowDirectoryNotFoundException
+    MultipleShowObjectsException, NoNFOException
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
@@ -68,8 +68,7 @@ from sickrage.core.nameparser import validator
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
     MANUAL_SEARCH_HISTORY, ManualSearchQueueItem
-from sickrage.core.scene_exceptions import get_all_scene_exceptions, \
-    get_scene_exceptions, update_scene_exceptions
+from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
 from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_absolute_numbering_for_show, get_scene_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
@@ -92,7 +91,7 @@ class BaseHandler(RequestHandler):
         super(BaseHandler, self).__init__(application, request, **kwargs)
 
         self.io_loop = IOLoop.current()
-        self.executor = ThreadPoolExecutor(cpu_count())
+        self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
         # template settings
         self.mako_lookup = TemplateLookup(
@@ -298,6 +297,8 @@ class CalendarHandler(BaseHandler):
         """ Provides a subscribeable URL for iCal subscriptions
         """
 
+        utc = tz.gettz('GMT')
+
         sickrage.srCore.srLogger.info("Receiving iCal request from %s" % self.request.remote_ip)
 
         # Create a iCal string
@@ -312,22 +313,17 @@ class CalendarHandler(BaseHandler):
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        calendar_shows = main_db.MainDB().select(
-            "SELECT show_name, indexer_id, network, airs, runtime FROM tv_shows WHERE ( status = 'Continuing' OR status = 'Returning Series' ) AND paused != '1'")
-        for show in calendar_shows:
-            # Get all episodes of this show airing between today and next month
-            episode_list = main_db.MainDB().select(
-                "SELECT indexerid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?",
-                (past_date, future_date, int(show["indexer_id"])))
+        for show in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)
+                     if x['doc']['status'].lower() in ['continuing', 'returning series']
+                     and x['doc']['paused'] != 1]:
+            for episode in [x['doc'] for x in
+                            MainDB().db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
+                            x['doc']['airdate'] >= past_date and x['doc']['airdate'] < future_date]:
 
-            utc = tz.gettz('GMT')
-
-            for episode in episode_list:
-
-                air_date_time = tz_updater.parse_date_time(episode['airdate'], show["airs"],
+                air_date_time = tz_updater.parse_date_time(episode['airdate'], show['airs'],
                                                            show['network']).astimezone(utc)
-                air_date_time_end = air_date_time + datetime.timedelta(
-                    minutes=tryInt(show["runtime"], 60))
+
+                air_date_time_end = air_date_time + datetime.timedelta(minutes=tryInt(show['runtime'], 60))
 
                 # Create event for episode
                 ical += 'BEGIN:VEVENT\r\n'
@@ -379,17 +375,12 @@ class WebRoot(WebHandler):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.srCore.srConfig.SORT_ARTICLE]
 
-        myDB = main_db.MainDB(row_type='dict')
         shows = sorted(sickrage.srCore.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
-        results = myDB.select(
-            'SELECT episode, season, showid '
-            'FROM tv_episodes '
-            'ORDER BY season ASC, episode ASC'
-        )
+        for result in sorted([x['doc'] for x in MainDB().db.all('tv_episodes')],
+                             key=lambda d: (d['season'], d['episode'])):
 
-        for result in results:
             if result['showid'] not in episodes:
                 episodes[result['showid']] = {}
 
@@ -679,34 +670,43 @@ class Home(WebHandler):
 
     @staticmethod
     def show_statistics():
+        show_stat = {}
+
         today = str(datetime.date.today().toordinal())
 
-        status_quality = '(' + ','.join([str(x) for x in Quality.SNATCHED + Quality.SNATCHED_PROPER]) + ')'
-        status_download = '(' + ','.join([str(x) for x in Quality.DOWNLOADED + Quality.ARCHIVED]) + ')'
+        status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER
+        status_download = Quality.DOWNLOADED + Quality.ARCHIVED
 
-        sql_statement = 'SELECT showid, '
-
-        sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + status_quality + ') AS ep_snatched, '
-        sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + status_download + ') AS ep_downloaded, '
-        sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 '
-        sql_statement += ' AND ((airdate <= ' + today + ' AND (status = ' + str(SKIPPED) + ' OR status = ' + str(
-            WANTED) + ' OR status = ' + str(FAILED) + ')) '
-        sql_statement += ' OR (status IN ' + status_quality + ') OR (status IN ' + status_download + '))) AS ep_total, '
-
-        sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate >= ' + today + ' AND (status = ' + str(
-            UNAIRED) + ' OR status = ' + str(WANTED) + ') ORDER BY airdate ASC LIMIT 1) AS ep_airs_next, '
-        sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate > 1 AND status <> ' + str(
-            UNAIRED) + ' ORDER BY airdate DESC LIMIT 1) AS ep_airs_prev '
-        sql_statement += ' FROM tv_episodes tv_eps GROUP BY showid'
-
-        sql_result = main_db.MainDB().select(sql_statement)
-
-        show_stat = {}
         max_download_count = 1000
-        for cur_result in sql_result:
-            show_stat[cur_result['showid']] = cur_result
-            if cur_result['ep_total'] > max_download_count:
-                max_download_count = cur_result['ep_total']
+
+        for dbData in MainDB().db.all('tv_episodes', with_doc=True):
+            showid = dbData['doc']['showid']
+            if showid not in show_stat:
+                show_stat[showid] = {}
+                show_stat[showid]['ep_snatched'] = 0
+                show_stat[showid]['ep_downloaded'] = 0
+                show_stat[showid]['ep_total'] = 0
+                show_stat[showid]['ep_airs_next'] = None
+                show_stat[showid]['ep_airs_prev'] = None
+
+            season = dbData['doc']['season']
+            episode = dbData['doc']['episode']
+            airdate = dbData['doc']['airdate']
+            status = dbData['doc']['status']
+
+            if season > 0 and episode > 0 and airdate > 1:
+                if status in status_quality: show_stat[showid]['ep_snatched'] += 1
+                if status in status_download: show_stat[showid]['ep_downloaded'] += 1
+                if (airdate <= today and status in [SKIPPED, WANTED, FAILED]
+                    ) or (status in status_quality + status_download): show_stat[showid]['ep_total'] += 1
+
+                if airdate >= today and status in [WANTED, UNAIRED]:
+                    show_stat[showid]['ep_airs_next'] = airdate
+                elif airdate > 1 and status == UNAIRED:
+                    show_stat[showid]['ep_airs_prev'] = airdate
+
+                if show_stat[showid]['ep_total'] > max_download_count:
+                    max_download_count = show_stat[showid]['ep_total']
 
         max_download_count *= 100
 
@@ -997,28 +997,29 @@ class Home(WebHandler):
 
     @staticmethod
     def loadShowNotifyLists():
-
-        rows = main_db.MainDB().select("SELECT show_id, show_name, notify_list FROM tv_shows ORDER BY show_name ASC")
-
         data = {}
         size = 0
-        for r in rows:
-            data[r['show_id']] = {'id': r['show_id'], 'name': r['show_name'], 'list': r['notify_list']}
+
+        tv_shows = sorted([x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)], key=lambda d: d['show_name'])
+
+        for s in tv_shows:
+            data[s['show_id']] = {'id': s['show_id'], 'name': s['show_name'], 'list': s['notify_list']}
             size += 1
         data['_size'] = size
+
         return json_encode(data)
 
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
-
-        if main_db.MainDB().action("UPDATE tv_shows SET notify_list = ? WHERE show_id = ?", [emails, show]):
-            return 'OK'
-        else:
+        try:
+            dbData = MainDB().db.get('tv_shows', show, with_doc=True)['doc']
+            dbData['notify_list'] = emails
+            MainDB().db.update(dbData)
+        except RecordNotFound:
             return 'ERROR'
 
     @staticmethod
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
-
         host = sickrage.srCore.srConfig.clean_host(host)
         if sickrage.srCore.notifiersDict.email_notifier.test_notify(host, port, smtp_from, use_tls, user, pwd, to):
             return 'Test email sent successfully! Check inbox.'
@@ -1036,7 +1037,6 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushalot(authorizationToken=None):
-
         result = sickrage.srCore.notifiersDict.pushalot_notifier.test_notify(authorizationToken)
         if result:
             return "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
@@ -1045,7 +1045,6 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushbullet(api=None):
-
         result = sickrage.srCore.notifiersDict.pushbullet_notifier.test_notify(api)
         if result:
             return "Pushbullet notification succeeded. Check your device to make sure it worked"
@@ -1054,8 +1053,6 @@ class Home(WebHandler):
 
     @staticmethod
     def getPushbulletDevices(api=None):
-        # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-
         result = sickrage.srCore.notifiersDict.pushbullet_notifier.get_devices(api)
         if result:
             return result
@@ -1091,7 +1088,8 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
-        sickrage.srCore.shutdown()
+        sickrage.restart = False
+        IOLoop.current().stop()
 
     def restart(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
@@ -1101,7 +1099,7 @@ class Home(WebHandler):
 
         self.io_loop.add_timeout(
             datetime.timedelta(seconds=10),
-            lambda: sickrage.srCore.shutdown(restart=True))
+            IOLoop.current().stop)
 
         return self.render(
             "/home/restart.mako",
@@ -1162,23 +1160,16 @@ class Home(WebHandler):
             if showObj is None:
                 return self._genericMessage("Error", "Show not in show list")
 
-        seasonResults = main_db.MainDB().select(
-            "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC",
-            [showObj.indexerid]
-        )
+        episodeResults = sorted(
+            [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
+            key=lambda d: (d['season'], d['episode']), reverse=True)
 
-        episodeResults = main_db.MainDB().select(
-            "SELECT * FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
-            [showObj.indexerid]
-        )
+        seasonResults = list({x['season'] for x in episodeResults})
 
         submenu = [
             {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
 
-        try:
-            showLoc = (showObj.location, True)
-        except ShowDirectoryNotFoundException:
-            showLoc = ("", False)
+        showLoc = showObj.location
 
         show_message = ''
 
@@ -1242,9 +1233,9 @@ class Home(WebHandler):
         epCounts[Overview.SNATCHED] = 0
 
         for curEp in episodeResults:
-            curEpCat = showObj.getOverview(int(curEp["status"] or -1))
+            curEpCat = showObj.getOverview(int(curEp['status'] or -1))
             if curEpCat:
-                epCats[str(curEp["season"]) + "x" + str(curEp["episode"])] = curEpCat
+                epCats[str(curEp['season']) + "x" + str(curEp['episode'])] = curEpCat
                 epCounts[curEpCat] += 1
 
         def titler(x):
@@ -1308,30 +1299,6 @@ class Home(WebHandler):
             controller='home',
             action="display_show"
         )
-
-    @staticmethod
-    def plotDetails(show, season, episode):
-
-        try:
-            result = main_db.MainDB().select(
-                "SELECT description FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
-                (int(show), int(season), int(episode)))[0]['description']
-        except:
-            result = 'Episode not found.'
-        return result
-
-    @staticmethod
-    def sceneExceptions(show):
-        exceptionsList = get_all_scene_exceptions(show)
-        if not exceptionsList:
-            return "No scene exceptions"
-
-        out = []
-        for season, names in iter(sorted(exceptionsList.items())):
-            if season == -1:
-                season = "*"
-            out.append("S" + str(season) + ": " + ", ".join(names))
-        return "<br>".join(out)
 
     def editShow(self, show=None, location=None, anyQualities=None, bestQualities=None, exceptions_list=None,
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
@@ -1507,7 +1474,7 @@ class Home(WebHandler):
             if os.path.normpath(showObj.location) != os.path.normpath(location):
                 sickrage.srCore.srLogger.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
                 if not os.path.isdir(location) and not sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS:
-                    errors.append("New location <tt>%s</tt> does not exist" % location)
+                    errors.append("New location <tt>{}</tt> does not exist".format(location))
 
                 # don't bother if we're going to update anyway
                 elif not do_update:
@@ -1774,7 +1741,6 @@ class Home(WebHandler):
         segments = {}
         trakt_data = []
         if eps:
-            sql_l = []
             for curEp in eps.split('|'):
 
                 if not curEp:
@@ -1829,10 +1795,8 @@ class Home(WebHandler):
 
                     epObj.status = int(status)
 
-                    # mass add to database
-                    sql_q = epObj.saveToDB(False)
-                    if sql_q:
-                        sql_l.append(sql_q)
+                    # save to database
+                    epObj.saveToDB()
 
                     trakt_data.append((epObj.season, epObj.episode))
 
@@ -1850,10 +1814,6 @@ class Home(WebHandler):
                             showObj.name) + " from Watchlist")
                     sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(showObj, data_episode=data,
                                                                                   update="remove")
-
-            if len(sql_l) > 0:
-                main_db.MainDB().mass_upsert(sql_l)
-                del sql_l  # cleanup
 
         if int(status) == WANTED and not showObj.paused:
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br>"
@@ -1905,9 +1865,7 @@ class Home(WebHandler):
         if showObj is None:
             return self._genericMessage("Error", "Show not in show list")
 
-        try:
-            showObj.location  # @UnusedVariable
-        except ShowDirectoryNotFoundException:
+        if not os.path.isdir(showObj.location):
             return self._genericMessage("Error", "Can't rename episodes when the show dir is missing.")
 
         ep_obj_rename_list = []
@@ -1958,9 +1916,7 @@ class Home(WebHandler):
             errMsg = "Error", "Show not in show list"
             return self._genericMessage("Error", errMsg)
 
-        try:
-            show_obj.location  # @UnusedVariable
-        except ShowDirectoryNotFoundException:
+        if not os.path.isdir(show_obj.location):
             return self._genericMessage("Error", "Can't rename episodes when the show dir is missing.")
 
         if eps is None:
@@ -1970,16 +1926,16 @@ class Home(WebHandler):
 
             epInfo = curEp.split('x')
 
-            # this is probably the worst possible way to deal with double eps but I've kinda painted myself into a corner here with this stupid database
-            ep_result = main_db.MainDB().select(
-                "SELECT * FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? AND 5=5",
-                [show, epInfo[0], epInfo[1]])
+            ep_result = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show, with_doc=True)
+                         if x['doc']['season'] == epInfo[0] and x['doc']['episode'] == epInfo[1]]
+
             if not ep_result:
                 sickrage.srCore.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
-            related_eps_result = main_db.MainDB().select(
-                "SELECT * FROM tv_episodes WHERE location = ? AND episode != ?",
-                [ep_result[0]["location"], epInfo[1]])
+
+            related_eps_result = [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
+                                  if x['doc']['location'] == ep_result[0]['location']
+                                  and x['doc']['episode'] != epInfo[1]]
 
             root_ep_obj = show_obj.getEpisode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
@@ -2430,9 +2386,7 @@ class HomeAddShows(Home):
                     pass
 
                 # see if the folder is in KODI already
-                dirResults = main_db.MainDB().select("SELECT * FROM tv_shows WHERE location = ?", [cur_path])
-
-                if dirResults:
+                if [x for x in MainDB().db.all('tv_shows', with_doc=True) if x['doc']['location'] == cur_path]:
                     cur_dir['added_already'] = True
                 else:
                     cur_dir['added_already'] = False
@@ -2460,9 +2414,7 @@ class HomeAddShows(Home):
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
-                if showid and findCertainShow(sickrage.srCore.SHOWLIST, showid):
-                    cur_dir['added_already'] = True
-
+                if showid and findCertainShow(sickrage.srCore.SHOWLIST, showid): cur_dir['added_already'] = True
         return self.render(
             "/home/mass_add_table.mako",
             dirList=dir_list,
@@ -2965,19 +2917,17 @@ class Manage(Home, WebRoot):
         if status_list[0] == SNATCHED:
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
-        cur_show_results = main_db.MainDB().select(
-            "SELECT season, episode, name FROM tv_episodes WHERE showid = ? AND season != 0 AND status IN (" + ','.join(
-                ['?'] * len(status_list)) + ")", [int(indexer_id)] + status_list)
-
         result = {}
-        for cur_result in cur_show_results:
-            cur_season = int(cur_result["season"])
-            cur_episode = int(cur_result["episode"])
+        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       if x['doc']['season'] != 0 and x['doc']['status'] in status_list]:
+
+            cur_season = int(dbData["season"])
+            cur_episode = int(dbData["episode"])
 
             if cur_season not in result:
                 result[cur_season] = {}
 
-            result[cur_season][cur_episode] = cur_result["name"]
+            result[cur_season][cur_episode] = dbData["name"]
 
         return json_encode(result)
 
@@ -2994,12 +2944,10 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-
-            status_results = main_db.MainDB().select(
-                "SELECT show_name, tv_shows.indexer_id AS indexer_id FROM tv_episodes, tv_shows WHERE tv_episodes.status IN (" + ','.join(
-                    ['?'] * len(
-                        status_list)) + ") AND season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name",
-                status_list)
+            status_results = sorted([s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)
+                                     for e in MainDB().db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
+                                     if e['doc']['status'] in status_list and e['doc']['season'] != 0],
+                                    key=lambda d: d['show_name'])
 
             for cur_status_result in status_results:
                 cur_indexer_id = int(cur_status_result["indexer_id"])
@@ -3046,13 +2994,11 @@ class Manage(Home, WebRoot):
             to_change[indexer_id].append(what)
 
         for cur_indexer_id in to_change:
-
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
-                all_eps_results = main_db.MainDB().select(
-                    "SELECT season, episode FROM tv_episodes WHERE status IN (" + ','.join(
-                        ['?'] * len(status_list)) + ") AND season != 0 AND showid = ?",
-                    status_list + [cur_indexer_id])
+                all_eps_results = [x['doc'] for x in MainDB().db.get_many('tv_episodes', cur_indexer_id, with_doc=True)
+                                   if x['doc']['status'] in status_list and x['doc']['season'] != 0]
+
                 all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
                 to_change[cur_indexer_id] = all_eps
 
@@ -3062,21 +3008,18 @@ class Manage(Home, WebRoot):
 
     @staticmethod
     def showSubtitleMissed(indexer_id, whichSubs):
-
-        cur_show_results = main_db.MainDB().select(
-            "SELECT season, episode, name, subtitles FROM tv_episodes WHERE showid = ? AND season != 0 AND status LIKE '%4'",
-            [int(indexer_id)])
-
         result = {}
-        for cur_result in cur_show_results:
+        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]:
+
             if whichSubs == 'all':
-                if not frozenset(subtitle_searcher.wantedLanguages()).difference(cur_result["subtitles"].split(',')):
+                if not frozenset(subtitle_searcher.wantedLanguages()).difference(dbData["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_result["subtitles"]:
+            elif whichSubs in dbData["subtitles"]:
                 continue
 
-            cur_season = int(cur_result["season"])
-            cur_episode = int(cur_result["episode"])
+            cur_season = int(dbData["season"])
+            cur_episode = int(dbData["episode"])
 
             if cur_season not in result:
                 result[cur_season] = {}
@@ -3084,9 +3027,9 @@ class Manage(Home, WebRoot):
             if cur_episode not in result[cur_season]:
                 result[cur_season][cur_episode] = {}
 
-            result[cur_season][cur_episode]["name"] = cur_result["name"]
+            result[cur_season][cur_episode]["name"] = dbData["name"]
 
-            result[cur_season][cur_episode]["subtitles"] = cur_result["subtitles"]
+            result[cur_season][cur_episode]["subtitles"] = dbData["subtitles"]
 
         return json_encode(result)
 
@@ -3102,11 +3045,18 @@ class Manage(Home, WebRoot):
                 action='subtitles_missed'
             )
 
-        status_results = main_db.MainDB().select(
-            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles " +
-            "FROM tv_episodes, tv_shows " +
-            "WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND tv_episodes.season != 0 " +
-            "AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
+        status_results = []
+        for s in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+            if not s['subtitles'] == 1: continue
+            for e in [x['doc'] for x in MainDB().db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                if e['status'].endswith('4') and e['season'] != 0:
+                    status_results += [{
+                        'show_name': s['show_name'],
+                        'indexer_id': s['indexer_id'],
+                        'subtitles': e['subtitles']
+                    }]
+
+        status_results = sorted(status_results, key=lambda d: d['show_name'])
 
         ep_counts = {}
         show_names = {}
@@ -3161,10 +3111,10 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_download:
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
-                all_eps_results = main_db.MainDB().select(
-                    "SELECT season, episode FROM tv_episodes WHERE status LIKE '%4' AND season != 0 AND showid = ?",
-                    [cur_indexer_id])
-                to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
+                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', cur_indexer_id, with_doc=True)
+                          if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]
+
+                to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
 
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
@@ -3198,11 +3148,11 @@ class Manage(Home, WebRoot):
             epCounts[Overview.UNAIRED] = 0
             epCounts[Overview.SNATCHED] = 0
 
-            sqlResults = main_db.MainDB().select(
-                "SELECT * FROM tv_episodes WHERE tv_episodes.showid IN (SELECT tv_shows.indexer_id FROM tv_shows WHERE tv_shows.indexer_id = ? AND paused = 0) ORDER BY tv_episodes.season DESC, tv_episodes.episode DESC",
-                [curShow.indexerid])
+            dbData = sorted([e['doc'] for x in MainDB().db.get_many('tv_shows', curShow.indexerid, with_doc=True)
+                             for e in MainDB().db.get_many('tv_episodes', x['doc']['indexer_id'], with_doc=True)
+                             if x['doc']['paused'] == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
-            for curResult in sqlResults:
+            for curResult in dbData:
                 curEpCat = curShow.getOverview(int(curResult["status"] or -1))
                 if curEpCat:
                     epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
@@ -3210,7 +3160,7 @@ class Manage(Home, WebRoot):
 
             showCounts[curShow.indexerid] = epCounts
             showCats[curShow.indexerid] = epCats
-            showSQLResults[curShow.indexerid] = sqlResults
+            showSQLResults[curShow.indexerid] = dbData
 
         return self.render(
             "/manage/backlog_overview.mako",
@@ -3655,14 +3605,17 @@ class Manage(Home, WebRoot):
 
     def failedDownloads(self, limit=100, toRemove=None):
         if limit == "0":
-            sqlResults = failed_db.FailedDB().select("SELECT * FROM failed")
+            dbData = [x['doc'] for x in FailedDB().db.all('failed', with_doc=True)]
         else:
-            sqlResults = failed_db.FailedDB().select("SELECT * FROM failed LIMIT ?", [limit])
+            dbData = [x['doc'] for x in FailedDB().db.all('failed', limit, with_doc=True)]
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
-            main_db.MainDB().action("DELETE FROM failed WHERE failed.release = ?", [release])
+            try:
+                MainDB().db.delete(MainDB().db.get('failed', release, with_doc=True)['doc'])
+            except RecordNotFound:
+                continue
 
         if toRemove:
             return self.redirect('/manage/failedDownloads/')
@@ -3670,7 +3623,7 @@ class Manage(Home, WebRoot):
         return self.render(
             "/manage/failed_downloads.mako",
             limit=limit,
-            failedResults=sqlResults,
+            failedResults=dbData,
             title='Failed Downloads',
             header='Failed Downloads',
             topmenu='manage',
@@ -3767,6 +3720,7 @@ class History(WebHandler):
                                 history['season'] == row['season'] and
                                 history['episode'] == row['episode'] and
                                 history['quality'] == row['quality']) for history in compact):
+
                 history = {
                     'actions': [action],
                     'episode': row['episode'],
@@ -3784,9 +3738,11 @@ class History(WebHandler):
                          item['season'] == row['season'] and
                          item['episode'] == row['episode'] and
                          item['quality'] == row['quality']][0]
+
                 history = compact[index]
                 history['actions'].append(action)
-                history['actions'].sort(key=lambda x: x['time'], reverse=True)
+
+                history['actions'].sort(key=lambda d: d['time'], reverse=True)
 
         submenu = [
             {'title': 'Clear History', 'path': '/history/clearHistory', 'icon': 'ui-icon ui-icon-trash',

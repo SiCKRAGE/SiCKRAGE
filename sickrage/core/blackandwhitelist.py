@@ -1,4 +1,3 @@
-
 # Author: Dennis Lutter <lad1337@gmail.com>
 # URL: https://sickrage.tv/
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -21,7 +20,8 @@
 from __future__ import unicode_literals
 
 import sickrage
-from sickrage.core.databases import main_db
+from CodernityDB.database import RecordNotFound
+from sickrage.core.databases.main import MainDB
 from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 
@@ -47,12 +47,15 @@ class BlackAndWhiteList(object):
         """
         DB: Adds keywords into database for current show
 
-        :param table: SQL table to add keywords to
+        :param table: database table to add keywords to
         :param values: Values to be inserted in table
         """
         for value in values:
-            main_db.MainDB().action('INSERT INTO [' + table + '] (show_id, keyword) VALUES (?,?)',
-                                    [self.show_id, value])
+            MainDB().db.insert({
+                '_t': table,
+                'show_id': self.show_id,
+                'keywork': value
+            })
 
     def set_black_keywords(self, values):
         """
@@ -80,9 +83,12 @@ class BlackAndWhiteList(object):
         """
         DB: Remove all keywords for current show
 
-        :param table: SQL table remove keywords from
+        :param table: database table remove keywords from
         """
-        main_db.MainDB().action('DELETE FROM [' + table + '] WHERE show_id = ?', [self.show_id])
+        try:
+            MainDB().db.delete(MainDB().db.get(table, self.show_id, with_doc=True)['doc'])
+        except RecordNotFound:
+            pass
 
     def _load_list(self, table):
         """
@@ -92,14 +98,12 @@ class BlackAndWhiteList(object):
 
         :return: keywords in list
         """
-        sqlResults = main_db.MainDB().select('SELECT keyword FROM [' + table + '] WHERE show_id = ?', [self.show_id])
-        if not sqlResults or not len(sqlResults):
-            return []
         groups = []
-        for result in sqlResults:
-            groups.append(result["keyword"])
+        for result in [x['doc'] for x in MainDB().db.get_many(table, self.show_id, with_doc=True)]:
+            groups.append(result['keyword'])
 
-        sickrage.srCore.srLogger.debug('BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
+        sickrage.srCore.srLogger.debug(
+            'BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
 
         return groups
 
@@ -127,7 +131,8 @@ class BlackAndWhiteList(object):
             else:
                 black_result = True
 
-            sickrage.srCore.srLogger.debug('Whitelist check passed: %s. Blacklist check passed: %s' % (white_result, black_result))
+            sickrage.srCore.srLogger.debug(
+                'Whitelist check passed: %s. Blacklist check passed: %s' % (white_result, black_result))
 
             if white_result and black_result:
                 return True
