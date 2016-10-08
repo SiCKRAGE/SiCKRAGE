@@ -20,7 +20,6 @@ from __future__ import unicode_literals
 
 import re
 import traceback
-import urllib
 
 import sickrage
 from sickrage.core.caches import tv_cache
@@ -46,11 +45,11 @@ class SceneTimeProvider(TorrentProvider):
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
             'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/browse.php?search=%s%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse_API.php'.format(base_url=self.urls['base_url']),
             'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
         })
 
-        self.categories = "&c2=1&c43=13&c9=1&c63=1&c77=1&c79=1&c100=1&c101=1"
+        self.categories = [2, 42, 9, 63, 77, 79, 100, 83]
 
     def _doLogin(self):
 
@@ -84,19 +83,19 @@ class SceneTimeProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                query = {'sec': 'jax', 'cata': 'yes', 'search': search_string}
+                query.update({"c%s" % i: 1 for i in self.categories})
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=query).text
+                    if not data: raise
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
                     with bs4_parser(data) as html:
-                        torrent_table = html.select("#torrenttable table")
-                        torrent_rows = torrent_table[0].select("tr") if torrent_table else []
+                        torrent_rows = html.findAll('tr')
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:

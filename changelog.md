@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1f8d019 - 2016-10-07: fix: Fixed IMDB Popular shows page 
+- * c05caf8 - 2016-10-07: fix: Fixed scene time provider search 
+- * 4244405 - 2016-10-07: fix: Fixed IMDB Popular shows page 
 - * 7d3fbea - 2016-10-06: new: Updated images 
 - * 9eb4be1 - 2016-10-06: new: Updated network logos 
 - * f632cef - 2016-10-06: fix: Adjusted CPU PRESETS for sleep timers 
