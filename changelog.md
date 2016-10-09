@@ -1,6 +1,7 @@
 # Changelog
 
-- * ac51250 - 2016-10-09: fix: Revamped network timezone code, gained overall app performance from this fix 
+- * 8d35646 - 2016-10-09: new: v8.4.0 
+- * fee55aa - 2016-10-09: fix: Revamped network timezone code, gained overall app performance from this fix 
 - * 3c45ed8 - 2016-10-09: fix: Backup/Restore functions now work with new database and database backups 
 - * 2754b45 - 2016-10-09: fix: Misc minor fixes 
 - * 2476793 - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
