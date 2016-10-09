@@ -1164,7 +1164,6 @@ def backupSR(backupDir):
     filesList = ['sickrage.db',
                  'failed.db',
                  'cache.db',
-                 'thetvdb.db',
                  os.path.basename(sickrage.CONFIG_FILE)]
 
     for f in filesList:
@@ -1172,6 +1171,17 @@ def backupSR(backupDir):
         if os.path.exists(fp):
             source += [fp]
 
+    # database
+    for (path, dirs, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'database'), topdown=True):
+        for filename in files:
+            source += [os.path.join(path, filename)]
+
+    # database backups
+    for (path, dirs, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'db_backup'), topdown=True):
+        for filename in files:
+            source += [os.path.join(path, filename)]
+
+    # cache
     if sickrage.srCore.srConfig.CACHE_DIR:
         for (path, dirs, files) in os.walk(sickrage.srCore.srConfig.CACHE_DIR, topdown=True):
             for dirname in dirs:
@@ -1188,10 +1198,8 @@ def backupSR(backupDir):
 def restoreSR(srcDir, dstDir):
     try:
         filesList = ['sickrage.db',
-                     'sickbeard.db',
                      'failed.db',
                      'cache.db',
-                     'thetvdb.db',
                      os.path.basename(sickrage.CONFIG_FILE)]
 
         for filename in filesList:
@@ -1205,6 +1213,25 @@ def restoreSR(srcDir, dstDir):
                     moveFile(dstFile, bakFile)
                 moveFile(srcFile, dstFile)
 
+        # databse
+        if os.path.exists(os.path.join(srcDir, 'database')):
+            if os.path.exists(os.path.join(dstDir, 'database')):
+                moveFile(os.path.join(dstDir, 'database'), os.path.join(dstDir, '{}.bak-{}'
+                                                                     .format('database',
+                                                                             datetime.datetime.now().strftime(
+                                                                                 '%Y%m%d_%H%M%S'))))
+            moveFile(os.path.join(srcDir, 'database'), dstDir)
+
+        # databse backups
+        if os.path.exists(os.path.join(srcDir, 'db_backup')):
+            if os.path.exists(os.path.join(dstDir, 'db_backup')):
+                moveFile(os.path.join(dstDir, 'db_backup'), os.path.join(dstDir, '{}.bak-{}'
+                                                                     .format('db_backup',
+                                                                             datetime.datetime.now().strftime(
+                                                                                 '%Y%m%d_%H%M%S'))))
+            moveFile(os.path.join(srcDir, 'db_backup'), dstDir)
+
+        # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
             if os.path.exists(os.path.join(dstDir, 'cache')):
                 moveFile(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'

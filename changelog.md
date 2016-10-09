@@ -1,6 +1,7 @@
 # Changelog
 
-- * 18b53c5 - 2016-10-09: fix: Misc minor fixes 
+- * b88a1e8 - 2016-10-09: fix: Backup/Restore functions now work with new database and database backups 
+- * 2754b45 - 2016-10-09: fix: Misc minor fixes 
 - * 2476793 - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
 - * bbf088b - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
 - * 8ff771b - 2016-10-09: fix: Fixed issues with episode renamer 
