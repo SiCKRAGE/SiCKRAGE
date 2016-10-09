@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3fd5800 - 2016-10-08: new: v8.3.6 fix: Fixed theTVDB API paging issue for episode data 
+- * 5788bfc - 2016-10-08: fix: Minor code changes 
+- * 122bd10 - 2016-10-08: new: v8.3.6 fix: Fixed theTVDB API paging issue for episode data 
 - * 63db473 - 2016-10-08: new: v8.3.5 fix: Fixed minor issue 
 - * 7d4cd4a - 2016-10-08: fix: Corrected typo to resolve key error 
 - * b90acf0 - 2016-10-08: fix: Removed dbFilename from mako template code 

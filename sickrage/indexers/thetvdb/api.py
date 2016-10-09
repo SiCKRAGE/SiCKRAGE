@@ -20,16 +20,13 @@ from __future__ import print_function, unicode_literals
 
 import functools
 import getpass
-import json
 import os
 import tempfile
 import time
-import zipfile
 
 import imdbpie
 import requests
 import sickrage
-import xmltodict
 
 try:
     import gzip
@@ -476,7 +473,10 @@ class Tvdb:
 
     @retry(tvdb_error)
     def _loadUrl(self, url, params=None):
+        data = {}
+
         try:
+
             # get api v2 token
             self.getToken()
 
@@ -491,38 +491,16 @@ class Tvdb:
                                                     timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT)
             # handle requests exceptions
             resp.raise_for_status()
+            data = resp.json()['data']
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
                 self.getToken(True)
-                raise tvdb_error("HTTP Error {}: Session token expired, retrieving new token".format(e.errno))
-            elif e.response.status_code == 404:
-                return
-            raise tvdb_error("HTTP Error {}: while loading URL {}".format(e.errno, url))
-        except requests.exceptions.ConnectionError as e:
-            raise tvdb_error("Connection error {} while loading URL {}".format(e.message, url))
-        except requests.exceptions.Timeout as e:
-            raise tvdb_error("Connection timed out {} while loading URL {}".format(e.message, url))
+                raise tvdb_error()
         except Exception as e:
-            raise tvdb_error("Unknown exception while loading URL {}: {}".format(url, repr(e)))
-
-        try:
-            if 'application/zip' in resp.headers.get("Content-Type", ''):
-                try:
-                    import StringIO
-                    sickrage.srCore.srLogger.debug("We received a zip file unpacking now ...")
-                    return json.loads(json.dumps(xmltodict.parse(
-                        zipfile.ZipFile(StringIO.StringIO(resp.content)).read(
-                            "{}.xml".format(self.config['language']))))
-                    )
-                except zipfile.BadZipfile:
-                    raise tvdb_error("Bad zip file received from theTVDB.com, could not read it")
-
-            try:
-                return resp.json()
-            except:
-                return json.loads(json.dumps(xmltodict.parse(resp.content)))
-        except:
             pass
+
+        return data
+
 
     def _getetsrc(self, url, params=None):
         """Loads a URL using caching, returns an ElementTree of the source
@@ -540,8 +518,7 @@ class Tvdb:
             return iterable
 
         try:
-            resp = self._loadUrl(url, params=params)
-            if resp: return renameKeys(resp)['data']
+            return renameKeys(self._loadUrl(url, params=params))
         except Exception as e:
             raise tvdb_error(e.message)
 
