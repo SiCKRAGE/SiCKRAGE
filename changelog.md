@@ -1,6 +1,7 @@
 # Changelog
 
-- * a86752b - 2016-10-08: new: Version 8.3.2 fix: Fixed issues with theTVDB API V2 and retrieval of episode info fix: Removed pickling of theTVDB indexer show cache 
+- * 483b560 - 2016-10-08: new: v8.3.3 fix: Removed remaining ShowDirInvalid directive 
+- * 6022bb3 - 2016-10-08: new: Version 8.3.2 fix: Fixed issues with theTVDB API V2 and retrieval of episode info fix: Removed pickling of theTVDB indexer show cache 
 - * 4b278f6 - 2016-10-08: new: Version 8.3.1 
 - * 2eeb509 - 2016-10-08: fix: Issues with image query params resolved fix: Available languages now queryed from api 
 - * b387686 - 2016-10-07: fix: Removed last reference to SQL code, minor impact 

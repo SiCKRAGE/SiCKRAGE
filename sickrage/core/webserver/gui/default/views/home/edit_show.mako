@@ -4,7 +4,6 @@
     from sickrage.indexers import adba, srIndexerApi
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings, Quality
-    from sickrage.core.exceptions import ShowDirInvalid
 %>
 
 <%block name="metas">
@@ -36,10 +35,7 @@
                                 <span class="component-desc">
                                     <input type="hidden" name="show" value="${show.indexerid}"/>
                                     <%
-                                        try:
-                                            showLoc = show.location
-                                        except ShowDirInvalid:
-                                            showLoc = ""
+                                        showLoc = show.location
                                     %>
                                     <input type="text" name="location" id="location" value="${showLoc}"
                                            class="form-control form-control-inline input-sm input350"
