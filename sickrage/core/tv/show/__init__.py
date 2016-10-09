@@ -953,18 +953,11 @@ class TVShow(object):
             self._release_groups = BlackAndWhiteList(self.indexerid)
 
         if not skipNFO:
-            foundNFO = False
-
-            # Get IMDb_info from database
-            dbData = [x['doc'] for x in MainDB().db.get_many('imdb_info', self.indexerid, with_doc=True)]
-            if len(dbData):
-                self._imdb_info = dict(zip(dbData[0].keys(), dbData[0])) or self.imdb_info
-                foundNFO = True
-
-            if not foundNFO:
-                return False
-
-        return True
+            try:
+                # Get IMDb_info from database
+                self._imdb_info = MainDB().db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+            except RecordNotFound:
+                pass
 
     def loadFromIndexer(self, cache=True, tvapi=None, cachedSeason=None):
 
