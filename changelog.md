@@ -1,6 +1,7 @@
 # Changelog
 
-- * 20dcd98 - 2016-10-08: fix: Fixed issues with retrieval and saving of IMDb info 
+- * 4472cf1 - 2016-10-08: new: v8.3.6 
+- * f4e899b - 2016-10-08: fix: Fixed issues with retrieval and saving of IMDb info 
 - * 920455d - 2016-10-08: fix: Minor code changes 
 - * 122bd10 - 2016-10-08: new: v8.3.6 fix: Fixed theTVDB API paging issue for episode data 
 - * 63db473 - 2016-10-08: new: v8.3.5 fix: Fixed minor issue 
