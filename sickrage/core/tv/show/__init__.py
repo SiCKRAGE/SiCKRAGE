@@ -415,17 +415,14 @@ class TVShow(object):
                 del myEp
 
     def getAllEpisodes(self, season=None, has_location=False):
-        results = []
-        for x in MainDB().db.get_many('tv_episodes', self.indexerid):
-            if season is not None and x['doc']['season'] != season:
-                continue
-            if has_location and x['doc']['location'] == '':
-                continue
-
-            results += [x['doc']]
-
         ep_list = []
-        for cur_result in results:
+        for cur_result in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+            if season and cur_result['season'] != season:
+                continue
+
+            if has_location and cur_result['location'] == '':
+                continue
+
             cur_ep = self.getEpisode(int(cur_result["season"]), int(cur_result["episode"]))
             if not cur_ep:
                 continue

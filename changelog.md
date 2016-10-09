@@ -1,6 +1,7 @@
 # Changelog
 
-- * 29e10be - 2016-10-08: new: v8.3.8 fix: Fixed loading IMDb info on startup 
+- * a2a4129 - 2016-10-09: fix: Fixed issues with episode renamer 
+- * 9e46f05 - 2016-10-08: new: v8.3.8 fix: Fixed loading IMDb info on startup 
 - * 2424afc - 2016-10-08: new: v8.3.6 
 - * f4e899b - 2016-10-08: fix: Fixed issues with retrieval and saving of IMDb info 
 - * 920455d - 2016-10-08: fix: Minor code changes 
