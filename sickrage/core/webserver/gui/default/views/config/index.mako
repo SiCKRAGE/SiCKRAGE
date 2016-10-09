@@ -3,7 +3,6 @@
     import sys, os
 
     import sickrage
-    from sickrage.core.databases import dbFilename
     from sickrage.core.helpers import anon_url
 %>
 <%block name="content">
@@ -41,10 +40,6 @@
     <tr>
         <td class="infoTableHeader">SR Config:</td>
         <td class="infoTableCell">${sickrage.CONFIG_FILE}</td>
-    </tr>
-    <tr>
-        <td class="infoTableHeader">SR Database:</td>
-        <td class="infoTableCell">${dbFilename()}</td>
     </tr>
     <tr>
         <td class="infoTableHeader">SR Cache Dir:</td>
