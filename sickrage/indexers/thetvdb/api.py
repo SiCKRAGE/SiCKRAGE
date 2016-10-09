@@ -495,6 +495,8 @@ class Tvdb:
             if e.response.status_code == 401:
                 self.getToken(True)
                 raise tvdb_error("HTTP Error {}: Session token expired, retrieving new token".format(e.errno))
+            elif e.response.status_code == 404:
+                return
             raise tvdb_error("HTTP Error {}: while loading URL {}".format(e.errno, url))
         except requests.exceptions.ConnectionError as e:
             raise tvdb_error("Connection error {} while loading URL {}".format(e.message, url))
@@ -738,7 +740,14 @@ class Tvdb:
             # Parse episode data
             sickrage.srCore.srLogger.debug('Getting all episodes of {}'.format(sid))
 
-            episodes = self._getetsrc(self.config['api']['episodes'].format(sid))
+            p = 1
+            episodes = []
+            while True:
+                data = self._getetsrc(self.config['api']['episodes'].format(sid), params={'page': p})
+                if not data: break
+                episodes += data
+                p += 1
+
             if not episodes:
                 sickrage.srCore.srLogger.debug('Series results incomplete')
                 return
