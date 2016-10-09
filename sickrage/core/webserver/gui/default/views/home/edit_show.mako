@@ -34,10 +34,7 @@
                                         <span class="component-title">Show Location</span>
                                 <span class="component-desc">
                                     <input type="hidden" name="show" value="${show.indexerid}"/>
-                                    <%
-                                        showLoc = show.location
-                                    %>
-                                    <input type="text" name="location" id="location" value="${showLoc}"
+                                    <input type="text" name="location" id="location" value="${show.location}"
                                            class="form-control form-control-inline input-sm input350"
                                            autocapitalize="off" required=""/>
                                 </span>
@@ -107,7 +104,7 @@
                                         <span class="component-title">Subtitles</span>
                                         <span class="component-desc">
                                             <input type="checkbox" id="subtitles"
-                                                   name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.srCore.srConfig.USE_SUBTITLES == True]} ${('disabled="disabled', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/> search for subtitles
+                                                   name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.srCore.srConfig.USE_SUBTITLES == True]} ${('disabled="disabled"', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/> search for subtitles
                                         </span>
                                     </label>
                                 </div>
@@ -117,7 +114,9 @@
                                         <span class="component-title">Paused</span>
                                         <span class="component-desc">
                                             <input type="checkbox" id="paused"
-                                                   name="paused" ${('', 'checked="checked"')[show.paused == 1]} /> pause this show (SickRage will not download episodes)
+                                                   name="paused" ${('', 'checked="checked"')[show.paused == 1]} />
+                                            <div class="clear-left"><p>pause this show (SickRage will not download episodes)
+                                                </p></div>
                                         </span>
                                     </label>
                                 </div>
