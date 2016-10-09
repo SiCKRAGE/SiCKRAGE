@@ -1,3 +1,21 @@
+# Author: echel0n <echel0n@sickrage.ca>
+# URL: http://github.com/SiCKRAGETV/SickRage/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import unicode_literals
 
 import ast
@@ -1433,8 +1451,8 @@ def getDiskSpaceUsage(diskPath=None):
     else:
         return False
 
-def getFreeSpace(directories):
 
+def getFreeSpace(directories):
     single = not isinstance(directories, (tuple, list))
     if single:
         directories = [directories]
@@ -1446,11 +1464,11 @@ def getFreeSpace(directories):
         if os.path.isdir(folder):
             if os.name == 'nt':
                 _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
-                                   ctypes.c_ulonglong()
+                                 ctypes.c_ulonglong()
                 if sys.version_info >= (3,) or isinstance(folder, unicode):
-                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW #@UndefinedVariable
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW  # @UndefinedVariable
                 else:
-                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA #@UndefinedVariable
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA  # @UndefinedVariable
                 ret = fun(folder, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
                 if ret == 0:
                     raise ctypes.WinError()
@@ -1464,6 +1482,7 @@ def getFreeSpace(directories):
         free_space[folder] = size
 
     return free_space
+
 
 def removetree(tgt):
     def error_handler(func, path, execinfo):

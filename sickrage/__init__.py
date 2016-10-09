@@ -1,5 +1,4 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://git.sickrage.ca
 #

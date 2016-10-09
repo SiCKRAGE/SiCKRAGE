@@ -1,6 +1,7 @@
 # Changelog
 
-- * e319113 - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
+- * 18b53c5 - 2016-10-09: fix: Misc minor fixes 
+- * 2476793 - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
 - * bbf088b - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
 - * 8ff771b - 2016-10-09: fix: Fixed issues with episode renamer 
 - * af04c02 - 2016-10-09: fix: Fixed issues with episode renamer 
