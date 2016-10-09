@@ -1034,10 +1034,13 @@ class TVShow(object):
 
         i = imdbpie.Imdb()
         if not self.imdbid:
-            try:
-                self.imdbid = i.search_for_title(self.name).imdb_id
-            except:
-                pass
+            for x in i.search_for_title(self.name):
+                try:
+                    if int(x.get('year'), 0) == self.startyear and x.get('title') == self.name:
+                        self.imdbid = x.get('imdb_id')
+                        break
+                except:
+                    continue
 
         if self.imdbid:
             sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Loading show info from IMDb")
@@ -1134,7 +1137,8 @@ class TVShow(object):
         if full:
             try:
                 if not os.path.isdir(self.location):
-                    sickrage.srCore.srLogger.warning("Show folder does not exist, no need to %s %s" % (action, self.location))
+                    sickrage.srCore.srLogger.warning(
+                        "Show folder does not exist, no need to %s %s" % (action, self.location))
                     return
 
                 sickrage.srCore.srLogger.info('Attempt to %s show folder %s' % (action, self.location))
@@ -1315,7 +1319,8 @@ class TVShow(object):
 
         if self.imdbid and self.imdb_info:
             self.imdb_info.update({
-                '_t': 'imdb_info'
+                '_t': 'imdb_info',
+                'indexer_id': self.indexerid
             })
 
             try:
