@@ -259,7 +259,7 @@ class TVCache(object):
             dbData = [x['doc'] for x in CacheDB().db.get_many('providers', self.providerID, with_doc=True)
                       if x['doc']['indexerid'] == episode.show.indexerid
                       and x['doc']['season'] == episode.season
-                      and "|" + str(episode.episode) + "|" in x['doc']['episode']]
+                      and "|" + str(episode.episode) + "|" in x['doc']['episodes']]
 
         # for each cache entry
         for curResult in dbData:
