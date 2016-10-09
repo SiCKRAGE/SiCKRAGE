@@ -417,7 +417,7 @@ class TVShow(object):
     def getAllEpisodes(self, season=None, has_location=False):
         results = []
         for x in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
-            if season is not None and x['season'] != season:
+            if season and x['season'] != season:
                 continue
             if has_location and x['location'] == '':
                 continue
