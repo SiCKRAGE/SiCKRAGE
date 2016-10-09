@@ -1,6 +1,7 @@
 # Changelog
 
-- * e574fb9 - 2016-10-08: fix: Corrected typo to resolve key error 
+- * e281203 - 2016-10-08: new: v8.3.5 fix: Fixed minor issue 
+- * 7d4cd4a - 2016-10-08: fix: Corrected typo to resolve key error 
 - * b90acf0 - 2016-10-08: fix: Removed dbFilename from mako template code 
 - * 725af2a - 2016-10-08: fix: Minor edit_show.mako fixes 
 - * 1c5c697 - 2016-10-08: new: v8.3.3 fix: Removed remaining ShowDirInvalid directive 

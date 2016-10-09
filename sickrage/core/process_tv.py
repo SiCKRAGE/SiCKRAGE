@@ -516,10 +516,12 @@ def already_postprocessed(dirName, videofile, force, result):
         except:
             parse_result = False
 
-        for h in [h['doc'] for h in MainDB().db.all('history', with_doc=True)]:
+        for h in [h['doc'] for h in MainDB().db.all('history', with_doc=True)
+                  if h['doc']['resource'].endswith(videofile)]:
             for e in [e['doc'] for e in MainDB().db.get_many('tv_episodes', h['showid'], with_doc=True)
-                      if h['season'] == e['season'] and h['episode'] == e['episode']
-                      and e['status'] in Quality.DOWNLOADED and h['resource'].endswith(videofile)]:
+                      if h['season'] == e['doc']['season']
+                      and h['episode'] == e['doc']['episode']
+                      and e['doc']['status'] in Quality.DOWNLOADED]:
 
                 # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
                 if parse_result and (
