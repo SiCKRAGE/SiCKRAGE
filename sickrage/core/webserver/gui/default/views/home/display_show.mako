@@ -623,14 +623,13 @@
                 </td>
                 <td class="col-airdate">
                     % if int(epResult['airdate']) != 1:
-                    ## Lets do this exactly like ComingEpisodes and History
-                        ## Avoid issues with dateutil's _isdst on Windows but still provide air dates
                         <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
-                    % if airDate.year >= 1970 or show.network:
-                        <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
-                    % endif
-                        <time datetime="${airDate.isoformat()}"
-                              class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
+
+                        % if airDate.year >= 1970 or show.network:
+                            <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
+                        % endif
+
+                        <time datetime="${airDate.isoformat()}" class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
                     % else:
                         Never
                     % endif

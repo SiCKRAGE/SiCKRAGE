@@ -28,6 +28,7 @@ from dateutil import tz
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import tryInt
 
+network_dict = {}
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
@@ -55,18 +56,19 @@ def update_network_dict():
     except (IOError, OSError):
         pass
 
-    network_timezones = load_network_dict()
-
     queries = []
     for network, timezone in d.items():
-        existing = network in network_timezones
+        existing = network in network_dict
         if not existing:
-            CacheDB().db.insert({
-                '_t': 'network_timezones',
-                'network_name': network,
-                'timezone': timezone
-            })
-        elif network_timezones[network] is not timezone:
+            try:
+                CacheDB().db.get('network_timezones', network)
+            except RecordNotFound:
+                CacheDB().db.insert({
+                    '_t': 'network_timezones',
+                    'network_name': network,
+                    'timezone': timezone
+                })
+        elif network_dict[network] is not timezone:
             try:
                 dbData = CacheDB().db.get('network_timezones', network, with_doc=True)['doc']
                 dbData['timezone'] = timezone
@@ -75,14 +77,15 @@ def update_network_dict():
                 continue
 
         if existing:
-            del network_timezones[network]
+            del network_dict[network]
 
-    if network_timezones:
-        for x in network_timezones:
-            try:
-                CacheDB().db.delete(CacheDB().db.get('network_timezones', x, with_doc=True)['doc'])
-            except RecordNotFound:
-                continue
+    for x in network_dict:
+        try:
+            CacheDB().db.delete(CacheDB().db.get('network_timezones', x, with_doc=True)['doc'])
+        except RecordNotFound:
+            continue
+
+    load_network_dict()
 
 
 # load network timezones from db into dict
@@ -91,12 +94,13 @@ def load_network_dict():
     Return network timezones from db
     """
 
-    return dict([(x['doc']['network_name'], x['doc']['timezone']) for x in
-                 CacheDB().db.all('network_timezones', with_doc=True)])
+    global network_dict
+    network_dict = dict([(x['doc']['network_name'], x['doc']['timezone']) for x in
+                         CacheDB().db.all('network_timezones', with_doc=True)])
 
 
 # get timezone of a network or return default timezone
-def get_network_timezone(network, _network_dict):
+def get_network_timezone(network):
     """
     Get a timezone of a network from a given network dict
 
@@ -108,7 +112,7 @@ def get_network_timezone(network, _network_dict):
         return sr_timezone
 
     try:
-        return tz.gettz(_network_dict[network]) or sr_timezone
+        return tz.gettz(network_dict[network]) or sr_timezone
     except Exception:
         return sr_timezone
 
@@ -123,8 +127,11 @@ def parse_date_time(d, t, network, dateOnly=False):
     :return: datetime object containing local time
     """
 
+    if not network_dict:
+        load_network_dict()
+
     parsed_time = time_regex.search(t)
-    network_tz = get_network_timezone(network, load_network_dict())
+    network_tz = get_network_timezone(network)
 
     hr = 0
     m = 0

@@ -1249,6 +1249,7 @@ class Home(WebHandler):
                     anime.append(show)
                 else:
                     shows.append(show)
+
             sortedShowLists = [["Shows", sorted(shows, lambda x, y: cmp(titler(x.name), titler(y.name)))],
                                ["Anime", sorted(anime, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
         else:
