@@ -383,7 +383,9 @@ class Core(object):
         self.srScheduler.add_job(
             self.DAILYSEARCHER.run,
             srIntervalTrigger(
-                **{'minutes': self.srConfig.DAILY_SEARCHER_FREQ, 'min': self.srConfig.MIN_DAILY_SEARCHER_FREQ}),
+                **{'minutes': self.srConfig.DAILY_SEARCHER_FREQ,
+                   'min': self.srConfig.MIN_DAILY_SEARCHER_FREQ,
+                   'start_date': datetime.datetime.now() + datetime.timedelta(minutes=4)}),
             name="DAILYSEARCHER",
             id="DAILYSEARCHER"
         )
@@ -393,7 +395,8 @@ class Core(object):
             self.BACKLOGSEARCHER.run,
             srIntervalTrigger(
                 **{'minutes': self.srConfig.BACKLOG_SEARCHER_FREQ,
-                   'min': self.srConfig.MIN_BACKLOG_SEARCHER_FREQ}),
+                   'min': self.srConfig.MIN_BACKLOG_SEARCHER_FREQ,
+                   'start_date': datetime.datetime.now() + datetime.timedelta(minutes=30)}),
             name="BACKLOG",
             id="BACKLOG"
         )
