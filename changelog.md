@@ -1,6 +1,7 @@
 # Changelog
 
-- * 40e68aa - 2016-10-10: fix: Backlogs start earlier now fix: Daily search starts 5 minutes after startup 
+- * 5ab5215 - 2016-10-10: new: v8.4.1 
+- * eb09f3d - 2016-10-10: fix: Backlogs start earlier now fix: Daily search starts 5 minutes after startup 
 - * c7eb873 - 2016-10-10: fix: Added repair function to database code to allow auto-repair of corrupted indexes 
 - * 9b78e3e - 2016-10-09: fix: Several misc code corrections and improvements 
 - * 3a87341 - 2016-10-09: fix: Converted returned epInfo values to integers, resolves episode renaming issues 
