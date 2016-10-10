@@ -1926,8 +1926,8 @@ class Home(WebHandler):
 
             epInfo = curEp.split('x')
 
-            ep_result = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show, with_doc=True)
-                         if x['doc']['season'] == epInfo[0] and x['doc']['episode'] == epInfo[1]]
+            ep_result = [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(show), with_doc=True)
+                         if x['doc']['season'] == int(epInfo[0]) and x['doc']['episode'] == int(epInfo[1])]
 
             if not ep_result:
                 sickrage.srCore.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
@@ -1935,7 +1935,7 @@ class Home(WebHandler):
 
             related_eps_result = [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
                                   if x['doc']['location'] == ep_result[0]['location']
-                                  and x['doc']['episode'] != epInfo[1]]
+                                  and x['doc']['episode'] != int(epInfo[1])]
 
             root_ep_obj = show_obj.getEpisode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []

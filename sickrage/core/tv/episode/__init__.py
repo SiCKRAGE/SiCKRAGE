@@ -962,7 +962,7 @@ class TVEpisode(object):
         for curEp in [self] + self.relatedEps:
             curEp.checkForMetaFiles()
 
-        # save any changes to the databas
+        # save any changes to the database
         with self.lock:
             for relEp in [self] + self.relatedEps:
                 relEp.saveToDB()
