@@ -328,7 +328,6 @@ class GenericProvider(object):
             itemList += itemsUnknown or []
 
         # filter results
-        cl = []
         for item in itemList:
             (title, url) = self._get_title_and_url(item)
 
@@ -400,9 +399,7 @@ class GenericProvider(object):
             # add parsed result to cache for usage later on
             if addCacheEntry:
                 sickrage.srCore.srLogger.debug("Adding item from search to cache: " + title)
-                ci = self.cache._addCacheEntry(title, url, parse_result=parse_result)
-                if ci is not None:
-                    cl.append(ci)
+                self.cache.addCacheEntry(title, url, parse_result=parse_result)
                 continue
 
             # make sure we want the episode
@@ -452,11 +449,6 @@ class GenericProvider(object):
                 results[epNum] = [result]
             else:
                 results[epNum].append(result)
-
-        # check if we have items to add to cache
-        if len(cl) > 0:
-            self.cache.ProviderDB().mass_action(cl)
-            del cl  # cleanup
 
         return results
 
@@ -632,7 +624,7 @@ class TorrentProvider(GenericProvider):
                 ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
                                                                            'episodenumber': ep_obj.scene_episode}
             if add_string:
-                ep_string = ep_string + ' %s' % add_string
+                ep_string += ' %s' % add_string
 
             search_string['Episode'].append(ep_string.strip())
 
@@ -1198,7 +1190,7 @@ class NewznabCache(TVCache):
 
         tvrageid = 0
 
-        return self._addCacheEntry(title, url, indexer_id=tvrageid)
+        return self.addCacheEntry(title, url, indexer_id=tvrageid)
 
 
 class providersDict(dict):

@@ -148,7 +148,7 @@ class RarbgProvider(TorrentProvider):
                     while retry > 0:
                         time_out = 0
                         while (datetime.datetime.now() < self.next_request) and time_out <= 15:
-                            time_out = time_out + 1
+                            time_out += 1
                             time.sleep(1)
 
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
@@ -170,7 +170,7 @@ class RarbgProvider(TorrentProvider):
                             return results
                         if re.search('Too many requests per minute. Please try again later!', data):
                             sickrage.srCore.srLogger.warning("Too many requests per minute")
-                            retry = retry - 1
+                            retry -= 1
                             time.sleep(10)
                             continue
                         if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
@@ -179,7 +179,7 @@ class RarbgProvider(TorrentProvider):
                             raise StopIteration
                         if re.search('Invalid token. Use get_token for a new one!', data):
                             sickrage.srCore.srLogger.debug("Invalid token, retrieving new token")
-                            retry = retry - 1
+                            retry -= 1
                             self.token = None
                             self.tokenExpireDate = None
                             if not self._doLogin():

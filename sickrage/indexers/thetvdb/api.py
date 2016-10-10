@@ -363,29 +363,9 @@ class Tvdb:
 
         self.shows = ShowCache()
 
-        self.config = {}
-
-        self.config['apikey'] = apikey
-
-        self.config['debug_enabled'] = debug  # show debugging messages
-
-        self.config['custom_ui'] = custom_ui
-
-        self.config['interactive'] = interactive  # prompt for correct series?
-
-        self.config['select_first'] = select_first
-
-        self.config['useZip'] = useZip
-
-        self.config['dvdorder'] = dvdorder
-
-        self.config['proxy'] = proxy
-
-        self.config['headers'] = headers
-
-        self.config['apitoken'] = apitoken
-
-        self.config['api'] = {}
+        self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'interactive': interactive,
+                       'select_first': select_first, 'useZip': useZip, 'dvdorder': dvdorder, 'proxy': proxy,
+                       'headers': headers, 'apitoken': apitoken, 'api': {}}
 
         if cache is True:
             self.config['cache_enabled'] = True

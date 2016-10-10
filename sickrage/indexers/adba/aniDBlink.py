@@ -183,10 +183,7 @@ class AniDBLink(threading.Thread):
         self.tags.append(command.tag)
 
     def _cmd_dequeue(self, resp):
-        if not resp.restag:
-            return None
-        else:
-            return self.cmd_queue.pop(resp.restag)
+        if resp.restag: return self.cmd_queue.pop(resp.restag)
 
     def _delay(self):
         return (self.delay < 2.1 and 2.1 or self.delay)

@@ -84,7 +84,7 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
                     web_root = "/" + web_root
 
                 if not web_root.endswith("/"):
-                    web_root = web_root + "/"
+                    web_root += "/"
 
             except configparser.NoOptionError:
                 pass
@@ -95,15 +95,12 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
             # There was a config_file, don't use default values but exit
             sys.exit(1)
 
-    params = {}
+    params = {'quiet': 1, 'dir': dir_to_process}
 
-    params['quiet'] = 1
-
-    params['dir'] = dir_to_process
-    if org_NZB_name != None:
+    if org_NZB_name is not None:
         params['nzbName'] = org_NZB_name
 
-    if status != None:
+    if status is not None:
         params['failed'] = status
 
     if ssl:

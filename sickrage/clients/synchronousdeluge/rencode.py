@@ -174,29 +174,12 @@ def decode_false(x, f):
 def decode_none(x, f):
   return (None, f+1)
 
-decode_func = {}
-decode_func['0'] = decode_string
-decode_func['1'] = decode_string
-decode_func['2'] = decode_string
-decode_func['3'] = decode_string
-decode_func['4'] = decode_string
-decode_func['5'] = decode_string
-decode_func['6'] = decode_string
-decode_func['7'] = decode_string
-decode_func['8'] = decode_string
-decode_func['9'] = decode_string
-decode_func[CHR_LIST   ] = decode_list
-decode_func[CHR_DICT   ] = decode_dict
-decode_func[CHR_INT    ] = decode_int
-decode_func[CHR_INT1   ] = decode_intb
-decode_func[CHR_INT2   ] = decode_inth
-decode_func[CHR_INT4   ] = decode_intl
-decode_func[CHR_INT8   ] = decode_intq
-decode_func[CHR_FLOAT32] = decode_float32
-decode_func[CHR_FLOAT64] = decode_float64
-decode_func[CHR_TRUE   ] = decode_true
-decode_func[CHR_FALSE  ] = decode_false
-decode_func[CHR_NONE   ] = decode_none
+decode_func = {'0': decode_string, '1': decode_string, '2': decode_string, '3': decode_string, '4': decode_string,
+               '5': decode_string, '6': decode_string, '7': decode_string, '8': decode_string, '9': decode_string,
+               CHR_LIST: decode_list, CHR_DICT: decode_dict, CHR_INT: decode_int, CHR_INT1: decode_intb,
+               CHR_INT2: decode_inth, CHR_INT4: decode_intl, CHR_INT8: decode_intq, CHR_FLOAT32: decode_float32,
+               CHR_FLOAT64: decode_float64, CHR_TRUE: decode_true, CHR_FALSE: decode_false, CHR_NONE: decode_none}
+
 
 def make_fixed_length_string_decoders():
     def make_decoder(slen):
@@ -338,15 +321,8 @@ def encode_dict(x,r):
             encode_func[type(v)](v, r)
         r.append(CHR_TERM)
 
-encode_func = {}
-encode_func[IntType] = encode_int
-encode_func[LongType] = encode_int
-encode_func[StringType] = encode_string
-encode_func[ListType] = encode_list
-encode_func[TupleType] = encode_list
-encode_func[DictType] = encode_dict
-encode_func[NoneType] = encode_none
-encode_func[UnicodeType] = encode_unicode
+encode_func = {IntType: encode_int, LongType: encode_int, StringType: encode_string, ListType: encode_list,
+               TupleType: encode_list, DictType: encode_dict, NoneType: encode_none, UnicodeType: encode_unicode}
 
 lock = Lock()
 

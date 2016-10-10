@@ -45,7 +45,6 @@ class WombleCache(tv_cache.TVCache):
             # set updated
             self.setLastUpdate()
 
-            cl = []
             for url in [self.provider.urls['base_url'] + '/rss/?sec=tv-x264&fr=false',
                         self.provider.urls['base_url'] + '/rss/?sec=tv-sd&fr=false',
                         self.provider.urls['base_url'] + '/rss/?sec=tv-dvd&fr=false',
@@ -53,13 +52,7 @@ class WombleCache(tv_cache.TVCache):
                 sickrage.srCore.srLogger.debug("Cache update URL: %s" % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
-                    ci = self._parseItem(item)
-                    if ci is not None:
-                        cl.append(ci)
-
-            if len(cl) > 0:
-                self.db().mass_action(cl)
-                del cl  # cleanup
+                    self._parseItem(item)
 
         return True
 

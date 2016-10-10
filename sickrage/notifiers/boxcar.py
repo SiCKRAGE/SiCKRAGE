@@ -54,7 +54,7 @@ class BoxcarNotifier(srNotifiers):
         # if this is a subscription notification then act accordingly
         if subscribe:
             data = urllib.urlencode({'email': email})
-            curUrl = curUrl + "/subscribe"
+            curUrl += "/subscribe"
 
         # for normal requests we need all these parameters
         else:

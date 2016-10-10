@@ -318,7 +318,7 @@ class CalendarHandler(BaseHandler):
                      and x['doc']['paused'] != 1]:
             for episode in [x['doc'] for x in
                             MainDB().db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
-                            x['doc']['airdate'] >= past_date and x['doc']['airdate'] < future_date]:
+                            past_date <= x['doc']['airdate'] < future_date]:
 
                 air_date_time = tz_updater.parse_date_time(episode['airdate'], show['airs'],
                                                            show['network']).astimezone(utc)

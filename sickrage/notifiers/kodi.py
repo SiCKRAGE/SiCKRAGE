@@ -562,7 +562,7 @@ class KODINotifier(srNotifiers):
                     if sickrage.srCore.srConfig.KODI_ALWAYS_ON:
                         sickrage.srCore.srLogger.warning(
                             "Failed to detect KODI version for '" + host + "', check configuration and try again.")
-                    result = result + 1
+                    result += 1
 
             # needed for the 'update kodi' submenu command
             # as it only cares of the final result vs the individual ones

@@ -160,7 +160,7 @@ def pid_exists(pid):
         return False
     try:
         os.kill(pid, 0)
-    except OSError as e:
+    except OSError:
         return False
     else:
         return True
@@ -199,7 +199,7 @@ def version():
 
 
 def main():
-    global srCore, status, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
+    global srCore, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
         DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
@@ -316,7 +316,7 @@ def main():
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
             print("Failed to import required libs, please run 'pip install -r {}' from console".format(REQS_FILE))
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
 
 if __name__ == '__main__':

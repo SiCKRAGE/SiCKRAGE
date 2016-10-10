@@ -20,11 +20,9 @@
 from __future__ import unicode_literals
 
 import ssl
-import traceback
 from functools import wraps
 
 import requests
-
 import sickrage
 
 

@@ -609,10 +609,7 @@ def _getRootDirs():
         if root_dir is default_dir:
             default = 1
 
-        curDir = {}
-        curDir['valid'] = valid
-        curDir['location'] = root_dir
-        curDir['default'] = default
+        curDir = {'valid': valid, 'location': root_dir, 'default': default}
         dir_list.append(curDir)
 
     return dir_list
@@ -2756,16 +2753,14 @@ class CMD_ShowStats(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # show stats
-        episode_status_counts_total = {}
-        episode_status_counts_total["total"] = 0
+        episode_status_counts_total = {"total": 0}
         for status in statusStrings.statusStrings.keys():
             if status in [UNKNOWN, DOWNLOADED, SNATCHED, SNATCHED_PROPER, ARCHIVED]:
                 continue
             episode_status_counts_total[status] = 0
 
         # add all the downloaded qualities
-        episode_qualities_counts_download = {}
-        episode_qualities_counts_download["total"] = 0
+        episode_qualities_counts_download = {"total": 0}
         for statusCode in Quality.DOWNLOADED + Quality.ARCHIVED:
             status, quality = Quality.splitCompositeStatus(statusCode)
             if quality in [Quality.NONE]:
@@ -2773,8 +2768,7 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_download[statusCode] = 0
 
         # add all snatched qualities
-        episode_qualities_counts_snatch = {}
-        episode_qualities_counts_snatch["total"] = 0
+        episode_qualities_counts_snatch = {"total": 0}
 
         for statusCode in Quality.SNATCHED + Quality.SNATCHED_PROPER:
             status, quality = Quality.splitCompositeStatus(statusCode)
@@ -2800,8 +2794,7 @@ class CMD_ShowStats(ApiCall):
                 episode_status_counts_total[status] += 1
 
         # the outgoing container
-        episodes_stats = {}
-        episodes_stats["downloaded"] = {}
+        episodes_stats = {"downloaded": {}}
         # turning codes into strings
         for statusCode in episode_qualities_counts_download:
             if statusCode == "total":
