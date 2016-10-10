@@ -1,6 +1,7 @@
 # Changelog
 
-- * a45472d - 2016-10-09: fix: Several misc code corrections and improvements 
+- * 4ecc04d - 2016-10-10: fix: Added repair function to database code to allow auto-repair of corrupted indexes 
+- * 9b78e3e - 2016-10-09: fix: Several misc code corrections and improvements 
 - * 3a87341 - 2016-10-09: fix: Converted returned epInfo values to integers, resolves episode renaming issues 
 - * 927d3fb - 2016-10-09: new: v8.4.0 
 - * fee55aa - 2016-10-09: fix: Revamped network timezone code, gained overall app performance from this fix 
