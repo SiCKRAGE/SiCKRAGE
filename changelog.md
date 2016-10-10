@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5ab5215 - 2016-10-10: new: v8.4.1 
+- * edac8c3 - 2016-10-10: new: v8.4.2 fix: Changed order of methods for populating episode info, resolves issues with loading not updating data from indexers 
+- * 4df3c2c - 2016-10-10: new: v8.4.1 
 - * eb09f3d - 2016-10-10: fix: Backlogs start earlier now fix: Daily search starts 5 minutes after startup 
 - * c7eb873 - 2016-10-10: fix: Added repair function to database code to allow auto-repair of corrupted indexes 
 - * 9b78e3e - 2016-10-09: fix: Several misc code corrections and improvements 

@@ -46,7 +46,7 @@ from sickrage.notifiers import srNotifiers
 
 
 class TVEpisode(object):
-    def __init__(self, show, season, episode, file="", forceIndexer=False):
+    def __init__(self, show, season, episode, file=""):
         self.lock = threading.Lock()
         self.dirty = True
 
@@ -80,7 +80,7 @@ class TVEpisode(object):
         self.checkForMetaFiles()
         self.wantedQuality = []
 
-        self.populateEpisode(self.season, self.episode, forceIndexer=forceIndexer)
+        self.populateEpisode(self.season, self.episode)
 
     @property
     def name(self):
@@ -357,43 +357,32 @@ class TVEpisode(object):
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
-    def populateEpisode(self, season, episode, forceIndexer=False):
-        # populating methods
-        methods = OrderedDict([('db', lambda: self.loadFromDB(season, episode)),
-                               ('nfo', lambda: self.loadFromNFO(self.location)),
-                               ('indexer', lambda: self.loadFromIndexer(season, episode))])
-
+    def populateEpisode(self, season, episode):
         # attempt populating episode
-        success = {'db': False,
-                   'nfo': False,
-                   'indexer': False}
+        success = {'nfo': False,
+                   'indexer': False,
+                   'db': False}
 
-        for method, func in methods.items():
-            if method == 'db':
-                # populate episode from database
+        for method, func in OrderedDict([
+            ('nfo', lambda: self.loadFromNFO(self.location)),
+            ('indexer', lambda: self.loadFromIndexer(season, episode)),
+            ('db', lambda: self.loadFromDB(season, episode))
+        ]).items():
+
+            try:
                 success[method] = func()
-            elif method == 'nfo' and not success['db']:
-                # populate episode from nfo files
-                try:
-                    success[method] = func()
-                except NoNFOException:
-                    sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
-                        self.show.indexerid, season or 0, episode or 0))
-            elif method == 'indexer':
-                # populate episode from indexers
-                try:
-                    success[method] = func()
-                except EpisodeDeletedException:
-                    self.deleteEpisode()
+            except NoNFOException:
+                sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
+                    self.show.indexerid, season or 0, episode or 0))
+            except EpisodeDeletedException:
+                self.deleteEpisode()
 
             # confirm if we successfully populated the episode
             if any(success.values()):
-                if method != 'indexer' and forceIndexer: continue
                 return True
 
         # we failed to populate the episode
-        raise EpisodeNotFoundException(
-            "Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
+        raise EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
 
     def loadFromDB(self, season, episode):
         sickrage.srCore.srLogger.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (

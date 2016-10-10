@@ -593,7 +593,7 @@ class QueueItemUpdate(ShowQueueItem):
             # for each ep we found on the Indexer not in the DB list add to DB
             for curSeason in IndexerEpList:
                 for curEpisode in set(IndexerEpList[curSeason]).difference(DBEpList.get(curSeason, {})):
-                    self.show.getEpisode(curSeason, curEpisode, forceIndexer=True).saveToDB()
+                    self.show.getEpisode(curSeason, curEpisode).saveToDB()
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in DBEpList:

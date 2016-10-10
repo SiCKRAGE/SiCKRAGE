@@ -454,8 +454,7 @@ class TVShow(object):
 
         return ep_list
 
-    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None,
-                   forceIndexer=False):
+    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None,):
 
         # if we get an anime get the real season and episode
         if self.is_anime and absolute_number and not season and not episode:
@@ -488,9 +487,9 @@ class TVShow(object):
             from sickrage.core.tv.episode import TVEpisode
 
             if file:
-                ep = TVEpisode(self, season, episode, file=file, forceIndexer=forceIndexer)
+                ep = TVEpisode(self, season, episode, file=file)
             else:
-                ep = TVEpisode(self, season, episode, forceIndexer=forceIndexer)
+                ep = TVEpisode(self, season, episode)
 
             if ep is not None:
                 self.episodes[season][episode] = ep
