@@ -668,11 +668,31 @@ class TVShow(object):
 
         sickrage.srCore.srLogger.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
+        lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
+
+        if self.lang:
+            lINDEXER_API_PARMS['language'] = self.lang
+
+        if self.dvdorder != 0:
+            lINDEXER_API_PARMS['dvdorder'] = True
+
+        t = srIndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+
+        cachedShow = t[self.indexerid]
+        cachedSeasons = {}
+
         for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
-            curEp = None
+            deleteEp = False
 
             curSeason = int(dbData["season"])
             curEpisode = int(dbData["episode"])
+
+            if curSeason not in cachedSeasons:
+                try:
+                    cachedSeasons[curSeason] = cachedShow[curSeason]
+                except indexer_seasonnotfound, e:
+                    sickrage.srCore.srLogger.warning("Error when trying to load the episode from TVDB: " + e.message)
+                    deleteEp = True
 
             if curSeason not in scannedEps:
                 scannedEps[curSeason] = {}
@@ -682,15 +702,15 @@ class TVShow(object):
                     "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
                 curEp = self.getEpisode(curSeason, curEpisode)
-                if not curEp:
-                    raise EpisodeNotFoundException
+                if not curEp: raise EpisodeNotFoundException
+                if deleteEp: curEp.deleteEpisode()
 
+                curEp.loadFromDB(curSeason, curEpisode)
+                curEp.loadFromIndexer(tvapi=t, cachedSeason=cachedSeasons[curSeason])
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
-                if curEp:
-                    curEp.deleteEpisode()
+                continue
 
-        sickrage.srCore.srLogger.debug("{}: Finished loading all episodes for show".format(self.indexerid))
         return scannedEps
 
     def loadEpisodesFromIndexer(self, cache=True):

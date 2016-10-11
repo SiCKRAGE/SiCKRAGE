@@ -31,7 +31,7 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateT
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import NoNFOException, \
-    EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
+    EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
     rename_ep_file, touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
     safe_getattr
@@ -392,7 +392,9 @@ class TVEpisode(object):
                   if x['doc']['season'] == season and x['doc']['episode'] == episode]
 
         if len(dbData) > 1:
-            raise MultipleEpisodesInDatabaseException("Your DB has two records for the same show somehow.")
+            for ep in dbData:
+                MainDB().db.delete(ep)
+            return False
         elif len(dbData) == 0:
             sickrage.srCore.srLogger.debug("%s: Episode S%02dE%02d not found in the database" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
