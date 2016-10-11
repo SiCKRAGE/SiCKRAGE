@@ -1,6 +1,7 @@
 # Changelog
 
-- * be6915b - 2016-10-10: new: v8.4.6 
+- * ec88ebe - 2016-10-11: new: v8.4.7 new: Added itorrents to bt cache url list fix: Corrected provider objects to be updated with valid keys only on app load 
+- * baa41ea - 2016-10-10: new: v8.4.6 
 - * 257902e - 2016-10-10: fix: Fixed issues with deleting shows and mapping of indexer&#x27;s to show id&#x27;s 
 - * bae6ef2 - 2016-10-10: fix: Misc fixes 
 - * a42520e - 2016-10-10: new: v8.4.5 fix: Resolved issues with updating show info from indexer and database fix: Duplicate episodes found in DB are removed and reloaded from indexer automatically 

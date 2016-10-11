@@ -76,6 +76,7 @@ class GenericProvider(object):
             'http://btdig.com/torrent/{torrent_hash}.torrent',
             'http://torrage.info/torrent/{torrent_hash}.torrent',
             'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+            'http://itorrents.org/torrent/{torrent_hash}.torrent'
         ]
 
     @property

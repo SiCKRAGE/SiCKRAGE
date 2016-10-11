@@ -477,7 +477,10 @@ class PostProcessor(object):
             self.in_history = True
             self.version = version
             to_return = (show, season, [], quality, version)
-            self._log("Found result in history: " + str(to_return), sickrage.srCore.srLogger.DEBUG)
+
+            qual_str = Quality.qualityStrings[quality] if quality is not None else quality
+            self._log("Found result in history for {} - Season: {} - Quality: {} - Version: {}".format(
+                show.name if show else "UNDEFINED", season, qual_str, version), sickrage.srCore.srLogger.DEBUG)
 
             return to_return
 

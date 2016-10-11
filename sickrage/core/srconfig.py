@@ -1893,7 +1893,8 @@ class srConfig(object):
             for k, v in providerSettings.items():
                 providerSettings[k] = autoType(v)
 
-            providerObj.__dict__.update(providerSettings)
+            [providerObj.__dict__.update({x: providerSettings[x]}) for x in
+             set(providerObj.__dict__).intersection(providerSettings)]
 
         # mark config settings loaded
         self.loaded = True
