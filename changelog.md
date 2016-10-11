@@ -1,6 +1,7 @@
 # Changelog
 
-- * 59ea1d5 - 2016-10-11: fix: Small code placement correction 
+- * 0028872 - 2016-10-11: new: v8.5.0 
+- * 9929925 - 2016-10-11: fix: Small code placement correction 
 - * 0b6a95b - 2016-10-11: new: v8.4.7 new: Added itorrents to bt cache url list fix: Corrected provider objects to be updated with valid keys only on app load 
 - * baa41ea - 2016-10-10: new: v8.4.6 
 - * 257902e - 2016-10-10: fix: Fixed issues with deleting shows and mapping of indexer&#x27;s to show id&#x27;s 
