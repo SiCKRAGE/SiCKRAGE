@@ -1,6 +1,7 @@
 # Changelog
 
-- * b26e5c2 - 2016-10-10: new: v8.4.5 fix: Resolved issues with updating show info from indexer and database fix: Duplicate episodes found in DB are removed and reloaded from indexer automatically 
+- * 9e71b8f - 2016-10-10: fix: Misc fixes 
+- * a42520e - 2016-10-10: new: v8.4.5 fix: Resolved issues with updating show info from indexer and database fix: Duplicate episodes found in DB are removed and reloaded from indexer automatically 
 - * 3ca1781 - 2016-10-10: new: v8.4.3 fix: Changed order of methods for populating episode info, resolves issues with loading not updating data from indexers 
 - * 525d3ae - 2016-10-10: new: v8.4.2 fix: Changed order of methods for populating episode info, resolves issues with loading not updating data from indexers 
 - * 4df3c2c - 2016-10-10: new: v8.4.1 

@@ -71,7 +71,7 @@ class GenericProvider(object):
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
 
-        self.btCacheURLS = [
+        self.btcache_urls = [
             'http://torrentproject.se/torrent/{torrent_hash}.torrent',
             'http://btdig.com/torrent/{torrent_hash}.torrent',
             'http://torrage.info/torrent/{torrent_hash}.torrent',
@@ -129,7 +129,7 @@ class GenericProvider(object):
                     sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
                     return urls
 
-                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS]
+                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btcache_urls]
             except Exception:
                 sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + url)
                 return urls
@@ -164,9 +164,11 @@ class GenericProvider(object):
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            if sickrage.srCore.srWebSession.download(url, filename,
-                                                     headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'})[
-                                                         url.startswith('http')]):
+            if sickrage.srCore.srWebSession.download(url,
+                                                     filename,
+                                                     headers=(None, {
+                                                         'Referer': '/'.join(url.split('/')[:3]) + '/'
+                                                     })[url.startswith('http')]):
 
                 if self._verify_download(filename):
                     sickrage.srCore.srLogger.info("Saved result to " + filename)
