@@ -454,7 +454,7 @@ class TVShow(object):
 
         return ep_list
 
-    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None,):
+    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, ):
 
         # if we get an anime get the real season and episode
         if self.is_anime and absolute_number and not season and not episode:
@@ -668,7 +668,7 @@ class TVShow(object):
 
         sickrage.srCore.srLogger.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
-        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid)]:
+        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
             curEp = None
 
             curSeason = int(dbData["season"])
@@ -713,33 +713,36 @@ class TVShow(object):
                 self.indexer).name + "..")
 
         for season in showObj:
-            if season not in scannedEps:
-                scannedEps[season] = {}
-
+            scannedEps[season] = {}
             for episode in showObj[season]:
                 # need some examples of wtf episode 0 means to decide if we want it or not
                 if episode == 0:
                     continue
-
                 try:
-                    sickrage.srCore.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                        self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
-
                     curEp = self.getEpisode(season, episode)
-                    if not curEp:
-                        raise EpisodeNotFoundException
-
-                    with curEp.lock:
-                        curEp.saveToDB()
-
-                    scannedEps[season][episode] = True
+                    if not curEp: raise EpisodeNotFoundException
                 except EpisodeNotFoundException:
                     sickrage.LOGGER.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
                         self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
+                    continue
+                else:
+                    try:
+                        curEp.loadFromIndexer(tvapi=t)
+                    except exceptions.EpisodeDeletedException:
+                        logger.log("The episode was deleted, skipping the rest of the load")
+                        continue
+
+                with curEp.lock:
+                    sickrage.srCore.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
+                        self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
+
+                    curEp.loadFromIndexer(season, episode, tvapi=t)
+                    curEp.saveToDB()
+
+                scannedEps[season][episode] = True
 
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
-
         self.saveToDB()
 
         return scannedEps

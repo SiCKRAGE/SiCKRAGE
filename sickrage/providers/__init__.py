@@ -72,9 +72,10 @@ class GenericProvider(object):
         self.proper_strings = ['PROPER|REPACK|REAL']
 
         self.btCacheURLS = [
-            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+            'http://torrentproject.se/torrent/{torrent_hash}.torrent',
             'http://btdig.com/torrent/{torrent_hash}.torrent',
-            'http://torrage.info/torrent/{torrent_hash}.torrent'
+            'http://torrage.info/torrent/{torrent_hash}.torrent',
+            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
         ]
 
     @property

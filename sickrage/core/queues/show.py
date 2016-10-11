@@ -576,41 +576,41 @@ class QueueItemUpdate(ShowQueueItem):
             return
 
         # get episode list from DB
-        DBEpList = self.show.loadEpisodesFromDB() if not self.force else {}
-
+        DBEpList = self.show.loadEpisodesFromDB()
+        IndexerEpList = None
+        
         # get episode list from TVDB
         try:
             IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force)
         except indexer_exception as e:
             sickrage.srCore.srLogger.error("Unable to get info from " + srIndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e.message))
-            IndexerEpList = None
 
         if IndexerEpList is None:
             sickrage.srCore.srLogger.error("No data returned from " + srIndexerApi(
                 self.show.indexer).name + ", unable to update this show")
         else:
-            # for each ep we found on the Indexer not in the DB list add to DB
+            # for each ep we found on indexer delete it from the DB list
             for curSeason in IndexerEpList:
-                for curEpisode in set(IndexerEpList[curSeason]).difference(DBEpList.get(curSeason, {})):
-                    self.show.getEpisode(curSeason, curEpisode).saveToDB()
+                for curEpisode in IndexerEpList[curSeason]:
+                    if curSeason in DBEpList and curEpisode in DBEpList[curSeason]:
+                        del DBEpList[curSeason][curEpisode]
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in DBEpList:
-                for curEpisode in set(DBEpList[curSeason]).difference(IndexerEpList.get(curSeason, {})):
-                    sickrage.srCore.srLogger.info("Permanently deleting episode " + str(curSeason) + "x" + str(
-                        curEpisode) + " from the database")
+                for curEpisode in DBEpList[curSeason]:
+                    sickrage.srCore.srLogger.info(
+                        "Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
 
+                    curEp = self.show.getEpisode(curSeason, curEpisode)
                     try:
-                        self.show.getEpisode(curSeason, curEpisode).deleteEpisode()
+                        curEp.deleteEpisode()
                     except EpisodeDeletedException:
                         pass
 
         # cleanup
         scrub(DBEpList)
         scrub(IndexerEpList)
-
-        self.finish()
 
         sickrage.srCore.srLogger.info("Finished updates for show: {}".format(self.show.name))
 

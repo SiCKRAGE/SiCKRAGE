@@ -364,9 +364,9 @@ class TVEpisode(object):
                    'db': False}
 
         for method, func in OrderedDict([
+            ('db', lambda: self.loadFromDB(season, episode)),
             ('nfo', lambda: self.loadFromNFO(self.location)),
             ('indexer', lambda: self.loadFromIndexer(season, episode)),
-            ('db', lambda: self.loadFromDB(season, episode))
         ]).items():
 
             try:
@@ -594,8 +594,8 @@ class TVEpisode(object):
         sickrage.srCore.srLogger.debug(
             "{}: Loading episode details from the NFO file associated with {}".format(self.show.indexerid, location))
 
-        self.location = location
-        if self.location != "":
+        if os.path.isfile(location):
+            self.location = location
             if self.status == UNKNOWN:
                 if isMediaFile(self.location):
                     sickrage.srCore.srLogger.debug("7 Status changes from " + str(self.status) + " to " + str(
