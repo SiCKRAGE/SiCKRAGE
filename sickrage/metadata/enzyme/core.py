@@ -1,23 +1,23 @@
-# -*- coding: utf-8 -*-
-# enzyme - Video metadata parser
-# Copyright 2011-2012 Antoine Bertin <diaoulael@gmail.com>
-# Copyright 2003-2006 Thomas Schueppel <stain@acm.org>
-# Copyright 2003-2006 Dirk Meyer <dischi@freevo.org>
+# Author: echel0n <echel0n@sickrage.ca>
+# URL: http://github.com/SiCKRAGETV/SickRage/
 #
-# This file is part of enzyme.
+# This file is part of SickRage.
 #
-# enzyme is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# enzyme is distributed in the hope that it will be useful,
+# SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with enzyme.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
 import logging
 import re
 

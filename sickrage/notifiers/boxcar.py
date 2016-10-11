@@ -1,5 +1,4 @@
-# Author: Marvin Pinto <me@marvinp.ca>
-# Author: Dennis Lutter <lad1337@gmail.com>
+# Author: echel0n <echel0n@sickrage.ca>
 # URL: http://github.com/SiCKRAGETV/SickRage/
 #
 # This file is part of SickRage.
@@ -12,10 +11,11 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
 
 from __future__ import unicode_literals
 
@@ -54,7 +54,7 @@ class BoxcarNotifier(srNotifiers):
         # if this is a subscription notification then act accordingly
         if subscribe:
             data = urllib.urlencode({'email': email})
-            curUrl = curUrl + "/subscribe"
+            curUrl += "/subscribe"
 
         # for normal requests we need all these parameters
         else:

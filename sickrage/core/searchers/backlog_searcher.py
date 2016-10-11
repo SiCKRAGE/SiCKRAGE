@@ -199,5 +199,5 @@ class srBacklogSearcher(object):
 
 
 def get_backlog_cycle_time():
-    cycletime = sickrage.srCore.srConfig.DAILY_SEARCHER_FREQ * 2 + 7
-    return max([cycletime, 720])
+    cycletime = sickrage.srCore.srConfig.DAILY_SEARCHER_FREQ * 4
+    return max([cycletime, 30])

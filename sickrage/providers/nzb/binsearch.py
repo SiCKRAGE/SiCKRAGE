@@ -86,7 +86,6 @@ class BinSearchCache(tv_cache.TVCache):
             # set updated
             self.setLastUpdate()
 
-            cl = []
             for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries',
                           'alt.binaries.teevee']:
                 url = self.provider.urls['base_url'] + '/rss.php?'
@@ -97,13 +96,7 @@ class BinSearchCache(tv_cache.TVCache):
                 sickrage.srCore.srLogger.debug("Cache update URL: %s " % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
-                    ci = self._parseItem(item)
-                    if ci is not None:
-                        cl.append(ci)
-
-            if len(cl) > 0:
-                self.db().mass_action(cl)
-                del cl  # cleanup
+                    self._parseItem(item)
 
         return True
 

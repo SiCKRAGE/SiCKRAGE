@@ -25,7 +25,6 @@ import json
 import time
 
 import requests
-
 import sickrage
 
 
@@ -90,7 +89,7 @@ class TraktAPI():
         if None == url:
             url = self.api_url
 
-        count = count + 1
+        count += 1
 
         if None == headers:
             headers = self.headers

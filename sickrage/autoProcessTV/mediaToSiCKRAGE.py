@@ -196,12 +196,9 @@ def main():
     if nzbName and os.path.isdir(os.path.join(dirName, nzbName)):
         dirName = os.path.join(dirName, nzbName)
 
-    params = {}
+    params = {'quiet': 1, 'dir': dirName}
 
-    params['quiet'] = 1
-
-    params['dir'] = dirName
-    if nzbName != None:
+    if nzbName is not None:
         params['nzbName'] = nzbName
 
     if ssl:

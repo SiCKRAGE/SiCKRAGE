@@ -206,8 +206,8 @@ def set_scene_numbering(indexer_id, indexer, season=None, episode=None, absolute
                   and x['doc']['episode'] == episode]
 
         if len(dbData):
-            dbData[0]['scene_season'] == sceneSeason
-            dbData[0]['scene_episode'] == sceneEpisode
+            dbData[0]['scene_season'] = sceneSeason
+            dbData[0]['scene_episode'] = sceneEpisode
             MainDB().db.update(dbData[0])
         else:
             MainDB().db.insert({
@@ -226,7 +226,7 @@ def set_scene_numbering(indexer_id, indexer, season=None, episode=None, absolute
                   and x['doc']['absolute_number'] == absolute_number]
 
         if len(dbData):
-            dbData[0]['scene_absolute_number'] == sceneAbsolute
+            dbData[0]['scene_absolute_number'] = sceneAbsolute
             MainDB().db.update(dbData[0])
         else:
             MainDB().db.insert({

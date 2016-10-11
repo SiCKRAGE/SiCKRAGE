@@ -79,13 +79,9 @@ NAMING_LIMITED_EXTEND = 8
 NAMING_SEPARATED_REPEAT = 16
 NAMING_LIMITED_EXTEND_E_PREFIXED = 32
 
-multiEpStrings = {}
-multiEpStrings[NAMING_REPEAT] = "Repeat"
-multiEpStrings[NAMING_SEPARATED_REPEAT] = "Repeat (Separated)"
-multiEpStrings[NAMING_DUPLICATE] = "Duplicate"
-multiEpStrings[NAMING_EXTEND] = "Extend"
-multiEpStrings[NAMING_LIMITED_EXTEND] = "Extend (Limited)"
-multiEpStrings[NAMING_LIMITED_EXTEND_E_PREFIXED] = "Extend (Limited, E-prefixed)"
+multiEpStrings = {NAMING_REPEAT: "Repeat", NAMING_SEPARATED_REPEAT: "Repeat (Separated)", NAMING_DUPLICATE: "Duplicate",
+                  NAMING_EXTEND: "Extend", NAMING_LIMITED_EXTEND: "Extend (Limited)",
+                  NAMING_LIMITED_EXTEND_E_PREFIXED: "Extend (Limited, E-prefixed)"}
 
 
 # pylint: disable=W0232

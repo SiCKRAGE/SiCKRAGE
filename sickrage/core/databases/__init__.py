@@ -27,6 +27,7 @@ import traceback
 from sqlite3 import OperationalError
 
 import sickrage
+from CodernityDB.database import PreconditionsException
 from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
 from CodernityDB.index import IndexException, IndexNotFoundException, IndexConflict
 from sickrage.core.helpers import randomString
@@ -45,7 +46,11 @@ class srDatabase(object):
         self.db = SuperThreadSafeDatabase(self.db_path)
 
         if self.db.exists():
-            self.db.open()
+            try:
+                self.db.open()
+            except (PreconditionsException, IndexError):
+                self.repair()
+                self.db.open()
 
     def initialize(self):
         # Remove database folder if both exists
@@ -134,12 +139,6 @@ class srDatabase(object):
         except:
             sickrage.srCore.srLogger.error('Failed adding index {}: {}'.format(index_name, traceback.format_exc()))
 
-    def reindex(self):
-        try:
-            self.db.reindex()
-        except:
-            sickrage.srCore.srLogger.error('Failed index: %s', traceback.format_exc())
-
     def compact(self, try_repair=True, **kwargs):
         # Removing left over compact files
         for f in os.listdir(self.db.path):
@@ -156,48 +155,52 @@ class srDatabase(object):
             self.db.compact()
             new_size = float(self.db.get_db_details().get('size', 0))
             sickrage.srCore.srLogger.debug(
-                'Done compacting {} database in {}s, new size: {}MB, saved: {}MB'.format(self.name,
-                                                                                         round(time.time() - start, 2),
-                                                                                         round(new_size / 1048576, 2),
-                                                                                         round(
-                                                                                             (
-                                                                                                 size - new_size) / 1048576,
-                                                                                             2)))
-        except (IndexException, AttributeError):
+                'Done compacting {} database in {}s, new size: {}MB, saved: {}MB'.format(
+                    self.name, round(time.time() - start, 2),
+                    round(new_size / 1048576, 2), round((size - new_size) / 1048576, 2))
+            )
+        except (PreconditionsException, IndexException, AttributeError):
             if try_repair:
-                sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
-
-                # Remove all indexes
-                old_indexes = self._indexes.keys()
-                for index_name in old_indexes:
-                    try:
-                        self.db.destroy_index(index_name)
-                    except IndexNotFoundException:
-                        pass
-                    except:
-                        sickrage.srCore.srLogger.error('Failed removing old index {}'.format(index_name))
-
-                # Add them again
-                for index_name in self._indexes:
-                    klass = self._indexes[index_name]
-
-                    # Category index
-                    index_instance = klass(self.db.path, index_name)
-                    try:
-                        self.db.add_index(index_instance)
-                        self.db.reindex_index(index_name)
-                    except IndexConflict:
-                        pass
-                    except:
-                        sickrage.srCore.srLogger.error('Failed adding index {}'.format(index_name))
-                        raise
-
+                self.repair()
                 self.compact(try_repair=False)
             else:
                 sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
 
         except:
             sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
+
+    def repair(self):
+        sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
+
+        # setup database indexes
+        for index_name in self._database:
+            klass = self._database[index_name]
+            self._indexes[index_name] = klass
+
+        # Remove all indexes
+        old_indexes = self._indexes.keys()
+        for index_name in old_indexes:
+            try:
+                self.db.destroy_index(index_name)
+            except IndexNotFoundException:
+                pass
+            except:
+                sickrage.srCore.srLogger.error('Failed removing old index {}'.format(index_name))
+
+        # Add them again
+        for index_name in self._indexes:
+            klass = self._indexes[index_name]
+
+            # Category index
+            index_instance = klass(self.db.path, index_name)
+            try:
+                self.db.add_index(index_instance)
+                self.db.reindex_index(index_name)
+            except IndexConflict:
+                pass
+            except:
+                sickrage.srCore.srLogger.error('Failed adding index {}'.format(index_name))
+                raise
 
     def close(self):
         self.db.close()

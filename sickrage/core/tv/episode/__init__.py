@@ -31,7 +31,7 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateT
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import NoNFOException, \
-    EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
+    EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
     rename_ep_file, touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
     safe_getattr
@@ -46,7 +46,7 @@ from sickrage.notifiers import srNotifiers
 
 
 class TVEpisode(object):
-    def __init__(self, show, season, episode, file="", forceIndexer=False):
+    def __init__(self, show, season, episode, file=""):
         self.lock = threading.Lock()
         self.dirty = True
 
@@ -80,7 +80,7 @@ class TVEpisode(object):
         self.checkForMetaFiles()
         self.wantedQuality = []
 
-        self.populateEpisode(self.season, self.episode, forceIndexer=forceIndexer)
+        self.populateEpisode(self.season, self.episode)
 
     @property
     def name(self):
@@ -357,43 +357,32 @@ class TVEpisode(object):
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
-    def populateEpisode(self, season, episode, forceIndexer=False):
-        # populating methods
-        methods = OrderedDict([('db', lambda: self.loadFromDB(season, episode)),
-                               ('nfo', lambda: self.loadFromNFO(self.location)),
-                               ('indexer', lambda: self.loadFromIndexer(season, episode))])
-
+    def populateEpisode(self, season, episode):
         # attempt populating episode
-        success = {'db': False,
-                   'nfo': False,
-                   'indexer': False}
+        success = {'nfo': False,
+                   'indexer': False,
+                   'db': False}
 
-        for method, func in methods.items():
-            if method == 'db':
-                # populate episode from database
+        for method, func in OrderedDict([
+            ('db', lambda: self.loadFromDB(season, episode)),
+            ('nfo', lambda: self.loadFromNFO(self.location)),
+            ('indexer', lambda: self.loadFromIndexer(season, episode)),
+        ]).items():
+
+            try:
                 success[method] = func()
-            elif method == 'nfo' and not success['db']:
-                # populate episode from nfo files
-                try:
-                    success[method] = func()
-                except NoNFOException:
-                    sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
-                        self.show.indexerid, season or 0, episode or 0))
-            elif method == 'indexer':
-                # populate episode from indexers
-                try:
-                    success[method] = func()
-                except EpisodeDeletedException:
-                    self.deleteEpisode()
+            except NoNFOException:
+                sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
+                    self.show.indexerid, season or 0, episode or 0))
+            except EpisodeDeletedException:
+                self.deleteEpisode()
 
             # confirm if we successfully populated the episode
             if any(success.values()):
-                if method != 'indexer' and forceIndexer: continue
                 return True
 
         # we failed to populate the episode
-        raise EpisodeNotFoundException(
-            "Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
+        raise EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
 
     def loadFromDB(self, season, episode):
         sickrage.srCore.srLogger.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
@@ -403,7 +392,9 @@ class TVEpisode(object):
                   if x['doc']['season'] == season and x['doc']['episode'] == episode]
 
         if len(dbData) > 1:
-            raise MultipleEpisodesInDatabaseException("Your DB has two records for the same show somehow.")
+            for ep in dbData:
+                MainDB().db.delete(ep)
+            return False
         elif len(dbData) == 0:
             sickrage.srCore.srLogger.debug("%s: Episode S%02dE%02d not found in the database" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
@@ -605,8 +596,8 @@ class TVEpisode(object):
         sickrage.srCore.srLogger.debug(
             "{}: Loading episode details from the NFO file associated with {}".format(self.show.indexerid, location))
 
-        self.location = location
-        if self.location != "":
+        if os.path.isfile(location):
+            self.location = location
             if self.status == UNKNOWN:
                 if isMediaFile(self.location):
                     sickrage.srCore.srLogger.debug("7 Status changes from " + str(self.status) + " to " + str(
@@ -634,7 +625,7 @@ class TVEpisode(object):
                 for epDetails in showXML.iter('episodedetails'):
                     if epDetails.findtext('season') is None or int(
                             epDetails.findtext('season')) != self.season or epDetails.findtext(
-                        'episode') is None or int(epDetails.findtext('episode')) != self.episode:
+                            'episode') is None or int(epDetails.findtext('episode')) != self.episode:
                         sickrage.srCore.srLogger.debug(
                             "%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got S%02dE%02d" %
                             (
@@ -962,7 +953,7 @@ class TVEpisode(object):
         for curEp in [self] + self.relatedEps:
             curEp.checkForMetaFiles()
 
-        # save any changes to the databas
+        # save any changes to the database
         with self.lock:
             for relEp in [self] + self.relatedEps:
                 relEp.saveToDB()
@@ -1091,8 +1082,7 @@ class TVEpisode(object):
             show_name = self.show.name
 
         # try to get the release group
-        rel_grp = {}
-        rel_grp["SiCKRAGE"] = 'SiCKRAGE'
+        rel_grp = {"SiCKRAGE": 'SiCKRAGE'}
         if hasattr(self, 'location'):  # from the location name
             rel_grp['location'] = release_group(self.show, self.location)
             if not rel_grp['location']:

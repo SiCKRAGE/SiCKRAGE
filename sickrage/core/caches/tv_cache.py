@@ -107,7 +107,7 @@ class TVCache(object):
         if title and url:
             title = self._translateTitle(title)
             url = self._translateLinkURL(url)
-            self._addCacheEntry(title, url)
+            self.addCacheEntry(title, url)
 
         else:
             sickrage.srCore.srLogger.debug(
@@ -185,7 +185,7 @@ class TVCache(object):
 
         return True
 
-    def _addCacheEntry(self, name, url, parse_result=None, indexer_id=0):
+    def addCacheEntry(self, name, url, parse_result=None, indexer_id=0):
 
         # check if we passed in a parsed result or should we try and create one
         if not parse_result:
@@ -259,7 +259,7 @@ class TVCache(object):
             dbData = [x['doc'] for x in CacheDB().db.get_many('providers', self.providerID, with_doc=True)
                       if x['doc']['indexerid'] == episode.show.indexerid
                       and x['doc']['season'] == episode.season
-                      and "|" + str(episode.episode) + "|" in x['doc']['episode']]
+                      and "|" + str(episode.episode) + "|" in x['doc']['episodes']]
 
         # for each cache entry
         for curResult in dbData:

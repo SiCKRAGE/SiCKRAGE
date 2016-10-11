@@ -1,3 +1,21 @@
+# Author: echel0n <echel0n@sickrage.ca>
+# URL: http://github.com/SiCKRAGETV/SickRage/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import unicode_literals
 
 import ast
@@ -1146,7 +1164,6 @@ def backupSR(backupDir):
     filesList = ['sickrage.db',
                  'failed.db',
                  'cache.db',
-                 'thetvdb.db',
                  os.path.basename(sickrage.CONFIG_FILE)]
 
     for f in filesList:
@@ -1154,6 +1171,17 @@ def backupSR(backupDir):
         if os.path.exists(fp):
             source += [fp]
 
+    # database
+    for (path, dirs, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'database'), topdown=True):
+        for filename in files:
+            source += [os.path.join(path, filename)]
+
+    # database backups
+    for (path, dirs, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'db_backup'), topdown=True):
+        for filename in files:
+            source += [os.path.join(path, filename)]
+
+    # cache
     if sickrage.srCore.srConfig.CACHE_DIR:
         for (path, dirs, files) in os.walk(sickrage.srCore.srConfig.CACHE_DIR, topdown=True):
             for dirname in dirs:
@@ -1170,10 +1198,8 @@ def backupSR(backupDir):
 def restoreSR(srcDir, dstDir):
     try:
         filesList = ['sickrage.db',
-                     'sickbeard.db',
                      'failed.db',
                      'cache.db',
-                     'thetvdb.db',
                      os.path.basename(sickrage.CONFIG_FILE)]
 
         for filename in filesList:
@@ -1187,6 +1213,25 @@ def restoreSR(srcDir, dstDir):
                     moveFile(dstFile, bakFile)
                 moveFile(srcFile, dstFile)
 
+        # databse
+        if os.path.exists(os.path.join(srcDir, 'database')):
+            if os.path.exists(os.path.join(dstDir, 'database')):
+                moveFile(os.path.join(dstDir, 'database'), os.path.join(dstDir, '{}.bak-{}'
+                                                                     .format('database',
+                                                                             datetime.datetime.now().strftime(
+                                                                                 '%Y%m%d_%H%M%S'))))
+            moveFile(os.path.join(srcDir, 'database'), dstDir)
+
+        # databse backups
+        if os.path.exists(os.path.join(srcDir, 'db_backup')):
+            if os.path.exists(os.path.join(dstDir, 'db_backup')):
+                moveFile(os.path.join(dstDir, 'db_backup'), os.path.join(dstDir, '{}.bak-{}'
+                                                                     .format('db_backup',
+                                                                             datetime.datetime.now().strftime(
+                                                                                 '%Y%m%d_%H%M%S'))))
+            moveFile(os.path.join(srcDir, 'db_backup'), dstDir)
+
+        # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
             if os.path.exists(os.path.join(dstDir, 'cache')):
                 moveFile(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
@@ -1433,8 +1478,8 @@ def getDiskSpaceUsage(diskPath=None):
     else:
         return False
 
-def getFreeSpace(directories):
 
+def getFreeSpace(directories):
     single = not isinstance(directories, (tuple, list))
     if single:
         directories = [directories]
@@ -1446,11 +1491,11 @@ def getFreeSpace(directories):
         if os.path.isdir(folder):
             if os.name == 'nt':
                 _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
-                                   ctypes.c_ulonglong()
+                                 ctypes.c_ulonglong()
                 if sys.version_info >= (3,) or isinstance(folder, unicode):
-                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW #@UndefinedVariable
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW  # @UndefinedVariable
                 else:
-                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA #@UndefinedVariable
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA  # @UndefinedVariable
                 ret = fun(folder, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
                 if ret == 0:
                     raise ctypes.WinError()
@@ -1464,6 +1509,7 @@ def getFreeSpace(directories):
         free_space[folder] = size
 
     return free_space
+
 
 def removetree(tgt):
     def error_handler(func, path, execinfo):

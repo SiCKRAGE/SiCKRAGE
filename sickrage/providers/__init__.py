@@ -71,10 +71,11 @@ class GenericProvider(object):
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
 
-        self.btCacheURLS = [
-            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+        self.btcache_urls = [
+            'http://torrentproject.se/torrent/{torrent_hash}.torrent',
             'http://btdig.com/torrent/{torrent_hash}.torrent',
-            'http://torrage.info/torrent/{torrent_hash}.torrent'
+            'http://torrage.info/torrent/{torrent_hash}.torrent',
+            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
         ]
 
     @property
@@ -128,7 +129,7 @@ class GenericProvider(object):
                     sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
                     return urls
 
-                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS]
+                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btcache_urls]
             except Exception:
                 sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + url)
                 return urls
@@ -163,9 +164,11 @@ class GenericProvider(object):
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            if sickrage.srCore.srWebSession.download(url, filename,
-                                                     headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'})[
-                                                         url.startswith('http')]):
+            if sickrage.srCore.srWebSession.download(url,
+                                                     filename,
+                                                     headers=(None, {
+                                                         'Referer': '/'.join(url.split('/')[:3]) + '/'
+                                                     })[url.startswith('http')]):
 
                 if self._verify_download(filename):
                     sickrage.srCore.srLogger.info("Saved result to " + filename)
@@ -328,7 +331,6 @@ class GenericProvider(object):
             itemList += itemsUnknown or []
 
         # filter results
-        cl = []
         for item in itemList:
             (title, url) = self._get_title_and_url(item)
 
@@ -400,9 +402,7 @@ class GenericProvider(object):
             # add parsed result to cache for usage later on
             if addCacheEntry:
                 sickrage.srCore.srLogger.debug("Adding item from search to cache: " + title)
-                ci = self.cache._addCacheEntry(title, url, parse_result=parse_result)
-                if ci is not None:
-                    cl.append(ci)
+                self.cache.addCacheEntry(title, url, parse_result=parse_result)
                 continue
 
             # make sure we want the episode
@@ -452,11 +452,6 @@ class GenericProvider(object):
                 results[epNum] = [result]
             else:
                 results[epNum].append(result)
-
-        # check if we have items to add to cache
-        if len(cl) > 0:
-            self.cache.ProviderDB().mass_action(cl)
-            del cl  # cleanup
 
         return results
 
@@ -632,7 +627,7 @@ class TorrentProvider(GenericProvider):
                 ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
                                                                            'episodenumber': ep_obj.scene_episode}
             if add_string:
-                ep_string = ep_string + ' %s' % add_string
+                ep_string += ' %s' % add_string
 
             search_string['Episode'].append(ep_string.strip())
 
@@ -1198,7 +1193,7 @@ class NewznabCache(TVCache):
 
         tvrageid = 0
 
-        return self._addCacheEntry(title, url, indexer_id=tvrageid)
+        return self.addCacheEntry(title, url, indexer_id=tvrageid)
 
 
 class providersDict(dict):

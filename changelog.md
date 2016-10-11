@@ -1,5 +1,35 @@
 # Changelog
 
+- * bae6ef2 - 2016-10-10: fix: Misc fixes 
+- * a42520e - 2016-10-10: new: v8.4.5 fix: Resolved issues with updating show info from indexer and database fix: Duplicate episodes found in DB are removed and reloaded from indexer automatically 
+- * 3ca1781 - 2016-10-10: new: v8.4.3 fix: Changed order of methods for populating episode info, resolves issues with loading not updating data from indexers 
+- * 525d3ae - 2016-10-10: new: v8.4.2 fix: Changed order of methods for populating episode info, resolves issues with loading not updating data from indexers 
+- * 4df3c2c - 2016-10-10: new: v8.4.1 
+- * eb09f3d - 2016-10-10: fix: Backlogs start earlier now fix: Daily search starts 5 minutes after startup 
+- * c7eb873 - 2016-10-10: fix: Added repair function to database code to allow auto-repair of corrupted indexes 
+- * 9b78e3e - 2016-10-09: fix: Several misc code corrections and improvements 
+- * 3a87341 - 2016-10-09: fix: Converted returned epInfo values to integers, resolves episode renaming issues 
+- * 927d3fb - 2016-10-09: new: v8.4.0 
+- * fee55aa - 2016-10-09: fix: Revamped network timezone code, gained overall app performance from this fix 
+- * 3c45ed8 - 2016-10-09: fix: Backup/Restore functions now work with new database and database backups 
+- * 2754b45 - 2016-10-09: fix: Misc minor fixes 
+- * 2476793 - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
+- * bbf088b - 2016-10-09: new: v8.3.9 fix: Fixed issues with episode renamer 
+- * 8ff771b - 2016-10-09: fix: Fixed issues with episode renamer 
+- * af04c02 - 2016-10-09: fix: Fixed issues with episode renamer 
+- * 9e46f05 - 2016-10-08: new: v8.3.8 fix: Fixed loading IMDb info on startup 
+- * 2424afc - 2016-10-08: new: v8.3.6 
+- * f4e899b - 2016-10-08: fix: Fixed issues with retrieval and saving of IMDb info 
+- * 920455d - 2016-10-08: fix: Minor code changes 
+- * 122bd10 - 2016-10-08: new: v8.3.6 fix: Fixed theTVDB API paging issue for episode data 
+- * 63db473 - 2016-10-08: new: v8.3.5 fix: Fixed minor issue 
+- * 7d4cd4a - 2016-10-08: fix: Corrected typo to resolve key error 
+- * b90acf0 - 2016-10-08: fix: Removed dbFilename from mako template code 
+- * 725af2a - 2016-10-08: fix: Minor edit_show.mako fixes 
+- * 1c5c697 - 2016-10-08: new: v8.3.3 fix: Removed remaining ShowDirInvalid directive 
+- * 6022bb3 - 2016-10-08: new: Version 8.3.2 fix: Fixed issues with theTVDB API V2 and retrieval of episode info fix: Removed pickling of theTVDB indexer show cache 
+- * 4b278f6 - 2016-10-08: new: Version 8.3.1 
+- * 2eeb509 - 2016-10-08: fix: Issues with image query params resolved fix: Available languages now queryed from api 
 - * b387686 - 2016-10-07: fix: Removed last reference to SQL code, minor impact 
 - * f425aca - 2016-10-07: fix: Fixed scene time provider search 
 - * 4244405 - 2016-10-07: fix: Fixed IMDB Popular shows page 

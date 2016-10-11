@@ -4,7 +4,6 @@
     from sickrage.indexers import adba, srIndexerApi
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings, Quality
-    from sickrage.core.exceptions import ShowDirInvalid
 %>
 
 <%block name="metas">
@@ -35,13 +34,7 @@
                                         <span class="component-title">Show Location</span>
                                 <span class="component-desc">
                                     <input type="hidden" name="show" value="${show.indexerid}"/>
-                                    <%
-                                        try:
-                                            showLoc = show.location
-                                        except ShowDirInvalid:
-                                            showLoc = ""
-                                    %>
-                                    <input type="text" name="location" id="location" value="${showLoc}"
+                                    <input type="text" name="location" id="location" value="${show.location}"
                                            class="form-control form-control-inline input-sm input350"
                                            autocapitalize="off" required=""/>
                                 </span>
@@ -98,7 +91,7 @@
                                             <select name="indexerLang" id="indexerLangSelect"
                                                     class="form-control form-control-inline input-sm bfh-languages"
                                                     data-language="${show.lang}"
-                                                    data-available="${','.join(srIndexerApi().config['valid_languages'])}"></select>
+                                                    data-available="${','.join(srIndexerApi().indexer().languages().keys())}"></select>
                                             <div class="clear-left"><p>This only applies to episode filenames and the
                                                 contents
                                                 of metadata files.</p></div>
@@ -111,7 +104,7 @@
                                         <span class="component-title">Subtitles</span>
                                         <span class="component-desc">
                                             <input type="checkbox" id="subtitles"
-                                                   name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.srCore.srConfig.USE_SUBTITLES == True]} ${('disabled="disabled', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/> search for subtitles
+                                                   name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.srCore.srConfig.USE_SUBTITLES == True]} ${('disabled="disabled"', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/> search for subtitles
                                         </span>
                                     </label>
                                 </div>
@@ -121,7 +114,9 @@
                                         <span class="component-title">Paused</span>
                                         <span class="component-desc">
                                             <input type="checkbox" id="paused"
-                                                   name="paused" ${('', 'checked="checked"')[show.paused == 1]} /> pause this show (SickRage will not download episodes)
+                                                   name="paused" ${('', 'checked="checked"')[show.paused == 1]} />
+                                            <div class="clear-left"><p>pause this show (SickRage will not download episodes)
+                                                </p></div>
                                         </span>
                                     </label>
                                 </div>

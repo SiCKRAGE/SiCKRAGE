@@ -416,16 +416,16 @@ class TVShow(object):
 
     def getAllEpisodes(self, season=None, has_location=False):
         results = []
-        for x in MainDB().db.get_many('tv_episodes', self.indexerid):
-            if season is not None and x['doc']['season'] != season:
+        for x in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+            if season and x['season'] != season:
                 continue
-            if has_location and x['doc']['location'] == '':
+            if has_location and x['location'] == '':
                 continue
 
-            results += [x['doc']]
+            results += [x]
 
         ep_list = []
-        for cur_result in results:
+        for cur_result in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
             cur_ep = self.getEpisode(int(cur_result["season"]), int(cur_result["episode"]))
             if not cur_ep:
                 continue
@@ -454,8 +454,7 @@ class TVShow(object):
 
         return ep_list
 
-    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None,
-                   forceIndexer=False):
+    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, ):
 
         # if we get an anime get the real season and episode
         if self.is_anime and absolute_number and not season and not episode:
@@ -488,9 +487,9 @@ class TVShow(object):
             from sickrage.core.tv.episode import TVEpisode
 
             if file:
-                ep = TVEpisode(self, season, episode, file=file, forceIndexer=forceIndexer)
+                ep = TVEpisode(self, season, episode, file=file)
             else:
-                ep = TVEpisode(self, season, episode, forceIndexer=forceIndexer)
+                ep = TVEpisode(self, season, episode)
 
             if ep is not None:
                 self.episodes[season][episode] = ep
@@ -669,11 +668,31 @@ class TVShow(object):
 
         sickrage.srCore.srLogger.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
-        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid)]:
-            curEp = None
+        lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
+
+        if self.lang:
+            lINDEXER_API_PARMS['language'] = self.lang
+
+        if self.dvdorder != 0:
+            lINDEXER_API_PARMS['dvdorder'] = True
+
+        t = srIndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+
+        cachedShow = t[self.indexerid]
+        cachedSeasons = {}
+
+        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+            deleteEp = False
 
             curSeason = int(dbData["season"])
             curEpisode = int(dbData["episode"])
+
+            if curSeason not in cachedSeasons:
+                try:
+                    cachedSeasons[curSeason] = cachedShow[curSeason]
+                except indexer_seasonnotfound, e:
+                    sickrage.srCore.srLogger.warning("Error when trying to load the episode from TVDB: " + e.message)
+                    deleteEp = True
 
             if curSeason not in scannedEps:
                 scannedEps[curSeason] = {}
@@ -683,15 +702,15 @@ class TVShow(object):
                     "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
                 curEp = self.getEpisode(curSeason, curEpisode)
-                if not curEp:
-                    raise EpisodeNotFoundException
+                if not curEp: raise EpisodeNotFoundException
+                if deleteEp: curEp.deleteEpisode()
 
+                curEp.loadFromDB(curSeason, curEpisode)
+                curEp.loadFromIndexer(tvapi=t, cachedSeason=cachedSeasons[curSeason])
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
-                if curEp:
-                    curEp.deleteEpisode()
+                continue
 
-        sickrage.srCore.srLogger.debug("{}: Finished loading all episodes for show".format(self.indexerid))
         return scannedEps
 
     def loadEpisodesFromIndexer(self, cache=True):
@@ -714,33 +733,36 @@ class TVShow(object):
                 self.indexer).name + "..")
 
         for season in showObj:
-            if season not in scannedEps:
-                scannedEps[season] = {}
-
+            scannedEps[season] = {}
             for episode in showObj[season]:
                 # need some examples of wtf episode 0 means to decide if we want it or not
                 if episode == 0:
                     continue
-
                 try:
-                    sickrage.srCore.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                        self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
-
                     curEp = self.getEpisode(season, episode)
-                    if not curEp:
-                        raise EpisodeNotFoundException
-
-                    with curEp.lock:
-                        curEp.saveToDB()
-
-                    scannedEps[season][episode] = True
+                    if not curEp: raise EpisodeNotFoundException
                 except EpisodeNotFoundException:
                     sickrage.LOGGER.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
                         self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
+                    continue
+                else:
+                    try:
+                        curEp.loadFromIndexer(tvapi=t)
+                    except exceptions.EpisodeDeletedException:
+                        logger.log("The episode was deleted, skipping the rest of the load")
+                        continue
+
+                with curEp.lock:
+                    sickrage.srCore.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
+                        self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
+
+                    curEp.loadFromIndexer(season, episode, tvapi=t)
+                    curEp.saveToDB()
+
+                scannedEps[season][episode] = True
 
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
-
         self.saveToDB()
 
         return scannedEps
@@ -953,18 +975,11 @@ class TVShow(object):
             self._release_groups = BlackAndWhiteList(self.indexerid)
 
         if not skipNFO:
-            foundNFO = False
-
-            # Get IMDb_info from database
-            dbData = [x['doc'] for x in MainDB().db.get_many('imdb_info', self.indexerid, with_doc=True)]
-            if len(dbData):
-                self._imdb_info = dict(zip(dbData[0].keys(), dbData[0])) or self.imdb_info
-                foundNFO = True
-
-            if not foundNFO:
-                return False
-
-        return True
+            try:
+                # Get IMDb_info from database
+                self._imdb_info = MainDB().db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+            except RecordNotFound:
+                pass
 
     def loadFromIndexer(self, cache=True, tvapi=None, cachedSeason=None):
 
@@ -1034,10 +1049,13 @@ class TVShow(object):
 
         i = imdbpie.Imdb()
         if not self.imdbid:
-            try:
-                self.imdbid = i.search_for_title(self.name).imdb_id
-            except:
-                pass
+            for x in i.search_for_title(self.name):
+                try:
+                    if int(x.get('year'), 0) == self.startyear and x.get('title') == self.name:
+                        self.imdbid = x.get('imdb_id')
+                        break
+                except:
+                    continue
 
         if self.imdbid:
             sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Loading show info from IMDb")
@@ -1134,7 +1152,8 @@ class TVShow(object):
         if full:
             try:
                 if not os.path.isdir(self.location):
-                    sickrage.srCore.srLogger.warning("Show folder does not exist, no need to %s %s" % (action, self.location))
+                    sickrage.srCore.srLogger.warning(
+                        "Show folder does not exist, no need to %s %s" % (action, self.location))
                     return
 
                 sickrage.srCore.srLogger.info('Attempt to %s show folder %s' % (action, self.location))
@@ -1315,7 +1334,8 @@ class TVShow(object):
 
         if self.imdbid and self.imdb_info:
             self.imdb_info.update({
-                '_t': 'imdb_info'
+                '_t': 'imdb_info',
+                'indexer_id': self.indexerid
             })
 
             try:

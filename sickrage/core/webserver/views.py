@@ -95,8 +95,8 @@ class BaseHandler(RequestHandler):
 
         # template settings
         self.mako_lookup = TemplateLookup(
-            directories=[os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'views{}'.format(os.sep))],
-            module_directory=os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'mako{}'.format(os.sep)),
+            directories=[os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'views')],
+            module_directory=os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'mako'),
             format_exceptions=False,
             strict_undefined=True,
             input_encoding='utf-8',
@@ -318,7 +318,7 @@ class CalendarHandler(BaseHandler):
                      and x['doc']['paused'] != 1]:
             for episode in [x['doc'] for x in
                             MainDB().db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
-                            x['doc']['airdate'] >= past_date and x['doc']['airdate'] < future_date]:
+                            past_date <= x['doc']['airdate'] < future_date]:
 
                 air_date_time = tz_updater.parse_date_time(episode['airdate'], show['airs'],
                                                            show['network']).astimezone(utc)
@@ -1249,6 +1249,7 @@ class Home(WebHandler):
                     anime.append(show)
                 else:
                     shows.append(show)
+
             sortedShowLists = [["Shows", sorted(shows, lambda x, y: cmp(titler(x.name), titler(y.name)))],
                                ["Anime", sorted(anime, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
         else:
@@ -1387,8 +1388,7 @@ class Home(WebHandler):
         anime = sickrage.srCore.srConfig.checkbox_to_value(anime)
         subtitles = sickrage.srCore.srConfig.checkbox_to_value(subtitles)
 
-        if indexerLang and indexerLang in srIndexerApi(showObj.indexer).indexer().config[
-            'valid_languages']:
+        if indexerLang and indexerLang in srIndexerApi(showObj.indexer).indexer().languages().keys():
             indexer_lang = indexerLang
         else:
             indexer_lang = showObj.lang
@@ -1926,8 +1926,8 @@ class Home(WebHandler):
 
             epInfo = curEp.split('x')
 
-            ep_result = [x['doc'] for x in MainDB().db.get_many('tv_episodes', show, with_doc=True)
-                         if x['doc']['season'] == epInfo[0] and x['doc']['episode'] == epInfo[1]]
+            ep_result = [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(show), with_doc=True)
+                         if x['doc']['season'] == int(epInfo[0]) and x['doc']['episode'] == int(epInfo[1])]
 
             if not ep_result:
                 sickrage.srCore.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
@@ -1935,7 +1935,7 @@ class Home(WebHandler):
 
             related_eps_result = [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
                                   if x['doc']['location'] == ep_result[0]['location']
-                                  and x['doc']['episode'] != epInfo[1]]
+                                  and x['doc']['episode'] != int(epInfo[1])]
 
             root_ep_obj = show_obj.getEpisode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
@@ -2298,7 +2298,7 @@ class HomeAddShows(Home):
 
     @staticmethod
     def getIndexerLanguages():
-        result = srIndexerApi().config['valid_languages']
+        result = srIndexerApi().indexer().languages().keys()
 
         return json_encode({'results': result})
 
@@ -2335,7 +2335,7 @@ class HomeAddShows(Home):
                 [[srIndexerApi(i).name, i, srIndexerApi(i).config["show_url"],
                   int(show['id']), show['seriesname'], show['firstaired']] for show in shows])
 
-        lang_id = srIndexerApi().config['langabbv_to_id'][lang]
+        lang_id = srIndexerApi().indexer().languages()[lang]
         return json_encode({'results': final_results, 'langid': lang_id})
 
     def massAddTable(self, rootDir=None):

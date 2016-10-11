@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: http://github.com/SiCKRAGETV/SickRage/
 #
 # This file is part of SickRage.
 #

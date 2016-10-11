@@ -121,7 +121,7 @@
             show_div = 'listing-overdue'
         elif cur_ep_airdate >= next_week.date():
             show_div = 'listing-toofar'
-        elif cur_ep_airdate >= today.date() and cur_ep_airdate < next_week.date():
+        elif today.date() <= cur_ep_airdate < next_week.date():
             if cur_ep_airdate == today.date():
                 show_div = 'listing-current'
             else:

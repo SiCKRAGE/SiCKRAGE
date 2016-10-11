@@ -21,9 +21,8 @@ from __future__ import unicode_literals
 from urlparse import parse_qsl
 
 import oauth2
-import twitter
-
 import sickrage
+import twitter
 from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
@@ -80,11 +79,9 @@ class TwitterNotifier(srNotifiers):
             return self.AUTHORIZATION_URL + "?oauth_token=" + request_token['oauth_token']
 
     def _get_credentials(self, key):
-        request_token = {}
-
-        request_token['oauth_token'] = sickrage.srCore.srConfig.TWITTER_USERNAME
-        request_token['oauth_token_secret'] = sickrage.srCore.srConfig.TWITTER_PASSWORD
-        request_token['oauth_callback_confirmed'] = 'true'
+        request_token = {'oauth_token': sickrage.srCore.srConfig.TWITTER_USERNAME,
+                         'oauth_token_secret': sickrage.srCore.srConfig.TWITTER_PASSWORD,
+                         'oauth_callback_confirmed': 'true'}
 
         token = oauth2.Token(request_token['oauth_token'], request_token['oauth_token_secret'])
         token.set_verifier(key)

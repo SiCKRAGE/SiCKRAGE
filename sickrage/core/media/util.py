@@ -1,7 +1,5 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://git.sickrage.ca
+# URL: http://github.com/SiCKRAGETV/SickRage/
 #
 # This file is part of SickRage.
 #
@@ -20,12 +18,11 @@
 
 from __future__ import unicode_literals
 
-from tornado.escape import url_escape
-
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
+from tornado.escape import url_escape
 
 
 def showImage(show=None, which=None):
