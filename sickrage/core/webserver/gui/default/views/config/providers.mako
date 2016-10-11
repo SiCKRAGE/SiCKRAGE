@@ -71,7 +71,8 @@
                             % endif
 
                             <div>
-                                <p class="note"><span class="red-text">*</span> Provider does not support backlog searches at this time.</p>
+                                <p class="note"><span class="red-text">*</span> Provider does not support backlog
+                                    searches at this time.</p>
                                 <p class="note"><span class="red-text">!</span> Provider is <b>NOT WORKING</b>.</p>
                             </div>
                         </div>
@@ -90,7 +91,8 @@
                                                     src="/images/providers/${providerObj.imageName}"
                                                     alt="${providerObj.name}" title="${providerObj.name}" width="16"
                                                     height="16" style="vertical-align:middle;"/></a>
-                                            <label for="enable_${providerID}" style="vertical-align:middle;">${providerObj.name}</label>
+                                            <label for="enable_${providerID}"
+                                                   style="vertical-align:middle;">${providerObj.name}</label>
                                             ${('<span class="red-text">*</span>', '')[bool(providerObj.supportsBacklog)]}
                                             <span class="ui-icon ui-icon-gear pull-right"
                                                   style="vertical-align:middle;"></span>
@@ -145,18 +147,18 @@
                                         </div>
                                     % endif
 
-                                        <div class="field-pair">
-                                            <label for="${providerID}_hash">
-                                                <span class="component-title">API key:</span>
-                                                <span class="component-desc">
+                                    <div class="field-pair">
+                                        <label for="${providerID}_hash">
+                                            <span class="component-title">API key:</span>
+                                            <span class="component-desc">
                                                     <input type="text" id="${providerID}_hash"
                                                            value="${providerObj.key}"
                                                            newznab_name="${providerID}_hash"
                                                            class="newznab_key form-control input-sm input350"
                                                            autocapitalize="off"/>
                                                 </span>
-                                            </label>
-                                        </div>
+                                        </label>
+                                    </div>
 
                                     % if hasattr(providerObj, 'enable_daily'):
                                         <div class="field-pair">

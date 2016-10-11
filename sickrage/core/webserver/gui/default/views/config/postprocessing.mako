@@ -645,7 +645,7 @@
                             </div><!-- /naming_abd_custom -->
 
                             <div id="naming_abd_example_div">
-                                <h3>Sample:</h3>
+                                <h3>Air-by-date Sample:</h3>
                                 <div class="example">
                                     <span class="jumbo" id="naming_abd_example">&nbsp;</span>
                                 </div>
@@ -827,7 +827,7 @@
                             </div><!-- /naming_sports_custom -->
 
                             <div id="naming_sports_example_div">
-                                <h3>Sample:</h3>
+                                <h3>Sports Sample:</h3>
                                 <div class="example">
                                     <span class="jumbo" id="naming_sports_example">&nbsp;</span>
                                 </div>
