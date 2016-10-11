@@ -1123,13 +1123,11 @@ class TVShow(object):
             self.next_aired = dbData[0]['airdate'] if dbData else ''
 
     def deleteShow(self, full=False):
-
-        MainDB().mass_action([["DELETE FROM tv_episodes WHERE showid = ?", [self.indexerid]],
-                              ["DELETE FROM tv_shows WHERE indexer_id = ?", [self.indexerid]],
-                              ["DELETE FROM imdb_info WHERE indexer_id = ?", [self.indexerid]],
-                              ["DELETE FROM xem_refresh WHERE indexer_id = ?", [self.indexerid]],
-                              ["DELETE FROM scene_numbering WHERE indexer_id = ?", [self.indexerid]]])
-
+        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]
+        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('tv_shows', self.indexerid, with_doc=True)]
+        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('imdb_info', self.indexerid, with_doc=True)]
+        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('xem_refresh', self.indexerid, with_doc=True)]
+        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('scene_numbering', self.indexerid, with_doc=True)]
         action = ('delete', 'trash')[sickrage.srCore.srConfig.TRASH_REMOVE_SHOW]
 
         # remove self from show list
@@ -1535,13 +1533,18 @@ class TVShow(object):
 
                     sickrage.srCore.srLogger.debug("Adding indexer mapping to DB for show: " + self.name)
 
-                    sql_l.append([
-                        "INSERT OR IGNORE INTO indexer_mapping (indexer_id, indexer, mindexer_id, mindexer) VALUES (?,?,?,?)",
-                        [self.indexerid, self.indexer, int(mapped_show[0]['id']), indexer]])
+                    dbData = [x['doc'] for x in MainDB().db.get_many('indexer_mapping', self.indexerid, with_doc=True)
+                              if x['doc']['indexer'] == self.indexer
+                              and x['doc']['mindexer_id'] == int(mapped_show[0]['id'])]
 
-            if len(sql_l) > 0:
-                MainDB().mass_action(sql_l)
-                del sql_l  # cleanup
+                    if not len(dbData):
+                        MainDB().db.insert({
+                            '_t': 'indexer_mapping',
+                            'indexer_id': self.indexerid,
+                            'indexer': self.indexer,
+                            'mindexer_id': int(mapped_show[0]['id']),
+                            'mindexer': indexer
+                        })
 
         return mapped
 
