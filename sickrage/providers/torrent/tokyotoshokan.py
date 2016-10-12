@@ -32,13 +32,13 @@ class TokyoToshokanProvider(TorrentProvider):
 
         super(TokyoToshokanProvider, self).__init__("TokyoToshokan",'tokyotosho.info', False)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
-        self.supportsAbsoluteNumbering = True
+        self.supports_absolute_numbering = True
         self.anime_only = True
         self.ratio = None
 
-        self.cache = TokyoToshokanCache(self)
+        self.cache = TokyoToshokanCache(self, min_time=15)
 
     def seedRatio(self):
         return self.ratio
@@ -111,12 +111,6 @@ class TokyoToshokanProvider(TorrentProvider):
 
 
 class TokyoToshokanCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll NyaaTorrents every 15 minutes max
-        self.minTime = 15
-
     def _get_rss_data(self):
         params = {
             "filter": '1',

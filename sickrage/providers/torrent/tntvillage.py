@@ -22,7 +22,7 @@ import re
 import traceback
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.common import Quality
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
@@ -62,7 +62,7 @@ class TNTVillageProvider(TorrentProvider):
     def __init__(self):
         super(TNTVillageProvider, self).__init__("TNTVillage", 'forum.tntvillage.scambioetico.org', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self._uid = None
         self._hash = None
@@ -112,7 +112,7 @@ class TNTVillageProvider(TorrentProvider):
 
         self.categories = "cat=29"
 
-        self.cache = TNTVillageCache(self)
+        self.cache = TVCache(self, min_time=30)
 
     def _check_auth(self):
 
@@ -420,15 +420,3 @@ class TNTVillageProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class TNTVillageCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll TNTVillage every 30 minutes max
-        self.minTime = 30
-
-    def _get_rss_data(self):
-        search_params = {'RSS': []}
-        return {'entries': self.provider.search(search_params)}

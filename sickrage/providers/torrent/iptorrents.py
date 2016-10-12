@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
@@ -31,7 +31,7 @@ class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(IPTorrentsProvider, self).__init__("IPTorrents", 'iptorrents.eu', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -40,7 +40,7 @@ class IPTorrentsProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = IPTorrentsCache(self)
+        self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
             'login': '{base_url}/torrents/'.format(base_url=self.urls['base_url']),
@@ -164,15 +164,3 @@ class IPTorrentsProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class IPTorrentsCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # Only poll IPTorrents every 10 minutes max
-        self.minTime = 10
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

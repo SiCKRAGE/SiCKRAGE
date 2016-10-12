@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.providers import TorrentProvider
 
 
@@ -30,7 +30,7 @@ class SpeedCDProvider(TorrentProvider):
 
         super(SpeedCDProvider, self).__init__("Speedcd",'speed.cd', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -50,7 +50,7 @@ class SpeedCDProvider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = SpeedCDCache(self)
+        self.cache = TVCache(self, min_time=20)
 
     def login(self):
 
@@ -132,15 +132,3 @@ class SpeedCDProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class SpeedCDCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll Speedcd every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

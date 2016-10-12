@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser
 from sickrage.providers import TorrentProvider
@@ -34,7 +34,7 @@ class TVChaosUKProvider(TorrentProvider):
             'search': '{base_url}/browse.php'.format(base_url=self.urls['base_url'])
         })
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -42,15 +42,7 @@ class TVChaosUKProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = TVChaosUKCache(self)
-
-        self.search_params = {
-            'do': 'search',
-            'keywords': '',
-            'search_type': 't_name',
-            'category': 0,
-            'include_dead_torrents': 'no',
-        }
+        self.cache = TVCache(self, min_time=20)
 
     def _check_auth(self):
         if self.username and self.password:
@@ -120,8 +112,16 @@ class TVChaosUKProvider(TorrentProvider):
         return True
 
     def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
-
         results = []
+
+        search_params = {
+            'do': 'search',
+            'keywords': '',
+            'search_type': 't_name',
+            'category': 0,
+            'include_dead_torrents': 'no',
+        }
+
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self.login():
@@ -134,10 +134,10 @@ class TVChaosUKProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params['keywords'] = search_string.strip()
+                search_params['keywords'] = search_string.strip()
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params).text
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
@@ -163,12 +163,12 @@ class TVChaosUKProvider(TorrentProvider):
                                 continue
 
                             # Chop off tracker/channel prefix or we cant parse the result!
-                            show_name_first_word = re.search(r'^[^ .]+', self.search_params['keywords']).group()
+                            show_name_first_word = re.search(r'^[^ .]+', search_params['keywords']).group()
                             if not title.startswith(show_name_first_word):
                                 title = re.match(r'(.*)(' + show_name_first_word + '.*)', title).group(2)
 
                             # Change title from Series to Season, or we can't parse
-                            if 'Series' in self.search_params['keywords']:
+                            if 'Series' in search_params['keywords']:
                                 title = re.sub(r'(?i)series', 'Season', title)
 
                             # Strip year from the end or we can't parse it!
@@ -195,15 +195,3 @@ class TVChaosUKProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class TVChaosUKCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll TVChaosUK every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

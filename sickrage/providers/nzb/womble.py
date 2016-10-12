@@ -27,15 +27,10 @@ class WombleProvider(NZBProvider):
     def __init__(self):
         super(WombleProvider, self).__init__("Womble's Index", 'newshost.co.za', False)
 
-        self.cache = WombleCache(self)
+        self.cache = WombleCache(self, min_time=15)
 
 
 class WombleCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-        # only poll Womble's Index every 15 minutes max
-        self.minTime = 15
-
     def update(self):
         # check if we should update
         if self.shouldUpdate():
@@ -43,7 +38,7 @@ class WombleCache(tv_cache.TVCache):
             self.clear()
 
             # set updated
-            self.setLastUpdate()
+            self.set_last_update()
 
             for url in [self.provider.urls['base_url'] + '/rss/?sec=tv-x264&fr=false',
                         self.provider.urls['base_url'] + '/rss/?sec=tv-sd&fr=false',

@@ -37,14 +37,14 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         self.username = None
         self.api_key = None
-        self.cache = OmgwtfnzbsCache(self)
+        self.cache = OmgwtfnzbsCache(self, min_time=20)
 
         self.urls.update({
             'search': 'api.{base_url}/json/?%s'.format(base_url=self.urls['base_url']),
             'rss': 'rss.{base_url}/rss-download.php?%s'.format(base_url=self.urls['base_url'])
         })
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
     def _check_auth(self):
 
@@ -152,10 +152,6 @@ class OmgwtfnzbsProvider(NZBProvider):
 
 
 class OmgwtfnzbsCache(TVCache):
-    def __init__(self, provider_obj):
-        TVCache.__init__(self, provider_obj)
-        self.minTime = 20
-
     def _get_title_and_url(self, item):
         """
         Retrieves the title and URL data from the item XML node

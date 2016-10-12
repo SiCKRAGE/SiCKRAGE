@@ -25,6 +25,7 @@ import urllib
 
 import requests
 import sickrage
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -34,7 +35,7 @@ class XthorProvider(TorrentProvider):
 
         super(XthorProvider, self).__init__("Xthor","xthor.bz", True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.cj = cookielib.CookieJar()
 
@@ -47,6 +48,8 @@ class XthorProvider(TorrentProvider):
         self.username = None
         self.password = None
         self.ratio = None
+
+        self.cache = TVCache(self, min_time=10)
 
     def login(self):
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):

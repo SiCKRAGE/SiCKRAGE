@@ -22,7 +22,7 @@ import re
 import traceback
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -38,7 +38,7 @@ class BitSoupProvider(TorrentProvider):
             'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
         })
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -46,11 +46,7 @@ class BitSoupProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = BitSoupCache(self)
-
-        self.search_params = {
-            "c42": 1, "c45": 1, "c49": 1, "c7": 1
-        }
+        self.cache = TVCache(self, min_time=20)
 
     def _check_auth(self):
         if not self.username or not self.password:
@@ -79,8 +75,12 @@ class BitSoupProvider(TorrentProvider):
         return True
 
     def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
-
         results = []
+
+        search_params = {
+            "c42": 1, "c45": 1, "c49": 1, "c7": 1
+        }
+
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self.login():
@@ -93,10 +93,10 @@ class BitSoupProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params['search'] = search_string
+                search_params['search'] = search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], self.search_params).text
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], search_params).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
@@ -154,15 +154,3 @@ class BitSoupProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class BitSoupCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll TorrentBytes every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

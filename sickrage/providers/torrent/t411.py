@@ -25,7 +25,7 @@ import traceback
 
 import sickrage
 from requests.auth import AuthBase
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.providers import TorrentProvider
 
 
@@ -33,7 +33,7 @@ class T411Provider(TorrentProvider):
     def __init__(self):
         super(T411Provider, self).__init__("T411",'www.t411.ch', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -41,7 +41,7 @@ class T411Provider(TorrentProvider):
         self.token = None
         self.tokenLastUpdate = None
 
-        self.cache = T411Cache(self)
+        self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
             'search': '{base_url}/torrents/search/%s?cid=%s&limit=100'.format(base_url=self.urls['base_url']),
@@ -182,15 +182,3 @@ class T411Auth(AuthBase):
     def __call__(self, r):
         r.headers['Authorization'] = self.token
         return r
-
-
-class T411Cache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # Only poll T411 every 10 minutes max
-        self.minTime = 10
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

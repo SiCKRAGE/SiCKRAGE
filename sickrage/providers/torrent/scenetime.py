@@ -22,7 +22,7 @@ import re
 import traceback
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -32,7 +32,7 @@ class SceneTimeProvider(TorrentProvider):
 
         super(SceneTimeProvider, self).__init__("SceneTime",'www.scenetime.com', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -40,7 +40,7 @@ class SceneTimeProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = SceneTimeCache(self)
+        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
@@ -158,15 +158,3 @@ class SceneTimeProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class SceneTimeCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll SceneTime every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

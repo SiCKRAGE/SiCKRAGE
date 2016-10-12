@@ -25,7 +25,7 @@ import urllib
 
 import requests
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
@@ -34,7 +34,7 @@ class HDTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(HDTorrentsProvider, self).__init__("HDTorrents", 'hd-torrents.org', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -52,7 +52,7 @@ class HDTorrentsProvider(TorrentProvider):
         self.categories = "&category[]=59&category[]=60&category[]=30&category[]=38"
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = HDTorrentsCache(self)
+        self.cache = TVCache(self, min_time=10)
 
     def _check_auth(self):
 
@@ -209,15 +209,3 @@ class HDTorrentsProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class HDTorrentsCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll HDTorrents every 10 minutes max
-        self.minTime = 10
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

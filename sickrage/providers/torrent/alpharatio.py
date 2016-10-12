@@ -24,7 +24,7 @@ import re
 import traceback
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 class AlphaRatioProvider(TorrentProvider):
     def __init__(self):
         super(AlphaRatioProvider, self).__init__("AlphaRatio", 'alpharatio.cc', True)
-        self.supportsBacklog = True
+        self.supports_backlog = True
         self.username = None
         self.password = None
         self.ratio = None
@@ -50,7 +50,7 @@ class AlphaRatioProvider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = AlphaRatioCache(self)
+        self.cache = TVCache(self, min_time=20)
 
     def login(self):
         login_params = {'username': self.username,
@@ -149,15 +149,3 @@ class AlphaRatioProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class AlphaRatioCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll AlphaRatio every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

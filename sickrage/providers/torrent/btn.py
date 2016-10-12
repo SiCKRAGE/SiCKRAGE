@@ -38,16 +38,16 @@ class BTNProvider(TorrentProvider):
     def __init__(self):
         super(BTNProvider, self).__init__("BTN", 'api.btnapps.net', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
-        self.supportsAbsoluteNumbering = True
+        self.supports_absolute_numbering = True
 
         self.api_key = None
         self.ratio = None
 
         self.reject_m2ts = False
 
-        self.cache = BTNCache(self)
+        self.cache = BTNCache(self, min_time=15)
 
     def _check_auth(self):
         if not self.api_key:
@@ -275,18 +275,12 @@ class BTNProvider(TorrentProvider):
 
 
 class BTNCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # At least 15 minutes between queries
-        self.minTime = 15
-
     def _get_rss_data(self):
         # Get the torrents uploaded since last check.
-        seconds_since_last_update = math.ceil(time.time() - time.mktime(self._getLastUpdate().timetuple()))
+        seconds_since_last_update = math.ceil(time.time() - time.mktime(self._get_last_update().timetuple()))
 
         # default to 15 minutes
-        seconds_minTime = self.minTime * 60
+        seconds_minTime = self.min_time * 60
         if seconds_since_last_update < seconds_minTime:
             seconds_since_last_update = seconds_minTime
 

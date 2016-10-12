@@ -60,8 +60,8 @@ class GenericProvider(object):
         self.urls = {'base_url': url}
         self.private = private
         self.show = None
-        self.supportsBacklog = False
-        self.supportsAbsoluteNumbering = False
+        self.supports_backlog = False
+        self.supports_absolute_numbering = False
         self.anime_only = False
         self.search_mode = None
         self.search_fallback = False
@@ -70,14 +70,6 @@ class GenericProvider(object):
         self.enable_backlog = False
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
-
-        self.btcache_urls = [
-            'http://torrentproject.se/torrent/{torrent_hash}.torrent',
-            'http://btdig.com/torrent/{torrent_hash}.torrent',
-            'http://torrage.info/torrent/{torrent_hash}.torrent',
-            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
-            'http://itorrents.org/torrent/{torrent_hash}.torrent'
-        ]
 
     @property
     def id(self):
@@ -114,6 +106,14 @@ class GenericProvider(object):
     def make_url(self, url):
         urls = []
 
+        btcache_urls = [
+            'http://torrentproject.se/torrent/{torrent_hash}.torrent',
+            'http://btdig.com/torrent/{torrent_hash}.torrent',
+            'http://torrage.info/torrent/{torrent_hash}.torrent',
+            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+            'http://itorrents.org/torrent/{torrent_hash}.torrent'
+        ]
+
         if url.startswith('magnet'):
             try:
                 torrent_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
@@ -130,7 +130,7 @@ class GenericProvider(object):
                     sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
                     return urls
 
-                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btcache_urls]
+                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in btcache_urls]
             except Exception:
                 sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + url)
                 return urls
@@ -261,7 +261,7 @@ class GenericProvider(object):
         searched_scene_season = None
         for epObj in episodes:
             # search cache for episode result
-            cacheResult = self.cache.searchCache(epObj, manualSearch, downCurQuality)
+            cacheResult = self.cache.search_cache(epObj, manualSearch, downCurQuality)
             if cacheResult:
                 if epObj.episode not in results:
                     results[epObj.episode] = cacheResult[epObj.episode]
@@ -458,7 +458,7 @@ class GenericProvider(object):
 
     def findPropers(self, search_date=None):
 
-        results = self.cache.listPropers(search_date)
+        results = self.cache.list_propers(search_date)
 
         return [Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time']), self.show) for x in
                 results]
@@ -764,7 +764,7 @@ class TorrentRssProvider(TorrentProvider):
 
         self.cache = TorrentRssCache(self)
         self.ratio = None
-        self.supportsBacklog = False
+        self.supports_backlog = False
 
         self.search_mode = search_mode
         self.search_fallback = search_fallback
@@ -892,7 +892,7 @@ class NewznabProvider(NZBProvider):
         self.enable_daily = enable_daily
         self.enable_backlog = enable_backlog
         self.key = key
-        self.supportsBacklog = True
+        self.supports_backlog = True
         self.catIDs = catIDs
         self.default = default
         self.last_search = datetime.datetime.now()
@@ -1139,7 +1139,7 @@ class NewznabProvider(NZBProvider):
 class TorrentRssCache(TVCache):
     def __init__(self, provider_obj):
         TVCache.__init__(self, provider_obj)
-        self.minTime = 15
+        self.min_time = 15
 
     def _get_rss_data(self):
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['base_url'])
@@ -1156,7 +1156,7 @@ class NewznabCache(TVCache):
         TVCache.__init__(self, provider_obj)
 
         # only poll newznab providers every 30 minutes
-        self.minTime = 30
+        self.min_time = 30
         self.last_search = datetime.datetime.now()
 
     def _get_rss_data(self):

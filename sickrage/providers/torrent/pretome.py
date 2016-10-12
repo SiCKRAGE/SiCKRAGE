@@ -23,7 +23,7 @@ import traceback
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
@@ -32,7 +32,7 @@ class PretomeProvider(TorrentProvider):
     def __init__(self):
         super(PretomeProvider, self).__init__("Pretome",'pretome.info', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -52,7 +52,7 @@ class PretomeProvider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = PretomeCache(self)
+        self.cache = TVCache(self, min_time=30)
 
     def _check_auth(self):
 
@@ -174,14 +174,3 @@ class PretomeProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-class PretomeCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll Pretome every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

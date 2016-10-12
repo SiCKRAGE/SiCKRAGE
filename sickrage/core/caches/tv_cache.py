@@ -30,16 +30,16 @@ from sickrage.core.common import Quality
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import findCertainShow, show_names
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.rssfeeds import getFeed
 
 
 class TVCache(object):
-    def __init__(self, provider):
+    def __init__(self, provider, min_time=10, search_params=None):
         self.provider = provider
         self.providerID = self.provider.id
-        self.minTime = 10
+        self.min_time = min_time
+        self.search_params = search_params or {'RSS': ['']}
 
     def clear(self):
         if self.shouldClearCache():
@@ -49,7 +49,8 @@ class TVCache(object):
         return self.provider._get_title_and_url(item)
 
     def _get_rss_data(self):
-        return None
+        if self.search_params:
+            return {'entries': self.provider.search(self.search_params)}
 
     def _checkAuth(self, data):
         return True
@@ -69,7 +70,7 @@ class TVCache(object):
                 self.clear()
 
                 # set updated
-                self.setLastUpdate()
+                self.set_last_update()
 
                 [self._parseItem(item) for item in data['entries']]
             except AuthException as e:
@@ -113,7 +114,7 @@ class TVCache(object):
             sickrage.srCore.srLogger.debug(
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
 
-    def _getLastUpdate(self):
+    def _get_last_update(self):
         try:
             dbData = CacheDB().db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
@@ -123,7 +124,7 @@ class TVCache(object):
 
         return datetime.datetime.fromtimestamp(lastTime)
 
-    def _getLastSearch(self):
+    def _get_last_search(self):
         try:
             dbData = CacheDB().db.get('lastSearch', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
@@ -133,7 +134,7 @@ class TVCache(object):
 
         return datetime.datetime.fromtimestamp(lastTime)
 
-    def setLastUpdate(self, toDate=None):
+    def set_last_update(self, toDate=None):
         if not toDate:
             toDate = datetime.datetime.today()
 
@@ -148,7 +149,7 @@ class TVCache(object):
                 'time': int(time.mktime(toDate.timetuple()))
             })
 
-    def setLastSearch(self, toDate=None):
+    def set_last_search(self, toDate=None):
         if not toDate:
             toDate = datetime.datetime.today()
 
@@ -163,18 +164,18 @@ class TVCache(object):
                 'time': int(time.mktime(toDate.timetuple()))
             })
 
-    lastUpdate = property(_getLastUpdate)
-    lastSearch = property(_getLastSearch)
+    last_update = property(_get_last_update)
+    last_search = property(_get_last_search)
 
     def shouldUpdate(self):
         # if we've updated recently then skip the update
-        if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
+        if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):
             return False
         return True
 
     def shouldClearCache(self):
         # if daily search hasn't used our previous results yet then don't clear the cache
-        if self.lastUpdate > self.lastSearch:
+        if self.last_update > self.last_search:
             return False
 
         return True
@@ -238,13 +239,13 @@ class TVCache(object):
 
                 sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
 
-    def listPropers(self, date=None):
+    def list_propers(self, date=None):
         return [x['doc'] for x in CacheDB().db.get_many('providers', self.providerID, with_doc=True)
                 if ('.PROPER.' in x['doc']['name'] or '.REPACK.' in x['doc']['name'])
                 and x['doc']['time'] >= str(int(time.mktime(date.timetuple())))
                 and x['doc']['indexerid']]
 
-    def searchCache(self, episode=None, manualSearch=False, downCurQuality=False):
+    def search_cache(self, episode=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
 
         if not episode:
@@ -319,6 +320,6 @@ class TVCache(object):
                 neededEps[epObj.episode].append(result)
 
         # datetime stamp this search so cache gets cleared
-        self.setLastSearch()
+        self.set_last_search()
 
         return neededEps

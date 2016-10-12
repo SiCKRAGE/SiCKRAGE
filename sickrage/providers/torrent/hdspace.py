@@ -25,7 +25,7 @@ import urllib
 
 import requests
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
@@ -34,7 +34,7 @@ class HDSpaceProvider(TorrentProvider):
     def __init__(self):
         super(HDSpaceProvider, self).__init__("HDSpace", 'hd-space.org', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -42,7 +42,7 @@ class HDSpaceProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = HDSpaceCache(self)
+        self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
             'login': '{base_url}/index.php?page=login'.format(base_url=self.urls['base_url']),
@@ -172,15 +172,3 @@ class HDSpaceProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class HDSpaceCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll HDSpace every 10 minutes max
-        self.minTime = 10
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

@@ -20,7 +20,7 @@ import traceback
 from urllib import urlencode
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
@@ -31,7 +31,7 @@ class TransmitTheNetProvider(TorrentProvider):
 
         super(TransmitTheNetProvider, self).__init__("TransmitTheNet",'transmithe.net', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -39,13 +39,7 @@ class TransmitTheNetProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = TransmitTheNetCache(self)
-
-        self.search_params = {
-            "page": 'torrents',
-            "category": 0,
-            "active": 1
-        }
+        self.cache = TVCache(self, min_time=20)
 
     def _check_auth(self):
 
@@ -76,8 +70,14 @@ class TransmitTheNetProvider(TorrentProvider):
         return True
 
     def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
-
         results = []
+
+        search_params = {
+            "page": 'torrents',
+            "category": 0,
+            "active": 1
+        }
+
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self.login():
@@ -89,7 +89,7 @@ class TransmitTheNetProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['base_url'] + "?" + urlencode(self.search_params)
+                searchURL = self.urls['base_url'] + "?" + urlencode(search_params)
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
@@ -158,15 +158,3 @@ class TransmitTheNetProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class TransmitTheNetCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # Only poll TransmitTheNet every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

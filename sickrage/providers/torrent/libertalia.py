@@ -27,7 +27,7 @@ import urllib
 
 import requests
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -36,7 +36,7 @@ class LibertaliaProvider(TorrentProvider):
     def __init__(self):
         super(LibertaliaProvider, self).__init__("Libertalia","libertalia.me", True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.cj = cookielib.CookieJar()
 
@@ -52,7 +52,7 @@ class LibertaliaProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = LibertaliaCache(self)
+        self.cache = TVCache(self, min_time=10)
 
     def login(self):
 
@@ -143,14 +143,3 @@ class LibertaliaProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class LibertaliaCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        self.minTime = 10
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

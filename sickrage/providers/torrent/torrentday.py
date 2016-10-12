@@ -24,7 +24,7 @@ import re
 
 import requests
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.providers import TorrentProvider
 
 
@@ -33,7 +33,7 @@ class TorrentDayProvider(TorrentProvider):
 
         super(TorrentDayProvider, self).__init__("TorrentDay", 'classic.torrentday.com', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self._uid = None
         self._hash = None
@@ -44,7 +44,7 @@ class TorrentDayProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = TorrentDayCache(self)
+        self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
             'login': '{base_url}/torrents/'.format(base_url=self.urls['base_url']),
@@ -157,14 +157,3 @@ class TorrentDayProvider(TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-
-class TorrentDayCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # Only poll IPTorrents every 10 minutes max
-        self.minTime = 10
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

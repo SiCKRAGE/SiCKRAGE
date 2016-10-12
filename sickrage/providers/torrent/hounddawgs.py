@@ -22,7 +22,7 @@ import re
 import traceback
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -31,7 +31,7 @@ class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
         super(HoundDawgsProvider, self).__init__("HoundDawgs",'hounddawgs.org', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -39,7 +39,7 @@ class HoundDawgsProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = HoundDawgsCache(self)
+        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'search': '{base_url}/torrents.php'.format(base_url=self.urls['base_url']),
@@ -177,15 +177,3 @@ class HoundDawgsProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class HoundDawgsCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll HoundDawgs every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

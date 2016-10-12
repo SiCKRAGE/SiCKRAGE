@@ -29,13 +29,13 @@ class ShazbatProvider(TorrentProvider):
 
         super(ShazbatProvider, self).__init__("Shazbat.tv",'www.shazbat.tv', True)
 
-        self.supportsBacklog = False
+        self.supports_backlog = False
 
         self.passkey = None
         self.ratio = None
         self.options = None
 
-        self.cache = ShazbatCache(self)
+        self.cache = ShazbatCache(self, min_time=15)
 
         self.urls.update({
             'login': '{base_url}/login'.format(base_url=self.urls['base_url'])
@@ -60,12 +60,6 @@ class ShazbatProvider(TorrentProvider):
 
 
 class ShazbatCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll Shazbat feed every 15 minutes max
-        self.minTime = 15
-
     def _get_rss_data(self):
         rss_url = self.provider.urls['base_url'] + '/rss/recent?passkey=' + self.provider.passkey + '&fname=true'
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)

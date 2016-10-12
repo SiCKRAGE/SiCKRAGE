@@ -23,7 +23,7 @@ import traceback
 
 import requests
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
@@ -33,7 +33,7 @@ class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
         super(MoreThanTVProvider, self).__init__("MoreThanTV",'www.morethan.tv', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self._uid = None
         self._hash = None
@@ -55,7 +55,7 @@ class MoreThanTVProvider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = MoreThanTVCache(self)
+        self.cache = TVCache(self, min_time=10)
 
     def _check_auth(self):
 
@@ -184,15 +184,3 @@ class MoreThanTVProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class MoreThanTVCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # poll delay in minutes
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

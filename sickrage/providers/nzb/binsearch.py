@@ -37,9 +37,8 @@ class BinSearchProvider(NZBProvider):
 
 class BinSearchCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
+        tv_cache.TVCache.__init__(self, provider_obj, min_time=30)
         # only poll Binsearch every 30 minutes max
-        self.minTime = 30
 
         # compile and save our regular expressions
 
@@ -84,7 +83,7 @@ class BinSearchCache(tv_cache.TVCache):
             self.clear()
 
             # set updated
-            self.setLastUpdate()
+            self.set_last_update()
 
             for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries',
                           'alt.binaries.teevee']:

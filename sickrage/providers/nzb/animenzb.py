@@ -33,10 +33,10 @@ from sickrage.providers import NZBProvider
 class AnimeNZBProvider(NZBProvider):
     def __init__(self):
         super(AnimeNZBProvider, self).__init__("AnimeNZB", 'animenzb.com', False)
-        self.supportsBacklog = False
-        self.supportsAbsoluteNumbering = True
+        self.supports_backlog = False
+        self.supports_absolute_numbering = True
         self.anime_only = True
-        self.cache = animenzbCache(self)
+        self.cache = animenzbCache(self, min_time=20)
 
     def _get_season_search_strings(self, ep_obj):
         return [x for x in show_names.makeSceneSeasonSearchString(self.show, ep_obj)]
@@ -95,12 +95,6 @@ class AnimeNZBProvider(NZBProvider):
 
 
 class animenzbCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll animenzb every 20 minutes max
-        self.minTime = 20
-
     def _get_rss_data(self):
         params = {
             "cat": "anime".encode('utf-8'),

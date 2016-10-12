@@ -23,7 +23,7 @@ import re
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
@@ -33,7 +33,7 @@ class SCCProvider(TorrentProvider):
 
         super(SCCProvider, self).__init__("SceneAccess",'sceneaccess.eu', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -41,7 +41,7 @@ class SCCProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = SCCCache(self)
+        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'login': '{base_url}/login'.format(base_url=self.urls['base_url']),
@@ -156,15 +156,3 @@ class SCCProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class SCCCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll SCC every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

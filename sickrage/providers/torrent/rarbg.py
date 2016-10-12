@@ -25,6 +25,7 @@ import time
 import traceback
 
 import sickrage
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import convert_size
 from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
@@ -33,7 +34,7 @@ class RarbgProvider(TorrentProvider):
     def __init__(self):
         super(RarbgProvider, self).__init__("Rarbg",'torrentapi.org', False)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.ratio = None
         self.minseed = None
@@ -67,6 +68,8 @@ class RarbgProvider(TorrentProvider):
         self.proper_strings = ['{{PROPER|REPACK}}']
 
         self.next_request = datetime.datetime.now()
+
+        self.cache = TVCache(self, min_time=10)
 
     def login(self):
         if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:

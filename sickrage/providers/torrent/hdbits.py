@@ -29,13 +29,13 @@ class HDBitsProvider(TorrentProvider):
     def __init__(self):
         super(HDBitsProvider, self).__init__("HDBits", 'hdbits.org', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.passkey = None
         self.ratio = None
 
-        self.cache = HDBitsCache(self)
+        self.cache = HDBitsCache(self, min_time=15)
 
         self.urls.update({
             'search': '{base_url}/api/torrents'.format(base_url=self.urls['base_url']),
@@ -54,7 +54,8 @@ class HDBitsProvider(TorrentProvider):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
-                sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+                sickrage.srCore.srLogger.warning(
+                    "[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -181,18 +182,12 @@ class HDBitsProvider(TorrentProvider):
 
 
 class HDBitsCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll HDBits every 15 minutes max
-        self.minTime = 15
-
     def _get_rss_data(self):
         results = []
 
         try:
-            resp = self.provider.session.post(self.provider.urls['rss'],
-                                              data=self.provider._make_post_data_JSON()).json()
+            resp = sickrage.srCore.srWebSession.post(self.provider.urls['rss'],
+                                                     data=self.provider._make_post_data_JSON()).json()
 
             if self.provider._checkAuthFromData(resp):
                 results = resp['data']

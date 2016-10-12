@@ -24,7 +24,7 @@ import traceback
 
 import requests
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import tryInt, bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -33,7 +33,7 @@ class FreshOnTVProvider(TorrentProvider):
     def __init__(self):
         super(FreshOnTVProvider, self).__init__("FreshOnTV",'freshon.tv', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self._uid = None
         self._hash = None
@@ -44,7 +44,7 @@ class FreshOnTVProvider(TorrentProvider):
         self.minleech = None
         self.freeleech = False
 
-        self.cache = FreshOnTVCache(self)
+        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'login': '{base_url}/login.php?action=makelogin'.format(base_url=self.urls['base_url']),
@@ -241,15 +241,3 @@ class FreshOnTVProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class FreshOnTVCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # poll delay in minutes
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

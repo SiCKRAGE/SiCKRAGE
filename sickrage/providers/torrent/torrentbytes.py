@@ -23,7 +23,7 @@ import traceback
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
@@ -33,7 +33,7 @@ class TorrentBytesProvider(TorrentProvider):
 
         super(TorrentBytesProvider, self).__init__("TorrentBytes", 'www.torrentbytes.net', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -53,7 +53,7 @@ class TorrentBytesProvider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = TorrentBytesCache(self)
+        self.cache = TVCache(self, min_time=20)
 
     def login(self):
 
@@ -174,15 +174,3 @@ class TorrentBytesProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class TorrentBytesCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll TorrentBytes every 20 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

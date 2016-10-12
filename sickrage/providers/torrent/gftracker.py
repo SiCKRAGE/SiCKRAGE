@@ -23,7 +23,7 @@ import traceback
 
 import requests
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
@@ -33,7 +33,7 @@ class GFTrackerProvider(TorrentProvider):
     def __init__(self):
         super(GFTrackerProvider, self).__init__("GFTracker",'www.thegft.org', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -53,7 +53,7 @@ class GFTrackerProvider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = GFTrackerCache(self)
+        self.cache = TVCache(self, min_time=20)
 
     def _check_auth(self):
 
@@ -174,14 +174,3 @@ class GFTrackerProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-class GFTrackerCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # Poll delay in minutes
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

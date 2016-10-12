@@ -22,7 +22,7 @@ import re
 from urllib import quote_plus
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
@@ -32,12 +32,13 @@ class TORRENTZProvider(TorrentProvider):
 
         super(TORRENTZProvider, self).__init__("Torrentz", 'torrentz2.eu', False)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
         self.confirmed = True
         self.ratio = None
         self.minseed = None
         self.minleech = None
-        self.cache = TORRENTZCache(self)
+
+        self.cache = TVCache(self, min_time=15)
 
         self.urls.update({
             'verified': '{base_url}/feed_verified'.format(base_url=self.urls['base_url']),
@@ -106,13 +107,3 @@ class TORRENTZProvider(TorrentProvider):
 
         return results
 
-
-class TORRENTZCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll every 15 minutes max
-        self.minTime = 15
-
-    def _get_rss_data(self):
-        return {'entries': self.provider.search({'RSS': ['']})}

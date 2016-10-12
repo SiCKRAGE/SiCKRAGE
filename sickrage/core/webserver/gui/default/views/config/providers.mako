@@ -93,7 +93,7 @@
                                                     height="16" style="vertical-align:middle;"/></a>
                                             <label for="enable_${providerID}"
                                                    style="vertical-align:middle;">${providerObj.name}</label>
-                                            ${('<span class="red-text">*</span>', '')[bool(providerObj.supportsBacklog)]}
+                                            ${('<span class="red-text">*</span>', '')[bool(providerObj.supports_backlog)]}
                                             <span class="ui-icon ui-icon-gear pull-right"
                                                   style="vertical-align:middle;"></span>
                                             <span class="ui-icon ${('ui-icon-unlocked','ui-icon-locked')[bool(providerObj.private)]} pull-right"
@@ -174,12 +174,12 @@
                                     % endif
 
                                     % if hasattr(providerObj, 'enable_backlog'):
-                                        <div class="field-pair${(' hidden', '')[providerObj.supportsBacklog]}">
+                                        <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                             <label for="${providerID}_enable_backlog">
                                                 <span class="component-title">Enable backlog searches</span>
                                                 <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_backlog"
-                                                       id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supportsBacklog)]}/>
+                                                       id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                                 <p>enable provider to perform backlog searches.</p>
                                             </span>
                                             </label>
@@ -275,12 +275,12 @@
                                     % endif
 
                                     % if hasattr(providerObj, 'enable_backlog'):
-                                        <div class="field-pair${(' hidden', '')[providerObj.supportsBacklog]}">
+                                        <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                             <label for="${providerID}_enable_backlog">
                                                 <span class="component-title">Enable backlog searches</span>
                                                 <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_backlog"
-                                                       id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supportsBacklog)]}/>
+                                                       id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                                 <p>enable provider to perform backlog searches.</p>
                                             </span>
                                             </label>
@@ -603,12 +603,12 @@
                                     % endif
 
                                     % if hasattr(providerObj, 'enable_backlog'):
-                                        <div class="field-pair${(' hidden', '')[providerObj.supportsBacklog]}">
+                                        <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                             <label for="${providerID}_enable_backlog">
                                                 <span class="component-title">Enable backlog searches</span>
                                                 <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_enable_backlog"
-                                                           id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supportsBacklog)]}/>
+                                                           id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                                     <p>enable provider to perform backlog searches.</p>
                                                 </span>
                                             </label>

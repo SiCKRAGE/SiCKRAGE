@@ -26,7 +26,7 @@ import traceback
 import requests
 import sickrage
 from requests.auth import AuthBase
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -35,7 +35,7 @@ class BLUETIGERSProvider(TorrentProvider):
     def __init__(self):
         super(BLUETIGERSProvider, self).__init__("BLUETIGERS",'www.bluetigers.ca', True)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -43,17 +43,13 @@ class BLUETIGERSProvider(TorrentProvider):
         self.token = None
         self.tokenLastUpdate = None
 
-        self.cache = BLUETIGERSCache(self)
+        self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
             'search': '{base_url}/torrents-search.php'.format(base_url=self.urls['base_url']),
             'login': '{base_url}/account-login.php'.format(base_url=self.urls['base_url']),
             'download': '{base_url}/torrents-details.php?id=%s&hit=1'.format(base_url=self.urls['base_url'])
         })
-
-        self.search_params = {
-            "c16": 1, "c10": 1, "c130": 1, "c131": 1, "c17": 1, "c18": 1, "c19": 1
-        }
 
     def login(self):
         if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
@@ -78,8 +74,12 @@ class BLUETIGERSProvider(TorrentProvider):
         return True
 
     def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
-
         results = []
+
+        search_params = {
+            "c16": 1, "c10": 1, "c130": 1, "c131": 1, "c17": 1, "c18": 1, "c19": 1
+        }
+
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         # check for auth
@@ -93,10 +93,10 @@ class BLUETIGERSProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params['search'] = search_string
+                search_params['search'] = search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params).text
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
@@ -157,15 +157,3 @@ class BLUETIGERSAuth(AuthBase):
     def __call__(self, r):
         r.headers['Authorization'] = self.token
         return r
-
-
-class BLUETIGERSCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # Only poll BLUETIGERS every 10 minutes max
-        self.minTime = 10
-
-    def _get_rss_data(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider.search(search_strings)}

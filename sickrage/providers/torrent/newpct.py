@@ -24,7 +24,7 @@ import traceback
 from urllib import urlencode
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
@@ -33,26 +33,19 @@ class newpctProvider(TorrentProvider):
     def __init__(self):
         super(newpctProvider, self).__init__("Newpct",'www.newpct.com', False)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
         self.onlyspasearch = None
-        self.cache = newpctCache(self)
+
+        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'search': '{base_url}/buscar-descargas/'.format(base_url=self.urls['base_url'])
         })
 
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+        results = []
 
-        """
-        Search query:
-        http://www.newpct.com/buscar-descargas/cID=0&tLang=0&oBy=0&oMode=0&category_=767&subcategory_=All&idioma_=1&calidad_=All&oByAux=0&oModeAux=0&size_=0&btnb=Filtrar+Busqueda&q=the+strain
-
-        category_=767 => Category Shows
-        idioma_=1 => Language Spanish
-        calidad_=All=> Quality ALL
-        q => Search show
-        """
-
-        self.search_params = {
+        search_params = {
             'cID': 0,
             'tLang': 0,
             'oBy': 0,
@@ -68,9 +61,6 @@ class newpctProvider(TorrentProvider):
             'q': ''
         }
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
-
-        results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         lang_info = '' if not epObj or not epObj.show else epObj.show.lang
@@ -84,13 +74,13 @@ class newpctProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
 
             for search_string in search_strings[mode]:
-                self.search_params.update({'q': search_string.strip()})
+                search_params.update({'q': search_string.strip()})
 
                 sickrage.srCore.srLogger.debug(
-                        "Search URL: %s" % self.urls['search'] + '?' + urlencode(self.search_params))
+                        "Search URL: %s" % self.urls['search'] + '?' + urlencode(search_params))
 
                 try:
-                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=self.search_params, timeout=30).text
+                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=search_params, timeout=30).text
                 except Exception:
                     continue
 
@@ -157,10 +147,3 @@ class newpctProvider(TorrentProvider):
         title = title.replace('[MicroHD 1080p]', '[1080p BlueRay x264]')
 
         return title
-
-
-class newpctCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        self.minTime = 30

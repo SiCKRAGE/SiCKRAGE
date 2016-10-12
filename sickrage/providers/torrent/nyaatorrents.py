@@ -22,7 +22,7 @@ import re
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
@@ -31,13 +31,13 @@ class NyaaProvider(TorrentProvider):
     def __init__(self):
         super(NyaaProvider, self).__init__("NyaaTorrents",'www.nyaa.se', False)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
-        self.supportsAbsoluteNumbering = True
+        self.supports_absolute_numbering = True
         self.anime_only = True
         self.ratio = None
 
-        self.cache = NyaaCache(self)
+        self.cache = TVCache(self, min_time=15)
 
         self.minseed = 0
         self.minleech = 0
@@ -109,15 +109,3 @@ class NyaaProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class NyaaCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll NyaaTorrents every 15 minutes max
-        self.minTime = 15
-
-    def _get_rss_data(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider.search(search_params)}

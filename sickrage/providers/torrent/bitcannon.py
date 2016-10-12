@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 from urllib import quote_plus
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.providers import TorrentProvider
 
 
@@ -30,13 +30,13 @@ class BitCannonProvider(TorrentProvider):
     def __init__(self):
         super(BitCannonProvider, self).__init__("BitCannon",'127.0.0.1:1337', False)
 
-        self.supportsBacklog = True
+        self.supports_backlog = True
 
         self.minseed = None
         self.minleech = None
         self.ratio = 0
 
-        self.cache = BitCannonCache(self)
+        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'search': '{base_url}/search/'.format(base_url=self.urls['base_url']),
@@ -108,16 +108,3 @@ class BitCannonProvider(TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
-
-
-class BitCannonCache(tv_cache.TVCache):
-    def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj)
-
-        # only poll KickAss every 10 minutes max
-        self.minTime = 20
-
-    def _get_rss_data(self):
-        return {'entries': []}
-        # search_strings = {'RSS': ['']}
-        # return {'entries': self.provider.search(search_strings)}

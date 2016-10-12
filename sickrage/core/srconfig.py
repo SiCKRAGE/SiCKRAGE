@@ -2811,10 +2811,10 @@ class ConfigMigrator(srConfig):
                                                                        providerID + '_enable_daily',
                                                                        1))
 
-            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
+            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supports_backlog'):
                 providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
                                                                          providerID + '_enable_backlog',
-                                                                         providerObj.supportsBacklog))
+                                                                         providerObj.supports_backlog))
 
             if hasattr(providerObj, 'cat'):
                 providerObj.cat = self.check_setting_int(providerID.upper(),
@@ -2846,10 +2846,10 @@ class ConfigMigrator(srConfig):
                                                                        providerID + '_enable_daily',
                                                                        1))
 
-            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
+            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supports_backlog'):
                 providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
                                                                          providerID + '_enable_backlog',
-                                                                         providerObj.supportsBacklog))
+                                                                         providerObj.supports_backlog))
         return self.CONFIG_OBJ
 
     # Migration v9: Rename gui template name from slick to default

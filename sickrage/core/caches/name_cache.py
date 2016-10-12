@@ -34,8 +34,8 @@ class srNameCache(object):
     def __init__(self, *args, **kwargs):
         self.name = "NAMECACHE"
         self.amActive = False
-        self.minTime = 10
-        self.lastUpdate = {}
+        self.min_time = 10
+        self.last_update = {}
         self.cache = {}
 
     def run(self, force=False):
@@ -49,7 +49,7 @@ class srNameCache(object):
         threading.currentThread().setName(self.name)
 
         # set minimum time limit
-        self.minTime = sickrage.srCore.srConfig.NAMECACHE_FREQ
+        self.min_time = sickrage.srCore.srConfig.NAMECACHE_FREQ
 
         # init cache
         self.cache = self.load()
@@ -62,8 +62,8 @@ class srNameCache(object):
 
     def should_update(self, show):
         # if we've updated recently then skip the update
-        if datetime.today() - getattr(self.lastUpdate, show.name, datetime.fromtimestamp(
-                int(time.mktime(datetime.today().timetuple())))) < timedelta(minutes=self.minTime):
+        if datetime.today() - getattr(self.last_update, show.name, datetime.fromtimestamp(
+                int(time.mktime(datetime.today().timetuple())))) < timedelta(minutes=self.min_time):
             return True
 
     def put(self, name, indexer_id=0):
@@ -149,7 +149,7 @@ class srNameCache(object):
             for show in sickrage.srCore.SHOWLIST:
                 self.build(show)
         elif self.should_update(show):
-            self.lastUpdate[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+            self.last_update[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
             sickrage.srCore.srLogger.debug("Building internal name cache for [{}]".format(show.name))
             self.clear(show.indexerid)
