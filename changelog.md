@@ -1,6 +1,7 @@
 # Changelog
 
-- * ebdc59e - 2016-10-11: fix: TVCache last_update and last_search properties 
+- * 3ad46af - 2016-10-11: fix: TVCache last_update and last_search properties organized 
+- * 40dc4cf - 2016-10-11: fix: TVCache last_update and last_search properties 
 - * de5b544 - 2016-10-11: fix: Provider code cleanups 
 - * 984f4d9 - 2016-10-11: fix: Corrected typo in function name 
 - * 47fe22b - 2016-10-11: new: v8.5.0 

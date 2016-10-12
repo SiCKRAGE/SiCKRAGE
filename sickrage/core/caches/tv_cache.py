@@ -125,17 +125,6 @@ class TVCache(object):
 
         return datetime.datetime.fromtimestamp(lastTime)
 
-    @property
-    def last_search(self):
-        try:
-            dbData = CacheDB().db.get('lastSearch', self.providerID, with_doc=True)['doc']
-            lastTime = int(dbData["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
-        except RecordNotFound:
-            lastTime = 0
-
-        return datetime.datetime.fromtimestamp(lastTime)
-
     @last_update.setter
     def last_update(self, toDate=None):
         if not toDate:
@@ -151,6 +140,17 @@ class TVCache(object):
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             })
+
+    @property
+    def last_search(self):
+        try:
+            dbData = CacheDB().db.get('lastSearch', self.providerID, with_doc=True)['doc']
+            lastTime = int(dbData["time"])
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
+        except RecordNotFound:
+            lastTime = 0
+
+        return datetime.datetime.fromtimestamp(lastTime)
 
     @last_search.setter
     def last_search(self, toDate=None):
