@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0028872 - 2016-10-11: new: v8.5.0 
+- * d2fffc0 - 2016-10-11: fix: Corrected typo in function name 
+- * 47fe22b - 2016-10-11: new: v8.5.0 
 - * 9929925 - 2016-10-11: fix: Small code placement correction 
 - * 0b6a95b - 2016-10-11: new: v8.4.7 new: Added itorrents to bt cache url list fix: Corrected provider objects to be updated with valid keys only on app load 
 - * baa41ea - 2016-10-10: new: v8.4.6 

@@ -48,7 +48,7 @@ class TVCache(object):
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         return None
 
     def _checkAuth(self, data):
@@ -61,7 +61,7 @@ class TVCache(object):
         # check if we should update
         if self.shouldUpdate():
             try:
-                data = self._getRSSData()
+                data = self._get_rss_data()
                 if not self._checkAuth(data):
                     return False
 
@@ -117,8 +117,7 @@ class TVCache(object):
         try:
             dbData = CacheDB().db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
-                lastTime = 0
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
             lastTime = 0
 
@@ -128,8 +127,7 @@ class TVCache(object):
         try:
             dbData = CacheDB().db.get('lastSearch', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
-                lastTime = 0
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
             lastTime = 0
 
@@ -171,11 +169,7 @@ class TVCache(object):
     def shouldUpdate(self):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
-            sickrage.srCore.srLogger.debug(
-                "Last update was too soon, using old tv cache: " + str(self.lastUpdate) + ". Updated less then " + str(
-                    self.minTime) + " minutes ago")
             return False
-
         return True
 
     def shouldClearCache(self):

@@ -807,7 +807,7 @@ class TorrentRssProvider(TorrentProvider):
 
             # pylint: disable=W0212
             # Access to a protected member of a client class
-            data = self.cache._getRSSData()['entries']
+            data = self.cache._get_rss_data()['entries']
             if not data:
                 return False, 'No items found in the RSS feed ' + self.urls['base_url']
 
@@ -1141,7 +1141,7 @@ class TorrentRssCache(TVCache):
         TVCache.__init__(self, provider_obj)
         self.minTime = 15
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['base_url'])
 
         if self.provider.cookies:
@@ -1159,7 +1159,7 @@ class NewznabCache(TVCache):
         self.minTime = 30
         self.last_search = datetime.datetime.now()
 
-    def _getRSSData(self):
+    def _get_rss_data(self):
 
         params = {"t": "tvsearch",
                   "cat": self.provider.catIDs,
