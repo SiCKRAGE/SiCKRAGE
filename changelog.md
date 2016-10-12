@@ -1,6 +1,7 @@
 # Changelog
 
-- * afa2aae - 2016-10-11: fix: Provider code cleanups 
+- * ebdc59e - 2016-10-11: fix: TVCache last_update and last_search properties 
+- * de5b544 - 2016-10-11: fix: Provider code cleanups 
 - * 984f4d9 - 2016-10-11: fix: Corrected typo in function name 
 - * 47fe22b - 2016-10-11: new: v8.5.0 
 - * 9929925 - 2016-10-11: fix: Small code placement correction 

@@ -114,7 +114,8 @@ class TVCache(object):
             sickrage.srCore.srLogger.debug(
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
 
-    def _get_last_update(self):
+    @property
+    def last_update(self):
         try:
             dbData = CacheDB().db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
@@ -124,7 +125,8 @@ class TVCache(object):
 
         return datetime.datetime.fromtimestamp(lastTime)
 
-    def _get_last_search(self):
+    @property
+    def last_search(self):
         try:
             dbData = CacheDB().db.get('lastSearch', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
@@ -134,7 +136,8 @@ class TVCache(object):
 
         return datetime.datetime.fromtimestamp(lastTime)
 
-    def set_last_update(self, toDate=None):
+    @last_update.setter
+    def last_update(self, toDate=None):
         if not toDate:
             toDate = datetime.datetime.today()
 
@@ -149,7 +152,8 @@ class TVCache(object):
                 'time': int(time.mktime(toDate.timetuple()))
             })
 
-    def set_last_search(self, toDate=None):
+    @last_search.setter
+    def last_search(self, toDate=None):
         if not toDate:
             toDate = datetime.datetime.today()
 
@@ -163,9 +167,6 @@ class TVCache(object):
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             })
-
-    last_update = property(_get_last_update)
-    last_search = property(_get_last_search)
 
     def shouldUpdate(self):
         # if we've updated recently then skip the update
