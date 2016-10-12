@@ -1,6 +1,7 @@
 # Changelog
 
-- * bd6fa20 - 2016-10-11: fix: BTN last_update converted to use as property 
+- * 9ed0b62 - 2016-10-11: fix: request session handling returned resp at wrong section of code, corrected 
+- * 910af25 - 2016-10-11: fix: BTN last_update converted to use as property 
 - * 80ce692 - 2016-10-11: fix: TVCache last_update and last_search properties require timestamp now 
 - * ef416ac - 2016-10-11: fix: TVCache last_update and last_search properties organized 
 - * 40dc4cf - 2016-10-11: fix: TVCache last_update and last_search properties 

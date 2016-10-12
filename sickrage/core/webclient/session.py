@@ -107,7 +107,6 @@ class srSession(FuturesSession):
 
         try:
             response.raise_for_status()
-            return response
         except requests.exceptions.SSLError as e:
             if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
                 sickrage.srCore.srLogger.info(
@@ -175,6 +174,8 @@ class srSession(FuturesSession):
             sickrage.srCore.srLogger.error(e.message)
             sickrage.srCore.srLogger.debug(traceback.format_exc())
             return
+
+        return response
 
     def download(self, url, filename, **kwargs):
         """
