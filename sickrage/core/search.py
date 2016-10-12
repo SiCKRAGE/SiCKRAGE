@@ -26,12 +26,11 @@ import threading
 from datetime import date, timedelta
 
 import sickrage
-from guessit.patterns.extension import video_exts
 from sickrage.clients import getClientIstance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
-    SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT
+    SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT, video_exts
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
