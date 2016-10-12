@@ -18,6 +18,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
+
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import NZBProvider
@@ -38,7 +40,7 @@ class WombleCache(tv_cache.TVCache):
             self.clear()
 
             # set updated
-            self.set_last_update()
+            self.last_update = datetime.datetime.today()
 
             for url in [self.provider.urls['base_url'] + '/rss/?sec=tv-x264&fr=false',
                         self.provider.urls['base_url'] + '/rss/?sec=tv-sd&fr=false',

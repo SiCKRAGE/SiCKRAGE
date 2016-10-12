@@ -70,7 +70,7 @@ class TVCache(object):
                 self.clear()
 
                 # set updated
-                self.set_last_update()
+                self.last_update = datetime.datetime.today()
 
                 [self._parseItem(item) for item in data['entries']]
             except AuthException as e:
@@ -126,10 +126,7 @@ class TVCache(object):
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_update.setter
-    def last_update(self, toDate=None):
-        if not toDate:
-            toDate = datetime.datetime.today()
-
+    def last_update(self, toDate):
         try:
             dbData = CacheDB().db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             dbData['time'] = int(time.mktime(toDate.timetuple()))
@@ -153,10 +150,7 @@ class TVCache(object):
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_search.setter
-    def last_search(self, toDate=None):
-        if not toDate:
-            toDate = datetime.datetime.today()
-
+    def last_search(self, toDate):
         try:
             dbData = CacheDB().db.get('lastSearch', self.providerID, with_doc=True)['doc']
             dbData['time'] = int(time.mktime(toDate.timetuple()))
@@ -321,6 +315,6 @@ class TVCache(object):
                 neededEps[epObj.episode].append(result)
 
         # datetime stamp this search so cache gets cleared
-        self.set_last_search()
+        self.last_search = datetime.datetime.today()
 
         return neededEps

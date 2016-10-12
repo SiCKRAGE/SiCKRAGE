@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import re
 import urllib
 
@@ -83,7 +84,7 @@ class BinSearchCache(tv_cache.TVCache):
             self.clear()
 
             # set updated
-            self.set_last_update()
+            self.last_update = datetime.datetime.today()
 
             for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries',
                           'alt.binaries.teevee']:

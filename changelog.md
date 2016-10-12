@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3ad46af - 2016-10-11: fix: TVCache last_update and last_search properties organized 
+- * d8a8983 - 2016-10-11: fix: TVCache last_update and last_search properties require timestamp now 
+- * ef416ac - 2016-10-11: fix: TVCache last_update and last_search properties organized 
 - * 40dc4cf - 2016-10-11: fix: TVCache last_update and last_search properties 
 - * de5b544 - 2016-10-11: fix: Provider code cleanups 
 - * 984f4d9 - 2016-10-11: fix: Corrected typo in function name 
