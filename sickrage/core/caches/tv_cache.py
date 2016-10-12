@@ -172,11 +172,9 @@ class TVCache(object):
         # if daily search hasn't used our previous results yet then don't clear the cache
         if self.last_update > self.last_search:
             return False
-
         return True
 
     def addCacheEntry(self, name, url, parse_result=None, indexer_id=0):
-
         # check if we passed in a parsed result or should we try and create one
         if not parse_result:
             # create showObj from indexer_id if available

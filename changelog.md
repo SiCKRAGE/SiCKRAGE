@@ -1,6 +1,7 @@
 # Changelog
 
-- * d8a8983 - 2016-10-11: fix: TVCache last_update and last_search properties require timestamp now 
+- * bd6fa20 - 2016-10-11: fix: BTN last_update converted to use as property 
+- * 80ce692 - 2016-10-11: fix: TVCache last_update and last_search properties require timestamp now 
 - * ef416ac - 2016-10-11: fix: TVCache last_update and last_search properties organized 
 - * 40dc4cf - 2016-10-11: fix: TVCache last_update and last_search properties 
 - * de5b544 - 2016-10-11: fix: Provider code cleanups 

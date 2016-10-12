@@ -277,7 +277,7 @@ class BTNProvider(TorrentProvider):
 class BTNCache(tv_cache.TVCache):
     def _get_rss_data(self):
         # Get the torrents uploaded since last check.
-        seconds_since_last_update = math.ceil(time.time() - time.mktime(self._get_last_update().timetuple()))
+        seconds_since_last_update = math.ceil(time.time() - time.mktime(self.last_update.timetuple()))
 
         # default to 15 minutes
         seconds_minTime = self.min_time * 60
