@@ -4834,7 +4834,7 @@ class ConfigSubtitles(Config):
     def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
                       service_order=None, subtitles_history=None, subtitles_finder_frequency=None,
                       subtitles_multi=None, embedded_subtitles_all=None, subtitles_extra_scripts=None,
-                      subtitles_hearing_impaired=None,
+                      subtitles_hearing_impaired=None, itasa_user=None, itasa_pass=None,
                       addic7ed_user=None, addic7ed_pass=None, legendastv_user=None, legendastv_pass=None,
                       opensubtitles_user=None, opensubtitles_pass=None):
 
@@ -4872,6 +4872,8 @@ class ConfigSubtitles(Config):
         sickrage.srCore.srConfig.ADDIC7ED_PASS = addic7ed_pass or ''
         sickrage.srCore.srConfig.LEGENDASTV_USER = legendastv_user or ''
         sickrage.srCore.srConfig.LEGENDASTV_PASS = legendastv_pass or ''
+        sickrage.srCore.srConfig.ITASA_USER = itasa_user or ''
+        sickrage.srCore.srConfig.ITASA_PASS = itasa_pass or ''
         sickrage.srCore.srConfig.OPENSUBTITLES_USER = opensubtitles_user or ''
         sickrage.srCore.srConfig.OPENSUBTITLES_PASS = opensubtitles_pass or ''
 

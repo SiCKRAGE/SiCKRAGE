@@ -415,6 +415,8 @@ class srConfig(object):
         self.OPENSUBTITLES_PASS = None
         self.LEGENDASTV_USER = None
         self.LEGENDASTV_PASS = None
+        self.ITASA_USER = None
+        self.ITASA_PASS = None
         self.USE_FAILED_DOWNLOADS = False
         self.DELETE_FAILED = False
         self.EXTRA_SCRIPTS = None
@@ -1830,6 +1832,9 @@ class srConfig(object):
         self.LEGENDASTV_USER = self.check_setting_str('Subtitles', 'legendastv_username', '')
         self.LEGENDASTV_PASS = self.check_setting_str('Subtitles', 'legendastv_password', '')
 
+        self.ITASA_USER = self.check_setting_str('Subtitles', 'itasa_username', '')
+        self.ITASA_PASS = self.check_setting_str('Subtitles', 'itasa_password', '')
+
         self.OPENSUBTITLES_USER = self.check_setting_str('Subtitles', 'opensubtitles_username', '')
         self.OPENSUBTITLES_PASS = self.check_setting_str('Subtitles', 'opensubtitles_password', '')
 
@@ -2316,6 +2321,8 @@ class srConfig(object):
         new_config['Subtitles']['addic7ed_password'] = self.ADDIC7ED_PASS
         new_config['Subtitles']['legendastv_username'] = self.LEGENDASTV_USER
         new_config['Subtitles']['legendastv_password'] = self.LEGENDASTV_PASS
+        new_config['Subtitles']['itasa_username'] = self.ITASA_USER
+        new_config['Subtitles']['itasa_password'] = self.ITASA_PASS
         new_config['Subtitles']['opensubtitles_username'] = self.OPENSUBTITLES_USER
         new_config['Subtitles']['opensubtitles_password'] = self.OPENSUBTITLES_PASS
 

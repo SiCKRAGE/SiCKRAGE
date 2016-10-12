@@ -56,21 +56,17 @@ entry_points = {
     ]
 }
 
-# pylint: disable=W0212
-# Access to a protected member of a client class
 distribution._ep_map = pkg_resources.EntryPoint.parse_map(entry_points, distribution)
 pkg_resources.working_set.add(distribution)
 
-# provider_manager.ENTRY_POINT_CACHE.pop('subliminal.providers')
-
-# subliminal.region.configure('dogpile.cache.memory')
-
-provider_urls = {
+PROVIDER_URLS = {
     'addic7ed': 'http://www.addic7ed.com',
+    'itasa': 'http://www.italiansubs.net/',
     'legendastv': 'http://www.legendas.tv',
     'napiprojekt': 'http://www.napiprojekt.pl',
     'opensubtitles': 'http://www.opensubtitles.org',
     'podnapisi': 'http://www.podnapisi.net',
+    'subscenter': 'http://www.subscenter.org',
     'thesubdb': 'http://www.thesubdb.com',
     'tvsubtitles': 'http://www.tvsubtitles.net'
 }
@@ -84,7 +80,7 @@ def sortedServiceList():
     for curService in sickrage.srCore.srConfig.SUBTITLES_SERVICES_LIST:
         if curService in subliminal.provider_manager.names():
             newList.append({'name': curService,
-                            'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
+                            'url': PROVIDER_URLS[curService] if curService in PROVIDER_URLS else lmgtfy % curService,
                             'image': curService + '.png',
                             'enabled': sickrage.srCore.srConfig.SUBTITLES_SERVICES_ENABLED[curIndex] == 1
                             })
@@ -93,7 +89,7 @@ def sortedServiceList():
     for curService in subliminal.provider_manager.names():
         if curService not in [x['name'] for x in newList]:
             newList.append({'name': curService,
-                            'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
+                            'url': PROVIDER_URLS[curService] if curService in PROVIDER_URLS else lmgtfy % curService,
                             'image': curService + '.png',
                             'enabled': False,
                             })
@@ -136,7 +132,7 @@ def downloadSubtitles(subtitles_info):
     providers = getEnabledServiceList()
 
     try:
-        video = subliminal.scan_video(video_path, subtitles=False, embedded_subtitles=False)
+        video = subliminal.scan_video(video_path)
     except Exception:
         sickrage.srCore.srLogger.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' %
                                        (subtitles_info['show.indexerid'], subtitles_info['season'],
@@ -146,12 +142,14 @@ def downloadSubtitles(subtitles_info):
     provider_configs = {
         'addic7ed': {'username': sickrage.srCore.srConfig.ADDIC7ED_USER,
                      'password': sickrage.srCore.srConfig.ADDIC7ED_PASS},
+        'itasa': {'username': sickrage.srCore.srConfig.ITASA_USER,
+                  'password': sickrage.srCore.srConfig.ITASA_PASS},
         'legendastv': {'username': sickrage.srCore.srConfig.LEGENDASTV_USER,
                        'password': sickrage.srCore.srConfig.LEGENDASTV_PASS},
         'opensubtitles': {'username': sickrage.srCore.srConfig.OPENSUBTITLES_USER,
                           'password': sickrage.srCore.srConfig.OPENSUBTITLES_PASS}}
 
-    pool = subliminal.api.ProviderPool(providers=providers, provider_configs=provider_configs)
+    pool = subliminal.ProviderPool(providers=providers, provider_configs=provider_configs)
 
     try:
         subtitles_list = pool.list_subtitles(video, languages)
@@ -356,7 +354,7 @@ def scan_subtitle_languages(path):
     subtitles = set()
     for p in os.listdir(dirpath):
         if not isinstance(p, bytes) and p.startswith(os.path.splitext(filename)[0]) and p.endswith(
-                subliminal.video.SUBTITLE_EXTENSIONS):
+                subliminal.SUBTITLE_EXTENSIONS):
             if os.path.splitext(p)[0].endswith(language_extensions) and len(
                     os.path.splitext(p)[0].rsplit('.', 1)[1]) is 2:
                 subtitles.add(babelfish.Language.fromopensubtitles(os.path.splitext(p)[0][-2:]))
@@ -427,7 +425,7 @@ class srSubtitleSearcher(object):
                       and e['doc']['location'] != ''
                       and e['doc']['subtitles'] not in wantedLanguages()
                       and (e['doc']['subtitles_searchcount'] <= 2 or (
-                                e['doc']['subtitles_searchcount'] <= 7 and (today - e['doc']['airdate'])))]:
+                                        e['doc']['subtitles_searchcount'] <= 7 and (today - e['doc']['airdate'])))]:
                 results += [{
                     'show_name': s['show_name'],
                     'showid': e['showid'],

@@ -1,5 +1,6 @@
 # Changelog
 
+- * 6095ec0 - 2016-10-12: fix: Minor code changes 
 - * 45a8004 - 2016-10-12: fix: Minor code placement change 
 - * 6d3dce3 - 2016-10-12: upgrade: Upgrading to Subliminal v2.0.5 
 - * 2cbd54c - 2016-10-11: fix: request session handling returned resp at wrong section of code, corrected 
