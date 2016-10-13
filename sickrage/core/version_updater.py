@@ -469,6 +469,16 @@ class GitUpdateManager(UpdateManager):
         _, _, exit_status = self._run_git(self._find_working_git, 'reset --hard')
         return (False, True)[exit_status == 0]
 
+    def fetch(self):
+        """
+        Calls git reset --hard to perform a hard reset. Returns a bool depending
+        on the call's success.
+        """
+        _, _, exit_status = self._run_git(self._find_working_git, 'config remote.origin.fetch %s' % '+refs/heads/*:refs/remotes/origin/*')
+        if exit_status == 0:
+            _, _, exit_status = self._run_git(self._find_working_git, 'fetch --all')
+        return (False, True)[exit_status == 0]
+
     def checkout_branch(self, branch):
         if branch in self.remote_branches:
             sickrage.srCore.srLogger.debug("Branch checkout: " + self._find_installed_version() + "->" + branch)
@@ -476,6 +486,9 @@ class GitUpdateManager(UpdateManager):
             # remove untracked files and performs a hard reset on git branch to avoid update issues
             if sickrage.srCore.srConfig.GIT_RESET:
                 self.reset()
+
+            # fetch all branches
+            self.fetch()
 
             _, _, exit_status = self._run_git(self._find_working_git, 'checkout -f ' + branch)
             if exit_status == 0:
