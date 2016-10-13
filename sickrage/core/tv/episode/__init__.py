@@ -289,7 +289,7 @@ class TVEpisode(object):
         if save_subtitles:
             self.saveToDB()
 
-    def downloadSubtitles(self, force=False):
+    def downloadSubtitles(self):
         if not os.path.isfile(self.location):
             sickrage.srCore.srLogger.debug("%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
                                            (self.show.indexerid, self.season or 0, self.episode or 0))

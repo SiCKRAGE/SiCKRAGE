@@ -500,8 +500,8 @@ def xem_refresh(indexer_id, indexer, force=False):
             # XEM MAP URL
             url = "http://thexem.de/map/havemap?origin=%s" % srIndexerApi(indexer).config['xem_origin']
 
-            parsedJSON = sickrage.srCore.srWebSession.get(url).json()
             try:
+                parsedJSON = sickrage.srCore.srWebSession.get(url).json()
                 if indexer_id not in map(int, parsedJSON['data']):
                     raise
             except:
@@ -511,8 +511,8 @@ def xem_refresh(indexer_id, indexer, force=False):
             url = "http://thexem.de/map/all?id={}&origin={}&destination=scene".format(
                 indexer_id, srIndexerApi(indexer).config['xem_origin'])
 
-            parsedJSON = sickrage.srCore.srWebSession.get(url).json()
             try:
+                parsedJSON = sickrage.srCore.srWebSession.get(url).json()
                 if 'success' not in parsedJSON['result']:
                     raise
             except:

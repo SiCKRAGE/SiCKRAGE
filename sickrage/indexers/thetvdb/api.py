@@ -456,7 +456,6 @@ class Tvdb:
         data = {}
 
         try:
-
             # get api v2 token
             self.getToken()
 

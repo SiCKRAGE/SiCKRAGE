@@ -1595,7 +1595,7 @@ class Home(WebHandler):
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
-    def subtitleShow(self, show=None, force=0):
+    def subtitleShow(self, show=None):
 
         if show is None:
             return self._genericMessage("Error", "Invalid show ID")
@@ -1606,7 +1606,7 @@ class Home(WebHandler):
             return self._genericMessage("Error", "Unable to find the specified show")
 
         # search and download subtitles
-        sickrage.srCore.SHOWQUEUE.downloadSubtitles(showObj, bool(force))
+        sickrage.srCore.SHOWQUEUE.downloadSubtitles(showObj)
 
         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 

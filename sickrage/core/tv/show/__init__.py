@@ -1259,8 +1259,7 @@ class TVShow(object):
                     with curEp.lock:
                         curEp.airdateModifyStamp()
 
-    def downloadSubtitles(self, force=False):
-        # TODO: Add support for force option
+    def downloadSubtitles(self):
         if not os.path.isdir(self.location):
             sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Show dir doesn't exist, can't download subtitles")
             return
@@ -1275,7 +1274,7 @@ class TVShow(object):
                 return
 
             for episode in episodes:
-                episode.downloadSubtitles(force=force)
+                episode.downloadSubtitles()
 
         except Exception:
             sickrage.srCore.srLogger.debug(

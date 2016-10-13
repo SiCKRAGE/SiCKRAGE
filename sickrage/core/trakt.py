@@ -107,7 +107,7 @@ class TraktAPI():
                                         data=json.dumps(data) if data else [])
 
             # check for http errors and raise if any are present
-            #resp.raise_for_status()
+            resp.raise_for_status()
 
             # convert response to json
             resp = resp.json()

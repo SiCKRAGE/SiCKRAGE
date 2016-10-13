@@ -1,6 +1,7 @@
 # Changelog
 
-- * 352c0e3 - 2016-10-13: new: v8.5.1 fix: Fixed issues with first-time startups and database creation 
+- * ac72de3 - 2016-10-13: fix: Issues with web client sessions due to premature error handling, now returns response object 
+- * d4bc818 - 2016-10-13: new: v8.5.1 fix: Fixed issues with first-time startups and database creation 
 - * edf7875 - 2016-10-12: fix: Minor code changes 
 - * 45a8004 - 2016-10-12: fix: Minor code placement change 
 - * 6d3dce3 - 2016-10-12: upgrade: Upgrading to Subliminal v2.0.5 
