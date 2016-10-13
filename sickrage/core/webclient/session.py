@@ -118,7 +118,7 @@ class srSession(FuturesSession):
                     "SSL Error requesting url: '{}' Try disabling Cert Verification on the advanced tab of /config/general".format(
                         e.request.url))
         except Exception as e:
-            sickrage.srCore.srLogger.error(e.message)
+            sickrage.srCore.srLogger.debug(e.message)
 
         return response
 

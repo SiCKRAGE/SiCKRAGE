@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4a96dfa - 2016-10-13: new: v8.5.2 
+- * 0652876 - 2016-10-13: fix: Changed web session handling of error messages to send to debugger instead of creating a error 
+- * 5934241 - 2016-10-13: new: v8.5.2 
 - * 5a8c514 - 2016-10-13: fix: Fixes issues with git and checkout of new branches 
 - * 9207d6f - 2016-10-13: fix: Issues with web client sessions due to premature error handling, now returns response object 
 - * d4bc818 - 2016-10-13: new: v8.5.1 fix: Fixed issues with first-time startups and database creation 

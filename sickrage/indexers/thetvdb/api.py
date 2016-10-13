@@ -703,13 +703,11 @@ class Tvdb:
                 episodes += data
                 p += 1
 
-            if not episodes:
+            if not len(episodes):
                 sickrage.srCore.srLogger.debug('Series results incomplete')
                 return
 
             for cur_ep in episodes:
-                # cur_ep = self._getetsrc(self.config['api']['episode_info'].format(eid))
-
                 try:
                     use_dvd = False
                     if self.config['dvdorder']:
