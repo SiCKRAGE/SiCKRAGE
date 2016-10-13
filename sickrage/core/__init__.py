@@ -236,12 +236,6 @@ class Core(object):
 
         # perform database startup actions
         for db in [MainDB, CacheDB, FailedDB]:
-            # initialize the database
-            db().initialize()
-
-            # migrate the database
-            db().migrate()
-
             # compact the main database
             db().compact()
 

@@ -51,6 +51,9 @@ class srDatabase(object):
             except (PreconditionsException, IndexError):
                 self.repair()
                 self.db.open()
+        else:
+            self.initialize()
+            self.migrate()
 
     def initialize(self):
         # Remove database folder if both exists
