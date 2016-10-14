@@ -1330,17 +1330,17 @@ class TVShow(object):
         update_anime_support()
 
         if self.imdbid and self.imdb_info:
-            self.imdb_info.update({
-                '_t': 'imdb_info',
-                'indexer_id': self.indexerid
-            })
-
             try:
                 dbData = MainDB().db.get('imdb_info', self.indexerid, with_doc=True)['doc']
                 dbData.update(self.imdb_info)
                 MainDB().db.update(dbData)
             except RecordNotFound:
-                MainDB().db.insert(self.imdb_info)
+                imdb_info = {
+                    '_t': 'imdb_info',
+                    'indexer_id': self.indexerid
+                }
+                imdb_info.update(self.imdb_info)
+                MainDB().db.insert(imdb_info)
 
     def __str__(self):
         toReturn = ""
