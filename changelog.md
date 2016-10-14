@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8190ecc - 2016-10-13: new: v8.5.6 
+- * 0a9179e - 2016-10-13: new: v8.5.7 fix: Minor fix for metadata episode creation 
+- * f7d7168 - 2016-10-13: new: v8.5.6 
 - * 5e7f7ac - 2016-10-13: fix: Misc code corrections 
 - * c724b64 - 2016-10-13: fix: Post-Processing 
 - * 416b349 - 2016-10-13: new: v8.5.5 fix: Post-Processing handles deleted episode exceptions properly now 

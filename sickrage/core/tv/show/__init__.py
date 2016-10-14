@@ -573,8 +573,6 @@ class TVShow(object):
                 dbData["season"] or 0, dbData["episode"] or 0))
 
             curEp = self.getEpisode(dbData["season"], dbData["episode"])
-            if not curEp: continue
-
             curEp.createMetaFiles()
 
     def updateMetadata(self):
