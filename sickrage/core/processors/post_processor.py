@@ -28,7 +28,8 @@ import subprocess
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException
+from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
+    EpisodeDeletedException
 from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs
@@ -712,7 +713,7 @@ class PostProcessor(object):
                 curEp = show.getEpisode(season, cur_episode)
                 if not curEp:
                     raise EpisodeNotFoundException()
-            except EpisodeNotFoundException as e:
+            except (EpisodeNotFoundException, EpisodeDeletedException) as e:
                 self._log("Unable to create episode: {}".format(e.message)), sickrage.srCore.srLogger.DEBUG
                 raise EpisodePostProcessingFailedException()
 
