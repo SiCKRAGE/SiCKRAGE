@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2f5c966 - 2016-10-13: fix: RevConflict issue during updating of shows and imdb info was caused by mistakenly storing previous rev info to class object 
+- * 92f2658 - 2016-10-13: new: v8.5.3 
+- * c519929 - 2016-10-13: fix: RevConflict issue during updating of shows and imdb info was caused by mistakenly storing previous rev info to class object 
 - * 1c7a1ba - 2016-10-13: fix: Changed web session handling of error messages to send to debugger instead of creating a error 
 - * 5934241 - 2016-10-13: new: v8.5.2 
 - * 5a8c514 - 2016-10-13: fix: Fixes issues with git and checkout of new branches 
