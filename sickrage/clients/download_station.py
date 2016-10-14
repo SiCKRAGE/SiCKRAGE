@@ -57,8 +57,8 @@ class DownloadStationAPI(GenericClient):
 
         if sickrage.srCore.srConfig.TORRENT_PATH:
             data['destination'] = sickrage.srCore.srConfig.TORRENT_PATH
-        self._request(method='post', data=data)
 
+        self._request(method='post', data=data)
         return self.response.json()['success']
 
     def _add_torrent_file(self, result):
@@ -73,6 +73,7 @@ class DownloadStationAPI(GenericClient):
 
         if sickrage.srCore.srConfig.TORRENT_PATH:
             data['destination'] = sickrage.srCore.srConfig.TORRENT_PATH
+
         files = {'file': (result.name + '.torrent', result.content)}
         self._request(method='post', data=data, files=files)
 

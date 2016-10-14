@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0a9179e - 2016-10-13: new: v8.5.7 fix: Minor fix for metadata episode creation 
+- * 775551a - 2016-10-13: fix: Minor change (testing) 
+- * 74e09f1 - 2016-10-13: new: v8.5.7 fix: Minor fix for metadata episode creation 
 - * f7d7168 - 2016-10-13: new: v8.5.6 
 - * 5e7f7ac - 2016-10-13: fix: Misc code corrections 
 - * c724b64 - 2016-10-13: fix: Post-Processing 

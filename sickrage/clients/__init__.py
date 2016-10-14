@@ -178,7 +178,7 @@ class GenericClient(object):
             method.upper(),
             self.url,
             str(kwargs.get('params')),
-            str(kwargs.get('data'))[0:99] + ('...' if len(str(kwargs.get('data'))) > 200 else '')))
+            str(kwargs.get('data'))))
 
         if not self.auth:
             sickrage.srCore.srLogger.warning(self.name + ': Authentication Failed')
