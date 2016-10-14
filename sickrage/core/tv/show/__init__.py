@@ -35,12 +35,9 @@ from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
-    UNAIRED, \
-    ARCHIVED, \
-    statusStrings, Overview, FAILED, SNATCHED_BEST
+    UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
 from sickrage.core.databases.main import MainDB
-from sickrage.core.exceptions import CantRefreshShowException, \
-    CantRemoveShowException
+from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowException
 from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
 from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, \
@@ -470,17 +467,16 @@ class TVShow(object):
             elif len(dbData) > 1:
                 sickrage.srCore.srLogger.error("Multiple entries for absolute number: " + str(
                     absolute_number) + " in show: " + self.name + " found ")
-                return
+                return None
             else:
                 sickrage.srCore.srLogger.debug(
-                    "No entries for absolute number: " + str(
-                        absolute_number) + " in show: " + self.name + " found.")
-                return
+                    "No entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found.")
+                return None
 
-        if not season in self.episodes:
+        if season not in self.episodes:
             self.episodes[season] = {}
 
-        if not episode in self.episodes[season] or self.episodes[season][episode] is None:
+        if episode not in self.episodes[season] or self.episodes[season][episode] is None:
             if noCreate:
                 return None
 
@@ -702,7 +698,6 @@ class TVShow(object):
                     "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
                 curEp = self.getEpisode(curSeason, curEpisode)
-                if not curEp: raise EpisodeNotFoundException
                 if deleteEp: curEp.deleteEpisode()
 
                 curEp.loadFromDB(curSeason, curEpisode)
@@ -740,7 +735,6 @@ class TVShow(object):
                     continue
                 try:
                     curEp = self.getEpisode(season, episode)
-                    if not curEp: raise EpisodeNotFoundException
                 except EpisodeNotFoundException:
                     sickrage.LOGGER.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
                         self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
@@ -748,7 +742,7 @@ class TVShow(object):
                 else:
                     try:
                         curEp.loadFromIndexer(tvapi=t)
-                    except exceptions.EpisodeDeletedException:
+                    except EpisodeDeletedException:
                         logger.log("The episode was deleted, skipping the rest of the load")
                         continue
 
@@ -829,8 +823,6 @@ class TVShow(object):
             if not curEp:
                 try:
                     curEp = self.getEpisode(season, episode, file)
-                    if not curEp:
-                        raise EpisodeNotFoundException
                 except EpisodeNotFoundException:
                     sickrage.srCore.srLogger.error(
                         str(self.indexerid) + ": Unable to figure out what this file is, skipping")
@@ -1215,8 +1207,6 @@ class TVShow(object):
 
             try:
                 curEp = self.getEpisode(season, episode)
-                if not curEp:
-                    raise EpisodeDeletedException
             except EpisodeDeletedException:
                 sickrage.srCore.srLogger.debug(
                     "The episode was deleted while we were refreshing it, moving on to the next one")

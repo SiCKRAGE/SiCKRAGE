@@ -710,8 +710,6 @@ class PostProcessor(object):
             # now that we've figured out which episode this file is just load it manually
             try:
                 curEp = show.getEpisode(season, cur_episode)
-                if not curEp:
-                    raise EpisodeNotFoundException()
             except EpisodeNotFoundException as e:
                 self._log("Unable to create episode: {}".format(e.message)), sickrage.srCore.srLogger.DEBUG
                 raise EpisodePostProcessingFailedException()

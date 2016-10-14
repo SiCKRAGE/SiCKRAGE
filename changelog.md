@@ -1,6 +1,7 @@
 # Changelog
 
-- * d2e2c5c - 2016-10-13: fix: Post-Processing 
+- * 869b0cf - 2016-10-13: fix: Misc code corrections 
+- * c724b64 - 2016-10-13: fix: Post-Processing 
 - * 416b349 - 2016-10-13: new: v8.5.5 fix: Post-Processing handles deleted episode exceptions properly now 
 - * 1c30b91 - 2016-10-13: new: v8.5.4 fix: Removed old reference to theTVDB API v1 
 - * a337fb8 - 2016-10-13: new: v8.5.3 
