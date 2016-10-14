@@ -1455,7 +1455,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
             os.rename(checkfile, lockFile)
             time.sleep(1)
             os.rename(lockFile, checkfile)
-        except (Exception, OSError, IOError):
+        except (OSError, IOError):
             return True
 
     return False
