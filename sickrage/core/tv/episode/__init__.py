@@ -486,6 +486,7 @@ class TVEpisode(object):
         except (indexer_episodenotfound, indexer_seasonnotfound):
             sickrage.srCore.srLogger.debug(
                 "Unable to find the episode on {}, has it been removed?".format(indexer_name))
+
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexerid != -1:
                 self.deleteEpisode()

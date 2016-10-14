@@ -153,11 +153,11 @@ class KODI_12PlusMetadata(GenericMetadata):
             plot = SubElement(tv_node, "plot")
             plot.text = myShow["overview"]
 
-        if getattr(myShow, 'id', None):
-            episodeguide = SubElement(tv_node, "episodeguide")
-            episodeguideurl = SubElement(episodeguide, "url")
-            episodeguideurl.text = srIndexerApi(show_obj.indexer).config['base_url'] + str(
-                myShow["id"]) + '/all/en.zip'
+        #if getattr(myShow, 'id', None):
+        #    episodeguide = SubElement(tv_node, "episodeguide")
+        #    episodeguideurl = SubElement(episodeguide, "url")
+        #    episodeguideurl.text = srIndexerApi(show_obj.indexer).config['base_url'] + str(
+        #        myShow["id"]) + '/all/en.zip'
 
         if getattr(myShow, 'contentrating', None):
             mpaa = SubElement(tv_node, "mpaa")
