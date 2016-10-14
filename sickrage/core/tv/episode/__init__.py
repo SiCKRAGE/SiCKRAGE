@@ -374,8 +374,6 @@ class TVEpisode(object):
             except NoNFOException:
                 sickrage.srCore.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
                     self.show.indexerid, season or 0, episode or 0))
-            except EpisodeDeletedException:
-                self.deleteEpisode()
 
             # confirm if we successfully populated the episode
             if any(success.values()):
