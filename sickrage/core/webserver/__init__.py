@@ -113,7 +113,7 @@ class srWebServer(object):
 
         # Load the app
         self.app = Application([],
-                               debug=sickrage.DEBUG,
+                               debug=False,
                                autoreload=False,
                                gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
                                xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
@@ -176,9 +176,10 @@ class srWebServer(object):
 
         self.server = HTTPServer(self.app, no_keep_alive=True)
 
-        if sickrage.srCore.srConfig.ENABLE_HTTPS:
-            self.server.ssl_options = {"certfile": sickrage.srCore.srConfig.HTTPS_CERT,
-                                       "keyfile": sickrage.srCore.srConfig.HTTPS_KEY}
+        if sickrage.srCore.srConfig.ENABLE_HTTPS: self.server.ssl_options = {
+            "certfile": sickrage.srCore.srConfig.HTTPS_CERT,
+            "keyfile": sickrage.srCore.srConfig.HTTPS_KEY
+        }
 
         try:
             self.server.listen(sickrage.srCore.srConfig.WEB_PORT, None)

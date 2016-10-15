@@ -36,7 +36,6 @@ from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.tv import episode
-from tornado.ioloop import IOLoop
 
 
 def createFolder(dirname):
@@ -189,7 +188,7 @@ def setUp_test_web_server():
 
 def tearDown_test_web_server():
     if sickrage.srCore:
-        IOLoop.current().stop()
+        sickrage.srCore.io_loop.stop()
 
 
 def load_tests(loader, tests):

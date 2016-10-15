@@ -90,6 +90,7 @@ from tornado.ioloop import IOLoop
 class Core(object):
     def __init__(self):
         self.started = False
+        self.io_loop = IOLoop.current()
 
         # process id
         self.PID = os.getpid()
@@ -461,7 +462,7 @@ class Core(object):
         self.srWebServer.start()
 
         # start ioloop event handler
-        IOLoop.current().start()
+        self.io_loop.start()
 
     def shutdown(self):
         if self.started:

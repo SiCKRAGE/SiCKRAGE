@@ -35,7 +35,6 @@ from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
-from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, authenticated
 
 try:
@@ -90,7 +89,7 @@ class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
 
-        self.io_loop = IOLoop.current()
+        self.io_loop = sickrage.srCore.io_loop
         self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
         # template settings
@@ -1089,17 +1088,14 @@ class Home(WebHandler):
 
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
         sickrage.restart = False
-        IOLoop.current().stop()
+        sickrage.srCore.io_loop.stop()
 
     def restart(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
-
-        self.io_loop.add_timeout(
-            datetime.timedelta(seconds=10),
-            IOLoop.current().stop)
+        self.io_loop.add_timeout(datetime.timedelta(seconds=10), sickrage.srCore.io_loop.stop)
 
         return self.render(
             "/home/restart.mako",

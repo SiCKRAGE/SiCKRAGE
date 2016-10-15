@@ -31,7 +31,6 @@ import urllib
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
-from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
 
 try:
@@ -114,7 +113,7 @@ class ApiHandler(RequestHandler):
 
     def __init__(self, application, request, *args, **kwargs):
         super(ApiHandler, self).__init__(application, request)
-        self.io_loop = IOLoop.current()
+        self.io_loop = sickrage.srCore.io_loop
         self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
     @coroutine
@@ -1579,7 +1578,7 @@ class CMD_SiCKRAGERestart(ApiCall):
 
     def run(self):
         """ Restart SiCKRAGE """
-        IOLoop.current().stop()
+        sickrage.srCore.io_loop.stop()
         return _responds(RESULT_SUCCESS, msg="SiCKRAGE is restarting...")
 
 
@@ -1805,7 +1804,7 @@ class CMD_SiCKRAGEShutdown(ApiCall):
         """ Shutdown SiCKRAGE """
         if sickrage.srCore.srWebServer:
             sickrage.restart = False
-            IOLoop.current().stop()
+            sickrage.srCore.io_loop.stop()
             return _responds(RESULT_SUCCESS, msg="SiCKRAGE is shutting down...")
         return _responds(RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
 
