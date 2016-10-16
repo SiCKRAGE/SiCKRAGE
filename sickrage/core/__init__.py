@@ -28,7 +28,7 @@ import traceback
 from multiprocessing import cpu_count
 
 import sickrage
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.tornado import TornadoScheduler
 from sickrage.core.caches.name_cache import srNameCache
 from sickrage.core.classes import AttrDict, srIntervalTrigger
 from sickrage.core.common import SD, SKIPPED, WANTED
@@ -140,7 +140,7 @@ class Core(object):
         self.srConfig = srConfig()
 
         # init scheduler service
-        self.srScheduler = BackgroundScheduler()
+        self.srScheduler = TornadoScheduler()
 
         # init web server
         self.srWebServer = srWebServer()
