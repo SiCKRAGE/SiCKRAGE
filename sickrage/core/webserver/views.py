@@ -1384,7 +1384,7 @@ class Home(WebHandler):
         anime = sickrage.srCore.srConfig.checkbox_to_value(anime)
         subtitles = sickrage.srCore.srConfig.checkbox_to_value(subtitles)
 
-        if indexerLang and indexerLang in srIndexerApi(showObj.indexer).indexer().languages().keys():
+        if indexerLang and indexerLang in srIndexerApi(showObj.indexer).indexer().languages.keys():
             indexer_lang = indexerLang
         else:
             indexer_lang = showObj.lang
@@ -2294,9 +2294,7 @@ class HomeAddShows(Home):
 
     @staticmethod
     def getIndexerLanguages():
-        result = srIndexerApi().indexer().languages().keys()
-
-        return json_encode({'results': result})
+        return json_encode({'results': srIndexerApi().indexer().language.keys()})
 
     @staticmethod
     def sanitizeFileName(name):
@@ -2331,7 +2329,7 @@ class HomeAddShows(Home):
                 [[srIndexerApi(i).name, i, srIndexerApi(i).config["show_url"],
                   int(show['id']), show['seriesname'], show['firstaired']] for show in shows])
 
-        lang_id = srIndexerApi().indexer().languages()[lang]
+        lang_id = srIndexerApi().indexer().languages[lang]
         return json_encode({'results': final_results, 'langid': lang_id})
 
     def massAddTable(self, rootDir=None):

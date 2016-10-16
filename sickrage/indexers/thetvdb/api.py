@@ -406,7 +406,7 @@ class Tvdb:
         self.config['api']['updated'] = "{base}/updated/query?fromTime={{}}".format(base=self.config['api']['base'])
 
         self.config['language'] = language
-        if language not in self.languages():
+        if language not in self.languages:
             self.config['language'] = None
 
         if self.config['language']:
@@ -478,7 +478,6 @@ class Tvdb:
             pass
 
         return data
-
 
     def _getetsrc(self, url, params=None):
         """Loads a URL using caching, returns an ElementTree of the source
@@ -745,8 +744,13 @@ class Tvdb:
     def updated(self, fromTime):
         return self._getetsrc(self.config['api']['updated'].format(fromTime))
 
+    @property
     def languages(self):
-        return {l['abbreviation']: l['id'] for l in self._getetsrc(self.config['api']['languages'])}
+        return {'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16, 'ru': 22, 'nl': 13, 'pt': 26, 'no': 9,
+                'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24,
+                'ko': 32, 'sv': 8, 'sl': 30}
+
+        # return {l['abbreviation']: l['id'] for l in self._getetsrc(self.config['api']['languages'])}
 
     def __getitem__(self, key):
         """

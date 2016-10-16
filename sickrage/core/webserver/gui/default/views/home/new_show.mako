@@ -7,7 +7,7 @@
 
 <%block name="metas">
     <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE}">
-    <meta data-var="sickrage.LANGUAGES" data-content="${','.join(srIndexerApi().indexer().languages().keys())}">
+    <meta data-var="sickrage.LANGUAGES" data-content="${','.join(srIndexerApi().indexer().languages.keys())}">
 </%block>
 
 <%block name="content">

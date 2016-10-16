@@ -1,6 +1,7 @@
 # Changelog
 
-- * e334032 - 2016-10-15: new: v8.6.0 
+- * eb01239 - 2016-10-15: new: v8.6.1 fix: Fixed issues with loading languages from indexers 
+- * 7fe3d84 - 2016-10-15: new: v8.6.0 
 - * 33db42e - 2016-10-15: fix: Fixed proper searcher fix: Changed scheduler from TornadoScheduler to BackgroundScheduler 
 - * b1a92a3 - 2016-10-15: new: v8.5.8 
 - * a0f0484 - 2016-10-15: fix: Misc small fixes 

@@ -88,10 +88,11 @@
                                     <label for="indexerLangSelect">
                                         <span class="component-title">Info Language</span>
                                         <span class="component-desc">
+                                            <% languages = srIndexerApi().indexer().languages.keys() %>
                                             <select name="indexerLang" id="indexerLangSelect"
                                                     class="form-control form-control-inline input-sm bfh-languages"
                                                     data-language="${show.lang}"
-                                                    data-available="${','.join(srIndexerApi().indexer().languages().keys())}"></select>
+                                                    data-available="${','.join(languages)}"></select>
                                             <div class="clear-left"><p>This only applies to episode filenames and the
                                                 contents
                                                 of metadata files.</p></div>

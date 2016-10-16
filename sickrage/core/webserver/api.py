@@ -1595,7 +1595,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        self.valid_languages = srIndexerApi().indexer().languages()
+        self.valid_languages = srIndexerApi().indexer().languages
         # required
         # optional
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
@@ -2045,7 +2045,7 @@ class CMD_ShowAddNew(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        self.valid_languages = srIndexerApi().indexer().languages()
+        self.valid_languages = srIndexerApi().indexer().languages
         # required
         self.indexerid, args = self.check_params("indexerid",
                                                  None,
