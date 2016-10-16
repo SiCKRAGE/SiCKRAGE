@@ -1,6 +1,7 @@
 # Changelog
 
-- * eb01239 - 2016-10-15: new: v8.6.1 fix: Fixed issues with loading languages from indexers 
+- * bf244d3 - 2016-10-15: new: v8.6.2 new: APScheduler v3.2 
+- * c96cfe6 - 2016-10-15: new: v8.6.1 fix: Fixed issues with loading languages from indexers 
 - * 7fe3d84 - 2016-10-15: new: v8.6.0 
 - * 33db42e - 2016-10-15: fix: Fixed proper searcher fix: Changed scheduler from TornadoScheduler to BackgroundScheduler 
 - * b1a92a3 - 2016-10-15: new: v8.5.8 
