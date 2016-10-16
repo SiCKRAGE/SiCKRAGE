@@ -1011,7 +1011,7 @@ class Home(WebHandler):
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
         try:
-            dbData = MainDB().db.get('tv_shows', show, with_doc=True)['doc']
+            dbData = MainDB().db.get('tv_shows', int(show), with_doc=True)['doc']
             dbData['notify_list'] = emails
             MainDB().db.update(dbData)
         except RecordNotFound:
@@ -2992,7 +2992,7 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_change:
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
-                all_eps_results = [x['doc'] for x in MainDB().db.get_many('tv_episodes', cur_indexer_id, with_doc=True)
+                all_eps_results = [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                                    if x['doc']['status'] in status_list and x['doc']['season'] != 0]
 
                 all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
@@ -3107,7 +3107,7 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_download:
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
-                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', cur_indexer_id, with_doc=True)
+                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                           if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]
 
                 to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
@@ -3144,9 +3144,8 @@ class Manage(Home, WebRoot):
             epCounts[Overview.UNAIRED] = 0
             epCounts[Overview.SNATCHED] = 0
 
-            dbData = sorted([e['doc'] for x in MainDB().db.get_many('tv_shows', curShow.indexerid, with_doc=True)
-                             for e in MainDB().db.get_many('tv_episodes', x['doc']['indexer_id'], with_doc=True)
-                             if x['doc']['paused'] == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
+            dbData = sorted([e['doc'] for e in MainDB().db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
+                             if curShow.paused == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
             for curResult in dbData:
                 curEpCat = curShow.getOverview(int(curResult["status"] or -1))

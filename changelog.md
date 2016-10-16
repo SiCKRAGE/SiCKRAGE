@@ -1,6 +1,7 @@
 # Changelog
 
-- * db631c2 - 2016-10-14: fix: Added IOLoop variable to core module 
+- * 1fa7365 - 2016-10-15: fix: Misc small fixes 
+- * 0a242c6 - 2016-10-14: fix: Added IOLoop variable to core module 
 - * 5ba5063 - 2016-10-13: fix: Minor change (testing) 
 - * 74e09f1 - 2016-10-13: new: v8.5.7 fix: Minor fix for metadata episode creation 
 - * f7d7168 - 2016-10-13: new: v8.5.6 
