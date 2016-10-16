@@ -65,15 +65,7 @@ class srProperSearcher(object):
 
         self._set_lastProperSearch(datetime.datetime.today().toordinal())
 
-        run_at = ""
-        if None is sickrage.srCore.PROPERSEARCHER.start_time:
-            run_in = sickrage.srCore.PROPERSEARCHER.lastRun + sickrage.srCore.PROPERSEARCHER.cycleTime - datetime.datetime.now()
-            hours, remainder = divmod(run_in.seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            run_at = ", next check in approx. " + (
-                "%dh, %dm" % (hours, minutes) if 0 < hours else "%dm, %ds" % (minutes, seconds))
-
-        sickrage.srCore.srLogger.info("Completed the search for new propers%s" % run_at)
+        sickrage.srCore.srLogger.info("Completed the search for new propers")
 
         self.amActive = False
 
