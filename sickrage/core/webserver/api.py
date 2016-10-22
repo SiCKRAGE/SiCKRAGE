@@ -1527,7 +1527,7 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
     _help = {
         "desc": "Pause or unpause the backlog search",
         "optionalParameters": {
-            "pause ": {"desc": "True to pause the backlog search, False to unpause it"}
+            "pause": {"desc": "True to pause the backlog search, False to unpause it"}
         }
     }
 
