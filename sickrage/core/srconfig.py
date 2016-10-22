@@ -892,7 +892,7 @@ class srConfig(object):
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin', 'reject_m2ts', 'cookies']
+                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             defaults['Providers'][providerID] = dict(
@@ -2348,11 +2348,11 @@ class srConfig(object):
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin', 'reject_m2ts', 'cookies']
+                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             new_config['Providers'][providerID] = dict(
-                [(x, providerObj.__dict__[x]) for x in provider_keys if x in providerObj.__dict__])
+                [(x, providerObj.__dict__[x]) for x in provider_keys if hasattr(providerObj, x)])
 
         # encrypt settings
         new_config.walk(self.encrypt)

@@ -4466,39 +4466,86 @@ class ConfigProviders(Config):
         # dynamically load provider settings
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             try:
-                providerObj.minseed = int(kwargs.get(providerID + '_minseed') or 0)
-                providerObj.minleech = int(kwargs.get(providerID + '_minleech') or 0)
-                providerObj.ratio = str(kwargs.get(providerID + '_ratio', '')).strip()
-                providerObj.digest = str(kwargs.get(providerID + '_digest', '')).strip()
-                providerObj.hash = str(kwargs.get(providerID + '_hash', '')).strip()
-                providerObj.api_key = str(kwargs.get(providerID + '_api_key', '')).strip()
-                providerObj.username = str(kwargs.get(providerID + '_username', '')).strip()
-                providerObj.password = str(kwargs.get(providerID + '_password', '')).strip()
-                providerObj.passkey = str(kwargs.get(providerID + '_passkey', '')).strip()
-                providerObj.pin = str(kwargs.get(providerID + '_pin', '')).strip()
-                providerObj.confirmed = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_confirmed') or 0)
-                providerObj.ranked = sickrage.srCore.srConfig.checkbox_to_value(kwargs.get(providerID + '_ranked') or 0)
-                providerObj.engrelease = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_engrelease') or 0)
-                providerObj.onlyspasearch = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_onlyspasearch') or 0)
-                providerObj.sorting = str(kwargs.get(providerID + '_sorting', 'seeders')).strip()
-                providerObj.freeleech = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_freeleech') or 0)
-                providerObj.reject_m2ts = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_reject_m2ts') or 0)
-                providerObj.search_mode = str(kwargs.get(providerID + '_search_mode', 'eponly')).strip()
-                providerObj.search_fallback = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_search_fallback') or 0)
-                providerObj.enable_daily = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_enable_daily') or 0)
-                providerObj.enable_backlog = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_enable_backlog') or 0)
-                providerObj.cat = int(kwargs.get(providerID + '_cat') or 0)
-                providerObj.subtitle = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerID + '_subtitle') or 0)
-                providerObj.cookies = str(kwargs.get(providerID + '_cookies', '')).strip()
+                if hasattr(providerObj, 'minseed'):
+                    providerObj.minseed = int(kwargs.get(providerID + '_minseed') or 0)
+
+                if hasattr(providerObj, 'minleech'):
+                    providerObj.minleech = int(kwargs.get(providerID + '_minleech') or 0)
+
+                if hasattr(providerObj, 'ratio'):
+                    providerObj.ratio = str(kwargs.get(providerID + '_ratio', '')).strip()
+
+                if hasattr(providerObj, 'digest'):
+                    providerObj.digest = str(kwargs.get(providerID + '_digest', '')).strip()
+
+                if hasattr(providerObj, 'hash'):
+                    providerObj.hash = str(kwargs.get(providerID + '_hash', '')).strip()
+
+                if hasattr(providerObj, 'api_key'):
+                    providerObj.api_key = str(kwargs.get(providerID + '_api_key', '')).strip()
+
+                if hasattr(providerObj, 'username'):
+                    providerObj.username = str(kwargs.get(providerID + '_username', '')).strip()
+
+                if hasattr(providerObj, 'password'):
+                    providerObj.password = str(kwargs.get(providerID + '_password', '')).strip()
+
+                if hasattr(providerObj, 'passkey'):
+                    providerObj.passkey = str(kwargs.get(providerID + '_passkey', '')).strip()
+
+                if hasattr(providerObj, 'pin'):
+                    providerObj.pin = str(kwargs.get(providerID + '_pin', '')).strip()
+
+                if hasattr(providerObj, 'confirmed'):
+                    providerObj.confirmed = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_confirmed') or 0)
+
+                if hasattr(providerObj, 'ranked'):
+                    providerObj.ranked = sickrage.srCore.srConfig.checkbox_to_value(kwargs.get(providerID + '_ranked') or 0)
+
+                if hasattr(providerObj, 'engrelease'):
+                    providerObj.engrelease = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_engrelease') or 0)
+
+                if hasattr(providerObj, 'onlyspasearch'):
+                    providerObj.onlyspasearch = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_onlyspasearch') or 0)
+
+                if hasattr(providerObj, 'sorting'):
+                    providerObj.sorting = str(kwargs.get(providerID + '_sorting', 'seeders')).strip()
+
+                if hasattr(providerObj, 'freeleech'):
+                    providerObj.freeleech = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_freeleech') or 0)
+
+                if hasattr(providerObj, 'reject_m2ts'):
+                    providerObj.reject_m2ts = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_reject_m2ts') or 0)
+
+                if hasattr(providerObj, 'search_mode'):
+                    providerObj.search_mode = str(kwargs.get(providerID + '_search_mode', 'eponly')).strip()
+
+                if hasattr(providerObj, 'search_fallback'):
+                    providerObj.search_fallback = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_search_fallback') or 0)
+
+                if hasattr(providerObj, 'enable_daily'):
+                    providerObj.enable_daily = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_enable_daily') or 0)
+
+                if hasattr(providerObj, 'enable_backlog'):
+                    providerObj.enable_backlog = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_enable_backlog') or 0)
+
+                if hasattr(providerObj, 'cat'):
+                    providerObj.cat = int(kwargs.get(providerID + '_cat') or 0)
+
+                if hasattr(providerObj, 'subtitle'):
+                    providerObj.subtitle = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_subtitle') or 0)
+
+                if hasattr(providerObj, 'cookies'):
+                    providerObj.cookies = str(kwargs.get(providerID + '_cookies', '')).strip()
             except Exception as e:
                 continue
 

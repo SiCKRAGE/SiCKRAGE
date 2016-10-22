@@ -426,7 +426,7 @@
                                         </div>
                                     % endif
 
-                                    % if hasattr(providerObj, 'enable_cookies'):
+                                    % if getattr(providerObj, 'enable_cookies', False):
                                         <div class="field-pair">
                                             <label for="${providerID}_cookies">
                                                 <span class="component-title">Cookies:</span>
