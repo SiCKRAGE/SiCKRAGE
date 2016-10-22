@@ -30,8 +30,15 @@ import sickrage
 from CodernityDB.database import PreconditionsException
 from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
 from CodernityDB.index import IndexException, IndexNotFoundException, IndexConflict
+from CodernityDB.storage import IU_Storage
 from sickrage.core.helpers import randomString
 
+def Custom_IU_Storage_get(self, start, size, status='c'):
+    if status == 'd':
+        return None
+    else:
+        self._f.seek(start)
+        return self.data_from(self._f.read(size))
 
 class srDatabase(object):
     _database = {}
@@ -285,3 +292,6 @@ class srDatabase(object):
                     os.rename(self.old_db_path + '-wal', '{}-wal.{}_old'.format(self.old_db_path, random))
                 if os.path.isfile(self.old_db_path + '-shm'):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
+
+# Monkey-Patch storage to suppress logging messages
+IU_Storage.get = Custom_IU_Storage_get

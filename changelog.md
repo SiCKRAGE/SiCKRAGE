@@ -1,6 +1,7 @@
 # Changelog
 
-- * 56e0dd6 - 2016-10-22: fix: corrected issue with checking for enable_cookies attribute 
+- * 5a8c205 - 2016-10-22: fix: Monkey-Patched CodernityDB IU Storage get function to not print to screen debug messages 
+- * 3db5ed7 - 2016-10-22: fix: corrected issue with checking for enable_cookies attribute 
 - * d3b508f - 2016-10-22: new: Added user-settable cookie support for TorrentDay, Scenetime, and Custom RSS Torrent providers 
 - * fa64467 - 2016-10-22: fix: Typo in API causing doubles 
 - * e5f0fae - 2016-10-15: new: v8.6.3 fix: Switched back to TornadoScheduler for APScheduler 
