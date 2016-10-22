@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4691dab - 2016-10-22: fix: Typo in API causing doubles 
+- * d8cd645 - 2016-10-22: new: Added user-settable cookie support for TorrentDay, Scenetime, and Custom RSS Torrent providers 
+- * fa64467 - 2016-10-22: fix: Typo in API causing doubles 
 - * e5f0fae - 2016-10-15: new: v8.6.3 fix: Switched back to TornadoScheduler for APScheduler 
 - * c888b11 - 2016-10-15: new: v8.6.2 new: APScheduler v3.2 
 - * c96cfe6 - 2016-10-15: new: v8.6.1 fix: Fixed issues with loading languages from indexers 

@@ -39,6 +39,7 @@ from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
 from pynzb import nzb_parser
+from requests.utils import add_dict_to_cookiejar
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
@@ -70,6 +71,11 @@ class GenericProvider(object):
         self.enable_backlog = False
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
+
+        self.enable_cookies = False
+        self.cookies = ''
+        self.rss_cookies = ''
+        self.cookie_jar = dict()
 
     @property
     def id(self):
@@ -470,6 +476,21 @@ class GenericProvider(object):
         '''
         return ''
 
+    def add_cookies_from_ui(self):
+        """
+        Adds the cookies configured from UI to the providers requests session
+        :return: A tuple with the the (success result, and a descriptive message in str)
+        """
+
+        # This is the generic attribute used to manually add cookies for provider authentication
+        if self.enable_cookies and self.cookies:
+            cookie_validator = re.compile(r'^(\w+=\w+)(;\w+=\w+)*$')
+            if cookie_validator.match(self.cookies):
+                add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
+                return True
+
+        return False
+
     @classmethod
     def getDefaultProviders(cls):
         pass
@@ -770,6 +791,7 @@ class TorrentRssProvider(TorrentProvider):
         self.search_fallback = search_fallback
         self.enable_daily = enable_daily
         self.enable_backlog = enable_backlog
+        self.enable_cookies = True
         self.cookies = cookies
         self.titleTAG = titleTAG
         self.default = default

@@ -4498,6 +4498,7 @@ class ConfigProviders(Config):
                 providerObj.cat = int(kwargs.get(providerID + '_cat') or 0)
                 providerObj.subtitle = sickrage.srCore.srConfig.checkbox_to_value(
                     kwargs.get(providerID + '_subtitle') or 0)
+                providerObj.cookies = str(kwargs.get(providerID + '_cookies', '')).strip()
             except Exception as e:
                 continue
 

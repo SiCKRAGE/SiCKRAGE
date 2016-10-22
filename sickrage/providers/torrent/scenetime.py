@@ -18,10 +18,10 @@
 
 from __future__ import unicode_literals
 
-import re
 import traceback
 
 import sickrage
+from requests.utils import dict_from_cookiejar
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
@@ -40,6 +40,8 @@ class SceneTimeProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
+        self.enable_cookies = True
+
         self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
@@ -52,18 +54,22 @@ class SceneTimeProvider(TorrentProvider):
         self.categories = [2, 42, 9, 63, 77, 79, 100, 83]
 
     def login(self):
+        cookie_dict = dict_from_cookiejar(self.cookie_jar)
+        if cookie_dict.get('uid') and cookie_dict.get('pass'):
+            return True
 
-        login_params = {'username': self.username,
-                        'password': self.password}
+        if not self.add_cookies_from_ui():
+            return False
 
-        try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
-        except Exception:
+        login_params = {'username': self.username, 'password': self.password}
+
+        response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30)
+        if response.status_code != 200:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
-        if re.search('Username or password incorrect', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+        if not dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).get('uid') in response.text:
+            sickrage.srCore.srLogger.warning("Failed to login, check your cookies")
             return False
 
         return True

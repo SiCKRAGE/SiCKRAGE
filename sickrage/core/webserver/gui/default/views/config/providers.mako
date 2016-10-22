@@ -426,6 +426,21 @@
                                         </div>
                                     % endif
 
+                                    % if providerObj.enable_cookies:
+                                        <div class="field-pair">
+                                            <label for="${providerID}_cookies">
+                                                <span class="component-title">Cookies:</span>
+                                                <span class="component-desc">
+                                                    <input type="text" name="${providerID}_cookies"
+                                                           id="${providerID}_cookies"
+                                                           value="${providerObj.cookies}"
+                                                           class="form-control input-sm input350"
+                                                           autocapitalize="off" autocomplete="no"/>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    % endif
+
                                     % if hasattr(providerObj, 'pin'):
                                         <div class="field-pair">
                                             <label for="${providerID}_pin">
