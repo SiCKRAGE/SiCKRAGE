@@ -41,6 +41,10 @@ module.exports = function (grunt) {
                         'dist/js/bootstrap-formhelpers.min.js',
                         'dist/css/bootstrap-formhelpers.min.css'
                     ],
+                    'jquery-ui': [
+                        'jquery-ui.min.js',
+                        'themes/base/jquery-ui.min.css'
+                    ],
                     'jquery.tablesorter': [
                         'dist/js/jquery.tablesorter.combined.min.js',
                         'dist/js/widgets/widget-columnSelector.min.js',
