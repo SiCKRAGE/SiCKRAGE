@@ -5,7 +5,6 @@
     from sickrage.providers.torrent import thepiratebay
     from sickrage.core.helpers import anon_url
 %>
-
 <%block name="scripts">
     <script type="text/javascript">
         $(document).ready(function () {
@@ -84,7 +83,7 @@
                                         <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider])]}"
                                             id="${providerID}">
                                             <input type="checkbox" id="enable_${providerID}"
-                                                   class="provider_enabler" ${('', 'checked="checked"')[providerObj.isEnabled == True]}/>
+                                                   class="provider_enabler" ${('', 'checked="checked"')[bool(providerObj.isEnabled)]}/>
                                             <a href="${anon_url(providerObj.urls['base_url'])}" class="imgLink"
                                                rel="noreferrer"
                                                onclick="window.open(this.href, '_blank'); return false;"><img
@@ -94,9 +93,9 @@
                                             <label for="enable_${providerID}"
                                                    style="vertical-align:middle;">${providerObj.name}</label>
                                             ${('<span class="red-text">*</span>', '')[bool(providerObj.supports_backlog)]}
-                                            <span class="ui-icon ui-icon-gear pull-right"
+                                            <span class="ui-icon ui-icon-arrowthick-2-n-s pull-right"
                                                   style="vertical-align:middle;"></span>
-                                            <span class="ui-icon ${('ui-icon-unlocked','ui-icon-locked')[bool(providerObj.private)]} pull-right"
+                                            <span class="ui-icon ${('ui-icon-unlocked','ui-icon-locked')[bool(providerObj.private)]} pull-left"
                                                   style="vertical-align:middle;"></span>
                                         </li>
                                     % endif
@@ -435,8 +434,13 @@
                                                            id="${providerID}_cookies"
                                                            value="${providerObj.cookies}"
                                                            class="form-control input-sm input350"
-                                                           autocapitalize="off" autocomplete="no"/>
+                                                           autocapitalize="off" autocomplete="no"
+                                                    />
                                                 </span>
+                                            </label>
+                                            <label>
+                                                <span class="component-title">&nbsp;</span>
+                                                <span class="component-desc">eg. uid=xx;pass=yy</span>
                                             </label>
                                         </div>
                                     % endif

@@ -51,15 +51,15 @@ inc_top.mako
 
 .ui-icon,
 .ui-widget-content .ui-icon {
-	background-image: url("../../images/ui/ui-icons_ffffff_256x240.png");
+	background-image: url("../images/ui-icons_ffffff_256x240.png");
 }
 
 .ui-state-default .ui-icon {
-	background-image: url("../../../images/ui/ui-icons_09a2ff_256x240.png");
+	background-image: url("/../images/ui-icons_056b93_256x240.png");
 }
 
 .ui-widget-overlay {
-	background: #000000 url("../../images/ui/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
+	background: #000000 url("../images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
 }
 
 .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
@@ -72,9 +72,9 @@ inc_top.mako
 }
 
 .ui-tabs {
-    padding: 0px;
+    padding: 0;
     background: none;
-    border-width: 0px;
+    border-width: 0;
 }
 
 .ui-tabs .ui-tabs-panel {
@@ -99,83 +99,83 @@ inc_top.mako
 }
 
 .menu-icon-addshow {
-	background-position: 0px 0px;
+	background-position: 0 0;
 }
 
 .menu-icon-anime {
-	background-position: -21px 0px;
+	background-position: -21px 0;
 }
 
 .menu-icon-backlog-view {
-	background-position: -42px 0px;
+	background-position: -42px 0;
 }
 
 .menu-icon-backlog {
-	background-position: -63px 0px;
+	background-position: -63px 0;
 }
 
 .menu-icon-bittorrent {
-	background-position: -84px 0px;
+	background-position: -84px 0;
 }
 
 .menu-icon-config-index {
-	background-position: -105px 0px;
+	background-position: -105px 0;
 }
 
 .menu-icon-config {
-	background-position: -126px 0px;
+	background-position: -126px 0;
 }
 
 .menu-icon-failed-download {
-	background-position: -147px 0px;
+	background-position: -147px 0;
 }
 
 .menu-icon-home {
-	background-position: -168px 0px;
+	background-position: -168px 0;
 }
 
 .menu-icon-manage {
-	background-position: -189px 0px;
+	background-position: -189px 0;
 }
 
 .menu-icon-manage-searches {
-	background-position: -210px 0px;
+	background-position: -210px 0;
 }
 
 .menu-icon-poster {
-	background-position: -231px 0px;
+	background-position: -231px 0;
 }
 
 .menu-icon-postprocess {
-	background-position: -252px 0px;
+	background-position: -252px 0;
 }
 
 .menu-icon-restart {
-	background-position: -273px 0px;
+	background-position: -273px 0;
 }
 
 .menu-icon-shutdown {
-	background-position: -294px 0px;
+	background-position: -294px 0;
 }
 
 .menu-icon-update {
-	background-position: -315px 0px;
+	background-position: -315px 0;
 }
 
 .menu-icon-viewlog-errors {
-	background-position: -336px 0px;
+	background-position: -336px 0;
 }
 
 .menu-icon-viewlog {
-	background-position: -357px 0px;
+	background-position: -357px 0;
 }
 
 .menu-icon-kodi {
-	background-position: -378px 0px;
+	background-position: -378px 0;
 }
 
 .menu-icon-help {
-	background-position: -399px 0px;
+	background-position: -399px 0;
 }
 
 [class^="submenu-icon-"], [class*=" submenu-icon-"] {
@@ -185,27 +185,27 @@ inc_top.mako
 }
 
 .submenu-icon-anime {
-	background-position: -21px 0px;
+	background-position: -21px 0;
 }
 
 .submenu-icon-bittorrent {
-	background-position: -84px 0px;
+	background-position: -84px 0;
 }
 
 .submenu-icon-failed-download {
-	background-position: -147px 0px;
+	background-position: -147px 0;
 }
 
 .submenu-icon-restart {
-	background-position: -273px 0px;
+	background-position: -273px 0;
 }
 
 .submenu-icon-shutdown {
-	background-position: -294px 0px;
+	background-position: -294px 0;
 }
 
 .submenu-icon-kodi {
-	background-position: -378px 0px;
+	background-position: -378px 0;
 }
 
 /* =======================================================================
@@ -420,7 +420,7 @@ ul.tags li {
 	border: 1px solid #111;
 	color: #FFF;
 	font: 14px/18px "Open Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
-	text-shadow: 0px 1px rgba(0, 0, 0, 0.8);
+	text-shadow: 0 1px rgba(0, 0, 0, 0.8);
 	float: left;
 }
 
@@ -501,7 +501,7 @@ h2.day, h2.network {
 	letter-spacing: 1px;
 	color: #FFF;
 	text-align: center;
-	text-shadow: -1px -1px 0px rgba(0, 0, 0, 0.3);
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
 	background-color: #15528F;
 }
 
@@ -510,7 +510,7 @@ h2.day, h2.network {
 	clear: both;
 	border: 1px solid #ccc;
 	margin: auto;
-	padding: 0px;
+	padding: 0;
 	text-align: left;
 	width: 750px;
 	border-radius: 5px;
@@ -753,7 +753,7 @@ body {
 .dropdown-menu {
 	background-color: #333;
 	border: 1px solid rgba(0, 0, 0, 0.15);
-	box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.176);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
 }
 
 .btn {
@@ -894,7 +894,7 @@ formWizard.css
 
 legend.legendStep {
 	color: #ffffff;
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
 
 div.stepsguide .step p {
@@ -929,10 +929,10 @@ pnotify.css
 	background-image: -o-linear-gradient(#333, #3d3d3d) !important;
 	filter: progid:dximagetransform.microsoft.gradient(startColorstr=#333, endColorstr=#3d3d3d) !important;
 	-ms-filter: progid:dximagetransform.microsoft.gradient(startColorstr=#333, endColorstr=#3d3d3d) !important;
-	-moz-box-shadow: 0px 0px 2px #000;
-	-webkit-box-shadow: 0px 0px 2px #000;
-	-o-box-shadow: 0px 0px 2px #000;
-	box-shadow: 0px 0px 2px #000;
+	-moz-box-shadow: 0 0 2px #000;
+	-webkit-box-shadow: 0 0 2px #000;
+	-o-box-shadow: 0 0 2px #000;
+	box-shadow: 0 0 2px #000;
 }
 
 .ui-pnotify-title {
@@ -1058,7 +1058,7 @@ jquery.confirm.css
 	top: 50%;
 	margin: -130px 0 0 -230px;
 	border: 1px solid #111;
-	box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.175);
+	box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.175);
 }
 
 #confirmBox h1 {
@@ -1067,13 +1067,13 @@ jquery.confirm.css
 	color: #fff;
 	margin: 0;
 	font-size: 22px;
-	text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
 }
 
 #confirmBox p {
 	padding-top: 20px;
 	color: #fff;
-	text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
 }
 
 /* =======================================================================

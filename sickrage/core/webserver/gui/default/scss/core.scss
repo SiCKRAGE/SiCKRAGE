@@ -35,11 +35,11 @@
   background: url("../images/loading.gif") 10px 50% no-repeat !important; }
 
 .ui-progressbar .ui-progressbar-overlay {
-  background: url("../images/ui/animated-overlay.gif"); }
+  background: url("../images/animated-overlay.gif"); }
 
 .ui-dialog,
 .ui-dialog-buttonpane {
-  background: #eceadf url("../images/ui/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important; }
+  background: #eceadf url("../images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important; }
 
 .ui-accordion-content,
 .ui-tabs-panel {
@@ -75,39 +75,39 @@
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-  background: #fbf9ee url("../images/ui/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
+  background: #fbf9ee url("../images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
 
 .ui-state-error,
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
-  background: #fef1ec url("../images/ui/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
+  background: #fef1ec url("../images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
 
 .ui-icon,
 .ui-widget-content .ui-icon {
-  background-image: url("../images/ui/ui-icons_222222_256x240.png"); }
+  background-image: url("../images/ui-icons_222222_256x240.png"); }
 
 .ui-widget-header .ui-icon {
-  background-image: url("../images/ui/ui-icons_222222_256x240.png"); }
+  background-image: url("../images/ui-icons_222222_256x240.png"); }
 
 .ui-state-default .ui-icon {
-  background-image: url("../images/ui/ui-icons_8c291d_256x240.png"); }
+  background-image: url("../images/ui-icons_8c291d_256x240.png"); }
 
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-  background-image: url("../images/ui/ui-icons_222222_256x240.png"); }
+  background-image: url("../images/ui-icons_222222_256x240.png"); }
 
 .ui-state-active .ui-icon {
-  background-image: url("../images/ui/ui-icons_8c291d_256x240.png"); }
+  background-image: url("../images/ui-icons_8c291d_256x240.png"); }
 
 .ui-state-highlight .ui-icon {
-  background-image: url("../images/ui/ui-icons_2e83ff_256x240.png"); }
+  background-image: url("../images/ui-icons_2e83ff_256x240.png"); }
 
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-  background-image: url("../images/ui/ui-icons_cd0a0a_256x240.png"); }
+  background-image: url("../images/ui-icons_cd0a0a_256x240.png"); }
 
 .ui-widget-overlay {
-  background: #aaaaaa url("../images/ui/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; }
+  background: #aaaaaa url("../images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; }
 
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   color: #140F06;
@@ -118,17 +118,17 @@
   text-decoration: none; }
 
 .ui-tabs {
-  padding: 0px;
+  padding: 0;
   background: none;
-  border-width: 0px; }
+  border-width: 0; }
 
 .ui-tabs .ui-tabs-nav {
-  padding-left: 0px;
+  padding-left: 0;
   background: transparent;
-  border-width: 0px 0px 0px 0px;
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  border-radius: 0px; }
+  border-width: 0 0 0 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0; }
 
 .ui-tabs .ui-tabs-panel {
   background-color: #F7F7F7 !important;
@@ -162,7 +162,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
-  margin-bottom: 0px; }
+  margin-bottom: 0; }
 
 [class^="menu-icon-"], [class*=" menu-icon-"] {
   background: url("../images/menu/menu-icons-black.png");
@@ -183,64 +183,64 @@
   float: left; }
 
 .menu-icon-addshow {
-  background-position: 0px 0px; }
+  background-position: 0 0; }
 
 .menu-icon-anime {
-  background-position: -21px 0px; }
+  background-position: -21px 0; }
 
 .menu-icon-backlog-view {
-  background-position: -42px 0px; }
+  background-position: -42px 0; }
 
 .menu-icon-backlog {
-  background-position: -63px 0px; }
+  background-position: -63px 0; }
 
 .menu-icon-bittorrent {
-  background-position: -84px 0px; }
+  background-position: -84px 0; }
 
 .menu-icon-config-index {
-  background-position: -105px 0px; }
+  background-position: -105px 0; }
 
 .menu-icon-config {
-  background-position: -126px 0px; }
+  background-position: -126px 0; }
 
 .menu-icon-failed-download {
-  background-position: -147px 0px; }
+  background-position: -147px 0; }
 
 .menu-icon-home {
-  background-position: -168px 0px; }
+  background-position: -168px 0; }
 
 .menu-icon-manage {
-  background-position: -189px 0px; }
+  background-position: -189px 0; }
 
 .menu-icon-manage-searches {
-  background-position: -210px 0px; }
+  background-position: -210px 0; }
 
 .menu-icon-poster {
-  background-position: -231px 0px; }
+  background-position: -231px 0; }
 
 .menu-icon-postprocess {
-  background-position: -252px 0px; }
+  background-position: -252px 0; }
 
 .menu-icon-restart {
-  background-position: -273px 0px; }
+  background-position: -273px 0; }
 
 .menu-icon-shutdown {
-  background-position: -294px 0px; }
+  background-position: -294px 0; }
 
 .menu-icon-update {
-  background-position: -315px 0px; }
+  background-position: -315px 0; }
 
 .menu-icon-viewlog-errors {
-  background-position: -336px 0px; }
+  background-position: -336px 0; }
 
 .menu-icon-viewlog {
-  background-position: -357px 0px; }
+  background-position: -357px 0; }
 
 .menu-icon-kodi {
-  background-position: -378px 0px; }
+  background-position: -378px 0; }
 
 .menu-icon-help {
-  background-position: -399px 0px; }
+  background-position: -399px 0; }
 
 [class^="submenu-icon-"], [class*=" submenu-icon-"] {
   background: url("../images/menu/menu-icons-black.png");
@@ -248,22 +248,22 @@
   width: 16px; }
 
 .submenu-icon-anime {
-  background-position: -21px 0px; }
+  background-position: -21px 0; }
 
 .submenu-icon-bittorrent {
-  background-position: -84px 0px; }
+  background-position: -84px 0; }
 
 .submenu-icon-failed-download {
-  background-position: -147px 0px; }
+  background-position: -147px 0; }
 
 .submenu-icon-restart {
-  background-position: -273px 0px; }
+  background-position: -273px 0; }
 
 .submenu-icon-shutdown {
-  background-position: -294px 0px; }
+  background-position: -294px 0; }
 
 .submenu-icon-kodi {
-  background-position: -378px 0px; }
+  background-position: -378px 0; }
 
 .footer {
   width: 100%;
@@ -404,22 +404,22 @@
   top: -2px; }
 
 .show .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-  border-bottom-right-radius: 0px; }
+  border-bottom-right-radius: 0; }
 
 .show .ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
-  border-bottom-left-radius: 0px; }
+  border-bottom-left-radius: 0; }
 
 .show .ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
-  border-top-right-radius: 0px; }
+  border-top-right-radius: 0; }
 
 .show .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
-  border-top-left-radius: 0px; }
+  border-top-left-radius: 0; }
 
 .show .ui-widget-content {
   border-top: 1px solid #111;
   border-bottom: 1px solid #111;
-  border-left: 0px;
-  border-right: 0px; }
+  border-left: 0;
+  border-right: 0; }
 
 .ui-progressbar .ui-progressbar-value {
   height: 20px; }
@@ -431,7 +431,7 @@
 .show .progress-40,
 .show .progress-60,
 .show .progress-80 {
-  border-radius: 0px;
+  border-radius: 0;
   height: 7px; }
 
 .show-title {
@@ -439,7 +439,7 @@
   overflow: hidden;
   white-space: nowrap;
   font-size: 11px;
-  margin: 4px 4px 0px 4px; }
+  margin: 4px 4px 0 4px; }
 
 .show-title:after {
   content: "";
@@ -460,7 +460,7 @@
   overflow: hidden;
   white-space: nowrap;
   font-size: 11px;
-  margin: 0px 4px 4px 4px; }
+  margin: 0 4px 4px 4px; }
 
 .show-date:after {
   content: "";
@@ -763,7 +763,7 @@ ul.tags li {
   border: 1px solid #111;
   color: #FFF;
   font: 14px/18px "Open Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
-  text-shadow: 0px 1px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px rgba(0, 0, 0, 0.8);
   float: left; }
 
 ul.tags li a {
@@ -1047,7 +1047,7 @@ h2.day, h2.network {
   letter-spacing: 1px;
   color: #FFF;
   text-align: center;
-  text-shadow: -1px -1px 0px rgba(0, 0, 0, 0.3);
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
   background-color: #333; }
 
 .tvshowDiv {
@@ -1055,7 +1055,7 @@ h2.day, h2.network {
   clear: both;
   border: 1px solid #ccc;
   margin: auto;
-  padding: 0px;
+  padding: 0;
   text-align: left;
   width: 750px;
   border-radius: 5px;
@@ -1181,7 +1181,7 @@ h2.day, h2.network {
   color: #666; }
 
 #config div.field-pair {
-  padding: 12px 0px; }
+  padding: 12px 0; }
 
 #config div.field-pair select,
 #config div.field-pair input {
@@ -1255,7 +1255,7 @@ select .selected {
 
 #provider_order_list input,
 #service_order_list input {
-  margin: 0px 2px; }
+  margin: 0 2px; }
 
 #config .tip_scale label span.component-title {
   width: 85px !important;
@@ -1376,7 +1376,7 @@ div.metadataDiv .disabled {
 
 .notifier-icon {
   float: left;
-  margin: 6px 4px 0px 0px; }
+  margin: 6px 4px 0 0; }
 
 .warning {
   border-color: #F89406;
@@ -1406,7 +1406,7 @@ td.tableright {
   text-align: left;
   vertical-align: middle;
   width: 225px;
-  padding: 6px 0px; }
+  padding: 6px 0; }
 
 .optionWrapper div.selectChoices {
   float: left;
@@ -1451,7 +1451,7 @@ span.quality {
   background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
   -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
-  text-shadow: 0px 1px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px rgba(0, 0, 0, 0.8);
   color: #FFFFFF;
   display: inline-block;
   padding: 2px 4px;
@@ -1545,7 +1545,7 @@ div.blackwhitelist {
   text-align: center; }
 
 div.blackwhitelist input {
-  margin: 5px 0px; }
+  margin: 5px 0; }
 
 div.blackwhitelist.pool select {
   width: 230px; }
@@ -1558,7 +1558,7 @@ div.blackwhitelist span {
   text-align: center; }
 
 div.blackwhitelist.anidb, div.blackwhitelist.manual {
-  margin: 7px 0px; }
+  margin: 7px 0; }
 
 /* =======================================================================
 bootstrap Overrides
@@ -1573,11 +1573,11 @@ html * {
   outline: 0 !important; }
 
 input[type="checkbox"] {
-  margin: 2px 0px 0px;
+  margin: 2px 0 0;
   line-height: normal; }
 
 input[type="radio"] {
-  margin: 2px 0px 0px;
+  margin: 2px 0 0;
   line-height: normal; }
 
 input, textarea, select, .uneditable-input {
@@ -1698,7 +1698,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
 .dropdown-menu {
   background-color: #F5F1E4;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.176); }
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176); }
 
 .form-control {
   color: #000000; }
@@ -2403,7 +2403,7 @@ jquery.confirm.css
   top: 50%;
   margin: -130px 0 0 -230px;
   border: 1px solid #111;
-  box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.175); }
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.175); }
 
 #confirmBox h1,
 #confirmBox p {
@@ -2415,12 +2415,12 @@ jquery.confirm.css
   color: #fff;
   margin: 0;
   font-size: 22px;
-  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75); }
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75); }
 
 #confirmBox p {
   padding-top: 20px;
   color: #000;
-  text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.75); }
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75); }
 
 #confirmButtons {
   padding: 15px 0;
@@ -2433,7 +2433,7 @@ jquery.confirm.css
   display: inline-block;
   color: #fff;
   text-align: center;
-  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
   background-clip: padding-box;
   border: 1px solid #111;
   border-radius: 3px;
@@ -2524,8 +2524,8 @@ IMDB Popular
   margin-bottom: 30px; }
 
 .popularShow h3 {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   display: inline-block;
   margin-right: 30px; }
 
@@ -2549,10 +2549,10 @@ IMDB Popular
 .popularShow .rating {
   font-size: 90%;
   display: inline-block;
-  margin-left: 0px; }
+  margin-left: 0; }
 
 .popularShow p {
-  margin-bottom: 0px; }
+  margin-bottom: 0; }
 
 /* =======================================================================
 File Browser
@@ -3375,5 +3375,3 @@ Country Flags
   /* Width of image */
   height: 38px;
   /* Height of image */ }
-
-/*# sourceMappingURL=core.scss.map */

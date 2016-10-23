@@ -5,11 +5,6 @@ module.exports = function (grunt) {
         clean: {
             dist: 'dist',
             bower_components: 'bower_components',
-//            fonts: 'sickrage/core/webserver/gui/default/fonts/',
-//            images: [
-//                'sickrage/core/webserver/gui/default/images/ui/',
-//                'sickrage/core/webserver/gui/default/images/tablesorter/'
-//            ],
             sass: [
                 '.sass-cache',
                 'sickrage/core/webserver/gui/default/scss/'
@@ -27,8 +22,10 @@ module.exports = function (grunt) {
         },
         bower_concat: {
             all: {
-                dest: 'dist/bower.js',
-                cssDest: 'dist/bower.css',
+                dest: {
+                    js:'dist/bower.js',
+                    css:'dist/bower.css'
+                },
                 callback: function (mainFiles) {
                     return mainFiles.map(function (filepath) {
                         var min = filepath.replace(/\.js$/, '.min.js');
@@ -39,10 +36,6 @@ module.exports = function (grunt) {
                     'bootstrap': [
                         'dist/css/bootstrap.min.css',
                         'dist/js/bootstrap.min.js'
-                    ],
-                    'jquery-ui': [
-                        'jquery-ui.min.js',
-                        'themes/base/jquery-ui.min.css'
                     ],
                     'bootstrap-formhelpers': [
                         'dist/js/bootstrap-formhelpers.min.js',
@@ -88,7 +81,7 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     fontPath: 'sickrage/core/webserver/gui/default/fonts/',
-                    cssFile: 'dist/fonts.css',
+                    css: 'dist/fonts.css',
                     formats: {
                         eot: true,
                         ttf: true,
@@ -129,14 +122,11 @@ module.exports = function (grunt) {
             }
         },
         imagemin: {
-            options: {
-                optimizationLevel: 3
-            },
             jquery_ui: {
                 files: [{
                     expand: true,
                     flatten: true,
-                    cwd: 'bower_components/jquery-ui/themes/base/images/',
+                    cwd: 'bower_components/jquery-ui/themes/',
                     src: ['**/*.{png,jpg,gif}'],
                     dest: 'sickrage/core/webserver/gui/default/images/'
                 }]

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7c8fc40 - 2016-10-22: fix: Fixed issues with saving providers then having incorrect attributes showing 
+- * f58511c - 2016-10-22: fix: Added missing jquery-ui images fix: Updated bower components 
+- * 002de48 - 2016-10-22: fix: Fixed issues with saving providers then having incorrect attributes showing 
 - * 990916d - 2016-10-22: fix: Monkey-Patched CodernityDB IU Storage get function to not print to screen debug messages 
 - * 3db5ed7 - 2016-10-22: fix: corrected issue with checking for enable_cookies attribute 
 - * d3b508f - 2016-10-22: new: Added user-settable cookie support for TorrentDay, Scenetime, and Custom RSS Torrent providers 
