@@ -30,19 +30,18 @@ Automatic Video Library Manager for TV Shows. It watches for new episodes of you
 
 #### Links
 - [Support Forums](https://www.sickrage.ca/forums/)
-- [FAQ](https://github.com/SiCKRAGETV/SickRage/wiki/Frequently-Asked-Questions)
-- [Wiki](https://github.com/SiCKRAGETV/SickRage/wiki)
-- [Supported providers](https://github.com/SiCKRAGETV/sickrage-issues/wiki/SickRage-Search-Providers)
+- [FAQ](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Frequently-Asked-Questions)
+- [Wiki](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home)
+- [Supported providers](https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/SickRage-Search-Providers)
 - [Changes](https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/changelog.md)
 
 #### Important
-Before using this with your existing database (sickbeard.db or sickrage.db) please make a backup copy of it and delete any other database files such as cache.db and failed.db if present, We HIGHLY recommend starting out with no database files at all to make this a fresh start but the choice is at your own risk
+Before using this with your existing database sickrage.db please make a backup copy of it and delete any other database files such as cache.db and failed.db if present, We HIGHLY recommend starting out with no database files at all to make this a fresh start but the choice is at your own risk
 
 #### Special Thanks to:
 ![image](https://rarbg.com/favicon.ico)[RARBG](https://rarbg.to)
 ![image](https://torrentproject.se/favicon.ico)[TorrentProject](https://torrentproject.se/about)
 ![image](https://piratebay.to/favicon.ico)[ThePirateBay](https://thepiratebay.la/)
-![image](http://kat.cr/favicon.ico)[KickAssTorrents](https://kat.cr)
 ![image](https://nzb.cat/favicon.ico)[NZB.cat](https://nzb.cat/)
 ![image](https://nzbgeek.info/favicon.ico)[NZBGeek](https://nzbgeek.info)
 ![image](http://dognzb.cr/favicon.ico)[DOGnzb](dognzb.cr)
