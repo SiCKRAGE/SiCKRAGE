@@ -1,6 +1,7 @@
 # Changelog
 
-- * b3c1230 - 2016-10-23: new: v8.6.5 
+- * 6107e7b - 2016-10-23: new: v8.6.6 fix: Misc cleanups, Resolved torrent provider seed ratio issue 
+- * 437e2be - 2016-10-23: new: v8.6.5 
 - * 99fb372 - 2016-10-23: fix: Misc cleanup of code and headers including url updates fix: Fixed code for source updating 
 - * 4031902 - 2016-10-22: new: v8.6.4 
 - * af98b78 - 2016-10-22: fix: Added in missing jquery-ui 

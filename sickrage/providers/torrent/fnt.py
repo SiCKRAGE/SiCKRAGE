@@ -1,6 +1,6 @@
 # -*- coding: latin-1 -*-
 # Author: raver2046 <raver2046@gmail.com> from djoole <bobby.djoole@gmail.com>
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -162,5 +162,5 @@ class FNTProvider(TorrentProvider):
 
         return results
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio

@@ -1,5 +1,5 @@
 # Author: Idan Gutman
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -153,5 +153,5 @@ class TorrentLeechProvider(TorrentProvider):
 
         return results
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio

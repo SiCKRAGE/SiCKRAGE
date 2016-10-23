@@ -1,6 +1,6 @@
 # Author: Jasper Lanting
 # Based on nmj.py by Nico Berlee: http://nico.berlee.nl/
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #

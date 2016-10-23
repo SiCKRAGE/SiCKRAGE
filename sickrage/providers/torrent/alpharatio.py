@@ -147,5 +147,5 @@ class AlphaRatioProvider(TorrentProvider):
 
         return results
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio

@@ -1,6 +1,6 @@
 # Author: Maciej Olesinski (https://github.com/molesinski/)
 # Based on prowl.py by Nic Wolfe <nic@wolfeden.ca>
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #

@@ -1,6 +1,6 @@
 # Author: Dennis Lutter <lad1337@gmail.com>
 # Author: Jonathon Saine <thezoggy@gmail.com>
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #

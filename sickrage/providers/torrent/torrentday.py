@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://git.sickrage.ca
 #
@@ -141,7 +139,4 @@ class TorrentDayProvider(TorrentProvider):
             results += items[mode]
 
         return results
-
-    def seedRatio(self):
-        return self.ratio
 

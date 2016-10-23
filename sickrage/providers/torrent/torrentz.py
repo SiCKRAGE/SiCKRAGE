@@ -46,7 +46,7 @@ class TORRENTZProvider(TorrentProvider):
             'feed': '{base_url}/feed'.format(base_url=self.urls['base_url'])
         })
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio
 
     @staticmethod

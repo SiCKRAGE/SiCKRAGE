@@ -177,7 +177,7 @@ class HDBitsProvider(TorrentProvider):
 
         return post_data
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio
 
 

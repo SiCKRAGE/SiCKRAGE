@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -469,7 +469,7 @@ class GenericProvider(object):
         return [Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time']), self.show) for x in
                 results]
 
-    def seedRatio(self):
+    def seed_ratio(self):
         '''
         Provider should override this value if custom seed ratio enabled
         It should return the value of the provider seed ratio
@@ -540,6 +540,7 @@ class TorrentProvider(GenericProvider):
 
     def __init__(self, name, url, private):
         super(TorrentProvider, self).__init__(name, url, private)
+        self.ratio = None
 
     @property
     def isActive(self):
@@ -689,6 +690,9 @@ class TorrentProvider(GenericProvider):
 
         return results
 
+    def seed_ratio(self):
+        return self.ratio
+
     @classmethod
     def getProviders(cls):
         return super(TorrentProvider, cls).loadProviders(cls.type)
@@ -784,7 +788,6 @@ class TorrentRssProvider(TorrentProvider):
         super(TorrentRssProvider, self).__init__(name, url, private)
 
         self.cache = TorrentRssCache(self)
-        self.ratio = None
         self.supports_backlog = False
 
         self.search_mode = search_mode
@@ -877,9 +880,6 @@ class TorrentRssProvider(TorrentProvider):
             return False
         sickrage.srCore.srLogger.info("Saved custom_torrent html dump %s " % dumpName)
         return True
-
-    def seedRatio(self):
-        return self.ratio
 
     @classmethod
     def getProviders(cls):

@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -55,7 +55,7 @@ class ShazbatProvider(TorrentProvider):
 
         return True
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio
 
 

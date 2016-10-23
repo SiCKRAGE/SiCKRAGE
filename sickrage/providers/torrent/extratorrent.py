@@ -130,5 +130,5 @@ class ExtraTorrentProvider(TorrentProvider):
         except Exception:
             return ''
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio

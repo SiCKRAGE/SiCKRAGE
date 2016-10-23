@@ -1,5 +1,5 @@
 # Author: Mr_Orange
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -40,7 +40,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
         self.cache = TokyoToshokanCache(self, min_time=15)
 
-    def seedRatio(self):
+    def seed_ratio(self):
         return self.ratio
 
     def _get_season_search_strings(self, ep_obj):

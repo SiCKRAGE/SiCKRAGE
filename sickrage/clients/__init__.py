@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -302,7 +302,7 @@ class GenericClient(object):
 
         try:
             # Sets per provider seed ratio
-            result.ratio = result.provider.seedRatio()
+            result.ratio = result.provider.seed_ratio()
 
             # lazy fix for now, I'm sure we already do this somewhere else too
             result = self._get_torrent_hash(result)

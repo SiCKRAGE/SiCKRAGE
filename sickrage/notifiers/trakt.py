@@ -1,5 +1,5 @@
 # Author: Dieter Blomme <dieterblomme@gmail.com>
-# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
