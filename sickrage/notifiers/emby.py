@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -43,7 +43,7 @@ class EMBYNotifier(srNotifiers):
 
         url = 'http://%s/emby/Notifications/Admin' % (host)
         values = {'Name': 'SiCKRAGE', 'Description': message,
-                  'ImageUrl': 'http://www.sickrage.ca/favicon.ico'}
+                  'ImageUrl': 'https://www.sickrage.ca/favicon.ico'}
         data = json.dumps(values)
         try:
             req = urllib2.Request(url, data)

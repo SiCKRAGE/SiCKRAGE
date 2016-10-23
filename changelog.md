@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5728b71 - 2016-10-22: new: v8.6.4 
+- * c17a05d - 2016-10-23: fix: Misc cleanup of code and headers including url updates fix: Fixed code for source updating 
+- * 4031902 - 2016-10-22: new: v8.6.4 
 - * af98b78 - 2016-10-22: fix: Added in missing jquery-ui 
 - * f8b1e93 - 2016-10-22: fix: Added missing jquery-ui images fix: Updated bower components 
 - * 002de48 - 2016-10-22: fix: Fixed issues with saving providers then having incorrect attributes showing 

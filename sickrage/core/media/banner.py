@@ -1,7 +1,7 @@
 # This file is part of SickRage.
 #
 # URL: https://www.sickrage.ca
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
 # SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

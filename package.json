@@ -3,7 +3,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SiCKRAGETV/SiCKRAGE.git"
+    "url": "git+https://git.sickrage.ca/SiCKRAGE/sickrage.git"
   },
   "bugs": {
     "url": "https://www.sickrage.ca/forums/"

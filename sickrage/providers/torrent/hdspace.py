@@ -1,7 +1,7 @@
 # Author: Idan Gutman
 # Modified by jkaberg, https://github.com/jkaberg for SceneAccess
 # Modified by 7ca for HDSpace
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #

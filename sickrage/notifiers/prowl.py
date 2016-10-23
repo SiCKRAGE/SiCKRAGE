@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -22,9 +22,8 @@ import socket
 from httplib import HTTPException, HTTPSConnection
 from urllib import urlencode
 
-from requests.exceptions import SSLError
-
 import sickrage
+from requests.exceptions import SSLError
 from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers

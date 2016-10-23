@@ -135,7 +135,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                         <span class="component-title">&nbsp;</span>
                                         <span class="component-desc">
                                             <ul>
-                                                    <li>See <a href="https://github.com/SiCKRAGETV/SiCKRAGE/wiki/Subtitle%20Scripts"><font color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
+                                                    <li>See <a href="https://git.sickrage.ca/SiCKRAGE/sickrage/wiki/Subtitle%20Scripts"><font color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
                                                     <li>Additional scripts separated by <b>|</b>.</li>
                                                     <li>Scripts are called after each episode has searched and downloaded subtitles.</li>
                                                     <li>For any scripted languages, include the interpreter executable before the script. See the following example:</li>

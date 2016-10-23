@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -29,7 +29,7 @@ from sickrage.notifiers import srNotifiers
 
 
 class GrowlNotifier(srNotifiers):
-    sr_logo_url = 'http://www.sickrage.ca/favicon.ico'
+    sr_logo_url = 'https://www.sickrage.ca/favicon.ico'
 
     def test_notify(self, host, password):
         self._sendRegistration(host, password, 'Test')

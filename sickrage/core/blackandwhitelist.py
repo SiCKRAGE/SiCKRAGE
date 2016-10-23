@@ -1,6 +1,6 @@
 # Author: Dennis Lutter <lad1337@gmail.com>
-# URL: https://sickrage.tv/
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: https://sickrage.ca/
+# Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
 # This file is part of SickRage.
 #

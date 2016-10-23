@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -542,7 +542,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
     def _check_for_new_version(self):
-        git_version_url = "http://www.sickrage.ca/version.txt"
+        git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/sickrage/version.txt"
 
         try:
             return sickrage.srCore.srWebSession.get(git_version_url).text
@@ -570,7 +570,7 @@ class SourceUpdateManager(UpdateManager):
         Downloads the latest source tarball from server and installs it over the existing version.
         """
 
-        tar_download_url = 'http://www.sickrage.ca/sr-update.tar'
+        tar_download_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/repository/archive.tar?ref=master'
 
         try:
             # prepare the update dir

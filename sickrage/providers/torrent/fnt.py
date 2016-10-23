@@ -1,6 +1,6 @@
 # -*- coding: latin-1 -*-
 # Author: raver2046 <raver2046@gmail.com> from djoole <bobby.djoole@gmail.com>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #

@@ -2,7 +2,7 @@
 # Authors: Raver2046
 #          adaur
 # based on tpi.py
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #

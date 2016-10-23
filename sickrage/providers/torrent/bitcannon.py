@@ -1,6 +1,6 @@
-
-# Author: miigotu <miigotu@gmail.com>
-# URL: http://github.com/SiCKRAGETV/SickRage
+# Author: echel0n <echel0n@sickrage.ca>
+# URL: https://sickrage.ca
+# Git: https://git.sickrage.ca/SiCKRAGE/sickrage
 #
 # This file is part of SickRage.
 #

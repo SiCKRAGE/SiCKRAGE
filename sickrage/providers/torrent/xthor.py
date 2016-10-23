@@ -1,6 +1,6 @@
 # -*- coding: latin-1 -*-
 # Author: adaur <adaur.underground@gmail.com>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #

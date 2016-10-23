@@ -1,5 +1,5 @@
 # Author: Nico Berlee http://nico.berlee.nl/
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #

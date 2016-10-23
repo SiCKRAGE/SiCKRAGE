@@ -1,8 +1,8 @@
 #!/usr/bin/env python2
 
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: https://sickrage.ca
+# Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
 # This file is part of SickRage.
 #

@@ -1,5 +1,5 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: https://git.sickrage.ca/SiCKRAGE/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -332,7 +332,7 @@ class CalendarHandler(BaseHandler):
                     "%Y%m%d") + 'T' + air_date_time_end.strftime(
                     "%H%M%S") + 'Z\r\n'
                 if sickrage.srCore.srConfig.CALENDAR_ICONS:
-                    ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:http://www.sickrage.ca/favicon.ico\r\n'
+                    ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://www.sickrage.ca/favicon.ico\r\n'
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
                 ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
                     show['show_name'], episode['season'], episode['episode'], episode['name']

@@ -1,6 +1,6 @@
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://sickrage.tv/
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: https://sickrage.ca/
+# Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
 # This file is part of SickRage.
 #
@@ -22,8 +22,6 @@ from __future__ import unicode_literals
 import os
 import string
 
-
-# adapted from http://stackoverflow.com/questions/827371/is-there-a-way-to-list-all-the-available-drive-letters-in-python/827490
 import sickrage
 
 
