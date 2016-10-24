@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://git.sickrage.ca
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -22,9 +22,8 @@ from __future__ import unicode_literals
 import os
 import pickle
 
-from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
-
 import sickrage
+from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 
 
 class googleAuth(object):

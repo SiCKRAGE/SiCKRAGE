@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://git.sickrage.ca
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -26,9 +26,8 @@ import types
 from itertools import imap
 from os import name
 
-import six
-
 import sickrage
+import six
 
 def getEncoding():
     return sickrage.SYS_ENCODING or "UTF-8"

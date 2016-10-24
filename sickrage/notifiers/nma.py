@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # Author: echel0n <echel0n@sickrage.ca>
-# URL: https://git.sickrage.ca
+# URL: https://sickrage.ca
 #
 # This file is part of SickRage.
 #
@@ -23,9 +23,8 @@ from __future__ import unicode_literals
 from urllib import urlencode
 from xml.dom.minidom import parseString
 
-from requests import request
-
 import sickrage
+from requests import request
 from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
