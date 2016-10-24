@@ -31,6 +31,9 @@ autoProcessTV.cfg
 #  SR Test Related   #
 ######################
 /tests/show name/
+/tests/Logs/
+/tests/cache/
+/tests/show name final/
 
 #  Compiled source   #
 ######################
