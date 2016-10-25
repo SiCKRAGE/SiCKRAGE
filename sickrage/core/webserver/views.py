@@ -2990,7 +2990,8 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_change:
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
-                all_eps_results = [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                all_eps_results = [x['doc'] for x in
+                                   MainDB().db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                                    if x['doc']['status'] in status_list and x['doc']['season'] != 0]
 
                 all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
@@ -4364,24 +4365,21 @@ class ConfigProviders(Config):
 
     @staticmethod
     def canAddNewznabProvider(name):
-        if not name:
-            return json_encode({'error': 'No Provider Name specified'})
+        if not name: return json_encode({'error': 'No Provider Name specified'})
 
-        providerID = NewznabProvider(name, '', True).id
-        if providerID not in sickrage.srCore.providersDict.newznab():
-            return json_encode({'success': providerID})
+        providerObj = NewznabProvider(name, '', True)
+        if providerObj.id not in sickrage.srCore.providersDict.newznab():
+            return json_encode({'success': providerObj.id})
         return json_encode({'error': 'Provider Name already exists as ' + name})
 
     @staticmethod
     def canAddTorrentRssProvider(name, url, cookies, titleTAG):
-        if not name:
-            return json_encode({'error': 'No Provider Name specified'})
+        if not name: return json_encode({'error': 'No Provider Name specified'})
 
         providerObj = TorrentRssProvider(name, url, True, cookies, titleTAG)
         if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
             (succ, errMsg) = providerObj.validateRSS()
-            if succ:
-                return json_encode({'success': providerObj.id})
+            if succ: return json_encode({'success': providerObj.id})
             return json_encode({'error': errMsg})
         return json_encode({'error': 'Provider Name already exists as ' + name})
 
@@ -4421,12 +4419,14 @@ class ConfigProviders(Config):
             curProvObj = sickrage.srCore.providersDict.all()[curProvider]
             curProvObj.enabled = bool(sickrage.srCore.srConfig.to_int(curEnabled))
 
-        # add all the newznab info we got into our list
+        # custom providers
+        custom_providers = ''
         for curProviderStr in provider_strings.split():
-            cur_type, curProviderStr = curProviderStr.split('|', 1)
+            custom_providers += '{}!!!'.format(curProviderStr)
+            cur_type, curProviderData = curProviderStr.split('|', 1)
 
             if cur_type == "newznab":
-                cur_name, cur_url, cur_key, cur_cat = curProviderStr.split('|')
+                cur_name, cur_url, cur_key, cur_cat = curProviderData.split('|')
                 cur_url = sickrage.srCore.srConfig.clean_url(cur_url)
 
                 providerObj = NewznabProvider(cur_name, cur_url, bool(not cur_key == 0), key=cur_key)
@@ -4434,34 +4434,26 @@ class ConfigProviders(Config):
                     sickrage.srCore.providersDict.newznab().update(**{providerObj.id: providerObj})
                 else:
                     providerObj = sickrage.srCore.providersDict.newznab()[providerObj.id]
+                    providerObj.name = cur_name
+                    providerObj.urls['base_url'] = cur_url
+                    providerObj.key = cur_key
+                    providerObj.catIDs = cur_cat
 
-                # newznab provider settings
-                providerObj.name = cur_name
-                providerObj.urls['base_url'] = cur_url
-                providerObj.key = cur_key
-                providerObj.catIDs = cur_cat
-                providerObj.search_mode = str(kwargs.get(providerObj.id + '_search_mode', 'eponly')).strip()
-                providerObj.search_fallback = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerObj.id + '_search_fallback', 0))
-                providerObj.enable_daily = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerObj.id + '_enable_daily', 0))
-                providerObj.enable_backlog = sickrage.srCore.srConfig.checkbox_to_value(
-                    kwargs.get(providerObj.id + '_enable_backlog', 0))
             elif cur_type == "torrentrss":
-                curName, curURL, curCookies, curTitleTAG = curProviderStr.split('|')
-                curURL = sickrage.srCore.srConfig.clean_url(curURL)
+                cur_name, cur_url, cur_cookies, cur_title_tag = curProviderData.split('|')
+                cur_url = sickrage.srCore.srConfig.clean_url(cur_url)
 
-                providerObj = TorrentRssProvider(curName, curURL, False, curCookies, curTitleTAG)
+                providerObj = TorrentRssProvider(cur_name, cur_url, False, cur_cookies, cur_title_tag)
                 if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
                     sickrage.srCore.providersDict.torrentrss().update(**{providerObj.id: providerObj})
                 else:
                     providerObj = sickrage.srCore.providersDict.torrentrss()[providerObj.id]
+                    providerObj.name = cur_name
+                    providerObj.urls['base_url'] = cur_url
+                    providerObj.cookies = cur_cookies
+                    providerObj.curTitleTAG = cur_title_tag
 
-                # torrentrss provider settings
-                providerObj.name = curName
-                providerObj.urls['base_url'] = curURL
-                providerObj.cookies = curCookies
-                providerObj.curTitleTAG = curTitleTAG
+        sickrage.srCore.srConfig.CUSTOM_PROVIDERS = custom_providers
 
         # dynamically load provider settings
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
@@ -4501,7 +4493,8 @@ class ConfigProviders(Config):
                         kwargs.get(providerID + '_confirmed') or 0)
 
                 if hasattr(providerObj, 'ranked'):
-                    providerObj.ranked = sickrage.srCore.srConfig.checkbox_to_value(kwargs.get(providerID + '_ranked') or 0)
+                    providerObj.ranked = sickrage.srCore.srConfig.checkbox_to_value(
+                        kwargs.get(providerID + '_ranked') or 0)
 
                 if hasattr(providerObj, 'engrelease'):
                     providerObj.engrelease = sickrage.srCore.srConfig.checkbox_to_value(
@@ -4548,6 +4541,14 @@ class ConfigProviders(Config):
                     providerObj.cookies = str(kwargs.get(providerID + '_cookies', '')).strip()
             except Exception as e:
                 continue
+
+        # sync provider order
+        for p in sickrage.srCore.providersDict.all():
+            if p not in sickrage.srCore.providersDict.provider_order:
+                sickrage.srCore.providersDict.provider_order += [p]
+        for p in sickrage.srCore.providersDict.provider_order:
+            if p not in sickrage.srCore.providersDict.all():
+                sickrage.srCore.providersDict.provider_order.pop(sickrage.srCore.providersDict.provider_order.index(p))
 
         # sort providers
         sickrage.srCore.providersDict.sort(re.findall(r'\w+[^\W\s]', provider_order))

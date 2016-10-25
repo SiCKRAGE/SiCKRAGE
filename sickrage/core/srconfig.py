@@ -459,6 +459,8 @@ class srConfig(object):
 
         self.QUALITY_SIZES = {}
 
+        self.CUSTOM_PROVIDERS = None
+
     def defaults(self):
         sickrage.srCore.srLogger.debug("Loading default config values")
 
@@ -1893,6 +1895,9 @@ class srConfig(object):
 
         self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes', Quality.qualitySizes)
 
+        self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers', '')
+
+        sickrage.srCore.providersDict.sync()
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             providerSettings = self.check_setting_str('Providers', providerID) or {}
             for k, v in providerSettings.items():
@@ -1900,6 +1905,9 @@ class srConfig(object):
 
             [providerObj.__dict__.update({x: providerSettings[x]}) for x in
              set(providerObj.__dict__).intersection(providerSettings)]
+
+        # order providers
+        sickrage.srCore.providersDict.provider_order = self.check_setting_str('Providers', 'providers_order', [])
 
         # mark config settings loaded
         self.loaded = True
@@ -2344,12 +2352,14 @@ class srConfig(object):
 
         new_config['Providers'] = {}
         new_config['Providers']['providers_order'] = sickrage.srCore.providersDict.provider_order
+        new_config['Providers']['custom_providers'] = self.CUSTOM_PROVIDERS
 
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
 
+        sickrage.srCore.providersDict.sync()
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             new_config['Providers'][providerID] = dict(
                 [(x, providerObj.__dict__[x]) for x in provider_keys if hasattr(providerObj, x)])

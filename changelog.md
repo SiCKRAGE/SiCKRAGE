@@ -1,6 +1,7 @@
 # Changelog
 
-- * cd72458 - 2016-10-23: fix: misc url changes/cleanups 
+- * bec8a3b - 2016-10-25: new: v8.6.8 fix: Fixed issues with custom providers 
+- * 850f2be - 2016-10-23: fix: misc url changes/cleanups 
 - * 179d46b - 2016-10-23: fix: misc url changes/cleanups 
 - * a6bdbdb - 2016-10-23: new: v8.6.7 fix: Updated ombwtfnzbs url 
 - * 3405193 - 2016-10-23: new: v8.6.6 fix: Misc cleanups, Resolved torrent provider seed ratio issue 

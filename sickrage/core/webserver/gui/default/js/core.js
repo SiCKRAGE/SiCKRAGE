@@ -4473,6 +4473,22 @@ jQuery(document).ready(function ($) {
                         SICKRAGE.config.providers.populateNewznabSection();
                     }
 
+                    var newznab_providers = SICKRAGE.getMeta('NEWZNAB_PROVIDERS').split('!!!');
+                    for(var newznab_id = 0; newznab_id < newznab_providers.length; newznab_id++) {
+                        var newznab_provider = newznab_providers[newznab_id];
+                        if (newznab_provider.length > 0) {
+                            SICKRAGE.config.providers.addNewznabProvider.apply(this, newznab_provider.split('|'));
+                        }
+                    }
+
+                    var torrentrss_providers = SICKRAGE.getMeta('TORRENTRSS_PROVIDERS').split('!!!');
+                    for(var torrentrss_id = 0; torrentrss_id < torrentrss_providers.length; torrentrss_id++) {
+                        var torrentrss_provider = torrentrss_providers[torrentrss_id];
+                        if (torrentrss_provider.length > 0) {
+                            SICKRAGE.config.providers.addTorrentRssProvider.apply(this, torrentrss_provider.split('|'));
+                        }
+                    }
+
                     SICKRAGE.config.providers.showHideProviders();
                 },
 
@@ -4799,7 +4815,7 @@ jQuery(document).ready(function ($) {
                         document.getElementsByClassName('component-desc')[0].innerHTML = "No providers available to configure.";
                     }
 
-                    $(this).showHideProviders();
+                    SICKRAGE.config.providers.showHideProviders();
                 },
 
                 replaceProviderOptions: function (field, options) {

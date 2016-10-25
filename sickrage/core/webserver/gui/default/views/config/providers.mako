@@ -1,41 +1,40 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
+    import json
     import sickrage
     from sickrage.providers import NZBProvider, TorrentProvider, NewznabProvider, TorrentRssProvider
     from sickrage.providers.torrent import thepiratebay
     from sickrage.core.helpers import anon_url
 %>
-<%block name="scripts">
-    <script type="text/javascript">
-        $(document).ready(function () {
-            % if sickrage.srCore.srConfig.USE_NZBS:
-                % for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
-                    SICKRAGE.config.providers.addNewznabProvider(
-                            '${providerID}',
-                            '${providerObj.name}',
-                            '${providerObj.urls["base_url"]}',
-                            '${("false", "true")[providerObj.key > 0]}',
-                            '${providerObj.key}',
-                            '${providerObj.catIDs}',
-                            '${int(providerObj.default)}',
-                            '${("false", "true")[bool(sickrage.srCore.srConfig.USE_NZBS)]}');
-                % endfor
-            % endif
 
-            % if sickrage.srCore.srConfig.USE_TORRENTS:
-                % for providerID, providerObj in sickrage.srCore.providersDict.torrentrss().items():
-                    SICKRAGE.config.providers.addTorrentRssProvider(
-                            '${providerID}',
-                            '${providerObj.name}',
-                            '${providerObj.urls["base_url"]}',
-                            '${("false", "true")[providerObj.cookies is not None]}',
-                            '${providerObj.cookies}',
-                            '${providerObj.titleTAG}',
-                            '${("false", "true")[bool(sickrage.srCore.srConfig.USE_TORRENTS)]}');
-                % endfor
-            % endif
-        });
-    </script>
+<%block name="metas">
+    <%
+        newznab_providers = ''
+        torrentrss_providers = ''
+
+        if sickrage.srCore.srConfig.USE_NZBS:
+            for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
+                newznab_providers += '{}'.format(
+                        '|'.join([providerID,
+                        providerObj.name,
+                        providerObj.urls["base_url"],
+                        providerObj.key,
+                        providerObj.catIDs,
+                        int(providerObj.default),
+                        ("false", "true")[bool(sickrage.srCore.srConfig.USE_NZBS)]]))
+
+        if sickrage.srCore.srConfig.USE_TORRENTS:
+            for providerID, providerObj in sickrage.srCore.providersDict.torrentrss().items():
+                torrentrss_providers += '{}!!!'.format(
+                    '|'.join([providerID,
+                              providerObj.name,
+                              providerObj.urls["base_url"],
+                              providerObj.cookies,
+                              providerObj.titleTAG,
+                              ("false", "true")[bool(sickrage.srCore.srConfig.USE_TORRENTS)]]))
+    %>
+    <meta data-var="NEWZNAB_PROVIDERS" data-content="${newznab_providers}">
+    <meta data-var="TORRENTRSS_PROVIDERS" data-content="${torrentrss_providers}">
 </%block>
 
 <%block name="content">
@@ -79,8 +78,8 @@
                         <fieldset class="component-group-list">
                             <ul id="provider_order_list">
                                 % for providerID, providerObj in sickrage.srCore.providersDict.sort().items():
-                                    % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srCore.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider] and sickrage.srCore.srConfig.USE_TORRENTS):
-                                        <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider])]}"
+                                    % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srCore.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.srCore.srConfig.USE_TORRENTS):
+                                        <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]}"
                                             id="${providerID}">
                                             <input type="checkbox" id="enable_${providerID}"
                                                    class="provider_enabler" ${('', 'checked="checked"')[bool(providerObj.isEnabled)]}/>
