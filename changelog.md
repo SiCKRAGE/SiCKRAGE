@@ -1,6 +1,7 @@
 # Changelog
 
-- * bec8a3b - 2016-10-25: new: v8.6.8 fix: Fixed issues with custom providers 
+- * 04084e1 - 2016-10-25: new: v8.6.9 fix: Fixed issues provider settings 
+- * d0d9a70 - 2016-10-25: new: v8.6.8 fix: Fixed issues with custom providers 
 - * 850f2be - 2016-10-23: fix: misc url changes/cleanups 
 - * 179d46b - 2016-10-23: fix: misc url changes/cleanups 
 - * a6bdbdb - 2016-10-23: new: v8.6.7 fix: Updated ombwtfnzbs url 

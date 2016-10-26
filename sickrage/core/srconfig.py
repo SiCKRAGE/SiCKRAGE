@@ -2359,7 +2359,6 @@ class srConfig(object):
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
 
-        sickrage.srCore.providersDict.sync()
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             new_config['Providers'][providerID] = dict(
                 [(x, providerObj.__dict__[x]) for x in provider_keys if hasattr(providerObj, x)])
