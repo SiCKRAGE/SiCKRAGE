@@ -1897,7 +1897,7 @@ class srConfig(object):
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers', '')
 
-        sickrage.srCore.providersDict.sync()
+        sickrage.srCore.providersDict.load()
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             providerSettings = self.check_setting_str('Providers', providerID) or {}
             for k, v in providerSettings.items():

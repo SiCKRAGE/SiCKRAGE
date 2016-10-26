@@ -1,6 +1,7 @@
 # Changelog
 
-- * 04084e1 - 2016-10-25: new: v8.6.9 fix: Fixed issues provider settings 
+- * 4cdf561 - 2016-10-25: new: v8.7.0 fix: Fixed issues with ordering of providers in settings fix: Fixed issues with removing of custom providers in settings 
+- * 862a810 - 2016-10-25: new: v8.6.9 fix: Fixed issues provider settings 
 - * d0d9a70 - 2016-10-25: new: v8.6.8 fix: Fixed issues with custom providers 
 - * 850f2be - 2016-10-23: fix: misc url changes/cleanups 
 - * 179d46b - 2016-10-23: fix: misc url changes/cleanups 

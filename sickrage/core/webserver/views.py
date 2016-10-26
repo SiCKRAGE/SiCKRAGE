@@ -4410,15 +4410,6 @@ class ConfigProviders(Config):
     def saveProviders(self, provider_strings='', provider_order='', **kwargs):
         results = []
 
-        # enable/disable providers
-        for curProviderStr in provider_order.split():
-            curProvider, curEnabled = curProviderStr.split(':')
-            if curProvider not in sickrage.srCore.providersDict.all():
-                continue
-
-            curProvObj = sickrage.srCore.providersDict.all()[curProvider]
-            curProvObj.enabled = bool(sickrage.srCore.srConfig.to_int(curEnabled))
-
         # custom providers
         custom_providers = ''
         for curProviderStr in provider_strings.split():
@@ -4454,6 +4445,21 @@ class ConfigProviders(Config):
                     providerObj.curTitleTAG = cur_title_tag
 
         sickrage.srCore.srConfig.CUSTOM_PROVIDERS = custom_providers
+
+        # remove providers
+        for p in list(set(sickrage.srCore.providersDict.provider_order).difference(
+                [x.split(':')[0] for x in provider_order.split()])):
+            providerObj = sickrage.srCore.providersDict.all()[p]
+            del sickrage.srCore.providersDict[providerObj.type][p]
+
+        # enable/disable/sort providers
+        sickrage.srCore.providersDict.provider_order = []
+        for curProviderStr in provider_order.split():
+            curProvider, curEnabled = curProviderStr.split(':')
+            sickrage.srCore.providersDict.provider_order += [curProvider]
+            if curProvider in sickrage.srCore.providersDict.all():
+                curProvObj = sickrage.srCore.providersDict.all()[curProvider]
+                curProvObj.enabled = bool(sickrage.srCore.srConfig.to_int(curEnabled))
 
         # dynamically load provider settings
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
@@ -4541,17 +4547,6 @@ class ConfigProviders(Config):
                     providerObj.cookies = str(kwargs.get(providerID + '_cookies', '')).strip()
             except Exception as e:
                 continue
-
-        # sync provider order
-        for p in sickrage.srCore.providersDict.all():
-            if p not in sickrage.srCore.providersDict.provider_order:
-                sickrage.srCore.providersDict.provider_order += [p]
-        for p in sickrage.srCore.providersDict.provider_order:
-            if p not in sickrage.srCore.providersDict.all():
-                sickrage.srCore.providersDict.provider_order.pop(sickrage.srCore.providersDict.provider_order.index(p))
-
-        # sort providers
-        sickrage.srCore.providersDict.sort(re.findall(r'\w+[^\W\s]', provider_order))
 
         # save provider settings
         sickrage.srCore.srConfig.save()

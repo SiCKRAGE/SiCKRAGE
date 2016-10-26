@@ -1267,7 +1267,7 @@ class providersDict(dict):
         self[NewznabProvider.type] = {}
         self[TorrentRssProvider.type] = {}
 
-    def sync(self):
+    def load(self):
         self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.getProviders()])
         self[TorrentProvider.type] = dict([(p.id, p) for p in TorrentProvider.getProviders()])
         self[NewznabProvider.type] = dict([(p.id, p) for p in NewznabProvider.getProviders()])
@@ -1282,10 +1282,12 @@ class providersDict(dict):
         if randomize:
             random.shuffle(key)
 
-        for p in [self.all()[x] for x in key]:
-            (lambda: sorted_providers.append(p), lambda: sorted_providers.insert(0, p))[p.isEnabled]()
+        for p in [self.enabled()[x] for x in key if x in self.enabled()]:
+            sorted_providers.append(p)
 
-        self.provider_order = [x.id for x in sorted_providers]
+        for p in [self.disabled()[x] for x in key if x in self.disabled()]:
+            sorted_providers.append(p)
+
         return OrderedDict([(x.id, x) for x in sorted_providers])
 
     def enabled(self):
