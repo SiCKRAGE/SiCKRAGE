@@ -20,7 +20,7 @@
                         providerObj.urls["base_url"],
                         providerObj.key,
                         providerObj.catIDs,
-                        int(providerObj.default),
+                        ("false", "true")[bool(int(providerObj.default))],
                         ("false", "true")[bool(sickrage.srCore.srConfig.USE_NZBS)]]))
 
         if sickrage.srCore.srConfig.USE_TORRENTS:
