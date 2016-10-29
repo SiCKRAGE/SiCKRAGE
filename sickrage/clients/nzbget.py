@@ -28,6 +28,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import tryInt
 
+
 class NZBGet(object):
     @staticmethod
     def sendNZB(nzb, proper=False):
@@ -37,25 +38,27 @@ class NZBGet(object):
         :param nzb: nzb object
         :param proper: True if this is a Proper download, False if not. Defaults to False
         """
-        addToTop = False
-        nzbgetprio = 0
-        category = sickrage.srCore.srConfig.NZBGET_CATEGORY
-        if nzb.show.is_anime:
-            category = sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME
 
-        if sickrage.srCore.srConfig.NZBGET_USE_HTTPS:
-            nzbgetXMLrpc = "https://%(username)s:%(password)s@%(host)s/xmlrpc"
-        else:
-            nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
-
-        if sickrage.srCore.srConfig.NZBGET_HOST is None:
+        if sickrage.srCore.srConig.NZBGET_HOST is None:
             sickrage.srCore.srLogger.error("No NZBget host found in configuration. Please configure it.")
             return False
 
-        url = nzbgetXMLrpc % {"host": sickrage.srCore.srConfig.NZBGET_HOST, "username": sickrage.srCore.srConfig.NZBGET_USERNAME,
-                              "password": sickrage.srCore.srConfig.NZBGET_PASSWORD}
+        dupe_key = ""
+        dupe_score = 0
+        addToTop = False
+        nzbgetprio = 0
+        category = (sickrage.srCore.srConfig.NZBGET_CATEGORY, sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME)[
+            nzb.show.is_anime]
+
+        url = "%(protocol)s://%(username)s:%(password)s@%(host)s/xmlrpc" % {
+            "protocol": 'https' if sickrage.srCore.srConfig.NZBGET_USE_HTTPS else 'http',
+            "host": sickrage.srCore.srConfig.NZBGET_HOST,
+            "username": sickrage.srCore.srConfig.NZBGET_USERNAME,
+            "password": sickrage.srCore.srConfig.NZBGET_PASSWORD
+        }
 
         nzbGetRPC = xmlrpclib.ServerProxy(url)
+
         try:
             if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
                 sickrage.srCore.srLogger.debug("Successful connected to NZBget")
@@ -64,7 +67,7 @@ class NZBGet(object):
 
         except httplib.socket.error:
             sickrage.srCore.srLogger.error(
-                    "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
+                "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
             return False
 
         except xmlrpclib.ProtocolError as e:
@@ -74,16 +77,14 @@ class NZBGet(object):
                 sickrage.srCore.srLogger.error("Protocol Error: " + e.errmsg)
             return False
 
-        dupekey = ""
-        dupescore = 0
         # if it aired recently make it high priority and generate DupeKey/Score
         for curEp in nzb.episodes:
-            if dupekey == "":
+            if dupe_key == "":
                 if curEp.show.indexer == 1:
-                    dupekey = "SiCKRAGE-" + str(curEp.show.indexerid)
+                    dupe_key = "SiCKRAGE-" + str(curEp.show.indexerid)
                 elif curEp.show.indexer == 2:
-                    dupekey = "SiCKRAGE-tvr" + str(curEp.show.indexerid)
-            dupekey += "-" + str(curEp.season) + "." + str(curEp.episode)
+                    dupe_key = "SiCKRAGE-tvr" + str(curEp.show.indexerid)
+            dupe_key += "-" + str(curEp.season) + "." + str(curEp.episode)
             if date.today() - curEp.airdate <= timedelta(days=7):
                 addToTop = True
                 nzbgetprio = sickrage.srCore.srConfig.NZBGET_PRIORITY
@@ -93,9 +94,9 @@ class NZBGet(object):
                     category = sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME_BACKLOG
 
         if nzb.quality != Quality.UNKNOWN:
-            dupescore = nzb.quality * 100
+            dupe_score = nzb.quality * 100
         if proper:
-            dupescore += 10
+            dupe_score += 10
 
         nzbcontent64 = None
         if nzb.resultType == "nzbdata":
@@ -122,17 +123,17 @@ class NZBGet(object):
             elif nzbget_version == 12:
                 if nzbcontent64 is not None:
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, nzbgetprio, False,
-                                                     nzbcontent64, False, dupekey, dupescore, "score")
+                                                     nzbcontent64, False, dupe_key, dupe_score, "score")
                 else:
                     nzbget_result = nzbGetRPC.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
-                                                        nzb.url, False, dupekey, dupescore, "score")
+                                                        nzb.url, False, dupe_key, dupe_score, "score")
             # v13+ has a new combined append method that accepts both (url and content)
             # also the return value has changed from boolean to integer
             # (Positive number representing NZBID of the queue item. 0 and negative numbers represent error codes.)
             elif nzbget_version >= 13:
                 nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb",
                                                          nzbcontent64 if nzbcontent64 is not None else nzb.url,
-                                                         category, nzbgetprio, False, False, dupekey, dupescore,
+                                                         category, nzbgetprio, False, False, dupe_key, dupe_score,
                                                          "score") > 0 else False
             else:
                 if nzbcontent64 is not None:
@@ -149,5 +150,6 @@ class NZBGet(object):
                 sickrage.srCore.srLogger.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
-            sickrage.srCore.srLogger.error("Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
+            sickrage.srCore.srLogger.error(
+                "Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False
