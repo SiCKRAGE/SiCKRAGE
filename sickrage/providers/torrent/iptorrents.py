@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
+from requests.utils import dict_from_cookiejar
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser, convert_size
@@ -40,10 +41,12 @@ class IPTorrentsProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
+        self.enable_cookies = True
+
         self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
-            'login': '{base_url}/torrents/'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/take_login.php'.format(base_url=self.urls['base_url']),
             'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(base_url=self.urls['base_url'])
         })
 
@@ -57,23 +60,33 @@ class IPTorrentsProvider(TorrentProvider):
         return True
 
     def login(self):
+        cookie_dict = dict_from_cookiejar(self.cookie_jar)
+        if cookie_dict.get('uid') and cookie_dict.get('pass'):
+            return True
 
-        login_params = {'username': self.username,
-                        'password': self.password,
-                        'login': 'submit'}
+        if not self.add_cookies_from_ui():
+            return False
 
-        try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
-        except Exception:
+        login_params = {'username': self.username, 'password': self.password, 'login': 'submit'}
+
+        response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30)
+        if response.status_code != 200:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
-        if re.search('tries left', response):
-            sickrage.srCore.srLogger.warning(
-                "You tried too often, please try again after 1 hour! Disable IPTorrents for at least 1 hour")
+        # Invalid username and password combination
+        if re.search('Invalid username and password combination', response.text):
+            sickrage.srCore.srLogger.warning(u"Invalid username or password. Check your settings")
             return False
-        if re.search('Password not correct', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+
+        # You tried too often, please try again after 2 hours!
+        if re.search('You tried too often', response.text):
+            sickrage.srCore.srLogger.warning(u"You tried too often, please try again after 2 hours! Disable IPTorrents for at least 2 hours")
+            return False
+
+        # Captcha!
+        if re.search('Captcha verification failed.', response.text):
+            sickrage.srCore.srLogger.warning(u"Stupid captcha")
             return False
 
         return True

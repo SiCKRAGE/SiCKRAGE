@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6f37281 - 2016-10-25: new: v8.7.1 fix: Fixed issues with custom newznab providers 
+- * cf358f4 - 2016-10-29: new: Added cookie auth to IPTorrents provider 
+- * 15d2930 - 2016-10-25: new: v8.7.1 fix: Fixed issues with custom newznab providers 
 - * f385fce - 2016-10-25: new: v8.7.0 fix: Fixed issues with ordering of providers in settings fix: Fixed issues with removing of custom providers in settings 
 - * 862a810 - 2016-10-25: new: v8.6.9 fix: Fixed issues provider settings 
 - * d0d9a70 - 2016-10-25: new: v8.6.8 fix: Fixed issues with custom providers 
