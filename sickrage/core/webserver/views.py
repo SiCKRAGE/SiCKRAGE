@@ -1126,13 +1126,10 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
-        if sickrage.srCore.VERSIONUPDATER._runbackup() is True:
-            if sickrage.srCore.VERSIONUPDATER.update():
-                return self.restart(pid)
-            else:
-                return self._genericMessage("Update Failed",
-                                            "Update wasn't successful, not restarting. Check your log for more information.")
+        if sickrage.srCore.VERSIONUPDATER.update():
+            return self.restart(pid)
         else:
+            sickrage.srCore.srNotifications.message("Update wasn't successful, not restarting. Check your log for more information.")
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def branchCheckout(self, branch):

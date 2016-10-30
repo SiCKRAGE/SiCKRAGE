@@ -41,7 +41,7 @@ class srVersionUpdater(object):
     Version check class meant to run as a thread object with the sr scheduler.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.name = "VERSIONUPDATER"
         self.amActive = False
         self.updater = self.find_install_type()
@@ -61,43 +61,40 @@ class srVersionUpdater(object):
                     if sickrage.srCore.srConfig.AUTO_UPDATE:
                         sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
                         sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
-                        if self.run_backup_if_safe() is True:
-                            if self.update():
-                                sickrage.srCore.srLogger.info("Update was successful!")
-                                sickrage.srCore.srNotifications.message('Update was successful')
-                                sickrage.srCore.io_loop.stop()
-                            else:
-                                sickrage.srCore.srLogger.info("Update failed!")
-                                sickrage.srCore.srNotifications.message('Update failed!')
+                        if self.update():
+                            sickrage.srCore.srLogger.info("Update was successful!")
+                            sickrage.srCore.srNotifications.message('Update was successful')
+                            sickrage.srCore.io_loop.stop()
+                        else:
+                            sickrage.srCore.srLogger.info("Update failed!")
+                            sickrage.srCore.srNotifications.message('Update failed!')
 
                 self.check_for_new_news()
         finally:
             self.amActive = False
 
-    def run_backup_if_safe(self):
-        return self.safe_to_update() is True and self._runbackup() is True
+    def backup(self):
+        if self.safe_to_update():
+            # Do a system backup before update
+            sickrage.srCore.srLogger.info("Config backup in progress...")
+            sickrage.srCore.srNotifications.message('Backup', 'Config backup in progress...')
+            try:
+                backupDir = os.path.join(sickrage.DATA_DIR, 'backup')
+                if not os.path.isdir(backupDir):
+                    os.mkdir(backupDir)
 
-    def _runbackup(self):
-        # Do a system backup before update
-        sickrage.srCore.srLogger.info("Config backup in progress...")
-        sickrage.srCore.srNotifications.message('Backup', 'Config backup in progress...')
-        try:
-            backupDir = os.path.join(sickrage.DATA_DIR, 'backup')
-            if not os.path.isdir(backupDir):
-                os.mkdir(backupDir)
-
-            if self._keeplatestbackup(backupDir) and backupSR(backupDir):
-                sickrage.srCore.srLogger.info("Config backup successful, updating...")
-                sickrage.srCore.srNotifications.message('Backup', 'Config backup successful, updating...')
-                return True
-            else:
-                sickrage.srCore.srLogger.error("Config backup failed, aborting update")
+                if self._keeplatestbackup(backupDir) and backupSR(backupDir):
+                    sickrage.srCore.srLogger.info("Config backup successful, updating...")
+                    sickrage.srCore.srNotifications.message('Backup', 'Config backup successful, updating...')
+                    return True
+                else:
+                    sickrage.srCore.srLogger.error("Config backup failed, aborting update")
+                    sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
+                    return False
+            except Exception as e:
+                sickrage.srCore.srLogger.error('Update: Config backup failed. Error: %s' % e)
                 sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
                 return False
-        except Exception as e:
-            sickrage.srCore.srLogger.error('Update: Config backup failed. Error: %s' % e)
-            sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
-            return False
 
     @staticmethod
     def _keeplatestbackup(backupDir=None):
@@ -122,7 +119,8 @@ class srVersionUpdater(object):
 
         return True
 
-    def safe_to_update(self):
+    @staticmethod
+    def safe_to_update():
         def postprocessor_safe():
             if not sickrage.srCore.STARTED:
                 return True
@@ -190,7 +188,8 @@ class srVersionUpdater(object):
             self.updater.set_newest_text()
             return True
 
-    def check_for_new_news(self):
+    @staticmethod
+    def check_for_new_news():
         """
         Checks server for the latest news.
 
@@ -231,14 +230,14 @@ class srVersionUpdater(object):
         return news
 
     def update(self):
-        if self.updater:
+        if self.backup() and self.updater:
             # check for updates
             if self.updater.need_update():
                 if self.updater.update():
                     # Clean up after update
-                    toclean = os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'mako')
+                    to_clean = os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'mako')
 
-                    for root, dirs, files in os.walk(toclean, topdown=False):
+                    for root, dirs, files in os.walk(to_clean, topdown=False):
                         [os.remove(os.path.join(root, name)) for name in files]
                         [os.rmdir(os.path.join(root, name)) for name in dirs]
 
@@ -276,7 +275,7 @@ class GitUpdateManager(UpdateManager):
 
     @property
     def get_newest_version(self):
-        return self._check_for_new_version()
+        return self._check_for_new_version() or self.version
 
     @staticmethod
     def _git_error():
@@ -364,7 +363,7 @@ class GitUpdateManager(UpdateManager):
                 sickrage.srCore.srLogger.warning(
                     "Please enable 'git reset' in settings or stash your changes in local files")
             else:
-                sickrage.srCore.srLogger.error(cmd + " returned : " + str(output))
+                sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output))
             exit_status = 1
 
         elif exit_status == 128 or 'fatal:' in output or err:
@@ -372,7 +371,7 @@ class GitUpdateManager(UpdateManager):
             exit_status = 128
 
         else:
-            sickrage.srCore.srLogger.error(cmd + " returned : " + str(output) + ", treat as error for now")
+            sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output) + ", treat as error for now")
             exit_status = 1
 
         return output, err, exit_status
@@ -473,7 +472,8 @@ class GitUpdateManager(UpdateManager):
         Calls git reset --hard to perform a hard reset. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._run_git(self._find_working_git, 'config remote.origin.fetch %s' % '+refs/heads/*:refs/remotes/origin/*')
+        _, _, exit_status = self._run_git(self._find_working_git,
+                                          'config remote.origin.fetch %s' % '+refs/heads/*:refs/remotes/origin/*')
         if exit_status == 0:
             _, _, exit_status = self._run_git(self._find_working_git, 'fetch --all')
         return (False, True)[exit_status == 0]
@@ -496,7 +496,8 @@ class GitUpdateManager(UpdateManager):
 
         return False
 
-    def install_requirements(self):
+    @staticmethod
+    def install_requirements():
         # install requirements
         subprocess.call("pip install --no-cache-dir --user -r {}".format(sickrage.REQS_FILE), shell=True)
 
@@ -518,6 +519,7 @@ class GitUpdateManager(UpdateManager):
         url, _, exit_status = self._run_git(self._find_working_git, 'config --get remote.origin.url')
         return ("", url)[exit_status == 0 and url is not None]
 
+
 class SourceUpdateManager(UpdateManager):
     def __init__(self):
         self.type = "source"
@@ -528,9 +530,10 @@ class SourceUpdateManager(UpdateManager):
 
     @property
     def get_newest_version(self):
-        return self._check_for_new_version()
+        return self._check_for_new_version() or self.version
 
-    def _find_installed_version(self):
+    @staticmethod
+    def _find_installed_version():
         with io.open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
 
@@ -565,7 +568,8 @@ class SourceUpdateManager(UpdateManager):
 
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
-    def update(self):
+    @staticmethod
+    def update():
         """
         Downloads the latest source tarball from server and installs it over the existing version.
         """
@@ -662,7 +666,7 @@ class PipUpdateManager(UpdateManager):
 
     @property
     def get_newest_version(self):
-        return self._check_for_new_version()
+        return self._check_for_new_version() or self.version
 
     @staticmethod
     def _pip_error():
@@ -745,12 +749,13 @@ class PipUpdateManager(UpdateManager):
             sickrage.srCore.srLogger.debug(cmd + " : returned successful")
             exit_status = 0
         else:
-            sickrage.srCore.srLogger.error(cmd + " returned : " + str(output) + ", treat as error for now")
+            sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output) + ", treat as error for now")
             exit_status = 1
 
         return output, err, exit_status
 
-    def _find_installed_version(self):
+    @staticmethod
+    def _find_installed_version():
         with io.open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
 
@@ -758,7 +763,7 @@ class PipUpdateManager(UpdateManager):
         # need this to run first to set self._newest_commit_hash
         try:
             pypi_version = self.get_newest_version
-            if self._find_installed_version() != pypi_version:
+            if self.version != pypi_version:
                 sickrage.srCore.srLogger.debug(
                     "Version upgrade: " + self._find_installed_version() + " -> " + pypi_version)
                 return True

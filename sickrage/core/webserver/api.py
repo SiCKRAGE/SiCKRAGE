@@ -1821,13 +1821,9 @@ class CMD_SiCKRAGEUpdate(ApiCall):
 
     def run(self):
         if sickrage.srCore.VERSIONUPDATER.check_for_new_version():
-            if sickrage.srCore.VERSIONUPDATER.run_backup_if_safe():
-                sickrage.srCore.VERSIONUPDATER.update()
-
+            if sickrage.srCore.VERSIONUPDATER.update():
                 return _responds(RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
-
-            return _responds(RESULT_FAILURE, msg="SiCKRAGE could not backup config ...")
-
+            return _responds(RESULT_FAILURE, msg="SiCKRAGE could not update ...")
         return _responds(RESULT_FAILURE, msg="SiCKRAGE is already up to date")
 
 

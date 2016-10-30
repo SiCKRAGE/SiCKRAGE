@@ -1,6 +1,7 @@
 # Changelog
 
-- * 93fc379 - 2016-10-30: fix: Cleaned up template for new shows 
+- * c42262b - 2016-10-30: fix: Cleaned up version updater module code 
+- * ca9a483 - 2016-10-30: fix: Cleaned up template for new shows 
 - * cdc56b9 - 2016-10-29: fix: Cleaned up nzbGet module 
 - * 808f707 - 2016-10-29: new: Added cookie auth to IPTorrents provider 
 - * 15d2930 - 2016-10-25: new: v8.7.1 fix: Fixed issues with custom newznab providers 
