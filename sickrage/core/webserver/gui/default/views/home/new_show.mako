@@ -47,10 +47,12 @@
                             </select>
                         </label>
                         <br/>
+                        <label for="indexerLang">
                             <select name="indexerLang" id="indexerLang"
                                     class="form-control form-control-inline input-sm">
                             </select>
-                        <br/>
+                        </label>
+                        <p>
                         <div id="messages"></div>
                         <br/>
                         <input class="btn btn-success btn-inline" type="button" id="searchName" value="Search"/>
