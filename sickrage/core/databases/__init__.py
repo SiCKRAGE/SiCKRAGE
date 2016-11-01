@@ -58,9 +58,6 @@ class srDatabase(object):
             except (PreconditionsException, IndexError):
                 self.repair()
                 self.db.open()
-        else:
-            self.initialize()
-            self.migrate()
 
     def initialize(self):
         # Remove database folder if both exists
@@ -283,7 +280,7 @@ class srDatabase(object):
                 sickrage.srCore.srLogger.error('Migration of %s database failed', self.name)
 
             # rename old database
-            if rename_old and not sickrage.DEVELOPER:
+            if rename_old:
                 random = randomString()
                 sickrage.srCore.srLogger.info('Renaming old database to %s.%s_old' % (self.old_db_path, random))
                 os.rename(self.old_db_path, '{}.{}_old'.format(self.old_db_path, random))

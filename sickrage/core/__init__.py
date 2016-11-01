@@ -207,6 +207,17 @@ class Core(object):
             helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')),
                              os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
 
+        # perform database startup actions
+        for db in [MainDB, CacheDB, FailedDB]:
+            # initialize database
+            db().initialize()
+
+            # migrate database
+            db().migrate()
+
+            # compact database
+            db().compact()
+
         # load config
         self.srConfig.load()
 
@@ -234,11 +245,6 @@ class Core(object):
                 return
         except:
             self.srLogger.error('Failed getting diskspace: %s', traceback.format_exc())
-
-        # perform database startup actions
-        for db in [MainDB, CacheDB, FailedDB]:
-            # compact the main database
-            db().compact()
 
         # load data for shows from database
         self.load_shows()

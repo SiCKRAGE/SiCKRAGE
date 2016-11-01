@@ -1,6 +1,7 @@
 # Changelog
 
-- * c42262b - 2016-10-30: fix: Cleaned up version updater module code 
+- * 90b9d0a - 2016-10-31: new: v8.7.2 fix: Fixed issues with database migration of old sqlite data, moved database (init,migrate,compact) calls to start of core module init function 
+- * 2af3779 - 2016-10-30: fix: Cleaned up version updater module code 
 - * ca9a483 - 2016-10-30: fix: Cleaned up template for new shows 
 - * cdc56b9 - 2016-10-29: fix: Cleaned up nzbGet module 
 - * 808f707 - 2016-10-29: new: Added cookie auth to IPTorrents provider 
