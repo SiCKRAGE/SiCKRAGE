@@ -91,7 +91,7 @@ class TVShow(object):
         if otherShow is not None:
             raise MultipleShowObjectsException("Can't create a show if it already exists")
 
-        self.loadFromDB()
+        #self.loadFromDB()
 
     @property
     def name(self):

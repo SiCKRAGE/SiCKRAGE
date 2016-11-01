@@ -66,7 +66,7 @@ class srDatabase(object):
 
         if self.db.exists():
             # Backup before start and cleanup old backups
-            backup_path = os.path.join(sickrage.DATA_DIR, 'db_backup')
+            backup_path = os.path.join(sickrage.DATA_DIR, 'db_backup', self.name)
             backup_count = 5
             existing_backups = []
             if not os.path.isdir(backup_path): os.makedirs(backup_path)
