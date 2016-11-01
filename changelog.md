@@ -1,6 +1,7 @@
 # Changelog
 
-- * 35294eb - 2016-10-31: fix: Database backups now done for each database, 5 backups per 
+- * 67b99a5 - 2016-10-31: fix: Cleaned up code for finding shows in show list 
+- * 5b4ae73 - 2016-10-31: fix: Database backups now done for each database, 5 backups per 
 - * 25c7e45 - 2016-10-31: new: v8.7.2 fix: Fixed issues with database migration of old sqlite data, moved database (init,migrate,compact) calls to start of core module init function 
 - * 2af3779 - 2016-10-30: fix: Cleaned up version updater module code 
 - * ca9a483 - 2016-10-30: fix: Cleaned up template for new shows 

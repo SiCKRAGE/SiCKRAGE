@@ -385,21 +385,19 @@ def findCertainShow(showList, indexerid):
     :return: result list
     """
 
-    results = []
+    if indexerid is None or showList is None or len(showList) == 0:
+        return None
 
-    if not isinstance(indexerid, list):
-        indexerid = [indexerid]
-
-    if showList and indexerid:
-        results = [show for show in showList if show.indexerid in indexerid]
+    indexer_ids = [indexerid] if not isinstance(indexerid, list) else indexerid
+    results = [show for show in showList if show.indexerid in indexer_ids]
 
     if not results:
         return None
 
     if len(results) == 1:
         return results[0]
-    elif len(results) > 1:
-        raise MultipleShowObjectsException()
+
+    raise MultipleShowObjectsException()
 
 
 def makeDir(path):

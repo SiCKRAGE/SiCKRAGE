@@ -52,7 +52,6 @@ from sickrage.indexers.exceptions import indexer_attributenotfound
 class TVShow(object):
     def __init__(self, indexer, indexerid, lang=""):
         self.lock = threading.Lock()
-        self.dirty = True
 
         self._indexerid = int(indexerid)
         self._indexer = int(indexer)
@@ -82,6 +81,8 @@ class TVShow(object):
         self._rls_ignore_words = ""
         self._rls_require_words = ""
         self._default_ep_status = SKIPPED
+        self.dirty = True
+
         self._location = ""
         self.episodes = {}
         self.next_aired = ""
@@ -91,7 +92,7 @@ class TVShow(object):
         if otherShow is not None:
             raise MultipleShowObjectsException("Can't create a show if it already exists")
 
-        #self.loadFromDB()
+        self.loadFromDB()
 
     @property
     def name(self):
