@@ -892,7 +892,7 @@ class srConfig(object):
         defaults['Providers']['providers_order'] = sickrage.srCore.providersDict.provider_order
 
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
-                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
+                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
 
@@ -2355,7 +2355,7 @@ class srConfig(object):
         new_config['Providers']['custom_providers'] = self.CUSTOM_PROVIDERS
 
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
-                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily',
+                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
 

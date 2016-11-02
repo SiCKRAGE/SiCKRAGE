@@ -4476,6 +4476,9 @@ class ConfigProviders(Config):
                 if hasattr(providerObj, 'hash'):
                     providerObj.hash = str(kwargs.get(providerID + '_hash', '')).strip()
 
+                if hasattr(providerObj, 'key'):
+                    providerObj.api_key = str(kwargs.get(providerID + '_key', '')).strip()
+
                 if hasattr(providerObj, 'api_key'):
                     providerObj.api_key = str(kwargs.get(providerID + '_api_key', '')).strip()
 
