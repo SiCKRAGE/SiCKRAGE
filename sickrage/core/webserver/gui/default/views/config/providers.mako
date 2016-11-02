@@ -14,23 +14,30 @@
 
         if sickrage.srCore.srConfig.USE_NZBS:
             for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
-                newznab_providers += '{}'.format(
+                if providerObj.default:
+                    continue
+
+                newznab_providers += '{}!!!'.format(
                         '|'.join([providerID,
                         providerObj.name,
                         providerObj.urls["base_url"],
                         providerObj.key,
                         providerObj.catIDs,
-                        ("false", "true")[bool(int(providerObj.default))],
+                        ("false", "true")[bool(providerObj.default)],
                         ("false", "true")[bool(sickrage.srCore.srConfig.USE_NZBS)]]))
 
         if sickrage.srCore.srConfig.USE_TORRENTS:
             for providerID, providerObj in sickrage.srCore.providersDict.torrentrss().items():
+                if providerObj.default:
+                    continue
+
                 torrentrss_providers += '{}!!!'.format(
                     '|'.join([providerID,
                               providerObj.name,
                               providerObj.urls["base_url"],
                               providerObj.cookies,
                               providerObj.titleTAG,
+                              ("false", "true")[bool(providerObj.default)],
                               ("false", "true")[bool(sickrage.srCore.srConfig.USE_TORRENTS)]]))
     %>
     <meta data-var="NEWZNAB_PROVIDERS" data-content="${newznab_providers}">

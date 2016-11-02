@@ -4385,7 +4385,7 @@ jQuery(document).ready(function ($) {
                                 alert(data.error);
                                 return;
                             }
-                            SICKRAGE.config.providers.addNewznabProvider(data.success, name, url, key, cat, 0);
+                            SICKRAGE.config.providers.addNewznabProvider(data.success, name, url, key, cat, 'false');
                             SICKRAGE.config.providers.refreshEditAProvider();
                         });
                     });
@@ -4409,7 +4409,7 @@ jQuery(document).ready(function ($) {
                                 return;
                             }
 
-                            SICKRAGE.config.providers.addTorrentRssProvider(data.success, name, url, cookies, titleTAG, 0);
+                            SICKRAGE.config.providers.addTorrentRssProvider(data.success, name, url, cookies, titleTAG, 'false');
                             SICKRAGE.config.providers.refreshEditAProvider();
                         });
                     });
@@ -4553,12 +4553,12 @@ jQuery(document).ready(function ($) {
 
                     SICKRAGE.config.providers.newznabProviders[id] = [isDefault, [name, url, key, cat]];
 
-                    if (!isDefault) {
+                    if (isDefault !== 'true') {
                         $('#editANewznabProvider').addOption(id, name);
                         SICKRAGE.config.providers.populateNewznabSection();
                     }
 
-                    if ($('#provider_order_list > #' + id).length === 0 && showProvider !== false) {
+                    if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
                         $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anon_url(url) + '" class="imgLink" target="_new"><img src="/images/providers/nzb.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
                         $('#provider_order_list').sortable("refresh");
                     }
@@ -4570,8 +4570,8 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.config.providers.newznabProviders[id][1][1] = url;
                     SICKRAGE.config.providers.newznabProviders[id][1][2] = key;
                     SICKRAGE.config.providers.newznabProviders[id][1][3] = cat;
-
                     SICKRAGE.config.providers.populateNewznabSection();
+                    SICKRAGE.config.providers.refreshProviderList();
                 },
 
                 deleteNewznabProvider: function (id) {
@@ -4590,7 +4590,7 @@ jQuery(document).ready(function ($) {
 
                     if (selectedProvider === 'addNewznab') {
                         data = ['', '', ''];
-                        isDefault = 0;
+                        isDefault = 'false';
                         $('#newznab_add_div').show();
                         $('#newznab_update_div').hide();
                         $('#newznab_cat').attr('disabled', 'disabled');
@@ -4647,7 +4647,7 @@ jQuery(document).ready(function ($) {
                     } else {
                         $('#newznab_name').attr("disabled", "disabled");
 
-                        if (isDefault) {
+                        if (isDefault === 'true') {
                             $('#newznab_url').attr("disabled", "disabled");
                             $('#newznab_delete').attr("disabled", "disabled");
                         } else {
@@ -4691,13 +4691,15 @@ jQuery(document).ready(function ($) {
                     }
                 },
 
-                addTorrentRssProvider: function (id, name, url, cookies, titleTAG, showProvider) {
+                addTorrentRssProvider: function (id, name, url, cookies, titleTAG, isDefault, showProvider) {
                     SICKRAGE.config.providers.torrentRssProviders[id] = [name, url, cookies, titleTAG];
 
-                    $('#editATorrentRssProvider').addOption(id, name);
-                    SICKRAGE.config.providers.populateTorrentRssSection();
+                    if (isDefault !== 'true') {
+                        $('#editATorrentRssProvider').addOption(id, name);
+                        SICKRAGE.config.providers.populateTorrentRssSection();
+                    }
 
-                    if ($('#provider_order_list > #' + id).length === 0 && showProvider !== false) {
+                    if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
                         $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anon_url(url) + '" class="imgLink" target="_new"><img src="/images/providers/torrent.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
                         $('#provider_order_list').sortable("refresh");
                     }
@@ -4710,6 +4712,7 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.config.providers.torrentRssProviders[id][2] = cookies;
                     SICKRAGE.config.providers.torrentRssProviders[id][3] = titleTAG;
                     SICKRAGE.config.providers.populateTorrentRssSection();
+                    SICKRAGE.config.providers.refreshProviderList();
                 },
 
                 deleteTorrentRssProvider: function (id) {
@@ -4788,7 +4791,7 @@ jQuery(document).ready(function ($) {
                         }
                     }
 
-                    $('#provider_strings').val(provStrings.join(' '));
+                    $("#provider_strings").val(provStrings.join(' '));
                     $("#provider_order").val(finalArr.join(' '));
 
                     SICKRAGE.config.providers.refreshEditAProvider();

@@ -905,7 +905,7 @@ class TorrentRssProvider(TorrentProvider):
     @classmethod
     def getDefaultProviders(cls):
         return [
-            cls('showRSS', 'showrss.info', False, '', 'title', 'eponly', True, True, True, True)
+            cls('showRSS', 'showrss.info', False, '', 'title', 'eponly', False, False, False, True)
         ]
 
 
@@ -1176,7 +1176,15 @@ class NewznabProvider(NZBProvider):
                         cur_name, cur_url, cur_key, cur_cat = curProviderData.split('|')
                         cur_url = sickrage.srCore.srConfig.clean_url(cur_url)
 
-                        providers += [NewznabProvider(cur_name, cur_url, bool(not cur_key == 0), key=cur_key)]
+                        provider = NewznabProvider(
+                            cur_name,
+                            cur_url,
+                            bool(not cur_key == 0),
+                            key=cur_key,
+                            catIDs=cur_cat
+                        )
+
+                        providers += [provider]
                 except Exception:
                     continue
         except Exception:
