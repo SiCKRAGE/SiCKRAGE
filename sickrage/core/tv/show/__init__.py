@@ -569,7 +569,6 @@ class TVShow(object):
 
         for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
                        if x['doc']['location'] != '']:
-
             sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Retrieving/creating episode S%02dE%02d" % (
                 dbData["season"] or 0, dbData["episode"] or 0))
 
@@ -735,14 +734,14 @@ class TVShow(object):
                 try:
                     curEp = self.getEpisode(season, episode)
                 except EpisodeNotFoundException:
-                    sickrage.LOGGER.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
+                    sickrage.srCore.srLogger.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
                         self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
                     continue
                 else:
                     try:
                         curEp.loadFromIndexer(tvapi=t)
                     except EpisodeDeletedException:
-                        logger.log("The episode was deleted, skipping the rest of the load")
+                        sickrage.srCore.srLogger.info("The episode was deleted, skipping the rest of the load")
                         continue
 
                 with curEp.lock:
@@ -1107,9 +1106,9 @@ class TVShow(object):
     def nextEpisode(self):
         curDate = datetime.date.today().toordinal()
         if not self.next_aired or self.next_aired and curDate > self.next_aired:
-            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True) if
-                      x['doc']['airdate'] >= datetime.date.today().toordinal() and
-                      x['doc']['status'] in (UNAIRED, WANTED)]
+            dbData = sorted([x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True) if
+                             x['doc']['airdate'] >= datetime.date.today().toordinal() and
+                             x['doc']['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
 
             self.next_aired = dbData[0]['airdate'] if dbData else ''
 

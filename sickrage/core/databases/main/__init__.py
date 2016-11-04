@@ -28,7 +28,7 @@ from .index import TVShowsIndex, TVEpisodesIndex, IMDBInfoIndex, XEMRefreshIndex
 
 
 class MainDB(srDatabase):
-    _database = {
+    _indexes = {
         'tv_shows': TVShowsIndex,
         'tv_episodes': TVEpisodesIndex,
         'imdb_info': IMDBInfoIndex,

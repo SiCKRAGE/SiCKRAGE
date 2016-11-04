@@ -27,11 +27,11 @@ import traceback
 from sqlite3 import OperationalError
 
 import sickrage
-from CodernityDB.database import PreconditionsException
 from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
-from CodernityDB.index import IndexException, IndexNotFoundException, IndexConflict
+from CodernityDB.index import IndexNotFoundException, IndexConflict
 from CodernityDB.storage import IU_Storage
 from sickrage.core.helpers import randomString
+
 
 def Custom_IU_Storage_get(self, start, size, status='c'):
     if status == 'd':
@@ -40,10 +40,10 @@ def Custom_IU_Storage_get(self, start, size, status='c'):
         self._f.seek(start)
         return self.data_from(self._f.read(size))
 
+
 class srDatabase(object):
-    _database = {}
-    _migrate_list = {}
     _indexes = {}
+    _migrate_list = {}
 
     def __init__(self, name=''):
         self.name = name
@@ -53,11 +53,7 @@ class srDatabase(object):
         self.db = SuperThreadSafeDatabase(self.db_path)
 
         if self.db.exists():
-            try:
-                self.db.open()
-            except (PreconditionsException, IndexError):
-                self.repair()
-                self.db.open()
+            self.db.open()
 
     def initialize(self):
         # Remove database folder if both exists
@@ -104,47 +100,7 @@ class srDatabase(object):
             self.db.create()
 
         # setup database indexes
-        for index_name in self._database:
-            klass = self._database[index_name]
-            self.setupIndex(index_name, klass)
-
-    def setupIndex(self, index_name, klass):
-        self._indexes[index_name] = klass
-
-        # Category index
-        index_instance = klass(self.db.path, index_name)
-        try:
-
-            # Make sure store and bucket don't exist
-            exists = []
-            for x in ['buck', 'stor']:
-                full_path = os.path.join(self.db.path, '%s_%s' % (index_name, x))
-                if os.path.exists(full_path):
-                    exists.append(full_path)
-
-            if index_name not in self.db.indexes_names:
-                # Remove existing buckets if index isn't there
-                for x in exists:
-                    os.unlink(x)
-
-                # Add index (will restore buckets)
-                self.db.add_index(index_instance)
-                self.db.reindex_index(index_name)
-            else:
-                # Previous info
-                previous = self.db.indexes_names[index_name]
-                previous_version = previous._version
-                current_version = klass._version
-
-                # Only edit index if versions are different
-                if previous_version < current_version:
-                    sickrage.srCore.srLogger.debug('Index [{}] exists, updating and reindexing'.format(index_name))
-                    self.db.destroy_index(previous)
-                    self.db.add_index(index_instance)
-                    self.db.reindex_index(index_name)
-
-        except:
-            sickrage.srCore.srLogger.error('Failed adding index {}: {}'.format(index_name, traceback.format_exc()))
+        self.setupIndexes()
 
     def compact(self, try_repair=True, **kwargs):
         # Removing left over compact files
@@ -166,51 +122,82 @@ class srDatabase(object):
                     self.name, round(time.time() - start, 2),
                     round(new_size / 1048576, 2), round((size - new_size) / 1048576, 2))
             )
-        except (PreconditionsException, IndexException, AttributeError):
+        except Exception:
             if try_repair:
-                self.repair()
+                sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
+
+                # Remove all indexes
+                old_indexes = self._indexes.keys()
+                for index_name in old_indexes:
+                    try:
+                        self.db.destroy_index(index_name)
+                    except IndexNotFoundException:
+                        pass
+                    except:
+                        sickrage.srCore.srLogger.error('Failed removing old index %s', index_name)
+
+                # Add them again
+                for index_name in self._indexes:
+                    try:
+                        self.db.add_index(self._indexes[index_name](self.db.path, index_name))
+                        self.db.reindex_index(index_name)
+                    except IndexConflict:
+                        pass
+                    except:
+                        sickrage.srCore.srLogger.error('Failed adding index %s', index_name)
+                        raise
+
                 self.compact(try_repair=False)
             else:
                 sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
-
         except:
             sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
 
-    def repair(self):
-        sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
-
+    def setupIndexes(self):
         # setup database indexes
-        for index_name in self._database:
-            klass = self._database[index_name]
-            self._indexes[index_name] = klass
-
-        # Remove all indexes
-        old_indexes = self._indexes.keys()
-        for index_name in old_indexes:
-            try:
-                self.db.destroy_index(index_name)
-            except IndexNotFoundException:
-                pass
-            except:
-                sickrage.srCore.srLogger.error('Failed removing old index {}'.format(index_name))
-
-        # Add them again
         for index_name in self._indexes:
-            klass = self._indexes[index_name]
-
-            # Category index
-            index_instance = klass(self.db.path, index_name)
             try:
-                self.db.add_index(index_instance)
-                self.db.reindex_index(index_name)
-            except IndexConflict:
-                pass
+                # Make sure store and bucket don't exist
+                exists = []
+                for x in ['buck', 'stor']:
+                    full_path = os.path.join(self.db.path, '%s_%s' % (index_name, x))
+                    if os.path.exists(full_path):
+                        exists.append(full_path)
+
+                if index_name not in self.db.indexes_names:
+                    # Remove existing buckets if index isn't there
+                    for x in exists:
+                        os.unlink(x)
+
+                    self.db.add_index(self._indexes[index_name](self.db.path, index_name))
+                    # self.db.reindex_index(self.db.indexes_names[index_name])
+                else:
+                    # Previous info
+                    previous_version = self.db.indexes_names[index_name]._version
+                    current_version = self._indexes[index_name]._version
+
+                    # Only edit index if versions are different
+                    if previous_version < current_version:
+                        self.db.destroy_index(self.db.indexes_names[index_name])
+                        self.db.add_index(self._indexes[index_name](self.db.path, index_name))
+                        self.db.reindex_index(index_name)
             except:
                 sickrage.srCore.srLogger.error('Failed adding index {}'.format(index_name))
-                raise
 
     def close(self):
         self.db.close()
+
+    def check_integrity(self):
+        for index_name in self._indexes:
+            try:
+                for x in self.db.all(index_name):
+                    try:
+                        self.db.get('id', x.get('_id'), with_doc=True)
+                    except (ValueError, TypeError) as e:
+                        self.db.delete(self.db.get(index_name, x.get('key'), with_doc=True)['doc'])
+            except Exception as e:
+                if index_name in self.db.indexes_names:
+                    self.db.destroy_index(self.db.indexes_names[index_name])
 
     def migrate(self):
         if os.path.isfile(self.old_db_path):
@@ -289,6 +276,7 @@ class srDatabase(object):
                     os.rename(self.old_db_path + '-wal', '{}-wal.{}_old'.format(self.old_db_path, random))
                 if os.path.isfile(self.old_db_path + '-shm'):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
+
 
 # Monkey-Patch storage to suppress logging messages
 IU_Storage.get = Custom_IU_Storage_get

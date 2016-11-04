@@ -26,7 +26,7 @@ from sickrage.core.databases.failed.index import FailedIndex, HistoryIndex
 
 
 class FailedDB(srDatabase):
-    _database = {
+    _indexes = {
         'failed': FailedIndex,
         'history': HistoryIndex,
     }

@@ -209,6 +209,9 @@ class Core(object):
 
         # perform database startup actions
         for db in [MainDB, CacheDB, FailedDB]:
+            # check integrity of database
+            db().check_integrity()
+
             # initialize database
             db().initialize()
 

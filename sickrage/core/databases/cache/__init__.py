@@ -27,7 +27,7 @@ from sickrage.core.databases.cache.index import LastUpdateIndex, LastSearchIndex
 
 
 class CacheDB(srDatabase):
-    _database = {
+    _indexes = {
         'lastUpdate': LastUpdateIndex,
         'lastSearch': LastSearchIndex,
         'scene_exceptions': SceneExceptionsIndex,
