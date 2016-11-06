@@ -35,7 +35,7 @@ class WombleProvider(NZBProvider):
 class WombleCache(tv_cache.TVCache):
     def update(self):
         # check if we should update
-        if self.shouldUpdate():
+        if self.should_update():
             # clear cache
             self.clear()
 
@@ -53,5 +53,5 @@ class WombleCache(tv_cache.TVCache):
 
         return True
 
-    def _checkAuth(self, data):
+    def check_auth(self, data):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

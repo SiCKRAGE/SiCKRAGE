@@ -89,7 +89,7 @@ class GenericProvider(object):
     def imageName(self):
         return ""
 
-    def _checkAuth(self):
+    def check_auth(self):
         return True
 
     def _doLogin(self):
@@ -256,7 +256,7 @@ class GenericProvider(object):
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
 
-        if not self._checkAuth:
+        if not self.check_auth:
             return
 
         self.show = show
@@ -925,16 +925,18 @@ class NewznabProvider(NZBProvider):
                  default=False):
         super(NewznabProvider, self).__init__(name, url, private)
 
-        self.cache = NewznabCache(self)
+        self.key = key
+
         self.search_mode = search_mode
         self.search_fallback = search_fallback
         self.enable_daily = enable_daily
         self.enable_backlog = enable_backlog
-        self.key = key
         self.supports_backlog = True
+
         self.catIDs = catIDs
         self.default = default
-        self.last_search = datetime.datetime.now()
+
+        self.cache = TVCache(self, min_time=30)
 
     def get_newznab_categories(self):
         """
@@ -947,7 +949,7 @@ class NewznabProvider(NZBProvider):
         categories = []
         message = ""
 
-        self._checkAuth()
+        self.check_auth()
 
         params = {"t": "caps"}
         if self.key:
@@ -1032,7 +1034,11 @@ class NewznabProvider(NZBProvider):
     def _doGeneralSearch(self, search_string):
         return self.search({'q': search_string})
 
-    def _checkAuth(self):
+    def check_auth(self):
+        if self.private and not len(self.key):
+            sickrage.srCore.srLogger.warning('Invalid api key for {}. Check your settings'.format(self.name))
+            return False
+
         return True
 
     def _checkAuthFromData(self, data):
@@ -1042,7 +1048,7 @@ class NewznabProvider(NZBProvider):
         :type data: dict
         """
         if not all([x in data for x in ['feed', 'entries']]):
-            return self._checkAuth()
+            return self.check_auth()
 
         try:
             if int(data['bozo']) == 1:
@@ -1068,8 +1074,10 @@ class NewznabProvider(NZBProvider):
         return True
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+        results = []
 
-        self._checkAuth()
+        if not self.check_auth():
+            return results
 
         params = {
             "t": "tvsearch",
@@ -1086,19 +1094,18 @@ class NewznabProvider(NZBProvider):
 
         sickrage.srCore.srLogger.debug('[{}] Search parameters: {}'.format(self.name, repr(params)))
 
-        results = []
         offset = total = 0
+        last_search = datetime.datetime.now()
         while total >= offset:
+            if (datetime.datetime.now() - last_search).seconds < 5:
+                continue
+
             search_url = self.urls['base_url'] + '/api?' + urllib.urlencode(params)
-
-            while (datetime.datetime.now() - self.last_search).seconds < 5:
-                time.sleep(1)
-
             sickrage.srCore.srLogger.debug("Search url: %s" % search_url)
 
             data = self.cache.getRSSFeed(search_url)
 
-            self.last_search = datetime.datetime.now()
+            last_search = datetime.datetime.now()
 
             if not self._checkAuthFromData(data):
                 break
@@ -1216,52 +1223,6 @@ class TorrentRssCache(TVCache):
 
         return self.getRSSFeed(self.provider.urls['base_url'])
 
-
-class NewznabCache(TVCache):
-    def __init__(self, provider_obj):
-
-        TVCache.__init__(self, provider_obj)
-
-        # only poll newznab providers every 30 minutes
-        self.min_time = 30
-        self.last_search = datetime.datetime.now()
-
-    def _get_rss_data(self):
-
-        params = {"t": "tvsearch",
-                  "cat": self.provider.catIDs,
-                  "maxage": 4,
-                  }
-
-        if self.provider.key:
-            params['apikey'] = self.provider.key
-
-        rss_url = self.provider.urls['base_url'] + '/api?' + urllib.urlencode(params)
-
-        while (datetime.datetime.now() - self.last_search).seconds < 5:
-            time.sleep(1)
-
-        sickrage.srCore.srLogger.debug("Cache update URL: %s " % rss_url)
-        data = self.getRSSFeed(rss_url)
-
-        self.last_search = datetime.datetime.now()
-
-        return data
-
-    def _checkAuth(self, data):
-        return self.provider._checkAuthFromData(data)
-
-    def _parseItem(self, item):
-        title, url = self._get_title_and_url(item)
-
-        self._checkItemAuth(title, url)
-
-        if not title or not url:
-            return None
-
-        tvrageid = 0
-
-        return self.addCacheEntry(title, url, indexer_id=tvrageid)
 
 
 class providersDict(dict):

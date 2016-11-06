@@ -143,7 +143,8 @@
                                             <label for="${providerID}_url">
                                                 <span class="component-title">URL:</span>
                                                 <span class="component-desc">
-                                                    <input type="text" id="${providerID}_url"
+                                                    <input type="text"
+                                                           id="${providerID}_url"
                                                            value="${providerObj.urls['base_url']}"
                                                            class="form-control input-sm input350"
                                                            autocapitalize="off" disabled/>
@@ -152,18 +153,22 @@
                                         </div>
                                     % endif
 
-                                    <div class="field-pair">
-                                        <label for="${providerID}_hash">
-                                            <span class="component-title">API key:</span>
-                                            <span class="component-desc">
-                                                    <input type="text" id="${providerID}_hash"
-                                                           value="${providerObj.key}"
-                                                           newznab_name="${providerID}_hash"
-                                                           class="newznab_key form-control input-sm input350"
-                                                           autocapitalize="off"/>
-                                                </span>
-                                        </label>
-                                    </div>
+                                    % if providerObj.private:
+                                        <div class="field-pair">
+                                            <label for="${providerID}_key">
+                                                <span class="component-title">API key:</span>
+                                                <span class="component-desc">
+                                                        <input type="text"
+                                                               id="${providerID}_key"
+                                                               name="${providerID}_key"
+                                                               value="${providerObj.key}"
+                                                               newznab_name="${providerID}_key"
+                                                               class="newznab_key form-control input-sm input350"
+                                                               autocapitalize="off"/>
+                                                    </span>
+                                            </label>
+                                        </div>
+                                    % endif
 
                                     % if hasattr(providerObj, 'enable_daily'):
                                         <div class="field-pair">
@@ -762,10 +767,6 @@
                                             <span class="component-title">API key:</span>
                                             <input type="text" id="newznab_key" class="form-control input-sm input350"
                                                    autocapitalize="off"/>
-                                        </label>
-                                        <label>
-                                            <span class="component-title">&nbsp;</span>
-                                            <span class="component-desc">(if not required, type 0)</span>
                                         </label>
                                     </div>
 

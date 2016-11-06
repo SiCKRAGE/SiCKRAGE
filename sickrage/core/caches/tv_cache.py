@@ -52,18 +52,18 @@ class TVCache(object):
         if self.search_params:
             return {'entries': self.provider.search(self.search_params)}
 
-    def _checkAuth(self, data):
+    def check_auth(self, data):
         return True
 
-    def _checkItemAuth(self, title, url):
+    def check_item(self, title, url):
         return True
 
     def update(self):
         # check if we should update
-        if self.shouldUpdate():
+        if self.should_update():
             try:
                 data = self._get_rss_data()
-                if not self._checkAuth(data):
+                if not self.check_auth(data):
                     return False
 
                 # clear cache
@@ -74,7 +74,7 @@ class TVCache(object):
 
                 [self._parseItem(item) for item in data['entries']]
             except AuthException as e:
-                sickrage.srCore.srLogger.error("Authentication error: {}".format(e.message))
+                sickrage.srCore.srLogger.warning("Authentication error: {}".format(e.message))
                 return False
             except Exception as e:
                 sickrage.srCore.srLogger.debug(
@@ -103,7 +103,7 @@ class TVCache(object):
     def _parseItem(self, item):
         title, url = self._get_title_and_url(item)
 
-        self._checkItemAuth(title, url)
+        self.check_item(title, url)
 
         if title and url:
             title = self._translateTitle(title)
@@ -162,7 +162,7 @@ class TVCache(object):
                 'time': int(time.mktime(toDate.timetuple()))
             })
 
-    def shouldUpdate(self):
+    def should_update(self):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):
             return False

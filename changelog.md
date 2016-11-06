@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4794799 - 2016-11-04: new: v8.7.5 fix: Added integrity check for databases that will auto-delete corrupt indexes, resolves marshal errors fix: Properly sort next episode dates when checking for next air date of new episodes 
+- * bd241df - 2016-11-05: new: v8.7.6 fix: Fixed issues with saving newznab provider settings fix: Fixed issues with searching rss feeds from providers update: Updated Core JS code 
+- * eabff6e - 2016-11-04: new: v8.7.5 fix: Added integrity check for databases that will auto-delete corrupt indexes, resolves marshal errors fix: Properly sort next episode dates when checking for next air date of new episodes 
 - * 1140fde - 2016-11-01: new: v8.7.4 fix: Fixed issues with saving api keys for newznab providers 
 - * 7df9a11 - 2016-11-01: new: v8.7.3 fix: Fixed core js code for newznab providers fix: Fixed issues with saving custom newznab providers 
 - * 2f74a8b - 2016-10-31: fix: Cleaned up code for finding shows in show list 

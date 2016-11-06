@@ -4273,7 +4273,7 @@ jQuery(document).ready(function ($) {
                 init: function () {
                     $(document).on('change', '.newznab_key', function () {
                         var providerId = $(this).attr('id');
-                        providerId = providerId.substring(0, providerId.length - '_hash'.length);
+                        providerId = providerId.substring(0, providerId.length - '_key'.length);
 
                         var url = $('#' + providerId + '_url').val();
                         var cat = $('#' + providerId + '_cat').val();

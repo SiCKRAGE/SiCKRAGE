@@ -232,10 +232,10 @@ class LoginHandler(BaseHandler):
 
     @coroutine
     def prepare(self, *args, **kwargs):
-        result = yield self.callback(self.checkAuth)
+        result = yield self.callback(self.auth)
         self.finish(result)
 
-    def checkAuth(self):
+    def auth(self):
         try:
             username = self.get_argument('username', '')
             password = self.get_argument('password', '')
@@ -4477,7 +4477,7 @@ class ConfigProviders(Config):
                     providerObj.hash = str(kwargs.get(providerID + '_hash', '')).strip()
 
                 if hasattr(providerObj, 'key'):
-                    providerObj.api_key = str(kwargs.get(providerID + '_key', '')).strip()
+                    providerObj.key = str(kwargs.get(providerID + '_key', '')).strip()
 
                 if hasattr(providerObj, 'api_key'):
                     providerObj.api_key = str(kwargs.get(providerID + '_api_key', '')).strip()
