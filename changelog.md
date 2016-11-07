@@ -1,6 +1,7 @@
 # Changelog
 
-- * bd241df - 2016-11-05: new: v8.7.6 fix: Fixed issues with saving newznab provider settings fix: Fixed issues with searching rss feeds from providers update: Updated Core JS code 
+- * 502b355 - 2016-11-07: v8.7.7 Added new logo design 
+- * 35db11d - 2016-11-05: new: v8.7.6 fix: Fixed issues with saving newznab provider settings fix: Fixed issues with searching rss feeds from providers update: Updated Core JS code 
 - * eabff6e - 2016-11-04: new: v8.7.5 fix: Added integrity check for databases that will auto-delete corrupt indexes, resolves marshal errors fix: Properly sort next episode dates when checking for next air date of new episodes 
 - * 1140fde - 2016-11-01: new: v8.7.4 fix: Fixed issues with saving api keys for newznab providers 
 - * 7df9a11 - 2016-11-01: new: v8.7.3 fix: Fixed core js code for newznab providers fix: Fixed issues with saving custom newznab providers 
