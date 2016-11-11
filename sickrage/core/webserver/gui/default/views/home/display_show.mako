@@ -417,31 +417,31 @@
                         epLoc = epLoc[len(showLoc)+1:]
         %>
 
+            <thead>
+            <tr class="seasoncols" style="display:none;">
+                <th data-sorter="false" data-priority="critical" class="col-checkbox">
+                    <input type="checkbox" class="seasonCheck"/>
+                </th>
+                <th data-sorter="false" class="col-metadata">NFO</th>
+                <th data-sorter="false" class="col-metadata">TBN</th>
+                <th data-sorter="false" class="col-ep">Episode</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>Absolute
+                </th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>Scene
+                </th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>Scene Absolute
+                </th>
+                <th data-sorter="false" class="col-name">Name</th>
+                <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
+                <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
+                <th data-sorter="false" class="col-airdate">Airdate</th>
+                <th data-sorter="false" class="col-status">Status</th>
+                <th data-sorter="false" class="col-search">Search</th>
+            </tr>
+            </thead>
+
         % if int(epResult["season"]) != curSeason:
             % if curSeason == -1:
-                <thead>
-                <tr class="seasoncols" style="display:none;">
-                    <th data-sorter="false" data-priority="critical" class="col-checkbox">
-                        <input type="checkbox" class="seasonCheck"/>
-                    </th>
-                    <th data-sorter="false" class="col-metadata">NFO</th>
-                    <th data-sorter="false" class="col-metadata">TBN</th>
-                    <th data-sorter="false" class="col-ep">Episode</th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>Absolute
-                    </th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>Scene
-                    </th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>Scene Absolute
-                    </th>
-                    <th data-sorter="false" class="col-name">Name</th>
-                    <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
-                    <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
-                    <th data-sorter="false" class="col-airdate">Airdate</th>
-                    <th data-sorter="false" class="col-status">Status</th>
-                    <th data-sorter="false" class="col-search">Search</th>
-                </tr>
-                </thead>
-
                 <tbody class="tablesorter-no-sort">
                 <tr style="height: 60px;">
                     <th class="row-seasonheader displayShowTable" colspan="100%"
