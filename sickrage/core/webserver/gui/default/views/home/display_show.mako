@@ -444,7 +444,7 @@
 
                 <tbody class="tablesorter-no-sort">
                 <tr style="height: 60px;">
-                    <th class="row-seasonheader displayShowTable" colspan="26"
+                    <th class="row-seasonheader displayShowTable" colspan="100%"
                         style="vertical-align: bottom; width: auto;">
                         <h3 style="display: inline;"><a
                                 name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[int(epResult["season"]) > 0]}
@@ -490,7 +490,7 @@
             % else:
                 <tbody class="tablesorter-no-sort">
                 <tr style="height: 60px;">
-                    <th class="row-seasonheader displayShowTable" colspan="26"
+                    <th class="row-seasonheader displayShowTable" colspan="100%"
                         style="vertical-align: bottom; width: auto;">
                         <h3 style="display: inline;"><a
                                 name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}

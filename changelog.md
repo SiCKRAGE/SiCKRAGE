@@ -1,6 +1,6 @@
 # Changelog
 
-- * 751afd1 - 2016-11-11: Fixed show display template code 
+- * 81e02bb - 2016-11-11: Fixed show display template code 
 - * a546517 - 2016-11-07: Updated logo 
 - * 83926de - 2016-11-07: v8.7.7 Added new logo design 
 - * 35db11d - 2016-11-05: new: v8.7.6 fix: Fixed issues with saving newznab provider settings fix: Fixed issues with searching rss feeds from providers update: Updated Core JS code 
