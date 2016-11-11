@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7aa6c12 - 2016-11-11: Fixed show display template code 
+- * 9ef9d5c - 2016-11-11: Fixed show display template code 
+- * f153e72 - 2016-11-11: Fixed show display template code 
 - * bde3888 - 2016-11-11: Fixed show display template code 
 - * 45d8ad2 - 2016-11-11: Fixed show display template code 
 - * a546517 - 2016-11-07: Updated logo 

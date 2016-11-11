@@ -417,6 +417,7 @@
                         epLoc = epLoc[len(showLoc)+1:]
         %>
 
+        % if int(epResult["season"]) != curSeason:
             <thead>
             <tr class="seasoncols" style="display:none;">
                 <th data-sorter="false" data-priority="critical" class="col-checkbox">
@@ -440,7 +441,6 @@
             </tr>
             </thead>
 
-        % if int(epResult["season"]) != curSeason:
             % if curSeason == -1:
                 <tbody class="tablesorter-no-sort">
                 <tr style="height: 60px;">
