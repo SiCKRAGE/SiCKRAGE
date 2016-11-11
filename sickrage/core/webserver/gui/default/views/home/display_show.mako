@@ -374,107 +374,99 @@
     <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="displayShowTable display_show"
            cellspacing="0" border="0" cellpadding="0">
 
+
         <% curSeason = -1 %>
         <% odd = 0 %>
 
         % for epResult in episodeResults:
-            <%
-                epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
-                if not epStr in epCats or not sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
-                    next
+        <%
+            epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
+            if not epStr in epCats or not sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
+                        next
 
-                scene = False
-                scene_anime = False
-                if not show.air_by_date and not show.is_sports and not show.is_anime and show.is_scene:
-                    scene = True
-                elif not show.air_by_date and not show.is_sports and show.is_anime and show.is_scene:
-                    scene_anime = True
+            scene = False
+            scene_anime = False
+            if not show.air_by_date and not show.is_sports and not show.is_anime and show.is_scene:
+                        scene = True
+            elif not show.air_by_date and not show.is_sports and show.is_anime and show.is_scene:
+                        scene_anime = True
 
-                (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
-                if (epResult["season"], epResult["episode"]) in xem_numbering:
-                    (dfltSeas, dfltEpis) = xem_numbering[(epResult["season"], epResult["episode"])]
+            (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
+            if (epResult["season"], epResult["episode"]) in xem_numbering:
+                        (dfltSeas, dfltEpis) = xem_numbering[(epResult["season"], epResult["episode"])]
 
-                if epResult["absolute_number"] in xem_absolute_numbering:
-                    dfltAbsolute = xem_absolute_numbering[epResult["absolute_number"]]
+            if epResult["absolute_number"] in xem_absolute_numbering:
+                        dfltAbsolute = xem_absolute_numbering[epResult["absolute_number"]]
 
-                if epResult["absolute_number"] in scene_absolute_numbering:
-                    scAbsolute = scene_absolute_numbering[epResult["absolute_number"]]
-                    dfltAbsNumbering = False
-                else:
-                    scAbsolute = dfltAbsolute
-                    dfltAbsNumbering = True
+            if epResult["absolute_number"] in scene_absolute_numbering:
+                        scAbsolute = scene_absolute_numbering[epResult["absolute_number"]]
+                        dfltAbsNumbering = False
+            else:
+                        scAbsolute = dfltAbsolute
+                        dfltAbsNumbering = True
 
-                if (epResult["season"], epResult["episode"]) in scene_numbering:
-                    (scSeas, scEpis) = scene_numbering[(epResult["season"], epResult["episode"])]
-                    dfltEpNumbering = False
-                else:
-                    (scSeas, scEpis) = (dfltSeas, dfltEpis)
-                    dfltEpNumbering = True
+            if (epResult["season"], epResult["episode"]) in scene_numbering:
+                        (scSeas, scEpis) = scene_numbering[(epResult["season"], epResult["episode"])]
+                        dfltEpNumbering = False
+            else:
+                        (scSeas, scEpis) = (dfltSeas, dfltEpis)
+                        dfltEpNumbering = True
 
-                epLoc = epResult["location"]
-                if epLoc and os.path.isdir(showLoc) and epLoc.lower().startswith(showLoc.lower()):
-                    epLoc = epLoc[len(showLoc)+1:]
-            %>
-            % if int(epResult["season"]) != curSeason:
-                % if curSeason == -1:
-                    <thead>
-                    <tr class="seasoncols" style="display:none;">
-                        <th data-sorter="false" data-priority="critical" class="col-checkbox"><input type="checkbox"
-                                                                                                     class="seasonCheck"/>
-                        </th>
-                        <th data-sorter="false" class="col-metadata">NFO</th>
-                        <th data-sorter="false" class="col-metadata">TBN</th>
-                        <th data-sorter="false" class="col-ep">Episode</th>
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>
-                            Absolute
-                        </th>
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>
-                            Scene
-                        </th>
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>
-                            Scene Absolute
-                        </th>
-                        <th data-sorter="false" class="col-name">Name</th>
-                        <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
-                        <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
-                        <th data-sorter="false" class="col-airdate">Airdate</th>
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srCore.srConfig.DOWNLOAD_URL)]}>
-                            Download
-                        </th>
-                        <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}>
-                            Subtitles
-                        </th>
-                        <th data-sorter="false" class="col-status">Status</th>
-                        <th data-sorter="false" class="col-search">Search</th>
-                    </tr>
-                    </thead>
-                    <tbody class="tablesorter-no-sort">
-                    <tr style="height: 60px;">
-                        <th class="row-seasonheader displayShowTable" colspan="15"
-                            style="vertical-align: bottom; width: auto;">
-                            <h3 style="display: inline;"><a
-                                    name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[int(epResult["season"]) > 0]}
-                            </h3>
-                            % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
-                                <button id="showseason-${epResult['season']}" type="button"
-                                        class="btn btn-xs pull-right" data-toggle="collapse"
-                                        data-target="#collapseSeason-${epResult['season']}">Show Episodes
-                                </button>
-                                <script type="text/javascript">
-                                    $(function () {
-                                        $('#collapseSeason-${epResult['season']}').on('hide.bs.collapse', function () {
-                                            $('#showseason-${epResult['season']}').text('Show Episodes');
-                                        });
-                                        $('#collapseSeason-${epResult['season']}').on('show.bs.collapse', function () {
-                                            $('#showseason-${epResult['season']}').text('Hide Episodes');
-                                        })
-                                    });
-                                </script>
-                            % endif
-                        </th>
-                    </tr>
-                    </tbody>
+            epLoc = epResult["location"]
+            if epLoc and os.path.isdir(showLoc) and epLoc.lower().startswith(showLoc.lower()):
+                        epLoc = epLoc[len(showLoc)+1:]
+        %>
+
+        % if int(epResult["season"]) != curSeason:
+            % if curSeason == -1:
+                <thead>
+                <tr class="seasoncols" style="display:none;">
+                    <th data-sorter="false" data-priority="critical" class="col-checkbox">
+                        <input type="checkbox" class="seasonCheck"/>
+                    </th>
+                    <th data-sorter="false" class="col-metadata">NFO</th>
+                    <th data-sorter="false" class="col-metadata">TBN</th>
+                    <th data-sorter="false" class="col-ep">Episode</th>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>Absolute
+                    </th>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>Scene
+                    </th>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>Scene Absolute
+                    </th>
+                    <th data-sorter="false" class="col-name">Name</th>
+                    <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
+                    <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
+                    <th data-sorter="false" class="col-airdate">Airdate</th>
+                    <th data-sorter="false" class="col-status">Status</th>
+                    <th data-sorter="false" class="col-search">Search</th>
+                </tr>
+                </thead>
+
                 <tbody class="tablesorter-no-sort">
+                <tr style="height: 60px;">
+                    <th class="row-seasonheader displayShowTable" colspan="26"
+                        style="vertical-align: bottom; width: auto;">
+                        <h3 style="display: inline;"><a
+                                name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[int(epResult["season"]) > 0]}
+                        </h3>
+                        % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
+                            <button id="showseason-${epResult['season']}" type="button"
+                                    class="btn btn-xs pull-right" data-toggle="collapse"
+                                    data-target="#collapseSeason-${epResult['season']}">Show Episodes
+                            </button>
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#collapseSeason-${epResult['season']}').on('hide.bs.collapse', function () {
+                                        $('#showseason-${epResult['season']}').text('Show Episodes');
+                                    });
+                                    $('#collapseSeason-${epResult['season']}').on('show.bs.collapse', function () {
+                                        $('#showseason-${epResult['season']}').text('Hide Episodes');
+                                    })
+                                });
+                            </script>
+                        % endif
+                    </th>
+                </tr>
                 <tr id="season-${epResult["season"]}-cols" class="seasoncols">
                     <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult["season"]}"
                                                     title=""/>
@@ -494,35 +486,33 @@
                     <th class="col-status">Status</th>
                     <th class="col-search">Search</th>
                 </tr>
-                % else:
                 </tbody>
-                    <tbody class="tablesorter-no-sort">
-                    <tr style="height: 60px;">
-                        <th class="row-seasonheader displayShowTable" colspan="15"
-                            style="vertical-align: bottom; width: auto;">
-                            <h3 style="display: inline;"><a
-                                    name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}
-                            </h3>
-                            % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
-                                <button id="showseason-${epResult['season']}" type="button"
-                                        class="btn btn-xs pull-right" data-toggle="collapse"
-                                        data-target="#collapseSeason-${epResult['season']}">Show Episodes
-                                </button>
-                                <script type="text/javascript">
-                                    $(function () {
-                                        $('#collapseSeason-${epResult['season']}').on('hide.bs.collapse', function () {
-                                            $('#showseason-${epResult['season']}').text('Show Episodes');
-                                        });
-                                        $('#collapseSeason-${epResult['season']}').on('show.bs.collapse', function () {
-                                            $('#showseason-${epResult['season']}').text('Hide Episodes');
-                                        })
-                                    });
-                                </script>
-                            % endif
-                        </th>
-                    </tr>
-                    </tbody>
+            % else:
                 <tbody class="tablesorter-no-sort">
+                <tr style="height: 60px;">
+                    <th class="row-seasonheader displayShowTable" colspan="26"
+                        style="vertical-align: bottom; width: auto;">
+                        <h3 style="display: inline;"><a
+                                name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}
+                        </h3>
+                        % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
+                            <button id="showseason-${epResult['season']}" type="button"
+                                    class="btn btn-xs pull-right" data-toggle="collapse"
+                                    data-target="#collapseSeason-${epResult['season']}">Show Episodes
+                            </button>
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#collapseSeason-${epResult['season']}').on('hide.bs.collapse', function () {
+                                        $('#showseason-${epResult['season']}').text('Show Episodes');
+                                    });
+                                    $('#collapseSeason-${epResult['season']}').on('show.bs.collapse', function () {
+                                        $('#showseason-${epResult['season']}').text('Hide Episodes');
+                                    })
+                                });
+                            </script>
+                        % endif
+                    </th>
+                </tr>
                 <tr id="season-${epResult["season"]}-cols" class="seasoncols">
                     <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult["season"]}"
                                                     title=""/>
@@ -542,154 +532,170 @@
                     <th class="col-status">Status</th>
                     <th class="col-search">Search</th>
                 </tr>
-                % endif
                 </tbody>
-                % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
-                    <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult['season']}">
-                % else:
-
-
-                    <tbody>
-                % endif
-                <% curSeason = int(epResult["season"]) %>
             % endif
-            <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle"
-                id="${'S' + str(epResult["season"]) + 'E' + str(epResult["episode"])}">
-                <td class="col-checkbox">
-                    % if int(epResult["status"]) != UNAIRED:
-                        <input type="checkbox" class="epCheck"
-                               id="${str(epResult["season"])+'x'+str(epResult["episode"])}"
-                               name="${str(epResult["season"]) +"x"+str(epResult["episode"])}" title=""/>
-                    % endif
-                </td>
-                <td align="center"><img src="/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
-                                        alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/></td>
-                <td align="center"><img src="/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
-                                        alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/></td>
-                <td align="center">
-                    <%
-                        text = str(epResult['episode'])
-                        if epLoc != '' and epLoc is not None:
+            <% curSeason = int(epResult["season"]) %>
+        % endif
+
+        % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
+            <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult['season']}">
+        % else:
+            <tbody>
+        % endif
+
+        <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle"
+            id="${'S' + str(epResult["season"]) + 'E' + str(epResult["episode"])}">
+
+            <td class="col-checkbox">
+                % if int(epResult["status"]) != UNAIRED:
+                    <input type="checkbox" class="epCheck"
+                           id="${str(epResult["season"])+'x'+str(epResult["episode"])}"
+                           name="${str(epResult["season"]) +"x"+str(epResult["episode"])}" title=""/>
+                % endif
+            </td>
+
+            <td align="center"><img src="/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
+                                    alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/></td>
+
+            <td align="center"><img src="/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
+                                    alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/></td>
+
+            <td align="center">
+                <%
+                    text = str(epResult['episode'])
+                    if epLoc != '' and epLoc is not None:
                                 text = '<span title="' + epLoc + '" class="addQTip">' + text + "</span>"
-                    %>
+                %>
                     ${text}
-                </td>
-                <td align="center">${epResult["absolute_number"]}</td>
-                <td align="center">
-                    <input type="text" placeholder="${str(dfltSeas) + 'x' + str(dfltEpis)}" size="6" maxlength="8"
-                           class="sceneSeasonXEpisode form-control input-scene" data-for-season="${epResult["season"]}"
-                           data-for-episode="${epResult["episode"]}"
-                           id="sceneSeasonXEpisode_${show.indexerid}_${str(epResult["season"])}_${str(epResult["episode"])}"
-                           title="Change the value here if scene numbering differs from the indexer episode numbering"
-                        % if dfltEpNumbering:
-                           value=""
-                        % else:
-                           value="${str(scSeas)}x${str(scEpis)}"
-                        % endif
-                           style="padding: 0; text-align: center; max-width: 60px;"/>
-                </td>
-                <td align="center">
-                    <input type="text" placeholder="${str(dfltAbsolute)}" size="6" maxlength="8"
-                           class="sceneAbsolute form-control input-scene"
-                           data-for-absolute="${epResult["absolute_number"]}"
-                           id="sceneAbsolute_${show.indexerid}${"_"+str(epResult["absolute_number"])}"
-                           title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
-                        % if dfltAbsNumbering:
-                           value=""
-                        % else:
-                           value="${str(scAbsolute)}"
-                        % endif
-                           style="padding: 0; text-align: center; max-width: 60px;"/>
-                </td>
-                <td class="col-name">
-                    % if epResult["description"]:
-                        <img src="/images/info32.png" width="16" height="16" class="plotInfo" alt=""
-                             id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
-                             data-tooltip="${epResult["description"]}"/>
-                    % else:
-                        <img src="/images/info32.png" width="16" height="16" class="plotInfoNone" alt=""
-                             id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
-                             data-tooltip=""/>
-                    % endif
+            </td>
 
-                    ${epResult["name"]}
-                </td>
-                <td class="col-name">${epLoc}</td>
-                <td class="col-ep">
-                    % if epResult["file_size"]:
+            <td align="center">${epResult["absolute_number"]}</td>
+
+            <td align="center">
+                <input type="text" placeholder="${str(dfltSeas) + 'x' + str(dfltEpis)}" size="6" maxlength="8"
+                       class="sceneSeasonXEpisode form-control input-scene" data-for-season="${epResult["season"]}"
+                       data-for-episode="${epResult["episode"]}"
+                       id="sceneSeasonXEpisode_${show.indexerid}_${str(epResult["season"])}_${str(epResult["episode"])}"
+                       title="Change the value here if scene numbering differs from the indexer episode numbering"
+                    % if dfltEpNumbering:
+                       value=""
+                    % else:
+                       value="${str(scSeas)}x${str(scEpis)}"
+                    % endif
+                       style="padding: 0; text-align: center; max-width: 60px;"/>
+            </td>
+
+            <td align="center">
+                <input type="text" placeholder="${str(dfltAbsolute)}" size="6" maxlength="8"
+                       class="sceneAbsolute form-control input-scene"
+                       data-for-absolute="${epResult["absolute_number"]}"
+                       id="sceneAbsolute_${show.indexerid}${"_"+str(epResult["absolute_number"])}"
+                       title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
+                    % if dfltAbsNumbering:
+                       value=""
+                    % else:
+                       value="${str(scAbsolute)}"
+                    % endif
+                       style="padding: 0; text-align: center; max-width: 60px;"/>
+            </td>
+
+            <td class="col-name">
+                % if epResult["description"]:
+                    <img src="/images/info32.png" width="16" height="16" class="plotInfo" alt=""
+                         id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
+                         data-tooltip="${epResult["description"]}"/>
+                % else:
+                    <img src="/images/info32.png" width="16" height="16" class="plotInfoNone" alt=""
+                         id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
+                         data-tooltip=""/>
+                % endif
+
+                ${epResult["name"]}
+            </td>
+
+            <td class="col-name">${epLoc}</td>
+
+            <td class="col-ep">
+                % if epResult["file_size"]:
                         <% file_size = pretty_filesize(epResult["file_size"]) %>
-                    ${file_size}
-                    % endif
-                </td>
-                <td class="col-airdate">
-                    % if int(epResult['airdate']) != 1:
-                        <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
+                ${file_size}
+                % endif
+            </td>
 
-                        % if airDate.year >= 1970 or show.network:
-                            <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
-                        % endif
+            <td class="col-airdate">
+                % if int(epResult['airdate']) != 1:
+                <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
 
-                        <time datetime="${airDate.isoformat()}" class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
-                    % else:
-                        Never
-                    % endif
-                </td>
-                <td>
-                    % if sickrage.srCore.srConfig.DOWNLOAD_URL and epResult['location']:
-                    <%
-                        filename = epResult['location']
-                        for rootDir in sickrage.srCore.srConfig.ROOT_DIRS.split('|'):
+                % if airDate.year >= 1970 or show.network:
+                    <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
+                % endif
+
+                    <time datetime="${airDate.isoformat()}"
+                          class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
+                % else:
+                    Never
+                % endif
+            </td>
+
+            <td>
+                % if sickrage.srCore.srConfig.DOWNLOAD_URL and epResult['location']:
+                <%
+                    filename = epResult['location']
+                    for rootDir in sickrage.srCore.srConfig.ROOT_DIRS.split('|'):
                                 if rootDir.startswith('/'):
                                     filename = filename.replace(rootDir, "")
-                        filename = sickrage.srCore.srConfig.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
-                    %>
-                        <div style="text-align: center;"><a href="${filename}">Download</a></div>
-                    % endif
-                </td>
-                <td class="col-subtitles" align="center">
-                    % for sub_lang in [subtitle_searcher.fromietf(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
-                    <% flag = sub_lang.opensubtitles %>
-                    % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
-                        <% flag = 'checkbox' %>
-                    % endif
-                        <img src="/images/subtitles/flags/${flag}.png" width="16" height="11"
-                             alt="${sub_lang.name}"
-                             onError="this.onerror=null;this.src='/images/flags/unknown.png';"/>
-                    % endfor
-                </td>
-                <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult["status"])) %>
-                % if curQuality != Quality.NONE:
-                    <td class="col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
-                % else:
-                    <td class="col-status">${statusStrings[curStatus]}</td>
+                    filename = sickrage.srCore.srConfig.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
+                %>
+                    <div style="text-align: center;"><a href="${filename}">Download</a></div>
                 % endif
-                <td class="col-search">
-                    % if int(epResult["season"]) != 0:
-                        % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-                            <a class="epRetry"
-                               id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                    src="/images/search16.png" height="16" alt="retry" title="Retry Download"/></a>
-                        % else:
-                            <a class="epSearch"
-                               id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                    src="/images/search16.png" width="16" height="16" alt="search"
-                                    title="Manual Search"/></a>
-                        % endif
+            </td>
+
+            <td class="col-subtitles" align="center">
+                % for sub_lang in [subtitle_searcher.fromietf(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
+                <% flag = sub_lang.opensubtitles %>
+                % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
+                    <% flag = 'checkbox' %>
+                % endif
+                    <img src="/images/subtitles/flags/${flag}.png" width="16" height="11"
+                         alt="${sub_lang.name}"
+                         onError="this.onerror=null;this.src='/images/flags/unknown.png';"/>
+                % endfor
+            </td>
+
+            <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult["status"])) %>
+            % if curQuality != Quality.NONE:
+                <td class="col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
+            % else:
+                <td class="col-status">${statusStrings[curStatus]}</td>
+            % endif
+
+            <td class="col-search">
+                % if int(epResult["season"]) != 0:
+                    % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
+                        <a class="epRetry"
+                           id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                           name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                           href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
+                                src="/images/search16.png" height="16" alt="retry" title="Retry Download"/></a>
+                    % else:
+                        <a class="epSearch"
+                           id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                           name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                           href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
+                                src="/images/search16.png" width="16" height="16" alt="search"
+                                title="Manual Search"/></a>
                     % endif
-                    % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult["subtitles"].split(',')):
-                        <a class="epSubtitlesSearch"
-                           href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                src="/images/closed_captioning.png" height="16" alt="search subtitles"
-                                title="Search Subtitles"/></a>
-                    % endif
-                </td>
-            </tr>
+                % endif
+                % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult["subtitles"].split(',')):
+                    <a class="epSubtitlesSearch"
+                       href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
+                            src="/images/closed_captioning.png" height="16" alt="search subtitles"
+                            title="Search Subtitles"/></a>
+                % endif
+            </td>
+        </tr>
+        </tbody>
         % endfor
-    </tbody>
     </table>
 
     <!--Begin - Bootstrap Modal-->

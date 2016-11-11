@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9b5534f - 2016-11-07: Updated logo 
+- * 751afd1 - 2016-11-11: Fixed show display template code 
+- * a546517 - 2016-11-07: Updated logo 
 - * 83926de - 2016-11-07: v8.7.7 Added new logo design 
 - * 35db11d - 2016-11-05: new: v8.7.6 fix: Fixed issues with saving newznab provider settings fix: Fixed issues with searching rss feeds from providers update: Updated Core JS code 
 - * eabff6e - 2016-11-04: new: v8.7.5 fix: Added integrity check for databases that will auto-delete corrupt indexes, resolves marshal errors fix: Properly sort next episode dates when checking for next air date of new episodes 
