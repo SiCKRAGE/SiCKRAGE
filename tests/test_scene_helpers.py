@@ -24,7 +24,6 @@ import unittest
 
 import sickrage
 from sickrage.core.common import countryList
-from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import show_names
 from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
     get_scene_exception_by_name
@@ -94,7 +93,7 @@ class SceneTests(SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        CacheDB().db.insert({
+        sickrage.srCore.cacheDB.db.insert({
             '_t': 'scene_exceptions',
             'indexer_id': -1,
             'show_name': 'Exception Test',
@@ -144,7 +143,7 @@ class SceneExceptionTestCase(SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        [CacheDB().db.delete(x['doc']) for x in CacheDB().db.all('scene_exceptions', with_doc=True)]
+        [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in sickrage.srCore.cacheDB.db.all('scene_exceptions', with_doc=True)]
 
         # put something in the cache
         sickrage.srCore.NAMECACHE.put('Cached Name', 0)

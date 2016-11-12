@@ -25,7 +25,6 @@ from datetime import datetime
 import sickrage
 from CodernityDB.database import RecordNotFound
 from dateutil import tz
-from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import tryInt
 
 network_dict = {}
@@ -61,18 +60,18 @@ def update_network_dict():
         existing = network in network_dict
         if not existing:
             try:
-                CacheDB().db.get('network_timezones', network)
+                sickrage.srCore.cacheDB.db.get('network_timezones', network)
             except RecordNotFound:
-                CacheDB().db.insert({
+                sickrage.srCore.cacheDB.db.insert({
                     '_t': 'network_timezones',
                     'network_name': network,
                     'timezone': timezone
                 })
         elif network_dict[network] is not timezone:
             try:
-                dbData = CacheDB().db.get('network_timezones', network, with_doc=True)['doc']
+                dbData = sickrage.srCore.cacheDB.db.get('network_timezones', network, with_doc=True)['doc']
                 dbData['timezone'] = timezone
-                CacheDB().db.update(dbData)
+                sickrage.srCore.cacheDB.db.update(dbData)
             except RecordNotFound:
                 continue
 
@@ -81,7 +80,7 @@ def update_network_dict():
 
     for x in network_dict:
         try:
-            CacheDB().db.delete(CacheDB().db.get('network_timezones', x, with_doc=True)['doc'])
+            sickrage.srCore.cacheDB.db.delete(sickrage.srCore.cacheDB.db.get('network_timezones', x, with_doc=True)['doc'])
         except RecordNotFound:
             continue
 
@@ -96,7 +95,7 @@ def load_network_dict():
 
     global network_dict
     network_dict = dict([(x['doc']['network_name'], x['doc']['timezone']) for x in
-                         CacheDB().db.all('network_timezones', with_doc=True)])
+                         sickrage.srCore.cacheDB.db.all('network_timezones', with_doc=True)])
 
 
 # get timezone of a network or return default timezone

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 80cfcfe - 2016-11-12: Fixed issues with find propers searches 
+- * 0d764de - 2016-11-12: v8.7.9 Fixed issues with database and multiple threading Fixed issues with database and shutdowns Fixes issues with queues and shutdowns 
+- * 1f80a6f - 2016-11-12: Fixed issues with find propers searches 
 - * 5726d5f - 2016-11-11: Fixed issues with find propers routines 
 - * bc7184c - 2016-11-11: Fixed issues with database and too many files open error 
 - * 7ad7d01 - 2016-11-11: Fixed issues with database and too many files open error 

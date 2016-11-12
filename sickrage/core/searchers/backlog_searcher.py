@@ -23,7 +23,6 @@ import threading
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
-from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.ui import ProgressIndicator
 
@@ -130,7 +129,7 @@ class srBacklogSearcher(object):
 
         sickrage.srCore.srLogger.debug("Retrieving the last check time from the DB")
 
-        dbData = [x['doc'] for x in MainDB().db.all('info', with_doc=True)]
+        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.all('info', with_doc=True)]
 
         if len(dbData) == 0:
             lastBacklog = 1
@@ -155,7 +154,7 @@ class srBacklogSearcher(object):
 
         # check through the list of statuses to see if we want any
         wanted = {}
-        for result in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+        for result in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                        if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
             curCompositeStatus = int(result["status"] or -1)
             curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
@@ -186,16 +185,16 @@ class srBacklogSearcher(object):
 
         sickrage.srCore.srLogger.debug("Setting the last backlog in the DB to " + str(when))
 
-        dbData = [x['doc'] for x in MainDB().db.all('info', with_doc=True)]
+        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.all('info', with_doc=True)]
         if len(dbData) == 0:
-            MainDB().db.insert({
+            sickrage.srCore.mainDB.db.insert({
                 '_t': 'info',
                 'last_backlog': str(when),
                 'last_indexer': 0
             })
         else:
             dbData[0]['last_backlog'] = str(when)
-            MainDB().db.update(dbData[0])
+            sickrage.srCore.mainDB.db.update(dbData[0])
 
 
 def get_backlog_cycle_time():

@@ -43,7 +43,6 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import chmodAsParent, \
     findCertainShow, remove_file_failed, \
@@ -393,7 +392,7 @@ class GenericProvider(object):
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
+                    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
                               if x['doc']['airdate'] == airdate]
 
                     if len(dbData) != 1:
@@ -670,8 +669,8 @@ class TorrentProvider(GenericProvider):
     def find_propers(self, search_date=datetime.datetime.today()):
         results = []
 
-        for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+        for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+            for episode in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
                 if episode['airdate'] >= str(search_date.toordinal()) \
                         and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
 
@@ -1144,8 +1143,8 @@ class NewznabProvider(NZBProvider):
         results = []
         dbData = []
 
-        for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+        for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+            for episode in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
                 if episode['airdate'] >= str(search_date.toordinal()) \
                         and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
 

@@ -31,12 +31,12 @@ class FailedIndex(HashIndex):
         kwargs['key_format'] = '32s'
         super(FailedIndex, self).__init__(*args, **kwargs)
 
+    def make_key(self, key):
+        return key
+
     def make_key_value(self, data):
         if data.get('_t') == 'failed' and data.get('release'):
             return md5(data.get('release')).hexdigest(), None
-
-    def make_key(self, key):
-        return md5(key).hexdigest()
 
 
 class HistoryIndex(HashIndex):
@@ -46,9 +46,9 @@ class HistoryIndex(HashIndex):
         kwargs['key_format'] = 'I'
         super(HistoryIndex, self).__init__(*args, **kwargs)
 
+    def make_key(self, key):
+        return key
+
     def make_key_value(self, data):
         if data.get('_t') == 'history' and data.get('showid'):
             return data.get('showid'), None
-
-    def make_key(self, key):
-        return key

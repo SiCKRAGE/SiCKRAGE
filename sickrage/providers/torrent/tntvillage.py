@@ -24,7 +24,6 @@ import traceback
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.common import Quality
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -277,7 +276,7 @@ class TNTVillageProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Unable to parse the filename %s into a valid show" % name)
             return False
 
-        if len([x for x in MainDB().db.get_many('tv_episodes', parse_result.show.indexerid, with_doc=True)
+        if len([x for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', parse_result.show.indexerid, with_doc=True)
                 if x['doc']['season'] == parse_result.season_number]) == len(parse_result.episode_numbers): return True
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):

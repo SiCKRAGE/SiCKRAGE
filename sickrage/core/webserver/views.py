@@ -51,8 +51,6 @@ from sickrage.core.classes import ErrorViewer, AllShowsListUI, AttrDict
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
-from sickrage.core.databases.main import MainDB
-from sickrage.core.databases.failed import FailedDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, NoNFOException
@@ -312,11 +310,11 @@ class CalendarHandler(BaseHandler):
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        for show in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)
+        for show in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)
                      if x['doc']['status'].lower() in ['continuing', 'returning series']
                      and x['doc']['paused'] != 1]:
             for episode in [x['doc'] for x in
-                            MainDB().db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
+                            sickrage.srCore.mainDB.db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
                             past_date <= x['doc']['airdate'] < future_date]:
 
                 air_date_time = tz_updater.parse_date_time(episode['airdate'], show['airs'],
@@ -377,7 +375,7 @@ class WebRoot(WebHandler):
         shows = sorted(sickrage.srCore.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
-        for result in sorted([x['doc'] for x in MainDB().db.all('tv_episodes')],
+        for result in sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes')],
                              key=lambda d: (d['season'], d['episode'])):
 
             if result['showid'] not in episodes:
@@ -678,7 +676,7 @@ class Home(WebHandler):
 
         max_download_count = 1000
 
-        for dbData in MainDB().db.all('tv_episodes', with_doc=True):
+        for dbData in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True):
             showid = dbData['doc']['showid']
             if showid not in show_stat:
                 show_stat[showid] = {}
@@ -999,7 +997,7 @@ class Home(WebHandler):
         data = {}
         size = 0
 
-        tv_shows = sorted([x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)], key=lambda d: d['show_name'])
+        tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)], key=lambda d: d['show_name'])
 
         for s in tv_shows:
             data[s['show_id']] = {'id': s['show_id'], 'name': s['show_name'], 'list': s['notify_list']}
@@ -1011,9 +1009,9 @@ class Home(WebHandler):
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
         try:
-            dbData = MainDB().db.get('tv_shows', int(show), with_doc=True)['doc']
+            dbData = sickrage.srCore.mainDB.db.get('tv_shows', int(show), with_doc=True)['doc']
             dbData['notify_list'] = emails
-            MainDB().db.update(dbData)
+            sickrage.srCore.mainDB.db.update(dbData)
         except RecordNotFound:
             return 'ERROR'
 
@@ -1154,7 +1152,7 @@ class Home(WebHandler):
                 return self._genericMessage("Error", "Show not in show list")
 
         episodeResults = sorted(
-            [x['doc'] for x in MainDB().db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
+            [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
             key=lambda d: (d['season'], d['episode']), reverse=True)
 
         seasonResults = list({x['season'] for x in episodeResults})
@@ -1919,14 +1917,14 @@ class Home(WebHandler):
 
             epInfo = curEp.split('x')
 
-            ep_result = [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(show), with_doc=True)
+            ep_result = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(show), with_doc=True)
                          if x['doc']['season'] == int(epInfo[0]) and x['doc']['episode'] == int(epInfo[1])]
 
             if not ep_result:
                 sickrage.srCore.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
 
-            related_eps_result = [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
+            related_eps_result = [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)
                                   if x['doc']['location'] == ep_result[0]['location']
                                   and x['doc']['episode'] != int(epInfo[1])]
 
@@ -2377,7 +2375,7 @@ class HomeAddShows(Home):
                     pass
 
                 # see if the folder is in KODI already
-                if [x for x in MainDB().db.all('tv_shows', with_doc=True) if x['doc']['location'] == cur_path]:
+                if [x for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if x['doc']['location'] == cur_path]:
                     cur_dir['added_already'] = True
                 else:
                     cur_dir['added_already'] = False
@@ -2909,7 +2907,7 @@ class Manage(Home, WebRoot):
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+        for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if x['doc']['season'] != 0 and x['doc']['status'] in status_list]:
 
             cur_season = int(dbData["season"])
@@ -2935,8 +2933,8 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            status_results = sorted([s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)
-                                     for e in MainDB().db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
+            status_results = sorted([s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)
+                                     for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
                                      if e['doc']['status'] in status_list and e['doc']['season'] != 0],
                                     key=lambda d: d['show_name'])
 
@@ -2988,7 +2986,7 @@ class Manage(Home, WebRoot):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps_results = [x['doc'] for x in
-                                   MainDB().db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                                   sickrage.srCore.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                                    if x['doc']['status'] in status_list and x['doc']['season'] != 0]
 
                 all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
@@ -3001,7 +2999,7 @@ class Manage(Home, WebRoot):
     @staticmethod
     def showSubtitleMissed(indexer_id, whichSubs):
         result = {}
-        for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+        for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]:
 
             if whichSubs == 'all':
@@ -3038,9 +3036,9 @@ class Manage(Home, WebRoot):
             )
 
         status_results = []
-        for s in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+        for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             if not s['subtitles'] == 1: continue
-            for e in [x['doc'] for x in MainDB().db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+            for e in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                 if e['status'].endswith('4') and e['season'] != 0:
                     status_results += [{
                         'show_name': s['show_name'],
@@ -3103,7 +3101,7 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_download:
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
-                dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                           if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]
 
                 to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
@@ -3140,7 +3138,7 @@ class Manage(Home, WebRoot):
             epCounts[Overview.UNAIRED] = 0
             epCounts[Overview.SNATCHED] = 0
 
-            dbData = sorted([e['doc'] for e in MainDB().db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
+            dbData = sorted([e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
                              if curShow.paused == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
             for curResult in dbData:
@@ -3596,15 +3594,15 @@ class Manage(Home, WebRoot):
 
     def failedDownloads(self, limit=100, toRemove=None):
         if limit == "0":
-            dbData = [x['doc'] for x in FailedDB().db.all('failed', with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', with_doc=True)]
         else:
-            dbData = [x['doc'] for x in FailedDB().db.all('failed', limit, with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', limit, with_doc=True)]
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
             try:
-                MainDB().db.delete(MainDB().db.get('failed', release, with_doc=True)['doc'])
+                sickrage.srCore.mainDB.db.delete(sickrage.srCore.mainDB.db.get('failed', release, with_doc=True)['doc'])
             except RecordNotFound:
                 continue
 

@@ -27,7 +27,6 @@ import time
 import sickrage
 from dateutil import parser
 from sickrage.core.common import Quality
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, get_all_episodes_from_absolute_number, \
     remove_extension
 from sickrage.core.nameparser import regexes
@@ -259,7 +258,7 @@ class NameParser(object):
                 airdate = bestResult.air_date.toordinal()
 
                 dbData = [x['doc'] for x in
-                          MainDB().db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
                           if x['doc']['indexer'] == bestResult.show.indexer and x['doc']['airdate'] == airdate]
 
                 season_number = None

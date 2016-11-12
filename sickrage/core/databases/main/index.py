@@ -33,7 +33,7 @@ class TVShowsIndex(HashIndex):
         return key
 
     def make_key_value(self, data):
-       if data.get('_t') == 'tv_shows' and data.get('indexer_id'):
+        if data.get('_t') == 'tv_shows' and data.get('indexer_id'):
             return data.get('indexer_id'), None
 
 
@@ -119,12 +119,12 @@ class HistoryIndex(HashIndex):
         kwargs['key_format'] = 'I'
         super(HistoryIndex, self).__init__(*args, **kwargs)
 
+    def make_key(self, key):
+        return key
+
     def make_key_value(self, data):
         if data.get('_t') == 'history' and data.get('showid'):
             return data.get('showid'), None
-
-    def make_key(self, key):
-        return key
 
 
 class InfoIndex(HashIndex):
@@ -134,12 +134,12 @@ class InfoIndex(HashIndex):
         kwargs['key_format'] = 'I'
         super(InfoIndex, self).__init__(*args, **kwargs)
 
+    def make_key(self, key):
+        return key
+
     def make_key_value(self, data):
         if data.get('_t') == 'info' and data.get('last_indexer'):
             return data.get('last_indexer'), None
-
-    def make_key(self, key):
-        return key
 
 
 class BlacklistIndex(HashIndex):
@@ -149,12 +149,12 @@ class BlacklistIndex(HashIndex):
         kwargs['key_format'] = 'I'
         super(BlacklistIndex, self).__init__(*args, **kwargs)
 
+    def make_key(self, key):
+        return key
+
     def make_key_value(self, data):
         if data.get('_t') == 'blacklist' and data.get('show_id'):
             return data.get('show_id'), None
-
-    def make_key(self, key):
-        return key
 
 
 class WhitelistIndex(HashIndex):
@@ -164,9 +164,9 @@ class WhitelistIndex(HashIndex):
         kwargs['key_format'] = 'I'
         super(WhitelistIndex, self).__init__(*args, **kwargs)
 
+    def make_key(self, key):
+        return key
+
     def make_key_value(self, data):
         if data.get('_t') == 'whitelist' and data.get('show_id'):
             return data.get('show_id'), None
-
-    def make_key(self, key):
-        return key

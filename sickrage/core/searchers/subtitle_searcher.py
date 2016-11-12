@@ -32,7 +32,6 @@ import sickrage
 import subliminal
 from enzyme import MKV, MalformedMKVError
 from sickrage.core.common import dateTimeFormat
-from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import findCertainShow, chmodAsParent, fixSetGroupID, makeDir
 
 distribution = pkg_resources.Distribution(location=os.path.dirname(os.path.dirname(__file__)),
@@ -419,8 +418,8 @@ class srSubtitleSearcher(object):
         today = datetime.date.today().toordinal()
 
         results = []
-        for s in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in MainDB().db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
+        for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
                       if s['subtitles'] == 1
                       and e['doc']['location'] != ''
                       and e['doc']['subtitles'] not in wantedLanguages()

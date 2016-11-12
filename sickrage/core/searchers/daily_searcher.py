@@ -24,7 +24,6 @@ import threading
 
 import sickrage
 from sickrage.core.common import UNAIRED, SKIPPED, statusStrings, WANTED
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import findCertainShow
 from sickrage.core.queues.search import DailySearchQueueItem
@@ -64,7 +63,7 @@ class srDailySearcher(object):
         curTime = datetime.datetime.now(tz_updater.sr_timezone)
 
         show = None
-        for dbData in [x['doc'] for x in MainDB().db.all('tv_episodes', with_doc=True)
+        for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)
                        if x['doc']['status'] in [UNAIRED, WANTED]
                        and x['doc']['season'] > 0
                        and curDate >= x['doc']['airdate'] > 1]:

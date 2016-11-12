@@ -24,7 +24,6 @@ import re
 import unittest
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
@@ -35,7 +34,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        for s in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
+        for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             try:
                 curShow = TVShow(int(s["indexer"]), int(s["indexer_id"]))
                 curShow.saveToDB()
@@ -49,7 +48,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        for s in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
+        for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             try:
                 curShow = TVShow(int(s["indexer"]), int(s["indexer_id"]))
                 curShow.saveToDB()

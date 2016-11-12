@@ -31,7 +31,6 @@ from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT, video_exts
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
@@ -351,7 +350,7 @@ def wantedEpisodes(show, fromDate):
     sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 
     # check through the list of statuses to see if we want any
-    for dbData in [x['doc'] for x in MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+    for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                    if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
 
         curCompositeStatus = int(dbData["status"] or -1)
@@ -522,7 +521,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                         seasonQual])
 
                 allEps = [int(x['doc']["episode"]) for x in
-                          MainDB().db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                           if x['doc']['season'] in searchedSeasons]
 
                 sickrage.srCore.srLogger.info(

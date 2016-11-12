@@ -139,6 +139,11 @@ class Core(object):
         # init config
         self.srConfig = srConfig()
 
+        # init databases
+        self.mainDB = MainDB()
+        self.cacheDB = CacheDB()
+        self.failedDB = FailedDB()
+
         # init scheduler service
         self.srScheduler = TornadoScheduler()
 
@@ -208,18 +213,18 @@ class Core(object):
                              os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
 
         # perform database startup actions
-        for db in [MainDB, CacheDB, FailedDB]:
-            # check integrity of database
-            db().check_integrity()
-
+        for db in [self.mainDB, self.cacheDB, self.failedDB]:
             # initialize database
-            db().initialize()
+            db.initialize()
+
+            # check integrity of database
+            db.check_integrity()
 
             # migrate database
-            db().migrate()
+            db.migrate()
 
             # compact database
-            db().compact()
+            db.compact()
 
         # load config
         self.srConfig.load()
@@ -504,6 +509,10 @@ class Core(object):
             # save all show and config settings
             self.save_all()
 
+            # close databases
+            self.srLogger.info("Closing database files")
+            [db.close() for db in [self.mainDB, self.cacheDB, self.failedDB]]
+
             # shutdown logging
             self.srLogger.shutdown()
 
@@ -528,7 +537,7 @@ class Core(object):
         Populates the showlist with shows from the database
         """
 
-        for dbData in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+        for dbData in [x['doc'] for x in self.mainDB.db.all('tv_shows', with_doc=True)]:
             try:
                 self.srLogger.debug("Loading data for show: [%s]", dbData['show_name'])
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))

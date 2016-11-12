@@ -30,7 +30,6 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 
 import sickrage
-from sickrage.core.databases.main import MainDB
 from sickrage.notifiers import srNotifiers
 
 
@@ -178,7 +177,7 @@ class EmailNotifier(srNotifiers):
 
         # Grab the recipients for the show
         for s in show:
-            for subs in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True) if x['doc']['show_name'] == s]:
+            for subs in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if x['doc']['show_name'] == s]:
                 if subs['notify_list']:
                     for addr in subs['notify_list'].split(','):
                         if (len(addr.strip()) > 0):

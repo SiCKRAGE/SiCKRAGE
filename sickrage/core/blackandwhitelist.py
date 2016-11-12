@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 
 import sickrage
 from CodernityDB.database import RecordNotFound
-from sickrage.core.databases.main import MainDB
 from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 
@@ -51,7 +50,7 @@ class BlackAndWhiteList(object):
         :param values: Values to be inserted in table
         """
         for value in values:
-            MainDB().db.insert({
+            sickrage.srCore.mainDB.db.insert({
                 '_t': table,
                 'show_id': self.show_id,
                 'keywork': value
@@ -86,7 +85,7 @@ class BlackAndWhiteList(object):
         :param table: database table remove keywords from
         """
         try:
-            MainDB().db.delete(MainDB().db.get(table, self.show_id, with_doc=True)['doc'])
+            sickrage.srCore.mainDB.db.delete(sickrage.srCore.mainDB.db.get(table, self.show_id, with_doc=True)['doc'])
         except RecordNotFound:
             pass
 
@@ -99,7 +98,7 @@ class BlackAndWhiteList(object):
         :return: keywords in list
         """
         groups = []
-        for result in [x['doc'] for x in MainDB().db.get_many(table, self.show_id, with_doc=True)]:
+        for result in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many(table, self.show_id, with_doc=True)]:
             groups.append(result['keyword'])
 
         sickrage.srCore.srLogger.debug(

@@ -45,9 +45,6 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
-from sickrage.core.databases.main import MainDB
-from sickrage.core.databases.failed import FailedDB
-from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import CantUpdateShowException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
     pretty_filesize, sanitizeFileName, srdatetime, tryInt, readFileBuffered
@@ -741,7 +738,7 @@ class CMD_Episode(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
                   if x['doc']['season'] == self.s and x['doc']['episode'] == self.e]
 
         if not len(dbData) == 1:
@@ -1025,7 +1022,7 @@ class CMD_Exceptions(ApiCall):
 
         if self.indexerid is None:
             scene_exceptions = {}
-            for dbData in [x['doc'] for x in CacheDB().db.all('scene_exceptions', with_doc=True)]:
+            for dbData in [x['doc'] for x in sickrage.srCore.cacheDB.db.all('scene_exceptions', with_doc=True)]:
                 indexerid = dbData['indexer_id']
                 if indexerid not in scene_exceptions:
                     scene_exceptions[indexerid] = []
@@ -1036,7 +1033,7 @@ class CMD_Exceptions(ApiCall):
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             scene_exceptions = []
-            for dbData in [x['doc'] for x in CacheDB().db.all('scene_exceptions', self.indexerid, with_doc=True)]:
+            for dbData in [x['doc'] for x in sickrage.srCore.cacheDB.db.all('scene_exceptions', self.indexerid, with_doc=True)]:
                 scene_exceptions.append(dbData['show_name'])
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
@@ -1146,9 +1143,9 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            dbData = [x['doc'] for x in FailedDB().db.all('failed', with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', with_doc=True)]
         else:
-            dbData = [x['doc'] for x in FailedDB().db.all('failed', ulimit, with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', ulimit, with_doc=True)]
 
         return _responds(RESULT_SUCCESS, dbData)
 
@@ -1170,7 +1167,7 @@ class CMD_Backlog(ApiCall):
 
         for s in sickrage.srCore.SHOWLIST:
             showEps = []
-            for e in sorted([e['doc'] for e in MainDB().db.get_many('tv_episodes', s.indexerid, with_doc=True) if
+            for e in sorted([e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
                              s.paused == 0], key=lambda x: (x['season'], x['episode']), reverse=True):
 
                 curEpCat = s.getOverview(int(e["status"] or -1))
@@ -1404,7 +1401,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         """ Get information about the scheduler """
 
         try:
-            last_backlog = [x['doc'] for x in MainDB().db.all('info', with_doc=True)][0]["last_backlog"]
+            last_backlog = [x['doc'] for x in sickrage.srCore.mainDB.db.all('info', with_doc=True)][0]["last_backlog"]
         except:
             last_backlog = 1
 
@@ -2565,11 +2562,11 @@ class CMD_ShowSeasonList(ApiCall):
 
         if self.sort == "asc":
             seasonList = sorted(
-                [x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                [x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
                 key=lambda d: d['season'])
         else:
             seasonList = sorted(
-                [x['doc']['season'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                [x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
                 key=lambda d: d['season'], reverse=True)
 
         return _responds(RESULT_SUCCESS, seasonList)
@@ -2605,7 +2602,7 @@ class CMD_ShowSeasons(ApiCall):
         if self.season is None:
             seasons = {}
 
-            for row in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+            for row in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)
@@ -2629,7 +2626,7 @@ class CMD_ShowSeasons(ApiCall):
                 seasons[curSeason][curEpisode] = row
 
         else:
-            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+            dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
                       if x['season'] == self.season]
 
             if len(dbData) is 0:
@@ -2770,7 +2767,7 @@ class CMD_ShowStats(ApiCall):
             if quality not in [Quality.NONE]: episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.indexerid, with_doc=True)
+        for row in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
                     if x['doc']['season'] != 0]:
 
             status, quality = Quality.splitCompositeStatus(int(row["status"]))

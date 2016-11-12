@@ -26,7 +26,6 @@ import sickrage
 from UnRAR2.rar_exceptions import ArchiveHeaderBroken, FileOpenError, \
     IncorrectRARPassword, InvalidRARArchive, InvalidRARArchiveUsage
 from sickrage.core.common import Quality
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException
 from sickrage.core.helpers import isMediaFile, isRarFile, isSyncFile, \
@@ -350,7 +349,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         return False
 
     # make sure the dir isn't inside a show dir
-    for dbData in [x['doc'] for x in MainDB().db.all('tv_shows', with_doc=True)]:
+    for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
         if dirName.lower().startswith(os.path.realpath(dbData["location"]).lower() + os.sep) or \
                         dirName.lower() == os.path.realpath(dbData["location"]).lower():
             result.output += logHelper(
@@ -500,11 +499,11 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if [x for x in MainDB().db.all('tv_episodes', with_doc=True)
+    if [x for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)
         if x['doc']['release_name'] == dirName]:
         return True
     else:
-        if [x for x in MainDB().db.all('tv_episodes', with_doc=True)
+        if [x for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)
             if x['doc']['release_name'] == [videofile.rpartition('.')[0]]]: return True
 
         # Needed if we have downloaded the same episode @ different quality
@@ -515,9 +514,9 @@ def already_postprocessed(dirName, videofile, force, result):
         except:
             parse_result = False
 
-        for h in [h['doc'] for h in MainDB().db.all('history', with_doc=True)
+        for h in [h['doc'] for h in sickrage.srCore.mainDB.db.all('history', with_doc=True)
                   if h['doc']['resource'].endswith(videofile)]:
-            for e in [e['doc'] for e in MainDB().db.get_many('tv_episodes', h['showid'], with_doc=True)
+            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', h['showid'], with_doc=True)
                       if h['season'] == e['doc']['season']
                       and h['episode'] == e['doc']['episode']
                       and e['doc']['status'] in Quality.DOWNLOADED]:

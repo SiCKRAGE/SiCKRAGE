@@ -28,7 +28,7 @@ from sqlite3 import OperationalError
 
 import sickrage
 from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
-from CodernityDB.index import IndexNotFoundException, IndexConflict
+from CodernityDB.index import IndexNotFoundException, IndexConflict, IndexException
 from CodernityDB.storage import IU_Storage
 from sickrage.core.helpers import randomString
 
@@ -52,12 +52,10 @@ class srDatabase(object):
         self.db_path = os.path.join(sickrage.DATA_DIR, 'database', self.name)
         self.db = SuperThreadSafeDatabase(self.db_path)
 
-        if self.db.exists():
-            self.db.open()
-
     def initialize(self):
         # Remove database folder if both exists
         if self.db.exists() and os.path.isfile(self.old_db_path):
+            self.db.open()
             self.db.destroy()
 
         if self.db.exists():
@@ -96,6 +94,8 @@ class srDatabase(object):
                     for zfilename in files:
                         zipf.add(os.path.join(root, zfilename),
                                  arcname='database/%s' % os.path.join(root[len(self.db_path) + 1:], zfilename))
+
+            self.db.open()
         else:
             self.db.create()
 
@@ -122,7 +122,7 @@ class srDatabase(object):
                     self.name, round(time.time() - start, 2),
                     round(new_size / 1048576, 2), round((size - new_size) / 1048576, 2))
             )
-        except Exception:
+        except (IndexException, AttributeError):
             if try_repair:
                 sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
 

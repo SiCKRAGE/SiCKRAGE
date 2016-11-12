@@ -29,7 +29,6 @@ from xml.etree.ElementTree import ElementTree
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
-from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
@@ -388,12 +387,12 @@ class TVEpisode(object):
         sickrage.srCore.srLogger.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
-        dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
                   if x['doc']['season'] == season and x['doc']['episode'] == episode]
 
         if len(dbData) > 1:
             for ep in dbData:
-                MainDB().db.delete(ep)
+                sickrage.srCore.mainDB.db.delete(ep)
             return False
         elif len(dbData) == 0:
             sickrage.srCore.srLogger.debug("%s: Episode S%02dE%02d not found in the database" % (
@@ -735,7 +734,7 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.srCore.srLogger.debug("Deleting myself from the database")
 
-        [MainDB().db.delete(x['doc']) for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+        [sickrage.srCore.mainDB.db.delete(x['doc']) for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
          if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
         data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
@@ -804,13 +803,13 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = [x['doc'] for x in MainDB().db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+            dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
                       if x['doc']['indexerid'] == self.indexerid][0]
 
             dbData.update(tv_episode)
-            MainDB().db.update(dbData)
+            sickrage.srCore.mainDB.db.update(dbData)
         except:
-            MainDB().db.insert(tv_episode)
+            sickrage.srCore.mainDB.db.insert(tv_episode)
 
     def fullPath(self):
         if self.location is None or self.location == "":

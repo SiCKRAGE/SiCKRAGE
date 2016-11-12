@@ -25,7 +25,6 @@ import time
 
 import sickrage
 from CodernityDB.database import RecordNotFound
-from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import CantRefreshShowException, CantUpdateShowException
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
 from sickrage.indexers import srIndexerApi
@@ -49,11 +48,11 @@ class srShowUpdater(object):
         update_timestamp = time.mktime(datetime.datetime.now().timetuple())
 
         try:
-            dbData = CacheDB().db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
+            dbData = sickrage.srCore.cacheDB.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
             last_update = dbData['time']
         except RecordNotFound:
             last_update = time.mktime(datetime.datetime.min.timetuple())
-            dbData = CacheDB().db.insert({
+            dbData = sickrage.srCore.cacheDB.db.insert({
                 '_t': 'lastUpdate',
                 'provider': 'theTVDB',
                 'time': long(last_update)
@@ -81,6 +80,6 @@ class srShowUpdater(object):
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))
 
         dbData['time'] = long(update_timestamp)
-        CacheDB().db.update(dbData)
+        sickrage.srCore.cacheDB.db.update(dbData)
 
         self.amActive = False
