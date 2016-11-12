@@ -1095,10 +1095,10 @@ class NewznabProvider(NZBProvider):
             if (datetime.datetime.now() - last_search).seconds < 5:
                 continue
 
-            search_url = self.urls['base_url'] + '/api?' + urllib.urlencode(params)
+            search_url = self.urls['base_url'] + '/api'
             sickrage.srCore.srLogger.debug("Search url: %s" % search_url)
 
-            data = self.cache.getRSSFeed(search_url)
+            data = self.cache.getRSSFeed(search_url, params=params)
 
             last_search = datetime.datetime.now()
 

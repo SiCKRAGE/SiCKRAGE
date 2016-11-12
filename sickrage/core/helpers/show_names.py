@@ -229,6 +229,8 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 
 
 def makeSceneSearchString(show, ep_obj):
+    toReturn = []
+
     numseasons = len({x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                       if x['doc']['season'] != 0})
 
@@ -245,13 +247,9 @@ def makeSceneSearchString(show, ep_obj):
     # for single-season shows just search for the show name -- if total ep count (exclude s0) is less than 11
     # due to the amount of qualities and releases, it is easy to go over the 50 result limit on rss feeds otherwise
     if numseasons == 1 and not ep_obj.show.is_anime:
-        epStrings = ['']
+        epStrings = []
 
-    showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
-
-    toReturn = []
-
-    for curShow in showNames:
+    for curShow in set(makeSceneShowSearchStrings(show, ep_obj.scene_season)):
         for curEpString in epStrings:
             if ep_obj.show.is_anime:
                 if ep_obj.show.release_groups is not None:
@@ -262,7 +260,9 @@ def makeSceneSearchString(show, ep_obj):
                         # If we have neither whitelist or blacklist we just append what we have
                         toReturn.append(curShow + '.' + curEpString)
             else:
-                toReturn.append(curShow + '.' + curEpString)
+                toReturn += [curShow + '.' + curEpString]
+        else:
+            toReturn += [curShow]
 
     return toReturn
 

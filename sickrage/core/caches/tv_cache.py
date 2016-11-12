@@ -82,7 +82,7 @@ class TVCache(object):
 
         return True
 
-    def getRSSFeed(self, url):
+    def getRSSFeed(self, url, params=None):
         handlers = []
 
         if sickrage.srCore.srConfig.PROXY_SETTING:
@@ -91,7 +91,7 @@ class TVCache(object):
             address = sickrage.srCore.srConfig.PROXY_SETTING if scheme else 'http://' + sickrage.srCore.srConfig.PROXY_SETTING
             handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
 
-        return getFeed(url, handlers=handlers)
+        return getFeed(url, params=params, handlers=handlers)
 
     def _translateTitle(self, title):
         return '' + title.replace(' ', '.')

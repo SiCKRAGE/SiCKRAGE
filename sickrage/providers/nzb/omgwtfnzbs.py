@@ -21,7 +21,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import urllib
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -40,44 +39,36 @@ class OmgwtfnzbsProvider(NZBProvider):
         self.cache = OmgwtfnzbsCache(self, min_time=20)
 
         self.urls.update({
-            'search': 'api.{base_url}/json/?%s'.format(base_url=self.urls['base_url']),
-            'rss': 'rss.{base_url}/rss-download.php?%s'.format(base_url=self.urls['base_url'])
+            'search': 'api.{base_url}/json/'.format(base_url=self.urls['base_url']),
+            'rss': 'rss.{base_url}/rss-download.php'.format(base_url=self.urls['base_url'])
         })
 
         self.supports_backlog = True
 
     def _check_auth(self):
-
         if not self.username or not self.api_key:
             sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
 
         return True
 
     def _checkAuthFromData(self, parsed_data, is_XML=True):
-
         if parsed_data is None:
             return self._check_auth()
 
         if is_XML:
             # provider doesn't return xml on error
             return True
-        else:
-            parsedJSON = parsed_data
 
-            if 'notice' in parsedJSON:
-                description_text = parsedJSON.get('notice')
+        if 'notice' in parsed_data:
+            description_text = parsed_data.get('notice')
 
-                if 'information is incorrect' in parsedJSON.get('notice'):
-                    sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
+            if 'information is incorrect' in parsed_data.get('notice'):
+                sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
+            elif '0 results matched your terms' in parsed_data.get('notice'):
+                sickrage.srCore.srLogger.debug("Unknown error: %s" % description_text)
+            return False
 
-                elif '0 results matched your terms' in parsedJSON.get('notice'):
-                    return True
-
-                else:
-                    sickrage.srCore.srLogger.debug("Unknown error: %s" % description_text)
-                    return False
-
-            return True
+        return True
 
     def _get_season_search_strings(self, ep_obj):
         return [x for x in makeSceneSeasonSearchString(self.show, ep_obj)]
@@ -86,7 +77,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         return [x for x in makeSceneSearchString(self.show, ep_obj)]
 
     def _get_title_and_url(self, item):
-        return (item['release'], item['getnzb'])
+        return item['release'], item['getnzb']
 
     def _get_size(self, item):
         try:
@@ -97,39 +88,34 @@ class OmgwtfnzbsProvider(NZBProvider):
         return size
 
     def search(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
+        results = []
+        if not self._check_auth():
+            return results
 
-        self._check_auth()
+        params = {
+            'user': self.username,
+            'api': self.api_key,
+            'eng': 1,
+            'retention': sickrage.srCore.srConfig.USENET_RETENTION,
+            'search': search
+        }
 
-        params = {'user': self.username,
-                  'api': self.api_key,
-                  'eng': 1,
-                  'catid': '19,20',  # SD,HD
-                  'retention': sickrage.srCore.srConfig.USENET_RETENTION,
-                  'search': search}
-
-        if retention or not params['retention']:
-            params['retention'] = retention
-
-        searchURL = self.urls['search'] % urllib.urlencode(params)
         sickrage.srCore.srLogger.debug("Search string: %s" % params)
-        sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
         try:
-            parsedJSON = sickrage.srCore.srWebSession.get(searchURL).json()
+            parsedJSON = sickrage.srCore.srWebSession.get(self.urls['search'], params=params).json()
         except Exception:
             return []
 
         if self._checkAuthFromData(parsedJSON, is_XML=False):
-            results = []
-
             for item in parsedJSON:
-                if 'release' in item and 'getnzb' in item:
-                    sickrage.srCore.srLogger.debug("Found result: %s " % item.get('title'))
-                    results.append(item)
+                if not self._get_title_and_url(item):
+                    continue
 
-            return results
+                sickrage.srCore.srLogger.debug("Found result: %s " % item.get('release'))
+                results.append(item)
 
-        return []
+        return results
 
     def find_propers(self, search_date=None):
         search_terms = ['.PROPER.', '.REPACK.']
@@ -167,13 +153,10 @@ class OmgwtfnzbsCache(TVCache):
         return (title, url)
 
     def _get_rss_data(self):
-        params = {'user': self.provider.username,
-                  'api': self.provider.api_key,
-                  'eng': 1,
-                  'catid': '19,20'}  # SD,HD
+        params = {
+            'user': self.provider.username,
+            'api': self.provider.api_key,
+            'eng': 1
+        }
 
-        rss_url = self.provider.urls['rss'] % urllib.urlencode(params)
-
-        sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)
-
-        return self.getRSSFeed(rss_url)
+        return self.getRSSFeed(self.provider.urls['rss'], params=params)
