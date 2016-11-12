@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9ef9d5c - 2016-11-11: Fixed show display template code 
+- * c199367 - 2016-11-11: Fixed issues with database and too many files open error 
+- * 8acf7b3 - 2016-11-11: Fixed show display template code 
 - * f153e72 - 2016-11-11: Fixed show display template code 
 - * bde3888 - 2016-11-11: Fixed show display template code 
 - * 45d8ad2 - 2016-11-11: Fixed show display template code 
