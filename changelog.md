@@ -1,6 +1,7 @@
 # Changelog
 
-- * bce41c7 - 2016-11-11: Fixed issues with find propers routines 
+- * 80cfcfe - 2016-11-12: Fixed issues with find propers searches 
+- * 5726d5f - 2016-11-11: Fixed issues with find propers routines 
 - * bc7184c - 2016-11-11: Fixed issues with database and too many files open error 
 - * 7ad7d01 - 2016-11-11: Fixed issues with database and too many files open error 
 - * 8acf7b3 - 2016-11-11: Fixed show display template code 

@@ -280,7 +280,7 @@ class srProperSearcher(object):
         :param when: When was the last proper search
         """
 
-        sickrage.srCore.srLogger.debug("Setting the last Proper search in the DB to " + str(when))
+        sickrage.srCore.srLogger.debug("Setting the last proper search in database to " + str(when))
 
         dbData = [x['doc'] for x in MainDB().db.all('info', with_doc=True)]
         if len(dbData) == 0:

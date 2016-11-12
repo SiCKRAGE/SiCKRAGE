@@ -72,7 +72,7 @@ class AnimeNZBProvider(NZBProvider):
 
         return results
 
-    def find_propers(self, date=None):
+    def find_propers(self, search_date=None):
 
         results = []
 
@@ -87,7 +87,7 @@ class AnimeNZBProvider(NZBProvider):
             else:
                 continue
 
-            if not date or result_date > date:
+            if not search_date or result_date > search_date:
                 search_result = Proper(title, url, result_date, self.show)
                 results.append(search_result)
 

@@ -669,24 +669,21 @@ class TorrentProvider(GenericProvider):
 
     def find_propers(self, search_date=datetime.datetime.today()):
         results = []
-        dbData = []
 
         for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
             for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
                 if episode['airdate'] >= str(search_date.toordinal()) \
                         and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
-                    dbData += [episode]
 
-        for show in dbData:
-            show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
-            if show:
-                curEp = show.getEpisode(int(show["season"]), int(show["episode"]))
-                for term in self.proper_strings:
-                    searchString = self._get_episode_search_strings(curEp, add_string=term)
+                    self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(episode["showid"]))
+                    if not show: continue
 
-                    for item in self.search(searchString[0]):
-                        title, url = self._get_title_and_url(item)
-                        results.append(Proper(title, url, datetime.datetime.today(), show))
+                    curEp = show.getEpisode(int(episode["season"]), int(episode["episode"]))
+                    for term in self.proper_strings:
+                        searchString = self._get_episode_search_strings(curEp, add_string=term)
+                        for item in self.search(searchString[0]):
+                            title, url = self._get_title_and_url(item)
+                            results.append(Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
 
@@ -1148,21 +1145,20 @@ class NewznabProvider(NZBProvider):
         dbData = []
 
         for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)
-                            if e['airdate'] >= str(search_date.toordinal())
-                            and e['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]:
-                dbData += [episode]
+            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+                if episode['airdate'] >= str(search_date.toordinal()) \
+                        and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
 
-        for show in dbData:
-            self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
-            if self.show:
-                curEp = self.show.getEpisode(int(show["season"]), int(show["episode"]))
-                searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
-                for searchString in searchStrings:
-                    for item in self.search(searchString):
-                        title, url = self._get_title_and_url(item)
-                        if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                            results += [Proper(title, url, datetime.datetime.today(), self.show)]
+                    self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
+                    if not self.show: continue
+
+                    curEp = self.show.getEpisode(int(episode["season"]), int(episode["episode"]))
+                    searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
+                    for searchString in searchStrings:
+                        for item in self.search(searchString):
+                            title, url = self._get_title_and_url(item)
+                            if re.match(r'.*(REPACK|PROPER).*', title, re.I):
+                                results += [Proper(title, url, datetime.datetime.today(), self.show)]
 
         return results
 
