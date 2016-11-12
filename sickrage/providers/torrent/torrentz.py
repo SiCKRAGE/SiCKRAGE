@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import re
-from urllib import quote_plus
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -56,36 +55,32 @@ class TORRENTZProvider(TorrentProvider):
 
     def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
-        items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings:
+            items = []
+            sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
-                search_url = self.urls['verified'] if self.confirmed else self.urls['feed']
+                search_url = self.urls['feed']
                 if mode != 'RSS':
-                    search_url += '?f=' + quote_plus(search_string)
-                    sickrage.srCore.srLogger.info(search_url)
+                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    data = sickrage.srCore.srWebSession.get(search_url, params={'f': search_string}).text
                 except Exception:
-                    sickrage.srCore.srLogger.info('Seems to be down right now!')
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
                     continue
 
                 if not data.startswith('<?xml'):
                     sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
                     continue
 
-                with bs4_parser(data) as html:
-                    if not html:
-                        sickrage.srCore.srLogger.debug("No html data parsed from provider")
-                        continue
-
-                    for item in html('item'):
+                with bs4_parser(data) as parser:
+                    for item in parser('item'):
                         if item.category and 'tv' not in item.category.get_text(strip=True):
                             continue
 
-                        title = item.title.text.rsplit(' ', 1)[0].replace(' ', '.')
-                        t_hash = item.guid.text.rsplit('/', 1)[-1]
+                        title = item.title.get_text(strip=True)
+                        t_hash = item.guid.get_text(strip=True).rsplit('/', 1)[-1]
 
                         if not all([title, t_hash]):
                             continue
@@ -100,11 +95,18 @@ class TORRENTZProvider(TorrentProvider):
                                 sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(title, seeders, leechers))
                             continue
 
-                        items[mode].append((title, download_url, size, seeders, leechers))
+                        items += [{
+                            'title': title,
+                            'link': download_url,
+                            'size': size,
+                            'seeders': seeders,
+                            'leechers': leechers,
+                            'hash': t_hash
+                        }]
 
             # For each search mode sort all the items by seeders if available
-            items[mode].sort(key=lambda tup: tup[3], reverse=True)
-            results += items[mode]
+            items.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
+            results += items
 
         return results
 
