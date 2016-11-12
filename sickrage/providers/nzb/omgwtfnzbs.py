@@ -39,8 +39,8 @@ class OmgwtfnzbsProvider(NZBProvider):
         self.cache = OmgwtfnzbsCache(self, min_time=20)
 
         self.urls.update({
-            'search': 'api.{base_url}/json/'.format(base_url=self.urls['base_url']),
-            'rss': 'rss.{base_url}/rss-download.php'.format(base_url=self.urls['base_url'])
+            'search': 'api.{base_url}/json/?catid=19,20'.format(base_url=self.urls['base_url']),
+            'rss': 'rss.{base_url}/rss-download.php?catid=19,20'.format(base_url=self.urls['base_url'])
         })
 
         self.supports_backlog = True

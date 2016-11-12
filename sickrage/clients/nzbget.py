@@ -39,7 +39,7 @@ class NZBGet(object):
         :param proper: True if this is a Proper download, False if not. Defaults to False
         """
 
-        if sickrage.srCore.srConig.NZBGET_HOST is None:
+        if sickrage.srCore.srConfig.NZBGET_HOST is None:
             sickrage.srCore.srLogger.error("No NZBget host found in configuration. Please configure it.")
             return False
 
@@ -47,8 +47,10 @@ class NZBGet(object):
         dupe_score = 0
         addToTop = False
         nzbgetprio = 0
-        category = (sickrage.srCore.srConfig.NZBGET_CATEGORY, sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME)[
-            nzb.show.is_anime]
+
+        category = sickrage.srCore.srConfig.NZBGET_CATEGORY
+        if nzb.show.is_anime:
+            category = sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME
 
         url = "%(protocol)s://%(username)s:%(password)s@%(host)s/xmlrpc" % {
             "protocol": 'https' if sickrage.srCore.srConfig.NZBGET_USE_HTTPS else 'http',
