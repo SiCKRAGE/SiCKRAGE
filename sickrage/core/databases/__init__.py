@@ -27,7 +27,7 @@ import traceback
 from sqlite3 import OperationalError
 
 import sickrage
-from CodernityDB.database import Database
+from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
 from CodernityDB.index import IndexNotFoundException, IndexConflict
 from CodernityDB.storage import IU_Storage
 from sickrage.core.helpers import randomString
@@ -50,7 +50,7 @@ class srDatabase(object):
         self.old_db_path = ''
 
         self.db_path = os.path.join(sickrage.DATA_DIR, 'database', self.name)
-        self.db = Database(self.db_path)
+        self.db = SuperThreadSafeDatabase(self.db_path)
 
         if self.db.exists():
             self.db.open()
