@@ -103,7 +103,7 @@ class HDBitsProvider(TorrentProvider):
         # FIXME SORTING
         return results
 
-    def findPropers(self, search_date=None):
+    def find_propers(self, search_date=None):
         results = []
 
         search_terms = [' proper ', ' repack ']

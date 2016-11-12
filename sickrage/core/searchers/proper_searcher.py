@@ -96,7 +96,7 @@ class srProperSearcher(object):
             sickrage.srCore.srLogger.info("Searching for any new PROPER releases from " + providerObj.name)
 
             try:
-                curPropers = providerObj.findPropers(search_date)
+                curPropers = providerObj.find_propers(search_date)
             except AuthException as e:
                 sickrage.srCore.srLogger.debug("Authentication error: {}".format(e.message))
                 continue

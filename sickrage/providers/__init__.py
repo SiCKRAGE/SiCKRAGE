@@ -25,7 +25,6 @@ import itertools
 import os
 import random
 import re
-import time
 import urllib
 from base64 import b16encode, b32decode
 from collections import OrderedDict
@@ -462,7 +461,7 @@ class GenericProvider(object):
 
         return results
 
-    def findPropers(self, search_date=None):
+    def find_propers(self, search_date=None):
 
         results = self.cache.list_propers(search_date)
 
@@ -668,15 +667,15 @@ class TorrentProvider(GenericProvider):
         return os.path.join(sickrage.srCore.srConfig.TORRENT_DIR,
                             '{}.{}'.format(sanitizeFileName(name), self.type))
 
-    def findPropers(self, search_date=datetime.datetime.today()):
+    def find_propers(self, search_date=datetime.datetime.today()):
         results = []
         dbData = []
 
         for show in [s['doc'] for s in MainDB().db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)
-                            if e['airdate'] >= str(search_date.toordinal())
-                            and e['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]:
-                dbData += [episode]
+            for episode in [e['doc'] for e in MainDB().db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+                if episode['airdate'] >= str(search_date.toordinal()) \
+                        and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
+                    dbData += [episode]
 
         for show in dbData:
             show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
@@ -1144,7 +1143,7 @@ class NewznabProvider(NZBProvider):
 
         return results
 
-    def findPropers(self, search_date=datetime.datetime.today()):
+    def find_propers(self, search_date=datetime.datetime.today()):
         results = []
         dbData = []
 
@@ -1222,7 +1221,6 @@ class TorrentRssCache(TVCache):
             self.provider.headers.update({'Cookie': self.provider.cookies})
 
         return self.getRSSFeed(self.provider.urls['base_url'])
-
 
 
 class providersDict(dict):

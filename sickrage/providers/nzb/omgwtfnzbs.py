@@ -131,7 +131,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         return []
 
-    def findPropers(self, search_date=None):
+    def find_propers(self, search_date=None):
         search_terms = ['.PROPER.', '.REPACK.']
         results = []
 

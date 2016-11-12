@@ -72,7 +72,7 @@ class AnimeNZBProvider(NZBProvider):
 
         return results
 
-    def findPropers(self, date=None):
+    def find_propers(self, date=None):
 
         results = []
 

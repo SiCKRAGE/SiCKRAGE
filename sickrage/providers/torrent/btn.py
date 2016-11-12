@@ -250,7 +250,7 @@ class BTNProvider(TorrentProvider):
         # use with caution!
         return self.search({'search': search_string})
 
-    def findPropers(self, search_date=None):
+    def find_propers(self, search_date=None):
         results = []
 
         search_terms = ['%.proper.%', '%.repack.%']
