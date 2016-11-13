@@ -26,6 +26,7 @@ import os.path
 import pickle
 import platform
 import re
+import sys
 import urlparse
 import uuid
 from itertools import izip, cycle
@@ -2433,11 +2434,12 @@ class ConfigMigrator(srConfig):
         """
 
         if self.config_version > self.expected_config_version:
-            sickrage.srCore.srLogger.log_error_and_exit(
+            sickrage.srCore.srLogger.error(
                 """Your config version (%i) has been incremented past what this version of supports (%i).
                     If you have used other forks or a newer version of  your config file may be unusable due to their modifications.""" %
                 (self.config_version, self.expected_config_version)
             )
+            sys.exit(1)
 
         self.CONFIG_VERSION = self.config_version
 
@@ -2451,7 +2453,8 @@ class ConfigMigrator(srConfig):
 
             sickrage.srCore.srLogger.info("Backing up config before upgrade")
             if not backupVersionedFile(sickrage.CONFIG_FILE, self.config_version):
-                sickrage.srCore.srLogger.log_error_and_exit("Config backup failed, abort upgrading config")
+                sickrage.srCore.srLogger.exit("Config backup failed, abort upgrading config")
+                sys.exit(1)
             else:
                 sickrage.srCore.srLogger.info("Proceeding with upgrade")
 

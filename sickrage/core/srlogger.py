@@ -20,16 +20,10 @@
 
 from __future__ import unicode_literals
 
-import io
-import locale
 import logging
 import os
-import platform
 import re
-import sys
-import traceback
-from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
-from logging import FileHandler
+from logging import FileHandler, CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
 import sickrage
@@ -51,8 +45,6 @@ class srLogger(logging.getLoggerClass()):
         self.logFile = None
         self.logSize = 1048576
         self.logNr = 5
-
-        self.submitter_running = False
 
         self.CRITICAL = CRITICAL
         self.DEBUG = DEBUG
@@ -191,156 +183,5 @@ class srLogger(logging.getLoggerClass()):
     def warning(self, msg, *args, **kwargs):
         super(srLogger, self).warning(msg, *args, **kwargs)
 
-    def log_error_and_exit(self, msg, *args, **kwargs):
-        if self.consoleLogging:
-            sys.exit(super(srLogger, self).error(msg, *args, **kwargs))
-        sys.exit(1)
-
-    def submit_errors(self):  # Too many local variables, too many branches, pylint: disable=R0912,R0914
-        import sickrage
-
-        submitter_result = None
-        issue_id = None
-
-        from sickrage.core.classes import ErrorViewer
-        if not (
-                            sickrage.srCore.srConfig.GIT_USERNAME and sickrage.srCore.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
-                    ErrorViewer.errors) > 0):
-            submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
-            return submitter_result, issue_id
-
-        try:
-            from version_updater import srVersionUpdater
-
-            sickrage.srCore.VERSIONUPDATER.check_for_new_version()
-        except Exception:
-            submitter_result = 'Could not check if your SiCKRAGE is updated, unable to submit issue ticket to GitHub!'
-            return submitter_result, issue_id
-
-        if self.submitter_running:
-            submitter_result = 'Issue submitter is running, please wait for it to complete'
-            return submitter_result, issue_id
-
-        self.submitter_running = True
-
-        gh_org = sickrage.srCore.srConfig.GIT_ORG or 'SiCKRAGETV'
-        gh_repo = 'sickrage-issues'
-
-        import github
-        gh = github.Github(login_or_token=sickrage.srCore.srConfig.GIT_USERNAME,
-                           password=sickrage.srCore.srConfig.GIT_PASSWORD,
-                           user_agent="SiCKRAGE")
-
-        try:
-            # read log file
-            log_data = None
-
-            if os.path.isfile(self.logFile):
-                with io.open(self.logFile, 'r') as f:
-                    log_data = f.readlines()
-
-            for i in range(1, int(sickrage.srCore.srConfig.LOG_NR)):
-                if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
-                    with io.open(self.logFile + ".%i" % i, 'r') as f:
-                        log_data += f.readlines()
-
-            log_data = [line for line in reversed(log_data)]
-
-            # parse and submit errors to issue tracker
-            for curError in sorted(ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
-
-                try:
-                    title_Error = "[APP SUBMITTED]: {}".format(curError.title)
-                    if not len(title_Error) or title_Error == 'None':
-                        title_Error = re.match(r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", curError.message).group(1)
-
-                    if len(title_Error) > 1000:
-                        title_Error = title_Error[0:1000]
-                except Exception as e:
-                    super(srLogger, self).error("Unable to get error title : {}".format(e.message))
-
-                gist = None
-                regex = r"^({})\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$".format(curError.time)
-                for i, x in enumerate(log_data):
-                    match = re.match(regex, x)
-                    if match:
-                        level = match.group(2)
-                        # if level == srCore.LOGGER.ERROR:
-                        # paste_data = "".join(log_data[i:i + 50])
-                        # if paste_data:
-                        #    gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
-                        # break
-                    else:
-                        gist = 'No ERROR found'
-
-                message = "### INFO\n"
-                message += "Python Version: **" + sys.version[:120].replace('\n', '') + "**\n"
-                message += "Operating System: **" + platform.platform() + "**\n"
-                try:
-                    message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
-                except Exception:
-                    message += "Locale: unknown" + "\n"
-                message += "Version: **" + sickrage.srCore.VERSIONUPDATER.updater.version + "**\n"
-                if hasattr(gist, 'html_url'):
-                    message += "Link to Log: " + gist.html_url + "\n"
-                else:
-                    message += "No Log available with ERRORS: " + "\n"
-                message += "### ERROR\n"
-                message += "```\n"
-                message += curError.message + "\n"
-                message += "```\n"
-                message += "---\n"
-                message += "_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
-
-                reports = gh.get_organization(gh_org).get_repo(gh_repo).get_issues(state="all")
-
-                def is_ascii_error(title):
-                    return re.search(r".* codec can't .*code .* in position .*:", title) is not None
-
-                def is_malformed_error(title):
-                    return re.search(r".* not well-formed \(invalid token\): line .* column .*", title) is not None
-
-                ascii_error = is_ascii_error(title_Error)
-                malformed_error = is_malformed_error(title_Error)
-
-                issue_found = False
-                for report in reports:
-                    if title_Error.rsplit(' :: ')[-1] in report.title or \
-                            (malformed_error and is_malformed_error(report.title)) or \
-                            (ascii_error and is_ascii_error(report.title)):
-
-                        issue_id = report.number
-                        if not report.raw_data['locked']:
-                            if report.create_comment(message):
-                                submitter_result = 'Commented on existing issue #%s successfully!' % issue_id
-                            else:
-                                submitter_result = 'Failed to comment on found issue #%s!' % issue_id
-                        else:
-                            submitter_result = 'Issue #%s is locked, check github to find info about the error.' % issue_id
-
-                        issue_found = True
-                        break
-
-                if not issue_found:
-                    issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue(title_Error, message)
-                    if issue:
-                        issue_id = issue.number
-                        submitter_result = 'Your issue ticket #%s was submitted successfully!' % issue_id
-                    else:
-                        submitter_result = 'Failed to create a new issue!'
-
-                if issue_id and curError in ErrorViewer.errors:
-                    # clear error from error list
-                    ErrorViewer.errors.remove(curError)
-
-        except Exception as e:
-            super(srLogger, self).error(traceback.format_exc())
-            submitter_result = 'Exception generated in issue submitter, please check the log'
-        finally:
-            self.submitter_running = False
-
-        return submitter_result, issue_id
-
-    @staticmethod
-    def shutdown():
+    def close(self, *args, **kwargs):
         logging.shutdown()

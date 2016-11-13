@@ -235,9 +235,9 @@ class Core(object):
         # setup logger settings
         self.srLogger.logSize = self.srConfig.LOG_SIZE
         self.srLogger.logNr = self.srConfig.LOG_NR
+        self.srLogger.logFile = self.srConfig.LOG_FILE
         self.srLogger.debugLogging = sickrage.DEBUG
         self.srLogger.consoleLogging = not sickrage.QUITE
-        self.srLogger.logFile = self.srConfig.LOG_FILE
 
         # start logger
         self.srLogger.start()
@@ -488,33 +488,29 @@ class Core(object):
             self.srWebServer.shutdown()
 
             # shutdown scheduler
-            self.srLogger.info("Shutting down scheduler")
+            self.srLogger.debug("Shutting down scheduler")
             self.srScheduler.shutdown()
 
             # shutdown show queue
             if self.SHOWQUEUE:
-                self.srLogger.info("Shutting down show queue")
+                self.srLogger.debug("Shutting down show queue")
                 self.SHOWQUEUE.shutdown()
 
             # shutdown search queue
             if self.SEARCHQUEUE:
-                self.srLogger.info("Shutting down search queue")
+                self.srLogger.debug("Shutting down search queue")
                 self.SEARCHQUEUE.shutdown()
 
             # log out of ADBA
             if sickrage.srCore.ADBA_CONNECTION:
-                self.srLogger.info("Logging out ANIDB connection")
+                self.srLogger.debug("Logging out ANIDB connection")
                 sickrage.srCore.ADBA_CONNECTION.logout()
 
             # save all show and config settings
             self.save_all()
 
-            # close databases
-            self.srLogger.info("Closing database files")
-            [db.close() for db in [self.mainDB, self.cacheDB, self.failedDB]]
-
             # shutdown logging
-            self.srLogger.shutdown()
+            self.srLogger.close()
 
         # delete pid file
         if sickrage.DAEMONIZE:

@@ -39,6 +39,7 @@ class srQueuePriorities(object):
 class srQueue(threading.Thread):
     def __init__(self, name="QUEUE"):
         super(srQueue, self).__init__(name=name)
+        self.daemon = True
         self._queue = PriorityQueue()
         self.currentItem = None
         self.min_priority = 0
@@ -56,7 +57,7 @@ class srQueue(threading.Thread):
             with self.lock:
                 self.amActive = True
 
-                if self.currentItem is None or not self.currentItem.is_alive():
+                if self.currentItem is None or not self.currentItem.isAlive():
                     if self.currentItem:
                         self.currentItem = None
 
@@ -103,8 +104,8 @@ class srQueue(threading.Thread):
     def shutdown(self):
         self.stop.set()
         try:
-            [t.join() for t in self.threads]
-            self.join(10)
+            [t.join(1) for t in self.threads if t.isAlive()]
+            self.join(1)
         except:
             pass
 
@@ -112,6 +113,7 @@ class srQueue(threading.Thread):
 class srQueueItem(threading.Thread):
     def __init__(self, name, action_id=0):
         super(srQueueItem, self).__init__(name=name.replace(" ", "-").upper())
+        self.daemon = True
         self.lock = threading.Lock()
         self.stop = threading.Event()
         self.priority = srQueuePriorities.NORMAL

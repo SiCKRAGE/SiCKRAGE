@@ -1,6 +1,7 @@
 # Changelog
 
-- * 91fa155 - 2016-11-12: Fixed issues with Torrentz provider 
+- * a18c62d - 2016-11-13: v8.8.1 Fixes issues with shutdowns taking forever 
+- * 6f0e03d - 2016-11-12: Fixed issues with Torrentz provider 
 - * e5ba547 - 2016-11-12: v8.8.0 Fixed issues with nzbget client 
 - * 671670d - 2016-11-12: Fixed issues with omgwtfnzbs newznab provider searches 
 - * 323696e - 2016-11-12: v8.7.9 Fixed issues with database and multiple threading Fixed issues with database and shutdowns Fixes issues with queues and shutdowns 

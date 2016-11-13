@@ -195,8 +195,10 @@ class ManualSearchQueueItem(srQueueItem):
                 time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
             else:
-                sickrage.srCore.srNotifications.message('No downloads were found',
-                                                        "Couldn't find a download for <i>%s</i>" % self.segment.prettyName())
+                sickrage.srCore.srNotifications.message(
+                    'No downloads were found',
+                    "Couldn't find a download for <i>%s</i>" % self.segment.prettyName()
+                )
 
                 sickrage.srCore.srLogger.info("Unable to find a download for: [" + self.segment.prettyName() + "]")
 
@@ -205,7 +207,7 @@ class ManualSearchQueueItem(srQueueItem):
         finally:
             sickrage.srCore.srLogger.info("Finished manual search for: [" + self.segment.prettyName() + "]")
 
-        ### Keep a list with the 100 last executed searches
+        # Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
 
 
@@ -283,5 +285,5 @@ class FailedQueueItem(srQueueItem):
         finally:
             sickrage.srCore.srLogger.info("Finished failed download search for: [" + self.show.name + "]")
 
-        ### Keep a list with the 100 last executed searches
+        # Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)

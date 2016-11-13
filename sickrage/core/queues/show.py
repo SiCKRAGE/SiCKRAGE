@@ -578,7 +578,7 @@ class QueueItemUpdate(ShowQueueItem):
         # get episode list from DB
         DBEpList = self.show.loadEpisodesFromDB()
         IndexerEpList = None
-        
+
         # get episode list from TVDB
         try:
             IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force)

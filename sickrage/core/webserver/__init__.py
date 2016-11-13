@@ -70,13 +70,10 @@ class StaticImageHandler(StaticFileHandler):
 
 class srWebServer(object):
     def __init__(self):
-        self.name = "TORNADO"
         self.started = False
 
     def start(self):
         self.started = True
-
-        threading.currentThread().setName(self.name)
 
         # video root
         self.video_root = None
