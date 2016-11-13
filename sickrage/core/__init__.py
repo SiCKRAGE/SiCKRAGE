@@ -509,6 +509,9 @@ class Core(object):
             # save all show and config settings
             self.save_all()
 
+            # close databases
+            [db.close() for db in [self.mainDB, self.cacheDB, self.failedDB]]
+
             # shutdown logging
             self.srLogger.close()
 
