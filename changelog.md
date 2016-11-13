@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2d96391 - 2016-11-13: v8.8.2 Properly closes databases during restarts of app to prevent errors being thrown 
+- * 63d1a31 - 2016-11-13: Fixes issues with Newznab providers and dict key errors for feedparser Fixes issues with apikey being shown in log files 
+- * 6f7a79d - 2016-11-13: v8.8.2 Properly closes databases during restarts of app to prevent errors being thrown 
 - * a62cc0d - 2016-11-13: v8.8.1 Fixes issues with shutdowns taking forever 
 - * 6f0e03d - 2016-11-12: Fixed issues with Torrentz provider 
 - * e5ba547 - 2016-11-12: v8.8.0 Fixed issues with nzbget client 

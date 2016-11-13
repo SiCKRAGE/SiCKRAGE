@@ -1042,7 +1042,7 @@ class NewznabProvider(NZBProvider):
 
         :type data: dict
         """
-        if not all([x in data for x in ['feed', 'entries']]):
+        if all([x in data for x in ['feed', 'entries']]):
             return self.check_auth()
 
         try:
@@ -1066,7 +1066,7 @@ class NewznabProvider(NZBProvider):
         except (AttributeError, KeyError):
             pass
 
-        return True
+        return False
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
@@ -1087,8 +1087,6 @@ class NewznabProvider(NZBProvider):
         if self.key:
             params['apikey'] = self.key
 
-        sickrage.srCore.srLogger.debug('[{}] Search parameters: {}'.format(self.name, repr(params)))
-
         offset = total = 0
         last_search = datetime.datetime.now()
         while total >= offset:
@@ -1096,7 +1094,7 @@ class NewznabProvider(NZBProvider):
                 continue
 
             search_url = self.urls['base_url'] + '/api'
-            sickrage.srCore.srLogger.debug("Search url: %s" % search_url)
+            sickrage.srCore.srLogger.debug("Search url: %s?%s" % (search_url, urllib.urlencode(params)))
 
             data = self.cache.getRSSFeed(search_url, params=params)
 

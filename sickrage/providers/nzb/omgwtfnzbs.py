@@ -21,6 +21,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import urllib
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -100,7 +101,7 @@ class OmgwtfnzbsProvider(NZBProvider):
             'search': search
         }
 
-        sickrage.srCore.srLogger.debug("Search string: %s" % params)
+        sickrage.srCore.srLogger.debug("Search url: %s?%s" % (self.urls['search'], urllib.urlencode(params)))
 
         try:
             parsedJSON = sickrage.srCore.srWebSession.get(self.urls['search'], params=params).json()
