@@ -40,7 +40,7 @@ from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowExc
 from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
 from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, \
-    safe_getattr
+    safe_getattr, removetree
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
@@ -958,7 +958,7 @@ class TVShow(object):
         self._location = dbData[0].get("location", self.location)
 
         if self.is_anime:
-            self._release_groups = BlackAndWhiteList(self.indexerid)
+            self.release_groups = BlackAndWhiteList(self.indexerid)
 
         if not skipNFO:
             try:
@@ -994,7 +994,7 @@ class TVShow(object):
                 self.name = myEp['seriesname'].strip()
             except AttributeError:
                 raise indexer_attributenotfound(
-                    "Found %s, but attribute 'seriesname' was empty." % (self.indexerid))
+                    "Found %s, but attribute 'seriesname' was empty." % self.indexerid)
 
             self.classification = safe_getattr(myEp, 'classification', self.classification)
             self.genre = safe_getattr(myEp, 'genre', self.genre)
@@ -1489,7 +1489,6 @@ class TVShow(object):
                 mapped[int(dbData['mindexer'])] = int(dbData['mindexer_id'])
                 return mapped
         else:
-            sql_l = []
             for indexer in srIndexerApi().indexers:
                 if indexer == self.indexer:
                     mapped[indexer] = self.indexerid

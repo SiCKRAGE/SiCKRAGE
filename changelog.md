@@ -1,6 +1,7 @@
 # Changelog
 
-- * d1f13c6 - 2016-11-13: v8.8.3 Reverted closing databases on shutdown/restarts ... caused issues 
+- * b0b161e - 2016-11-15: v8.8.4 Fixed issues with deleting/removing shows Fixed issues with anime black/white release groups 
+- * e5e68fb - 2016-11-13: v8.8.3 Reverted closing databases on shutdown/restarts ... caused issues 
 - * 2a0f78f - 2016-11-13: Fixes issues with Newznab providers and dict key errors for feedparser Fixes issues with apikey being shown in log files 
 - * 6f7a79d - 2016-11-13: v8.8.2 Properly closes databases during restarts of app to prevent errors being thrown 
 - * a62cc0d - 2016-11-13: v8.8.1 Fixes issues with shutdowns taking forever 
