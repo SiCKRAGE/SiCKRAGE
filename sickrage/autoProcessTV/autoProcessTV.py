@@ -32,7 +32,6 @@ except ImportError:
     import configparser
     import urllib.request as urllib2
     from urllib.parse import urlencode
-    HTTPBasicAuthHandler = urllib2.HTTPBasicAuthHandler
 
 
 def processEpisode(dir_to_process, org_NZB_name=None, status=None):
@@ -115,7 +114,7 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
     try:
         password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
         password_mgr.add_password(None, url, username, password)
-        handler = HTTPBasicAuthHandler(password_mgr)
+        handler = urllib2.HTTPBasicAuthHandler(password_mgr)
         opener = urllib2.build_opener(handler)
         urllib2.install_opener(opener)
 
