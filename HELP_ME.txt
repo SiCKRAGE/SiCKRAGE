@@ -1,0 +1,16 @@
+Hi
+
+I've several bug reports but I can't comment/post in the forums… can you please check my user "dbarton"? Haven't got a confirmation email so far, so I can't do anything to report bugs or get in contact with you!
+
+Bugs/issues found so far:
+
+- UnicodeError messages
+- Mako errors
+- Limited capability to add existing TV shows (http://cloud.confirm.ch/iAzh)
+- Mass update for TV shows doesn't work (HTTP 500)
+- Home view sometimes doesn't show correct statistics (a lot of ?, after reload all is fine)
+- Startup of SiCKRAGE takes about 10 minutes until webui is availabe
+- Fresh re-install and reindex all my TV shows takes about 3 days
+…
+
+Can you please activate my account on the forums?
