@@ -244,8 +244,8 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie('user', json_encode(sickrage.srCore.srConfig.API_KEY),
                                        expires_days=30 if remember_me > 0 else None)
                 sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
-                # return self.redirect(self.get_argument("next", "/"))
-                return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+
+                return self.redirect(self.get_argument("next","/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE)))
             elif username and password:
                 sickrage.srCore.srLogger.warning(
                     'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(

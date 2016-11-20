@@ -1,6 +1,7 @@
 # Changelog
 
-- * 427ed92 - 2016-11-19: Fixed import errors 
+- * 1c2c612 - 2016-11-19: Fixed login redirection issues 
+- * 04dd3ef - 2016-11-19: Fixed import errors 
 - * 50fe40a - 2016-11-19: Fixed provider URL 
 - * e294e58 - 2016-11-15: v8.8.4 Fixed issues with deleting/removing shows Fixed issues with anime black/white release groups 
 - * e5e68fb - 2016-11-13: v8.8.3 Reverted closing databases on shutdown/restarts ... caused issues 
