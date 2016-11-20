@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1c2c612 - 2016-11-19: Fixed login redirection issues 
+- * 0eee112 - 2016-11-20: Updated contributing guide 
+- * c60690a - 2016-11-19: Fixed login redirection issues 
 - * 04dd3ef - 2016-11-19: Fixed import errors 
 - * 50fe40a - 2016-11-19: Fixed provider URL 
 - * e294e58 - 2016-11-15: v8.8.4 Fixed issues with deleting/removing shows Fixed issues with anime black/white release groups 

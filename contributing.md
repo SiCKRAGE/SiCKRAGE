@@ -49,14 +49,14 @@ Bugs in old versions of SickRage may have already been fixed. In order to avoid 
 
 Please follow these guidelines before reporting a bug:
 
-1. **Update to the latest version** &mdash; Check if you can reproduce the issue with the latest version from the `develop` branch.
+1. **Update to the latest version** - Check if you can reproduce the issue with the latest version from the `develop` branch.
 
-2. **Use the search on sickrage-issues** &mdash; check if the issue has already been reported. If it has been, please comment on the existing issue.
+2. **Use the search on sickrage issues** - check if the issue has already been reported. If it has been, please comment on the existing issue.
 
-3. **Provide a means to reproduce the problem** &mdash; Please provide as much details as possible, e.g. SickRage log files (obfuscate apikey/passwords), browser and operating system versions, how you started SickRage, and of course the steps to reproduce the problem. Bugs are always reported in the forums.
+3. **Provide a means to reproduce the problem** - Please provide as much details as possible, e.g. SickRage log files (obfuscate apikey/passwords), browser and operating system versions, how you started SickRage, and of course the steps to reproduce the problem. Bugs are always reported in the forums.
 
 ### Pull requests
-[Pull requests](https://help.github.com/articles/using-pull-requests) are welcome and the preferred way of accepting code contributions.
+[Pull requests](https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html) are welcome and the preferred way of accepting code contributions.
 
 Please follow these guidelines before sending a pull request:
 
@@ -74,12 +74,12 @@ Please follow these guidelines before sending a pull request:
 
 Please follow this process; it's the best way to get your work included in the project:
 
-- [Fork](http://help.github.com/fork-a-repo/) the project, clone your fork,
+- [Fork](https://docs.gitlab.com/ee/gitlab-basics/fork-project.html) the project, clone your fork,
    and configure the remotes:
 
 ```bash
    # clone your fork of the repo into the current directory in terminal
-   git clone git@github.com:<your username>/sickrage.git
+   git clone git@git.sickrage.ca:<your username>/sickrage.git
    # navigate to the newly cloned directory
    cd SickRage
    # assign the original repo to a remote called "upstream"
@@ -114,7 +114,7 @@ Please follow this process; it's the best way to get your work included in the p
 
 - Commit your changes in logical chunks. or your pull request is unlikely
    be merged into the main project. Use git's
-   [interactive rebase](https://help.github.com/articles/interactive-rebase)
+   [interactive rebase](https://help.github.com/articles/about-git-rebase/)
    feature to tidy up your commits before making them public.
 
 - Push your topic branch up to your fork:
@@ -123,7 +123,7 @@ Please follow this process; it's the best way to get your work included in the p
    git push origin <topic-branch-name>
    ```
 
-- [Open a Pull Request](https://help.github.com/articles/using-pull-requests) with a
+- [Open a Pull Request](https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html) with a
     clear title and description.
 
 
