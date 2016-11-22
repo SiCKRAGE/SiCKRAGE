@@ -4103,11 +4103,11 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#getPushbulletDevices').click(function () {
-                        SICKRAGE.config.postprocessing.get_pushbullet_devices("Device list updated. Please choose a device to push to.");
+                        SICKRAGE.config.notifications.get_pushbullet_devices("Device list updated. Please choose a device to push to.");
                     });
 
                     // we have to call this function on dom ready to create the devices select
-                    SICKRAGE.config.postprocessing.get_pushbullet_devices();
+                    SICKRAGE.config.notifications.get_pushbullet_devices();
 
                     $('#email_show').on('change', function () {
                         var key = parseInt($('#email_show').val(), 10);
@@ -4128,7 +4128,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     // Load the per show notify lists everytime this page is loaded
-                    SICKRAGE.config.postprocessing.load_show_notify_lists();
+                    SICKRAGE.config..load_show_notify_lists();
 
                     $('#email_show_save').click(function () {
                         $.post("/home/saveShowNotifyList", {
