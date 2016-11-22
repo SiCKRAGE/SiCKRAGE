@@ -4128,7 +4128,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     // Load the per show notify lists everytime this page is loaded
-                    SICKRAGE.config..load_show_notify_lists();
+                    SICKRAGE.config.notifications.load_show_notify_lists();
 
                     $('#email_show_save').click(function () {
                         $.post("/home/saveShowNotifyList", {
