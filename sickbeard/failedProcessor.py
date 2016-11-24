@@ -1,6 +1,7 @@
+# coding=utf-8
 # Author: Tyler Fenby <tylerfenby@gmail.com>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: https://sickrage.github.io
+# Git: https://github.com/SickRage/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -11,12 +12,11 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 
-from __future__ import with_statement
 
 import sickbeard
 from sickbeard import logger
@@ -48,27 +48,23 @@ class FailedProcessor(object):
         self._log(u"Failed download detected: (" + str(self.nzb_name) + ", " + str(self.dir_name) + ")")
 
         releaseName = show_name_helpers.determineReleaseName(self.dir_name, self.nzb_name)
-        if releaseName is None:
+        if not releaseName:
             self._log(u"Warning: unable to find a valid release name.", logger.WARNING)
             raise FailedPostProcessingFailedException()
 
         try:
-            parser = NameParser(False)
-            parsed = parser.parse(releaseName)
-        except InvalidNameException:
-            self._log(u"Error: release name is invalid: " + releaseName, logger.DEBUG)
-            raise FailedPostProcessingFailedException()
-        except InvalidShowException:
-            self._log(u"Error: unable to parse release name " + releaseName + " into a valid show", logger.DEBUG)
+            parsed = NameParser(False).parse(releaseName)
+        except (InvalidNameException, InvalidShowException) as error:
+            self._log(u"{0}".format(error), logger.DEBUG)
             raise FailedPostProcessingFailedException()
 
-        logger.log(u"name_parser info: ", logger.DEBUG)
-        logger.log(u" - " + str(parsed.series_name), logger.DEBUG)
-        logger.log(u" - " + str(parsed.season_number), logger.DEBUG)
-        logger.log(u" - " + str(parsed.episode_numbers), logger.DEBUG)
-        logger.log(u" - " + str(parsed.extra_info), logger.DEBUG)
-        logger.log(u" - " + str(parsed.release_group), logger.DEBUG)
-        logger.log(u" - " + str(parsed.air_date), logger.DEBUG)
+        self._log(u"name_parser info: ", logger.DEBUG)
+        self._log(u" - " + str(parsed.series_name), logger.DEBUG)
+        self._log(u" - " + str(parsed.season_number), logger.DEBUG)
+        self._log(u" - " + str(parsed.episode_numbers), logger.DEBUG)
+        self._log(u" - " + str(parsed.extra_info), logger.DEBUG)
+        self._log(u" - " + str(parsed.release_group), logger.DEBUG)
+        self._log(u" - " + str(parsed.air_date), logger.DEBUG)
 
         for episode in parsed.episode_numbers:
             segment = parsed.show.getEpisode(parsed.season_number, episode)

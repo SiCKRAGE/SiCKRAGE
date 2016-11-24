@@ -1,6 +1,7 @@
+# coding=utf-8
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: https://sickrage.github.io
+# Git: https://github.com/SickRage/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -11,90 +12,70 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty    of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
+# pylint:disable=too-many-lines
 
-from __future__ import with_statement
+from __future__ import unicode_literals
 
+import io
 import os
-import ctypes
-import random
 import re
-import socket
+import ast
+import ssl
 import stat
-import tempfile
 import time
+import ctypes
+import shutil
+import socket
 import traceback
 import urllib
-import urllib2
-import hashlib
-import httplib
-import urlparse
 import uuid
 import base64
 import zipfile
 import datetime
-import errno
-import ast
 import operator
 import platform
+import hashlib
+import random
 from contextlib import closing
-
-import sickbeard
+from itertools import izip, cycle
+import xml.etree.ElementTree as ET
 
 import adba
-import requests
 import certifi
+import requests
+from requests.utils import urlparse
+from cachecontrol import CacheControl
+# from httpcache import CachingHTTPAdapter
 
-
-try:
-    from io import BytesIO as _StringIO
-except ImportError:
-    try:
-        from cStringIO import StringIO as _StringIO
-    except ImportError:
-        from StringIO import StringIO as _StringIO
-
-try:
-    import gzip
-except ImportError:
-    gzip = None
-
-from sickbeard import logger, classes
+import sickbeard
+from sickbeard import logger, classes, db
 from sickbeard.common import USER_AGENT
-from sickbeard.common import mediaExtensions
-from sickbeard.common import subtitleExtensions
-from sickbeard import db
-from sickbeard import notifiers
-from sickbeard import clients
-from sickbeard.subtitles import isValidLanguage
+from sickrage.helper import MEDIA_EXTENSIONS, SUBTITLE_EXTENSIONS, pretty_file_size, episode_num
 from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex, MultipleShowObjectsException
-from cachecontrol import CacheControl, caches
+from sickrage.show.Show import Show
 
-from itertools import izip, cycle
 
-import shutil
 import shutil_custom
+
 
 shutil.copyfile = shutil_custom.copyfile_custom
 
+# pylint: disable=protected-access
+# Access to a protected member of a client class
 urllib._urlopener = classes.SickBeardURLopener()
 
 
-def fixGlob(path):
-    path = re.sub(r'\[', '[[]', path)
-    return re.sub(r'(?<!\[)\]', '[]]', path)
-
 def indentXML(elem, level=0):
-    '''
+    """
     Does our pretty printing, makes Matt very happy
-    '''
+    """
     i = "\n" + level * "  "
-    if len(elem):
+    if elem:
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
         if not elem.tail or not elem.tail.strip():
@@ -104,32 +85,14 @@ def indentXML(elem, level=0):
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:
-        # Strip out the newlines from text
-        if elem.text:
-            elem.text = elem.text.replace('\n', ' ')
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
-
-
-def remove_extension(name):
-    """
-    Remove download or media extension from name (if any)
-    """
-
-    if name and "." in name:
-        # pylint: disable=W0612
-        base_name, sep, extension = name.rpartition('.')  # @UnusedVariable
-        if base_name and extension.lower() in ['nzb', 'torrent'] + mediaExtensions:
-            name = base_name
-
-    return name
 
 
 def remove_non_release_groups(name):
     """
     Remove non release groups from name
     """
-
     if not name:
         return name
 
@@ -137,38 +100,66 @@ def remove_non_release_groups(name):
     # Check your database for funky release_names and add them here, to improve failed handling, archiving, and history.
     # select release_name from tv_episodes WHERE LENGTH(release_name);
     # [eSc], [SSG], [GWC] are valid release groups for non-anime
-    removeWordsList = {r'\[rartv\]$':       'searchre',
-                       r'\[rarbg\]$':       'searchre',
-                       r'\[eztv\]$':        'searchre',
-                       r'\[ettv\]$':        'searchre',
-                       r'\[vtv\]$':         'searchre',
-                       r'\[GloDLS\]$':      'searchre',
-                       r'\[silv4\]$':       'searchre',
-                       r'\[Seedbox\]$':     'searchre',
-                       r'\[AndroidTwoU\]$': 'searchre',
-                       r'\.\[BT\]$':        'searchre',
-                       r' \[1044\]$':       'searchre',
-                       r'\.RiPSaLoT$':      'searchre',
-                       r'\.GiuseppeTnT$':   'searchre',
-                       r'\.Renc$':          'searchre',
-                       r'-NZBGEEK$':        'searchre',
-                       r'-Siklopentan$':    'searchre',
-                       r'-RP$':                             'searchre',
-                       r'-20-40$':                          'searchre',
-                       r'\.\[www\.usabit\.com\]$':          'searchre',
-                       r'^\[www\.Cpasbien\.pe\] ':          'searchre',
-                       r'^\[www\.Cpasbien\.com\] ':         'searchre',
-                       r'^\[ www\.Cpasbien\.pw \] ':        'searchre',
-                       r'^\[ www\.Cpasbien\.com \] ':       'searchre',
-                       r'- \{ www\.SceneTime\.com \}$':     'searchre',
-                       r'^\{ www\.SceneTime\.com \} - ':    'searchre',
-                       r'- \[ www\.torrentday\.com \]$':    'searchre',
-                       r'^\[ www\.TorrentDay\.com \] - ':   'searchre',
-                       r'^\[www\.frenchtorrentdb\.com\] ':  'searchre',
-                       r'^\]\.\[www\.tensiontorrent.com\] - ':      'searchre',
-                       r'^\]\.\[ www\.tensiontorrent.com \] - ':    'searchre',
-                       r'\[NO-RAR\] - \[ www\.torrentday\.com \]$': 'searchre',
-                      }
+    removeWordsList = {
+        r'\[rartv\]$': 'searchre',
+        r'\[rarbg\]$': 'searchre',
+        r'\.\[eztv\]$': 'searchre',
+        r'\[eztv\]$': 'searchre',
+        r'\[ettv\]$': 'searchre',
+        r'\[cttv\]$': 'searchre',
+        r'\.\[vtv\]$': 'searchre',
+        r'\[vtv\]$': 'searchre',
+        r'\[EtHD\]$': 'searchre',
+        r'\[GloDLS\]$': 'searchre',
+        r'\[silv4\]$': 'searchre',
+        r'\[Seedbox\]$': 'searchre',
+        r'\[PublicHD\]$': 'searchre',
+        r'\.\[PublicHD\]$': 'searchre',
+        r'\.\[NO.RAR\]$': 'searchre',
+        r'\[NO.RAR\]$': 'searchre',
+        r'-\=\{SPARROW\}\=-$': 'searchre',
+        r'\=\{SPARR$': 'searchre',
+        r'\.\[720P\]\[HEVC\]$': 'searchre',
+        r'\[AndroidTwoU\]$': 'searchre',
+        r'\[brassetv\]$': 'searchre',
+        r'\[Talamasca32\]$': 'searchre',
+        r'\(musicbolt\.com\)$': 'searchre',
+        r'\.\(NLsub\)$': 'searchre',
+        r'\(NLsub\)$': 'searchre',
+        r'\.\[BT\]$': 'searchre',
+        r' \[1044\]$': 'searchre',
+        r'\.RiPSaLoT$': 'searchre',
+        r'\.GiuseppeTnT$': 'searchre',
+        r'\.Renc$': 'searchre',
+        r'\.gz$': 'searchre',
+        r'\.English$': 'searchre',
+        r'\.German$': 'searchre',
+        r'\.\.Italian$': 'searchre',
+        r'\.Italian$': 'searchre',
+        r'(?<![57])\.1$': 'searchre',
+        r'-NZBGEEK$': 'searchre',
+        r'-Siklopentan$': 'searchre',
+        r'-Chamele0n$': 'searchre',
+        r'-Obfuscated$': 'searchre',
+        r'-BUYMORE$': 'searchre',
+        r'-\[SpastikusTV\]$': 'searchre',
+        r'-RP$': 'searchre',
+        r'-20-40$': 'searchre',
+        r'\.\[www\.usabit\.com\]$': 'searchre',
+        r'^\[www\.Cpasbien\.pe\] ': 'searchre',
+        r'^\[www\.Cpasbien\.com\] ': 'searchre',
+        r'^\[ www\.Cpasbien\.pw \] ': 'searchre',
+        r'^\.www\.Cpasbien\.pw': 'searchre',
+        r'^\[www\.newpct1\.com\]': 'searchre',
+        r'^\[ www\.Cpasbien\.com \] ': 'searchre',
+        r'- \{ www\.SceneTime\.com \}$': 'searchre',
+        r'^\{ www\.SceneTime\.com \} - ': 'searchre',
+        r'^\]\.\[www\.tensiontorrent.com\] - ': 'searchre',
+        r'^\]\.\[ www\.tensiontorrent.com \] - ': 'searchre',
+        r'- \[ www\.torrentday\.com \]$': 'searchre',
+        r'^\[ www\.TorrentDay\.com \] - ': 'searchre',
+        r'\[NO-RAR\] - \[ www\.torrentday\.com \]$': 'searchre',
+    }
 
     _name = name
     for remove_string, remove_type in removeWordsList.iteritems():
@@ -177,54 +168,7 @@ def remove_non_release_groups(name):
         elif remove_type == 'searchre':
             _name = re.sub(r'(?i)' + remove_string, '', _name)
 
-    return _name.strip('.- ')
-
-
-def replaceExtension(filename, newExt):
-    """
-    >>> replaceExtension('foo.avi', 'mkv')
-    'foo.mkv'
-    >>> replaceExtension('.vimrc', 'arglebargle')
-    '.vimrc'
-    >>> replaceExtension('a.b.c', 'd')
-    'a.b.d'
-    >>> replaceExtension('', 'a')
-    ''
-    >>> replaceExtension('foo.bar', '')
-    'foo.'
-    """
-    sepFile = filename.rpartition(".")
-    if sepFile[0] == "":
-        return filename
-    else:
-        return sepFile[0] + "." + newExt
-
-
-def notTorNZBFile(filename):
-    """
-    Returns true if filename is not a NZB nor Torrent file
-
-    :param filename: Filename to check
-    :return: True if filename is not a NZB nor Torrent
-    """
-
-    return not (filename.endswith(".torrent") or filename.endswith(".nzb"))
-
-def isSyncFile(filename):
-    """
-    Returns true if filename is a syncfile, indicating filesystem may be in flux
-
-    :param filename: Filename to check
-    :return: True if this file is a syncfile, False otherwise
-    """
-
-    extension = filename.rpartition(".")[2].lower()
-    #if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
-    syncfiles = sickbeard.SYNC_FILES
-    if extension in syncfiles.split(","):
-        return True
-    else:
-        return False
+    return _name
 
 
 def isMediaFile(filename):
@@ -236,21 +180,26 @@ def isMediaFile(filename):
     """
 
     # ignore samples
-    if re.search(r'(^|[\W_])(sample\d*)[\W_]', filename, re.I):
-        return False
+    try:
+        if re.search(r'(^|[\W_])(?<!shomin.)(sample\d*)[\W_]', filename, re.I):
+            return False
 
-    # ignore MAC OS's retarded "resource fork" files
-    if filename.startswith('._'):
-        return False
+        # ignore RARBG release intro
+        if re.search(r'^RARBG\.\w+\.(mp4|avi|txt)$', filename, re.I):
+            return False
 
-    sepFile = filename.rpartition(".")
+        # ignore MAC OS's retarded "resource fork" files
+        if filename.startswith('._'):
+            return False
 
-    if re.search('extras?$', sepFile[0], re.I):
-        return False
+        filname_parts = filename.rpartition(".")
 
-    if sepFile[2].lower() in mediaExtensions:
-        return True
-    else:
+        if re.search('extras?$', filname_parts[0], re.I):
+            return False
+
+        return filname_parts[-1].lower() in MEDIA_EXTENSIONS
+    except TypeError as error:  # Not a string
+        logger.log('Invalid filename. Filename must be a string. {0}'.format(error), logger.DEBUG)  # pylint: disable=no-member
         return False
 
 
@@ -286,30 +235,7 @@ def isBeingWritten(filepath):
     return False
 
 
-def sanitizeFileName(name):
-    """
-    >>> sanitizeFileName('a/b/c')
-    'a-b-c'
-    >>> sanitizeFileName('abc')
-    'abc'
-    >>> sanitizeFileName('a"b')
-    'ab'
-    >>> sanitizeFileName('.a.b..')
-    'a.b'
-    """
-
-    # remove bad chars from the filename
-    name = re.sub(r'[\\/\*]', '-', name)
-    name = re.sub(r'[:"<>|?]', '', name)
-    name = re.sub(ur'\u2122', '', name) # Trade Mark Sign
-
-    # remove leading/trailing periods and spaces
-    name = name.strip(' .')
-
-    return name
-
-
-def _remove_file_failed(failed_file):
+def remove_file_failed(failed_file):
     """
     Remove file from filesystem
 
@@ -321,28 +247,6 @@ def _remove_file_failed(failed_file):
     except Exception:
         pass
 
-
-def findCertainShow(showList, indexerid):
-    """
-    Find a show by indexer ID in the show list
-
-    :param showList: List of shows to search in (needle)
-    :param indexerid: Show to look for
-    :return: result list
-    """
-
-    results = []
-
-    if not isinstance(indexerid, list):
-        indexerid = [indexerid]
-
-    if showList and len(indexerid):
-        results = filter(lambda x: int(x.indexerid) in indexerid, showList)
-
-    if len(results) == 1:
-        return results[0]
-    elif len(results) > 1:
-        raise MultipleShowObjectsException()
 
 def makeDir(path):
     """
@@ -356,55 +260,10 @@ def makeDir(path):
         try:
             ek(os.makedirs, path)
             # do the library update for synoindex
-            notifiers.synoindex_notifier.addFolder(path)
+            sickbeard.notifiers.synoindex_notifier.addFolder(path)
         except OSError:
             return False
     return True
-
-
-def searchDBForShow(regShowName, log=False):
-    """
-    Searches if show names are present in the DB
-
-    :param regShowName: list of show names to look for
-    :param log: Boolean, log debug results of search (defaults to False)
-    :return: Indexer ID of found show
-    """
-
-    showNames = [re.sub('[. -]', ' ', regShowName)]
-
-    yearRegex = r"([^()]+?)\s*(\()?(\d{4})(?(2)\))$"
-
-    myDB = db.DBConnection()
-    for showName in showNames:
-
-        sqlResults = myDB.select("SELECT * FROM tv_shows WHERE show_name LIKE ?",
-                                 [showName])
-
-        if len(sqlResults) == 1:
-            return int(sqlResults[0]["indexer_id"])
-        else:
-            # if we didn't get exactly one result then try again with the year stripped off if possible
-            match = re.match(yearRegex, showName)
-            if match and match.group(1):
-                if log:
-                    logger.log(u"Unable to match original name but trying to manually strip and specify show year",
-                               logger.DEBUG)
-                sqlResults = myDB.select(
-                    "SELECT * FROM tv_shows WHERE (show_name LIKE ?) AND startyear = ?",
-                    [match.group(1) + '%', match.group(3)])
-
-            if len(sqlResults) == 0:
-                if log:
-                    logger.log(u"Unable to match a record in the DB for " + showName, logger.DEBUG)
-                continue
-            elif len(sqlResults) > 1:
-                if log:
-                    logger.log(u"Multiple results for " + showName + " in the DB, unable to match show name",
-                               logger.DEBUG)
-                continue
-            else:
-                return int(sqlResults[0]["indexer_id"])
 
 
 def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
@@ -429,7 +288,7 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
         t = sickbeard.indexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            logger.log(u"Trying to find " + name + " on " + sickbeard.indexerApi(i).name, logger.DEBUG)
+            logger.log("Trying to find " + name + " on " + sickbeard.indexerApi(i).name, logger.DEBUG)
 
             try:
                 search = t[indexer_id] if indexer_id else t[name]
@@ -437,47 +296,28 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
                 continue
 
             try:
-                seriesname = search[0]['seriesname']
+                seriesname = search[0][b'seriesname']
             except Exception:
                 seriesname = None
 
             try:
-                series_id = search[0]['id']
+                series_id = search[0][b'id']
             except Exception:
                 series_id = None
 
             if not (seriesname and series_id):
                 continue
-            ShowObj = findCertainShow(sickbeard.showList, int(series_id))
-            #Check if we can find the show in our list (if not, it's not the right show)
+            ShowObj = Show.find(sickbeard.showList, int(series_id))
+            # Check if we can find the show in our list (if not, it's not the right show)
             if (indexer_id is None) and (ShowObj is not None) and (ShowObj.indexerid == int(series_id)):
-                return (seriesname, i, int(series_id))
+                return seriesname, i, int(series_id)
             elif (indexer_id is not None) and (int(indexer_id) == int(series_id)):
-                return (seriesname, i, int(indexer_id))
+                return seriesname, i, int(indexer_id)
 
         if indexer:
             break
 
-    return (None, None, None)
-
-
-def sizeof_fmt(num):
-    """
-    >>> sizeof_fmt(2)
-    '2.0 bytes'
-    >>> sizeof_fmt(1024)
-    '1.0 KB'
-    >>> sizeof_fmt(2048)
-    '2.0 KB'
-    >>> sizeof_fmt(2**20)
-    '1.0 MB'
-    >>> sizeof_fmt(1234567)
-    '1.2 MB'
-    """
-    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-        if num < 1024.0:
-            return "%3.1f %s" % (num, x)
-        num /= 1024.0
+    return None, None, None
 
 
 def listMediaFiles(path):
@@ -513,11 +353,23 @@ def copyFile(srcFile, destFile):
     :param destFile: Path of destination file
     """
 
-    ek(shutil.copyfile, srcFile, destFile)
     try:
-        ek(shutil.copymode, srcFile, destFile)
-    except OSError:
-        pass
+        from shutil import SpecialFileError, Error
+    except ImportError:
+        from shutil import Error
+        SpecialFileError = Error
+
+    try:
+        ek(shutil.copyfile, srcFile, destFile)
+    except (SpecialFileError, Error) as error:
+        logger.log('{0}'.format(error), logger.WARNING)
+    except Exception as error:
+        logger.log('{0}'.format(error), logger.ERROR)
+    else:
+        try:
+            ek(shutil.copymode, srcFile, destFile)
+        except OSError:
+            pass
 
 
 def moveFile(srcFile, destFile):
@@ -545,11 +397,11 @@ def link(src, dst):
     :param dst: Destination file
     """
 
-    if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0:
+    if platform.system() == 'Windows':
+        if ctypes.windll.kernel32.CreateHardLinkW(ctypes.c_wchar_p(unicode(dst)), ctypes.c_wchar_p(unicode(src)), None) == 0:
             raise ctypes.WinError()
     else:
-        os.link(src, dst)
+        ek(os.link, src, dst)
 
 
 def hardlinkFile(srcFile, destFile):
@@ -563,9 +415,9 @@ def hardlinkFile(srcFile, destFile):
     try:
         ek(link, srcFile, destFile)
         fixSetGroupID(destFile)
-    except Exception as e:
-        logger.log(u"Failed to create hardlink of " + srcFile + " at " + destFile + ": " + ex(e) + ". Copying instead",
-                   logger.ERROR)
+    except Exception as error:
+        logger.log("Failed to create hardlink of {0} at {1}. Error: {2}. Copying instead".format
+                   (srcFile, destFile, error), logger.WARNING)
         copyFile(srcFile, destFile)
 
 
@@ -577,11 +429,11 @@ def symlink(src, dst):
     :param dst: Destination file
     """
 
-    if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0, 1280]:
+    if platform.system() == 'Windows':
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(ctypes.c_wchar_p(unicode(dst)), ctypes.c_wchar_p(unicode(src)), 1 if ek(os.path.isdir, src) else 0) in [0, 1280]:
             raise ctypes.WinError()
     else:
-        os.symlink(src, dst)
+        ek(os.symlink, src, dst)
 
 
 def moveAndSymlinkFile(srcFile, destFile):
@@ -597,8 +449,9 @@ def moveAndSymlinkFile(srcFile, destFile):
         ek(shutil.move, srcFile, destFile)
         fixSetGroupID(destFile)
         ek(symlink, destFile, srcFile)
-    except Exception:
-        logger.log(u"Failed to create symlink of " + srcFile + " at " + destFile + ". Copying instead", logger.ERROR)
+    except Exception as error:
+        logger.log("Failed to create symlink of {0} at {1}. Error: {2}. Copying instead".format
+                   (srcFile, destFile, error), logger.WARNING)
         copyFile(srcFile, destFile)
 
 
@@ -608,16 +461,16 @@ def make_dirs(path):
     parents
     """
 
-    logger.log(u"Checking if the path %s already exists" % path, logger.DEBUG)
+    logger.log("Checking if the path {0} already exists".format(path), logger.DEBUG)
 
     if not ek(os.path.isdir, path):
         # Windows, create all missing folders
-        if os.name == 'nt' or os.name == 'ce':
+        if platform.system() == 'Windows':
             try:
-                logger.log(u"Folder %s didn't exist, creating it" % path, logger.DEBUG)
+                logger.log("Folder {0} didn't exist, creating it".format(path), logger.DEBUG)
                 ek(os.makedirs, path)
-            except (OSError, IOError) as e:
-                logger.log(u"Failed creating %s : %s" % (path, ex(e)), logger.ERROR)
+            except (OSError, IOError) as error:
+                logger.log("Failed creating {0} : {1}".format(path, error), logger.ERROR)
                 return False
 
         # not Windows, create all missing folders and set permissions
@@ -634,14 +487,14 @@ def make_dirs(path):
                     continue
 
                 try:
-                    logger.log(u"Folder %s didn't exist, creating it" % sofar, logger.DEBUG)
+                    logger.log("Folder {0} didn't exist, creating it".format(sofar), logger.DEBUG)
                     ek(os.mkdir, sofar)
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmodAsParent(ek(os.path.normpath, sofar))
                     # do the library update for synoindex
-                    notifiers.synoindex_notifier.addFolder(sofar)
-                except (OSError, IOError) as e:
-                    logger.log(u"Failed creating %s : %s" % (sofar, ex(e)), logger.ERROR)
+                    sickbeard.notifiers.synoindex_notifier.addFolder(sofar)
+                except (OSError, IOError) as error:
+                    logger.log("Failed creating {0} : {1}".format(sofar, error), logger.ERROR)
                     return False
 
     return True
@@ -657,35 +510,35 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     :param old_path_length: The length of media file path (old name) WITHOUT THE EXTENSION
     """
 
-    new_dest_dir, new_dest_name = os.path.split(new_path)  # @UnusedVariable
+    # new_dest_dir, new_dest_name = ek(os.path.split, new_path)  # @UnusedVariable
 
     if old_path_length == 0 or old_path_length > len(cur_path):
         # approach from the right
-        cur_file_name, cur_file_ext = os.path.splitext(cur_path)  # @UnusedVariable
+        cur_file_name, cur_file_ext = ek(os.path.splitext, cur_path)  # @UnusedVariable
     else:
         # approach from the left
         cur_file_ext = cur_path[old_path_length:]
         cur_file_name = cur_path[:old_path_length]
 
-    if cur_file_ext[1:] in subtitleExtensions:
+    if cur_file_ext[1:] in SUBTITLE_EXTENSIONS:
         # Extract subtitle language from filename
-        sublang = os.path.splitext(cur_file_name)[1][1:]
+        sublang = ek(os.path.splitext, cur_file_name)[1][1:]
 
         # Check if the language extracted from filename is a valid language
-        if isValidLanguage(sublang):
+        if sublang in sickbeard.subtitles.subtitle_code_filter():
             cur_file_ext = '.' + sublang + cur_file_ext
 
     # put the extension on the incoming file
     new_path += cur_file_ext
 
-    make_dirs(os.path.dirname(new_path))
+    make_dirs(ek(os.path.dirname, new_path))
 
     # move the file
     try:
-        logger.log(u"Renaming file from %s to %s" % (cur_path, new_path))
+        logger.log("Renaming file from {0} to {1}".format(cur_path, new_path))
         ek(shutil.move, cur_path, new_path)
-    except (OSError, IOError) as e:
-        logger.log(u"Failed renaming %s to %s : %s" % (cur_path, new_path, ex(e)), logger.ERROR)
+    except (OSError, IOError) as error:
+        logger.log("Failed renaming {0} to {1} : {2}".format(cur_path, new_path, error), logger.ERROR)
         return False
 
     # clean up any old folders that are empty
@@ -705,23 +558,23 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
     # treat check_empty_dir as empty when it only contains these items
     ignore_items = []
 
-    logger.log(u"Trying to clean any empty folders under " + check_empty_dir)
+    logger.log("Trying to clean any empty folders under " + check_empty_dir)
 
     # as long as the folder exists and doesn't contain any files, delete it
     while ek(os.path.isdir, check_empty_dir) and check_empty_dir != keep_dir:
         check_files = ek(os.listdir, check_empty_dir)
 
         if not check_files or (len(check_files) <= len(ignore_items) and all(
-                [check_file in ignore_items for check_file in check_files])):
+                check_file in ignore_items for check_file in check_files)):
             # directory is empty or contains only ignore_items
             try:
-                logger.log(u"Deleting empty folder: " + check_empty_dir)
+                logger.log("Deleting empty folder: " + check_empty_dir)
                 # need shutil.rmtree when ignore_items is really implemented
                 ek(os.rmdir, check_empty_dir)
                 # do the library update for synoindex
-                notifiers.synoindex_notifier.deleteFolder(check_empty_dir)
-            except OSError as e:
-                logger.log(u"Unable to delete " + check_empty_dir + ": " + repr(e) + " / " + str(e), logger.WARNING)
+                sickbeard.notifiers.synoindex_notifier.deleteFolder(check_empty_dir)
+            except OSError as error:
+                logger.log("Unable to delete {0}. Error: {1}".format(check_empty_dir, error), logger.WARNING)
                 break
             check_empty_dir = ek(os.path.dirname, check_empty_dir)
         else:
@@ -751,19 +604,21 @@ def chmodAsParent(childPath):
     :param childPath: Child Path to change permissions to sync from parent
     """
 
-    if os.name == 'nt' or os.name == 'ce':
+    if platform.system() == 'Windows':
         return
 
     parentPath = ek(os.path.dirname, childPath)
 
     if not parentPath:
-        logger.log(u"No parent path provided in " + childPath + ", unable to get permissions from it", logger.DEBUG)
+        logger.log("No parent path provided in " + childPath + ", unable to get permissions from it", logger.DEBUG)
         return
+
+    childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
 
     parentPathStat = ek(os.stat, parentPath)
     parentMode = stat.S_IMODE(parentPathStat[stat.ST_MODE])
 
-    childPathStat = ek(os.stat, childPath)
+    childPathStat = ek(os.stat, childPath.encode(sickbeard.SYS_ENCODING))
     childPath_mode = stat.S_IMODE(childPathStat[stat.ST_MODE])
 
     if ek(os.path.isfile, childPath):
@@ -774,19 +629,17 @@ def chmodAsParent(childPath):
     if childPath_mode == childMode:
         return
 
-    childPath_owner = childPathStat.st_uid
+    childPath_owner = childPathStat.st_uid  # pylint: disable=no-member
     user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
-    if user_id != 0 and user_id != childPath_owner:
-        logger.log(u"Not running as root or owner of " + childPath + ", not trying to set permissions", logger.DEBUG)
+    if user_id not in (childPath_owner, 0):
+        logger.log("Not running as root or owner of " + childPath + ", not trying to set permissions", logger.DEBUG)
         return
 
     try:
         ek(os.chmod, childPath, childMode)
-        logger.log(u"Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode),
-                   logger.DEBUG)
     except OSError:
-        logger.log(u"Failed to set permission for %s to %o" % (childPath, childMode), logger.DEBUG)
+        logger.log("Failed to set permission for {0} to {1:o}, parent directory has {2:o}".format(childPath, childMode, parentMode), logger.DEBUG)
 
 
 def fixSetGroupID(childPath):
@@ -797,35 +650,37 @@ def fixSetGroupID(childPath):
     :param childPath: Path to inherit SGID permissions from parent
     """
 
-    if os.name == 'nt' or os.name == 'ce':
+    if platform.system() == 'Windows':
         return
 
     parentPath = ek(os.path.dirname, childPath)
     parentStat = ek(os.stat, parentPath)
     parentMode = stat.S_IMODE(parentStat[stat.ST_MODE])
 
+    childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
+
     if parentMode & stat.S_ISGID:
         parentGID = parentStat[stat.ST_GID]
-        childStat = ek(os.stat, childPath)
+        childStat = ek(os.stat, childPath.encode(sickbeard.SYS_ENCODING))
         childGID = childStat[stat.ST_GID]
 
         if childGID == parentGID:
             return
 
-        childPath_owner = childStat.st_uid
+        childPath_owner = childStat.st_uid  # pylint: disable=no-member
         user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
         if user_id != 0 and user_id != childPath_owner:
-            logger.log(u"Not running as root or owner of " + childPath + ", not trying to set the set-group-ID",
+            logger.log("Not running as root or owner of " + childPath + ", not trying to set the set-group-ID",
                        logger.DEBUG)
             return
 
         try:
             ek(os.chown, childPath, -1, parentGID)  # @UndefinedVariable - only available on UNIX
-            logger.log(u"Respecting the set-group-ID bit on the parent directory for %s" % (childPath), logger.DEBUG)
+            logger.log("Respecting the set-group-ID bit on the parent directory for {0}".format(childPath), logger.DEBUG)
         except OSError:
             logger.log(
-                u"Failed to respect the set-group-ID bit on the parent directory for %s (setting group ID %i)" % (
+                "Failed to respect the set-group-ID bit on the parent directory for {0} (setting group ID {1})".format(
                     childPath, parentGID), logger.ERROR)
 
 
@@ -861,20 +716,18 @@ def get_absolute_number_from_season_and_episode(show, season, episode):
     absolute_number = None
 
     if season and episode:
-        myDB = db.DBConnection()
+        main_db_con = db.DBConnection()
         sql = "SELECT * FROM tv_episodes WHERE showid = ? and season = ? and episode = ?"
-        sqlResults = myDB.select(sql, [show.indexerid, season, episode])
+        sql_results = main_db_con.select(sql, [show.indexerid, season, episode])
 
-        if len(sqlResults) == 1:
-            absolute_number = int(sqlResults[0]["absolute_number"])
-            logger.log(
-                "Found absolute_number:" + str(absolute_number) + " by " + str(season) + "x" + str(episode),
-                logger.DEBUG)
+        if len(sql_results) == 1:
+            absolute_number = int(sql_results[0][b"absolute_number"])
+            logger.log("Found absolute number {absolute} for show {show} {ep}".format
+                       (absolute=absolute_number, show=show.name,
+                        ep=episode_num(season, episode)), logger.DEBUG)
         else:
-            logger.log(
-                "No entries for absolute number in show: " + show.name + " found using " + str(season) + "x" + str(
-                    episode),
-                logger.DEBUG)
+            logger.log("No entries for absolute number for show {show} {ep}".format
+                       (show=show.name, ep=episode_num(season, episode)), logger.DEBUG)
 
     return absolute_number
 
@@ -885,7 +738,7 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
 
     if len(absolute_numbers):
         if not show and indexer_id:
-            show = findCertainShow(sickbeard.showList, indexer_id)
+            show = Show.find(sickbeard.showList, indexer_id)
 
         for absolute_number in absolute_numbers if show else []:
             ep = show.getEpisode(None, None, absolute_number=absolute_number)
@@ -893,7 +746,7 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
                 episodes.append(ep.episode)
                 season = ep.season  # this will always take the last found season so eps that cross the season border are not handeled well
 
-    return (season, episodes)
+    return season, episodes
 
 
 def sanitizeSceneName(name, anime=False):
@@ -904,20 +757,23 @@ def sanitizeSceneName(name, anime=False):
     :return: A string containing the scene version of the show name given.
     """
 
+    # assert isinstance(name, unicode), name + ' is not unicode'
+
     if not name:
         return ''
 
-    bad_chars = u',:()!?\u2019'
+    bad_chars = ',:()!?\u2019'
     if not anime:
-        bad_chars += u"'"
+        bad_chars += "'"
 
     # strip out any bad chars
     for x in bad_chars:
         name = name.replace(x, "")
 
     # tidy up stuff that doesn't belong in scene names
-    name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
-    name = re.sub(r"\.\.*", ".", name)
+    name = name.replace("&", "and")
+    name = re.sub(r"[- /]+", ".", name)
+    name = re.sub(r"[.]+", ".", name)
 
     if name.endswith('.'):
         name = name[:-1]
@@ -953,9 +809,10 @@ def arithmeticEval(s):
         elif isinstance(node, ast.BinOp):
             return _binOps[type(node.op)](_eval(node.left), _eval(node.right))
         else:
-            raise Exception('Unsupported type {}'.format(node))
+            raise Exception('Unsupported type {0}'.format(node))
 
     return _eval(node.body)
+
 
 def create_https_certificates(ssl_cert, ssl_key):
     """
@@ -966,12 +823,15 @@ def create_https_certificates(ssl_cert, ssl_key):
     :return: True on success, False on failure
     """
 
+    # assert isinstance(ssl_key, unicode)
+    # assert isinstance(ssl_cert, unicode)
+
     try:
         from OpenSSL import crypto  # @UnresolvedImport
         from certgen import createKeyPair, createCertRequest, createCertificate, TYPE_RSA, \
             serial  # @UnresolvedImport
     except Exception:
-        logger.log(u"pyopenssl module missing, please install for https access", logger.WARNING)
+        logger.log("pyopenssl module missing, please install for https access", logger.WARNING)
         return False
 
     # Create the CA Certificate
@@ -986,10 +846,12 @@ def create_https_certificates(ssl_cert, ssl_key):
 
     # Save the key and certificate to disk
     try:
-        open(ssl_key, 'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey))
-        open(ssl_cert, 'w').write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+        # pylint: disable=no-member
+        # Module has no member
+        io.open(ssl_key, 'wb').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey))
+        io.open(ssl_cert, 'wb').write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
     except Exception:
-        logger.log(u"Error creating SSL key and certificate", logger.ERROR)
+        logger.log("Error creating SSL key and certificate", logger.ERROR)
         return False
 
     return True
@@ -1010,22 +872,22 @@ def backupVersionedFile(old_file, version):
 
     while not ek(os.path.isfile, new_file):
         if not ek(os.path.isfile, old_file):
-            logger.log(u"Not creating backup, %s doesn't exist" % old_file, logger.DEBUG)
+            logger.log("Not creating backup, {0} doesn't exist".format(old_file), logger.DEBUG)
             break
 
         try:
-            logger.log(u"Trying to back up %s to %s" % (old_file, new_file), logger.DEBUG)
+            logger.log("Trying to back up {0} to {1}".format(old_file, new_file), logger.DEBUG)
             shutil.copy(old_file, new_file)
-            logger.log(u"Backup done", logger.DEBUG)
+            logger.log("Backup done", logger.DEBUG)
             break
-        except Exception as e:
-            logger.log(u"Error while trying to back up %s to %s : %s" % (old_file, new_file, ex(e)), logger.WARNING)
+        except Exception as error:
+            logger.log("Error while trying to back up {0} to {1} : {2}".format(old_file, new_file, error), logger.WARNING)
             numTries += 1
             time.sleep(1)
-            logger.log(u"Trying again.", logger.DEBUG)
+            logger.log("Trying again.", logger.DEBUG)
 
         if numTries >= 10:
-            logger.log(u"Unable to back up %s to %s please do it manually." % (old_file, new_file), logger.ERROR)
+            logger.log("Unable to back up {0} to {1} please do it manually.".format(old_file, new_file), logger.ERROR)
             return False
 
     return True
@@ -1042,85 +904,44 @@ def restoreVersionedFile(backup_file, version):
 
     numTries = 0
 
-    new_file, backup_version = os.path.splitext(backup_file)
+    new_file, ext_ = ek(os.path.splitext, backup_file)
     restore_file = new_file + '.' + 'v' + str(version)
 
     if not ek(os.path.isfile, new_file):
-        logger.log(u"Not restoring, %s doesn't exist" % new_file, logger.DEBUG)
+        logger.log("Not restoring, {0} doesn't exist".format(new_file), logger.DEBUG)
         return False
 
     try:
-        logger.log(
-            u"Trying to backup " + new_file + " to " + new_file + "." + "r" + str(version) + " before restoring backup",
-            logger.DEBUG)
+        logger.log("Trying to backup {0} to {1}.r{2} before restoring backup".format
+                   (new_file, new_file, version), logger.DEBUG)
+
         shutil.move(new_file, new_file + '.' + 'r' + str(version))
-    except Exception as e:
-        logger.log(
-            u"Error while trying to backup DB file " + restore_file + " before proceeding with restore: " + ex(e),
-            logger.WARNING)
+    except Exception as error:
+        logger.log("Error while trying to backup DB file {0} before proceeding with restore: {1}".format
+                   (restore_file, error), logger.WARNING)
         return False
 
     while not ek(os.path.isfile, new_file):
         if not ek(os.path.isfile, restore_file):
-            logger.log(u"Not restoring, " + restore_file + " doesn't exist", logger.DEBUG)
+            logger.log("Not restoring, {0} doesn't exist".format(restore_file), logger.DEBUG)
             break
 
         try:
-            logger.log(u"Trying to restore " + restore_file + " to " + new_file, logger.DEBUG)
+            logger.log("Trying to restore file {0} to {1}".format(restore_file, new_file), logger.DEBUG)
             shutil.copy(restore_file, new_file)
-            logger.log(u"Restore done", logger.DEBUG)
+            logger.log("Restore done", logger.DEBUG)
             break
-        except Exception as e:
-            logger.log(u"Error while trying to restore " + restore_file + ": " + ex(e), logger.WARNING)
+        except Exception as error:
+            logger.log("Error while trying to restore file {0}. Error: {1}".format(restore_file, error), logger.WARNING)
             numTries += 1
             time.sleep(1)
-            logger.log(u"Trying again.", logger.DEBUG)
+            logger.log("Trying again. Attempt #: {0}".format(numTries), logger.DEBUG)
 
         if numTries >= 10:
-            logger.log(u"Unable to restore " + restore_file + " to " + new_file + " please do it manually.",
-                       logger.ERROR)
+            logger.log("Unable to restore file {0} to {1}".format(restore_file, new_file), logger.WARNING)
             return False
 
     return True
-
-
-# try to convert to int, if it fails the default will be returned
-def tryInt(s, s_default=0):
-    """
-    Try to convert to int, if it fails, the default will be returned
-
-    :param s: Value to attempt to convert to int
-    :param s_default: Default value to return on failure (defaults to 0)
-    :return: integer, or default value on failure
-    """
-
-    try:
-        return int(s)
-    except Exception:
-        return s_default
-
-
-# generates a md5 hash of a file
-def md5_for_file(filename, block_size=2 ** 16):
-    """
-    Generate an md5 hash for a file
-    :param filename: File to generate md5 hash for
-    :param block_size: Block size to use (defaults to 2^16)
-    :return MD5 hexdigest on success, or None on failure
-    """
-
-    try:
-        with open(filename, 'rb') as f:
-            md5 = hashlib.md5()
-            while True:
-                data = f.read(block_size)
-                if not data:
-                    break
-                md5.update(data)
-            f.close()
-            return md5.hexdigest()
-    except Exception:
-        return None
 
 
 def get_lan_ip():
@@ -1131,29 +952,25 @@ def get_lan_ip():
     except Exception:
         return socket.gethostname()
 
+
 def check_url(url):
     """
     Check if a URL exists without downloading the whole file.
     We only check the URL header.
     """
-    # see also http://stackoverflow.com/questions/2924422
-    # http://stackoverflow.com/questions/1140661
-    good_codes = [httplib.OK, httplib.FOUND, httplib.MOVED_PERMANENTLY]
-
-    host, path = urlparse.urlparse(url)[1:3]  # elems [1] and [2]
     try:
-        conn = httplib.HTTPConnection(host)
-        conn.request('HEAD', path)
-        return conn.getresponse().status in good_codes
-    except StandardError:
-        return None
+        requests.head(url, verify=False).raise_for_status()
+    except Exception as error:
+        handle_requests_exception(error)
+        return False
+    return True
 
 
 def anon_url(*url):
     """
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
     """
-    return '' if None in url else '%s%s' % (sickbeard.ANON_REDIRECT, ''.join(str(s) for s in url))
+    return '' if None in url else '{0}{1}'.format(sickbeard.ANON_REDIRECT, ''.join(str(s) for s in url))
 
 
 """
@@ -1173,18 +990,19 @@ To add a new encryption_version:
 # Key Generators
 unique_key1 = hex(uuid.getnode() ** 2)  # Used in encryption v1
 
+
 # Encryption Functions
-def encrypt(data, encryption_version=0, decrypt=False):
+def encrypt(data, encryption_version=0, _decrypt=False):
     # Version 1: Simple XOR encryption (this is not very secure, but works)
     if encryption_version == 1:
-        if decrypt:
+        if _decrypt:
             return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(unique_key1)))
         else:
             return base64.encodestring(
                 ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(unique_key1)))).strip()
     # Version 2: Simple XOR encryption (this is not very secure, but works)
     elif encryption_version == 2:
-        if decrypt:
+        if _decrypt:
             return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(sickbeard.ENCRYPTION_SECRET)))
         else:
             return base64.encodestring(
@@ -1195,11 +1013,11 @@ def encrypt(data, encryption_version=0, decrypt=False):
 
 
 def decrypt(data, encryption_version=0):
-    return encrypt(data, encryption_version, decrypt=True)
+    return encrypt(data, encryption_version, _decrypt=True)
 
 
 def full_sanitizeSceneName(name):
-    return re.sub('[. -]', ' ', sanitizeSceneName(name)).lower().lstrip()
+    return re.sub('[. -]', ' ', sanitizeSceneName(name)).lower().strip()
 
 
 def _check_against_names(nameInQuestion, show, season=-1):
@@ -1217,7 +1035,7 @@ def _check_against_names(nameInQuestion, show, season=-1):
     return False
 
 
-def get_show(name, tryIndexers=False, trySceneExceptions=False):
+def get_show(name, tryIndexers=False):
     if not sickbeard.showList:
         return
 
@@ -1232,24 +1050,24 @@ def get_show(name, tryIndexers=False, trySceneExceptions=False):
         cache = sickbeard.name_cache.retrieveNameFromCache(name)
         if cache:
             fromCache = True
-            showObj = findCertainShow(sickbeard.showList, int(cache))
+            showObj = Show.find(sickbeard.showList, int(cache))
 
-        #try indexers
+        # try indexers
         if not showObj and tryIndexers:
-            showObj = findCertainShow(sickbeard.showList,
-                                      searchIndexerForShowID(full_sanitizeSceneName(name), ui=classes.ShowListUI)[2])
+            showObj = Show.find(
+                sickbeard.showList, searchIndexerForShowID(full_sanitizeSceneName(name), ui=classes.ShowListUI)[2])
 
-        #try scene exceptions
-        if not showObj and trySceneExceptions:
+        # try scene exceptions
+        if not showObj:
             ShowID = sickbeard.scene_exceptions.get_scene_exception_by_name(name)[0]
             if ShowID:
-                showObj = findCertainShow(sickbeard.showList, int(ShowID))
+                showObj = Show.find(sickbeard.showList, int(ShowID))
 
         # add show to cache
         if showObj and not fromCache:
             sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
-    except Exception as e:
-        logger.log(u"Error when attempting to find show: " + name + " in SickRage: " + str(e), logger.DEBUG)
+    except Exception as error:
+        logger.log("Error when attempting to find show: {0} in SickRage. Error: {1} ".format(name, error), logger.DEBUG)
 
     return showObj
 
@@ -1261,12 +1079,12 @@ def is_hidden_folder(folder):
     :param folder: Full path of folder to check
     """
     def is_hidden(filepath):
-        name = os.path.basename(os.path.abspath(filepath))
+        name = ek(os.path.basename, ek(os.path.abspath, filepath))
         return name.startswith('.') or has_hidden_attribute(filepath)
 
     def has_hidden_attribute(filepath):
         try:
-            attrs = ctypes.windll.kernel32.GetFileAttributesW(unicode(filepath))
+            attrs = ctypes.windll.kernel32.GetFileAttributesW(ctypes.c_wchar_p(unicode(filepath)))
             assert attrs != -1
             result = bool(attrs & 2)
         except (AttributeError, AssertionError):
@@ -1293,10 +1111,9 @@ def validateShow(show, season=None, episode=None):
     try:
         lINDEXER_API_PARMS = sickbeard.indexerApi(show.indexer).api_params.copy()
 
-        if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
-            lINDEXER_API_PARMS['language'] = indexer_lang
+        lINDEXER_API_PARMS['language'] = indexer_lang or sickbeard.INDEXER_DEFAULT_LANGUAGE
 
-        if show.dvdorder != 0:
+        if show.dvdorder:
             lINDEXER_API_PARMS['dvdorder'] = True
 
         t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
@@ -1312,19 +1129,21 @@ def set_up_anidb_connection():
     """Connect to anidb"""
 
     if not sickbeard.USE_ANIDB:
-        logger.log(u"Usage of anidb disabled. Skiping", logger.DEBUG)
+        logger.log("Usage of anidb disabled. Skiping", logger.DEBUG)
         return False
 
     if not sickbeard.ANIDB_USERNAME and not sickbeard.ANIDB_PASSWORD:
-        logger.log(u"anidb username and/or password are not set. Aborting anidb lookup.", logger.DEBUG)
+        logger.log("anidb username and/or password are not set. Aborting anidb lookup.", logger.DEBUG)
         return False
 
     if not sickbeard.ADBA_CONNECTION:
-        anidb_logger = lambda x: logger.log("ANIDB: " + str(x), logger.DEBUG)
+        def anidb_logger(msg):
+            return logger.log("anidb: {0} ".format(msg), logger.DEBUG)
+
         try:
             sickbeard.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=anidb_logger)
-        except Exception as e:
-            logger.log(u"anidb exception msg: " + str(e))
+        except Exception as error:
+            logger.log("anidb exception msg: {0} ".format(error), logger.WARNING)
             return False
 
     try:
@@ -1332,8 +1151,8 @@ def set_up_anidb_connection():
             sickbeard.ADBA_CONNECTION.auth(sickbeard.ANIDB_USERNAME, sickbeard.ANIDB_PASSWORD)
         else:
             return True
-    except Exception as e:
-        logger.log(u"anidb exception msg: " + str(e))
+    except Exception as error:
+        logger.log("anidb exception msg: {0} ".format(error), logger.WARNING)
         return False
 
     return sickbeard.ADBA_CONNECTION.authed()
@@ -1353,8 +1172,8 @@ def makeZip(fileList, archive):
             a.write(f)
         a.close()
         return True
-    except Exception as e:
-        logger.log(u"Zip creation error: " + str(e), logger.ERROR)
+    except Exception as error:
+        logger.log("Zip creation error: {0} ".format(error), logger.ERROR)
         return False
 
 
@@ -1367,26 +1186,26 @@ def extractZip(archive, targetDir):
     """
 
     try:
-        if not os.path.exists(targetDir):
-            os.mkdir(targetDir)
+        if not ek(os.path.exists, targetDir):
+            ek(os.mkdir, targetDir)
 
         zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
         for member in zip_file.namelist():
-            filename = os.path.basename(member)
+            filename = ek(os.path.basename, member)
             # skip directories
             if not filename:
                 continue
 
             # copy file (taken from zipfile's extract)
             source = zip_file.open(member)
-            target = file(os.path.join(targetDir, filename), "wb")
+            target = file(ek(os.path.join, targetDir, filename), "wb")
             shutil.copyfileobj(source, target)
             source.close()
             target.close()
         zip_file.close()
         return True
-    except Exception as e:
-        logger.log(u"Zip extraction error: " + str(e), logger.ERROR)
+    except Exception as error:
+        logger.log("Zip extraction error: {0} ".format(error), logger.ERROR)
         return False
 
 
@@ -1403,11 +1222,11 @@ def backupConfigZip(fileList, archive, arcname=None):
     try:
         a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
         for f in fileList:
-            a.write(f, os.path.relpath(f, arcname))
+            a.write(f, ek(os.path.relpath, f, arcname))
         a.close()
         return True
-    except Exception as e:
-        logger.log(u"Zip creation error: " + str(e), logger.ERROR)
+    except Exception as error:
+        logger.log("Zip creation error: {0} ".format(error), logger.ERROR)
         return False
 
 
@@ -1421,22 +1240,22 @@ def restoreConfigZip(archive, targetDir):
     """
 
     try:
-        if not os.path.exists(targetDir):
-            os.mkdir(targetDir)
+        if not ek(os.path.exists, targetDir):
+            ek(os.mkdir, targetDir)
         else:
             def path_leaf(path):
-                head, tail = os.path.split(path)
-                return tail or os.path.basename(head)
-            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S'))
-            shutil.move(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
+                head, tail = ek(os.path.split, path)
+                return tail or ek(os.path.basename, head)
+            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
+            shutil.move(targetDir, ek(os.path.join, ek(os.path.dirname, targetDir), bakFilename))
 
         zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
         for member in zip_file.namelist():
             zip_file.extract(member, targetDir)
         zip_file.close()
         return True
-    except Exception as e:
-        logger.log(u"Zip extraction error: " + str(e), logger.ERROR)
+    except Exception as error:
+        logger.log("Zip extraction error: {0}".format(error), logger.ERROR)
         shutil.rmtree(targetDir)
         return False
 
@@ -1448,19 +1267,19 @@ def mapIndexersToShow(showObj):
     for indexer in sickbeard.indexerApi().indexers:
         mapped[indexer] = showObj.indexerid if int(indexer) == int(showObj.indexer) else 0
 
-    myDB = db.DBConnection()
-    sqlResults = myDB.select(
+    main_db_con = db.DBConnection()
+    sql_results = main_db_con.select(
         "SELECT * FROM indexer_mapping WHERE indexer_id = ? AND indexer = ?",
         [showObj.indexerid, showObj.indexer])
 
     # for each mapped entry
-    for curResult in sqlResults:
+    for curResult in sql_results:
         nlist = [i for i in curResult if i is not None]
         # Check if its mapped with both tvdb and tvrage.
         if len(nlist) >= 4:
-            logger.log(u"Found indexer mapping in cache for show: " + showObj.name, logger.DEBUG)
-            mapped[int(curResult['mindexer'])] = int(curResult['mindexer_id'])
-            return mapped
+            logger.log("Found indexer mapping in cache for show: " + showObj.name, logger.DEBUG)
+            mapped[int(curResult[b'mindexer'])] = int(curResult[b'mindexer_id'])
+            break
     else:
         sql_l = []
         for indexer in sickbeard.indexerApi().indexers:
@@ -1475,25 +1294,25 @@ def mapIndexersToShow(showObj):
             try:
                 mapped_show = t[showObj.name]
             except Exception:
-                logger.log(u"Unable to map " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
+                logger.log("Unable to map " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
                     indexer).name + " for show: " + showObj.name + ", skipping it", logger.DEBUG)
                 continue
 
             if mapped_show and len(mapped_show) == 1:
-                logger.log(u"Mapping " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
+                logger.log("Mapping " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
                     indexer).name + " for show: " + showObj.name, logger.DEBUG)
 
-                mapped[indexer] = int(mapped_show[0]['id'])
+                mapped[indexer] = int(mapped_show[0][b'id'])
 
-                logger.log(u"Adding indexer mapping to DB for show: " + showObj.name, logger.DEBUG)
+                logger.log("Adding indexer mapping to DB for show: " + showObj.name, logger.DEBUG)
 
                 sql_l.append([
                     "INSERT OR IGNORE INTO indexer_mapping (indexer_id, indexer, mindexer_id, mindexer) VALUES (?,?,?,?)",
-                    [showObj.indexerid, showObj.indexer, int(mapped_show[0]['id']), indexer]])
+                    [showObj.indexerid, showObj.indexer, int(mapped_show[0][b'id']), indexer]])
 
-        if len(sql_l) > 0:
-            myDB = db.DBConnection()
-            myDB.mass_action(sql_l)
+        if sql_l:
+            main_db_con = db.DBConnection()
+            main_db_con.mass_action(sql_l)
 
     return mapped
 
@@ -1507,161 +1326,80 @@ def touchFile(fname, atime=None):
     :return: True on success, False on failure
     """
 
-    if None != atime:
-        try:
-            with file(fname, 'a'):
-                os.utime(fname, (atime, atime))
-                return True
-        except Exception as e:
-            if e.errno == errno.ENOSYS:
-                logger.log(u"File air date stamping not available on your OS", logger.DEBUG)
-            elif e.errno == errno.EACCES:
-                logger.log(u"File air date stamping failed(Permission denied). Check permissions for file: %s" % fname, logger.ERROR)
-            else:
-                logger.log(u"File air date stamping failed. The error is: %s." % ex(e), logger.ERROR)
+    if atime and fname and ek(os.path.isfile, fname):
+        ek(os.utime, fname, (atime, atime))
+        return True
 
     return False
 
 
-def _getTempDir():
-    """
-    Returns the [system temp dir]/tvdb_api-u501 (or
-    tvdb_api-myuser)
-    """
+def make_session():
+    session = requests.Session()
 
-    import getpass
-
-    if hasattr(os, 'getuid'):
-        uid = "u%d" % (os.getuid())
-    else:
-        # For Windows
-        try:
-            uid = getpass.getuser()
-        except ImportError:
-            return os.path.join(tempfile.gettempdir(), "sickrage")
-
-    return os.path.join(tempfile.gettempdir(), "sickrage-%s" % (uid))
-
-def codeDescription(status_code):
-    """
-    Returns the description of the URL error code
-    """
-    if status_code in clients.http_error_code:
-        return clients.http_error_code[status_code]
-    else:
-        logger.log(u"Unknown error code. Please submit an issue", logger.WARNING)
-        return 'unknown'
-
-
-def _setUpSession(session, headers):
-    """
-    Returns a session initialized with default cache and parameter settings
-
-    :param session: session object to (re)use
-    :param headers: Headers to pass to session
-    :return: session object
-    """
-
-    # request session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions'), use_dir_lock=True), cache_etags=False)
-
-    # request session clear residual referer
-    if 'Referer' in session.headers and not 'Referer' in headers:
-        session.headers.pop('Referer')
-
-    # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
-    session.headers.update(headers)
 
-    # request session ssl verify
-    session.verify = certifi.where() if sickbeard.SSL_VERIFY else False
+    return CacheControl(sess=session, cache_etags=True)
+
+
+def request_defaults(kwargs):
+    hooks = kwargs.pop('hooks', None)
+    cookies = kwargs.pop('cookies', None)
+    verify = certifi.old_where() if all([sickbeard.SSL_VERIFY, kwargs.pop('verify', True)]) else False
 
     # request session proxies
-    if not 'Referer' in session.headers and sickbeard.PROXY_SETTING:
-        logger.log("Using proxy: " + sickbeard.PROXY_SETTING, logger.DEBUG)
-        scheme, address = urllib2.splittype(sickbeard.PROXY_SETTING)
-        address = sickbeard.PROXY_SETTING if scheme else 'http://' + sickbeard.PROXY_SETTING
-        session.proxies = {
+    if sickbeard.PROXY_SETTING:
+        logger.log("Using global proxy: " + sickbeard.PROXY_SETTING, logger.DEBUG)
+        parsed_url = urlparse(sickbeard.PROXY_SETTING)
+        address = sickbeard.PROXY_SETTING if parsed_url.scheme else 'http://' + sickbeard.PROXY_SETTING
+        proxies = {
             "http": address,
             "https": address,
         }
-        session.headers.update({'Referer': address})
+    else:
+        proxies = None
 
-    if 'Content-Type' in session.headers:
-        session.headers.pop('Content-Type')
-
-    return session
+    return hooks, cookies, verify, proxies
 
 
-def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None, json=False, proxyGlypeProxySSLwarning=None):
+def getURL(url, post_data=None, params=None, headers=None,  # pylint:disable=too-many-arguments, too-many-return-statements, too-many-branches, too-many-locals
+           timeout=30, session=None, **kwargs):
     """
-    Returns a byte-string retrieved from the url provider.
+    Returns data retrieved from the url provider.
     """
+    try:
+        response_type = kwargs.pop('returns', 'text')
+        stream = kwargs.pop('stream', False)
 
-    session = _setUpSession(session, headers)
+        hooks, cookies, verify, proxies = request_defaults(kwargs)
 
-    if params and isinstance(params, (list, dict)):
-        for param in params:
-            if isinstance(params[param], unicode):
-                params[param] = params[param].encode('utf-8')
+        if params and isinstance(params, (list, dict)):
+            for param in params:
+                if isinstance(params[param], unicode):
+                    params[param] = params[param].encode('utf-8')
 
-    session.params = params
+        if post_data and isinstance(post_data, (list, dict)):
+            for param in post_data:
+                if isinstance(post_data[param], unicode):
+                    post_data[param] = post_data[param].encode('utf-8')
+
+        resp = session.request(
+            'POST' if post_data else 'GET', url, data=post_data, params=params,
+            timeout=timeout, allow_redirects=True, hooks=hooks, stream=stream,
+            headers=headers, cookies=cookies, proxies=proxies, verify=verify
+        )
+        resp.raise_for_status()
+    except Exception as error:
+        handle_requests_exception(error)
+        return None
 
     try:
-        # decide if we get or post data to server
-        if post_data:
-            if isinstance(post_data, (list, dict)):
-                for param in post_data:
-                    if isinstance(post_data[param], unicode):
-                        post_data[param] = post_data[param].encode('utf-8')
-
-            session.headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
-            resp = session.post(url, data=post_data, timeout=timeout, allow_redirects=True, verify=session.verify)
-        else:
-            resp = session.get(url, timeout=timeout, allow_redirects=True, verify=session.verify)
-
-        if not resp.ok:
-            logger.log(u"Requested getURL " + url + " returned status code is " + str(
-                resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
-            return None
-
-        if proxyGlypeProxySSLwarning is not None:
-            if re.search('The site you are attempting to browse is on a secure connection', resp.text):
-                resp = session.get(proxyGlypeProxySSLwarning, timeout=timeout, allow_redirects=True, verify=session.verify)
-
-                if not resp.ok:
-                    logger.log(u"GlypeProxySSLwarning: Requested getURL " + url + " returned status code is " + str(
-                        resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
-                    return None
-
-    except requests.exceptions.HTTPError as e:
-        logger.log(u"HTTP error in getURL %s Error: %s" % (url, ex(e)), logger.WARNING)
-        return None
-    except requests.exceptions.ConnectionError as e:
-        logger.log(u"Connection error to getURL %s Error: %s" % (url, ex(e)), logger.WARNING)
-        return None
-    except requests.exceptions.Timeout as e:
-        logger.log(u"Connection timed out accessing getURL %s Error: %s" % (url, ex(e)), logger.WARNING)
-        return None
-    except requests.exceptions.ContentDecodingError:
-        logger.log(u"Content-Encoding was gzip, but content was not compressed. getURL: %s" % url, logger.DEBUG)
-        logger.log(traceback.format_exc(), logger.DEBUG)
-        return None
-    except Exception as e:
-        logger.log(u"Unknown exception in getURL %s Error: %s" % (url, ex(e)), logger.WARNING)
-        logger.log(traceback.format_exc(), logger.WARNING)
+        return resp if response_type == 'response' or response_type is None else resp.json() if response_type == 'json' else getattr(resp, response_type, resp)
+    except ValueError:
+        logger.log('Requested a json response but response was not json, check the url: {0}'.format(url), logger.DEBUG)
         return None
 
-    attempts = 0
-    while gzip and len(resp.content) > 1 and resp.content[0] == '\x1f' and resp.content[1] == '\x8b' and attempts < 3:
-        attempts += 1
-        resp._content = gzip.GzipFile(fileobj=_StringIO(resp.content)).read()
 
-    return resp.content if not json else resp.json()
-
-
-def download_file(url, filename, session=None, headers={}):
+def download_file(url, filename, session=None, headers=None, **kwargs):  # pylint:disable=too-many-return-statements
     """
     Downloads a file specified
 
@@ -1672,18 +1410,17 @@ def download_file(url, filename, session=None, headers={}):
     :return: True on success, False on failure
     """
 
-    session = _setUpSession(session, headers)
-    session.stream = True
-
     try:
-        with closing(session.get(url, allow_redirects=True, verify=session.verify)) as resp:
-            if not resp.ok:
-                logger.log(u"Requested download url " + url + " returned status code is " + str(
-                    resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
-                return False
+        hooks, cookies, verify, proxies = request_defaults(kwargs)
+
+        with closing(session.get(url, allow_redirects=True, stream=True,
+                                 verify=verify, headers=headers, cookies=cookies,
+                                 hooks=hooks, proxies=proxies)) as resp:
+
+            resp.raise_for_status()
 
             try:
-                with open(filename, 'wb') as fp:
+                with io.open(filename, 'wb') as fp:
                     for chunk in resp.iter_content(chunk_size=1024):
                         if chunk:
                             fp.write(chunk)
@@ -1691,30 +1428,63 @@ def download_file(url, filename, session=None, headers={}):
 
                 chmodAsParent(filename)
             except Exception:
-                logger.log(u"Problem setting permissions or writing file to: %s" % filename, logger.WARNING)
+                logger.log("Problem setting permissions or writing file to: {0}".format(filename), logger.WARNING)
 
-    except requests.exceptions.HTTPError as e:
-        _remove_file_failed(filename)
-        logger.log(u"HTTP error " + ex(e) + " while loading download URL " + url, logger.WARNING)
-        return False
-    except requests.exceptions.ConnectionError as e:
-        _remove_file_failed(filename)
-        logger.log(u"Connection error " + ex(e) + " while loading download URL " + url, logger.WARNING)
-        return False
-    except requests.exceptions.Timeout as e:
-        _remove_file_failed(filename)
-        logger.log(u"Connection timed out " + ex(e) + " while loading download URL " + url, logger.WARNING)
-        return False
-    except EnvironmentError as e:
-        _remove_file_failed(filename)
-        logger.log(u"Unable to save the file: " + ex(e), logger.WARNING)
-        return False
-    except Exception:
-        _remove_file_failed(filename)
-        logger.log(u"Unknown exception while loading download URL " + url + ": " + traceback.format_exc(), logger.WARNING)
+    except Exception as error:
+        handle_requests_exception(error)
         return False
 
     return True
+
+
+def handle_requests_exception(requests_exception):  # pylint: disable=too-many-branches, too-many-statements
+    default = "Request failed: {0}"
+    try:
+        raise requests_exception
+    except requests.exceptions.SSLError as error:
+        if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
+            logger.log("SSL Error requesting url: '{0}' You have {1}, try upgrading OpenSSL to 1.0.1e+".format(error.request.url, ssl.OPENSSL_VERSION))
+        if sickbeard.SSL_VERIFY:
+            logger.log("SSL Error requesting url: '{0}' Try disabling Cert Verification on the advanced tab of /config/general")
+        logger.log(default.format(error), logger.DEBUG)
+        logger.log(traceback.format_exc(), logger.DEBUG)
+
+    except requests.exceptions.HTTPError as error:
+        if error.response.status_code == 404 and \
+            error.response.headers.get('X-Content-Type-Options') == 'nosniff':
+            pass
+        else:
+            logger.log(default.format(error))
+    except requests.exceptions.TooManyRedirects as error:
+        logger.log(default.format(error))
+    except requests.exceptions.ConnectTimeout as error:
+        logger.log(default.format(error))
+    except requests.exceptions.ReadTimeout as error:
+        logger.log(default.format(error))
+    except requests.exceptions.ProxyError as error:
+        logger.log(default.format(error))
+    except requests.exceptions.ConnectionError as error:
+        logger.log(default.format(error))
+    except requests.exceptions.ContentDecodingError as error:
+        logger.log(default.format(error))
+        logger.log(traceback.format_exc(), logger.DEBUG)
+    except requests.exceptions.ChunkedEncodingError as error:
+        logger.log(default.format(error))
+    except requests.exceptions.InvalidURL as error:
+        logger.log(default.format(error))
+    except requests.exceptions.InvalidSchema as error:
+        logger.log(default.format(error))
+    except requests.exceptions.MissingSchema as error:
+        logger.log(default.format(error))
+    except requests.exceptions.RetryError as error:
+        logger.log(default.format(error))
+    except requests.exceptions.StreamConsumedError as error:
+        logger.log(default.format(error))
+    except requests.exceptions.URLRequired as error:
+        logger.log(default.format(error))
+    except Exception as error:
+        logger.log(default.format(error), logger.ERROR)
+        logger.log(traceback.format_exc(), logger.DEBUG)
 
 
 def get_size(start_path='.'):
@@ -1729,75 +1499,62 @@ def get_size(start_path='.'):
         return -1
 
     total_size = 0
-    for dirpath, dirnames, filenames in ek(os.walk, start_path):
+    for dirpath, dirnames_, filenames in ek(os.walk, start_path):
         for f in filenames:
             fp = ek(os.path.join, dirpath, f)
             try:
                 total_size += ek(os.path.getsize, fp)
-            except OSError as e:
-                logger.log('Unable to get size for file %s Error: %s' % (fp, ex(e)), logger.ERROR)
+            except OSError as error:
+                logger.log("Unable to get size for file {0} Error: {1}".format(fp, error), logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
     return total_size
 
 
 def generateApiKey():
     """ Return a new randomized API_KEY"""
+    logger.log("Generating New API key")
+    secure_hash = hashlib.sha512(str(time.time()))
+    secure_hash.update(str(random.SystemRandom().getrandbits(4096)))
+    return secure_hash.hexdigest()[:32]
 
-    try:
-        from hashlib import md5
-    except ImportError:
-        from md5 import md5
-
-    # Create some values to seed md5
-    t = str(time.time())
-    r = str(random.random())
-
-    # Create the md5 instance and give it the current time
-    m = md5(t)
-
-    # Update the md5 instance with the random variable
-    m.update(r)
-
-    # Return a hex digest of the md5, eg 49f68a5c8493ec2c0bf489821c21fc3b
-    logger.log(u"New API generated")
-    return m.hexdigest()
-
-def pretty_filesize(file_bytes):
-    """Return humanly formatted sizes from bytes"""
-
-    file_bytes = float(file_bytes)
-    if file_bytes >= 1099511627776:
-        terabytes = file_bytes / 1099511627776
-        size = '%.2f TB' % terabytes
-    elif file_bytes >= 1073741824:
-        gigabytes = file_bytes / 1073741824
-        size = '%.2f GB' % gigabytes
-    elif file_bytes >= 1048576:
-        megabytes = file_bytes / 1048576
-        size = '%.2f MB' % megabytes
-    elif file_bytes >= 1024:
-        kilobytes = file_bytes / 1024
-        size = '%.2f KB' % kilobytes
-    else:
-        size = '%.2f b' % file_bytes
-
-    return size
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
 
 def remove_article(text=''):
     """Remove the english articles from a text string"""
 
     return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
 
+
 def generateCookieSecret():
     """Generate a new cookie secret"""
 
     return base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
 
-def verify_freespace(src, dest, oldfile=None):
+
+def disk_usage(path):
+    if platform.system() == 'Windows':
+        free = ctypes.c_ulonglong(0)
+        if ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(unicode(path)), None, None, ctypes.pointer(free)) == 0:
+            raise ctypes.WinError()
+        return free.value
+
+    elif hasattr(os, 'statvfs'):  # POSIX
+        if platform.system() == 'Darwin':
+            try:
+                import subprocess
+                call = subprocess.Popen(["df", "-k", path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                output = call.communicate()[0]
+                return int(output.split("\n")[1].split()[3]) * 1024
+            except Exception:
+                pass
+
+        st = ek(os.statvfs, path)
+        return st.f_bavail * st.f_frsize  # pylint: disable=no-member
+
+    else:
+        raise Exception("Unable to determine free space on your OS")
+
+
+def verify_freespace(src, dest, oldfile=None, method="copy"):
     """
     Checks if the target system has enough free space to copy or move a file.
 
@@ -1808,43 +1565,30 @@ def verify_freespace(src, dest, oldfile=None):
     """
 
     if not isinstance(oldfile, list):
-        oldfile = [oldfile]
+        oldfile = [oldfile] if oldfile else []
 
     logger.log("Trying to determine free space on destination drive", logger.DEBUG)
 
-    if hasattr(os, 'statvfs'):  # POSIX
-        def disk_usage(path):
-            st = os.statvfs(path)
-            free = st.f_bavail * st.f_frsize
-            return free
-
-    elif os.name == 'nt':       # Windows
-        import sys
-
-        def disk_usage(path):
-            _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
-                               ctypes.c_ulonglong()
-            if sys.version_info >= (3,) or isinstance(path, unicode):
-                fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
-            else:
-                fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA
-            ret = fun(path, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
-            if ret == 0:
-                logger.log("Unable to determine free space, something went wrong", logger.WARNING)
-                raise ctypes.WinError()
-            return free.value
-    else:
-        logger.log("Unable to determine free space on your OS")
+    if not ek(os.path.isfile, src):
+        logger.log("A path to a file is required for the source. {0} is not a file.".format(src), logger.WARNING)
         return True
 
-    if not ek(os.path.isfile, src):
-        logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
+    # shortcut: if we are moving the file and the destination == src dir,
+    # then by definition there is enough space
+    if method == "move" and ek(os.stat, src).st_dev == ek(os.stat, dest).st_dev:  # pylint: disable=no-member
+        logger.log("Process method is 'move' and src and destination are on the same device, skipping freepace check", logger.INFO)
         return True
 
     try:
         diskfree = disk_usage(dest)
-    except Exception:
+    except Exception as error:
         logger.log("Unable to determine free space, so I will assume there is enough.", logger.WARNING)
+        logger.log("Error: {error}".format(error=error), logger.DEBUG)
+        logger.log(traceback.format_exc(), logger.DEBUG)
+        return True
+
+    # Lets also do this for symlink and hardlink
+    if method.endswith('link') and diskfree > 1024**2:
         return True
 
     neededspace = ek(os.path.getsize, src)
@@ -1857,8 +1601,28 @@ def verify_freespace(src, dest, oldfile=None):
     if diskfree > neededspace:
         return True
     else:
-        logger.log("Not enough free space: Needed: " + str(neededspace) + " bytes (" + pretty_filesize(neededspace) + "), found: " + str(diskfree) + " bytes (" + pretty_filesize(diskfree) + ")", logger.WARNING)
+        logger.log("Not enough free space: Needed: {0} bytes ( {1} ), found: {2} bytes ( {3} )".format
+                   (neededspace, pretty_file_size(neededspace), diskfree, pretty_file_size(diskfree)), logger.WARNING)
         return False
+
+
+def getDiskSpaceUsage(diskPath=None):
+    """
+    returns the free space in human readable bytes for a given path or False if no path given
+    :param diskPath: the filesystem path being checked
+    """
+    if diskPath and ek(os.path.exists, diskPath):
+        try:
+            free = disk_usage(diskPath)
+        except Exception as error:
+            logger.log("Unable to determine free space", logger.WARNING)
+            logger.log("Error: {error}".format(error=error), logger.DEBUG)
+            logger.log(traceback.format_exc(), logger.DEBUG)
+        else:
+            return pretty_file_size(free)
+
+    return False
+
 
 # https://gist.github.com/thatalextaylor/7408395
 def pretty_time_delta(seconds):
@@ -1870,18 +1634,19 @@ def pretty_time_delta(seconds):
     time_delta = sign_string
 
     if days > 0:
-        time_delta += ' %dd' % days
+        time_delta += '{0}d'.format(days)
     if hours > 0:
-        time_delta += ' %dh' % hours
+        time_delta += '{0}h'.format(hours)
     if minutes > 0:
-        time_delta += ' %dm' % minutes
+        time_delta += '{0}m'.format(minutes)
     if seconds > 0:
-        time_delta += ' %ds' % seconds
+        time_delta += '{0}s'.format(seconds)
 
     return time_delta
 
+
 def isFileLocked(checkfile, writeLockCheck=False):
-    '''
+    """
     Checks to see if a file is locked. Performs three checks
         1. Checks if the file even exists
         2. Attempts to open the file for reading. This will determine if the file has a write lock.
@@ -1891,12 +1656,15 @@ def isFileLocked(checkfile, writeLockCheck=False):
             or deleted.
     :param file: the file being checked
     :param writeLockCheck: when true will check if the file is locked for writing (prevents move operations)
-    '''
+    """
+
+    checkfile = ek(os.path.abspath, checkfile)
+
     if not ek(os.path.exists, checkfile):
         return True
     try:
-        f = ek(open, checkfile, 'r')
-        f.close()
+        f = ek(io.open, checkfile, 'rb')
+        f.close()  # pylint: disable=no-member
     except IOError:
         return True
 
@@ -1913,19 +1681,68 @@ def isFileLocked(checkfile, writeLockCheck=False):
 
     return False
 
-def getDiskSpaceUsage(diskPath=None):
-    '''
-    returns the free space in MB for a given path or False if no path given
-    :param diskPath: the filesystem path being checked
-    '''
 
-    if diskPath:
-        if platform.system() == 'Windows':
-            free_bytes = ctypes.c_ulonglong(0)
-            ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(diskPath), None, None, ctypes.pointer(free_bytes))
-            return free_bytes.value / 1024 / 1024
-        else:
-            st = os.statvfs(diskPath)
-            return st.f_bavail * st.f_frsize / 1024 / 1024
+def getTVDBFromID(indexer_id, indexer):  # pylint:disable=too-many-return-statements
+
+    session = make_session()
+    tvdb_id = ''
+    if indexer == 'IMDB':
+        url = "http://www.thetvdb.com/api/GetSeriesByRemoteID.php?imdbid={0}".format(indexer_id)
+        data = getURL(url, session=session, returns='content')
+        if data is None:
+            return tvdb_id
+        try:
+            tree = ET.fromstring(data)
+            for show in tree.getiterator("Series"):
+                tvdb_id = show.findtext("seriesid")
+
+        except SyntaxError:
+            pass
+
+        return tvdb_id
+    elif indexer == 'ZAP2IT':
+        url = "http://www.thetvdb.com/api/GetSeriesByRemoteID.php?zap2it={0}".format(indexer_id)
+        data = getURL(url, session=session, returns='content')
+        if data is None:
+            return tvdb_id
+        try:
+            tree = ET.fromstring(data)
+            for show in tree.getiterator("Series"):
+                tvdb_id = show.findtext("seriesid")
+
+        except SyntaxError:
+            pass
+
+        return tvdb_id
+    elif indexer == 'TVMAZE':
+        url = "http://api.tvmaze.com/shows/{0}".format(indexer_id)
+        data = getURL(url, session=session, returns='json')
+        if data is None:
+            return tvdb_id
+        tvdb_id = data[b'externals'][b'thetvdb']
+        return tvdb_id
     else:
-        return False
+        return tvdb_id
+
+
+def get_showname_from_indexer(indexer, indexer_id, lang='en'):
+    lINDEXER_API_PARMS = sickbeard.indexerApi(indexer).api_params.copy()
+    lINDEXER_API_PARMS['language'] = lang or sickbeard.INDEXER_DEFAULT_LANGUAGE
+
+    logger.log('{0}: {1!r}'.format(sickbeard.indexerApi(indexer).name, lINDEXER_API_PARMS))
+
+    t = sickbeard.indexerApi(indexer).indexer(**lINDEXER_API_PARMS)
+    s = t[int(indexer_id)]
+
+    if hasattr(s, 'data'):
+        return s.data.get('seriesname')
+
+    return None
+
+
+def is_ip_private(ip):
+    priv_lo = re.compile(r"^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+    priv_24 = re.compile(r"^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+    priv_20 = re.compile(r"^192\.168\.\d{1,3}.\d{1,3}$")
+    priv_16 = re.compile(r"^172.(1[6-9]|2[0-9]|3[0-1]).[0-9]{1,3}.[0-9]{1,3}$")
+    return priv_lo.match(ip) or priv_24.match(ip) or priv_20.match(ip) or priv_16.match(ip)

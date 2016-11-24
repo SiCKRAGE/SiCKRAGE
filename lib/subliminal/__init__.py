@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 __title__ = 'subliminal'
-__version__ = '0.8.0-dev'
+__version__ = '2.0-rc1'
+__short_version__ = '.'.join(__version__.split('.')[:2])
 __author__ = 'Antoine Bertin'
 __license__ = 'MIT'
-__copyright__ = 'Copyright 2013 Antoine Bertin'
+__copyright__ = 'Copyright 2016, Antoine Bertin'
 
 import logging
-from .api import list_subtitles, download_subtitles, download_best_subtitles, save_subtitles
-from .cache import MutexLock, region as cache_region
+
+from .core import (AsyncProviderPool, ProviderPool, check_video, download_best_subtitles, download_subtitles,
+                   list_subtitles, refine, save_subtitles, scan_video, scan_videos)
+from .cache import region
 from .exceptions import Error, ProviderError
-from .providers import Provider, ProviderPool, provider_manager
-from .subtitle import Subtitle
-from .video import VIDEO_EXTENSIONS, SUBTITLE_EXTENSIONS, Video, Episode, Movie, scan_videos, scan_video
+from .extensions import provider_manager, refiner_manager
+from .providers import Provider
+from .score import compute_score, get_scores
+from .subtitle import SUBTITLE_EXTENSIONS, Subtitle
+from .video import VIDEO_EXTENSIONS, Episode, Movie, Video
 
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-
-logging.getLogger(__name__).addHandler(NullHandler())
+logging.getLogger(__name__).addHandler(logging.NullHandler())

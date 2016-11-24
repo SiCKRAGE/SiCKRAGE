@@ -7,8 +7,8 @@ $(document).ready(function() {
             $('#customQuality').hide();
         }
 
-        $('#anyQualities option').each(function(i) {
-            var result = preset & $(this).val();
+        $('#anyQualities option').each(function() {
+            var result = preset & $(this).val(); // jshint ignore:line
             if (result > 0) {
                 $(this).attr('selected', 'selected');
             } else {
@@ -16,8 +16,8 @@ $(document).ready(function() {
             }
         });
 
-        $('#bestQualities option').each(function(i) {
-            var result = preset & ($(this).val() << 16);
+        $('#bestQualities option').each(function() {
+            var result = preset & ($(this).val() << 16); // jshint ignore:line
             if (result > 0) {
                 $(this).attr('selected', 'selected');
             } else {
@@ -28,7 +28,7 @@ $(document).ready(function() {
         return;
     }
 
-    $('#qualityPreset').change(function() {
+    $('#qualityPreset').on('change', function() {
         setFromPresets($('#qualityPreset :selected').val());
     });
 

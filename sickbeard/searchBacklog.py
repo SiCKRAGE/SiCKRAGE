@@ -1,3 +1,4 @@
+# coding=utf-8
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -10,13 +11,12 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
 
 import datetime
 import threading
@@ -42,7 +42,7 @@ class BacklogSearchScheduler(scheduler.Scheduler):
             return datetime.date.fromordinal(self.action._lastBacklog + self.action.cycleTime)
 
 
-class BacklogSearcher:
+class BacklogSearcher(object):
     def __init__(self):
 
         self._lastBacklog = self._get_lastBacklog()
@@ -51,6 +51,7 @@ class BacklogSearcher:
         self.amActive = False
         self.amPaused = False
         self.amWaiting = False
+        self.currentSearchInfo = {'title': 'Initializing'}
 
         self._resetPI()
 
@@ -87,7 +88,7 @@ class BacklogSearcher:
         curDate = datetime.date.today().toordinal()
         fromDate = datetime.date.fromordinal(1)
 
-        if not which_shows and not ((curDate - self._lastBacklog) >= self.cycleTime):
+        if not (which_shows or curDate - self._lastBacklog >= self.cycleTime):
             logger.log(u"Running limited backlog on missed episodes " + str(sickbeard.BACKLOG_DAYS) + " day(s) and older only")
             fromDate = datetime.date.today() - datetime.timedelta(days=sickbeard.BACKLOG_DAYS)
 
@@ -104,8 +105,9 @@ class BacklogSearcher:
 
                 backlog_queue_item = search_queue.BacklogQueueItem(curShow, segment)
                 sickbeard.searchQueueScheduler.action.add_item(backlog_queue_item)  # @UndefinedVariable
-            else:
-                logger.log(u"Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name),logger.DEBUG)
+
+            if not segments:
+                logger.log(u"Nothing needs to be downloaded for {0}, skipping".format(curShow.name), logger.DEBUG)
 
         # don't consider this an actual backlog search if we only did recent eps
         # or if we only did certain shows
@@ -119,67 +121,73 @@ class BacklogSearcher:
 
         logger.log(u"Retrieving the last check time from the DB", logger.DEBUG)
 
-        myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM info")
+        main_db_con = db.DBConnection()
+        sql_results = main_db_con.select("SELECT last_backlog FROM info")
 
-        if len(sqlResults) == 0:
+        if not sql_results:
             lastBacklog = 1
-        elif sqlResults[0]["last_backlog"] == None or sqlResults[0]["last_backlog"] == "":
+        elif sql_results[0]["last_backlog"] is None or sql_results[0]["last_backlog"] == "":
             lastBacklog = 1
         else:
-            lastBacklog = int(sqlResults[0]["last_backlog"])
+            lastBacklog = int(sql_results[0]["last_backlog"])
             if lastBacklog > datetime.date.today().toordinal():
                 lastBacklog = 1
 
         self._lastBacklog = lastBacklog
         return self._lastBacklog
 
-    def _get_segments(self, show, fromDate):
+    @staticmethod
+    def _get_segments(show, fromDate):
+        wanted = {}
         if show.paused:
-            logger.log(u"Skipping backlog for {show_name} because the show is paused".format(show_name=show.name), logger.DEBUG)
-            return {}
+            logger.log(u"Skipping backlog for {0} because the show is paused".format(show.name), logger.DEBUG)
+            return wanted
 
-        anyQualities, bestQualities = common.Quality.splitQuality(show.quality)  # @UnusedVariable
+        allowed_qualities, preferred_qualities = common.Quality.splitQuality(show.quality)
 
-        logger.log(u"Seeing if we need anything from {show_name}".format(show_name=show.name), logger.DEBUG)
+        logger.log(u"Seeing if we need anything from {0}".format(show.name), logger.DEBUG)
 
-        myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT status, season, episode FROM tv_episodes WHERE season > 0 AND airdate > ? AND showid = ?",
-                [fromDate.toordinal(), show.indexerid])
+        con = db.DBConnection()
+        sql_results = con.select(
+            "SELECT status, season, episode FROM tv_episodes WHERE airdate > ? AND showid = ?",
+            [fromDate.toordinal(), show.indexerid]
+        )
 
         # check through the list of statuses to see if we want any
-        wanted = {}
-        for result in sqlResults:
-            curCompositeStatus = int(result["status"] or -1)
-            curStatus, curQuality = common.Quality.splitCompositeStatus(curCompositeStatus)
+        for sql_result in sql_results:
+            cur_status, cur_quality = common.Quality.splitCompositeStatus(int(sql_result["status"] or -1))
 
-            if bestQualities:
-                highestBestQuality = max(bestQualities)
+            if cur_status not in {common.WANTED, common.DOWNLOADED, common.SNATCHED, common.SNATCHED_PROPER}:
+                continue
+
+            if cur_status != common.WANTED:
+                if preferred_qualities:
+                    if cur_quality in preferred_qualities:
+                        continue
+                elif cur_quality in allowed_qualities:
+                    continue
+
+            ep_obj = show.getEpisode(sql_result["season"], sql_result["episode"])
+
+            if ep_obj.season not in wanted:
+                wanted[ep_obj.season] = [ep_obj]
             else:
-                highestBestQuality = 0
-
-            # if we need a better one then say yes
-            if (curStatus in (common.DOWNLOADED, common.SNATCHED, common.SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == common.WANTED:
-                epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
-                if epObj.season not in wanted:
-                    wanted[epObj.season] = [epObj]
-                else:
-                    wanted[epObj.season].append(epObj)
+                wanted[ep_obj.season].append(ep_obj)
 
         return wanted
 
-    def _set_lastBacklog(self, when):
+    @staticmethod
+    def _set_lastBacklog(when):
 
         logger.log(u"Setting the last backlog in the DB to " + str(when), logger.DEBUG)
 
-        myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM info")
+        main_db_con = db.DBConnection()
+        sql_results = main_db_con.select("SELECT last_backlog FROM info")
 
-        if len(sqlResults) == 0:
-            myDB.action("INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [str(when), 0])
+        if not sql_results:
+            main_db_con.action("INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [str(when), 0])
         else:
-            myDB.action("UPDATE info SET last_backlog=" + str(when))
-
+            main_db_con.action("UPDATE info SET last_backlog=" + str(when))
 
     def run(self, force=False):
         try:

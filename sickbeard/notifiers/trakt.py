@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Dieter Blomme <dieterblomme@gmail.com>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -10,11 +12,11 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 import sickbeard
 from sickbeard import logger
@@ -24,7 +26,7 @@ from libtrakt import TraktAPI
 from libtrakt.exceptions import traktException, traktServerBusy, traktAuthException
 
 
-class TraktNotifier:
+class Notifier(object):
     """
     A "notifier" for trakt.tv which keeps track of what has and hasn't been added to your library.
     """
@@ -39,6 +41,9 @@ class TraktNotifier:
         pass
 
     def notify_git_update(self, new_version):
+        pass
+
+    def notify_login(self, ipaddress=""):
         pass
 
     def update_library(self, ep_obj):
@@ -74,7 +79,7 @@ class TraktNotifier:
                         trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
 
                 # Add Season and Episode + Related Episodes
-                data['shows'][0]['seasons']=[{'number': ep_obj.season,'episodes': [] }]
+                data['shows'][0]['seasons'] = [{'number': ep_obj.season, 'episodes': []}]
 
                 for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
                     data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
@@ -87,9 +92,9 @@ class TraktNotifier:
                 trakt_api.traktRequest("sync/collection", data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                logger.log(u"Could not connect to Trakt service: {0}".format(ex(e)), logger.WARNING)
 
-    def update_watchlist (self, show_obj = None, s = None, e = None, data_show = None, data_episode = None, update = "add"):
+    def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
         """
         Sends a request to trakt indicating that the given episode is part of our library.
@@ -97,8 +102,8 @@ class TraktNotifier:
         show_obj: The TVShow object to add to trakt
         s: season number
         e: episode number
-        data_show: structured object of shows traktv type
-        data_episode: structured object of episodes traktv type
+        data_show: structured object of shows trakt type
+        data_episode: structured object of episodes trakt type
         update: type o action add or remove
         """
 
@@ -119,7 +124,7 @@ class TraktNotifier:
                                 'ids': {},
                             }
                         ]
-                     }
+                    }
 
                     if trakt_id == 'tvdb_id':
                         data['shows'][0]['ids']['tvdb'] = show_obj.indexerid
@@ -135,37 +140,37 @@ class TraktNotifier:
                     data['shows'][0].update(data_episode)
 
                 elif s is not None:
-                    # traktv URL parameters
+                    # trakt URL parameters
                     season = {
                         'season': [
                             {
                                 'number': s,
                             }
                         ]
-                     }
+                    }
 
                     if e is not None:
-                        # traktv URL parameters
+                        # trakt URL parameters
                         episode = {
                             'episodes': [
                                 {
                                     'number': e
                                 }
                             ]
-                         }
+                        }
 
                         season['season'][0].update(episode)
 
                     data['shows'][0].update(season)
 
                 trakt_url = "sync/watchlist"
-                if update=="remove":
+                if update == "remove":
                     trakt_url += "/remove"
 
                 trakt_api.traktRequest(trakt_url, data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                logger.log(u"Could not connect to Trakt service: {0}".format(ex(e)), logger.WARNING)
                 return False
 
         return True
@@ -194,7 +199,7 @@ class TraktNotifier:
             if season not in uniqueSeasons:
                 uniqueSeasons.append(season)
 
-        #build the query
+        # build the query
         seasonsList = []
         for searchedSeason in uniqueSeasons:
             episodesList = []
@@ -225,14 +230,12 @@ class TraktNotifier:
                 trakt_lists = trakt_api.traktRequest("users/" + username + "/lists")
                 found = False
                 for trakt_list in trakt_lists:
-                    if (trakt_list['ids']['slug'] == blacklist_name):
+                    if trakt_list['ids']['slug'] == blacklist_name:
                         return "Test notice sent successfully to Trakt"
                 if not found:
                     return "Trakt blacklist doesn't exists"
             else:
                 return "Test notice sent successfully to Trakt"
         except (traktException, traktAuthException, traktServerBusy) as e:
-            logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
-            return "Test notice failed to Trakt: %s" % ex(e)
-
-notifier = TraktNotifier
+            logger.log(u"Could not connect to Trakt service: {0}".format(ex(e)), logger.WARNING)
+            return "Test notice failed to Trakt: {0}".format(ex(e))

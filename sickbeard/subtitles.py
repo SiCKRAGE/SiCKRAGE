@@ -1,5 +1,8 @@
-# Author: Nyaran <nyayukko@gmail.com>, based on Antoine Bertin <diaoulael@gmail.com> work
-# URL: http://code.google.com/p/sickbeard/
+# coding=utf-8
+# Author: medariox <dariox@gmx.com>,
+# based on Antoine Bertin's <diaoulael@gmail.com> work
+# and originally written by Nyaran <nyayukko@gmail.com>
+# URL: https://github.com/SickRage/SickRage/
 #
 # This file is part of SickRage.
 #
@@ -10,263 +13,515 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import re
 import datetime
-import sickbeard
-from sickbeard.common import *
-from sickbeard import logger
-from sickbeard import db
-from sickrage.helper.common import dateTimeFormat
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex
-from enzyme import MKV
-from babelfish import Error as BabelfishError, Language, language_converters
-import subliminal
+import traceback
 import subprocess
+import threading
+from babelfish import Language, language_converters
 
-subliminal.cache_region.configure('dogpile.cache.memory')
+import subliminal
+from subliminal import ProviderPool, provider_manager
 
-provider_urls = {
+import sickbeard
+from sickbeard import logger
+from sickbeard import history
+from sickbeard import db
+from sickbeard.common import Quality
+from sickbeard.helpers import isMediaFile
+
+from sickrage.helper.common import episode_num, dateTimeFormat
+from sickrage.show.Show import Show
+from sickrage.helper.exceptions import ex
+
+# https://github.com/Diaoul/subliminal/issues/536
+# provider_manager.register('napiprojekt = subliminal.providers.napiprojekt:NapiProjektProvider')
+if 'legendastv' not in provider_manager.names():
+    provider_manager.register('legendastv = subliminal.providers.legendastv:LegendasTVProvider')
+
+subliminal.region.configure('dogpile.cache.memory')
+
+PROVIDER_URLS = {
     'addic7ed': 'http://www.addic7ed.com',
+    'itasa': 'http://www.italiansubs.net/',
+    'legendastv': 'http://www.legendas.tv',
+    'napiprojekt': 'http://www.napiprojekt.pl',
     'opensubtitles': 'http://www.opensubtitles.org',
     'podnapisi': 'http://www.podnapisi.net',
+    'subscenter': 'http://www.subscenter.org',
     'thesubdb': 'http://www.thesubdb.com',
     'tvsubtitles': 'http://www.tvsubtitles.net'
 }
 
-SINGLE = 'und'
+
+class SubtitleProviderPool(object):  # pylint: disable=too-few-public-methods
+    _lock = threading.Lock()
+    _creation = None
+    _instance = None
+
+    @staticmethod
+    def __init_instance():
+        with SubtitleProviderPool._lock:
+            providers = enabled_service_list()
+            provider_configs = {
+                'addic7ed': {
+                    'username': sickbeard.ADDIC7ED_USER,
+                    'password': sickbeard.ADDIC7ED_PASS
+                },
+                'itasa': {
+                    'username': sickbeard.ITASA_USER,
+                    'password': sickbeard.ITASA_PASS
+                },
+                'legendastv': {
+                    'username': sickbeard.LEGENDASTV_USER,
+                    'password': sickbeard.LEGENDASTV_PASS
+                },
+                'opensubtitles': {
+                    'username': sickbeard.OPENSUBTITLES_USER,
+                    'password': sickbeard.OPENSUBTITLES_PASS
+                }
+            }
+
+            SubtitleProviderPool._instance = ProviderPool(providers=providers, provider_configs=provider_configs)
+
+    def __init__(self):
+        if SubtitleProviderPool._creation is None:
+            SubtitleProviderPool._creation = datetime.datetime.now()
+            self.__init_instance()
+        else:
+            delta = datetime.timedelta(minutes=15)
+            if SubtitleProviderPool._creation + delta < datetime.datetime.now():
+                SubtitleProviderPool._creation = datetime.datetime.now()
+                self.__init_instance()
+
+    @staticmethod
+    def reset():
+        SubtitleProviderPool._creation = None
+
+    def __getattr__(self, attr):
+        """ Delegate access to implementation """
+        return getattr(self._instance, attr)
 
 
-def sortedServiceList():
-    newList = []
+def sorted_service_list():
+    new_list = []
     lmgtfy = 'http://lmgtfy.com/?q=%s'
 
-    curIndex = 0
-    for curService in sickbeard.SUBTITLES_SERVICES_LIST:
-        if curService in subliminal.provider_manager.available_providers:
-            newList.append({'name': curService,
-                            'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
-                            'image': curService + '.png',
-                            'enabled': sickbeard.SUBTITLES_SERVICES_ENABLED[curIndex] == 1
-                           })
-        curIndex += 1
+    current_index = 0
+    for current_service in sickbeard.SUBTITLES_SERVICES_LIST:
+        if current_service in provider_manager.names():
+            new_list.append({'name': current_service,
+                             'url': PROVIDER_URLS[current_service] if current_service in PROVIDER_URLS else lmgtfy % current_service,
+                             'image': current_service + '.png',
+                             'enabled': sickbeard.SUBTITLES_SERVICES_ENABLED[current_index] == 1})
+        current_index += 1
 
-    for curService in subliminal.provider_manager.available_providers:
-        if curService not in [x['name'] for x in newList]:
-            newList.append({'name': curService,
-                            'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
-                            'image': curService + '.png',
-                            'enabled': False,
-                           })
+    for current_service in provider_manager.names():
+        if current_service not in [service['name'] for service in new_list]:
+            new_list.append({'name': current_service,
+                             'url': PROVIDER_URLS[current_service] if current_service in PROVIDER_URLS else lmgtfy % current_service,
+                             'image': current_service + '.png',
+                             'enabled': False})
+    return new_list
 
-    return newList
 
-def getEnabledServiceList():
-    return [x['name'] for x in sortedServiceList() if x['enabled']]
+def enabled_service_list():
+    return [service['name'] for service in sorted_service_list() if service['enabled']]
 
-#Hack around this for now.
-def fromietf(language):
-    return Language.fromopensubtitles(language)
 
-def isValidLanguage(language):
-    try:
-        langObj = fromietf(language)
-    except:
+def wanted_languages(sql_like=None):
+    wanted = frozenset(sickbeard.SUBTITLES_LANGUAGES).intersection(subtitle_code_filter())
+    return (wanted, '%' + ','.join(sorted(wanted)) + '%' if sickbeard.SUBTITLES_MULTI else '%und%')[bool(sql_like)]
+
+
+def get_needed_languages(subtitles):
+    if not sickbeard.SUBTITLES_MULTI:
+        return set() if 'und' in subtitles else {from_code(language) for language in wanted_languages()}
+    return {from_code(language) for language in wanted_languages().difference(subtitles)}
+
+
+def subtitle_code_filter():
+    return {code for code in language_converters['opensubtitles'].codes if len(code) == 3}
+
+
+def needs_subtitles(subtitles):
+    if not wanted_languages():
         return False
-    return True
 
-def getLanguageName(language):
-    return fromietf(language).name
+    if isinstance(subtitles, basestring):
+        subtitles = {subtitle.strip() for subtitle in subtitles.split(',') if subtitle.strip()}
 
-# TODO: Filter here for non-languages in sickbeard.SUBTITLES_LANGUAGES
-def wantedLanguages(sqlLike = False):
-    wantedLanguages = [x for x in sorted(sickbeard.SUBTITLES_LANGUAGES) if x in subtitleCodeFilter()]
-    if sqlLike:
-        return '%' + ','.join(wantedLanguages) + '%'
-    return wantedLanguages
+    if sickbeard.SUBTITLES_MULTI:
+        return wanted_languages().difference(subtitles)
 
-def subtitlesLanguages(video_path):
-    """Return a list detected subtitles for the given video file"""
-    resultList = []
-    embedded_subtitle_languages = set()
+    return 'und' not in subtitles
 
-    # Serch for embedded subtitles
-    if video_path.endswith('mkv'):
-        with open(video_path, 'rb') as f:
-            mkv = MKV(f)
-            if mkv.subtitle_tracks:
-                for st in mkv.subtitle_tracks:
-                    if st.language:
-                        try:
-                            embedded_subtitle_languages.add(Language.fromalpha3b(st.language))
-                        except BabelfishError:
-                            logger.log('Embedded subtitle track is not a valid language', logger.DEBUG)
-                            embedded_subtitle_languages.add(Language('und'))
-                    elif st.name:
-                        try:
-                            embedded_subtitle_languages.add(Language.fromname(st.name))
-                        except BabelfishError:
-                            logger.log('Embedded subtitle track is not a valid language', logger.DEBUG)
-                            embedded_subtitle_languages.add(Language('und'))
-                    else:
-                        embedded_subtitle_languages.add(Language('und'))
-            else:
-                logger.log('MKV has no subtitle track', logger.DEBUG)
 
-    # Search subtitles in the absolute path
-    if sickbeard.SUBTITLES_DIR and ek(os.path.exists, sickbeard.SUBTITLES_DIR):
-        video_path = ek(os.path.join, sickbeard.SUBTITLES_DIR, ek(os.path.basename, video_path))
-    # Search subtitles in the relative path
+def from_code(language):
+    language = language.strip()
+    if language and language in language_converters['opensubtitles'].codes:
+        return Language.fromopensubtitles(language)  # pylint: disable=no-member
+
+    return Language('und')
+
+
+def name_from_code(code):
+    return from_code(code).name
+
+
+def code_from_code(code):
+    return from_code(code).opensubtitles
+
+
+def download_subtitles(subtitles_info):  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+    existing_subtitles = subtitles_info['subtitles']
+
+    if not needs_subtitles(existing_subtitles):
+        logger.log(u'Episode already has all needed subtitles, skipping {0} {1}'.format
+                   (subtitles_info['show_name'], episode_num(subtitles_info['season'], subtitles_info['episode']) or
+                    episode_num(subtitles_info['season'], subtitles_info['episode'], numbering='absolute')), logger.DEBUG)
+        return existing_subtitles, None
+
+    languages = get_needed_languages(existing_subtitles)
+    if not languages:
+        logger.log(u'No subtitles needed for {0} {1}'.format
+                   (subtitles_info['show_name'], episode_num(subtitles_info['season'], subtitles_info['episode']) or
+                    episode_num(subtitles_info['season'], subtitles_info['episode'], numbering='absolute')), logger.DEBUG)
+        return existing_subtitles, None
+
+    subtitles_path = get_subtitles_path(subtitles_info['location'])
+    video_path = subtitles_info['location']
+
+    # Perfect match = hash score - hearing impaired score - resolution score (subtitle for 720p is the same as for 1080p)
+    # Perfect match = 215 - 1 - 1 = 213
+    # Non-perfect match = series + year + season + episode
+    # Non-perfect match = 108 + 54 + 18 + 18 = 198
+    # From latest subliminal code:
+    # episode_scores = {'hash': 215, 'series': 108, 'year': 54, 'season': 18, 'episode': 18, 'release_group': 9,
+    #                   'format': 4, 'audio_codec': 2, 'resolution': 1, 'hearing_impaired': 1, 'video_codec': 1}
+    user_score = 213 if sickbeard.SUBTITLES_PERFECT_MATCH else 198
+
+    video = get_video(video_path, subtitles_path=subtitles_path)
+    if not video:
+        logger.log(u'Exception caught in subliminal.scan_video for {0} {1}'.format
+                   (subtitles_info['show_name'], episode_num(subtitles_info['season'], subtitles_info['episode']) or
+                    episode_num(subtitles_info['season'], subtitles_info['episode'], numbering='absolute')), logger.DEBUG)
+        return existing_subtitles, None
+
+    providers = enabled_service_list()
+    pool = SubtitleProviderPool()
+
+    try:
+        subtitles_list = pool.list_subtitles(video, languages)
+
+        for provider in providers:
+            if provider in pool.discarded_providers:
+                logger.log(u'Could not search in {0} provider. Discarding for now'.format(provider), logger.DEBUG)
+
+        if not subtitles_list:
+            logger.log(u'No subtitles found for {0} {1}'.format
+                       (subtitles_info['show_name'], episode_num(subtitles_info['season'], subtitles_info['episode']) or
+                        episode_num(subtitles_info['season'], subtitles_info['episode'], numbering='absolute')), logger.DEBUG)
+            return existing_subtitles, None
+
+        for subtitle in subtitles_list:
+            score = subliminal.score.compute_score(subtitle, video, hearing_impaired=sickbeard.SUBTITLES_HEARING_IMPAIRED)
+            logger.log(u'[{0}] Subtitle score for {1} is: {2} (min={3})'.format
+                       (subtitle.provider_name, subtitle.id, score, user_score), logger.DEBUG)
+
+        found_subtitles = pool.download_best_subtitles(subtitles_list, video, languages=languages,
+                                                       hearing_impaired=sickbeard.SUBTITLES_HEARING_IMPAIRED,
+                                                       min_score=user_score, only_one=not sickbeard.SUBTITLES_MULTI)
+
+        subliminal.save_subtitles(video, found_subtitles, directory=subtitles_path,
+                                  single=not sickbeard.SUBTITLES_MULTI)
+    except IOError as error:
+        if 'No space left on device' in ex(error):
+            logger.log(u'Not enough space on the drive to save subtitles', logger.WARNING)
+        else:
+            logger.log(traceback.format_exc(), logger.WARNING)
+    except Exception:
+        logger.log(u'Error occurred when downloading subtitles for: {0}'.format(video_path))
+        logger.log(traceback.format_exc(), logger.ERROR)
+        return existing_subtitles, None
+
+    for subtitle in found_subtitles:
+        subtitle_path = subliminal.subtitle.get_subtitle_path(video.name,
+                                                              None if not sickbeard.SUBTITLES_MULTI else
+                                                              subtitle.language)
+        if subtitles_path is not None:
+            subtitle_path = os.path.join(subtitles_path, os.path.split(subtitle_path)[1])
+
+        sickbeard.helpers.chmodAsParent(subtitle_path)
+        sickbeard.helpers.fixSetGroupID(subtitle_path)
+
+        if sickbeard.SUBTITLES_HISTORY:
+            logger.log(u'history.logSubtitle {0}, {1}'.format
+                       (subtitle.provider_name, subtitle.language.opensubtitles), logger.DEBUG)
+
+            history.logSubtitle(subtitles_info['show_indexerid'], subtitles_info['season'],
+                                subtitles_info['episode'], subtitles_info['status'], subtitle)
+
+        if sickbeard.SUBTITLES_EXTRA_SCRIPTS and isMediaFile(video_path) and not sickbeard.EMBEDDED_SUBTITLES_ALL:
+            run_subs_extra_scripts(subtitles_info, subtitle, video, single=not sickbeard.SUBTITLES_MULTI)
+
+    new_subtitles = sorted({subtitle.language.opensubtitles for subtitle in found_subtitles})
+    current_subtitles = sorted({subtitle for subtitle in new_subtitles + existing_subtitles}) if existing_subtitles else new_subtitles
+    if not sickbeard.SUBTITLES_MULTI and len(found_subtitles) == 1:
+        new_code = found_subtitles[0].language.opensubtitles
+        if new_code not in existing_subtitles:
+            current_subtitles.remove(new_code)
+        current_subtitles.append('und')
+
+    return current_subtitles, new_subtitles
+
+
+def refresh_subtitles(episode_info, existing_subtitles):
+    video = get_video(episode_info['location'])
+    if not video:
+        logger.log(u"Exception caught in subliminal.scan_video, subtitles couldn't be refreshed", logger.DEBUG)
+        return existing_subtitles, None
+    current_subtitles = get_subtitles(video)
+    if existing_subtitles == current_subtitles:
+        logger.log(u'No changed subtitles for {0} {1}'.format
+                   (episode_info['show_name'], episode_num(episode_info['season'], episode_info['episode']) or
+                    episode_num(episode_info['season'], episode_info['episode'], numbering='absolute')), logger.DEBUG)
+        return existing_subtitles, None
+    else:
+        return current_subtitles, True
+
+
+def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitles=None):
+    if not subtitles_path:
+        subtitles_path = get_subtitles_path(video_path)
+
+    try:
+        # Encode paths to UTF-8 to ensure subliminal support.
+        video_path = video_path.encode('utf-8')
+        subtitles_path = subtitles_path.encode('utf-8')
+    except UnicodeEncodeError:
+        # Fallback to system encoding. This should never happen.
+        video_path = video_path.encode(sickbeard.SYS_ENCODING)
+        subtitles_path = subtitles_path.encode(sickbeard.SYS_ENCODING)
+
+    try:
+        video = subliminal.scan_video(video_path)
+
+        # external subtitles
+        if subtitles:
+            video.subtitle_languages |= \
+                set(subliminal.core.search_external_subtitles(video_path, directory=subtitles_path).values())
+
+        if embedded_subtitles is None:
+            embedded_subtitles = bool(not sickbeard.EMBEDDED_SUBTITLES_ALL and video_path.endswith('.mkv'))
+
+        subliminal.refine(video, embedded_subtitles=embedded_subtitles)
+    except Exception as error:
+        logger.log(u'Exception: {0}'.format(error), logger.DEBUG)
+        return None
+
+    return video
+
+
+def get_subtitles_path(video_path):
+    if os.path.isabs(sickbeard.SUBTITLES_DIR):
+        new_subtitles_path = sickbeard.SUBTITLES_DIR
     elif sickbeard.SUBTITLES_DIR:
-        video_path = ek(os.path.join, ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR, ek(os.path.basename, video_path))
+        new_subtitles_path = os.path.join(os.path.dirname(video_path), sickbeard.SUBTITLES_DIR)
+        dir_exists = sickbeard.helpers.makeDir(new_subtitles_path)
+        if not dir_exists:
+            logger.log(u'Unable to create subtitles folder {0}'.format(new_subtitles_path), logger.ERROR)
+        else:
+            sickbeard.helpers.chmodAsParent(new_subtitles_path)
+    else:
+        new_subtitles_path = os.path.dirname(video_path)
 
-    languages = subliminal.video.scan_subtitle_languages(video_path)
+    try:
+        # Encode path to UTF-8 to ensure subliminal support.
+        new_subtitles_path = new_subtitles_path.encode('utf-8')
+    except UnicodeEncodeError:
+        # Fallback to system encoding. This should never happen.
+        new_subtitles_path = new_subtitles_path.encode(sickbeard.SYS_ENCODING)
 
-    for language in languages.union(embedded_subtitle_languages):
+    return new_subtitles_path
+
+
+def get_subtitles(video):
+    """Return a sorted list of detected subtitles for the given video file."""
+    result_list = []
+
+    if not video.subtitle_languages:
+        return result_list
+
+    for language in video.subtitle_languages:
         if hasattr(language, 'opensubtitles') and language.opensubtitles:
-            resultList.append(language.opensubtitles)
-        elif hasattr(language, 'alpha3') and language.alpha3:
-            resultList.append(language.alpha3)
-        elif hasattr(language, 'alpha2') and language.alpha2:
-            resultList.append(language.alpha2)
+            result_list.append(language.opensubtitles)
 
-    defaultLang = wantedLanguages()
+    return sorted(result_list)
 
-    if ('pob' in defaultLang or 'pb' in defaultLang) and ('pt' not in defaultLang and 'por' not in defaultLang):
-            resultList = [x if not x in ['por', 'pt'] else u'pob' for x in resultList]
 
-    return sorted(resultList)
+class SubtitlesFinder(object):  # pylint: disable=too-few-public-methods
+    """The SubtitlesFinder will be executed every hour but will not necessarly search and download subtitles.
 
-# TODO: Return only languages our providers allow
-def subtitleLanguageFilter():
-    return [Language.fromopensubtitles(language) for language in language_converters['opensubtitles'].codes if len(language) == 3]
-
-def subtitleCodeFilter():
-    return [Language.fromopensubtitles(language).opensubtitles for language in language_converters['opensubtitles'].codes if len(language) == 3]
-
-class SubtitlesFinder():
+    Only if the defined rule is true.
     """
-    The SubtitlesFinder will be executed every hour but will not necessarly search
-    and download subtitles. Only if the defined rule is true
-    """
+
     def __init__(self):
         self.amActive = False
 
-    def run(self, force=False):
-
-        self.amActive = True
+    def run(self, force=False):  # pylint: disable=too-many-branches, too-many-statements, too-many-locals
         if not sickbeard.USE_SUBTITLES:
             return
 
-        if len(sickbeard.subtitles.getEnabledServiceList()) < 1:
-            logger.log(u'Not enough services selected. At least 1 service is required to search subtitles in the background', logger.WARNING)
+        if not sickbeard.subtitles.enabled_service_list():
+            logger.log(u'Not enough services selected. At least 1 service is required to '
+                       'search subtitles in the background', logger.WARNING)
             return
 
-        logger.log(u'Checking for subtitles', logger.INFO)
+        self.amActive = True
 
-        # get episodes on which we want subtitles
-        # criteria is:
-        #  - show subtitles = 1
-        #  - episode subtitles != config wanted languages or SINGLE (depends on config multi)
-        #  - search count < 2 and diff(airdate, now) > 1 week : now -> 1d
-        #  - search count < 7 and diff(airdate, now) <= 1 week : now -> 4h -> 8h -> 16h -> 1d -> 1d -> 1d
+        def dhm(td):
+            days = td.days
+            hours = td.seconds // 60 ** 2
+            minutes = (td.seconds // 60) % 60
+            ret = (u'', '{0} days, '.format(days))[days > 0] + \
+                (u'', '{0} hours, '.format(hours))[hours > 0] + \
+                (u'', '{0} minutes'.format(minutes))[minutes > 0]
+            if days == 1:
+                ret = ret.replace('days', 'day')
+            if hours == 1:
+                ret = ret.replace('hours', 'hour')
+            if minutes == 1:
+                ret = ret.replace('minutes', 'minute')
+            return ret.rstrip(', ')
 
-        today = datetime.date.today().toordinal()
+        logger.log(u'Checking for missed subtitles', logger.INFO)
 
-        # you have 5 minutes to understand that one. Good luck
-        myDB = db.DBConnection()
+        database = db.DBConnection()
+        sql_results = database.select(
+            "SELECT s.show_name, e.showid, e.season, e.episode, "
+            "e.status, e.subtitles, e.subtitles_searchcount AS searchcount, "
+            "e.subtitles_lastsearch AS lastsearch, e.location, (? - e.airdate) as age "
+            "FROM tv_episodes AS e INNER JOIN tv_shows AS s "
+            "ON (e.showid = s.indexer_id) "
+            "WHERE s.subtitles = 1 AND e.subtitles NOT LIKE ? "
+            "AND e.location != '' AND e.status IN (%s) ORDER BY age ASC" %
+            ','.join(['?'] * len(Quality.DOWNLOADED)),
+            [datetime.datetime.now().toordinal(), wanted_languages(True)] + Quality.DOWNLOADED
+        )
 
-        sqlResults = myDB.select('SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.subtitles, ' +
-        'e.subtitles_searchcount AS searchcount, e.subtitles_lastsearch AS lastsearch, e.location, (? - e.airdate) AS airdate_daydiff ' +
-        'FROM tv_episodes AS e INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id) ' +
-        'WHERE s.subtitles = 1 AND e.subtitles NOT LIKE (?) ' +
-        'AND (e.subtitles_searchcount <= 2 OR (e.subtitles_searchcount <= 7 AND airdate_daydiff <= 7)) ' +
-        'AND e.location != ""', [today, wantedLanguages(True)])
-
-        if len(sqlResults) == 0:
-            logger.log('No subtitles to download', logger.INFO)
+        if not sql_results:
+            logger.log(u'No subtitles to download', logger.INFO)
+            self.amActive = False
             return
 
-        rules = self._getRules()
-        now = datetime.datetime.now()
-        for epToSub in sqlResults:
-
-            if not ek(os.path.isfile, epToSub['location']):
-                logger.log('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
+        for ep_to_sub in sql_results:
+            try:
+                # Encode path to system encoding.
+                subtitle_path = ep_to_sub['location'].encode(sickbeard.SYS_ENCODING)
+            except UnicodeEncodeError:
+                # Fallback to UTF-8.
+                subtitle_path = ep_to_sub['location'].encode('utf-8')
+            if not os.path.isfile(subtitle_path):
+                logger.log(u'Episode file does not exist, cannot download subtitles for {0} {1}'.format
+                           (ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                            episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute')), logger.DEBUG)
                 continue
 
-            # Old shows rule
-            throwaway = datetime.datetime.strptime('20110101', '%Y%m%d')
-            if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.strptime(epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
-                # Recent shows rule
-                (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
-                logger.log('Downloading subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
+            if not needs_subtitles(ep_to_sub['subtitles']):
+                logger.log(u'Episode already has all needed subtitles, skipping {0} {1}'.format
+                           (ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                            episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute')), logger.DEBUG)
+                continue
 
-                showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(epToSub['showid']))
-                if not showObj:
-                    logger.log(u'Show not found', logger.DEBUG)
-                    return
+            try:
+                lastsearched = datetime.datetime.strptime(ep_to_sub['lastsearch'], dateTimeFormat)
+            except ValueError:
+                lastsearched = datetime.datetime.min
 
-                epObj = showObj.getEpisode(int(epToSub["season"]), int(epToSub["episode"]))
-                if isinstance(epObj, str):
-                    logger.log(u'Episode not found', logger.DEBUG)
-                    return
+            try:
+                if not force:
+                    now = datetime.datetime.now()
+                    days = int(ep_to_sub['age'])
+                    delay_time = datetime.timedelta(hours=8 if days < 10 else 7 * 24 if days < 30 else 30 * 24)
 
-                previous_subtitles = epObj.subtitles
+                    # Search every hour for the first 24 hours since aired, then every 8 hours until 10 days passes
+                    # After 10 days, search every 7 days, after 30 days search once a month
+                    # Will always try an episode regardless of age at least 2 times
+                    if lastsearched + delay_time > now and int(ep_to_sub['searchcount']) > 2 and days:
+                        logger.log(u'Subtitle search for {0} {1} delayed for {2}'.format
+                                   (ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                                    episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute'),
+                                    dhm(lastsearched + delay_time - now)), logger.DEBUG)
+                        continue
+
+                logger.log(u'Searching for missing subtitles of {0} {1}'.format
+                           (ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                            episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute')), logger.INFO)
+
+                show_object = Show.find(sickbeard.showList, int(ep_to_sub['showid']))
+                if not show_object:
+                    logger.log(u'Show with ID {0} not found in the database'.format(ep_to_sub['showid']), logger.DEBUG)
+                    continue
+
+                episode_object = show_object.getEpisode(ep_to_sub['season'], ep_to_sub['episode'])
+                if isinstance(episode_object, str):
+                    logger.log(u'{0} {1} not found in the database'.format
+                               (ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                                episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute')), logger.DEBUG)
+                    continue
 
                 try:
-                    epObj.downloadSubtitles()
-                except Exception as e:
-                    logger.log(u'Unable to find subtitles', logger.DEBUG)
-                    logger.log(str(e), logger.DEBUG)
-                    return
+                    new_subtitles = episode_object.download_subtitles()
+                except Exception as error:
+                    logger.log(u'Unable to find subtitles for {0} {1}. Error: {2}'.format
+                               (ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                                episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute'), ex(error)), logger.ERROR)
+                    continue
 
-                newSubtitles = frozenset(epObj.subtitles).difference(previous_subtitles)
-                if newSubtitles:
-                    logger.log(u'Downloaded subtitles for S%02dE%02d in %s' % (epToSub["season"], epToSub["episode"], ', '.join(newSubtitles)))
+                if new_subtitles:
+                    logger.log(u'Downloaded {0} subtitles for {1} {2}'.format
+                               (', '.join(new_subtitles), ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                                episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute')))
 
+            except Exception as error:
+                logger.log(u'Error while searching subtitles for {0} {1}. Error: {2}'.format
+                           (ep_to_sub['show_name'], episode_num(ep_to_sub['season'], ep_to_sub['episode']) or
+                            episode_num(ep_to_sub['season'], ep_to_sub['episode'], numbering='absolute'), ex(error)), logger.ERROR)
+                continue
+
+        logger.log(u'Finished checking for missed subtitles', logger.INFO)
         self.amActive = False
 
-    def _getRules(self):
-        """
-        Define the hours to wait between 2 subtitles search depending on:
-        - the episode: new or old
-        - the number of searches done so far (searchcount), represented by the index of the list
-        """
-        return {'old': [0, 24], 'new': [0, 4, 8, 4, 16, 24, 24]}
 
+def run_subs_extra_scripts(episode_object, subtitle, video, single=False):
+    for script_name in sickbeard.SUBTITLES_EXTRA_SCRIPTS:
+        script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", script_name) if piece.strip()]
+        script_cmd[0] = os.path.abspath(script_cmd[0])
+        logger.log(u'Absolute path to script: {0}'.format(script_cmd[0]), logger.DEBUG)
 
-def run_subs_extra_scripts(epObj, foundSubs):
+        subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
 
-    for curScriptName in sickbeard.SUBTITLES_EXTRA_SCRIPTS:
-        script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
-        script_cmd[0] = ek(os.path.abspath, script_cmd[0])
-        logger.log(u"Absolute path to script: " + script_cmd[0], logger.DEBUG)
+        inner_cmd = script_cmd + [video.name, subtitle_path, subtitle.language.opensubtitles,
+                                  episode_object['show_name'], str(episode_object['season']),
+                                  str(episode_object['episode']), episode_object['name'],
+                                  str(episode_object['show_indexerid'])]
 
-        for video, subs in foundSubs.iteritems():
-            subpaths = []
-            for sub in subs:
-                subpath = subliminal.subtitle.get_subtitle_path(video.name, sub.language)
-                if sickbeard.SUBTITLES_DIR and ek(os.path.exists, sickbeard.SUBTITLES_DIR):
-                    subpath = ek(os.path.join, sickbeard.SUBTITLES_DIR, ek(os.path.basename, subpath))
-                elif sickbeard.SUBTITLES_DIR:
-                    subpath = ek(os.path.join, ek(os.path.dirname, subpath), sickbeard.SUBTITLES_DIR, ek(os.path.basename, subpath))
+        # use subprocess to run the command and capture output
+        logger.log(u'Executing command: {0}'.format(inner_cmd))
+        try:
+            process = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT, cwd=sickbeard.PROG_DIR)
 
-                inner_cmd = script_cmd + [video.name, subpath, sub.language.opensubtitles, epObj.show.name,
-                                         str(epObj.season), str(epObj.episode), epObj.name, str(epObj.show.indexerid)]
+            stdout, stderr_ = process.communicate()
+            logger.log(u'Script result: {0}'.format(stdout), logger.DEBUG)
 
-                # use subprocess to run the command and capture output
-                logger.log(u"Executing command: %s" % inner_cmd)
-                try:
-                    p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT, cwd=sickbeard.PROG_DIR)
-                    out, err = p.communicate()  # @UnusedVariable
-                    logger.log(u"Script result: %s" % out, logger.DEBUG)
-
-                except Exception as e:
-                    logger.log(u"Unable to run subs_extra_script: " + ex(e))
+        except Exception as error:
+            logger.log(u'Unable to run subs_extra_script: {0}'.format(ex(error)))

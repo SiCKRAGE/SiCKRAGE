@@ -11,36 +11,47 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
+"""
+Test exception logging
+"""
 
+import os.path
+import sys
 import unittest
-import sys, os.path
-
-from sickbeard import logger
-from sickrage.helper.exceptions import ex
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from sickbeard import logger, ex
 
-def error():
+
+def exception_generator():
+    """
+    Dummy function to raise a fake exception and log it
+    """
     try:
         raise Exception('FAKE EXCEPTION')
-    except Exception as e:
-        logger.log("FAKE ERROR: " + ex(e), logger.ERROR)
-        logger.submit_errors()
+    except Exception as error:
+        logger.log(u"FAKE ERROR: " + ex(error), logger.ERROR)  # pylint: disable=no-member
+        logger.submit_errors()  # pylint: disable=no-member
         raise
 
 
 class IssueSubmitterBasicTests(unittest.TestCase):
+    """
+    Tests logging of exceptions
+    """
     def test_submitter(self):
-        self.assertRaises(Exception, error)
+        """
+        Test that an exception is raised
+        """
+        self.assertRaises(Exception, exception_generator)
 
 
 if __name__ == "__main__":
@@ -48,5 +59,6 @@ if __name__ == "__main__":
     print "STARTING - ISSUE SUBMITTER TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(IssueSubmitterBasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+
+    SUITE = unittest.TestLoader().loadTestsFromTestCase(IssueSubmitterBasicTests)
+    unittest.TextTestRunner(verbosity=2).run(SUITE)

@@ -1,217 +1,102 @@
-# -*- coding: latin-1 -*-
+# coding=utf-8
 # Author: Guillaume Serre <guillaume.serre@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
 #
-# This file is part of Sick Beard.
+# URL: https://sickrage.github.io
 #
-# Sick Beard is free software: you can redistribute it and/or modify
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Sick Beard is distributed in the hope that it will be useful,
+# SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
-import traceback
 import re
-import datetime
-import sickbeard
-import generic
 
-
-from sickbeard.common import Quality
-from sickbeard import logger
-from sickbeard import show_name_helpers
+from sickbeard import logger, tvcache
 from sickbeard.bs4_parser import BS4Parser
-from sickbeard import db
-from sickbeard import helpers
-from sickbeard import classes
-from sickbeard.helpers import sanitizeSceneName
+
+from sickrage.helper.common import convert_size, try_int
+from sickrage.providers.torrent.TorrentProvider import TorrentProvider
 
 
-
-class CpasbienProvider(generic.TorrentProvider):
+class CpasbienProvider(TorrentProvider):
 
     def __init__(self):
-        
-        generic.TorrentProvider.__init__(self, "Cpasbien")
 
-        self.supportsBacklog = True
+        TorrentProvider.__init__(self, "Cpasbien")
+
         self.public = True
-        self.ratio = None
-        
-        self.url = "http://www.cpasbien.pw"
-        
-        
-    def isEnabled(self):
-        
-        return self.enabled
-    
-    def imageName(self):
-        return 'cpasbien.png'
-    
-    def getQuality(self, item, anime=False):
-        quality = Quality.sceneQuality(item[0], anime)
-        return quality
+        self.minseed = None
+        self.minleech = None
+        self.url = "http://www.cpasbien.cm"
 
-    def _get_season_search_strings(self, ep_obj):
+        self.proper_strings = ['PROPER', 'REPACK']
+        self.cache = tvcache.TVCache(self)
 
-        search_string = {'Season': []}
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-            if ep_obj.show.air_by_date or ep_obj.show.sports:
-                ep_string = show_name + '.' + str(ep_obj.airdate).split('-')[0]
-            elif ep_obj.show.anime:
-                ep_string = show_name + '.' + "%d" % ep_obj.scene_absolute_number
-            else:
-                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  # 1) showName.SXX
-
-            search_string['Season'].append(ep_string)
-
-        return [search_string]
-
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-
-        search_string = {'Episode': []}
-
-        if not ep_obj:
-            return []
-
-        if self.show.air_by_date:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + '.' + \
-                            str(ep_obj.airdate).replace('-', '|')
-                search_string['Episode'].append(ep_string)
-        elif self.show.sports:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + '.' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
-                search_string['Episode'].append(ep_string)
-        elif self.show.anime:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + '.' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
-                search_string['Episode'].append(ep_string)
-        else:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + '.' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
-
-                search_string['Episode'].append(re.sub('\s+', '.', ep_string))
-
-        return [search_string]
-        
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-        
+    def search(self, search_strings, age=0, ep_obj=None):  # pylint: disable=too-many-locals
         results = []
-        items = {'Season': [], 'Episode': [], 'RSS': []}
-        
-        for mode in search_params.keys():
+        for mode in search_strings:
+            items = []
+            logger.log(u"Search Mode: {0}".format(mode), logger.DEBUG)
+            for search_string in search_strings[mode]:
 
-            for search_string in search_params[mode]:
-        
-                searchURL = self.url + '/recherche/'+search_string.replace('.','-')+'.html'
-                data = self.getURL(searchURL)
+                if mode != 'RSS':
+                    logger.log(u"Search string: {0}".format
+                               (search_string.decode("utf-8")), logger.DEBUG)
 
+                    search_url = self.url + '/recherche/' + search_string.replace('.', '-').replace(' ', '-') + '.html,trie-seeds-d'
+                else:
+                    search_url = self.url + '/view_cat.php?categorie=series&trie=date-d'
+
+                data = self.get_url(search_url, returns='text')
                 if not data:
                     continue
 
-                try:
-                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        
-                        lin=0
-                        erlin=0
-                        resultdiv=[]
-                        while erlin==0:
-                            try:
-                                classlin='ligne'+str(lin)
-                                resultlin=html.findAll(attrs = {'class' : [classlin]})
-                                if resultlin:
-                                    for ele in resultlin:
-                                        resultdiv.append(ele)
-                                    lin+=1
-                                else:
-                                    erlin=1
-                            except:
-                                erlin=1
-                        
-                        for row in resultdiv:
-                            try:
-                                link = row.find("a", title=True)
-                                torrent_name = str(link.text).lower().strip()  
-                                pageURL = link['href']
-
-                                #downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
-                                tmp = pageURL.split('/')[-1].replace('.html','.torrent')
-
-                                downloadTorrentLink = ('http://www.cpasbien.pw/telechargement/%s' % tmp)
-
-                                if downloadTorrentLink:
-                
-                                    torrent_download_url = downloadTorrentLink
-                            except (AttributeError, TypeError):
-                                    continue
-                            
-                            if not torrent_name or not torrent_download_url:
+                with BS4Parser(data, 'html5lib') as html:
+                    torrent_rows = html(class_=re.compile('ligne[01]'))
+                    for result in torrent_rows:
+                        try:
+                            title = result.find(class_="titre").get_text(strip=True).replace("HDTV", "HDTV x264-CPasBien")
+                            title = re.sub(r' Saison', ' Season', title, flags=re.I)
+                            tmp = result.find("a")['href'].split('/')[-1].replace('.html', '.torrent').strip()
+                            download_url = (self.url + '/telechargement/{0}'.format(tmp))
+                            if not all([title, download_url]):
                                 continue
 
-                            item = torrent_name, torrent_download_url
-                            logger.log(u"Found result: " + torrent_name + " (" + torrent_download_url + ")",logger.DEBUG)
-                            items[mode].append(item)
+                            seeders = try_int(result.find(class_="up").get_text(strip=True))
+                            leechers = try_int(result.find(class_="down").get_text(strip=True))
+                            if seeders < self.minseed or leechers < self.minleech:
+                                if mode != 'RSS':
+                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format
+                                               (title, seeders, leechers), logger.DEBUG)
+                                continue
 
-                except Exception, e:
-                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),logger.ERROR)
-            results += items[mode]
-        return results
-    
-    def _get_title_and_url(self, item):
+                            torrent_size = result.find(class_="poid").get_text(strip=True)
 
-        title, url = item
+                            units = ['o', 'Ko', 'Mo', 'Go', 'To', 'Po']
+                            size = convert_size(torrent_size, units=units) or -1
 
-        if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
+                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
+                            if mode != 'RSS':
+                                logger.log(u"Found result: {0} with {1} seeders and {2} leechers".format(title, seeders, leechers), logger.DEBUG)
 
-        if url:
-            url = str(url).replace('&amp;', '&')
+                            items.append(item)
+                        except StandardError:
+                            continue
 
-        return title, url
-    
-    def findPropers(self, search_date=datetime.datetime.today()):
-
-        results = []
-
-        myDB = db.DBConnection()
-        sqlResults = myDB.select(
-            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-            ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
-            ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
-        )
-
-        if not sqlResults:
-            return []
-
-        for sqlshow in sqlResults:
-            self.show = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
-            if self.show:
-                curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
-                searchString = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
-
-                for item in self._doSearch(searchString[0]):
-                    title, url = self._get_title_and_url(item)
-                    results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
+            # For each search mode sort all the items by seeders if available
+            items.sort(key=lambda d: try_int(d.get('seeders', 0)), reverse=True)
+            results += items
 
         return results
-    
-    def seedRatio(self):
-        return self.ratio
+
 
 provider = CpasbienProvider()

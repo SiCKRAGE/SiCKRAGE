@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # Author: Gordon Turner <gordonturner@gordonturner.ca>
 # URL: http://code.google.com/p/sickbeard/
@@ -11,19 +13,18 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
 
-import datetime
+import io
 import os
+import datetime
 
 import sickbeard
-
 from sickbeard import logger, helpers
 from sickbeard.metadata import generic
 from sickrage.helper.encoding import ek
@@ -85,9 +86,9 @@ class TIVOMetadata(generic.GenericMetadata):
     # Override with empty methods for unsupported features
     def retrieveShowMetadata(self, folder):
         # no show metadata generated, we abort this lookup function
-        return (None, None, None)
+        return None, None, None
 
-    def create_show_metadata(self, show_obj, force=False):
+    def create_show_metadata(self, show_obj):
         pass
 
     def update_show_indexer_metadata(self, show_obj):
@@ -108,7 +109,8 @@ class TIVOMetadata(generic.GenericMetadata):
     def create_episode_thumb(self, ep_obj):
         pass
 
-    def get_episode_thumb_path(self, ep_obj):
+    @staticmethod
+    def get_episode_thumb_path(ep_obj):
         pass
 
     def create_season_posters(self, ep_obj):
@@ -173,17 +175,16 @@ class TIVOMetadata(generic.GenericMetadata):
 
             lINDEXER_API_PARMS['actors'] = True
 
-            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang or sickbeard.INDEXER_DEFAULT_LANGUAGE
 
-            if ep_obj.show.dvdorder != 0:
+            if ep_obj.show.dvdorder:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
             t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
-        except sickbeard.indexer_shownotfound, e:
+        except sickbeard.indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
-        except sickbeard.indexer_error, e:
+        except sickbeard.indexer_error as e:
             logger.log(u"Unable to connect to " + sickbeard.indexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + str(e), logger.ERROR)
             return False
@@ -193,18 +194,16 @@ class TIVOMetadata(generic.GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
-                logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
-                    curEpToWrite.episode) + " on " + sickbeard.indexerApi(
-                    ep_obj.show.indexer).name + "... has it been removed? Should I delete from db?")
+                logger.log(u"Unable to find episode {0:d}x{1:d} on {2}... has it been removed? Should I delete from db?".format(curEpToWrite.season, curEpToWrite.episode, sickbeard.indexerApi(ep_obj.show.indexer).name))
                 return None
 
-            if getattr(myEp, 'firstaired', None) is None and ep_obj.season == 0:
+            if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
                 myEp["firstaired"] = str(datetime.date.fromordinal(1))
 
-            if getattr(myEp, 'episodename', None) is None or getattr(myEp, 'firstaired', None) is None:
+            if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
 
-            if getattr(myShow, 'seriesname', None) is not None:
+            if getattr(myShow, 'seriesname', None):
                 data += ("title : " + myShow["seriesname"] + "\n")
                 data += ("seriesTitle : " + myShow["seriesname"] + "\n")
 
@@ -225,7 +224,7 @@ class TIVOMetadata(generic.GenericMetadata):
             # after the episode's title and before the description on the Program screen.
 
             # FIXME: Hardcode isEpisode to true for now, not sure how to handle movies
-            data += ("isEpisode : true\n")
+            data += "isEpisode : true\n"
 
             # Write the synopsis of the video here
             # Micrsoft Word's smartquotes can die in a fire.
@@ -233,18 +232,17 @@ class TIVOMetadata(generic.GenericMetadata):
             # Replace double curly quotes
             sanitizedDescription = sanitizedDescription.replace(u"\u201c", "\"").replace(u"\u201d", "\"")
             # Replace single curly quotes
-            sanitizedDescription = sanitizedDescription.replace(u"\u2018", "'").replace(u"\u2019", "'").replace(
-                u"\u02BC", "'")
+            sanitizedDescription = sanitizedDescription.replace(u"\u2018", "'").replace(u"\u2019", "'").replace(u"\u02BC", "'")
 
             data += ("description : " + sanitizedDescription + "\n")
 
             # Usually starts with "SH" and followed by 6-8 digits.
             # Tivo uses zap2it for thier data, so the series id is the zap2it_id.
-            if getattr(myShow, 'zap2it_id', None) is not None:
+            if getattr(myShow, 'zap2it_id', None):
                 data += ("seriesId : " + myShow["zap2it_id"] + "\n")
 
             # This is the call sign of the channel the episode was recorded from.
-            if getattr(myShow, 'network', None) is not None:
+            if getattr(myShow, 'network', None):
                 data += ("callsign : " + myShow["network"] + "\n")
 
             # This must be entered as yyyy-mm-ddThh:mm:ssZ (the t is capitalized and never changes, the Z is also
@@ -254,13 +252,13 @@ class TIVOMetadata(generic.GenericMetadata):
                 data += ("originalAirDate : " + str(curEpToWrite.airdate) + "T00:00:00Z\n")
 
             # This shows up at the beginning of the description on the Program screen and on the Details screen.
-            if getattr(myShow, 'actors', None) is not None:
-                for actor in myShow["actors"].split('|'):
-                    if actor:
-                        data += ("vActor : " + actor + "\n")
+            if getattr(myShow, '_actors', None):
+                for actor in myShow["_actors"]:
+                    if 'name' in actor and actor['name'].strip():
+                        data += ("vActor : " + actor['name'].strip() + "\n")
 
             # This is shown on both the Program screen and the Details screen.
-            if getattr(myEp, 'rating', None) is not None:
+            if getattr(myEp, 'rating', None):
                 try:
                     rating = float(myEp['rating'])
                 except ValueError:
@@ -272,7 +270,7 @@ class TIVOMetadata(generic.GenericMetadata):
 
             # This is shown on both the Program screen and the Details screen.
             # It uses the standard TV rating system of: TV-Y7, TV-Y, TV-G, TV-PG, TV-14, TV-MA and TV-NR.
-            if getattr(myShow, 'contentrating', None) is not None:
+            if getattr(myShow, 'contentrating', None):
                 data += ("tvRating : " + str(myShow["contentrating"]) + "\n")
 
             # This field can be repeated as many times as necessary or omitted completely.
@@ -321,13 +319,13 @@ class TIVOMetadata(generic.GenericMetadata):
 
             logger.log(u"Writing episode nfo file to " + nfo_file_path, logger.DEBUG)
 
-            with ek(open, nfo_file_path, 'w') as nfo_file:
+            with io.open(nfo_file_path, 'wb') as nfo_file:
                 # Calling encode directly, b/c often descriptions have wonky characters.
                 nfo_file.write(data.encode("utf-8"))
 
             helpers.chmodAsParent(nfo_file_path)
 
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             logger.log(u"Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? " + ex(e),
                        logger.ERROR)
             return False

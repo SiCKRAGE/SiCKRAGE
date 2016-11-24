@@ -1,6 +1,9 @@
-# Author: duramato <matigonkas@outlook.com>
-# Author: miigotu
-# URL: https://github.com/SiCKRAGETV/sickrage
+# coding=utf-8
+# Author: Gonçalo M. (aka duramato/supergonkas) <supergonkas@gmail.com>
+# Author: Dustyn Gibson <miigotu@gmail.com>
+#
+# URL: https://sickrage.github.io
+#
 # This file is part of SickRage.
 #
 # SickRage is free software: you can redistribute it and/or modify
@@ -10,188 +13,108 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 import re
-import traceback
-import datetime
+
 import sickbeard
-import xmltodict
+from sickbeard import logger, tvcache
+from sickbeard.bs4_parser import BS4Parser
+from sickbeard.common import USER_AGENT
 
-from sickbeard.providers import generic
-from sickbeard.common import Quality
-from sickbeard import logger
-from sickbeard import tvcache
-from sickbeard import db
-from sickbeard import classes
-from sickbeard import helpers
-from sickbeard import show_name_helpers
-from sickbeard.helpers import sanitizeSceneName
+from sickrage.helper.common import convert_size, try_int
+from sickrage.providers.torrent.TorrentProvider import TorrentProvider
 
 
-class ExtraTorrentProvider(generic.TorrentProvider):
+class ExtraTorrentProvider(TorrentProvider):  # pylint: disable=too-many-instance-attributes
+
     def __init__(self):
-        generic.TorrentProvider.__init__(self, "ExtraTorrent")
+
+        TorrentProvider.__init__(self, "ExtraTorrent")
 
         self.urls = {
             'index': 'http://extratorrent.cc',
             'rss': 'http://extratorrent.cc/rss.xml',
-            }
+        }
 
         self.url = self.urls['index']
 
-        self.supportsBacklog = True
         self.public = True
-        self.enabled = False
-        self.ratio = None
         self.minseed = None
         self.minleech = None
+        self.custom_url = None
 
-        self.cache = ExtraTorrentCache(self)
-
+        self.cache = tvcache.TVCache(self, min_time=30)  # Only poll ExtraTorrent every 30 minutes max
+        self.headers.update({'User-Agent': USER_AGENT})
         self.search_params = {'cid': 8}
 
-    def isEnabled(self):
-        return self.enabled
-
-    def _get_season_search_strings(self, ep_obj):
-
-        search_string = {'Season': []}
-        for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
-            if ep_obj.show.air_by_date or ep_obj.show.sports:
-                ep_string = show_name + ' ' + str(ep_obj.airdate).split('-')[0]
-            elif ep_obj.show.anime:
-                ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
-            else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
-
-            search_string['Season'].append(ep_string.strip())
-
-        return [search_string]
-
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-
-        search_strings = {'Episode': []}
-
-        if not ep_obj:
-            return []
-
-        for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
-            if ep_obj.show.air_by_date:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                                str(ep_obj.airdate).replace('-', '|')
-            elif ep_obj.show.sports:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                                str(ep_obj.airdate).replace('-', '|') + '|' + \
-                                ep_obj.airdate.strftime('%b')
-            elif ep_obj.show.anime:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                                "%i" % int(ep_obj.scene_absolute_number)
-            else:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode}
-
-            if add_string:
-                ep_string += ' %s' % add_string
-
-            search_strings['Episode'].append(re.sub(r'\s+', ' ', ep_string))
-
-        return [search_strings]
-
-
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
-
+    def search(self, search_strings, age=0, ep_obj=None):  # pylint: disable=too-many-locals, too-many-branches
         results = []
-        items = {'Season': [], 'Episode': [], 'RSS': []}
-
-        for mode in search_strings.keys():
+        for mode in search_strings:
+            items = []
+            logger.log(u"Search Mode: {0}".format(mode), logger.DEBUG)
             for search_string in search_strings[mode]:
-                try:
-                    self.search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string.strip()})
-                    data = self.getURL(self.urls['rss'], params=self.search_params)
-                    if not data:
-                        continue
+                if mode != 'RSS':
+                    logger.log(u"Search string: {0}".format
+                               (search_string.decode("utf-8")), logger.DEBUG)
 
-                    data = xmltodict.parse(data)
-                    for item in data['rss']['channel']['item']:
-                        title = item['title']
-                        info_hash = item['info_hash']
-                        url = item['enclosure']['@url']
-                        size = int(item['enclosure']['@length'] or item['size'])
-                        seeders = helpers.tryInt(item['seeders'],0)
-                        leechers = helpers.tryInt(item['leechers'],0)
+                self.search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string})
+                search_url = self.urls['rss'] if not self.custom_url else self.urls['rss'].replace(self.urls['index'], self.custom_url)
 
-                        if not seeders or seeders < self.minseed or leechers < self.minleech:
+                data = self.get_url(search_url, params=self.search_params, returns='text')
+                if not data:
+                    logger.log(u"No data returned from provider", logger.DEBUG)
+                    continue
+
+                if not data.startswith('<?xml'):
+                    logger.log(u'Expected xml but got something else, is your mirror failing?', logger.INFO)
+                    continue
+
+                with BS4Parser(data, 'html5lib') as parser:
+                    for item in parser('item'):
+                        try:
+                            title = re.sub(r'^<!\[CDATA\[|\]\]>$', '', item.find('title').get_text(strip=True))
+                            seeders = try_int(item.find('seeders').get_text(strip=True))
+                            leechers = try_int(item.find('leechers').get_text(strip=True))
+                            torrent_size = item.find('size').get_text()
+                            size = convert_size(torrent_size) or -1
+
+                            if sickbeard.TORRENT_METHOD == 'blackhole':
+                                enclosure = item.find('enclosure')  # Backlog doesnt have enclosure
+                                download_url = enclosure['url'] if enclosure else item.find('link').next.strip()
+                                download_url = re.sub(r'(.*)/torrent/(.*).html', r'\1/download/\2.torrent', download_url)
+                            else:
+                                info_hash = item.find('info_hash').get_text(strip=True)
+                                download_url = "magnet:?xt=urn:btih:" + info_hash + "&dn=" + title + self._custom_trackers
+
+                        except (AttributeError, TypeError, KeyError, ValueError):
                             continue
 
-                        items[mode].append((title, url, seeders, leechers, size, info_hash))
+                        if not all([title, download_url]):
+                            continue
 
-                except Exception:
-                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
+                            # Filter unseeded torrent
+                        if seeders < self.minseed or leechers < self.minleech:
+                            if mode != 'RSS':
+                                logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format
+                                           (title, seeders, leechers), logger.DEBUG)
+                            continue
 
-            results += items[mode]
+                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
+                        if mode != 'RSS':
+                            logger.log(u"Found result: {0} with {1} seeders and {2} leechers".format(title, seeders, leechers), logger.DEBUG)
 
-        return results
+                        items.append(item)
 
-    def _get_title_and_url(self, item):
-        #pylint: disable=W0612
-        title, url, seeders, leechers, size, info_hash = item
-
-        if title:
-            title = self._clean_title_from_provider(title)
-
-        if url:
-            url = url.replace('&amp;', '&')
-
-        return (title, url)
-
-
-    def _get_size(self, item):
-        #pylint: disable=W0612
-        title, url, seeders, leechers, size, info_hash = item
-        return size
-
-    def findPropers(self, search_date=datetime.datetime.today()-datetime.timedelta(days=1)):
-        results = []
-        myDB = db.DBConnection()
-        sqlResults = myDB.select(
-            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-            ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
-            ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
-        )
-
-        for sqlshow in sqlResults or []:
-            show = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
-            if show:
-                curEp = show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
-                searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
-                for item in self._doSearch(searchStrings):
-                    title, url = self._get_title_and_url(item)
-                    results.append(classes.Proper(title, url, datetime.datetime.today(), show))
+            # For each search mode sort all the items by seeders if available
+            items.sort(key=lambda d: try_int(d.get('seeders', 0)), reverse=True)
+            results += items
 
         return results
-
-    def seedRatio(self):
-        return self.ratio
-
-
-class ExtraTorrentCache(tvcache.TVCache):
-    def __init__(self, _provider):
-
-        tvcache.TVCache.__init__(self, _provider)
-
-        self.minTime = 30
-
-    def _getRSSData(self):
-        search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
 
 
 provider = ExtraTorrentProvider()

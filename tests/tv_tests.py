@@ -11,33 +11,50 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Test tv
+"""
+
+import os.path
+import sys
 import unittest
-import test_lib as test
 
-import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
+import sickbeard
+import tests.test_lib as test
+
 
 class TVShowTests(test.SickbeardTestDBCase):
-
+    """
+    Test tv shows
+    """
     def setUp(self):
+        """
+        Set up tests
+        """
         super(TVShowTests, self).setUp()
         sickbeard.showList = []
 
     def test_init_indexerid(self):
+        """
+        test init indexer id
+        """
         show = TVShow(1, 0001, "en")
         self.assertEqual(show.indexerid, 0001)
 
     def test_change_indexerid(self):
+        """
+        test change indexer id
+        """
         show = TVShow(1, 0001, "en")
         show.name = "show name"
         show.network = "cbs"
@@ -49,44 +66,64 @@ class TVShowTests(test.SickbeardTestDBCase):
         show.startyear = 1987
 
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
+        show.loadFromDB()
 
         show.indexerid = 0002
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
+        show.loadFromDB()
 
         self.assertEqual(show.indexerid, 0002)
 
     def test_set_name(self):
+        """
+        test set name
+        """
         show = TVShow(1, 0001, "en")
         show.name = "newName"
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
+        show.loadFromDB()
         self.assertEqual(show.name, "newName")
 
 
 class TVEpisodeTests(test.SickbeardTestDBCase):
-
+    """
+    Test tv episode
+    """
     def setUp(self):
+        """
+        Set up
+        """
         super(TVEpisodeTests, self).setUp()
         sickbeard.showList = []
 
     def test_init_empty_db(self):
+        """
+        test init empty db
+        """
         show = TVShow(1, 0001, "en")
-        ep = TVEpisode(show, 1, 1)
-        ep.name = "asdasdasdajkaj"
-        ep.saveToDB()
-        ep.loadFromDB(1, 1)
-        self.assertEqual(ep.name, "asdasdasdajkaj")
+        episode = TVEpisode(show, 1, 1)
+        episode.name = "asdasdasdajkaj"
+        episode.saveToDB()
+        episode.loadFromDB(1, 1)
+        self.assertEqual(episode.name, "asdasdasdajkaj")
 
 
 class TVTests(test.SickbeardTestDBCase):
-
+    """
+    Test tv
+    """
     def setUp(self):
+        """
+        Set up
+        """
         super(TVTests, self).setUp()
         sickbeard.showList = []
 
-    def test_getEpisode(self):
+    @staticmethod
+    def test_get_episode():
+        """
+        Test get episodes
+        """
         show = TVShow(1, 0001, "en")
         show.name = "show name"
         show.network = "cbs"
@@ -98,7 +135,7 @@ class TVTests(test.SickbeardTestDBCase):
         show.startyear = 1987
         show.saveToDB()
         sickbeard.showList = [show]
-        #TODO: implement
+        # TODO: implement
 
 
 if __name__ == '__main__':
@@ -106,11 +143,11 @@ if __name__ == '__main__':
     print "STARTING - TV TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TVShowTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    SUITE = unittest.TestLoader().loadTestsFromTestCase(TVShowTests)
+    unittest.TextTestRunner(verbosity=2).run(SUITE)
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TVEpisodeTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    SUITE = unittest.TestLoader().loadTestsFromTestCase(TVEpisodeTests)
+    unittest.TextTestRunner(verbosity=2).run(SUITE)
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TVTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    SUITE = unittest.TestLoader().loadTestsFromTestCase(TVTests)
+    unittest.TextTestRunner(verbosity=2).run(SUITE)

@@ -1,21 +1,28 @@
-#!/usr/bin/env python2.7
-# encoding:utf-8
-#author:echel0n
-#project:indexer_api
-#repository:http://github.com/echel0n/Sick-Beard
-#license:unlicense (http://unlicense.org/)
+# coding=utf-8
+
+# URL: https://sickrage.github.io
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 """Custom exceptions used or raised by indexer_api"""
 
-__author__ = "echel0n"
-__version__ = "1.0"
+from tvdb_api.tvdb_exceptions import (tvdb_exception, tvdb_error, tvdb_userabort, tvdb_shownotfound, tvdb_showincomplete,
+                                      tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
 
-from tvdb_api.tvdb_exceptions import \
-    tvdb_exception, tvdb_attributenotfound, tvdb_episodenotfound, tvdb_error, \
-    tvdb_seasonnotfound, tvdb_shownotfound, tvdb_showincomplete, tvdb_userabort
-
-indexerExcepts = ["indexer_exception", "indexer_error", "indexer_userabort", "indexer_shownotfound",
-                  "indexer_showincomplete",
+indexerExcepts = ["indexer_exception", "indexer_error", "indexer_userabort", "indexer_shownotfound", "indexer_showincomplete",
                   "indexer_seasonnotfound", "indexer_episodenotfound", "indexer_attributenotfound"]
 
 tvdbExcepts = ["tvdb_exception", "tvdb_error", "tvdb_userabort", "tvdb_shownotfound", "tvdb_showincomplete",

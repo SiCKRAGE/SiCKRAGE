@@ -1,6 +1,7 @@
+# coding=utf-8
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: https://sickrage.github.io
+# Git: https://github.com/SickRage/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -11,11 +12,11 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 import os.path
 
@@ -28,16 +29,19 @@ from sickrage.helper.exceptions import ShowDirectoryNotFoundException
 
 from hachoir_parser import createParser
 from hachoir_metadata import extractMetadata
+from hachoir_core.log import log
+log.use_print = False
 
 
-class ImageCache:
+class ImageCache(object):
     def __init__(self):
         pass
 
     def __del__(self):
         pass
 
-    def _cache_dir(self):
+    @staticmethod
+    def _cache_dir():
         """
         Builds up the full path to the image cache directory
         """
@@ -249,7 +253,7 @@ class ImageCache:
             return False
 
         # retrieve the image from indexer using the generic metadata class
-        #TODO: refactor
+        # TODO: refactor
         metadata_generator = GenericMetadata()
         img_data = metadata_generator._retrieve_show_image(img_type_name, show_obj)
         result = metadata_generator._write_image(img_data, dest_path)
@@ -273,8 +277,7 @@ class ImageCache:
                        self.BANNER_THUMB: not self.has_banner_thumbnail(show_obj.indexerid),
                        self.FANART: not self.has_fanart(show_obj.indexerid)}
 
-        if not need_images[self.POSTER] and not need_images[self.BANNER] and not need_images[self.POSTER_THUMB] and not \
-        need_images[self.BANNER_THUMB] and not need_images[self.FANART]:
+        if not need_images[self.POSTER] and not need_images[self.BANNER] and not need_images[self.POSTER_THUMB] and not need_images[self.BANNER_THUMB] and not need_images[self.FANART]:
             logger.log(u"No new cache images needed, not retrieving new ones", logger.DEBUG)
             return
 
@@ -285,10 +288,10 @@ class ImageCache:
                     logger.log(u"Checking if we can use the show image from the " + cur_provider.name + " metadata",
                                logger.DEBUG)
                     if ek(os.path.isfile, cur_provider.get_poster_path(show_obj)):
-                        cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
+                        cur_file_name = ek(os.path.abspath, cur_provider.get_poster_path(show_obj))
                         cur_file_type = self.which_type(cur_file_name)
 
-                        if cur_file_type == None:
+                        if cur_file_type is None:
                             logger.log(u"Unable to retrieve image type, not using the image from " + str(cur_file_name),
                                        logger.WARNING)
                             continue
@@ -306,7 +309,7 @@ class ImageCache:
                 logger.log(u"Unable to search for images in show dir because it doesn't exist", logger.WARNING)
 
         # download from indexer for missing ones
-        for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB,self.FANART]:
+        for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:
             logger.log(u"Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
                 need_images[cur_image_type]), logger.DEBUG)
             if cur_image_type in need_images and need_images[cur_image_type]:

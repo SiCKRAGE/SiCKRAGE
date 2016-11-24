@@ -1,6 +1,7 @@
+# coding=utf-8
 import re
 import os
-import requests
+import posixpath
 from bs4 import BeautifulSoup
 from datetime import date
 
@@ -8,8 +9,8 @@ import sickbeard
 from sickbeard import helpers
 from sickrage.helper.encoding import ek
 
-# pylint: disable=C1001
-class imdbPopular:
+
+class imdbPopular(object):
     def __init__(self):
         """Gets a list of most popular TV series from imdb"""
 
@@ -20,23 +21,23 @@ class imdbPopular:
             'at': 0,
             'sort': 'moviemeter',
             'title_type': 'tv_series',
-            'year': '%s,%s' % (date.today().year - 1, date.today().year + 1)
+            'year': '{0},{1}'.format(date.today().year - 1, date.today().year + 1)
         }
 
-        self.session = requests.Session()
+        self.session = helpers.make_session()
 
     def fetch_popular_shows(self):
         """Get popular show information from IMDB"""
 
         popular_shows = []
 
-        data = helpers.getURL(self.url, session=self.session, params=self.params, headers={'Referer': 'http://akas.imdb.com/'})
+        data = helpers.getURL(self.url, session=self.session, params=self.params, headers={'Referer': 'http://akas.imdb.com/'}, returns='text')
         if not data:
             return None
 
-        soup = BeautifulSoup(data, 'html.parser')
+        soup = BeautifulSoup(data, 'html5lib')
         results = soup.find("table", {"class": "results"})
-        rows = results.find_all("tr")
+        rows = results("tr")
 
         for row in rows:
             show = {}
@@ -45,7 +46,7 @@ class imdbPopular:
             if image_td:
                 image = image_td.find("img")
                 show['image_url_large'] = self.change_size(image['src'], 3)
-                show['image_path'] = os.path.join('images', 'imdb_popular', os.path.basename(show['image_url_large']))
+                show['image_path'] = ek(posixpath.join, 'images', 'imdb_popular', ek(os.path.basename, show['image_url_large']))
 
                 self.cache_image(show['image_url_large'])
 
@@ -54,7 +55,7 @@ class imdbPopular:
             if td:
                 show['name'] = td.find("a").contents[0]
                 show['imdb_url'] = "http://www.imdb.com" + td.find("a")["href"]
-                show['imdb_tt'] =  show['imdb_url'][-10:][0:9]
+                show['imdb_tt'] = show['imdb_url'][-10:][0:9]
                 show['year'] = td.find("span", {"class": "year_type"}).contents[0].split(" ")[0][1:]
 
                 rating_all = td.find("div", {"class": "user_rating"})
@@ -91,7 +92,7 @@ class imdbPopular:
 
         if match:
             matches = match.groups()
-            os.path.basename(image_url)
+            ek(os.path.basename, image_url)
             matches = list(matches)
             matches[2] = int(matches[2]) * factor
             matches[4] = int(matches[4]) * factor
@@ -99,7 +100,7 @@ class imdbPopular:
             matches[6] = int(matches[6]) * factor
             matches[7] = int(matches[7]) * factor
 
-            return "%sV1._%s%s_%s%s,%s,%s,%s_.jpg" % (matches[0], matches[1], matches[2], matches[3], matches[4],
+            return "{0}V1._{1}{2}_{3}{4},{5},{6},{7}_.jpg".format(matches[0], matches[1], matches[2], matches[3], matches[4],
                                                       matches[5], matches[6], matches[7])
         else:
             return image_url
@@ -111,12 +112,12 @@ class imdbPopular:
         """
         path = ek(os.path.abspath, ek(os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
 
-        if not os.path.exists(path):
-            os.makedirs(path)
+        if not ek(os.path.exists, path):
+            ek(os.makedirs, path)
 
-        full_path = os.path.join(path, os.path.basename(image_url))
+        full_path = ek(os.path.join, path, ek(os.path.basename, image_url))
 
-        if not os.path.isfile(full_path):
+        if not ek(os.path.isfile, full_path):
             helpers.download_file(image_url, full_path, session=self.session)
 
 imdb_popular = imdbPopular()

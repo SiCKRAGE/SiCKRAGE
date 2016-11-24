@@ -1,7 +1,8 @@
+# coding=utf-8
 # This file is part of SickRage.
 #
-# URL: https://www.sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# URL: https://sickrage.github.io
+# Git: https://github.com/SickRage/SickRage.git
 #
 # SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,19 +11,20 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime
 from datetime import timedelta
 from sickbeard.common import Quality
 from sickbeard.db import DBConnection
+from sickrage.helper.common import try_int
 
 
-class History:
+class History(object):
     date_format = '%Y%m%d%H%M%S'
 
     def __init__(self):
@@ -46,15 +48,8 @@ class History:
         :return: The last ``limit`` elements of type ``action`` in the history
         """
 
-        action = action.lower() if isinstance(action, str) else ''
-        limit = int(limit)
-
-        if action == 'downloaded':
-            actions = Quality.DOWNLOADED
-        elif action == 'snatched':
-            actions = Quality.SNATCHED
-        else:
-            actions = []
+        actions = History._get_actions(action)
+        limit = History._get_limit(limit)
 
         common_sql = 'SELECT action, date, episode, provider, h.quality, resource, season, show_name, showid ' \
                      'FROM history h, tv_shows s ' \
@@ -63,12 +58,12 @@ class History:
         order_sql = 'ORDER BY date DESC '
 
         if limit == 0:
-            if len(actions) > 0:
+            if actions:
                 results = self.db.select(common_sql + filter_sql + order_sql, actions)
             else:
                 results = self.db.select(common_sql + order_sql)
         else:
-            if len(actions) > 0:
+            if actions:
                 results = self.db.select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
             else:
                 results = self.db.select(common_sql + order_sql + 'LIMIT ?', [limit])
@@ -100,3 +95,21 @@ class History:
             'WHERE date < ?',
             [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
         )
+
+    @staticmethod
+    def _get_actions(action):
+        action = action.lower() if isinstance(action, (str, unicode)) else ''
+
+        if action == 'downloaded':
+            return Quality.DOWNLOADED
+
+        if action == 'snatched':
+            return Quality.SNATCHED
+
+        return []
+
+    @staticmethod
+    def _get_limit(limit):
+        limit = try_int(limit, 0)
+
+        return max(limit, 0)

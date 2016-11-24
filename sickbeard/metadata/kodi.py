@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -10,18 +12,17 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
-import generic
-import kodi_12plus
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 import os
 
-from sickbeard import helpers
+from sickbeard.metadata import generic
+from sickbeard.metadata import kodi_12plus
+from sickrage.helper.common import replace_extension
 from sickrage.helper.encoding import ek
 
 
@@ -90,7 +91,8 @@ class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
     def create_season_all_banner(self, show_obj):
         pass
 
-    def get_episode_thumb_path(self, ep_obj):
+    @staticmethod
+    def get_episode_thumb_path(ep_obj):
         """
         Returns the path where the episode thumbnail should be stored. Defaults to
         the same path as the episode file but with a .tbn extension.
@@ -98,13 +100,14 @@ class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
         if ek(os.path.isfile, ep_obj.location):
-            tbn_filename = helpers.replaceExtension(ep_obj.location, 'tbn')
+            tbn_filename = replace_extension(ep_obj.location, 'tbn')
         else:
             return None
 
         return tbn_filename
 
-    def get_season_poster_path(self, show_obj, season):
+    @staticmethod
+    def get_season_poster_path(show_obj, season):
         """
         Returns the full path to the file for a given season poster.
 

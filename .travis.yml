@@ -1,6 +1,7 @@
 language: python
+
 python:
-  - 2.7
+  - 2.7.9
 
 sudo: false
 
@@ -8,20 +9,34 @@ branches:
   except:
     - master
 
-cache: pip
+env:
+  - TRAVIS_NODE_VERSION="5.6.0"
 
-before_script:
- - chmod +x ./tests/all_tests.py
+before_install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - npm install -g grunt-cli
+  - npm install -g bower
+  - cd .build && npm install --quiet && bower install && cd ..
+
+install:
+    - pip install --upgrade pip
+    - pip install --upgrade tox
 
 script:
-  - ./tests/all_tests.py
+  - cd .build && grunt travis && cd ..
+  - tox -v --recreate
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - .build/bower_components
+    - .build/node_modules
 
 after_failure:
   - cat ./Logs/sickrage.log
 
 notifications:
-  irc: "irc.freenode.net#sickrage-updates"
-
+  irc: "irc.freenode.net#sickrage-builds"
   email:
     on_success: change
     on_failure: change

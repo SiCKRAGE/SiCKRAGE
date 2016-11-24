@@ -1,3 +1,4 @@
+# coding=utf-8
 import threading
 import traceback
 from Queue import Queue, Empty
@@ -5,7 +6,7 @@ from sickbeard import logger
 from sickrage.helper.exceptions import ex
 
 
-class Event:
+class Event(object):
     def __init__(self, type):
         self._type = type
 
@@ -31,7 +32,7 @@ class Events(threading.Thread):
         Actually runs the thread to process events
         """
         try:
-            while (not self.stop.is_set()):
+            while not self.stop.is_set():
                 try:
                     # get event type
                     type = self.queue.get(True, 1)
@@ -46,7 +47,7 @@ class Events(threading.Thread):
 
             # exiting thread
             self.stop.clear()
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Exception generated in thread " + self.name + ": " + ex(e), logger.ERROR)
             logger.log(repr(traceback.format_exc()), logger.DEBUG)
 

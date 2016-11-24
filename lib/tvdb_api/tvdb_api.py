@@ -22,7 +22,7 @@ import logging
 import zipfile
 import datetime as dt
 import requests
-from requests import exceptions
+
 import xmltodict
 
 try:
@@ -178,9 +178,9 @@ class Show(dict):
         Search terms are converted to lower case (unicode) strings.
 
         # Examples
-        
+
         These examples assume t is an instance of Tvdb():
-        
+
         >>> t = Tvdb()
         >>>
 
@@ -296,7 +296,7 @@ class Episode(dict):
         """Search episode data for term, if it matches, return the Episode (self).
         The key parameter can be used to limit the search to a specific element,
         for example, episodename.
-        
+
         This primarily for use use by Show.search and Season.search. See
         Show.search for further information on search
 
@@ -422,7 +422,7 @@ class Tvdb:
             By default, Tvdb will only search in the language specified using
             the language option. When this is True, it will search for the
             show in and language
-        
+
         apikey (str/unicode):
             Override the default thetvdb.com API key. By default it will use
             tvdb_api's own key (fine for small scripts), but you can use your
@@ -565,8 +565,9 @@ class Tvdb:
 
             # get response from TVDB
             if self.config['cache_enabled']:
-
-                session = CacheControl(sess=self.config['session'], cache=caches.FileCache(self.config['cache_location'], use_dir_lock=True), cache_etags=False)
+                # Lets try without caching sessions to disk for awhile
+                # session = CacheControl(sess=self.config['session'], cache=caches.FileCache(self.config['cache_location'], use_dir_lock=True), cache_etags=False)
+                session = self.config['session']
                 if self.config['proxy']:
                     log().debug("Using proxy for URL: %s" % url)
                     session.proxies = {
@@ -585,8 +586,8 @@ class Tvdb:
             raise tvdb_error("Connection error " + str(e.message) + " while loading URL " + str(url))
         except requests.exceptions.Timeout, e:
             raise tvdb_error("Connection timed out " + str(e.message) + " while loading URL " + str(url))
-        except Exception:
-            raise tvdb_error("Unknown exception while loading URL " + url + ": " + traceback.format_exc())
+        except Exception as e:
+            raise tvdb_error("Unknown exception while loading URL " + url + ": " + repr(e))
 
         def process(path, key, value):
             key = key.lower()
@@ -671,7 +672,8 @@ class Tvdb:
         - Replaces &amp; with &
         - Trailing whitespace
         """
-        data = data.replace(u"&amp;", u"&")
+
+        data = unicode(data).replace(u"&amp;", u"&")
         data = data.strip()
         return data
 

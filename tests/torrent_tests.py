@@ -11,61 +11,104 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
+"""
+Test torrents
+"""
 
+# pylint: disable=line-too-long
+
+import os.path
+import sys
 import unittest
 
-import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import urlparse
-import test_lib as test
 from bs4 import BeautifulSoup
-from sickbeard.helpers import getURL
-import requests
+from sickbeard.helpers import getURL, make_session
+from sickbeard.providers.bitcannon import BitCannonProvider
+from sickbeard.tv import TVEpisode, TVShow
+import tests.test_lib as test
+import urlparse
+
 
 class TorrentBasicTests(test.SickbeardTestDBCase):
+    """
+    Test torrents
+    """
+    @classmethod
+    def setUpClass(cls):
+        cls.shows = []
 
-    def test_search(self):
-        self.url = 'http://kickass.to/'
-        searchURL = 'http://kickass.to/usearch/American%20Dad%21%20S08%20-S08E%20category%3Atv/?field=seeders&sorder=desc'
+        show = TVShow(1, 121361)
+        show.name = "Italian Works"
+        show.episodes = []
+        episode = TVEpisode(show, 05, 10)
+        episode.name = "Pines of Rome"
+        episode.scene_season = 5
+        episode.scene_episode = 10
+        show.episodes.append(episode)
+        cls.shows.append(show)
 
-        html = getURL(searchURL, session=requests.Session())
+    def test_bitcannon(self):
+        """
+        Test bitcannon
+        """
+        bitcannon = BitCannonProvider()
+        bitcannon.custom_url = ""        # true testing requires a valid URL here (e.g., "http://localhost:3000/")
+        bitcannon.api_key = ""
+
+        if bitcannon.custom_url:
+            # pylint: disable=protected-access
+            search_strings_list = bitcannon._get_episode_search_strings(self.shows[0].episodes[0])  # [{'Episode': ['Italian Works S05E10']}]
+            for search_strings in search_strings_list:
+                bitcannon.search(search_strings)   # {'Episode': ['Italian Works S05E10']} # pylint: disable=protected-access
+
+        return True
+
+    @staticmethod
+    def test_search():  # pylint: disable=too-many-locals
+        """
+        Test searching
+        """
+        url = 'http://kickass.to/'
+        search_url = 'http://kickass.to/usearch/American%20Dad%21%20S08%20-S08E%20category%3Atv/?field=seeders&sorder=desc'
+
+        html = getURL(search_url, session=make_session(), returns='text')
         if not html:
             return
 
-        soup = BeautifulSoup(html, features=["html5lib", "permissive"])
+        soup = BeautifulSoup(html, 'html5lib')
 
         torrent_table = soup.find('table', attrs={'class': 'data'})
-        torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+        torrent_rows = torrent_table('tr') if torrent_table else []
 
         # cleanup memory
         soup.clear(True)
 
-        #Continue only if one Release is found
+        # Continue only if one Release is found
         if len(torrent_rows) < 2:
-            print(u"The data returned does not contain any torrents")
+            print "The data returned does not contain any torrents"
             return
 
-        for tr in torrent_rows[1:]:
-
+        for row in torrent_rows[1:]:
             try:
-                link = urlparse.urljoin(self.url, (tr.find('div', {'class': 'torrentname'}).find_all('a')[1])['href'])
-                id = tr.get('id')[-7:]
-                title = (tr.find('div', {'class': 'torrentname'}).find_all('a')[1]).text \
-                    or (tr.find('div', {'class': 'torrentname'}).find_all('a')[2]).text
-                url = tr.find('a', 'imagnet')['href']
-                verified = True if tr.find('a', 'iverify') else False
-                trusted = True if tr.find('img', {'alt': 'verified'}) else False
-                seeders = int(tr.find_all('td')[-2].text)
-                leechers = int(tr.find_all('td')[-1].text)
+                link = urlparse.urljoin(url, (row.find('div', {'class': 'torrentname'})('a')[1])['href'])
+                _id = row.get('id')[-7:]
+                title = (row.find('div', {'class': 'torrentname'})('a')[1]).text \
+                    or (row.find('div', {'class': 'torrentname'})('a')[2]).text
+                url = row.find('a', 'imagnet')['href']
+                verified = True if row.find('a', 'iverify') else False
+                trusted = True if row.find('img', {'alt': 'verified'}) else False
+                seeders = int(row('td')[-2].text)
+                leechers = int(row('td')[-1].text)
+                _ = link, _id, verified, trusted, seeders, leechers
             except (AttributeError, TypeError):
                 continue
 
@@ -76,5 +119,5 @@ if __name__ == "__main__":
     print "STARTING - Torrent Basic TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TorrentBasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    SUITE = unittest.TestLoader().loadTestsFromTestCase(TorrentBasicTests)
+    unittest.TextTestRunner(verbosity=2).run(SUITE)

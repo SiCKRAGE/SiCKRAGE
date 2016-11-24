@@ -7,7 +7,8 @@ from sickbeard import logger
 
 from exceptions import traktException, traktAuthException, traktServerBusy
 
-class TraktAPI():
+
+class TraktAPI:
     def __init__(self, ssl_verify=True, timeout=30):
         self.session = requests.Session()
         self.verify = certifi.where() if ssl_verify else False
@@ -21,14 +22,12 @@ class TraktAPI():
         }
 
     def traktToken(self, trakt_pin=None, refresh=False, count=0):
-   
+
         if count > 3:
             sickbeard.TRAKT_ACCESS_TOKEN = ''
             return False
         elif count > 0:
             time.sleep(2)
-
-
 
         data = {
             'client_id': sickbeard.TRAKT_API_KEY,
@@ -43,7 +42,7 @@ class TraktAPI():
             data['grant_type'] = 'authorization_code'
             if not None == trakt_pin:
                 data['code'] = trakt_pin
-       
+
         headers = {
             'Content-Type': 'application/json'
         }
@@ -56,29 +55,30 @@ class TraktAPI():
                 sickbeard.TRAKT_REFRESH_TOKEN = resp['refresh_token']
             return True
         return False
-       
+
     def validateAccount(self):
-           
+
         resp = self.traktRequest('users/settings')
-       
+
         if 'account' in resp:
             return True
         return False
-       
+
     def traktRequest(self, path, data=None, headers=None, url=None, method='GET', count=0):
-        if None == url:
+        if url is None:
             url = self.api_url
-       
+
         count = count + 1
-       
-        if None == headers:
+
+        if headers is None:
             headers = self.headers
-       
-        if None == sickbeard.TRAKT_ACCESS_TOKEN:
+
+        if sickbeard.TRAKT_ACCESS_TOKEN == '' and count >= 2:
             logger.log(u'You must get a Trakt TOKEN. Check your Trakt settings', logger.WARNING)
             return {}
 
-        headers['Authorization'] = 'Bearer ' + sickbeard.TRAKT_ACCESS_TOKEN
+        if sickbeard.TRAKT_ACCESS_TOKEN != '':
+            headers['Authorization'] = 'Bearer ' + sickbeard.TRAKT_ACCESS_TOKEN
 
         try:
             resp = self.session.request(method, url + path, headers=headers, timeout=self.timeout,
@@ -93,14 +93,14 @@ class TraktAPI():
             code = getattr(e.response, 'status_code', None)
             if not code:
                 if 'timed out' in e:
-                    logger.log(u'Timeout connecting to Trakt. Try to increase timeout value in Trakt settings', logger.WARNING)                      
+                    logger.log(u'Timeout connecting to Trakt. Try to increase timeout value in Trakt settings', logger.WARNING)
                 # This is pretty much a fatal error if there is no status_code
-                # It means there basically was no response at all                    
+                # It means there basically was no response at all
                 else:
-                    logger.log(u'Could not connect to Trakt. Error: {0}'.format(e), logger.WARNING)                
+                    logger.log(u'Could not connect to Trakt. Error: {0}'.format(e), logger.DEBUG)
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
-                logger.log(u'Retrying trakt api request: %s' % path, logger.WARNING)
+                logger.log(u'Retrying trakt api request: %s' % path, logger.DEBUG)
                 return self.traktRequest(path, data, headers, url, method)
             elif code == 401:
                 if self.traktToken(refresh=True, count=count):
@@ -108,10 +108,10 @@ class TraktAPI():
                 else:
                     logger.log(u'Unauthorized. Please check your Trakt settings', logger.WARNING)
             elif code in (500,501,503,504,520,521,522):
-                #http://docs.trakt.apiary.io/#introduction/status-codes
-                logger.log(u'Trakt may have some issues and it\'s unavailable. Try again later please', logger.WARNING)
+                # http://docs.trakt.apiary.io/#introduction/status-codes
+                logger.log(u'Trakt may have some issues and it\'s unavailable. Try again later please', logger.DEBUG)
             elif code == 404:
-                logger.log(u'Trakt error (404) the resource does not exist: %s' % url + path, logger.WARNING)
+                logger.log(u'Trakt error (404) the resource does not exist: %s' % url + path, logger.DEBUG)
             else:
                 logger.log(u'Could not connect to Trakt. Code error: {0}'.format(code), logger.ERROR)
             return {}
