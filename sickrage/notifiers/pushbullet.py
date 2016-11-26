@@ -90,7 +90,7 @@ class PushbulletNotifier(srNotifiers):
         headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer %s' % pushbullet_api}
 
         try:
-            response = self.session.request(method, url, data=data, headers=headers)
+            response = sickrage.srCore.srWebSession.request(method, url, data=data, headers=headers)
         except Exception:
             sickrage.srCore.srLogger.debug('Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
