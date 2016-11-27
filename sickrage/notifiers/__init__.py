@@ -22,9 +22,6 @@ import sickrage
 
 
 class srNotifiers(object):
-    def __init__(self):
-        self.session = None
-
     @staticmethod
     def notify_download(ep_name):
         for n in sickrage.srCore.notifiersDict.values():

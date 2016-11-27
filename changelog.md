@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6fc8a20 - 2016-11-22: Fix for pushbullet configuration in webserver 
+- * ea47e50 - 2016-11-27: Fixed pushbullet notifier web sessions 
+- * 49648be - 2016-11-22: Fix for pushbullet configuration in webserver 
 - * b2af322 - 2016-11-20: Updated contributing guide 
 - * c60690a - 2016-11-19: Fixed login redirection issues 
 - * 04dd3ef - 2016-11-19: Fixed import errors 
