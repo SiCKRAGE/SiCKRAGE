@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+
 
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
@@ -24,8 +24,9 @@ import datetime
 import time
 import urllib2
 
-import sickrage
 from CodernityDB.database import RecordNotFound
+
+import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import findCertainShow, show_names

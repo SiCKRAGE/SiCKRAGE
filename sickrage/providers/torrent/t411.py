@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+
 
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
@@ -23,8 +23,9 @@ from __future__ import unicode_literals
 import time
 import traceback
 
-import sickrage
 from requests.auth import AuthBase
+
+import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.providers import TorrentProvider
 

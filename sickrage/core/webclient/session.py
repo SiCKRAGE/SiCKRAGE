@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -31,9 +31,10 @@ from contextlib import closing
 import cachecontrol
 import certifi
 import requests
-import sickrage
 from cachecontrol.heuristics import ExpiresAfter
 from requests_futures.sessions import FuturesSession
+
+import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
 from sickrage.core.webclient.useragents import USER_AGENTS
 

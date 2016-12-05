@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+
 
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
@@ -24,8 +24,9 @@ import os
 import re
 import time
 
-import sickrage
 from dateutil import parser
+
+import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, get_all_episodes_from_absolute_number, \
     remove_extension

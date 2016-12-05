@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+
 
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
@@ -26,8 +26,9 @@ import re
 import threading
 import time
 
-import sickrage
 from CodernityDB.database import RecordNotFound
+
+import sickrage
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba.aniDBAbstracter import Anime

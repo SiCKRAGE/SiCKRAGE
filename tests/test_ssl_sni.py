@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-
+#!/usr/bin/env python2.7
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -24,6 +23,7 @@ import unittest
 
 import certifi
 import requests
+
 import sickrage
 from tests import SiCKRAGETestCase
 

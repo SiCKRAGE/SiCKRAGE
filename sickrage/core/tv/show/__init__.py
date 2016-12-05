@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -29,8 +29,9 @@ import traceback
 
 import imdbpie
 import send2trash
-import sickrage
 from CodernityDB.database import RecordNotFound
+
+import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
