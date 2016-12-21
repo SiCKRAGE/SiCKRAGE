@@ -1,6 +1,7 @@
 # Changelog
 
-- * c9d90f5 - 2016-12-05: v8.8.5 Fixed shabang line 
+- * d37a15a - 2016-12-21: Improved daemon handling code 
+- * cc40f71 - 2016-12-05: v8.8.5 Fixed shabang line 
 - * 82d5a2d - 2016-11-27: Fixed issues related to renaming episodes and subtitles 
 - * 5459e37 - 2016-11-27: Fixed pushbullet notifier web sessions 
 - * 49648be - 2016-11-22: Fix for pushbullet configuration in webserver 

@@ -64,7 +64,6 @@ time.strptime("2012", "%Y")
 # set thread name
 threading.currentThread().setName('MAIN')
 
-
 def encodingInit():
     # map the following codecs to utf-8
     codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
@@ -98,71 +97,6 @@ def isElevatedUser():
 
 def isVirtualEnv():
     return hasattr(sys, 'real_prefix')
-
-
-def daemonize(pidfile):
-    try:
-        pid = os.fork()
-        if pid > 0:
-            # Exit from first parent
-            sys.exit(0)
-    except OSError as e:
-        sys.stderr.write("Fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
-        sys.exit(1)
-
-    # Decouple from parent environment
-    os.chdir("/")
-    os.setsid()
-    os.umask(0)
-
-    # Second fork
-    try:
-        pid = os.fork()
-        if pid > 0:
-            # Exit from second parent
-            sys.exit(0)
-    except OSError as e:
-        sys.stderr.write("Fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
-        sys.exit(1)
-
-    print("Daemonized successfully, pid %s" % os.getpid())
-
-    if sys.platform != 'darwin':
-        # Redirect standard file descriptors
-        sys.stdin = sys.__stdin__
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
-        sys.stdout.flush()
-        sys.stderr.flush()
-        si = file(getattr(os, 'devnull', '/dev/null'), 'r')
-        so = file(getattr(os, 'devnull', '/dev/null'), 'a+')
-        se = file(getattr(os, 'devnull', '/dev/null'), 'a+', 0)
-        os.dup2(si.fileno(), sys.stdin.fileno())
-        os.dup2(so.fileno(), sys.stdout.fileno())
-        os.dup2(se.fileno(), sys.stderr.fileno())
-
-    # Write the PID file
-    import atexit
-    atexit.register(lambda: delpid(pidfile))
-    io.open(pidfile, 'w+').write("%s\n" % str(os.getpid()))
-
-
-def delpid(pidfile):
-    # Removes the PID file
-    if pidfile and os.path.exists(pidfile):
-        os.remove(pidfile)
-
-
-def pid_exists(pid):
-    """Check whether pid exists in the current process table."""
-    if pid < 0:
-        return False
-    try:
-        os.kill(pid, 0)
-    except OSError:
-        return False
-    else:
-        return True
 
 
 def check_requirements():
@@ -287,26 +221,12 @@ def main():
         if not os.access(DATA_DIR, os.W_OK):
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
-        # Pidfile for daemon
-        if os.path.exists(PID_FILE):
-            if pid_exists(int(io.open(PID_FILE).read())):
-                sys.exit("PID file: " + PID_FILE + " already exists. Exiting.")
-
-            # remove stale pidfile
-            delpid(PID_FILE)
-
-        # daemonize if requested
-        if DAEMONIZE:
-            NOLAUNCH = False
-            QUITE = False
-            daemonize(PID_FILE)
-
         # main app loop
         while restart:
             srCore = core.Core()
             srCore.start()
             srCore.shutdown()
-    except KeyboardInterrupt:
+    except (SystemExit, KeyboardInterrupt):
         try:
             srCore.shutdown()
         except:
@@ -315,8 +235,9 @@ def main():
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
             print("Failed to import required libs, please run 'pip install -r {}' from console".format(REQS_FILE))
-    except Exception:
+    except:
         traceback.print_exc()
+
 
 if __name__ == '__main__':
     main()
