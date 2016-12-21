@@ -1,6 +1,7 @@
 # Changelog
 
-- * 98e58b4 - 2016-12-21: Improved daemon handling code 
+- * ef19041 - 2016-12-21: Improved daemon handling code 
+- * 80e464b - 2016-12-21: Improved daemon handling code 
 - * 0333c4c - 2016-12-21: Improved daemon handling code 
 - * 785ccca - 2016-12-21: Improved daemon handling code 
 - * 05db96b - 2016-12-21: Improved daemon handling code 

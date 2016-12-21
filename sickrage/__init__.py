@@ -75,9 +75,6 @@ class Daemon(object):
     """
 
     def __init__(self, pidfile):
-        sys.stdin = sys.__stdin__
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
         self.stdin = getattr(os, 'devnull', '/dev/null')
         self.stdout = getattr(os, 'devnull', '/dev/null')
         self.stderr = getattr(os, 'devnull', '/dev/null')
@@ -113,7 +110,12 @@ class Daemon(object):
             sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
+        print("Daemonized successfully, pid %s" % os.getpid())
+
         # redirect standard file descriptors
+        sys.stdin = sys.__stdin__
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
         sys.stdout.flush()
         sys.stderr.flush()
         si = file(self.stdin, 'r')
@@ -359,7 +361,6 @@ def main():
             QUITE = False
             daemon = Daemon(PID_FILE)
             daemon.daemonize()
-            print("Daemonized successfully, pid %s" % os.getpid())
 
         # main app loop
         while restart:
