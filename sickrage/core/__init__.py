@@ -98,10 +98,13 @@ class Daemon(object):
     Usage: subclass the Daemon class and override the run() method
     """
 
-    def __init__(self, pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
-        self.stdin = stdin
-        self.stdout = stdout
-        self.stderr = stderr
+    def __init__(self, pidfile):
+        sys.stdin = sys.__stdin__
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+        self.stdin = getattr(os, 'devnull', '/dev/null')
+        self.stdout = getattr(os, 'devnull', '/dev/null')
+        self.stderr = getattr(os, 'devnull', '/dev/null')
         self.pidfile = pidfile
 
     def daemonize(self):
@@ -326,8 +329,8 @@ class Core(object):
 
         # daemonize if requested
         if sickrage.DAEMONIZE:
-            NOLAUNCH = False
-            QUITE = False
+            sickrage.NOLAUNCH = False
+            sickrage.QUITE = False
             self.daemon = Daemon(sickrage.PID_FILE)
             self.daemon.daemonize()
 
