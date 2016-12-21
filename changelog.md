@@ -1,6 +1,7 @@
 # Changelog
 
-- * 247ebc5 - 2016-12-21: Improved daemon handling code 
+- * b2e0e9c - 2016-12-21: Improved daemon handling code 
+- * 785ccca - 2016-12-21: Improved daemon handling code 
 - * 05db96b - 2016-12-21: Improved daemon handling code 
 - * cc40f71 - 2016-12-05: v8.8.5 Fixed shabang line 
 - * 82d5a2d - 2016-11-27: Fixed issues related to renaming episodes and subtitles 

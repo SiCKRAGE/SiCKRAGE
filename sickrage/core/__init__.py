@@ -333,6 +333,7 @@ class Core(object):
             sickrage.QUITE = False
             self.daemon = Daemon(sickrage.PID_FILE)
             self.daemon.daemonize()
+            print("Daemonized successfully, pid %s" % os.getpid())
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore'))):
