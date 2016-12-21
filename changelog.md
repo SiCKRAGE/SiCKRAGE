@@ -1,6 +1,7 @@
 # Changelog
 
-- * b2e0e9c - 2016-12-21: Improved daemon handling code 
+- * 98e58b4 - 2016-12-21: Improved daemon handling code 
+- * 0333c4c - 2016-12-21: Improved daemon handling code 
 - * 785ccca - 2016-12-21: Improved daemon handling code 
 - * 05db96b - 2016-12-21: Improved daemon handling code 
 - * cc40f71 - 2016-12-05: v8.8.5 Fixed shabang line 

@@ -19,6 +19,7 @@
 from __future__ import print_function, unicode_literals, with_statement
 
 import argparse
+import atexit
 import codecs
 import io
 import locale
@@ -28,6 +29,7 @@ import sys
 import threading
 import time
 import traceback
+from signal import SIGTERM
 
 __all__ = [
     'srCore',
@@ -41,6 +43,7 @@ __all__ = [
 
 restart = True
 srCore = None
+daemon = None
 
 MAIN_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 PROG_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
@@ -63,6 +66,135 @@ time.strptime("2012", "%Y")
 
 # set thread name
 threading.currentThread().setName('MAIN')
+
+class Daemon(object):
+    """
+    A generic daemon class.
+
+    Usage: subclass the Daemon class and override the run() method
+    """
+
+    def __init__(self, pidfile):
+        sys.stdin = sys.__stdin__
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+        self.stdin = getattr(os, 'devnull', '/dev/null')
+        self.stdout = getattr(os, 'devnull', '/dev/null')
+        self.stderr = getattr(os, 'devnull', '/dev/null')
+        self.pidfile = pidfile
+
+    def daemonize(self):
+        """
+        do the UNIX double-fork magic, see Stevens' "Advanced
+        Programming in the UNIX Environment" for details (ISBN 0201563177)
+        http://www.erlenstar.demon.co.uk/unix/faq_2.html#SEC16
+        """
+        try:
+            pid = os.fork()
+            if pid > 0:
+                # exit first parent
+                sys.exit(0)
+        except OSError, e:
+            sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.exit(1)
+
+        # decouple from parent environment
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+
+        # do second fork
+        try:
+            pid = os.fork()
+            if pid > 0:
+                # exit from second parent
+                sys.exit(0)
+        except OSError, e:
+            sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.exit(1)
+
+        # redirect standard file descriptors
+        sys.stdout.flush()
+        sys.stderr.flush()
+        si = file(self.stdin, 'r')
+        so = file(self.stdout, 'a+')
+        se = file(self.stderr, 'a+', 0)
+        os.dup2(si.fileno(), sys.stdin.fileno())
+        os.dup2(so.fileno(), sys.stdout.fileno())
+        os.dup2(se.fileno(), sys.stderr.fileno())
+
+        # write pidfile
+        atexit.register(self.delpid)
+        pid = str(os.getpid())
+        file(self.pidfile, 'w+').write("%s\n" % pid)
+
+    def delpid(self):
+        if os.path.exists(self.pidfile):
+            os.remove(self.pidfile)
+
+    def start(self):
+        """
+        Start the daemon
+        """
+        # Check for a pidfile to see if the daemon already runs
+        try:
+            pf = file(self.pidfile, 'r')
+            pid = int(pf.read().strip())
+            pf.close()
+        except IOError:
+            pid = None
+
+        if pid:
+            message = "pidfile %s already exist. Daemon already running?\n"
+            sys.stderr.write(message % self.pidfile)
+            sys.exit(1)
+
+        # Start the daemon
+        self.daemonize()
+        self.run()
+
+    def stop(self):
+        """
+        Stop the daemon
+        """
+
+        # Get the pid from the pidfile
+        try:
+            pf = file(self.pidfile, 'r')
+            pid = int(pf.read().strip())
+            pf.close()
+        except IOError:
+            pid = None
+
+        if not pid:
+            message = "pidfile %s does not exist. Daemon not running?\n"
+            sys.stderr.write(message % self.pidfile)
+            return  # not an error in a restart
+
+        # Try killing the daemon process
+        try:
+            while 1:
+                os.kill(pid, SIGTERM)
+                time.sleep(0.1)
+        except OSError, err:
+            err = str(err)
+            if err.find("No such process") > 0:
+                self.delpid()
+            else:
+                sys.exit(1)
+
+    def restart(self):
+        """
+        Restart the daemon
+        """
+        self.stop()
+        self.start()
+
+    def run(self):
+        """
+        You should override this method when you subclass Daemon. It will be called after the process has been
+        daemonized by start() or restart().
+        """
 
 def encodingInit():
     # map the following codecs to utf-8
@@ -132,7 +264,7 @@ def version():
 
 
 def main():
-    global srCore, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
+    global srCore, daemon, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
         DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
@@ -220,6 +352,14 @@ def main():
         # Make sure we can write to the data dir
         if not os.access(DATA_DIR, os.W_OK):
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
+
+        # daemonize if requested
+        if DAEMONIZE:
+            NOLAUNCH = False
+            QUITE = False
+            daemon = Daemon(PID_FILE)
+            daemon.daemonize()
+            print("Daemonized successfully, pid %s" % os.getpid())
 
         # main app loop
         while restart:
