@@ -67,11 +67,10 @@ time.strptime("2012", "%Y")
 # set thread name
 threading.currentThread().setName('MAIN')
 
+
 class Daemon(object):
     """
-    A generic daemon class.
-
-    Usage: subclass the Daemon class and override the run() method
+    Usage: subclass the Daemon class
     """
 
     def __init__(self, pidfile):
@@ -153,7 +152,6 @@ class Daemon(object):
 
         # Start the daemon
         self.daemonize()
-        self.run()
 
     def stop(self):
         """
@@ -185,18 +183,6 @@ class Daemon(object):
             else:
                 sys.exit(1)
 
-    def restart(self):
-        """
-        Restart the daemon
-        """
-        self.stop()
-        self.start()
-
-    def run(self):
-        """
-        You should override this method when you subclass Daemon. It will be called after the process has been
-        daemonized by start() or restart().
-        """
 
 def encodingInit():
     # map the following codecs to utf-8
@@ -378,7 +364,6 @@ def main():
             print("Failed to import required libs, please run 'pip install -r {}' from console".format(REQS_FILE))
     except:
         traceback.print_exc()
-
 
 if __name__ == '__main__':
     main()

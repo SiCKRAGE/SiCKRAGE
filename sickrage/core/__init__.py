@@ -91,7 +91,6 @@ class Core(object):
     def __init__(self):
         self.started = False
         self.io_loop = IOLoop.current()
-        self.daemon = None
 
         # process id
         self.PID = os.getpid()
@@ -513,9 +512,8 @@ class Core(object):
             # shutdown logging
             self.srLogger.close()
 
-        # delete pid file
-        if sickrage.DAEMONIZE and sickrage.daemon:
-            sickrage.daemon.stop()
+        # stop daemon process
+        if sickrage.daemon: sickrage.daemon.stop()
 
     def save_all(self):
         # write all shows
