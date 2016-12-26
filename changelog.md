@@ -1,6 +1,7 @@
 # Changelog
 
-- * c175ca7 - 2016-12-21: Improved daemon handling code 
+- * e44c9ed - 2016-12-26: Fixed issues with displaying providers 
+- * 5e0d292 - 2016-12-21: Improved daemon handling code 
 - * 55d69f7 - 2016-12-21: Improved daemon handling code 
 - * 80e464b - 2016-12-21: Improved daemon handling code 
 - * 0333c4c - 2016-12-21: Improved daemon handling code 

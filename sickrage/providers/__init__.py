@@ -32,13 +32,14 @@ from xml.sax import SAXParseException
 
 import bencode
 import requests
-import sickrage
 import xmltodict
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
 from pynzb import nzb_parser
 from requests.utils import add_dict_to_cookiejar
+
+import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
@@ -1236,8 +1237,10 @@ class providersDict(dict):
     def sort(self, key=None, randomize=False):
         sorted_providers = []
 
+        self.provider_order += [x.id for x in self.all().values() if x.id not in self.provider_order]
+
         if not key:
-            key = self.provider_order or [x.id for x in self.all().values()]
+            key = self.provider_order
 
         if randomize:
             random.shuffle(key)
