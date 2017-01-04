@@ -462,7 +462,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                                                                   downCurQuality,
                                                                   cacheOnly)
                 except AuthException as e:
-                    sickrage.srCore.srLogger.error("Authentication error: {}".format(e.message))
+                    sickrage.srCore.srLogger.warning("Authentication error: {}".format(e.message))
                     break
                 except Exception as e:
                     sickrage.srCore.srLogger.error(

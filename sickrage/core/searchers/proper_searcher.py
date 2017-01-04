@@ -95,7 +95,7 @@ class srProperSearcher(object):
             try:
                 curPropers = providerObj.find_propers(search_date)
             except AuthException as e:
-                sickrage.srCore.srLogger.debug("Authentication error: {}".format(e.message))
+                sickrage.srCore.srLogger.warning("Authentication error: {}".format(e.message))
                 continue
             except Exception as e:
                 sickrage.srCore.srLogger.debug(
