@@ -22,8 +22,9 @@ import re
 import traceback
 from xml.parsers.expat import ExpatError
 
-import sickrage
 import xmltodict
+
+import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import tryInt
 from sickrage.providers import TorrentProvider
@@ -31,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class ExtraTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(ExtraTorrentProvider, self).__init__("ExtraTorrent",'extratorrent.cc', False)
+        super(ExtraTorrentProvider, self).__init__("ExtraTorrent",'extra.to', False)
 
         self.urls.update({
             'rss': '{base_url}/rss.xml'.format(base_url=self.urls['base_url'])
