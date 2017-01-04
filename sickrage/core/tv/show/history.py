@@ -60,10 +60,12 @@ class History:
         for tv_show in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             if limit == 0:
                 if len(actions) > 0:
-                    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('history', tv_show['indexer_id'], with_doc=True)
+                    dbData = [x['doc'] for x in
+                              sickrage.srCore.mainDB.db.get_many('history', tv_show['indexer_id'], with_doc=True)
                               if x['doc']['action'] in actions]
                 else:
-                    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('history', tv_show['indexer_id'], with_doc=True)]
+                    dbData = [x['doc'] for x in
+                              sickrage.srCore.mainDB.db.get_many('history', tv_show['indexer_id'], with_doc=True)]
             else:
                 if len(actions) > 0:
                     dbData = [x['doc'] for x in
@@ -71,7 +73,8 @@ class History:
                               if x['doc']['action'] in actions]
                 else:
                     dbData = [x['doc'] for x in
-                              sickrage.srCore.mainDB.db.get_many('history', tv_show['indexer_id'], limit, with_doc=True)]
+                              sickrage.srCore.mainDB.db.get_many('history', tv_show['indexer_id'], limit,
+                                                                 with_doc=True)]
 
             for result in dbData:
                 data.append({
@@ -240,11 +243,11 @@ class FailedHistory(object):
 
         release = FailedHistory.prepareFailedName(release)
 
-        dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.get_many('history', release, with_doc=True)]
+        dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('history', with_doc=True) if
+                  x['doc']['release'] == release]
 
         if len(dbData) == 0:
-            sickrage.srCore.srLogger.warning(
-                "Release not found in snatch history.")
+            sickrage.srCore.srLogger.warning("{}, Release not found in snatch history.".format(release))
         elif len(dbData) > 1:
             sickrage.srCore.srLogger.warning("Multiple logged snatches found for release")
             sizes = len(set(x["size"] for x in dbData))
@@ -401,7 +404,8 @@ class FailedHistory(object):
     def trimHistory():
         """Trims history table to 1 month of history from today"""
         date = str((datetime.today() - timedelta(days=30)).strftime(History.date_format))
-        for dbData in [x['doc'] for x in sickrage.srCore.failedDB.db.all('history', with_doc=True) if x['doc']['date'] < date]:
+        for dbData in [x['doc'] for x in sickrage.srCore.failedDB.db.all('history', with_doc=True) if
+                       x['doc']['date'] < date]:
             sickrage.srCore.failedDB.db.delete(dbData)
 
     @staticmethod
@@ -415,14 +419,16 @@ class FailedHistory(object):
         provider = None
 
         # Clear old snatches for this release if any exist
-        dbData = sorted([x['doc'] for x in sickrage.srCore.failedDB.db.get_many('history', epObj.show.indexerid, with_doc=True)
-                         if x['doc']['season'] == epObj.season
-                         and x['doc']['episode'] == epObj.episode], key=lambda d: d['date'])
+        dbData = sorted(
+            [x['doc'] for x in sickrage.srCore.failedDB.db.get_many('history', epObj.show.indexerid, with_doc=True)
+             if x['doc']['season'] == epObj.season
+             and x['doc']['episode'] == epObj.episode], key=lambda d: d['date'])
 
         [sickrage.srCore.failedDB.db.delete(x) for x in dbData[1::]]
 
         # Search for release in snatch history
-        for dbData in [x['doc'] for x in sickrage.srCore.failedDB.db.get_many('history', epObj.show.indexerid, with_doc=True)
+        for dbData in [x['doc'] for x in
+                       sickrage.srCore.failedDB.db.get_many('history', epObj.show.indexerid, with_doc=True)
                        if x['doc']['season'] == epObj.season
                        and x['doc']['episode'] == epObj.episode]:
 
