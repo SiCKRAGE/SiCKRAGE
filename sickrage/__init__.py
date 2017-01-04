@@ -237,7 +237,7 @@ def check_requirements():
         v = OpenSSL.__version__
         v_needed = '0.15'
 
-        if v >= v_needed:
+        if not v >= v_needed:
             print('OpenSSL installed but {} is needed while {} is installed. Run `pip install -U pyopenssl`'.format(
                 v_needed, v))
     except:
