@@ -1,6 +1,7 @@
 # Changelog
 
-- * ea29563 - 2017-01-07: Fixed issues with version updater 
+- * 17395df - 2017-01-07: Version updated to v8.8.7 
+- * 5e2dd84 - 2017-01-07: Fixed issues with version updater 
 - * ed93874 - 2017-01-07: Small fixes for show updater code 
 - * 1594ffe - 2017-01-07: Updated to v8.8.6 
 - * ce5ff24 - 2017-01-07: Fixed db backups to save correct path names Updates showUpdater class code 
