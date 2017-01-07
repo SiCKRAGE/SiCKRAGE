@@ -26,10 +26,11 @@ import time
 import traceback
 from sqlite3 import OperationalError
 
-import sickrage
 from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
 from CodernityDB.index import IndexNotFoundException, IndexConflict, IndexException
 from CodernityDB.storage import IU_Storage
+
+import sickrage
 from sickrage.core.helpers import randomString
 
 
@@ -93,7 +94,10 @@ class srDatabase(object):
                 for root, dirs, files in os.walk(self.db_path):
                     for zfilename in files:
                         zipf.add(os.path.join(root, zfilename),
-                                 arcname='database/%s' % os.path.join(root[len(self.db_path) + 1:], zfilename))
+                                 arcname='database/%s/%s' % (
+                                     self.name,
+                                     os.path.join(root[len(self.db_path) + 1:], zfilename))
+                                 )
 
             self.db.open()
         else:
