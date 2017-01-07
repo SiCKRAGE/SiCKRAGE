@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import os
 import threading
 import time
 
@@ -60,25 +59,23 @@ class srShowUpdater(object):
             })
 
         # get indexer updated show ids
-        updated_shows = srIndexerApi().indexer(**srIndexerApi().api_params.copy()).updated(long(last_update))
+        updated_shows = set(d["id"] for d in
+                            srIndexerApi().indexer(**srIndexerApi().api_params.copy()).updated(long(last_update)) or {})
 
         # start update process
-        piList = []
+        pi_list = []
         for curShow in sickrage.srCore.SHOWLIST:
             try:
                 curShow.nextEpisode()
 
-                if not os.path.isdir(curShow.location):
-                    continue
-
-                if curShow.indexerid in set(d["id"] for d in updated_shows or {}):
-                    piList.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
+                if curShow.indexerid in updated_shows:
+                    pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
                 elif datetime.date.fromordinal(curShow.last_refresh) > datetime.timedelta(days=1):
-                    piList.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
-            except (CantUpdateShowException, CantRefreshShowException):
-                continue
+                    pi_list.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
+            except (CantUpdateShowException, CantRefreshShowException) as e:
+                sickrage.srCore.srLogger.debug("Automatic update failed: {}".format(e.message))
 
-        ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", piList))
+        ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData['time'] = long(update_timestamp)
         sickrage.srCore.cacheDB.db.update(dbData)

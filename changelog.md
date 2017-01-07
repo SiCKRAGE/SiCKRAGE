@@ -1,6 +1,7 @@
 # Changelog
 
-- * 649a485 - 2017-01-07: Updated to v8.8.6 
+- * b3a5e25 - 2017-01-07: Small fixes for show updater code 
+- * 1594ffe - 2017-01-07: Updated to v8.8.6 
 - * ce5ff24 - 2017-01-07: Fixed db backups to save correct path names Updates showUpdater class code 
 - * 39b7cd5 - 2017-01-03: Fix for failed downloads 
 - * a9e1e80 - 2017-01-03: Fixed issues with PyOpenSSL version being newer then v0.15 
