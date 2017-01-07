@@ -31,6 +31,7 @@ import time
 import traceback
 
 import github
+
 import sickrage
 from sickrage.core.helpers import backupSR, removetree
 from sickrage.notifiers import srNotifiers
@@ -122,7 +123,7 @@ class srVersionUpdater(object):
     @staticmethod
     def safe_to_update():
         def postprocessor_safe():
-            if not sickrage.srCore.STARTED:
+            if not sickrage.srCore.started:
                 return True
 
             if not sickrage.srCore.srScheduler.get_job('POSTPROCESSOR').func.im_self.amActive:
@@ -133,7 +134,7 @@ class srVersionUpdater(object):
                 return False
 
         def showupdate_safe():
-            if not sickrage.srCore.STARTED:
+            if not sickrage.srCore.started:
                 return True
 
             if not sickrage.srCore.srScheduler.get_job('SHOWUPDATER').func.im_self.amActive:
@@ -418,10 +419,7 @@ class GitUpdateManager(UpdateManager):
         if self.version != self.get_newest_version:
             newest_text = 'There is a newer version available, version {}'.format(self.get_newest_version)
             newest_text += "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
-        else:
-            return
-
-        sickrage.srCore.NEWEST_VERSION_STRING = newest_text
+            sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
     def need_update(self):
         try:

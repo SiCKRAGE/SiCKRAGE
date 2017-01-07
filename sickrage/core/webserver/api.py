@@ -1557,7 +1557,7 @@ class CMD_SiCKRAGEPing(ApiCall):
 
     def run(self):
         """ Ping SiCKRAGE to check if it is running """
-        if sickrage.srCore.STARTED:
+        if sickrage.srCore.started:
             return _responds(RESULT_SUCCESS, {"pid": sickrage.srCore.PID}, "Pong")
         else:
             return _responds(RESULT_SUCCESS, msg="Pong")
