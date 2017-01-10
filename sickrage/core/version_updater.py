@@ -126,7 +126,7 @@ class srVersionUpdater(object):
             if not sickrage.srCore.started:
                 return True
 
-            if not sickrage.srCore.srScheduler.get_job('POSTPROCESSOR').func.im_self.amActive:
+            if not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
                 sickrage.srCore.srLogger.debug("We can proceed with the update. Post-Processor is not running")
                 return True
             else:
@@ -137,7 +137,7 @@ class srVersionUpdater(object):
             if not sickrage.srCore.started:
                 return True
 
-            if not sickrage.srCore.srScheduler.get_job('SHOWUPDATER').func.im_self.amActive:
+            if not sickrage.srCore.SHOWUPDATER.amActive:
                 sickrage.srCore.srLogger.debug("We can proceed with the update. Shows are not being updated")
                 return True
             else:
