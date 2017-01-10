@@ -513,7 +513,7 @@ class Core(object):
             self.srLogger.close()
 
         # stop daemon process
-        if sickrage.daemon: sickrage.daemon.stop()
+        if not sickrage.restart and sickrage.daemon: sickrage.daemon.stop()
 
     def save_all(self):
         # write all shows

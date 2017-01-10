@@ -2935,7 +2935,7 @@ class Manage(Home, WebRoot):
             status_results = sorted([s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)
                                      for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
                                      if e['doc']['status'] in status_list and e['doc']['season'] != 0],
-                                    key=lambda d: d['show_name'])
+                                      key=lambda d: d['show_name'])
 
             for cur_status_result in status_results:
                 cur_indexer_id = int(cur_status_result["indexer_id"])

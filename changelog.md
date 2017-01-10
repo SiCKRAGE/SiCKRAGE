@@ -1,6 +1,7 @@
 # Changelog
 
-- * 710b701 - 2017-01-10: Updated to v8.8.9 
+- * a0001c4 - 2017-01-10: Fixed restart issues during updates 
+- * 70aa230 - 2017-01-10: Updated to v8.8.9 
 - * 45a38c8 - 2017-01-10: Fixed issue with version updater and safety checks 
 - * 613f601 - 2017-01-10: Fixed issue with episode status manager and snatched. Updated to v8.8.8 
 - * fb84609 - 2017-01-07: Version updated to v8.8.7 
