@@ -1,6 +1,7 @@
 # Changelog
 
-- * 17395df - 2017-01-07: Version updated to v8.8.7 
+- * 273d691 - 2017-01-10: Fixed issue with episode status manager and snatched. Updated to v8.8.8 
+- * fb84609 - 2017-01-07: Version updated to v8.8.7 
 - * 5e2dd84 - 2017-01-07: Fixed issues with version updater 
 - * ed93874 - 2017-01-07: Small fixes for show updater code 
 - * 1594ffe - 2017-01-07: Updated to v8.8.6 
