@@ -511,7 +511,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
 
             # see if every episode is wanted
             if bestSeasonResult:
-                searchedSeasons = {str(x.season) for x in episodes}
+                searchedSeasons = {x.season for x in episodes}
 
                 # get the quality of the season nzb
                 seasonQual = bestSeasonResult.quality
@@ -523,10 +523,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                 allEps = [int(x['doc']["episode"]) for x in
                           sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                           if x['doc']['season'] in searchedSeasons]
-
-                sickrage.srCore.srLogger.info(
-                    "Executed query: [SELECT episode FROM tv_episodes WHERE showid = %s AND season in  %s]" % (
-                        show.indexerid, ','.join(searchedSeasons)))
 
                 sickrage.srCore.srLogger.debug("Episode list: " + str(allEps))
 
