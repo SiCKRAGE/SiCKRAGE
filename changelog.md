@@ -1,6 +1,7 @@
 # Changelog
 
-- * 56903a8 - 2017-01-15: Fixed misc bugs with web session handling/exceptions 
+- * 6589f22 - 2017-01-15: Added cfscrape to requirements 
+- * e29e5bf - 2017-01-15: Fixed misc bugs with web session handling/exceptions 
 - * 11deea3 - 2017-01-10: Updated to v8.9.0 
 - * 873a209 - 2017-01-10: Fixed restart issues during updates 
 - * 70aa230 - 2017-01-10: Updated to v8.8.9 
