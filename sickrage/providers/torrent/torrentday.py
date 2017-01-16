@@ -20,8 +20,9 @@ from __future__ import unicode_literals
 
 import re
 
-import sickrage
 from requests.utils import dict_from_cookiejar
+
+import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.providers import TorrentProvider
 
@@ -64,7 +65,7 @@ class TorrentDayProvider(TorrentProvider):
         login_params = {'username': self.username, 'password': self.password, 'submit.x': 0, 'submit.y': 0}
 
         response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params)
-        if response.status_code != 200:
+        if not response.ok:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 

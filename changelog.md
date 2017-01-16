@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2d227a8 - 2017-01-10: Updated to v8.9.0 
+- * 56903a8 - 2017-01-15: Fixed misc bugs with web session handling/exceptions 
+- * 11deea3 - 2017-01-10: Updated to v8.9.0 
 - * 873a209 - 2017-01-10: Fixed restart issues during updates 
 - * 70aa230 - 2017-01-10: Updated to v8.8.9 
 - * 45a38c8 - 2017-01-10: Fixed issue with version updater and safety checks 

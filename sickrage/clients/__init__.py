@@ -23,8 +23,9 @@ import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
 
-import sickrage
 from bencode import BTFailure, bdecode, bencode
+
+import sickrage
 
 __all__ = [
     'utorrent',
@@ -156,9 +157,9 @@ class GenericClient(object):
     def __init__(self, name, host=None, username=None, password=None):
 
         self.name = name
-        self.username = sickrage.srCore.srConfig.TORRENT_USERNAME if username is None else username
-        self.password = sickrage.srCore.srConfig.TORRENT_PASSWORD if password is None else password
-        self.host = sickrage.srCore.srConfig.TORRENT_HOST if host is None else host
+        self.username = sickrage.srCore.srConfig.TORRENT_USERNAME if not username else username
+        self.password = sickrage.srCore.srConfig.TORRENT_PASSWORD if not password else password
+        self.host = sickrage.srCore.srConfig.TORRENT_HOST if not host else host
         self.rpcurl = sickrage.srCore.srConfig.TORRENT_RPCURL
 
         self.url = None
@@ -167,7 +168,7 @@ class GenericClient(object):
         self.cookies = None
         self.last_time = time.time()
 
-    def _request(self, method='get', *args, **kwargs):
+    def _request(self, method='get', params=None, data=None, *args, **kwargs):
 
         if time.time() > self.last_time + 1800 or not self.auth:
             self.last_time = time.time()
@@ -177,23 +178,24 @@ class GenericClient(object):
             self.name,
             method.upper(),
             self.url,
-            str(kwargs.get('params')),
-            str(kwargs.get('data'))))
+            str(params),
+            str(data if data else 'None')[0:99] + ('...' if len(data if data else 'None') > 200 else '')))
 
         if not self.auth:
             sickrage.srCore.srLogger.warning(self.name + ': Authentication Failed')
             return False
 
         try:
-            if 'data' in kwargs and kwargs['data'] is None:
-                del kwargs['data']
-
             self.response = sickrage.srCore.srWebSession.request(method.upper(),
                                                                  self.url,
+                                                                 params=params,
+                                                                 data=data,
                                                                  auth=(self.username, self.password),
                                                                  timeout=120,
+                                                                 verify=False,
                                                                  *args,
                                                                  **kwargs)
+
             sickrage.srCore.srLogger.debug(
                 self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
         except Exception as e:
@@ -345,17 +347,19 @@ class GenericClient(object):
     def testAuthentication(self):
         try:
             # verify valid url
-            self.response = sickrage.srCore.srWebSession.get(self.url,
-                                                             timeout=120,
-                                                             verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+            self.response = sickrage.srCore.srWebSession.get(self.url, timeout=120, verify=False)
+        except:
+            pass
 
+        try:
             # get auth
             self._get_auth()
+            if not self.response:
+                raise Exception
 
             # verify auth
             if self.auth:
                 return True, 'Success: Connected and Authenticated'
-
             return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
         except Exception as e:
             return False, 'Error: Unable to connect to ' + self.name

@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -44,7 +42,6 @@ class DelugeAPI(GenericClient):
             self.response = sickrage.srCore.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
                                                               verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
-
         except Exception:
             return None
 
@@ -77,8 +74,8 @@ class DelugeAPI(GenericClient):
                 return None
 
             hosts = self.response.json()['result']
-            if len(hosts) == 0:
-                sickrage.srCore.srLogger.error(self.name + ': WebUI does not contain daemons')
+            if not hosts:
+                sickrage.srCore.srLogger.warning(self.name + ': WebUI does not contain daemons')
                 return None
 
             post_data = json.dumps({"method": "web.connect",
@@ -107,7 +104,7 @@ class DelugeAPI(GenericClient):
 
             connected = self.response.json()['result']
             if not connected:
-                sickrage.srCore.srLogger.error(self.name + ': WebUI could not connect to daemon')
+                sickrage.srCore.srLogger.warning(self.name + ': WebUI could not connect to daemon')
                 return None
 
         return self.auth

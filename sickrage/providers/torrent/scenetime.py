@@ -20,8 +20,9 @@ from __future__ import unicode_literals
 
 import traceback
 
-import sickrage
 from requests.utils import dict_from_cookiejar
+
+import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
@@ -64,7 +65,7 @@ class SceneTimeProvider(TorrentProvider):
         login_params = {'username': self.username, 'password': self.password}
 
         response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30)
-        if response.status_code != 200:
+        if not response.ok:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -94,7 +95,6 @@ class SceneTimeProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.post(self.urls['search'], data=query).text
-                    if not data: raise
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue

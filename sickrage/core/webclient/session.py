@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -30,9 +29,9 @@ from contextlib import closing
 
 import cachecontrol
 import certifi
+import cfscrape as cfscrape
 import requests
 from cachecontrol.heuristics import ExpiresAfter
-from requests_futures.sessions import FuturesSession
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
@@ -66,44 +65,48 @@ class DBCache(object):
                 cache.clear()
 
 
-class srSession(FuturesSession):
-    def request(self, method, url, headers=None, params=None, cache=True, *args, **kwargs):
-        url = self.normalize_url(url)
-        kwargs.setdefault('params', {}).update(params or {})
-        kwargs.setdefault('headers', {}).update(headers or {})
+class srSession(cfscrape.CloudflareScraper):
+    def request(self, method, url, headers=None, params=None, proxies=None, cache=True, verify=False, *args, **kwargs):
+        if headers is None: headers = {}
+        if params is None: params = {}
+        if proxies is None: proxies = {}
 
-        # if method == 'POST':
-        #    self.session.headers.update({"Content-type": "application/x-www-form-urlencoded"})
-        kwargs.setdefault('headers', {}).update({'Accept-Encoding': 'gzip, deflate'})
-        kwargs.setdefault('headers', {}).update(random.choice(USER_AGENTS))
+        url = self.normalize_url(url)
+
+        headers.update({'Accept-Encoding': 'gzip, deflate'})
+        headers.update(random.choice(USER_AGENTS))
 
         # request session ssl verify
-        kwargs['verify'] = False
         if sickrage.srCore.srConfig.SSL_VERIFY:
             try:
-                kwargs['verify'] = certifi.where()
+                verify = certifi.where()
             except:
                 pass
 
         # request session proxies
-        if 'Referer' not in kwargs.get('headers', {}) and sickrage.srCore.srConfig.PROXY_SETTING:
+        if 'Referer' not in headers and sickrage.srCore.srConfig.PROXY_SETTING:
             sickrage.srCore.srLogger.debug("Using global proxy: " + sickrage.srCore.srConfig.PROXY_SETTING)
             scheme, address = urllib2.splittype(sickrage.srCore.srConfig.PROXY_SETTING)
-            address = \
-                ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING), sickrage.srCore.srConfig.PROXY_SETTING)[
-                    scheme]
-            kwargs.setdefault('proxies', {}).update({"http": address, "https": address})
-            kwargs.setdefault('headers', {}).update({'Referer': address})
+            address = ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING),
+                       sickrage.srCore.srConfig.PROXY_SETTING)[scheme]
+            proxies.update({"http": address, "https": address})
+            headers.update({'Referer': address})
 
         # setup session caching
         if cache:
             cache_file = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))
-            cachecontrol.CacheControl(self,
-                                      cache=DBCache(cache_file),
-                                      heuristic=ExpiresAfter(days=7))
+            self.__class__ = cachecontrol.CacheControl(self,
+                                                       cache=DBCache(cache_file),
+                                                       heuristic=ExpiresAfter(days=7)).__class__
 
         # get web response
-        response = super(srSession, self).request(method, url, *args, **kwargs).result()
+        response = super(srSession, self).request(method,
+                                                  url,
+                                                  headers=headers,
+                                                  params=params,
+                                                  verify=verify,
+                                                  proxies=proxies,
+                                                  *args, **kwargs)
 
         try:
             # check web response for errors
@@ -116,10 +119,10 @@ class srSession(FuturesSession):
 
             if sickrage.srCore.srConfig.SSL_VERIFY:
                 sickrage.srCore.srLogger.info(
-                    "SSL Error requesting url: '{}' Try disabling Cert Verification on the advanced tab of /config/general".format(
+                    "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(
                         e.request.url))
-        except Exception as e:
-            sickrage.srCore.srLogger.debug(e.message)
+        except Exception:
+            pass
 
         return response
 

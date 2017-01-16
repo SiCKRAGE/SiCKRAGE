@@ -32,7 +32,6 @@ import sickrage
 
 class TraktAPI():
     def __init__(self, ssl_verify=True, timeout=30):
-        self.session = sickrage.srCore.srWebSession
         self.timeout = timeout if timeout else None
         self.auth_url = sickrage.srCore.srConfig.TRAKT_OAUTH_URL
         self.api_url = sickrage.srCore.srConfig.TRAKT_API_URL
@@ -102,7 +101,7 @@ class TraktAPI():
         headers['Authorization'] = 'Bearer ' + sickrage.srCore.srConfig.TRAKT_ACCESS_TOKEN
 
         try:
-            resp = self.session.request(method, url + path,
+            resp = sickrage.srCore.srWebSession.request(method, url + path,
                                         headers=headers,
                                         timeout=self.timeout,
                                         data=json.dumps(data) if data else [])

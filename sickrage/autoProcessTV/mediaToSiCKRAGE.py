@@ -223,7 +223,7 @@ def main():
         scriptlogger.error('Invalid SiCKRAGE Username or Password, check your config')
         sys.exit('Invalid SiCKRAGE Username or Password, check your config')
 
-    if response.status_code == 200:
+    if response.ok:
         scriptlogger.info('Script ' + __file__ + ' Succesfull')
         print('Script ' + __file__ + ' Succesfull')
         sys.exit()

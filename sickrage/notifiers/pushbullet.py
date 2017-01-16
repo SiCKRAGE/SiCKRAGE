@@ -99,7 +99,7 @@ class PushbulletNotifier(srNotifiers):
             sickrage.srCore.srLogger.debug('Pushbullet authorization failed')
             return False
 
-        if response.status_code != 200:
+        if not response.ok:
             sickrage.srCore.srLogger.debug('Pushbullet call failed with error code %r' % response.status_code)
             return False
 

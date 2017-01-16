@@ -43,15 +43,14 @@ class imdbPopular(object):
             'year': '%s,%s' % (datetime.date.today().year - 1, datetime.date.today().year + 1)
         }
 
-        self.session = sickrage.srCore.srWebSession
-
     def fetch_popular_shows(self):
         """Get popular show information from IMDB"""
 
         popular_shows = []
 
-        data = self.session.get(self.url, headers={'Referer': 'http://akas.imdb.com/'}, params=self.params).text
-        if not data:
+        try:
+            data = sickrage.srCore.srWebSession.get(self.url, headers={'Referer': 'http://akas.imdb.com/'}, params=self.params).text
+        except Exception:
             return None
 
         with bs4_parser(data) as soup:
@@ -125,4 +124,4 @@ class imdbPopular(object):
         full_path = os.path.join(path, os.path.basename(image_url))
 
         if not os.path.isfile(full_path):
-            self.session.download(image_url, full_path)
+            sickrage.srCore.srWebSession.download(image_url, full_path)

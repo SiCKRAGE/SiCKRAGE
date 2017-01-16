@@ -39,7 +39,7 @@ class mlnetAPI(GenericClient):
         except Exception:
             return None
 
-        return self.auth if not self.response.status_code == 404 else None
+        return self.auth if self.response.ok else None
 
     def _add_torrent_uri(self, result):
 
