@@ -1237,7 +1237,8 @@ class providersDict(dict):
     def sort(self, key=None, randomize=False):
         sorted_providers = []
 
-        self.provider_order += [x.id for x in self.all().values() if x.id not in self.provider_order]
+        self.provider_order = [x for x in self.provider_order if x in self.all().keys()]
+        self.provider_order += [x for x in self.all().keys() if x not in self.provider_order]
 
         if not key:
             key = self.provider_order

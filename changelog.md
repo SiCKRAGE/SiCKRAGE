@@ -1,6 +1,7 @@
 # Changelog
 
-- * 82a06ed - 2017-01-16: Fixed issue with season pack searches/downloading Updated to v8.9.2 
+- * 148056c - 2017-01-25: Fixed issue with provider objects and ordering 
+- * 5dfb0b1 - 2017-01-16: Fixed issue with season pack searches/downloading Updated to v8.9.2 
 - * 76a3681 - 2017-01-15: Updated to v8.9.1 
 - * c794f1a - 2017-01-15: Added cfscrape to requirements 
 - * e29e5bf - 2017-01-15: Fixed misc bugs with web session handling/exceptions 
