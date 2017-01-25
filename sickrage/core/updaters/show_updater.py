@@ -70,7 +70,7 @@ class srShowUpdater(object):
 
                 if curShow.indexerid in updated_shows:
                     pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
-                elif datetime.date.fromordinal(curShow.last_refresh) > datetime.timedelta(days=1):
+                else:
                     pi_list.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
                 sickrage.srCore.srLogger.debug("Automatic update failed: {}".format(e.message))

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 148056c - 2017-01-25: Fixed issue with provider objects and ordering 
+- * e670a70 - 2017-01-25: Fixed issues with automated show updates Fixed issues with version updates New version v8.9.3 
+- * 6d06475 - 2017-01-25: Fixed issue with provider objects and ordering 
 - * 5dfb0b1 - 2017-01-16: Fixed issue with season pack searches/downloading Updated to v8.9.2 
 - * 76a3681 - 2017-01-15: Updated to v8.9.1 
 - * c794f1a - 2017-01-15: Added cfscrape to requirements 
