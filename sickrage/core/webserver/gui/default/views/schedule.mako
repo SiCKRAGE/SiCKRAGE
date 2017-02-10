@@ -114,18 +114,20 @@
         continue
 
     cur_ep_airdate = cur_result['localtime'].date()
+    cur_ep_enddate = cur_result['localtime']
 
     if run_time:
-        cur_ep_enddate = cur_result['localtime'].date() + datetime.timedelta(minutes = run_time)
-        if cur_ep_enddate < today.date():
-            show_div = 'listing-overdue'
-        elif cur_ep_airdate >= next_week.date():
-            show_div = 'listing-toofar'
-        elif today.date() <= cur_ep_airdate < next_week.date():
-            if cur_ep_airdate == today.date():
-                show_div = 'listing-current'
-            else:
-                show_div = 'listing-default'
+        cur_ep_enddate += datetime.timedelta(minutes = run_time)
+
+    if cur_ep_enddate < today:
+        show_div = 'listing-overdue'
+    elif cur_ep_airdate >= next_week.date():
+        show_div = 'listing-toofar'
+    elif today.date() <= cur_ep_airdate < next_week.date():
+        if cur_ep_airdate == today.date():
+            show_div = 'listing-current'
+        else:
+            show_div = 'listing-default'
 %>
 
         <tr class="${show_div}">
@@ -226,9 +228,9 @@
         cur_ep_airdate = cur_result['localtime'].date()
 
         if run_time:
-            cur_ep_enddate = cur_result['localtime'].date() + datetime.timedelta(minutes = run_time)
+            cur_ep_enddate = cur_result['localtime'] + datetime.timedelta(minutes = run_time)
         else:
-            cur_ep_enddate = cur_result['localtime'].date()
+            cur_ep_enddate = cur_result['localtime']
     %>
     % if sickrage.srCore.srConfig.COMING_EPS_SORT == 'network':
         <% show_network = ('no network', cur_result['network'])[bool(cur_result['network'])] %>
@@ -239,11 +241,11 @@
             <% cur_segment = cur_result['network'] %>
         % endif
 
-        % if cur_ep_enddate < today.date():
+        % if cur_ep_enddate < today:
             <% show_div = 'ep_listing listing-overdue' %>
         % elif cur_ep_airdate >= next_week.date():
             <% show_div = 'ep_listing listing-toofar' %>
-        % elif cur_ep_enddate >= today.date() and cur_ep_airdate < next_week.date():
+        % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
             % if cur_ep_airdate == today.date():
                 <% show_div = 'ep_listing listing-current' %>
             % else:
@@ -253,13 +255,13 @@
 
     % elif sickrage.srCore.srConfig.COMING_EPS_SORT == 'date':
         % if cur_segment != cur_ep_airdate:
-            % if cur_ep_enddate < today.date() and cur_ep_airdate != today.date() and not missed_header:
+            % if cur_ep_enddate < today and cur_ep_airdate != today.date() and not missed_header:
                 <br><h2 class="day">Missed</h2>
                 <% missed_header = True %>
             % elif cur_ep_airdate >= next_week.date() and not too_late_header:
                 <br><h2 class="day">Later</h2>
                 <% too_late_header = True %>
-            % elif cur_ep_enddate >= today.date() and cur_ep_airdate < next_week.date():
+            % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
                 % if cur_ep_airdate == today.date():
                     <br><h2
                         class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.SYS_ENCODING).capitalize()}
@@ -281,11 +283,11 @@
             <% today_header = True %>
         % endif
 
-        % if cur_ep_enddate < today.date():
+        % if cur_ep_enddate < today:
             <% show_div = 'ep_listing listing-overdue' %>
         % elif cur_ep_airdate >= next_week.date():
             <% show_div = 'ep_listing listing-toofar' %>
-        % elif cur_ep_enddate >= today.date() and cur_ep_airdate < next_week.date():
+        % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
             % if cur_ep_airdate == today.date():
                 <% show_div = 'ep_listing listing-current' %>
             % else:
@@ -294,11 +296,11 @@
         % endif
 
     % elif sickrage.srCore.srConfig.COMING_EPS_SORT == 'show':
-        % if cur_ep_enddate < today.date():
+        % if cur_ep_enddate < today:
             <% show_div = 'ep_listing listing-overdue listingradius' %>
         % elif cur_ep_airdate >= next_week.date():
             <% show_div = 'ep_listing listing-toofar listingradius' %>
-        % elif cur_ep_enddate >= today.date() and cur_ep_airdate < next_week.date():
+        % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
             % if cur_ep_airdate == today.date():
                 <% show_div = 'ep_listing listing-current listingradius' %>
             % else:
