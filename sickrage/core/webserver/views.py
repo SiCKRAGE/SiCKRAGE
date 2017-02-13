@@ -669,9 +669,9 @@ class Home(WebHandler):
     def show_statistics():
         show_stat = {}
 
-        today = str(datetime.date.today().toordinal())
+        today = datetime.date.today().toordinal()
 
-        status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER
+        status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
         status_download = Quality.DOWNLOADED + Quality.ARCHIVED
 
         max_download_count = 1000
@@ -697,9 +697,9 @@ class Home(WebHandler):
                 if (airdate <= today and status in [SKIPPED, WANTED, FAILED]
                     ) or (status in status_quality + status_download): show_stat[showid]['ep_total'] += 1
 
-                if airdate >= today and status in [WANTED, UNAIRED]:
+                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
                     show_stat[showid]['ep_airs_next'] = airdate
-                elif airdate > 1 and status == UNAIRED:
+                elif airdate < today and status != UNAIRED:
                     show_stat[showid]['ep_airs_prev'] = airdate
 
                 if show_stat[showid]['ep_total'] > max_download_count:
