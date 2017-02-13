@@ -699,7 +699,7 @@ class Home(WebHandler):
 
                 if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
                     show_stat[showid]['ep_airs_next'] = airdate
-                elif airdate < today and status != UNAIRED:
+                elif airdate < today and status != UNAIRED and airdate > show_stat[showid]['ep_airs_prev']:
                     show_stat[showid]['ep_airs_prev'] = airdate
 
                 if show_stat[showid]['ep_total'] > max_download_count:
