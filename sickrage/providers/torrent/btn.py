@@ -121,29 +121,22 @@ class BTNProvider(TorrentProvider):
         # FIXME SORT RESULTS
         return results
 
-    def _api_call(self, apikey, params=None, results_per_page=1000, offset=0):
-        api = jsonrpclib.Server('http://' + self.urls['base_url'])
+    def _api_call(self, apikey, params=None, results_per_page=300, offset=0):
         parsedJSON = {}
 
         try:
+            api = jsonrpclib.Server('http://' + self.urls['base_url'])
             parsedJSON = api.getTorrents(apikey, params or {}, int(results_per_page), int(offset))
             time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
         except jsonrpclib.jsonrpc.ProtocolError as e:
-            if 'Call Limit Exceeded' in e.message:
-                sickrage.srCore.srLogger.warning(
-                    "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
+            if e.message[1] == 'Call Limit Exceeded':
+                sickrage.srCore.srLogger.warning("You have exceeded the limit of 150 calls per hour.")
+            elif e.message[1] == 'Invalid API Key':
+                sickrage.srCore.srLogger.warning("Incorrect authentication credentials.")
             else:
-                sickrage.srCore.srLogger.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(e))
-        except socket.timeout:
-            sickrage.srCore.srLogger.warning("Timeout while accessing provider")
-        except socket.error as e:
-            # Note that sometimes timeouts are thrown as socket errors
-            sickrage.srCore.srLogger.warning("Socket error while accessing provider. Error: %s " % e[1])
-        except Exception as e:
-            errorstring = str(e)
-            if errorstring.startswith('<') and errorstring.endswith('>'): errorstring = errorstring[1:-1]
-
-            sickrage.srCore.srLogger.warning("Unknown error while accessing provider. Error: %s " % errorstring)
+                sickrage.srCore.srLogger.error("JSON-RPC protocol error while accessing provider. Error: {}".format(e.message[1]))
+        except (socket.error, socket.timeout, ValueError) as e:
+            sickrage.srCore.srLogger.warning("Error while accessing provider. Error: {}".format(e))
 
         return parsedJSON
 
