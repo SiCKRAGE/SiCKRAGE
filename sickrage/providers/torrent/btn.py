@@ -25,6 +25,7 @@ import socket
 import time
 
 import jsonrpclib
+
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
@@ -36,7 +37,7 @@ from sickrage.providers import TorrentProvider
 
 class BTNProvider(TorrentProvider):
     def __init__(self):
-        super(BTNProvider, self).__init__("BTN", 'api.btnapps.net', True)
+        super(BTNProvider, self).__init__("BTN", 'api.broadcasthe.net', True)
 
         self.supports_backlog = True
 
