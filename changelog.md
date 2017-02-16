@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0d92095 - 2017-02-15: Updated BTN provider api url 
+- * 33358eb - 2017-02-15: Updated to v8.9.4 
+- * 6df13d7 - 2017-02-15: Updated BTN provider api url 
 - * 8456556 - 2017-02-12: Fixed issues with next_ep and prev_ep airdates for home view 
 - * 3a1a2f5 - 2017-02-12: Fixed issues with next_ep and prev_ep airdates for home view 
 - * 59d69d0 - 2017-02-09: Fixed issues displaying episode end date/time in schedule view 
