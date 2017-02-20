@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -32,7 +30,7 @@ from sickrage.notifiers import srNotifiers
 
 
 class NMA_Notifier(srNotifiers):
-    API_SERVER = 'www.notifymyandroid.com'
+    API_SERVER = 'https://www.notifymyandroid.com'
     ADD_PATH = '/publicapi/notify'
 
     def __init__(self):
@@ -112,7 +110,7 @@ class NMA_Notifier(srNotifiers):
         if method == "POST":
             headers['Content-type'] = "application/x-www-form-urlencoded"
 
-        resp = request(method, url=path, headers=headers, **urlencode(args))
+        resp = request(method, url=self.API_SERVER + path, headers=headers, data=urlencode(args))
 
         try:
             res = self._parse_reponse(resp.content)

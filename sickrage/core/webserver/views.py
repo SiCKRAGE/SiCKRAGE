@@ -1054,7 +1054,7 @@ class Home(WebHandler):
         if result:
             return result
         else:
-            return "Error sending Pushbullet notification"
+            return "Error getting Pushbullet devices"
 
     def status(self):
         tvdirFree = getDiskSpaceUsage(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR)

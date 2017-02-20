@@ -1,6 +1,7 @@
 # Changelog
 
-- * 66c5c33 - 2017-02-15: Cleaned up logging for BTN provider Changed results fetched per page to 300 from 1000 
+- * 124b627 - 2017-02-20: Fixed pushbullet notifications Fixed NotifyMyAndroid notifications 
+- * 48301ee - 2017-02-15: Cleaned up logging for BTN provider Changed results fetched per page to 300 from 1000 
 - * 10d0371 - 2017-02-15: Updated to v8.9.4 
 - * 6df13d7 - 2017-02-15: Updated BTN provider api url 
 - * 8456556 - 2017-02-12: Fixed issues with next_ep and prev_ep airdates for home view 

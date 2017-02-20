@@ -134,7 +134,8 @@ class BTNProvider(TorrentProvider):
             elif e.message[1] == 'Invalid API Key':
                 sickrage.srCore.srLogger.warning("Incorrect authentication credentials.")
             else:
-                sickrage.srCore.srLogger.error("JSON-RPC protocol error while accessing provider. Error: {}".format(e.message[1]))
+                sickrage.srCore.srLogger.error(
+                    "JSON-RPC protocol error while accessing provider. Error: {}".format(e.message[1]))
         except (socket.error, socket.timeout, ValueError) as e:
             sickrage.srCore.srLogger.warning("Error while accessing provider. Error: {}".format(e))
 

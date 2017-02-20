@@ -40,7 +40,7 @@ class PushbulletNotifier(srNotifiers):
 
     def get_devices(self, pushbullet_api):
         sickrage.srCore.srLogger.debug("Testing Pushbullet authentication and retrieving the device list.")
-        return self._sendPushbullet(pushbullet_api)
+        return self._sendPushbullet(pushbullet_api, event=self.TEST_EVENT)
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSNATCH:
@@ -65,7 +65,7 @@ class PushbulletNotifier(srNotifiers):
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None):
 
-        if not (sickrage.srCore.srConfig.USE_PUSHBULLET or event.lower() == 'test' or event is None):
+        if not (sickrage.srCore.srConfig.USE_PUSHBULLET or event.lower() == 'test'):
             return False
 
         pushbullet_api = pushbullet_api or sickrage.srCore.srConfig.PUSHBULLET_API
@@ -84,7 +84,7 @@ class PushbulletNotifier(srNotifiers):
             'body': message.encode('utf-8'),
             'device_iden': pushbullet_device.encode('utf-8'),
             'type': 'note'
-        }) if event else None
+        }) if pushbullet_device else None
 
         method = 'GET' if data is None else 'POST'
         headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer %s' % pushbullet_api}
