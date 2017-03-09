@@ -26,6 +26,7 @@ import time
 
 import imdbpie
 import requests
+
 import sickrage
 
 try:
@@ -668,8 +669,8 @@ class Tvdb:
 
         seriesInfoEt = self._getetsrc(self.config['api']['series'].format(sid))
         if not seriesInfoEt:
-            sickrage.srCore.srLogger.debug('Series result returned zero')
-            raise tvdb_error("Series result returned zero")
+            sickrage.srCore.srLogger.debug("[{}]: Series result returned zero".format(sid))
+            raise tvdb_error("[{}]: Series result returned zero".format(sid))
 
         # get series data
         for k, v in seriesInfoEt.items():
