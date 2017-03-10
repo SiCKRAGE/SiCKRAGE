@@ -54,7 +54,6 @@ def login_required(f):
         try:
             return f(obj, *args, **kwargs)
         except Unauthorized:
-            sickrage.srCore.srLogger.debug("Unauthorized API error - login again")
             obj.login()
             return f(obj, *args, **kwargs)
 
@@ -340,17 +339,12 @@ class Tvdb:
     def login(self):
         self.config['apitoken'] = None
 
-        jwtResp = {'token': self.config['apitoken']}
-        timeout = 10
-
         try:
-            jwtResp.update(**sickrage.srCore.srWebSession.post(self.config['api']['login'],
+            self.config['apitoken'] = sickrage.srCore.srWebSession.post(self.config['api']['login'],
                                                                json={'apikey': self.config['apikey']},
                                                                headers={'Content-type': 'application/json'},
-                                                               timeout=timeout
-                                                               ).json())
-
-            self.config['apitoken'] = jwtResp['token']
+                                                               timeout=10
+                                                               ).json()['token']
         except Exception as e:
             self.config['apitoken'] = None
 

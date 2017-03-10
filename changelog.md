@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5be8c41 - 2017-03-10: Updated code to help debug issues with metadata downloading issues Updated theTVDB API code 
+- * b6dc3be - 2017-03-10: Updated theTVDB API code 
+- * 033ca62 - 2017-03-10: Updated code to help debug issues with metadata downloading issues Updated theTVDB API code 
 - * b5633b2 - 2017-03-10: Updated code to help debug issues with metadata downloading issues 
 - * e530100 - 2017-03-09: Updated code to help debug issues with metadata downloading issues 
 - * e563457 - 2017-02-20: Fixed pushbullet notifications Fixed NotifyMyAndroid notifications 
