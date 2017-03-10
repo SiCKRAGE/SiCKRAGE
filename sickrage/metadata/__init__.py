@@ -774,8 +774,8 @@ class GenericMetadata(object):
 
             indexer_show_obj = t[show_obj.indexerid]
         except (indexer_error, IOError) as e:
-            sickrage.srCore.srLogger.warning("{}: Unable to look up show on " + srIndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(show_obj.indexerid, e.message))
+            sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
+                show_obj.indexer).name + ", not downloading images: {}".format(e.message))
             sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
@@ -841,8 +841,8 @@ class GenericMetadata(object):
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
         except (indexer_error, IOError) as e:
-            sickrage.srCore.srLogger.warning("{}: Unable to look up show on " + srIndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(show_obj.indexerid, e.message))
+            sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
+                show_obj.indexer).name + ", not downloading images: {}".format(e.message))
             sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return result
@@ -898,8 +898,8 @@ class GenericMetadata(object):
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
         except (indexer_error, IOError) as e:
-            sickrage.srCore.srLogger.warning("{}: Unable to look up show on " + srIndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(show_obj.indexerid, e.message))
+            sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
+                show_obj.indexer).name + ", not downloading images: {}".format(e.message))
             sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return result
