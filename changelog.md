@@ -1,6 +1,7 @@
 # Changelog
 
-- * 156d237 - 2017-03-10: Updated code to help debug issues with metadata downloading issues 
+- * 5be8c41 - 2017-03-10: Updated code to help debug issues with metadata downloading issues Updated theTVDB API code 
+- * b5633b2 - 2017-03-10: Updated code to help debug issues with metadata downloading issues 
 - * e530100 - 2017-03-09: Updated code to help debug issues with metadata downloading issues 
 - * e563457 - 2017-02-20: Fixed pushbullet notifications Fixed NotifyMyAndroid notifications 
 - * 48301ee - 2017-02-15: Cleaned up logging for BTN provider Changed results fetched per page to 300 from 1000 

@@ -22,10 +22,8 @@ import functools
 import getpass
 import os
 import tempfile
-import time
 
 import imdbpie
-import requests
 
 import sickrage
 
@@ -39,48 +37,28 @@ from exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb
                         tvdb_attributenotfound)
 
 
-def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
-    """Retry calling the decorated function using an exponential backoff.
+class Unauthorized(Exception):
+    pass
 
-    http://www.saltycrane.com/blog/2009/11/trying-out-retry-decorator-python/
-    original from: http://wiki.python.org/moin/PythonDecoratorLibrary#Retry
 
-    :param ExceptionToCheck: the exception to check. may be a tuple of
-        exceptions to check
-    :type ExceptionToCheck: Exception or tuple
-    :param tries: number of times to try (not retry) before giving up
-    :type tries: int
-    :param delay: initial delay between retries in seconds
-    :type delay: int
-    :param backoff: backoff multiplier e.g. value of 2 will double the delay
-        each retry
-    :type backoff: int
-    :param logger: logger to use. If None, print
-    :type logger: logging.Logger instance
-    """
+class APIError(Exception):
+    pass
 
-    def deco_retry(f):
 
-        @functools.wraps(f)
-        def f_retry(*args, **kwargs):
-            mtries, mdelay = tries, delay
-            while mtries > 1:
-                try:
-                    return f(*args, **kwargs)
-                except ExceptionToCheck as e:
-                    msg = "{}, Retrying in {} seconds...".format(e, mdelay)
-                    if logger:
-                        logger.warning(msg)
-                    else:
-                        print(msg)
-                    time.sleep(mdelay)
-                    mtries -= 1
-                    mdelay *= backoff
-            return f(*args, **kwargs)
+def login_required(f):
+    @functools.wraps(f)
+    def wrapper(obj, *args, **kwargs):
+        if not obj.logged_in:
+            obj.login()
 
-        return f_retry  # true decorator
+        try:
+            return f(obj, *args, **kwargs)
+        except Unauthorized:
+            sickrage.srCore.srLogger.debug("Unauthorized API error - login again")
+            obj.login()
+            return f(obj, *args, **kwargs)
 
-    return deco_retry
+    return wrapper
 
 
 class ShowCache(dict):
@@ -303,62 +281,6 @@ class Tvdb:
                  headers=None,
                  apitoken=None):
 
-        """interactive (True/False):
-            When True, uses built-in console UI is used to select the correct show.
-            When False, the first search result is used.
-
-        select_first (True/False):
-            Automatically selects the first series search result (rather
-            than showing the user a list of more than one series).
-            Is overridden by interactive = False, or specifying a custom_ui
-
-        debug (True/False) DEPRECATED:
-             Replaced with proper use of logging module. To show debug messages:
-
-        images (True/False):
-            Retrieves the images for a show. These are accessed
-            via the _images key of a Show(), for example:
-
-            >>> Tvdb(images=True)['scrubs']['_images'].keys()
-            ['fanart', 'poster', 'series', 'season']
-
-        actors (True/False):
-            Retrieves a list of the actors for a show. These are accessed
-            via the _actors key of a Show(), for example:
-
-            >>> t = Tvdb(actors=True)
-            >>> t['scrubs']['_actors'][0]['name']
-            'Zach Braff'
-
-        custom_ui (tvdb_ui.BaseUI subclass):
-            A callable subclass of tvdb_ui.BaseUI (overrides interactive option)
-
-        language (2 character language abbreviation):
-            The language of the returned data. Is also the language search
-            uses. Default is "en" (English). For full list, run..
-
-            >>> Tvdb().config['valid_languages'] #doctest: +ELLIPSIS
-            ['da', 'fi', 'nl', ...]
-
-        apikey (str/unicode):
-            Override the default thetvdb.com API key. By default it will use
-            thetvdb's own key (fine for small scripts), but you can use your
-            own key if desired - this is recommended if you are embedding
-            thetvdb in a larger application)
-            See http://thetvdb.com/?tab=apiregister to get your own key
-
-        forceConnect (bool):
-            If true it will always try to connect to theTVDB.com even if we
-            recently timed out. By default it will wait one minute before
-            trying again, and any requests within that one minute window will
-            return an exception immediately.
-
-        useZip (bool):
-            Download the zip archive where possibale, instead of the xml.
-            This is only used when all episodes are pulled.
-            And only the main language xml is used, the actor and banner xml are lost.
-        """
-
         if headers is None:
             headers = {}
 
@@ -415,6 +337,30 @@ class Tvdb:
                 'Accept-Language': self.config['language']
             })
 
+    def login(self):
+        self.config['apitoken'] = None
+
+        jwtResp = {'token': self.config['apitoken']}
+        timeout = 10
+
+        try:
+            jwtResp.update(**sickrage.srCore.srWebSession.post(self.config['api']['login'],
+                                                               json={'apikey': self.config['apikey']},
+                                                               headers={'Content-type': 'application/json'},
+                                                               timeout=timeout
+                                                               ).json())
+
+            self.config['apitoken'] = jwtResp['token']
+        except Exception as e:
+            self.config['apitoken'] = None
+
+    def logout(self):
+        self.config['apitoken'] = None
+
+    @property
+    def logged_in(self):
+        return self.config['apitoken'] is not None
+
     def _getTempDir(self):
         """Returns the [system temp dir]/thetvdb-u501 (or
         thetvdb-myuser)
@@ -430,55 +376,26 @@ class Tvdb:
 
         return os.path.join(tempfile.gettempdir(), "thetvdb-{}".format(uid))
 
-    def getToken(self, refresh=False):
-        jwtResp = {'token': self.config['apitoken']}
-        timeout = 10
+    @login_required
+    def _request(self, url, params=None):
+        if self.config['apitoken']:
+            self.config['headers']['authorization'] = 'Bearer {}'.format(self.config['apitoken'])
 
-        try:
-            if refresh and self.config['apitoken']:
-                jwtResp.update(**sickrage.srCore.srWebSession.post(self.config['api']['refresh'],
-                                                                   headers={'Content-type': 'application/json'},
-                                                                   timeout=timeout
-                                                                   ).json())
-            elif not self.config['apitoken']:
-                jwtResp.update(**sickrage.srCore.srWebSession.post(self.config['api']['login'],
-                                                                   json={'apikey': self.config['apikey']},
-                                                                   headers={'Content-type': 'application/json'},
-                                                                   timeout=timeout
-                                                                   ).json())
+        sickrage.srCore.srLogger.debug("Retrieving URL {}".format(url))
 
-            self.config['apitoken'] = jwtResp['token']
-            self.config['headers']['authorization'] = 'Bearer {}'.format(jwtResp['token'])
-        except Exception as e:
-            self.config['headers']['authorization'] = self.config['apitoken'] = ""
+        # get response from theTVDB
+        resp = sickrage.srCore.srWebSession.get(url,
+                                                cache=self.config['cache_enabled'],
+                                                headers=self.config['headers'],
+                                                params=params,
+                                                timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT)
+        # handle requests exceptions
+        if resp.status_code == 401:
+            raise Unauthorized(resp.json()['Error'])
+        elif resp.status_code >= 400:
+            raise APIError()
 
-    @retry(tvdb_error)
-    def _loadUrl(self, url, params=None):
-        data = {}
-
-        try:
-            # get api v2 token
-            self.getToken()
-
-            sickrage.srCore.srLogger.debug("Retrieving URL {}".format(url))
-
-            # get response from theTVDB
-            resp = sickrage.srCore.srWebSession.get(url,
-                                                    cache=self.config['cache_enabled'],
-                                                    headers=self.config['headers'],
-                                                    params=params,
-                                                    timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT)
-            # handle requests exceptions
-            resp.raise_for_status()
-            data = resp.json()['data']
-        except requests.exceptions.HTTPError as e:
-            if e.response.status_code == 401:
-                self.getToken(True)
-                raise tvdb_error()
-        except Exception as e:
-            pass
-
-        return data
+        return resp.json()['data']
 
     def _getetsrc(self, url, params=None):
         """Loads a URL using caching, returns an ElementTree of the source
@@ -496,7 +413,7 @@ class Tvdb:
             return iterable
 
         try:
-            return renameKeys(self._loadUrl(url, params=params))
+            return renameKeys(self._request(url, params=params))
         except Exception as e:
             raise tvdb_error(e.message)
 
