@@ -1,6 +1,7 @@
 # Changelog
 
-- * b6dc3be - 2017-03-10: Updated theTVDB API code 
+- * 9f5b511 - 2017-03-10: Updated theTVDB API code 
+- * af34329 - 2017-03-10: Updated theTVDB API code 
 - * 033ca62 - 2017-03-10: Updated code to help debug issues with metadata downloading issues Updated theTVDB API code 
 - * b5633b2 - 2017-03-10: Updated code to help debug issues with metadata downloading issues 
 - * e530100 - 2017-03-09: Updated code to help debug issues with metadata downloading issues 

@@ -341,10 +341,10 @@ class Tvdb:
 
         try:
             self.config['apitoken'] = sickrage.srCore.srWebSession.post(self.config['api']['login'],
-                                                               json={'apikey': self.config['apikey']},
-                                                               headers={'Content-type': 'application/json'},
-                                                               timeout=10
-                                                               ).json()['token']
+                                                                        json={'apikey': self.config['apikey']},
+                                                                        headers={'Content-type': 'application/json'},
+                                                                        timeout=10
+                                                                        ).json()['token']
         except Exception as e:
             self.config['apitoken'] = None
 
