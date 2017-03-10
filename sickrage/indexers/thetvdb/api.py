@@ -54,10 +54,23 @@ def login_required(f):
         try:
             return f(obj, *args, **kwargs)
         except Unauthorized:
-            obj.login()
+            obj.login(True)
             return f(obj, *args, **kwargs)
 
     return wrapper
+
+
+def to_lowercase(iterable):
+    if type(iterable) is dict:
+        for key in iterable.keys():
+            iterable[key.lower()] = iterable.pop(key)
+            if type(iterable[key.lower()]) is dict or type(iterable[key.lower()]) is list:
+                iterable[key.lower()] = to_lowercase(iterable[key.lower()])
+    elif type(iterable) is list:
+        for item in iterable:
+            item = to_lowercase(item)
+
+    return iterable
 
 
 class ShowCache(dict):
@@ -181,11 +194,10 @@ class Season(dict):
         """
         results = []
         for ep in self.values():
-            searchresult = ep.search(term=term, key=key)
-            if searchresult is not None:
-                results.append(
-                    searchresult
-                )
+            result = ep.search(term=term, key=key)
+            if result is not None:
+                results.append(result)
+
         return results
 
 
@@ -336,17 +348,19 @@ class Tvdb:
                 'Accept-Language': self.config['language']
             })
 
-    def login(self):
-        self.config['apitoken'] = None
-
+    def login(self, refresh=False):
         try:
-            self.config['apitoken'] = sickrage.srCore.srWebSession.post(self.config['api']['login'],
-                                                                        json={'apikey': self.config['apikey']},
-                                                                        headers={'Content-type': 'application/json'},
-                                                                        timeout=10
-                                                                        ).json()['token']
+            if refresh and self.config['apitoken']:
+                self.config['apitoken'] = sickrage.srCore.srWebSession.post(
+                    self.config['api']['refresh']
+                ).json()['token']
+            else:
+                self.config['apitoken'] = sickrage.srCore.srWebSession.post(
+                    self.config['api']['login'],
+                    json={'apikey': self.config['apikey']},
+                ).json()['token']
         except Exception as e:
-            self.config['apitoken'] = None
+            self.logout()
 
     def logout(self):
         self.config['apitoken'] = None
@@ -370,7 +384,6 @@ class Tvdb:
 
         return os.path.join(tempfile.gettempdir(), "thetvdb-{}".format(uid))
 
-    @login_required
     def _request(self, url, params=None):
         if self.config['apitoken']:
             self.config['headers']['authorization'] = 'Bearer {}'.format(self.config['apitoken'])
@@ -389,25 +402,8 @@ class Tvdb:
         elif resp.status_code >= 400:
             raise APIError()
 
-        return resp.json()['data']
-
-    def _getetsrc(self, url, params=None):
-        """Loads a URL using caching, returns an ElementTree of the source
-        """
-
-        def renameKeys(iterable):
-            if type(iterable) is dict:
-                for key in iterable.keys():
-                    iterable[key.lower()] = iterable.pop(key)
-                    if type(iterable[key.lower()]) is dict or type(iterable[key.lower()]) is list:
-                        iterable[key.lower()] = renameKeys(iterable[key.lower()])
-            elif type(iterable) is list:
-                for item in iterable:
-                    item = renameKeys(item)
-            return iterable
-
         try:
-            return renameKeys(self._request(url, params=params))
+            return to_lowercase(resp.json()['data'])
         except Exception as e:
             raise tvdb_error(e.message)
 
@@ -457,6 +453,7 @@ class Tvdb:
 
         return data.replace("&amp;", "&").strip() if isinstance(data, basestring) else data
 
+    @login_required
     def search(self, series=None, imdbid=None, zap2itid=None):
         """This searches TheTVDB.com for the series by name, imdbid, or zap2itid
         and returns the result list
@@ -466,13 +463,13 @@ class Tvdb:
 
         if series:
             sickrage.srCore.srLogger.debug("Searching for show by name: {}".format(series))
-            return self._getetsrc(self.config['api']['getSeries'].format(series))
+            return self._request(self.config['api']['getSeries'].format(series))
         elif imdbid:
             sickrage.srCore.srLogger.debug("Searching for show by imdbId: {}".format(imdbid))
-            return self._getetsrc(self.config['api']['getSeriesIMDB'].format(imdbid))
+            return self._request(self.config['api']['getSeriesIMDB'].format(imdbid))
         elif zap2itid:
             sickrage.srCore.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
-            return self._getetsrc(self.config['api']['getSeriesZap2It'].format(zap2itid))
+            return self._request(self.config['api']['getSeriesZap2It'].format(zap2itid))
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -503,15 +500,16 @@ class Tvdb:
 
         return ui.selectSeries(allSeries, series)
 
+    @login_required
     def _parseImages(self, sid):
         sickrage.srCore.srLogger.debug('Getting season images for {}'.format(sid))
 
-        params = self._getetsrc(self.config['api']['imagesParams'].format(sid))
+        params = self._request(self.config['api']['imagesParams'].format(sid))
         if not params:
             return
 
         for type in [x['keytype'] for x in params]:
-            imagesEt = self._getetsrc(self.config['api']['images'].format(sid, type))
+            imagesEt = self._request(self.config['api']['images'].format(sid, type))
             if not imagesEt:
                 continue
 
@@ -542,10 +540,11 @@ class Tvdb:
 
             self._setShowData(sid, "_images", images)
 
+    @login_required
     def _parseActors(self, sid):
         sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
 
-        actorsEt = self._getetsrc(self.config['api']['actors'].format(sid))
+        actorsEt = self._request(self.config['api']['actors'].format(sid))
         if not actorsEt:
             sickrage.srCore.srLogger.debug('Actors result returned zero')
             return
@@ -569,6 +568,7 @@ class Tvdb:
 
         self._setShowData(sid, '_actors', cur_actors)
 
+    @login_required
     def _getShowData(self, sid, getEpInfo=False):
         """Takes a series ID, gets the episodes URL and parses the TVDB
         XML file into the shows dict in layout:
@@ -578,7 +578,7 @@ class Tvdb:
         # Parse show information
         sickrage.srCore.srLogger.debug('Getting all series data for {}'.format(sid))
 
-        seriesInfoEt = self._getetsrc(self.config['api']['series'].format(sid))
+        seriesInfoEt = self._request(self.config['api']['series'].format(sid))
         if not seriesInfoEt:
             sickrage.srCore.srLogger.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
@@ -609,10 +609,12 @@ class Tvdb:
             p = 1
             episodes = []
             while True:
-                data = self._getetsrc(self.config['api']['episodes'].format(sid), params={'page': p})
-                if not data: break
-                episodes += data
-                p += 1
+                try:
+                    data = self._request(self.config['api']['episodes'].format(sid), params={'page': p})
+                    episodes += data
+                    p += 1
+                except APIError:
+                    break
 
             if not len(episodes):
                 sickrage.srCore.srLogger.debug('Series results incomplete')
@@ -653,8 +655,9 @@ class Tvdb:
 
         return self.shows[int(sid)]
 
+    @login_required
     def updated(self, fromTime):
-        return self._getetsrc(self.config['api']['updated'].format(fromTime))
+        return self._request(self.config['api']['updated'].format(fromTime))
 
     @property
     def languages(self):
