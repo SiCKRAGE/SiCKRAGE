@@ -44,4 +44,4 @@ Before using this with your existing database sickrage.db please make a backup c
 ![image](https://piratebay.to/favicon.ico)[ThePirateBay](https://thepiratebay.la/)
 ![image](https://nzb.cat/favicon.ico)[NZB.cat](https://nzb.cat/)
 ![image](https://nzbgeek.info/favicon.ico)[NZBGeek](https://nzbgeek.info)
-![image](http://dognzb.cr/favicon.ico)[DOGnzb](dognzb.cr)
+![image](https://dognzb.cr/favicon.ico)[DOGnzb](dognzb.cr)

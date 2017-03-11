@@ -1,6 +1,7 @@
 # Changelog
 
-- * baf4fbd - 2017-03-11: Updated theTVDB API code Fixed bug in show updater code 
+- * a921b5d - 2017-03-11: Fixed insecure url 
+- * b1c7c3f - 2017-03-11: Updated theTVDB API code Fixed bug in show updater code 
 - * d293014 - 2017-03-10: Updated theTVDB API code 
 - * 4290365 - 2017-03-10: Updated theTVDB API code 
 - * af34329 - 2017-03-10: Updated theTVDB API code 
