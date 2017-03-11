@@ -45,7 +45,7 @@ from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_supp
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
-from sickrage.indexers.exceptions import indexer_attributenotfound
+from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_attributenotfound
 
 
 # noinspection PyUnresolvedReferences

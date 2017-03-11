@@ -22,6 +22,7 @@ import functools
 import getpass
 import os
 import tempfile
+import urlparse
 
 import imdbpie
 
@@ -289,8 +290,7 @@ class Tvdb:
                  useZip=False,
                  dvdorder=False,
                  proxy=None,
-                 headers=None,
-                 apitoken=None):
+                 headers=None):
 
         if headers is None:
             headers = {}
@@ -299,7 +299,7 @@ class Tvdb:
 
         self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'interactive': interactive,
                        'select_first': select_first, 'useZip': useZip, 'dvdorder': dvdorder, 'proxy': proxy,
-                       'headers': headers, 'apitoken': apitoken, 'api': {}}
+                       'headers': headers, 'apitoken': None, 'api': {}}
 
         if cache is True:
             self.config['cache_enabled'] = True
@@ -321,23 +321,20 @@ class Tvdb:
         self.config['api']['base'] = "https://api.thetvdb.com"
 
         # api-v2 urls
-        self.config['api']['login'] = '{base}/login'.format(base=self.config['api']['base'])
-        self.config['api']['refresh'] = '{base}/refresh_token'.format(base=self.config['api']['base'])
-        self.config['api']['languages'] = '{base}/languages'.format(base=self.config['api']['base'])
-        self.config['api']['getSeries'] = "{base}/search/series?name={{}}".format(base=self.config['api']['base'])
-        self.config['api']['getSeriesIMDB'] = "{base}/search/series?imdbId={{}}".format(base=self.config['api']['base'])
-        self.config['api']['getSeriesZap2It'] = "{base}/search/series?zap2itId={{}}".format(
-            base=self.config['api']['base'])
-        self.config['api']['series'] = "{base}/series/{{}}".format(base=self.config['api']['base'])
-        self.config['api']['episodes'] = "{base}/series/{{}}/episodes".format(base=self.config['api']['base'])
-        self.config['api']['episode_info'] = "{base}/episodes/{{}}".format(base=self.config['api']['base'])
-        self.config['api']['actors'] = "{base}/series/{{}}/actors".format(base=self.config['api']['base'])
-        self.config['api']['images'] = "{base}/series/{{}}/images/query?keyType={{}}".format(
-            base=self.config['api']['base'])
-        self.config['api']['imagesParams'] = "{base}/series/{{}}/images/query/params".format(
-            base=self.config['api']['base'])
-        self.config['api']['imagesPrefix'] = "http://thetvdb.com/banners/{}"
-        self.config['api']['updated'] = "{base}/updated/query?fromTime={{}}".format(base=self.config['api']['base'])
+        self.config['api']['login'] = '/login'
+        self.config['api']['refresh'] = '/refresh_token'
+        self.config['api']['languages'] = '/languages'
+        self.config['api']['getSeries'] = "/search/series?name={name}"
+        self.config['api']['getSeriesIMDB'] = "/search/series?imdbId={id}"
+        self.config['api']['getSeriesZap2It'] = "/search/series?zap2itId={id}"
+        self.config['api']['series'] = "/series/{id}"
+        self.config['api']['episodes'] = "/series/{id}/episodes"
+        self.config['api']['episode_info'] = "/episodes/{id}"
+        self.config['api']['actors'] = "/series/{id}/actors"
+        self.config['api']['updated'] = "/updated/query?fromTime={time}"
+        self.config['api']['images'] = "/series/{id}/images/query?keyType={type}"
+        self.config['api']['imagesParams'] = "/series/{id}/images/query/params"
+        self.config['api']['imagesPrefix'] = "http://thetvdb.com/banners/{id}"
 
         self.config['language'] = language
         if language not in self.languages:
@@ -352,11 +349,11 @@ class Tvdb:
         try:
             if refresh and self.config['apitoken']:
                 self.config['apitoken'] = sickrage.srCore.srWebSession.post(
-                    self.config['api']['refresh']
+                    urlparse.urljoin(self.config['api']['base'], self.config['api']['refresh'])
                 ).json()['token']
             else:
                 self.config['apitoken'] = sickrage.srCore.srWebSession.post(
-                    self.config['api']['login'],
+                    urlparse.urljoin(self.config['api']['base'], self.config['api']['login']),
                     json={'apikey': self.config['apikey']},
                 ).json()['token']
         except Exception as e:
@@ -385,17 +382,22 @@ class Tvdb:
         return os.path.join(tempfile.gettempdir(), "thetvdb-{}".format(uid))
 
     def _request(self, url, params=None):
+        url = urlparse.urljoin(self.config['api']['base'], url)
+
         if self.config['apitoken']:
             self.config['headers']['authorization'] = 'Bearer {}'.format(self.config['apitoken'])
 
         sickrage.srCore.srLogger.debug("Retrieving URL {}".format(url))
 
         # get response from theTVDB
-        resp = sickrage.srCore.srWebSession.get(url,
-                                                cache=self.config['cache_enabled'],
-                                                headers=self.config['headers'],
-                                                params=params,
-                                                timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT)
+        resp = sickrage.srCore.srWebSession.get(
+            url,
+            cache=self.config['cache_enabled'],
+            headers=self.config['headers'],
+            params=params,
+            timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT
+        )
+
         # handle requests exceptions
         if resp.status_code == 401:
             raise Unauthorized(resp.json()['Error'])
@@ -463,13 +465,13 @@ class Tvdb:
 
         if series:
             sickrage.srCore.srLogger.debug("Searching for show by name: {}".format(series))
-            return self._request(self.config['api']['getSeries'].format(series))
+            return self._request(self.config['api']['getSeries'].format(name=series))
         elif imdbid:
             sickrage.srCore.srLogger.debug("Searching for show by imdbId: {}".format(imdbid))
-            return self._request(self.config['api']['getSeriesIMDB'].format(imdbid))
+            return self._request(self.config['api']['getSeriesIMDB'].format(id=imdbid))
         elif zap2itid:
             sickrage.srCore.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
-            return self._request(self.config['api']['getSeriesZap2It'].format(zap2itid))
+            return self._request(self.config['api']['getSeriesZap2It'].format(id=zap2itid))
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -504,12 +506,12 @@ class Tvdb:
     def _parseImages(self, sid):
         sickrage.srCore.srLogger.debug('Getting season images for {}'.format(sid))
 
-        params = self._request(self.config['api']['imagesParams'].format(sid))
+        params = self._request(self.config['api']['imagesParams'].format(id=sid))
         if not params:
             return
 
         for type in [x['keytype'] for x in params]:
-            imagesEt = self._request(self.config['api']['images'].format(sid, type))
+            imagesEt = self._request(self.config['api']['images'].format(id=sid, type=type))
             if not imagesEt:
                 continue
 
@@ -534,7 +536,7 @@ class Tvdb:
 
                     k = k.lower()
                     if k in ['filename', 'thumbnail']:
-                        v = self.config['api']['imagesPrefix'].format(v)
+                        v = self.config['api']['imagesPrefix'].format(id=v)
 
                     images[image_type][image_subtype][image_id][k] = v
 
@@ -544,7 +546,7 @@ class Tvdb:
     def _parseActors(self, sid):
         sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
 
-        actorsEt = self._request(self.config['api']['actors'].format(sid))
+        actorsEt = self._request(self.config['api']['actors'].format(id=sid))
         if not actorsEt:
             sickrage.srCore.srLogger.debug('Actors result returned zero')
             return
@@ -558,7 +560,7 @@ class Tvdb:
 
                 k = k.lower()
                 if k == "image":
-                    v = self.config['api']['imagesPrefix'].format(v)
+                    v = self.config['api']['imagesPrefix'].format(id=v)
                 else:
                     v = self._cleanData(v)
 
@@ -578,7 +580,7 @@ class Tvdb:
         # Parse show information
         sickrage.srCore.srLogger.debug('Getting all series data for {}'.format(sid))
 
-        seriesInfoEt = self._request(self.config['api']['series'].format(sid))
+        seriesInfoEt = self._request(self.config['api']['series'].format(id=sid))
         if not seriesInfoEt:
             sickrage.srCore.srLogger.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
@@ -587,7 +589,7 @@ class Tvdb:
         for k, v in seriesInfoEt.items():
             if v is not None:
                 if k in ['banner', 'fanart', 'poster']:
-                    v = self.config['api']['imagesPrefix'].format(v)
+                    v = self.config['api']['imagesPrefix'].format(id=v)
                 elif isinstance(v, list):
                     v = '|'.join(v)
                 else:
@@ -610,7 +612,7 @@ class Tvdb:
             episodes = []
             while True:
                 try:
-                    data = self._request(self.config['api']['episodes'].format(sid), params={'page': p})
+                    data = self._request(self.config['api']['episodes'].format(id=sid), params={'page': p})
                     episodes += data
                     p += 1
                 except APIError:
@@ -645,7 +647,7 @@ class Tvdb:
 
                     if v is not None:
                         if k == 'filename':
-                            v = self.config['api']['imagesPrefix'].format(v)
+                            v = self.config['api']['imagesPrefix'].format(id=v)
                         elif isinstance(v, list):
                             v = '|'.join(v)
                         else:
@@ -657,7 +659,7 @@ class Tvdb:
 
     @login_required
     def updated(self, fromTime):
-        return self._request(self.config['api']['updated'].format(fromTime))
+        return self._request(self.config['api']['updated'].format(time=fromTime))
 
     @property
     def languages(self):
@@ -665,7 +667,7 @@ class Tvdb:
                 'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24,
                 'ko': 32, 'sv': 8, 'sl': 30}
 
-        # return {l['abbreviation']: l['id'] for l in self._getetsrc(self.config['api']['languages'])}
+        # return {l['abbreviation']: l['id'] for l in self._request(self.config['api']['languages'])}
 
     def __getitem__(self, key):
         """

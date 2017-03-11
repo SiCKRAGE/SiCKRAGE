@@ -31,7 +31,6 @@ indexerConfig = {
         'name': 'theTVDB',
         'module': Tvdb,
         'api_params': {'apikey': 'F9C450E78D99172E',
-                       'apitoken': '',
                        'language': 'en',
                        'useZip': True,
                        },
