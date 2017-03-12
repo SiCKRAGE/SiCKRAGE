@@ -1,6 +1,7 @@
 # Changelog
 
-- * cb65f67 - 2017-03-12: Fixed args passed when in daemon mode for browser window launching and quite 
+- * f501d27 - 2017-03-12: Removed startup message for daemoning pid 
+- * 13ef587 - 2017-03-12: Fixed args passed when in daemon mode for browser window launching and quite 
 - * 64be91c - 2017-03-12: NEW Release v8.9.8 Fixed issues with metadata image downloading from theTVDB for season posters/banners as well as banners for shows Images and actor info is parsed only when needed when using theTVDB API 
 - * 3e35e35 - 2017-03-11: v8.9.7 
 - * f589c3a - 2017-03-11: Fixed issues with downloading metadata/images from TheTVDB API 

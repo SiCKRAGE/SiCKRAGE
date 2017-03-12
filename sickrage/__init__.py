@@ -110,8 +110,6 @@ class Daemon(object):
             sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
-        print("Daemonized successfully, pid %s" % os.getpid())
-
         # redirect standard file descriptors
         sys.stdin = sys.__stdin__
         sys.stdout = sys.__stdout__
