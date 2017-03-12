@@ -393,7 +393,8 @@ class GenericProvider(object):
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
+                    dbData = [x['doc'] for x in
+                              sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
                               if x['doc']['airdate'] == airdate]
 
                     if len(dbData) != 1:
@@ -671,7 +672,8 @@ class TorrentProvider(GenericProvider):
         results = []
 
         for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+            for episode in [e['doc'] for e in
+                            sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
                 if episode['airdate'] >= str(search_date.toordinal()) \
                         and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
 
@@ -1143,7 +1145,8 @@ class NewznabProvider(NZBProvider):
         dbData = []
 
         for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+            for episode in [e['doc'] for e in
+                            sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
                 if episode['airdate'] >= str(search_date.toordinal()) \
                         and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
 

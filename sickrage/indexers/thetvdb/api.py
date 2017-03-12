@@ -349,11 +349,13 @@ class Tvdb:
         try:
             if refresh and self.config['apitoken']:
                 self.config['apitoken'] = sickrage.srCore.srWebSession.post(
-                    urlparse.urljoin(self.config['api']['base'], self.config['api']['refresh'])
+                    urlparse.urljoin(self.config['api']['base'], self.config['api']['refresh']),
+                    timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT
                 ).json()['token']
             else:
                 self.config['apitoken'] = sickrage.srCore.srWebSession.post(
                     urlparse.urljoin(self.config['api']['base'], self.config['api']['login']),
+                    timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT,
                     json={'apikey': self.config['apikey']},
                 ).json()['token']
         except Exception as e:

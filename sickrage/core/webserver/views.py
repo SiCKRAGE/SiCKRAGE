@@ -245,7 +245,7 @@ class LoginHandler(BaseHandler):
                                        expires_days=30 if remember_me > 0 else None)
                 sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
 
-                return self.redirect(self.get_argument("next","/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE)))
+                return self.redirect(self.get_argument("next", "/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE)))
             elif username and password:
                 sickrage.srCore.srLogger.warning(
                     'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
@@ -997,7 +997,8 @@ class Home(WebHandler):
         data = {}
         size = 0
 
-        tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)], key=lambda d: d['show_name'])
+        tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)],
+                          key=lambda d: d['show_name'])
 
         for s in tv_shows:
             data[s['show_id']] = {'id': s['show_id'], 'name': s['show_name'], 'list': s['notify_list']}
@@ -1127,7 +1128,8 @@ class Home(WebHandler):
         if sickrage.srCore.VERSIONUPDATER.update():
             return self.restart(pid)
         else:
-            sickrage.srCore.srNotifications.message("Update wasn't successful, not restarting. Check your log for more information.")
+            sickrage.srCore.srNotifications.message(
+                "Update wasn't successful, not restarting. Check your log for more information.")
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def branchCheckout(self, branch):
@@ -1465,7 +1467,7 @@ class Home(WebHandler):
             if os.path.normpath(showObj.location) != os.path.normpath(location):
                 sickrage.srCore.srLogger.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
                 if not os.path.isdir(location) and not sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS:
-                    errors.append("New location <tt>{}</tt> does not exist".format(location))
+                    errors.append("New location {} does not exist".format(location))
 
                 # don't bother if we're going to update anyway
                 elif not do_update:
@@ -1481,7 +1483,7 @@ class Home(WebHandler):
                             # rescan the episodes in the new folder
                     except NoNFOException:
                         errors.append(
-                            "The folder at <tt>%s</tt> doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE." % location)
+                            "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE." % location)
 
             # save it to the DB
             showObj.saveToDB()
@@ -1510,12 +1512,12 @@ class Home(WebHandler):
                 errors.append("Unable to force an update on scene numbering of the show.")
 
         if directCall:
-            return errors
+            return map(str, errors)
 
         if len(errors) > 0:
             sickrage.srCore.srNotifications.error(
                 '%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
-                '<ul>' + '\n'.join(['<li>%s</li>' % error for error in errors]) + "</ul>")
+                '<ul>' + '\n'.join(['<li>%s</li>' % error for error in map(str, errors)]) + "</ul>")
 
         return self.redirect("/home/displayShow?show=" + show)
 
@@ -2375,7 +2377,8 @@ class HomeAddShows(Home):
                     pass
 
                 # see if the folder is in KODI already
-                if [x for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if x['doc']['location'] == cur_path]:
+                if [x for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if
+                    x['doc']['location'] == cur_path]:
                     cur_dir['added_already'] = True
                 else:
                     cur_dir['added_already'] = False
@@ -2907,7 +2910,8 @@ class Manage(Home, WebRoot):
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+        for dbData in [x['doc'] for x in
+                       sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if x['doc']['season'] != 0 and x['doc']['status'] in status_list]:
 
             cur_season = int(dbData["season"])
@@ -2933,9 +2937,10 @@ class Manage(Home, WebRoot):
         # if we have no status then this is as far as we need to go
         if len(status_list):
             status_results = sorted([s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)
-                                     for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'], with_doc=True)
+                                     for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'],
+                                                                                 with_doc=True)
                                      if e['doc']['status'] in status_list and e['doc']['season'] != 0],
-                                      key=lambda d: d['show_name'])
+                                    key=lambda d: d['show_name'])
 
             for cur_status_result in status_results:
                 cur_indexer_id = int(cur_status_result["indexer_id"])
@@ -2998,7 +3003,8 @@ class Manage(Home, WebRoot):
     @staticmethod
     def showSubtitleMissed(indexer_id, whichSubs):
         result = {}
-        for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+        for dbData in [x['doc'] for x in
+                       sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]:
 
             if whichSubs == 'all':
@@ -3037,7 +3043,8 @@ class Manage(Home, WebRoot):
         status_results = []
         for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             if not s['subtitles'] == 1: continue
-            for e in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+            for e in [x['doc'] for x in
+                      sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                 if e['status'].endswith('4') and e['season'] != 0:
                     status_results += [{
                         'show_name': s['show_name'],
@@ -3100,7 +3107,8 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_download:
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
-                dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                dbData = [x['doc'] for x in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                           if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]
 
                 to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
@@ -3137,8 +3145,9 @@ class Manage(Home, WebRoot):
             epCounts[Overview.UNAIRED] = 0
             epCounts[Overview.SNATCHED] = 0
 
-            dbData = sorted([e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
-                             if curShow.paused == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
+            dbData = sorted(
+                [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
+                 if curShow.paused == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
             for curResult in dbData:
                 curEpCat = curShow.getOverview(int(curResult["status"] or -1))

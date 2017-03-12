@@ -1038,7 +1038,7 @@ class TVShow(object):
         if not self.imdbid:
             for x in i.search_for_title(self.name):
                 try:
-                    if int(x.get('year'), 0) == self.startyear and x.get('title') == self.name:
+                    if int(x.get('year'), 0) == self.startyear and x.get('title') in self.name:
                         self.imdbid = x.get('imdb_id')
                         break
                 except:

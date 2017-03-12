@@ -447,7 +447,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
                     # update provider RSS cache
-                    providerObj.cache.update()
+                    # providerObj.cache.update()
 
                     if search_mode == 'eponly':
                         sickrage.srCore.srLogger.info("Performing episode search for " + show.name)
