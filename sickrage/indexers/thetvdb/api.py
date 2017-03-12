@@ -441,6 +441,7 @@ class Tvdb:
 
         if sid not in self.shows:
             self.shows[sid] = Show()
+
         self.shows[sid].data[key] = value
 
     def _delShow(self, sid):
@@ -517,7 +518,6 @@ class Tvdb:
             if not imagesEt:
                 continue
 
-            images = {}
             for cur_image in imagesEt:
                 image_id = cur_image['id']
                 image_type = cur_image['keytype']
@@ -525,24 +525,15 @@ class Tvdb:
                 if image_type is None or image_subtype is None:
                     continue
 
-                if image_type not in images:
-                    images[image_type] = {}
-                if image_subtype not in images[image_type]:
-                    images[image_type][image_subtype] = {}
-                if image_id not in images[image_type][image_subtype]:
-                    images[image_type][image_subtype][image_id] = {}
-
                 for k, v in cur_image.items():
                     if k is None or v is None:
                         continue
 
                     k = k.lower()
-                    if k in ['filename', 'thumbnail']:
-                        v = self.config['api']['imagesPrefix'].format(id=v)
-
-                    images[image_type][image_subtype][image_id][k] = v
-
-            self._setShowData(sid, "_images", images)
+                    if k == 'filename':
+                        self._setShowData(sid, image_type, self.config['api']['imagesPrefix'].format(id=v))
+                    elif k == 'thumbnail':
+                        self._setShowData(sid, image_type + '_thumb', self.config['api']['imagesPrefix'].format(id=v))
 
     @login_required
     def _parseActors(self, sid):

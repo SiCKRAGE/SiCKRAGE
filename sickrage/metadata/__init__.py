@@ -787,14 +787,14 @@ class GenericMetadata(object):
             return
 
         if image_type == 'poster_thumb':
-            if getattr(indexer_show_obj, 'poster', None):
-                image_url = re.sub('posters', '_cache/posters', indexer_show_obj['poster'])
+            if getattr(indexer_show_obj, 'poster_thumb', None):
+                image_url = indexer_show_obj['poster_thumb']
             if not image_url:
                 # Try and get images from Fanart.TV
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         elif image_type == 'banner_thumb':
-            if getattr(indexer_show_obj, 'banner', None):
-                image_url = re.sub('graphical', '_cache/graphical', indexer_show_obj['banner'])
+            if getattr(indexer_show_obj, 'banner_thumb', None):
+                image_url = indexer_show_obj['banner_thumb']
             if not image_url:
                 # Try and get images from Fanart.TV
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
