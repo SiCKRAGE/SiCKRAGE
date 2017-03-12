@@ -43,7 +43,7 @@
     </tr>
     <tr>
         <td class="infoTableHeader">SR Cache Dir:</td>
-        <td class="infoTableCell">${sickrage.srCore.srConfig.CACHE_DIR}</td>
+        <td class="infoTableCell">${sickrage.CACHE_DIR}</td>
     </tr>
     <tr>
         <td class="infoTableHeader">SR Log Dir:</td>

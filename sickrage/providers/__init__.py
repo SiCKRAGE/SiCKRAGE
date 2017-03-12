@@ -865,7 +865,7 @@ class TorrentRssProvider(TorrentProvider):
 
     @staticmethod
     def dumpHTML(data):
-        dumpName = os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'custom_torrent.html')
+        dumpName = os.path.join(sickrage.CACHE_DIR, 'custom_torrent.html')
 
         try:
             with io.open(dumpName, 'wb') as fileOut:

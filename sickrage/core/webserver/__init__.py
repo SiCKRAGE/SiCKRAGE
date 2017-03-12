@@ -56,8 +56,8 @@ class StaticImageHandler(StaticFileHandler):
 
     def get(self, path, include_body=True):
         # image cache check
-        self.root = (self.root, os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'images', path)))
+        self.root = (self.root, os.path.join(sickrage.CACHE_DIR, 'images'))[
+            os.path.exists(os.path.normpath(os.path.join(sickrage.CACHE_DIR, 'images', path)))
         ]
 
         # image css check
@@ -195,7 +195,7 @@ class srWebServer(object):
                              )).start()
 
         # clear mako cache folder
-        makocache = os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'mako')
+        makocache = os.path.join(sickrage.CACHE_DIR, 'mako')
         if os.path.isdir(makocache):
             shutil.rmtree(makocache)
 

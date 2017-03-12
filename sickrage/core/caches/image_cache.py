@@ -22,11 +22,12 @@ from __future__ import unicode_literals
 import io
 import os
 
-import sickrage
 from hachoir_core import config as hachoir_config
 from hachoir_core.stream import StringInputStream
 from hachoir_metadata import extractMetadata
 from hachoir_parser import guessParser
+
+import sickrage
 from sickrage.core.helpers import copyFile
 from sickrage.metadata import GenericMetadata
 
@@ -42,7 +43,7 @@ class ImageCache(object):
         """
         Builds up the full path to the image cache directory
         """
-        return os.path.abspath(os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'images'))
+        return os.path.abspath(os.path.join(sickrage.CACHE_DIR, 'images'))
 
     def _thumbnails_dir(self):
         """

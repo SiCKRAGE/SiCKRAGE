@@ -31,11 +31,12 @@ import urlparse
 import uuid
 from itertools import izip, cycle
 
-import sickrage
 from configobj import ConfigObj
+
+import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_temp_dir
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType
 from sickrage.core.nameparser import validator
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.searchers import backlog_searcher
@@ -112,7 +113,6 @@ class srConfig(object):
         self.EP_DEFAULT_DELETED_STATUS = None
         self.LAUNCH_BROWSER = False
         self.SHOWUPDATE_STALE = True
-        self.CACHE_DIR = None
         self.ROOT_DIRS = None
         self.CPU_PRESET = None
         self.ANON_REDIRECT = None
@@ -559,7 +559,6 @@ class srConfig(object):
         defaults['General']['metadata_tivo'] = self.METADATA_TIVO
         defaults['General']['metadata_mede8er'] = self.METADATA_MEDE8ER
         defaults['General']['backlog_days'] = int(self.BACKLOG_DAYS)
-        defaults['General']['cache_dir'] = self.CACHE_DIR
         defaults['General']['root_dirs'] = self.ROOT_DIRS
         defaults['General']['tv_download_dir'] = self.TV_DOWNLOAD_DIR
         defaults['General']['keep_processed_dir'] = int(self.KEEP_PROCESSED_DIR)
@@ -1407,14 +1406,6 @@ class srConfig(object):
         self.GIT_NEWVER = bool(self.check_setting_int('General', 'git_newver', 0))
         self.GIT_RESET = bool(self.check_setting_int('General', 'git_reset', 1))
 
-        # cache settings
-        self.CACHE_DIR = self.check_setting_str('General', 'cache_dir', 'cache')
-        if not os.path.isabs(self.CACHE_DIR):
-            self.CACHE_DIR = os.path.abspath(os.path.join(sickrage.DATA_DIR, self.CACHE_DIR))
-
-        if not makeDir(self.CACHE_DIR):
-            self.CACHE_DIR = get_temp_dir()
-
         # web settings
         self.WEB_PORT = self.check_setting_int('General', 'web_port', 8081)
         if sickrage.WEB_PORT != 8081:
@@ -2016,7 +2007,6 @@ class srConfig(object):
         new_config['General']['metadata_tivo'] = self.METADATA_TIVO
         new_config['General']['metadata_mede8er'] = self.METADATA_MEDE8ER
         new_config['General']['backlog_days'] = int(self.BACKLOG_DAYS)
-        new_config['General']['cache_dir'] = self.CACHE_DIR
         new_config['General']['root_dirs'] = self.ROOT_DIRS
         new_config['General']['tv_download_dir'] = self.TV_DOWNLOAD_DIR
         new_config['General']['keep_processed_dir'] = int(self.KEEP_PROCESSED_DIR)

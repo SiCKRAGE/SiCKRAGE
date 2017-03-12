@@ -45,8 +45,8 @@ class srIndexerApi(object):
 
     @property
     def api_params(self):
-        if sickrage.srCore.srConfig.CACHE_DIR:
-            indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickrage.srCore.srConfig.CACHE_DIR,
+        if sickrage.CACHE_DIR:
+            indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickrage.CACHE_DIR,
                                                                                 'indexers',
                                                                                 self.name)
         if sickrage.srCore.srConfig.PROXY_SETTING and sickrage.srCore.srConfig.PROXY_INDEXERS:

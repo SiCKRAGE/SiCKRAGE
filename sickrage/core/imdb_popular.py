@@ -116,7 +116,7 @@ class imdbPopular(object):
         Store cache of image in cache dir
         :param image_url: Source URL
         """
-        path = os.path.abspath(os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'images', 'imdb_popular'))
+        path = os.path.abspath(os.path.join(sickrage.CACHE_DIR, 'images', 'imdb_popular'))
 
         if not os.path.exists(path):
             os.makedirs(path)

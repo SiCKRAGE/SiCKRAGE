@@ -1,6 +1,8 @@
 # Changelog
 
-- * 739b936 - 2017-03-11: v8.9.6 
+- * 41dffcb - 2017-03-11: Cache directory is now automatically placed in data directory 
+- * e13da53 - 2017-03-11: v8.9.6 
+- * 31d5fe9 - 2017-03-11: Fixed issues with core session download function Fixed issues with theTVDB api and timeouts Fixed issues with searching for imdbID via show title names 
 - * 57ec9e7 - 2017-03-11: v8.9.5 
 - * 7f4b642 - 2017-03-11: Fixed insecure url 
 - * b1c7c3f - 2017-03-11: Updated theTVDB API code Fixed bug in show updater code 

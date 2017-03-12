@@ -1182,10 +1182,10 @@ def backupSR(backupDir):
             source += [os.path.join(path, filename)]
 
     # cache
-    if sickrage.srCore.srConfig.CACHE_DIR:
-        for (path, dirs, files) in os.walk(sickrage.srCore.srConfig.CACHE_DIR, topdown=True):
+    if sickrage.CACHE_DIR:
+        for (path, dirs, files) in os.walk(sickrage.CACHE_DIR, topdown=True):
             for dirname in dirs:
-                if path == sickrage.srCore.srConfig.CACHE_DIR and dirname not in ['images']:
+                if path == sickrage.CACHE_DIR and dirname not in ['images']:
                     dirs.remove(dirname)
 
             for filename in files:

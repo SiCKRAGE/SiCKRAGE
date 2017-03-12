@@ -58,6 +58,7 @@ NOLAUNCH = None
 QUITE = None
 MODULE_DIR = None
 DATA_DIR = None
+CACHE_DIR = None
 CONFIG_FILE = None
 PID_FILE = None
 
@@ -252,7 +253,7 @@ def version():
 
 
 def main():
-    global srCore, daemon, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
+    global srCore, daemon, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
         DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
@@ -303,6 +304,7 @@ def main():
         DEBUG = args.debug
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
         DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
+        CACHE_DIR = os.path.abspath(os.path.join(DATA_DIR, 'cache'))
         CONFIG_FILE = args.config
         PID_FILE = args.pidfile
 
@@ -340,6 +342,17 @@ def main():
         # Make sure we can write to the data dir
         if not os.access(DATA_DIR, os.W_OK):
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
+
+        # Make sure that we can create the cache dir
+        if not os.access(CACHE_DIR, os.F_OK):
+            try:
+                os.makedirs(CACHE_DIR, 0o744)
+            except os.error:
+                sys.exit("Unable to create cache directory '" + CACHE_DIR + "'")
+
+        # Make sure we can write to the cache dir
+        if not os.access(CACHE_DIR, os.W_OK):
+            sys.exit("Cache directory must be writeable '" + CACHE_DIR + "'")
 
         # daemonize if requested
         if DAEMONIZE:

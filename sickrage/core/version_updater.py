@@ -236,7 +236,7 @@ class srVersionUpdater(object):
             if self.updater.need_update():
                 if self.updater.update():
                     # Clean up after update
-                    to_clean = os.path.join(sickrage.srCore.srConfig.CACHE_DIR, 'mako')
+                    to_clean = os.path.join(sickrage.CACHE_DIR, 'mako')
 
                     for root, dirs, files in os.walk(to_clean, topdown=False):
                         [os.remove(os.path.join(root, name)) for name in files]
