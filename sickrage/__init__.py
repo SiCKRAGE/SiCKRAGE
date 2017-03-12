@@ -259,8 +259,6 @@ def main():
     try:
         from sickrage import core
 
-        print("..::[ SiCKRAGE ]::..")
-
         # sickrage startup options
         parser = argparse.ArgumentParser(prog='sickrage')
         parser.add_argument('-v', '--version',
@@ -326,12 +324,6 @@ def main():
         # set locale encoding
         SYS_ENCODING = encodingInit()
 
-        if DEVELOPER:
-            print("!!! DEVELOPER MODE ENABLED !!!")
-
-        if DEBUG:
-            print("!!! DEBUG MODE ENABLED !!!")
-
         # Make sure that we can create the data dir
         if not os.access(DATA_DIR, os.F_OK):
             try:
@@ -356,8 +348,8 @@ def main():
 
         # daemonize if requested
         if DAEMONIZE:
-            NOLAUNCH = False
-            QUITE = False
+            NOLAUNCH = True
+            QUITE = True
             daemon = Daemon(PID_FILE)
             daemon.daemonize()
 
