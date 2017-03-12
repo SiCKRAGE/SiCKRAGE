@@ -1,6 +1,7 @@
 # Changelog
 
-- * c35fbf6 - 2017-03-11: v8.9.7 
+- * 0d702c7 - 2017-03-12: NEW Release v8.9.8 Fixed issues with metadata image downloading from theTVDB for season posters/banners as well as banners for shows Images and actor info is parsed only when needed when using theTVDB API 
+- * 3e35e35 - 2017-03-11: v8.9.7 
 - * f589c3a - 2017-03-11: Fixed issues with downloading metadata/images from TheTVDB API 
 - * bf1768c - 2017-03-11: Cache directory is now automatically placed in data directory 
 - * e13da53 - 2017-03-11: v8.9.6 

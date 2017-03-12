@@ -361,7 +361,7 @@ class GenericMetadata(object):
                 if not self._has_season_poster(show_obj, season):
                     sickrage.srCore.srLogger.debug(
                         "Metadata provider " + self.name + " creating season posters for " + show_obj.name)
-                    result = result + [self.save_season_posters(show_obj, season)]
+                    result = result + [self.save_season_poster(show_obj, season)]
             return all(result)
         return False
 
@@ -371,7 +371,7 @@ class GenericMetadata(object):
             sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating season banners for " + show_obj.name)
             for season, _ in show_obj.episodes.items():  # @UnusedVariable
                 if not self._has_season_banner(show_obj, season):
-                    result = result + [self.save_season_banners(show_obj, season)]
+                    result = result + [self.save_season_banner(show_obj, season)]
             return all(result)
         return False
 
@@ -584,7 +584,7 @@ class GenericMetadata(object):
         # use the default banner name
         banner_path = self.get_banner_path(show_obj)
 
-        banner_data = self._retrieve_show_image('banner', show_obj, which)
+        banner_data = self._retrieve_show_image('series', show_obj, which)
 
         if not banner_data:
             sickrage.srCore.srLogger.debug("No show banner image was retrieved, unable to write banner")
@@ -592,97 +592,36 @@ class GenericMetadata(object):
 
         return self._write_image(banner_data, banner_path)
 
-    def save_season_posters(self, show_obj, season):
-        """
-        Saves all season posters to disk for the given show.
+    def save_season_poster(self, show_obj, season):
+        season_url = self._retrieve_season_poster_image(show_obj, season)
 
-        show_obj: a TVShow object for which to save the season thumbs
-
-        Cycles through all seasons and saves the season posters if possible. This
-        method should not need to be overridden by implementing classes, changing
-        _season_posters_dict and get_season_poster_path should be good enough.
-        """
-
-        season_dict = self._season_posters_dict(show_obj, season)
-        result = []
-
-        # Returns a nested dictionary of season art with the season
-        # number as primary key. It's really overkill but gives the option
-        # to present to user via ui to pick down the road.
-        for cur_season in season_dict:
-
-            cur_season_art = season_dict[cur_season]
-
-            if len(cur_season_art) == 0:
-                continue
-
-            # Just grab whatever's there for now
-            _, season_url = cur_season_art.popitem()  # @UnusedVariable
-
-            season_poster_file_path = self.get_season_poster_path(show_obj, cur_season)
-
-            if not season_poster_file_path:
-                sickrage.srCore.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
-                continue
-
-            seasonData = getShowImage(season_url)
-
-            if not seasonData:
-                sickrage.srCore.srLogger.debug("No season poster data available, skipping this season")
-                continue
-
-            result = result + [self._write_image(seasonData, season_poster_file_path)]
-
-        if result:
-            return all(result)
-        else:
+        season_poster_file_path = self.get_season_poster_path(show_obj, season)
+        if not season_poster_file_path:
+            sickrage.srCore.srLogger.debug(
+                "Path for season " + str(season) + " came back blank, skipping this season")
             return False
 
-    def save_season_banners(self, show_obj, season):
-        """
-        Saves all season banners to disk for the given show.
-
-        show_obj: a TVShow object for which to save the season thumbs
-
-        Cycles through all seasons and saves the season banners if possible. This
-        method should not need to be overridden by implementing classes, changing
-        _season_banners_dict and get_season_banner_path should be good enough.
-        """
-
-        season_dict = self._season_banners_dict(show_obj, season)
-        result = []
-
-        # Returns a nested dictionary of season art with the season
-        # number as primary key. It's really overkill but gives the option
-        # to present to user via ui to pick down the road.
-        for cur_season in season_dict:
-
-            cur_season_art = season_dict[cur_season]
-
-            if len(cur_season_art) == 0:
-                continue
-
-            # Just grab whatever's there for now
-            _, season_url = cur_season_art.popitem()  # @UnusedVariable
-
-            season_banner_file_path = self.get_season_banner_path(show_obj, cur_season)
-
-            if not season_banner_file_path:
-                sickrage.srCore.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
-                continue
-
-            seasonData = getShowImage(season_url)
-
-            if not seasonData:
-                sickrage.srCore.srLogger.debug("No season banner data available, skipping this season")
-                continue
-
-            result = result + [self._write_image(seasonData, season_banner_file_path)]
-
-        if result:
-            return all(result)
-        else:
+        seasonData = getShowImage(season_url)
+        if not seasonData:
+            sickrage.srCore.srLogger.debug("No season poster data available, skipping this season")
             return False
+
+        return self._write_image(seasonData, season_poster_file_path)
+
+    def save_season_banner(self, show_obj, season):
+        season_url = self._retrieve_season_banner_image(show_obj, season)
+
+        season_banner_file_path = self.get_season_banner_path(show_obj, season)
+        if not season_banner_file_path:
+            sickrage.srCore.srLogger.debug("Path for season " + str(season) + " came back blank, skipping this season")
+            return False
+
+        seasonData = getShowImage(season_url)
+        if not seasonData:
+            sickrage.srCore.srLogger.debug("No season banner data available, skipping this season")
+            return False
+
+        return self._write_image(seasonData, season_banner_file_path)
 
     def save_season_all_poster(self, show_obj, which=None):
         # use the default season all poster name
@@ -700,7 +639,7 @@ class GenericMetadata(object):
         # use the default season all banner name
         banner_path = self.get_season_all_banner_path(show_obj)
 
-        banner_data = self._retrieve_show_image('banner', show_obj, which)
+        banner_data = self._retrieve_show_image('series', show_obj, which)
 
         if not banner_data:
             sickrage.srCore.srLogger.debug("No show banner image was retrieved, unable to write season all banner")
@@ -757,12 +696,15 @@ class GenericMetadata(object):
         Returns: the binary image data if available, or else None
         """
         image_url = None
+        image_data = None
         indexer_lang = show_obj.lang
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
             lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
+
+            lINDEXER_API_PARMS['images'] = True
 
             if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
@@ -780,39 +722,35 @@ class GenericMetadata(object):
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
 
-        if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
+        if image_type not in ('fanart', 'poster', 'series', 'poster_thumb', 'series_thumb'):
             sickrage.srCore.srLogger.error(
                 "Invalid image type " + str(image_type) + ", couldn't find it in the " + srIndexerApi(
                     show_obj.indexer).name + " object")
             return
 
         if image_type == 'poster_thumb':
-            if getattr(indexer_show_obj, 'poster_thumb', None):
-                image_url = indexer_show_obj['poster_thumb']
-            if not image_url:
-                # Try and get images from Fanart.TV
+            try:
+                image_url = indexer_show_obj['_images']['poster']['thumbnail']
+            except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
-        elif image_type == 'banner_thumb':
-            if getattr(indexer_show_obj, 'banner_thumb', None):
-                image_url = indexer_show_obj['banner_thumb']
-            if not image_url:
-                # Try and get images from Fanart.TV
+        elif image_type == 'series_thumb':
+            try:
+                image_url = indexer_show_obj['_images']['series']['thumbnail']
+            except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         else:
-            if getattr(indexer_show_obj, image_type, None):
-                image_url = indexer_show_obj[image_type]
-            if not image_url:
-                # Try and get images from Fanart.TV
+            try:
+                image_url = indexer_show_obj['_images'][image_type]['filename']
+            except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
 
         if image_url:
             image_data = getShowImage(image_url, which)
-            return image_data
 
-        return None
+        return image_data
 
     @staticmethod
-    def _season_posters_dict(show_obj, season):
+    def _retrieve_season_poster_image(show_obj, season):
         """
         Should return a dict like:
 
@@ -820,8 +758,7 @@ class GenericMetadata(object):
                     {1: '<url 1>', 2: <url 2>, ...},}
         """
 
-        # This holds our resulting dictionary of season art
-        result = {}
+        result = None
 
         indexer_lang = show_obj.lang
 
@@ -840,48 +777,26 @@ class GenericMetadata(object):
 
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
+
+            # Give us just the normal poster-style season graphics
+            try:
+                return indexer_show_obj['_images']['season'][season]['filename']
+            except KeyError:
+                pass
         except (indexer_error, IOError) as e:
             sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
             sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
-            return result
-
-        # if we have no season banners then just finish
-        if not getattr(indexer_show_obj, '_images', None):
-            return result
-
-        if 'season' not in indexer_show_obj['_images'] or 'season' not in indexer_show_obj['_images']['season']:
-            return result
-
-        # Give us just the normal poster-style season graphics
-        seasonsArtObj = indexer_show_obj['_images']['season']['season']
-
-        # Returns a nested dictionary of season art with the season
-        # number as primary key. It's really overkill but gives the option
-        # to present to user via ui to pick down the road.
-
-        result[season] = {}
-
-        # find the correct season in the TVDB object and just copy the dict into our result dict
-        for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and \
-                            seasonsArtObj[seasonArtID]['language'] == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                result[season][seasonArtID] = seasonsArtObj[seasonArtID]['filename']
-
-        return result
 
     @staticmethod
-    def _season_banners_dict(show_obj, season):
+    def _retrieve_season_banner_image(show_obj, season):
         """
         Should return a dict like:
 
         result = {<season number>:
                     {1: '<url 1>', 2: <url 2>, ...},}
         """
-
-        # This holds our resulting dictionary of season art
-        result = {}
 
         indexer_lang = show_obj.lang
 
@@ -897,37 +812,17 @@ class GenericMetadata(object):
 
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
+
+            # Give us just the normal season graphics
+            try:
+                return indexer_show_obj['_images']['seasonwide'][season]['filename']
+            except KeyError:
+                pass
         except (indexer_error, IOError) as e:
             sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
             sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
-            return result
-
-        # if we have no season banners then just finish
-        if not getattr(indexer_show_obj, '_images', None):
-            return result
-
-        # if we have no season banners then just finish
-        if 'season' not in indexer_show_obj['_images'] or 'seasonwide' not in indexer_show_obj['_images']['season']:
-            return result
-
-        # Give us just the normal season graphics
-        seasonsArtObj = indexer_show_obj['_images']['season']['seasonwide']
-
-        # Returns a nested dictionary of season art with the season
-        # number as primary key. It's really overkill but gives the option
-        # to present to user via ui to pick down the road.
-
-        result[season] = {}
-
-        # find the correct season in the TVDB object and just copy the dict into our result dict
-        for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and \
-                            seasonsArtObj[seasonArtID]['language'] == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                result[season][seasonArtID] = seasonsArtObj[seasonArtID]['filename']
-
-        return result
 
     def retrieveShowMetadata(self, folder):
         """
@@ -996,9 +891,9 @@ class GenericMetadata(object):
     def _retrieve_show_images_from_fanart(show, img_type, thumb=False):
         types = {
             'poster': sickrage.metadata.fanart.TYPE.TV.POSTER,
-            'banner': sickrage.metadata.fanart.TYPE.TV.BANNER,
+            'series': sickrage.metadata.fanart.TYPE.TV.BANNER,
             'poster_thumb': sickrage.metadata.fanart.TYPE.TV.POSTER,
-            'banner_thumb': sickrage.metadata.fanart.TYPE.TV.BANNER,
+            'series_thumb': sickrage.metadata.fanart.TYPE.TV.BANNER,
             'fanart': sickrage.metadata.fanart.TYPE.TV.BACKGROUND,
         }
 

@@ -230,13 +230,13 @@ class ImageCache(object):
             img_type_name = 'poster'
             dest_path = self.poster_path(show_obj.indexerid)
         elif img_type == self.BANNER:
-            img_type_name = 'banner'
+            img_type_name = 'series'
             dest_path = self.banner_path(show_obj.indexerid)
         elif img_type == self.POSTER_THUMB:
             img_type_name = 'poster_thumb'
             dest_path = self.poster_thumb_path(show_obj.indexerid)
         elif img_type == self.BANNER_THUMB:
-            img_type_name = 'banner_thumb'
+            img_type_name = 'series_thumb'
             dest_path = self.banner_thumb_path(show_obj.indexerid)
         elif img_type == self.FANART:
             img_type_name = 'fanart'

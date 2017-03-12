@@ -513,6 +513,7 @@ class Tvdb:
         if not params:
             return
 
+        images = {}
         for type in [x['keytype'] for x in params]:
             imagesEt = self._request(self.config['api']['images'].format(id=sid, type=type))
             if not imagesEt:
@@ -525,15 +526,24 @@ class Tvdb:
                 if image_type is None or image_subtype is None:
                     continue
 
+                if image_type not in images:
+                    images[image_type] = {}
+
                 for k, v in cur_image.items():
                     if k is None or v is None:
                         continue
 
                     k = k.lower()
-                    if k == 'filename':
-                        self._setShowData(sid, image_type, self.config['api']['imagesPrefix'].format(id=v))
-                    elif k == 'thumbnail':
-                        self._setShowData(sid, image_type + '_thumb', self.config['api']['imagesPrefix'].format(id=v))
+                    if k in ['filename', 'thumbnail']:
+                        v = self.config['api']['imagesPrefix'].format(id=v)
+                        if 'season' in image_type:
+                            if int(image_subtype) not in images[image_type]:
+                                images[image_type][int(image_subtype)] = {}
+                            images[image_type][int(image_subtype)][k] = v
+                        else:
+                            images[image_type][k] = v
+
+        self._setShowData(sid, '_images', images)
 
     @login_required
     def _parseActors(self, sid):
@@ -593,10 +603,10 @@ class Tvdb:
         # get episode data
         if getEpInfo:
             # Parse images
-            self._parseImages(sid)
+            if self.config['images_enabled']: self._parseImages(sid)
 
             # Parse actors
-            self._parseActors(sid)
+            if self.config['actors_enabled']: self._parseActors(sid)
 
             # Parse episode data
             sickrage.srCore.srLogger.debug('Getting all episodes of {}'.format(sid))
