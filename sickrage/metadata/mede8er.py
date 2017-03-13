@@ -100,7 +100,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         indexer_lang = show_obj.lang
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-        lINDEXER_API_PARMS['actors'] = True
+
 
         if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang

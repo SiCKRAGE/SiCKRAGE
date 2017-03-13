@@ -103,8 +103,6 @@ class KODI_12PlusMetadata(GenericMetadata):
         indexer_lang = show_obj.lang
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-        lINDEXER_API_PARMS['actors'] = True
-
         if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -153,7 +151,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             plot = SubElement(tv_node, "plot")
             plot.text = myShow["overview"]
 
-        #if getattr(myShow, 'id', None):
+        # if getattr(myShow, 'id', None):
         #    episodeguide = SubElement(tv_node, "episodeguide")
         #    episodeguideurl = SubElement(episodeguide, "url")
         #    episodeguideurl.text = srIndexerApi(show_obj.indexer).config['base_url'] + str(
@@ -217,8 +215,6 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
 
-        lINDEXER_API_PARMS['actors'] = True
-
         if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -259,7 +255,8 @@ class KODI_12PlusMetadata(GenericMetadata):
                 sickrage.srCore.srLogger.debug("Not generating nfo because the ep has no title")
                 return None
 
-            sickrage.srCore.srLogger.debug("Creating metadata for episode " + str(ep_obj.season) + "x" + str(ep_obj.episode))
+            sickrage.srCore.srLogger.debug(
+                "Creating metadata for episode " + str(ep_obj.season) + "x" + str(ep_obj.episode))
 
             if len(eps_to_write) > 1:
                 episode = SubElement(rootNode, "episodedetails")

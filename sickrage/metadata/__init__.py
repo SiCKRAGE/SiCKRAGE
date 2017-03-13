@@ -287,7 +287,8 @@ class GenericMetadata(object):
 
     def create_show_metadata(self, show_obj):
         if self.show_metadata and show_obj and not self._has_show_metadata(show_obj):
-            sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating show metadata for " + show_obj.name)
+            sickrage.srCore.srLogger.debug(
+                "Metadata provider " + self.name + " creating show metadata for " + show_obj.name)
             return self.write_show_file(show_obj)
         return False
 
@@ -368,7 +369,8 @@ class GenericMetadata(object):
     def create_season_banners(self, show_obj):
         if self.season_banners and show_obj:
             result = []
-            sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating season banners for " + show_obj.name)
+            sickrage.srCore.srLogger.debug(
+                "Metadata provider " + self.name + " creating season banners for " + show_obj.name)
             for season, _ in show_obj.episodes.items():  # @UnusedVariable
                 if not self._has_season_banner(show_obj, season):
                     result = result + [self.save_season_banner(show_obj, season)]
@@ -704,8 +706,6 @@ class GenericMetadata(object):
             # change the language value elsewhere
             lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS['images'] = True
-
             if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -767,8 +767,6 @@ class GenericMetadata(object):
             # change the language value elsewhere
             lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS['images'] = True
-
             if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -804,8 +802,6 @@ class GenericMetadata(object):
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
             lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
-
-            lINDEXER_API_PARMS['images'] = True
 
             if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
@@ -849,8 +845,9 @@ class GenericMetadata(object):
 
             if showXML.findtext('title') is None or (
                             showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
-                sickrage.srCore.srLogger.info("Invalid info in tvshow.nfo (missing name or id): {0:s} {1:s} {2:s}".format(
-                    showXML.findtext('title'), showXML.findtext('tvdbid'), showXML.findtext('id')))
+                sickrage.srCore.srLogger.info(
+                    "Invalid info in tvshow.nfo (missing name or id): {0:s} {1:s} {2:s}".format(
+                        showXML.findtext('title'), showXML.findtext('tvdbid'), showXML.findtext('id')))
                 return empty_return
 
             name = showXML.findtext('title')
@@ -864,7 +861,8 @@ class GenericMetadata(object):
                 return empty_return
 
             if indexer_id is None:
-                sickrage.srCore.srLogger.warning("Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
+                sickrage.srCore.srLogger.warning(
+                    "Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
                 return empty_return
 
             indexer = None
@@ -885,7 +883,6 @@ class GenericMetadata(object):
             return empty_return
 
         return indexer_id, name, indexer
-
 
     @staticmethod
     def _retrieve_show_images_from_fanart(show, img_type, thumb=False):

@@ -97,14 +97,6 @@ class Show(dict):
         super(Show, self).__init__(**kwargs)
         self.data = {}
 
-    # pickle freindly.
-    def __getstate__(self):
-        return self.__dict__
-
-    # pickle freindly.
-    def __setstate__(self, d):
-        self.__dict__.update(d)
-
     def __repr__(self):
         return "<Show {} (containing {} seasons)>".format(
             self.data.get('seriesname', 'instance'),
@@ -287,19 +279,17 @@ class Tvdb:
                  custom_ui=None,
                  language=None,
                  apikey='F9C450E78D99172E',
-                 useZip=False,
                  dvdorder=False,
                  proxy=None,
                  headers=None):
 
-        if headers is None:
-            headers = {}
+        if headers is None: headers = {}
 
         self.shows = ShowCache()
 
         self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'interactive': interactive,
-                       'select_first': select_first, 'useZip': useZip, 'dvdorder': dvdorder, 'proxy': proxy,
-                       'headers': headers, 'apitoken': None, 'api': {}}
+                       'select_first': select_first, 'dvdorder': dvdorder, 'proxy': proxy, 'apitoken': None, 'api': {},
+                       'headers': headers.update({'Content-type': 'application/json'})}
 
         if cache is True:
             self.config['cache_enabled'] = True
@@ -311,11 +301,6 @@ class Tvdb:
             self.config['cache_location'] = cache
         else:
             raise ValueError("Invalid value for Cache %r (type was {})".format(cache, type(cache)))
-
-        self.config['headers'].update({'Content-type': 'application/json'})
-
-        self.config['images_enabled'] = images
-        self.config['actors_enabled'] = actors
 
         # api base urls
         self.config['api']['base'] = "https://api.thetvdb.com"
@@ -603,10 +588,10 @@ class Tvdb:
         # get episode data
         if getEpInfo:
             # Parse images
-            if self.config['images_enabled']: self._parseImages(sid)
+            self._parseImages(sid)
 
             # Parse actors
-            if self.config['actors_enabled']: self._parseActors(sid)
+            self._parseActors(sid)
 
             # Parse episode data
             sickrage.srCore.srLogger.debug('Getting all episodes of {}'.format(sid))
