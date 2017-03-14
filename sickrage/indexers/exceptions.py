@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -20,25 +18,22 @@
 
 from __future__ import unicode_literals
 
-from thetvdb.exceptions import tvdb_attributenotfound, \
-    tvdb_episodenotfound, tvdb_error, tvdb_exception, tvdb_seasonnotfound, \
-    tvdb_showincomplete, tvdb_shownotfound, tvdb_userabort
-
+from thetvdb.exceptions import tvdb_attributenotfound, tvdb_episodenotfound, tvdb_error, tvdb_exception, \
+    tvdb_seasonnotfound, tvdb_showincomplete, tvdb_shownotfound
 
 __author__ = "echel0n"
 __version__ = "1.0"
 
 indexerExcepts = ["indexer_exception", "indexer_error", "indexer_userabort", "indexer_shownotfound",
-                  "indexer_showincomplete",
-                  "indexer_seasonnotfound", "indexer_episodenotfound", "indexer_attributenotfound"]
+                  "indexer_showincomplete", "indexer_seasonnotfound", "indexer_episodenotfound",
+                  "indexer_attributenotfound"]
 
-tvdbExcepts = ["tvdb_exception", "tvdb_error", "tvdb_userabort", "tvdb_shownotfound", "tvdb_showincomplete",
+tvdbExcepts = ["tvdb_exception", "tvdb_error", "tvdb_shownotfound", "tvdb_showincomplete",
                "tvdb_seasonnotfound", "tvdb_episodenotfound", "tvdb_attributenotfound"]
 
 # link API exceptions to our exception handler
 indexer_exception = tvdb_exception
 indexer_error = tvdb_error
-indexer_userabort = tvdb_userabort
 indexer_attributenotfound = tvdb_attributenotfound
 indexer_episodenotfound = tvdb_episodenotfound
 indexer_seasonnotfound = tvdb_seasonnotfound
