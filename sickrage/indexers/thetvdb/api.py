@@ -18,10 +18,12 @@
 
 from __future__ import print_function, unicode_literals
 
+import datetime
 import functools
 import getpass
 import os
 import tempfile
+import time
 import urlparse
 
 import imdbpie
@@ -284,12 +286,13 @@ class Tvdb:
                  headers=None):
 
         if headers is None: headers = {}
+        headers.update({'Content-type': 'application/json'})
 
         self.shows = ShowCache()
 
         self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'interactive': interactive,
                        'select_first': select_first, 'dvdorder': dvdorder, 'proxy': proxy, 'apitoken': None, 'api': {},
-                       'headers': headers.update({'Content-type': 'application/json'})}
+                       'headers': headers}
 
         if cache is True:
             self.config['cache_enabled'] = True
@@ -643,6 +646,9 @@ class Tvdb:
 
                     self._setItem(sid, seas_no, ep_no, k, v)
 
+        # set last updated
+        self._setShowData(sid, 'last_updated', long(time.mktime(datetime.datetime.now().timetuple())))
+
         return self.shows[int(sid)]
 
     @login_required
@@ -658,13 +664,12 @@ class Tvdb:
         # return {l['abbreviation']: l['id'] for l in self._request(self.config['api']['languages'])}
 
     def __getitem__(self, key):
-        """
-        Handles: tvdb_instance['seriesname'] calls
-        """
-
         if isinstance(key, (int, long)):
             if key in self.shows:
-                return self.shows[key]
+                fromTime = long(self.shows[key]['last_update'])
+                updated_shows = set(d["id"] for d in self.updated(fromTime) or {})
+                if key not in updated_shows:
+                    return self.shows[key]
             return self._getShowData(key, True)
 
         selected_series = self._getSeries(key)
