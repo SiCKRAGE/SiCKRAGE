@@ -388,12 +388,9 @@ class Tvdb:
         if resp.status_code == 401:
             raise tvdb_unauthorized(resp.json()['Error'])
         elif resp.status_code >= 400:
-            raise tvdb_error()
+            raise tvdb_error(resp.json()['Error'])
 
-        try:
-            return to_lowercase(resp.json())
-        except Exception as e:
-            raise tvdb_error(e.message)
+        return to_lowercase(resp.json())
 
     def _setItem(self, sid, seas, ep, attrib, value):
         """Creates a new episode, creating Show(), Season() and
@@ -491,8 +488,7 @@ class Tvdb:
 
         ui = BaseUI(config=self.config)
         if self.config['custom_ui'] is not None:
-            CustomUI = self.config['custom_ui']
-            ui = CustomUI(config=self.config)
+            ui = self.config['custom_ui'](config=self.config)
 
         return ui.selectSeries(allSeries, series)
 
