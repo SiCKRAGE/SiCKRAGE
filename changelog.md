@@ -1,6 +1,7 @@
 # Changelog
 
-- * d437079 - 2017-03-13: Fixed header issue with TheTVDB API Added code to check TheTVDB if a show has updated infomation available before using a cached version 
+- * 781eb30 - 2017-03-13: Small typo fix 
+- * fdab661 - 2017-03-13: Fixed header issue with TheTVDB API Added code to check TheTVDB if a show has updated infomation available before using a cached version 
 - * 5fb41f2 - 2017-03-13: Added option to enable/disable provider RSS updates during searches to help reduce resource usage for smaller devices 
 - * d4061cf - 2017-03-13: Removed misc stale code 
 - * 3edf433 - 2017-03-12: Removed startup message for daemoning pid 
