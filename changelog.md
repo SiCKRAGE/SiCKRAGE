@@ -1,6 +1,7 @@
 # Changelog
 
-- * 18e4bde - 2017-03-14: Added alternative url for TheTVDB API 
+- * c4c4b7d - 2017-03-14: Corrected some code violations 
+- * d80f248 - 2017-03-14: Added alternative url for TheTVDB API 
 - * 67013ec - 2017-03-14: Added cache into TheTVDB API to help reduce number of API calls 
 - * 9eefa4a - 2017-03-13: Small typo fix 
 - * fdab661 - 2017-03-13: Fixed header issue with TheTVDB API Added code to check TheTVDB if a show has updated infomation available before using a cached version 
