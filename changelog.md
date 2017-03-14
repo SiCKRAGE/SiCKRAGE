@@ -1,6 +1,7 @@
 # Changelog
 
-- * d21625c - 2017-03-14: Increased indexer api timeout to 120s 
+- * f3a56e2 - 2017-03-14: Added error handler for requests routine in indexer api 
+- * a7d9214 - 2017-03-14: Increased indexer api timeout to 120s 
 - * 9bbf594 - 2017-03-14: Updated TheTVDB API url 
 - * 536a733 - 2017-03-14: Fixed JWT Token auth issues with TheTVDB API 
 - * 5e53d4a - 2017-03-14: Corrected some code violations 
