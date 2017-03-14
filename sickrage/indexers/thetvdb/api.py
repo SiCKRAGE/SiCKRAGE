@@ -342,12 +342,12 @@ class Tvdb:
         try:
             if refresh and self.config['apitoken']:
                 self.config['apitoken'] = self._request(
-                    self.config['api']['login'],
-                    json={'apikey': self.config['apikey']},
+                    self.config['api']['refresh']
                 ).json()['token']
             else:
                 self.config['apitoken'] = self._request(
-                    self.config['api']['refresh']
+                    self.config['api']['login'],
+                    json={'apikey': self.config['apikey']},
                 ).json()['token']
         except Exception as e:
             self.logout()
