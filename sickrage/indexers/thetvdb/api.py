@@ -311,7 +311,7 @@ class Tvdb:
             raise ValueError("Invalid value for Cache %r (type was {})".format(cache, type(cache)))
 
         # api base url
-        self.config['api']['base'] = "https://tvdb2.plex.tv"
+        self.config['api']['base'] = "https://api.thetvdb.com"
 
         # api-v2 urls
         self.config['api']['login'] = '/login'

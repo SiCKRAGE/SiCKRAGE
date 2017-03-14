@@ -1,6 +1,7 @@
 # Changelog
 
-- * 15b3399 - 2017-03-14: Fixed JWT Token auth issues with TheTVDB API 
+- * 955f312 - 2017-03-14: Updated TheTVDB API url 
+- * 536a733 - 2017-03-14: Fixed JWT Token auth issues with TheTVDB API 
 - * 5e53d4a - 2017-03-14: Corrected some code violations 
 - * 7c1e6b2 - 2017-03-14: Corrected some code violations 
 - * d80f248 - 2017-03-14: Added alternative url for TheTVDB API 
