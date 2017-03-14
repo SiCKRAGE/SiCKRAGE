@@ -45,6 +45,16 @@
                                 </span>
                                 </label>
                             </div>
+                            <div class="field-pair">
+                                <label for="enable_rss_cache">
+                                    <span class="component-title">Enable provider RSS cache</span>
+                                <span class="component-desc">
+                                    <input type="checkbox" name="enable_rss_cache" id="enable_rss_cache"
+                                           class="enabler" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ENABLE_RSS_CACHE)]}/>
+                                    <p>Enables/Disables provider RSS cache</p>
+                                </span>
+                                </label>
+                            </div>
                             <div id="content_download_propers">
                                 <div class="field-pair">
                                     <label for="check_propers_interval">

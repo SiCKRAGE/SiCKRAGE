@@ -1,6 +1,7 @@
 # Changelog
 
-- * 638762f - 2017-03-13: Removed misc stale code 
+- * 412dcff - 2017-03-13: Added option to enable/disable provider RSS updates during searches to help reduce resource usage for smaller devices 
+- * d4061cf - 2017-03-13: Removed misc stale code 
 - * 3edf433 - 2017-03-12: Removed startup message for daemoning pid 
 - * 13ef587 - 2017-03-12: Fixed args passed when in daemon mode for browser window launching and quite 
 - * 64be91c - 2017-03-12: NEW Release v8.9.8 Fixed issues with metadata image downloading from theTVDB for season posters/banners as well as banners for shows Images and actor info is parsed only when needed when using theTVDB API 

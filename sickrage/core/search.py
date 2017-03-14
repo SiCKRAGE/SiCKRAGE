@@ -385,7 +385,7 @@ def searchForNeededEpisodes():
             continue
 
         episodes = wantedEpisodes(curShow, date.fromordinal(1))
-        result = searchProviders(curShow, episodes, cacheOnly=True)
+        result = searchProviders(curShow, episodes, cacheOnly=sickrage.srCore.srConfig.ENABLE_RSS_CACHE)
         if result: results += result
 
     return results
@@ -447,7 +447,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
                     # update provider RSS cache
-                    # providerObj.cache.update()
+                    if sickrage.srCore.srConfig.ENABLE_RSS_CACHE: providerObj.cache.update()
 
                     if search_mode == 'eponly':
                         sickrage.srCore.srLogger.info("Performing episode search for " + show.name)

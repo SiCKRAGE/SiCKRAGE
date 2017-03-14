@@ -160,6 +160,7 @@ class srConfig(object):
         self.TORRENT_METHOD = None
         self.TORRENT_DIR = None
         self.DOWNLOAD_PROPERS = False
+        self.ENABLE_RSS_CACHE = True
         self.PROPER_SEARCHER_INTERVAL = None
         self.ALLOW_HIGH_PRIORITY = False
         self.SAB_FORCED = False
@@ -515,6 +516,7 @@ class srConfig(object):
         defaults['General']['showupdate_hour'] = int(self.SHOWUPDATE_HOUR)
         defaults['General']['showupdate_stale'] = int(self.SHOWUPDATE_STALE)
         defaults['General']['download_propers'] = int(self.DOWNLOAD_PROPERS)
+        defaults['General']['enable_rss_cache'] = int(self.ENABLE_RSS_CACHE)
         defaults['General']['randomize_providers'] = int(self.RANDOMIZE_PROVIDERS)
         defaults['General']['check_propers_interval'] = self.PROPER_SEARCHER_INTERVAL
         defaults['General']['allow_high_priority'] = int(self.ALLOW_HIGH_PRIORITY)
@@ -1490,6 +1492,7 @@ class srConfig(object):
         self.NZB_METHOD = self.check_setting_str('General', 'nzb_method', 'blackhole')
         self.TORRENT_METHOD = self.check_setting_str('General', 'torrent_method', 'blackhole')
         self.DOWNLOAD_PROPERS = bool(self.check_setting_int('General', 'download_propers', 1))
+        self.ENABLE_RSS_CACHE = bool(self.check_setting_int('General', 'enable_rss_cache', 1))
         self.PROPER_SEARCHER_INTERVAL = self.check_setting_str('General', 'check_propers_interval',
                                                                'daily')
         self.RANDOMIZE_PROVIDERS = bool(self.check_setting_int('General', 'randomize_providers', 0))
@@ -1963,6 +1966,7 @@ class srConfig(object):
         new_config['General']['showupdate_hour'] = int(self.SHOWUPDATE_HOUR)
         new_config['General']['showupdate_stale'] = int(self.SHOWUPDATE_STALE)
         new_config['General']['download_propers'] = int(self.DOWNLOAD_PROPERS)
+        new_config['General']['enable_rss_cache'] = int(self.ENABLE_RSS_CACHE)
         new_config['General']['randomize_providers'] = int(self.RANDOMIZE_PROVIDERS)
         new_config['General']['check_propers_interval'] = self.PROPER_SEARCHER_INTERVAL
         new_config['General']['allow_high_priority'] = int(self.ALLOW_HIGH_PRIORITY)
