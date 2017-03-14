@@ -28,7 +28,6 @@ import time
 import urlparse
 
 import imdbpie
-from requests import ReadTimeout
 
 import sickrage
 
@@ -313,6 +312,7 @@ class Tvdb:
 
         # api base urls
         self.config['api']['base'] = "https://api.thetvdb.com"
+        self.config['api']['base_alt'] = "https://tvdb2.plex.tv"
 
         # api-v2 urls
         self.config['api']['login'] = '/login'
@@ -342,15 +342,13 @@ class Tvdb:
     def login(self, refresh=False):
         try:
             if refresh and self.config['apitoken']:
-                self.config['apitoken'] = sickrage.srCore.srWebSession.post(
-                    urlparse.urljoin(self.config['api']['base'], self.config['api']['refresh']),
-                    timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT
+                self.config['apitoken'] = self._request(
+                    self.config['api']['login'],
+                    json={'apikey': self.config['apikey']},
                 ).json()['token']
             else:
-                self.config['apitoken'] = sickrage.srCore.srWebSession.post(
-                    urlparse.urljoin(self.config['api']['base'], self.config['api']['login']),
-                    timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT,
-                    json={'apikey': self.config['apikey']},
+                self.config['apitoken'] = self._request(
+                    self.config['api']['refresh']
                 ).json()['token']
         except Exception as e:
             self.logout()
@@ -377,25 +375,32 @@ class Tvdb:
 
         return os.path.join(tempfile.gettempdir(), "thetvdb-{}".format(uid))
 
-    def _request(self, url, params=None):
-        url = urlparse.urljoin(self.config['api']['base'], url)
-
+    def _request(self, url, params=None, **kwargs):
         if self.config['apitoken']:
             self.config['headers']['authorization'] = 'Bearer {}'.format(self.config['apitoken'])
-
-        sickrage.srCore.srLogger.debug("Retrieving URL {}".format(url))
 
         # get response from theTVDB
         try:
             resp = sickrage.srCore.srWebSession.get(
-                url,
+                urlparse.urljoin(self.config['api']['base'], url),
                 cache=self.config['cache_enabled'],
                 headers=self.config['headers'],
                 params=params,
-                timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT
+                timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT,
+                **kwargs
             )
-        except ReadTimeout as e:
-            raise tvdb_error(e.message)
+        except Exception as e:
+            try:
+                resp = sickrage.srCore.srWebSession.get(
+                    urlparse.urljoin(self.config['api']['base_alt'], url),
+                    cache=self.config['cache_enabled'],
+                    headers=self.config['headers'],
+                    params=params,
+                    timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT,
+                    **kwargs
+                )
+            except:
+                raise tvdb_error(e.message)
 
         # handle requests exceptions
         if resp.status_code == 401:
@@ -404,7 +409,7 @@ class Tvdb:
             raise tvdb_error()
 
         try:
-            return to_lowercase(resp.json()['data'])
+            return resp.json()
         except Exception as e:
             raise tvdb_error(e.message)
 
@@ -470,17 +475,18 @@ class Tvdb:
         and returns the result list
         """
 
-        data = []
-
         if series:
             sickrage.srCore.srLogger.debug("Searching for show by name: {}".format(series))
-            return self._request(self.config['api']['getSeries'].format(name=series))
+            result = self._request(self.config['api']['getSeries'].format(name=series))
+            return to_lowercase(result['data'])
         elif imdbid:
             sickrage.srCore.srLogger.debug("Searching for show by imdbId: {}".format(imdbid))
-            return self._request(self.config['api']['getSeriesIMDB'].format(id=imdbid))
+            result = self._request(self.config['api']['getSeriesIMDB'].format(id=imdbid))
+            return to_lowercase(result['data'])
         elif zap2itid:
             sickrage.srCore.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
-            return self._request(self.config['api']['getSeriesZap2It'].format(id=zap2itid))
+            result = self._request(self.config['api']['getSeriesZap2It'].format(id=zap2itid))
+            return to_lowercase(result['data'])
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -515,13 +521,13 @@ class Tvdb:
     def _parseImages(self, sid):
         sickrage.srCore.srLogger.debug('Getting season images for {}'.format(sid))
 
-        params = self._request(self.config['api']['imagesParams'].format(id=sid))
+        params = to_lowercase(self._request(self.config['api']['imagesParams'].format(id=sid))['data'])
         if not params:
             return
 
         images = {}
         for type in [x['keytype'] for x in params]:
-            imagesEt = self._request(self.config['api']['images'].format(id=sid, type=type))
+            imagesEt = to_lowercase(self._request(self.config['api']['images'].format(id=sid, type=type))['data'])
             if not imagesEt:
                 continue
 
@@ -555,7 +561,7 @@ class Tvdb:
     def _parseActors(self, sid):
         sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
 
-        actorsEt = self._request(self.config['api']['actors'].format(id=sid))
+        actorsEt = to_lowercase(self._request(self.config['api']['actors'].format(id=sid))['data'])
         if not actorsEt:
             sickrage.srCore.srLogger.debug('Actors result returned zero')
             return
@@ -589,7 +595,7 @@ class Tvdb:
         # Parse show information
         sickrage.srCore.srLogger.debug('Getting all series data for {}'.format(sid))
 
-        seriesInfoEt = self._request(self.config['api']['series'].format(id=sid))
+        seriesInfoEt = to_lowercase(self._request(self.config['api']['series'].format(id=sid))['data'])
         if not seriesInfoEt:
             sickrage.srCore.srLogger.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
@@ -621,8 +627,8 @@ class Tvdb:
             episodes = []
             while True:
                 try:
-                    data = self._request(self.config['api']['episodes'].format(id=sid), params={'page': p})
-                    episodes += data
+                    resp = self._request(self.config['api']['episodes'].format(id=sid), params={'page': p})
+                    episodes += to_lowercase(resp['data'])
                     p += 1
                 except tvdb_error:
                     break
@@ -671,7 +677,7 @@ class Tvdb:
 
     @login_required
     def updated(self, fromTime):
-        return self._request(self.config['api']['updated'].format(time=fromTime))
+        return to_lowercase(self._request(self.config['api']['updated'].format(time=fromTime))['data'])
 
     @property
     def languages(self):

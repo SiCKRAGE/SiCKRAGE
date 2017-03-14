@@ -1,6 +1,7 @@
 # Changelog
 
-- * 15916ba - 2017-03-14: Added cache into TheTVDB API to help reduce number of API calls 
+- * 18e4bde - 2017-03-14: Added alternative url for TheTVDB API 
+- * 67013ec - 2017-03-14: Added cache into TheTVDB API to help reduce number of API calls 
 - * 9eefa4a - 2017-03-13: Small typo fix 
 - * fdab661 - 2017-03-13: Fixed header issue with TheTVDB API Added code to check TheTVDB if a show has updated infomation available before using a cached version 
 - * 5fb41f2 - 2017-03-13: Added option to enable/disable provider RSS updates during searches to help reduce resource usage for smaller devices 
