@@ -100,13 +100,15 @@ class srSession(cfscrape.CloudflareScraper):
                                                        heuristic=ExpiresAfter(days=7)).__class__
 
         # get web response
-        response = super(srSession, self).request(method,
-                                                  url,
-                                                  headers=headers,
-                                                  params=params,
-                                                  verify=verify,
-                                                  proxies=proxies,
-                                                  *args, **kwargs)
+        response = super(srSession, self).request(
+            method,
+            url,
+            headers=headers,
+            params=params,
+            verify=verify,
+            proxies=proxies,
+            *args, **kwargs
+        )
 
         try:
             # check web response for errors

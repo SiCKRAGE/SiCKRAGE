@@ -22,11 +22,13 @@ import datetime
 import functools
 import getpass
 import os
+import pickle
 import tempfile
 import time
 import urlparse
 
 import imdbpie
+from requests import ReadTimeout
 
 import sickrage
 
@@ -41,10 +43,6 @@ from exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb
 
 
 class Unauthorized(Exception):
-    pass
-
-
-class APIError(Exception):
     pass
 
 
@@ -90,7 +88,6 @@ class ShowCache(dict):
             self._stack = self._stack[-self.maxsize:]
         super(ShowCache, self).__setitem__(key, value)
 
-
 class Show(dict):
     """Holds a dict of seasons, and show data.
     """
@@ -98,6 +95,12 @@ class Show(dict):
     def __init__(self, **kwargs):
         super(Show, self).__init__(**kwargs)
         self.data = {}
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
 
     def __repr__(self):
         return "<Show {} (containing {} seasons)>".format(
@@ -289,6 +292,9 @@ class Tvdb:
         headers.update({'Content-type': 'application/json'})
 
         self.shows = ShowCache()
+        if os.path.isfile(os.path.join(sickrage.DATA_DIR, 'thetvdb.db')):
+            with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'rb') as fp:
+                self.shows = pickle.load(fp)
 
         self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'interactive': interactive,
                        'select_first': select_first, 'dvdorder': dvdorder, 'proxy': proxy, 'apitoken': None, 'api': {},
@@ -380,19 +386,22 @@ class Tvdb:
         sickrage.srCore.srLogger.debug("Retrieving URL {}".format(url))
 
         # get response from theTVDB
-        resp = sickrage.srCore.srWebSession.get(
-            url,
-            cache=self.config['cache_enabled'],
-            headers=self.config['headers'],
-            params=params,
-            timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT
-        )
+        try:
+            resp = sickrage.srCore.srWebSession.get(
+                url,
+                cache=self.config['cache_enabled'],
+                headers=self.config['headers'],
+                params=params,
+                timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT
+            )
+        except ReadTimeout as e:
+            raise tvdb_error(e.message)
 
         # handle requests exceptions
         if resp.status_code == 401:
             raise Unauthorized(resp.json()['Error'])
         elif resp.status_code >= 400:
-            raise APIError()
+            raise tvdb_error()
 
         try:
             return to_lowercase(resp.json()['data'])
@@ -423,6 +432,9 @@ class Tvdb:
             self.shows[sid][seas][ep] = Episode()
         self.shows[sid][seas][ep][attrib] = value
 
+        with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
+            pickle.dump(self.shows, fp)
+
     def _setShowData(self, sid, key, value):
         """Sets self.shows[sid] to a new Show instance, or sets the data
         """
@@ -432,9 +444,15 @@ class Tvdb:
 
         self.shows[sid].data[key] = value
 
+        with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
+            pickle.dump(self.shows, fp)
+
     def _delShow(self, sid):
         if sid in self.shows:
             del self.shows[sid]
+
+        with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
+            pickle.dump(self.shows, fp)
 
     def _cleanData(self, data):
         """Cleans up strings returned by TheTVDB.com
@@ -606,7 +624,7 @@ class Tvdb:
                     data = self._request(self.config['api']['episodes'].format(id=sid), params={'page': p})
                     episodes += data
                     p += 1
-                except APIError:
+                except tvdb_error:
                     break
 
             if not len(episodes):
