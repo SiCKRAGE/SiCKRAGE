@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9cff967 - 2017-03-14: TheTVDB API code cleanup 
+- * 13be4c8 - 2017-03-14: TheTVDB API code fix for last_updated attrib 
+- * 82e44c3 - 2017-03-14: TheTVDB API code cleanup 
 - * 99a9a4e - 2017-03-14: Added error handler for requests routine in indexer api 
 - * a7d9214 - 2017-03-14: Increased indexer api timeout to 120s 
 - * 9bbf594 - 2017-03-14: Updated TheTVDB API url 

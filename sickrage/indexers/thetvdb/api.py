@@ -667,10 +667,13 @@ class Tvdb:
     def __getitem__(self, key):
         if isinstance(key, (int, long)):
             if key in self.shows:
-                fromTime = long(self.shows[key]['last_updated'])
-                updated_shows = set(d["id"] for d in self.updated(fromTime) or {})
-                if key not in updated_shows:
-                    return self.shows[key]
+                try:
+                    fromTime = long(self.shows[key]['last_updated'])
+                    updated_shows = set(d["id"] for d in self.updated(fromTime) or {})
+                    if key not in updated_shows:
+                        return self.shows[key]
+                except:
+                    pass
             return self._getShowData(key)
 
         selected_series = self._getSeries(key)
