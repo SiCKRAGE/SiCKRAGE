@@ -2514,7 +2514,7 @@ jQuery(document).ready(function ($) {
                         timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
                         dataType: 'json',
                         error: function () {
-                            $('#messages').empty().html('search timed out, try again or try another indexer');
+                            $('#messages').empty().html('search timed out, try increasing timeout for indexer');
                         },
                         success: function (data) {
                             var firstResult = true;

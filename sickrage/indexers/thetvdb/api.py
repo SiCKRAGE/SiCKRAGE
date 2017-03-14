@@ -378,18 +378,15 @@ class Tvdb:
             self.config['headers'].update({'Accept-Language': self.config['language']})
 
         # get response from theTVDB
-        try:
-            resp = sickrage.srCore.srWebSession.request(
-                method,
-                urlparse.urljoin(self.config['api']['base'], url),
-                cache=self.config['cache_enabled'],
-                headers=self.config['headers'],
-                params=params,
-                timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT,
-                **kwargs
-            )
-        except Exception as e:
-            raise tvdb_error(e.message)
+        resp = sickrage.srCore.srWebSession.request(
+            method,
+            urlparse.urljoin(self.config['api']['base'], url),
+            cache=self.config['cache_enabled'],
+            headers=self.config['headers'],
+            timeout=sickrage.srCore.srConfig.INDEXER_TIMEOUT,
+            params=params,
+            **kwargs
+        )
 
         # handle requests exceptions
         if resp.status_code == 401:

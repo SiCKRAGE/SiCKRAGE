@@ -1464,7 +1464,7 @@ class srConfig(object):
         self.FLATTEN_FOLDERS_DEFAULT = bool(
             self.check_setting_int('General', 'flatten_folders_default', 0))
         self.INDEXER_DEFAULT = self.check_setting_int('General', 'indexer_default', 0)
-        self.INDEXER_TIMEOUT = self.check_setting_int('General', 'indexer_timeout', 20)
+        self.INDEXER_TIMEOUT = self.check_setting_int('General', 'indexer_timeout', 120)
         self.ANIME_DEFAULT = bool(self.check_setting_int('General', 'anime_default', 0))
         self.SCENE_DEFAULT = bool(self.check_setting_int('General', 'scene_default', 0))
         self.ARCHIVE_DEFAULT = bool(self.check_setting_int('General', 'archive_default', 0))
