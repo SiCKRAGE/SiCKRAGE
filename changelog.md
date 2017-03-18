@@ -1,6 +1,7 @@
 # Changelog
 
-- * 388da51 - 2017-03-14: TheTVDB API returns error message from response correctly now 
+- * 887ce3d - 2017-03-17: Updated thetvdb api url 
+- * 1fba2fd - 2017-03-14: TheTVDB API returns error message from response correctly now 
 - * c51217e - 2017-03-14: TheTVDB API code fix for last_updated attrib 
 - * 82e44c3 - 2017-03-14: TheTVDB API code cleanup 
 - * 99a9a4e - 2017-03-14: Added error handler for requests routine in indexer api 

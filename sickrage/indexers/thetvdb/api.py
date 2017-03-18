@@ -293,22 +293,11 @@ class Tvdb:
             with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'rb') as fp:
                 self.shows = pickle.load(fp)
 
-        self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui,
+        self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'cache_enabled': cache,
                        'dvdorder': dvdorder, 'proxy': proxy, 'apitoken': None, 'api': {}, 'headers': headers}
 
-        if cache is True:
-            self.config['cache_enabled'] = True
-            self.config['cache_location'] = self._getTempDir()
-        elif cache is False:
-            self.config['cache_enabled'] = False
-        elif isinstance(cache, basestring):
-            self.config['cache_enabled'] = True
-            self.config['cache_location'] = cache
-        else:
-            raise ValueError("Invalid value for Cache %r (type was {})".format(cache, type(cache)))
-
         # api base url
-        self.config['api']['base'] = "https://api.thetvdb.com"
+        self.config['api']['base'] = "http://tvdb.sickrage.ca"
 
         # api-v2 urls
         self.config['api']['login'] = '/login'
@@ -330,6 +319,13 @@ class Tvdb:
         if language not in self.languages:
             self.config['language'] = None
 
+    def logout(self):
+        self.config['apitoken'] = None
+
+    @property
+    def logged_in(self):
+        return self.config['apitoken'] is not None
+
     def login(self, refresh=False):
         try:
             if refresh and self.config['apitoken']:
@@ -340,28 +336,6 @@ class Tvdb:
                     self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
         except Exception as e:
             self.logout()
-
-    def logout(self):
-        self.config['apitoken'] = None
-
-    @property
-    def logged_in(self):
-        return self.config['apitoken'] is not None
-
-    def _getTempDir(self):
-        """Returns the [system temp dir]/thetvdb-u501 (or
-        thetvdb-myuser)
-        """
-        if hasattr(os, 'getuid'):
-            uid = os.getuid()
-        else:
-            # For Windows
-            try:
-                uid = getpass.getuser()
-            except ImportError:
-                return os.path.join(tempfile.gettempdir(), "thetvdb")
-
-        return os.path.join(tempfile.gettempdir(), "thetvdb-{}".format(uid))
 
     def _request(self, method, url, **kwargs):
         self.config['headers'].update({'Content-type': 'application/json'})
