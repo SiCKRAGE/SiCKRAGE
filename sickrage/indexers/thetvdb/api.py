@@ -20,10 +20,8 @@ from __future__ import print_function, unicode_literals
 
 import datetime
 import functools
-import getpass
 import os
 import pickle
-import tempfile
 import time
 import urlparse
 
@@ -297,7 +295,7 @@ class Tvdb:
                        'dvdorder': dvdorder, 'proxy': proxy, 'apitoken': None, 'api': {}, 'headers': headers}
 
         # api base url
-        self.config['api']['base'] = "http://tvdb.sickrage.ca"
+        self.config['api']['base'] = "https://api.thetvdb.com"
 
         # api-v2 urls
         self.config['api']['login'] = '/login'
