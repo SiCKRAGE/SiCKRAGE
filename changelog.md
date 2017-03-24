@@ -1,6 +1,7 @@
 # Changelog
 
-- * 887ce3d - 2017-03-17: Updated thetvdb api url 
+- * a471307 - 2017-03-24: Removed Tornado async 
+- * 6086b26 - 2017-03-17: Updated thetvdb api url 
 - * 1fba2fd - 2017-03-14: TheTVDB API returns error message from response correctly now 
 - * c51217e - 2017-03-14: TheTVDB API code fix for last_updated attrib 
 - * 82e44c3 - 2017-03-14: TheTVDB API code cleanup 

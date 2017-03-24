@@ -23,14 +23,11 @@ import collections
 import datetime
 import os
 import re
-import threading
 import time
 import traceback
 import urllib
 
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
-from tornado.gen import coroutine
 from tornado.web import RequestHandler
 
 try:
@@ -113,7 +110,6 @@ class ApiHandler(RequestHandler):
         self.io_loop = sickrage.srCore.io_loop
         self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
-    @coroutine
     def prepare(self, *args, **kwargs):
         args = args[1:]
         kwargs = dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
@@ -139,7 +135,7 @@ class ApiHandler(RequestHandler):
             del kwargs["profile"]
 
         try:
-            outDict = yield self.callback(_call_dispatcher, *args, **kwargs)
+            outDict = self.route(_call_dispatcher, *args, **kwargs)
         except Exception as e:
             sickrage.srCore.srLogger.error("API :: {}".format(e.message))
             errorData = {
@@ -156,9 +152,8 @@ class ApiHandler(RequestHandler):
 
         self.finish(outputCallback(outDict))
 
-    @run_on_executor
-    def callback(self, function, *args, **kwargs):
-        threading.currentThread().setName('API')
+    def route(self, function, *args, **kwargs):
+        #threading.currentThread().setName('API')
         return recursive_unicode(function(
             **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
                     recursive_unicode(kwargs.items())])

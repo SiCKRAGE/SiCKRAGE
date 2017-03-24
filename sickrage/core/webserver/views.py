@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import datetime
 import os
 import re
-import threading
 import time
 import traceback
 import urllib
@@ -32,9 +31,7 @@ from UnRAR2 import RarFile
 from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode, json_decode
-from tornado.gen import coroutine
 from tornado.web import RequestHandler, authenticated
 
 try:
@@ -197,9 +194,8 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
-    @run_on_executor
-    def callback(self, function, **kwargs):
-        threading.currentThread().setName('WEB')
+    def route(self, function, **kwargs):
+        #threading.currentThread().setName('WEB')
         return recursive_unicode(function(
             **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
                     recursive_unicode(kwargs.items())])
@@ -210,7 +206,6 @@ class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
 
-    @coroutine
     @authenticated
     def prepare(self, *args, **kwargs):
         # route -> method obj
@@ -220,18 +215,15 @@ class WebHandler(BaseHandler):
         )
 
         if method:
-            result = yield self.callback(method, **self.request.arguments)
-            self.finish(result)
+            self.finish(self.route(method, **self.request.arguments))
 
 
 class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
-    @coroutine
     def prepare(self, *args, **kwargs):
-        result = yield self.callback(self.auth)
-        self.finish(result)
+        self.finish(self.route(self.auth))
 
     def auth(self):
         try:
