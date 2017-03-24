@@ -22,13 +22,13 @@ import os
 
 import sickrage
 from sickrage.core.databases import srDatabase
-from sickrage.core.databases.failed.index import FailedIndex, HistoryIndex
+from sickrage.core.databases.failed.index import FailedIndex, FailedHistoryIndex
 
 
 class FailedDB(srDatabase):
     _indexes = {
         'failed': FailedIndex,
-        'history': HistoryIndex,
+        'history': FailedHistoryIndex,
     }
 
     _migrate_list = {

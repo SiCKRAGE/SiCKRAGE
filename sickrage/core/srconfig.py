@@ -51,6 +51,8 @@ class srConfig(object):
         self.ENCRYPTION_VERSION = 0
         self.ENCRYPTION_SECRET = ""
 
+        self.LAST_DB_COMPACT = 0
+
         self.CENSORED_ITEMS = {}
 
         self.USER_AGENT = '({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
@@ -473,6 +475,7 @@ class srConfig(object):
         defaults['General']['config_version'] = self.CONFIG_VERSION
         defaults['General']['encryption_version'] = int(self.ENCRYPTION_VERSION)
         defaults['General']['encryption_secret'] = self.ENCRYPTION_SECRET
+        defaults['General']['last_db_compact'] = self.LAST_DB_COMPACT
         defaults['General']['git_autoissues'] = int(self.GIT_AUTOISSUES)
         defaults['General']['git_username'] = self.GIT_USERNAME
         defaults['General']['git_password'] = self.GIT_PASSWORD
@@ -1380,6 +1383,9 @@ class srConfig(object):
         sickrage.DEBUG = sickrage.DEBUG or bool(self.check_setting_int('General', 'debug', 0))
         sickrage.DEVELOPER = sickrage.DEVELOPER or bool(self.check_setting_int('General', 'developer', 0))
 
+        # last database compact
+        self.LAST_DB_COMPACT = self.check_setting_int('General', 'last_db_compact', 0)
+
         # logging settings
         self.LOG_NR = self.check_setting_int('General', 'log_nr', 5)
         self.LOG_SIZE = self.check_setting_int('General', 'log_size', 1048576)
@@ -1923,6 +1929,7 @@ class srConfig(object):
         new_config['General']['config_version'] = self.CONFIG_VERSION
         new_config['General']['encryption_version'] = int(self.ENCRYPTION_VERSION)
         new_config['General']['encryption_secret'] = self.ENCRYPTION_SECRET
+        new_config['General']['last_db_compact'] = self.LAST_DB_COMPACT
         new_config['General']['git_autoissues'] = int(self.GIT_AUTOISSUES)
         new_config['General']['git_username'] = self.GIT_USERNAME
         new_config['General']['git_password'] = self.GIT_PASSWORD

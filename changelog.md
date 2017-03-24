@@ -1,6 +1,7 @@
 # Changelog
 
-- * c51ee53 - 2017-03-24: Removed Tornado async 
+- * 15286a4 - 2017-03-24: Fixed issues with startup delays related to compacting main database Fixed issues with conflicting database index class names 
+- * ace751a - 2017-03-24: Removed Tornado async 
 - * db59856 - 2017-03-24: Removed Tornado async 
 - * 6086b26 - 2017-03-17: Updated thetvdb api url 
 - * 1fba2fd - 2017-03-14: TheTVDB API returns error message from response correctly now 

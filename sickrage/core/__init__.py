@@ -24,6 +24,7 @@ import re
 import shutil
 import socket
 import threading
+import time
 import traceback
 from multiprocessing import cpu_count
 
@@ -86,6 +87,7 @@ from sickrage.notifiers.synologynotifier import synologyNotifier
 from sickrage.notifiers.trakt import TraktNotifier
 from sickrage.notifiers.tweet import TwitterNotifier
 from sickrage.providers import providersDict
+
 
 class Core(object):
     def __init__(self):
@@ -212,20 +214,6 @@ class Core(object):
             helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')),
                              os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
 
-        # perform database startup actions
-        for db in [self.mainDB, self.cacheDB, self.failedDB]:
-            # initialize database
-            db.initialize()
-
-            # check integrity of database
-            db.check_integrity()
-
-            # migrate database
-            db.migrate()
-
-            # compact database
-            db.compact()
-
         # load config
         self.srConfig.load()
 
@@ -254,6 +242,22 @@ class Core(object):
         except:
             self.srLogger.error('Failed getting diskspace: %s', traceback.format_exc())
 
+        # perform database startup actions
+        for db in [self.mainDB, self.cacheDB, self.failedDB]:
+            # initialize database
+            db.initialize()
+
+            # check integrity of database
+            db.check_integrity()
+
+            # migrate database
+            db.migrate()
+
+        # compact main database
+        if self.srConfig.LAST_DB_COMPACT < time.time() - 604800:  # 7 days
+            self.mainDB.compact()
+            self.srConfig.LAST_DB_COMPACT = int(time.time())
+
         # load data for shows from database
         self.load_shows()
 
@@ -266,7 +270,7 @@ class Core(object):
         # cleanup cache folder
         for folder in ['mako', 'sessions', 'indexers']:
             try:
-                shutil.rmtree(os.path.join(self.srConfig.CACHE_DIR, folder), ignore_errors=True)
+                shutil.rmtree(os.path.join(sickrage.CACHE_DIR, folder), ignore_errors=True)
             except Exception:
                 continue
 

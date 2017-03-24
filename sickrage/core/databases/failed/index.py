@@ -39,12 +39,12 @@ class FailedIndex(HashIndex):
             return md5(data.get('release')).hexdigest(), None
 
 
-class HistoryIndex(HashIndex):
+class FailedHistoryIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(HistoryIndex, self).__init__(*args, **kwargs)
+        super(FailedHistoryIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key

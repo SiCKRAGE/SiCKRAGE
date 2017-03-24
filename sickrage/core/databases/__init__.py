@@ -116,19 +116,20 @@ class srDatabase(object):
         try:
             start = time.time()
             size = float(self.db.get_db_details().get('size', 0))
-            sickrage.srCore.srLogger.debug(
+            sickrage.srCore.srLogger.info(
                 'Compacting {} database, current size: {}MB'.format(self.name, round(size / 1048576, 2)))
 
             self.db.compact()
+
             new_size = float(self.db.get_db_details().get('size', 0))
-            sickrage.srCore.srLogger.debug(
+            sickrage.srCore.srLogger.info(
                 'Done compacting {} database in {}s, new size: {}MB, saved: {}MB'.format(
                     self.name, round(time.time() - start, 2),
                     round(new_size / 1048576, 2), round((size - new_size) / 1048576, 2))
             )
-        except (IndexException, AttributeError):
+        except (IndexException, AttributeError, TypeError) as e:
             if try_repair:
-                sickrage.srCore.srLogger.error('Something wrong with indexes, trying repair')
+                sickrage.srCore.srLogger.debug('Something wrong with indexes, trying repair')
 
                 # Remove all indexes
                 old_indexes = self._indexes.keys()
@@ -138,7 +139,7 @@ class srDatabase(object):
                     except IndexNotFoundException:
                         pass
                     except:
-                        sickrage.srCore.srLogger.error('Failed removing old index %s', index_name)
+                        sickrage.srCore.srLogger.debug('Failed removing old index %s', index_name)
 
                 # Add them again
                 for index_name in self._indexes:
@@ -148,14 +149,14 @@ class srDatabase(object):
                     except IndexConflict:
                         pass
                     except:
-                        sickrage.srCore.srLogger.error('Failed adding index %s', index_name)
+                        sickrage.srCore.srLogger.debug('Failed adding index %s', index_name)
                         raise
 
                 self.compact(try_repair=False)
             else:
-                sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
+                sickrage.srCore.srLogger.debug('Failed compact: {}'.format(traceback.format_exc()))
         except:
-            sickrage.srCore.srLogger.error('Failed compact: {}'.format(traceback.format_exc()))
+            sickrage.srCore.srLogger.debug('Failed compact: {}'.format(traceback.format_exc()))
 
     def setupIndexes(self):
         # setup database indexes
@@ -174,7 +175,7 @@ class srDatabase(object):
                         os.unlink(x)
 
                     self.db.add_index(self._indexes[index_name](self.db.path, index_name))
-                    # self.db.reindex_index(self.db.indexes_names[index_name])
+                    self.db.reindex_index(index_name)
                 else:
                     # Previous info
                     previous_version = self.db.indexes_names[index_name]._version
@@ -186,7 +187,7 @@ class srDatabase(object):
                         self.db.add_index(self._indexes[index_name](self.db.path, index_name))
                         self.db.reindex_index(index_name)
             except:
-                sickrage.srCore.srLogger.error('Failed adding index {}'.format(index_name))
+                sickrage.srCore.srLogger.debug('Failed adding index {}'.format(index_name))
 
     def close(self):
         self.db.close()
@@ -265,10 +266,10 @@ class srDatabase(object):
 
                 rename_old = True
             except OperationalError:
-                sickrage.srCore.srLogger.error('Migrating from unsupported/corrupt %s database version', self.name)
+                sickrage.srCore.srLogger.debug('Migrating from unsupported/corrupt %s database version', self.name)
                 rename_old = True
             except:
-                sickrage.srCore.srLogger.error('Migration of %s database failed', self.name)
+                sickrage.srCore.srLogger.debug('Migration of %s database failed', self.name)
 
             # rename old database
             if rename_old:

@@ -22,23 +22,23 @@ import os
 
 import sickrage
 from sickrage.core.databases import srDatabase
-
-from .index import TVShowsIndex, TVEpisodesIndex, IMDBInfoIndex, XEMRefreshIndex, SceneNumberingIndex, \
-    IndexerMappingIndex, HistoryIndex, InfoIndex, BlacklistIndex, WhitelistIndex
+from sickrage.core.databases.main.index import MainTVShowsIndex, MainTVEpisodesIndex, MainIMDBInfoIndex, \
+    MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, MainInfoIndex, \
+    MainBlacklistIndex, MainWhitelistIndex
 
 
 class MainDB(srDatabase):
     _indexes = {
-        'tv_shows': TVShowsIndex,
-        'tv_episodes': TVEpisodesIndex,
-        'imdb_info': IMDBInfoIndex,
-        'xem_refresh': XEMRefreshIndex,
-        'scene_numbering': SceneNumberingIndex,
-        'indexer_mapping': IndexerMappingIndex,
-        'history': HistoryIndex,
-        'info': InfoIndex,
-        'blacklist': BlacklistIndex,
-        'whitelist': WhitelistIndex,
+        'tv_shows': MainTVShowsIndex,
+        'tv_episodes': MainTVEpisodesIndex,
+        'imdb_info': MainIMDBInfoIndex,
+        'xem_refresh': MainXEMRefreshIndex,
+        'scene_numbering': MainSceneNumberingIndex,
+        'indexer_mapping': MainIndexerMappingIndex,
+        'info': MainInfoIndex,
+        'blacklist': MainBlacklistIndex,
+        'whitelist': MainWhitelistIndex,
+        'history': MainHistoryIndex,
     }
 
     _migrate_list = {

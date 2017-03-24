@@ -22,12 +22,12 @@ from __future__ import unicode_literals
 from CodernityDB.hash_index import HashIndex
 
 
-class TVShowsIndex(HashIndex):
+class MainTVShowsIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(TVShowsIndex, self).__init__(*args, **kwargs)
+        super(MainTVShowsIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -37,12 +37,12 @@ class TVShowsIndex(HashIndex):
             return data.get('indexer_id'), None
 
 
-class TVEpisodesIndex(HashIndex):
+class MainTVEpisodesIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(TVEpisodesIndex, self).__init__(*args, **kwargs)
+        super(MainTVEpisodesIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -52,12 +52,12 @@ class TVEpisodesIndex(HashIndex):
             return data.get('showid'), None
 
 
-class IMDBInfoIndex(HashIndex):
+class MainIMDBInfoIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(IMDBInfoIndex, self).__init__(*args, **kwargs)
+        super(MainIMDBInfoIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -67,12 +67,12 @@ class IMDBInfoIndex(HashIndex):
             return data.get('indexer_id'), None
 
 
-class SceneNumberingIndex(HashIndex):
+class MainSceneNumberingIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(SceneNumberingIndex, self).__init__(*args, **kwargs)
+        super(MainSceneNumberingIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -82,12 +82,12 @@ class SceneNumberingIndex(HashIndex):
             return data.get('indexer_id'), None
 
 
-class XEMRefreshIndex(HashIndex):
+class MainXEMRefreshIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(XEMRefreshIndex, self).__init__(*args, **kwargs)
+        super(MainXEMRefreshIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -97,12 +97,12 @@ class XEMRefreshIndex(HashIndex):
             return data.get('indexer_id'), None
 
 
-class IndexerMappingIndex(HashIndex):
+class MainIndexerMappingIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(IndexerMappingIndex, self).__init__(*args, **kwargs)
+        super(MainIndexerMappingIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -112,12 +112,12 @@ class IndexerMappingIndex(HashIndex):
             return data.get('indexer_id'), None
 
 
-class HistoryIndex(HashIndex):
+class MainHistoryIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(HistoryIndex, self).__init__(*args, **kwargs)
+        super(MainHistoryIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -127,12 +127,12 @@ class HistoryIndex(HashIndex):
             return data.get('showid'), None
 
 
-class InfoIndex(HashIndex):
+class MainInfoIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(InfoIndex, self).__init__(*args, **kwargs)
+        super(MainInfoIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -142,12 +142,12 @@ class InfoIndex(HashIndex):
             return data.get('last_indexer'), None
 
 
-class BlacklistIndex(HashIndex):
+class MainBlacklistIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(BlacklistIndex, self).__init__(*args, **kwargs)
+        super(MainBlacklistIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
@@ -157,12 +157,12 @@ class BlacklistIndex(HashIndex):
             return data.get('show_id'), None
 
 
-class WhitelistIndex(HashIndex):
+class MainWhitelistIndex(HashIndex):
     _version = 1
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = 'I'
-        super(WhitelistIndex, self).__init__(*args, **kwargs)
+        super(MainWhitelistIndex, self).__init__(*args, **kwargs)
 
     def make_key(self, key):
         return key
