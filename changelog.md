@@ -1,6 +1,7 @@
 # Changelog
 
-- * 12bb7da - 2017-03-24: v8.9.9 
+- * a0a634e - 2017-03-25: Fixes issues for corrupted thetvdb api cache Removed scheduler for name cache Closes databases on app shutdown properly 
+- * 2f3fbe3 - 2017-03-24: v8.9.9 
 - * f042119 - 2017-03-24: Fixed issues with startup delays related to compacting main database Fixed issues with conflicting database index class names 
 - * ace751a - 2017-03-24: Removed Tornado async 
 - * db59856 - 2017-03-24: Removed Tornado async 

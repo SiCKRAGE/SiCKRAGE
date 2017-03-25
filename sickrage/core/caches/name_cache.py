@@ -19,45 +19,21 @@
 
 from __future__ import unicode_literals
 
-import threading
 import time
 from datetime import datetime, timedelta
 
-import sickrage
 from CodernityDB.database import RecordNotFound
+
+import sickrage
 from sickrage.core.helpers import full_sanitizeSceneName
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
 
 class srNameCache(object):
     def __init__(self, *args, **kwargs):
-        self.name = "NAMECACHE"
-        self.amActive = False
         self.min_time = 10
         self.last_update = {}
         self.cache = {}
-
-    def run(self, force=False):
-        if self.amActive:
-            return
-
-        # set active
-        self.amActive = True
-
-        # set thread name
-        threading.currentThread().setName(self.name)
-
-        # set minimum time limit
-        self.min_time = sickrage.srCore.srConfig.NAMECACHE_FREQ
-
-        # init cache
-        self.cache = self.load()
-
-        # build name cache
-        self.build()
-
-        # unset active
-        self.amActive = False
 
     def should_update(self, show):
         # if we've updated recently then skip the update
@@ -72,6 +48,7 @@ class srNameCache(object):
         :param name: The show name to cache
         :param indexer_id: the TVDB id that this show should be cached with (can be None/0 for unknown)
         """
+
         # standardize the name we're using to account for small differences in providers
         name = full_sanitizeSceneName(name)
         if name not in self.cache:
@@ -118,7 +95,7 @@ class srNameCache(object):
             del item
 
     def load(self):
-        return dict([(key, d['doc'][key]) for d in sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True) for key in d['doc']])
+        self.cache = dict([(key, d['doc'][key]) for d in sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True) for key in d['doc']])
 
     def save(self):
         """Commit cache to database file"""

@@ -261,9 +261,6 @@ class Core(object):
         # load data for shows from database
         self.load_shows()
 
-        # build name cache
-        self.NAMECACHE.build()
-
         if self.srConfig.DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):
             self.srConfig.DEFAULT_PAGE = 'home'
 
@@ -371,15 +368,6 @@ class Core(object):
             srIntervalTrigger(**{'days': 1}),
             name="TZUPDATER",
             id="TZUPDATER"
-        )
-
-        # add namecache updater job
-        self.srScheduler.add_job(
-            self.NAMECACHE.run,
-            srIntervalTrigger(
-                **{'minutes': self.srConfig.NAMECACHE_FREQ, 'min': self.srConfig.MIN_NAMECACHE_FREQ}),
-            name="NAMECACHE",
-            id="NAMECACHE"
         )
 
         # add show updater job
@@ -491,10 +479,6 @@ class Core(object):
             # shutdown/restart webserver
             self.srWebServer.shutdown()
 
-            # shutdown scheduler
-            self.srLogger.debug("Shutting down scheduler")
-            self.srScheduler.shutdown()
-
             # shutdown show queue
             if self.SHOWQUEUE:
                 self.srLogger.debug("Shutting down show queue")
@@ -512,6 +496,10 @@ class Core(object):
 
             # save all show and config settings
             self.save_all()
+
+            # close databases
+            for db in [self.mainDB, self.cacheDB, self.failedDB]:
+                db.close()
 
             # shutdown logging
             self.srLogger.close()
@@ -536,11 +524,13 @@ class Core(object):
         Populates the showlist with shows from the database
         """
 
+        self.NAMECACHE.load()
         for dbData in [x['doc'] for x in self.mainDB.db.all('tv_shows', with_doc=True)]:
             try:
                 self.srLogger.debug("Loading data for show: [%s]", dbData['show_name'])
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
                 show.nextEpisode()
+                self.NAMECACHE.build(show)
                 self.SHOWLIST += [show]
             except Exception as e:
                 self.srLogger.error("Show error in [%s]: %s" % (dbData['location'], e.message))
