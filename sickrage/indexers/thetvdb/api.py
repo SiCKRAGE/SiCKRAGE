@@ -34,8 +34,8 @@ try:
 except ImportError:
     gzip = None
 
-from exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound, tvdb_episodenotfound,
-                        tvdb_attributenotfound, tvdb_unauthorized)
+from sickrage.indexers.thetvdb.exceptions import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
+                                                  tvdb_episodenotfound, tvdb_attributenotfound, tvdb_unauthorized)
 
 
 def login_required(f):
@@ -391,9 +391,6 @@ class Tvdb:
             self.shows[sid][seas][ep] = Episode()
         self.shows[sid][seas][ep][attrib] = value
 
-        with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
-            pickle.dump(self.shows, fp)
-
     def _setShowData(self, sid, key, value):
         """Sets self.shows[sid] to a new Show instance, or sets the data
         """
@@ -402,13 +399,6 @@ class Tvdb:
             self.shows[sid] = Show()
 
         self.shows[sid].data[key] = value
-
-        with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
-            pickle.dump(self.shows, fp)
-
-    def _delShow(self, sid):
-        if sid in self.shows:
-            del self.shows[sid]
 
         with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
             pickle.dump(self.shows, fp)

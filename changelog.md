@@ -1,6 +1,7 @@
 # Changelog
 
-- * 831e428 - 2017-03-26: Fixed issues when trying to retrieve images and actor info from thetvdb api 
+- * e777577 - 2017-03-26: Removed delShows function from thetvdb api 
+- * b278192 - 2017-03-26: Fixed issues when trying to retrieve images and actor info from thetvdb api 
 - * 5ab4758 - 2017-03-26: Changed threading lock to rlock XEM lookups that fail reset all scene related numbering 
 - * b27f5fe - 2017-03-25: Fixes issues for corrupted thetvdb api cache Removed scheduler for name cache Closes databases on app shutdown properly 
 - * 2f3fbe3 - 2017-03-24: v8.9.9 
