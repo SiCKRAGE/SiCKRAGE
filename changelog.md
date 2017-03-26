@@ -1,6 +1,7 @@
 # Changelog
 
-- * a0a634e - 2017-03-25: Fixes issues for corrupted thetvdb api cache Removed scheduler for name cache Closes databases on app shutdown properly 
+- * 5f2e982 - 2017-03-26: Changed threading lock to rlock XEM lookups that fail reset all scene related numbering 
+- * b27f5fe - 2017-03-25: Fixes issues for corrupted thetvdb api cache Removed scheduler for name cache Closes databases on app shutdown properly 
 - * 2f3fbe3 - 2017-03-24: v8.9.9 
 - * f042119 - 2017-03-24: Fixed issues with startup delays related to compacting main database Fixed issues with conflicting database index class names 
 - * ace751a - 2017-03-24: Removed Tornado async 

@@ -23,8 +23,9 @@ import datetime
 import time
 import traceback
 
-import sickrage
 from CodernityDB.database import RecordNotFound
+
+import sickrage
 from sickrage.core.helpers import findCertainShow
 from sickrage.indexers import srIndexerApi
 
@@ -350,7 +351,6 @@ def get_indexer_absolute_numbering_for_xem(indexer_id, indexer, sceneAbsoluteNum
                   and x['doc']['scene_absolute_number'] == sceneAbsoluteNumber
                   and x['doc']['scene_season'] == scene_season]
 
-
     if dbData:
         return int(dbData[0]["absolute_number"] or 0)
 
@@ -504,6 +504,11 @@ def xem_refresh(indexer_id, indexer, force=False):
                 if indexer_id not in map(int, parsedJSON['data']):
                     raise
             except:
+                for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True):
+                    x['doc']['scene_season'], x['doc']['scene_episode'], x['doc']['scene_absolute_number'] = 0, 0, 0
+                    sickrage.srCore.mainDB.db.update(x['doc'])
+                sickrage.srCore.srLogger.info(
+                    'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
                 return
 
             # XEM API URL
@@ -515,15 +520,17 @@ def xem_refresh(indexer_id, indexer, force=False):
                 if 'success' not in parsedJSON['result']:
                     raise
             except:
-                sickrage.srCore.srLogger.info('No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
+                sickrage.srCore.srLogger.info(
+                    'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
                 return
 
             for entry in parsedJSON['data']:
                 try:
-                    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
-                              if x['doc']['season'] == entry[srIndexerApi(indexer).config['xem_origin']]['season']
-                              and x['doc']['episode'] == entry[srIndexerApi(indexer).config['xem_origin']]['episode']][
-                        0]
+                    dbData = \
+                        [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
+                         if x['doc']['season'] == entry[srIndexerApi(indexer).config['xem_origin']]['season']
+                         and x['doc']['episode'] == entry[srIndexerApi(indexer).config['xem_origin']]['episode']][
+                            0]
                 except:
                     continue
 

@@ -114,7 +114,7 @@ class srQueueItem(threading.Thread):
     def __init__(self, name, action_id=0):
         super(srQueueItem, self).__init__(name=name.replace(" ", "-").upper())
         self.daemon = True
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         self.stop = threading.Event()
         self.priority = srQueuePriorities.NORMAL
         self.action_id = action_id
