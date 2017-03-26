@@ -471,14 +471,16 @@ class Tvdb:
     def _parseImages(self, sid):
         sickrage.srCore.srLogger.debug('Getting season images for {}'.format(sid))
 
-        params = self._request('get', self.config['api']['imagesParams'].format(id=sid))['data']
-        if not params:
+        try:
+            params = self._request('get', self.config['api']['imagesParams'].format(id=sid))['data']
+        except tvdb_error:
             return
 
         images = {}
         for type in [x['keytype'] for x in params]:
-            imagesEt = self._request('get', self.config['api']['images'].format(id=sid, type=type))['data']
-            if not imagesEt:
+            try:
+                imagesEt = self._request('get', self.config['api']['images'].format(id=sid, type=type))['data']
+            except tvdb_error:
                 continue
 
             for cur_image in imagesEt:
@@ -511,8 +513,9 @@ class Tvdb:
     def _parseActors(self, sid):
         sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
 
-        actorsEt = self._request('get', self.config['api']['actors'].format(id=sid))['data']
-        if not actorsEt:
+        try:
+            actorsEt = self._request('get', self.config['api']['actors'].format(id=sid))['data']
+        except tvdb_error:
             sickrage.srCore.srLogger.debug('Actors result returned zero')
             return
 
@@ -545,8 +548,9 @@ class Tvdb:
         # Parse show information
         sickrage.srCore.srLogger.debug('Getting all series data for {}'.format(sid))
 
-        seriesInfoEt = self._request('get', self.config['api']['series'].format(id=sid))['data']
-        if not seriesInfoEt:
+        try:
+            seriesInfoEt = self._request('get', self.config['api']['series'].format(id=sid))['data']
+        except tvdb_error:
             sickrage.srCore.srLogger.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
 
