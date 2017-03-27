@@ -1,6 +1,7 @@
 # Changelog
 
-- * dae73b4 - 2017-03-26: v9.0.0 
+- * 3b29a72 - 2017-03-26: Fixed queuing priorities 
+- * b1b4f64 - 2017-03-26: v9.0.0 
 - * c4b7b11 - 2017-03-26: Removed delShows function from thetvdb api 
 - * b278192 - 2017-03-26: Fixed issues when trying to retrieve images and actor info from thetvdb api 
 - * 5ab4758 - 2017-03-26: Changed threading lock to rlock XEM lookups that fail reset all scene related numbering 

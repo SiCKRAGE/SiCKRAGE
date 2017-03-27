@@ -24,16 +24,17 @@ try:
 except ImportError:
     from queue import PriorityQueue, Empty
 
+import time
+import datetime
 import threading
-from datetime import datetime
 
 import sickrage
 
 
 class srQueuePriorities(object):
-    LOW = 10
+    HIGH = 10
     NORMAL = 20
-    HIGH = 30
+    LOW = 30
 
 
 class srQueue(threading.Thread):
@@ -76,7 +77,7 @@ class srQueue(threading.Thread):
         return self._queue.queue
 
     def get(self, *args, **kwargs):
-        _, item = self._queue.get(*args, **kwargs)
+        _, _, item = self._queue.get(*args, **kwargs)
         return item
 
     def put(self, item, *args, **kwargs):
@@ -86,9 +87,9 @@ class srQueue(threading.Thread):
         :param item: Queue object to add
         :return: item
         """
-        item.added = datetime.now()
+        item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
-        self._queue.put((item.priority, item), *args, **kwargs)
+        self._queue.put((item.priority, time.time(), item), *args, **kwargs)
         return item
 
     def pause(self):
