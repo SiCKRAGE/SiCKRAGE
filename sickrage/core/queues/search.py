@@ -51,26 +51,26 @@ class srSearchQueue(srQueue):
         srQueue.__init__(self, "SEARCHQUEUE")
 
     def is_in_queue(self, show, segment):
-        for cur_priority, cur_item in self.queue:
+        for _, _, cur_item in self.queue:
             if isinstance(cur_item, BacklogQueueItem) and cur_item.show == show and cur_item.segment == segment:
                 return True
         return False
 
     def is_ep_in_queue(self, segment):
-        for cur_priority, cur_item in self.queue:
+        for _, _, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.segment == segment:
                 return True
         return False
 
     def is_show_in_queue(self, show):
-        for cur_priority, cur_item in self.queue:
+        for _, _, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexerid == show:
                 return True
         return False
 
     def get_all_ep_from_queue(self, show):
         ep_obj_list = []
-        for cur_priority, cur_item in self.queue:
+        for _, _, cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
                 ep_obj_list.append(cur_item)
         return ep_obj_list
@@ -95,14 +95,14 @@ class srSearchQueue(srQueue):
         return False
 
     def is_backlog_in_progress(self):
-        for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
+        for _, _, cur_item in self.queue + [(0, 0, self.currentItem)]:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
 
         return False
 
     def is_dailysearch_in_progress(self):
-        for cur_priority, cur_item in self.queue + [(0, self.currentItem)]:
+        for _, _, cur_item in self.queue + [(0, 0, self.currentItem)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
 
@@ -110,7 +110,7 @@ class srSearchQueue(srQueue):
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for cur_priority, cur_item in self.queue:
+        for _, _, cur_item in self.queue:
             if isinstance(cur_item, DailySearchQueueItem):
                 length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):

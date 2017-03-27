@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3b29a72 - 2017-03-26: Fixed queuing priorities 
+- * 19c8425 - 2017-03-26: Fixed queue currentItem ref&#x27;s 
+- * 1a863e5 - 2017-03-26: Fixed queuing priorities 
 - * b1b4f64 - 2017-03-26: v9.0.0 
 - * c4b7b11 - 2017-03-26: Removed delShows function from thetvdb api 
 - * b278192 - 2017-03-26: Fixed issues when trying to retrieve images and actor info from thetvdb api 

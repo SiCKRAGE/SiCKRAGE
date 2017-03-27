@@ -50,9 +50,9 @@ class srShowQueue(srQueue):
         if not show:
             return False
 
-        return show.indexerid in [x.show.indexerid if x.show else 0 for p, x in self.queue if x.action_id in actions]
+        return show.indexerid in [x.show.indexerid if x.show else 0 for _, _, x in self.queue if x.action_id in actions]
 
-    def _isBeingSomethinged(self, show, actions):
+    def _isBeing(self, show, actions):
         return self.currentItem is not None and show == self.currentItem.show and self.currentItem.action_id in actions
 
     def isInUpdateQueue(self, show):
@@ -68,22 +68,22 @@ class srShowQueue(srQueue):
         return self._isInQueue(show, (ShowQueueActions.SUBTITLE,))
 
     def isBeingAdded(self, show):
-        return self._isBeingSomethinged(show, (ShowQueueActions.ADD,))
+        return self._isBeing(show, (ShowQueueActions.ADD,))
 
     def isBeingUpdated(self, show):
-        return self._isBeingSomethinged(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
+        return self._isBeing(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
 
     def isBeingRefreshed(self, show):
-        return self._isBeingSomethinged(show, (ShowQueueActions.REFRESH,))
+        return self._isBeing(show, (ShowQueueActions.REFRESH,))
 
     def isBeingRenamed(self, show):
-        return self._isBeingSomethinged(show, (ShowQueueActions.RENAME,))
+        return self._isBeing(show, (ShowQueueActions.RENAME,))
 
     def isBeingSubtitled(self, show):
-        return self._isBeingSomethinged(show, (ShowQueueActions.SUBTITLE,))
+        return self._isBeing(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
-        return [x for p, x in self.queue + [(0, self.currentItem)] if x is not None and x.isLoading]
+        return [x for _, _, x in self.queue + [(0, 0, self.currentItem)] if x is not None and x.isLoading]
 
     def updateShow(self, show, force=False):
 
@@ -148,7 +148,7 @@ class srShowQueue(srQueue):
             raise CantRemoveShowException
 
         # remove other queued actions for this show.
-        for p, x in self.queue:
+        for _, _, x in self.queue:
             if show.indexerid == x.show.indexerid and x != self.currentItem:
                 self.queue.remove(x)
 
