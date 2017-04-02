@@ -23,6 +23,7 @@ import tornado.web
 
 route_list = []
 
+
 class Route(object):
     _routes = []
 

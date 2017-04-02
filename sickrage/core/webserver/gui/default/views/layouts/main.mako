@@ -75,13 +75,13 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/images/ico/favicon-76.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/ico/favicon-72.png">
     <link rel="apple-touch-icon" sizes="57x57" href="/images/ico/favicon-57.png">
-    <link rel="stylesheet" type="text/css" href="/css/bower.min.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="/css/bower.min.css"/>
     % if sickrage.DEVELOPER:
-        <link rel="stylesheet" type="text/css" href="/css/core.css?${srPID}"/>
+        <link rel="stylesheet" type="text/css" href="/css/core.css"/>
     % else:
-        <link rel="stylesheet" type="text/css" href="/css/core.min.css?${srPID}"/>
+        <link rel="stylesheet" type="text/css" href="/css/core.min.css"/>
     % endif
-    <link rel="stylesheet" type="text/css" href="/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css"/>
     <%block name="css" />
 
 </head>

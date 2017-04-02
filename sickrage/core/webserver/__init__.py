@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -60,24 +58,21 @@ class StaticImageHandler(StaticFileHandler):
             os.path.exists(os.path.normpath(os.path.join(sickrage.CACHE_DIR, 'images', path)))
         ]
 
-        # image css check
-        self.root = (self.root, os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css', 'lib', 'images'))[
-            os.path.exists(
-                os.path.normpath(os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css', 'lib', 'images', path)))
-        ]
-
         return super(StaticImageHandler, self).get(path, include_body)
 
 
 class srWebServer(object):
     def __init__(self):
         self.started = False
+        self.video_root = None
+        self.api_root = None
+        self.app = None
+        self.server = None
 
     def start(self):
         self.started = True
 
         # video root
-        self.video_root = None
         if sickrage.srCore.srConfig.ROOT_DIRS:
             root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
             self.video_root = root_dirs[int(root_dirs[0]) + 1]
@@ -110,67 +105,59 @@ class srWebServer(object):
                 sickrage.srCore.srConfig.ENABLE_HTTPS = False
 
         # Load the app
-        self.app = Application([],
-                               debug=False,
-                               autoreload=False,
-                               gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
-                               xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
-                               cookie_secret=sickrage.srCore.srConfig.WEB_COOKIE_SECRET,
-                               login_url='%s/login/' % sickrage.srCore.srConfig.WEB_ROOT)
+        self.app = Application(
+            [
+                # webapi handler
+                (r'%s(/?.*)' % self.api_root, ApiHandler),
 
-        # Main Handlers
-        self.app.add_handlers('.*$', [
-            # webapi handler
-            (r'%s(/?.*)' % self.api_root, ApiHandler),
+                # webapi key retrieval
+                (r'%s/getkey(/?.*)' % sickrage.srCore.srConfig.WEB_ROOT, KeyHandler),
 
-            # webapi key retrieval
-            (r'%s/getkey(/?.*)' % sickrage.srCore.srConfig.WEB_ROOT, KeyHandler),
+                # webapi builder redirect
+                (r'%s/api/builder' % sickrage.srCore.srConfig.WEB_ROOT, RedirectHandler,
+                 {"url": sickrage.srCore.srConfig.WEB_ROOT + '/apibuilder/'}),
 
-            # webapi builder redirect
-            (r'%s/api/builder' % sickrage.srCore.srConfig.WEB_ROOT, RedirectHandler,
-             {"url": sickrage.srCore.srConfig.WEB_ROOT + '/apibuilder/'}),
+                # webui login/logout handlers
+                (r'%s/login(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LoginHandler),
+                (r'%s/logout(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LogoutHandler),
 
-            # webui login/logout handlers
-            (r'%s/login(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LoginHandler),
-            (r'%s/logout(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LogoutHandler),
+                # favicon
+                (r'%s/(favicon\.ico)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images/ico/favicon.ico')}),
 
-            # webui handlers
-        ] + Route.get_routes(sickrage.srCore.srConfig.WEB_ROOT))
+                # images
+                (r'%s.*?/images/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticImageHandler,
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images')}),
 
-        # Web calendar handler (Needed because option Unprotected calendar)
-        self.app.add_handlers('.*$', [
-            (r'%s/calendar' % sickrage.srCore.srConfig.WEB_ROOT, CalendarHandler),
-        ])
+                # css
+                (r'%s/css/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css')}),
 
-        # Static File Handlers
-        self.app.add_handlers(".*$", [
-            # favicon
-            (r'%s/(favicon\.ico)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-             {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images/ico/favicon.ico')}),
+                # scss
+                (r'%s/scss/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'scss')}),
 
-            # images
-            (r'%s.*?/images/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticImageHandler,
-             {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images')}),
+                # fonts
+                (r'%s/fonts/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'fonts')}),
 
-            # css
-            (r'%s/css/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-             {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css')}),
+                # javascript
+                (r'%s/js/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'js')}),
 
-            # scss
-            (r'%s/scss/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-             {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'scss')}),
+                # videos
+                (r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
+                 {"path": self.video_root}),
 
-            # fonts
-            (r'%s/fonts/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-             {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'fonts')}),
-
-            # javascript
-            (r'%s/js/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-             {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'js')}),
-
-            # videos
-        ] + [(r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-              {"path": self.video_root})])
+                # calendar
+                (r'%s/calendar' % sickrage.srCore.srConfig.WEB_ROOT, CalendarHandler)
+            ] + Route.get_routes(sickrage.srCore.srConfig.WEB_ROOT),
+            debug=False,
+            autoreload=False,
+            gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
+            xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
+            cookie_secret=sickrage.srCore.srConfig.WEB_COOKIE_SECRET,
+            login_url='%s/login/' % sickrage.srCore.srConfig.WEB_ROOT)
 
         self.server = HTTPServer(self.app, no_keep_alive=True)
 
@@ -195,9 +182,9 @@ class srWebServer(object):
                              )).start()
 
         # clear mako cache folder
-        makocache = os.path.join(sickrage.CACHE_DIR, 'mako')
-        if os.path.isdir(makocache):
-            shutil.rmtree(makocache)
+        mako_cache = os.path.join(sickrage.CACHE_DIR, 'mako')
+        if os.path.isdir(mako_cache):
+            shutil.rmtree(mako_cache)
 
         sickrage.srCore.srLogger.info("SiCKRAGE :: STARTED")
         sickrage.srCore.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(sickrage.srCore.VERSIONUPDATER.updater.version))
