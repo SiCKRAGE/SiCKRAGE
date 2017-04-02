@@ -72,6 +72,11 @@ class srWebServer(object):
     def start(self):
         self.started = True
 
+        # clear mako cache folder
+        mako_cache = os.path.join(sickrage.CACHE_DIR, 'mako')
+        if os.path.isdir(mako_cache):
+            shutil.rmtree(mako_cache)
+
         # video root
         if sickrage.srCore.srConfig.ROOT_DIRS:
             root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
@@ -107,19 +112,24 @@ class srWebServer(object):
         # Load the app
         self.app = Application(
             [
-                # webapi handler
+                # api
                 (r'%s(/?.*)' % self.api_root, ApiHandler),
 
-                # webapi key retrieval
+                # api key
                 (r'%s/getkey(/?.*)' % sickrage.srCore.srConfig.WEB_ROOT, KeyHandler),
 
-                # webapi builder redirect
+                # api builder
                 (r'%s/api/builder' % sickrage.srCore.srConfig.WEB_ROOT, RedirectHandler,
                  {"url": sickrage.srCore.srConfig.WEB_ROOT + '/apibuilder/'}),
 
-                # webui login/logout handlers
+                # login
                 (r'%s/login(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LoginHandler),
+
+                # logout
                 (r'%s/logout(/?)' % sickrage.srCore.srConfig.WEB_ROOT, LogoutHandler),
+
+                # calendar
+                (r'%s/calendar' % sickrage.srCore.srConfig.WEB_ROOT, CalendarHandler),
 
                 # favicon
                 (r'%s/(favicon\.ico)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
@@ -148,9 +158,6 @@ class srWebServer(object):
                 # videos
                 (r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
                  {"path": self.video_root}),
-
-                # calendar
-                (r'%s/calendar' % sickrage.srCore.srConfig.WEB_ROOT, CalendarHandler)
             ] + Route.get_routes(sickrage.srCore.srConfig.WEB_ROOT),
             debug=False,
             autoreload=False,
@@ -180,11 +187,6 @@ class srWebServer(object):
                                  get_lan_ip(),
                                  sickrage.srCore.srConfig.WEB_PORT
                              )).start()
-
-        # clear mako cache folder
-        mako_cache = os.path.join(sickrage.CACHE_DIR, 'mako')
-        if os.path.isdir(mako_cache):
-            shutil.rmtree(mako_cache)
 
         sickrage.srCore.srLogger.info("SiCKRAGE :: STARTED")
         sickrage.srCore.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(sickrage.srCore.VERSIONUPDATER.updater.version))

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 35a676e - 2017-04-02: Cleaned up web server init code 
+- * c613c72 - 2017-04-02: Fixed template error for app status 
+- * fbb3999 - 2017-04-02: Cleaned up web server init code 
 - * 6a75c06 - 2017-04-02: Updated requirements 
 - * 7f2b8cf - 2017-04-02: Updated requirements 
 - * d669135 - 2017-03-26: Fixed queue currentItem ref&#x27;s 
