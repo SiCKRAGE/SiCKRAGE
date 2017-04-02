@@ -1,6 +1,7 @@
 # Changelog
 
-- * 19c8425 - 2017-03-26: Fixed queue currentItem ref&#x27;s 
+- * 32fc342 - 2017-04-02: Updated requirements 
+- * d669135 - 2017-03-26: Fixed queue currentItem ref&#x27;s 
 - * 1a863e5 - 2017-03-26: Fixed queuing priorities 
 - * b1b4f64 - 2017-03-26: v9.0.0 
 - * c4b7b11 - 2017-03-26: Removed delShows function from thetvdb api 
