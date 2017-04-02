@@ -1,6 +1,7 @@
 # Changelog
 
-- * 32fc342 - 2017-04-02: Updated requirements 
+- * af05e80 - 2017-04-02: Updated requirements 
+- * 7f2b8cf - 2017-04-02: Updated requirements 
 - * d669135 - 2017-03-26: Fixed queue currentItem ref&#x27;s 
 - * 1a863e5 - 2017-03-26: Fixed queuing priorities 
 - * b1b4f64 - 2017-03-26: v9.0.0 
