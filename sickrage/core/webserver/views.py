@@ -4242,6 +4242,14 @@ class ConfigPostProcessing(Config):
             results.append(
                 "You tried saving an invalid sports naming config, not saving your sports settings")
 
+        sickrage.srCore.metadataProvidersDict['kodi'].set_config(kodi_data)
+        sickrage.srCore.metadataProvidersDict['kodi_12plus'].set_config(kodi_12plus_data)
+        sickrage.srCore.metadataProvidersDict['mediabrowser'].set_config(mediabrowser_data)
+        sickrage.srCore.metadataProvidersDict['sony_ps3'].set_config(sony_ps3_data)
+        sickrage.srCore.metadataProvidersDict['wdtv'].set_config(wdtv_data)
+        sickrage.srCore.metadataProvidersDict['tivo'].set_config(tivo_data)
+        sickrage.srCore.metadataProvidersDict['mede8er'].set_config(mede8er_data)
+
         sickrage.srCore.srConfig.save()
 
         if len(results) > 0:
