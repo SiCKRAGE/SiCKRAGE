@@ -1,6 +1,7 @@
 # Changelog
 
-- * bacac52 - 2017-04-03: Removed the ability to change the log directory location and log file name 
+- * baf7cce - 2017-04-03: Cleaned up version updater code to reduce memory usage 
+- * 9ee5c8c - 2017-04-03: Removed the ability to change the log directory location and log file name 
 - * 14ce167 - 2017-04-03: Queue threads joined on shutdown 
 - * ab88a54 - 2017-04-03: Migrated to new-style settings for metadata provider objects Display Tornado version 
 - * e1e541f - 2017-04-02: Fixed template error for app status 

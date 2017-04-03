@@ -30,8 +30,6 @@ import threading
 import time
 import traceback
 
-import github
-
 import sickrage
 from sickrage.core.helpers import backupSR, removetree
 from sickrage.notifiers import srNotifiers
@@ -45,7 +43,10 @@ class srVersionUpdater(object):
     def __init__(self):
         self.name = "VERSIONUPDATER"
         self.amActive = False
-        self.updater = self.find_install_type()
+
+    @property
+    def updater(self):
+        return self.find_install_type()
 
     def run(self, force=False):
         if self.amActive:
@@ -161,17 +162,14 @@ class srVersionUpdater(object):
             'source': running from source without git
         """
 
-        import pip
-
         if os.path.isdir(os.path.join(os.path.dirname(sickrage.PROG_DIR), '.git')):
             # git install
             return GitUpdateManager()
+        elif PipUpdateManager().version:
+            # pip install
+            return PipUpdateManager()
         else:
-            for dist in pip.get_installed_distributions():
-                if dist.project_name.lower() == 'sickrage':
-                    # pip install
-                    return PipUpdateManager()
-            # git source install
+            # source install
             return SourceUpdateManager()
 
     def check_for_new_version(self, force=False):
@@ -245,7 +243,7 @@ class srVersionUpdater(object):
                     return True
 
     @property
-    def get_version(self):
+    def version(self):
         if self.updater:
             return self.updater.version
 
@@ -257,6 +255,8 @@ class UpdateManager(object):
 
     @staticmethod
     def github():
+        import github
+
         try:
             return github.Github(
                 login_or_token=sickrage.srCore.srConfig.GIT_USERNAME,
@@ -752,10 +752,11 @@ class PipUpdateManager(UpdateManager):
 
         return output, err, exit_status
 
-    @staticmethod
-    def _find_installed_version():
-        with io.open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
-            return f.read().strip() or ""
+    def _find_installed_version(self):
+        out, _, exit_status = self._run_pip(self._find_working_pip, 'show sickrage')
+        if exit_status == 0:
+            return out.split('\n')[1].split()[1]
+        return ""
 
     def need_update(self):
         # need this to run first to set self._newest_commit_hash
@@ -770,23 +771,16 @@ class PipUpdateManager(UpdateManager):
             return False
 
     def _check_for_new_version(self):
-        import xmlrpclib
-        pypi = xmlrpclib.ServerProxy('https://pypi.python.org/pypi')
+        from distutils.version import StrictVersion
+        url = "https://pypi.python.org/pypi/{}/json".format('sickrage')
+        resp = sickrage.srCore.srWebSession.get(url)
+        versions = resp.json()["releases"].keys()
+        versions.sort(key=StrictVersion, reverse=True)
 
-        import pip
-        for dist in pip.get_installed_distributions():
-            if not dist.project_name.lower() == 'sickrage':
-                continue
-
-            available = pypi.package_releases(dist.project_name)
-            if not available:
-                # Try to capitalize pkg name
-                available = pypi.package_releases(dist.project_name.capitalize())
-
-            if available:
-                return available[0]
-
-        return self._find_installed_version()
+        try:
+            return versions[0]
+        except:
+            return self._find_installed_version()
 
     def set_newest_text(self):
 

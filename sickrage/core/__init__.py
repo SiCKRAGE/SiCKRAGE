@@ -271,7 +271,7 @@ class Core(object):
                 continue
 
         # init anidb connection
-        if not self.srConfig.USE_ANIDB:
+        if self.srConfig.USE_ANIDB:
             try:
                 self.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=lambda msg: self.srLogger.debug(
                     "AniDB: %s " % msg)).auth(self.srConfig.ANIDB_USERNAME, self.srConfig.ANIDB_PASSWORD)
@@ -453,7 +453,7 @@ class Core(object):
         self.srWebServer.start()
 
         self.srLogger.info("SiCKRAGE :: STARTED")
-        self.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(self.VERSIONUPDATER.updater.version))
+        self.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(self.VERSIONUPDATER.version))
         self.srLogger.info("SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.CONFIG_FILE, self.srConfig.CONFIG_VERSION))
         self.srLogger.info("SiCKRAGE :: URL:[{}://{}:{}/]".format(
             ('http', 'https')[self.srConfig.ENABLE_HTTPS],
