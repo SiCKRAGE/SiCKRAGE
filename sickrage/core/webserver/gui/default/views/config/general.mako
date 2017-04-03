@@ -127,17 +127,6 @@
                                 </div>
 
                                 <div class="field-pair">
-                                    <label for="log_dir">
-                                        <span class="component-title">Log file folder location</span>
-                                <span class="component-desc">
-                                    <input type="text" name="log_dir" id="log_dir"
-                                           value="${sickrage.srCore.srConfig.LOG_DIR}"
-                                           class="form-control input-sm input350" autocapitalize="off"/>
-                                </span>
-                                    </label>
-                                </div>
-
-                                <div class="field-pair">
                                     <label for="log_nr">
                                         <span class="component-title">Number of Log files saved</span>
                                 <span class="component-desc">

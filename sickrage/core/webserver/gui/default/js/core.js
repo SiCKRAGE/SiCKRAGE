@@ -2686,9 +2686,6 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $('#log_dir').fileBrowser({title: 'Select log file folder location'});
-
-
                 $(".enabler").each(function () {
                     if (!$(this).prop('checked')) {
                         $('#content_' + $(this).attr('id')).hide();
