@@ -1103,43 +1103,42 @@
                             <span>Toggle the metadata options that you wish to be created. <b>Multiple targets may be used.</b></span>
                         </div>
 
-                        % for (cur_id, _) in m_dict.items():
-                        <% cur_metadata_inst = sickrage.srCore.metadataProvidersDict[cur_id] %>
+                        % for (cur_id, cur_generator) in m_dict.items():
                         <div class="metadataDiv container-fluid" id="${cur_id}">
                             <div>
-                                <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_metadata_inst.enabled)]}/>&nbsp;Enabled</label>
+                                <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_generator.enabled)]}/>&nbsp;Enabled</label>
                             </div>
                             <div class="metadata_options_wrapper">
                                 <h4>Create:</h4>
                                 <div class="metadata_options">
-                                    <label for="${cur_id}_show_metadata"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_show_metadata" ${('', 'checked="checked"')[bool(cur_metadata_inst.show_metadata)]}/>&nbsp;Show Metadata</label>
-                                    <label for="${cur_id}_episode_metadata"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_episode_metadata" ${('', 'checked="checked"')[bool(cur_metadata_inst.episode_metadata)]}/>&nbsp;Episode Metadata</label>
-                                    <label for="${cur_id}_fanart"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_fanart" ${('', 'checked="checked"')[bool(cur_metadata_inst.fanart)]}/>&nbsp;Show Fanart</label>
-                                    <label for="${cur_id}_poster"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_poster" ${('', 'checked="checked"')[bool(cur_metadata_inst.poster)]}/>&nbsp;Show Poster</label>
-                                    <label for="${cur_id}_banner"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_banner" ${('', 'checked="checked"')[bool(cur_metadata_inst.banner)]}/>&nbsp;Show Banner</label>
-                                    <label for="${cur_id}_episode_thumbnails"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_episode_thumbnails" ${('', 'checked="checked"')[bool(cur_metadata_inst.episode_thumbnails)]}/>&nbsp;Episode Thumbnails</label>
-                                    <label for="${cur_id}_season_posters"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_posters" ${('', 'checked="checked"')[bool(cur_metadata_inst.season_posters)]}/>&nbsp;Season Posters</label>
-                                    <label for="${cur_id}_season_banners"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_banners" ${('', 'checked="checked"')[bool(cur_metadata_inst.season_banners)]}/>&nbsp;Season Banners</label>
-                                    <label for="${cur_id}_season_all_poster"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_all_poster" ${('', 'checked="checked"')[bool(cur_metadata_inst.season_all_poster)]}/>&nbsp;Season All Poster</label>
-                                    <label for="${cur_id}_season_all_banner"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_all_banner" ${('', 'checked="checked"')[bool(cur_metadata_inst.season_all_banner)]}/>&nbsp;Season All Banner</label>
+                                    <label for="${cur_id}_show_metadata"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_show_metadata" ${('', 'checked="checked"')[bool(cur_generator.show_metadata)]}/>&nbsp;Show Metadata</label>
+                                    <label for="${cur_id}_episode_metadata"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_episode_metadata" ${('', 'checked="checked"')[bool(cur_generator.episode_metadata)]}/>&nbsp;Episode Metadata</label>
+                                    <label for="${cur_id}_fanart"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_fanart" ${('', 'checked="checked"')[bool(cur_generator.fanart)]}/>&nbsp;Show Fanart</label>
+                                    <label for="${cur_id}_poster"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_poster" ${('', 'checked="checked"')[bool(cur_generator.poster)]}/>&nbsp;Show Poster</label>
+                                    <label for="${cur_id}_banner"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_banner" ${('', 'checked="checked"')[bool(cur_generator.banner)]}/>&nbsp;Show Banner</label>
+                                    <label for="${cur_id}_episode_thumbnails"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_episode_thumbnails" ${('', 'checked="checked"')[bool(cur_generator.episode_thumbnails)]}/>&nbsp;Episode Thumbnails</label>
+                                    <label for="${cur_id}_season_posters"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_posters" ${('', 'checked="checked"')[bool(cur_generator.season_posters)]}/>&nbsp;Season Posters</label>
+                                    <label for="${cur_id}_season_banners"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_banners" ${('', 'checked="checked"')[bool(cur_generator.season_banners)]}/>&nbsp;Season Banners</label>
+                                    <label for="${cur_id}_season_all_poster"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_all_poster" ${('', 'checked="checked"')[bool(cur_generator.season_all_poster)]}/>&nbsp;Season All Poster</label>
+                                    <label for="${cur_id}_season_all_banner"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_all_banner" ${('', 'checked="checked"')[bool(cur_generator.season_all_banner)]}/>&nbsp;Season All Banner</label>
                                 </div>
                             </div>
                             <div class="metadata_example_wrapper">
                                 <h4>Results:</h4>
                                 <div class="metadata_example panel panel-default">
-                                    <label for="${cur_id}_show_metadata"><span id="${cur_id}_eg_show_metadata">${cur_metadata_inst.eg_show_metadata}</span></label>
-                                    <label for="${cur_id}_episode_metadata"><span id="${cur_id}_eg_episode_metadata">${cur_metadata_inst.eg_episode_metadata}</span></label>
-                                    <label for="${cur_id}_fanart"><span id="${cur_id}_eg_fanart">${cur_metadata_inst.eg_fanart}</span></label>
-                                    <label for="${cur_id}_poster"><span id="${cur_id}_eg_poster">${cur_metadata_inst.eg_poster}</span></label>
-                                    <label for="${cur_id}_banner"><span id="${cur_id}_eg_banner">${cur_metadata_inst.eg_banner}</span></label>
-                                    <label for="${cur_id}_episode_thumbnails"><span id="${cur_id}_eg_episode_thumbnails">${cur_metadata_inst.eg_episode_thumbnails}</span></label>
-                                    <label for="${cur_id}_season_posters"><span id="${cur_id}_eg_season_posters">${cur_metadata_inst.eg_season_posters}</span></label>
-                                    <label for="${cur_id}_season_banners"><span id="${cur_id}_eg_season_banners">${cur_metadata_inst.eg_season_banners}</span></label>
-                                    <label for="${cur_id}_season_all_poster"><span id="${cur_id}_eg_season_all_poster">${cur_metadata_inst.eg_season_all_poster}</span></label>
-                                    <label for="${cur_id}_season_all_banner"><span id="${cur_id}_eg_season_all_banner">${cur_metadata_inst.eg_season_all_banner}</span></label>
+                                    <label for="${cur_id}_show_metadata"><span id="${cur_id}_eg_show_metadata">${cur_generator.eg_show_metadata}</span></label>
+                                    <label for="${cur_id}_episode_metadata"><span id="${cur_id}_eg_episode_metadata">${cur_generator.eg_episode_metadata}</span></label>
+                                    <label for="${cur_id}_fanart"><span id="${cur_id}_eg_fanart">${cur_generator.eg_fanart}</span></label>
+                                    <label for="${cur_id}_poster"><span id="${cur_id}_eg_poster">${cur_generator.eg_poster}</span></label>
+                                    <label for="${cur_id}_banner"><span id="${cur_id}_eg_banner">${cur_generator.eg_banner}</span></label>
+                                    <label for="${cur_id}_episode_thumbnails"><span id="${cur_id}_eg_episode_thumbnails">${cur_generator.eg_episode_thumbnails}</span></label>
+                                    <label for="${cur_id}_season_posters"><span id="${cur_id}_eg_season_posters">${cur_generator.eg_season_posters}</span></label>
+                                    <label for="${cur_id}_season_banners"><span id="${cur_id}_eg_season_banners">${cur_generator.eg_season_banners}</span></label>
+                                    <label for="${cur_id}_season_all_poster"><span id="${cur_id}_eg_season_all_poster">${cur_generator.eg_season_all_poster}</span></label>
+                                    <label for="${cur_id}_season_all_banner"><span id="${cur_id}_eg_season_all_banner">${cur_generator.eg_season_all_banner}</span></label>
                                 </div>
                             </div>
-                            <input type="hidden" name="${cur_id}_data" id="${cur_id}_data" value="${cur_metadata_inst.get_config()}" />
+                            <input type="hidden" name="${cur_id}_data" id="${cur_id}_data" value="${cur_generator.get_config()}" />
                         </div>
                         % endfor
 

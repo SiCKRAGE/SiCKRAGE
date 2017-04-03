@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2594fd3 - 2017-04-03: Fixed issue with saving metadata provider settings 
+- * f5549ff - 2017-04-03: Small code cleanup for metadata providers template 
+- * d791a3a - 2017-04-03: Fixed issue with saving metadata provider settings 
 - * 3f87196 - 2017-04-03: Fixed issue with metadata view template code 
 - * fb0e818 - 2017-04-03: Released v9.0.1 
 - * 639ce93 - 2017-04-03: Cleaned up version updater code to reduce memory usage 
