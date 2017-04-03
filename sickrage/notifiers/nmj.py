@@ -43,7 +43,7 @@ class NMJNotifier(srNotifiers):
         try:
             terminal = telnetlib.Telnet(host)
         except Exception:
-            sickrage.srCore.srLogger.warning("Warning: unable to get a telnet session to %s" % (host))
+            sickrage.srCore.srLogger.warning("Warning: unable to get a telnet session to %s" % host)
             return False
 
         # tell the terminal to output the necessary info to the screen so we can search it later

@@ -470,10 +470,10 @@ class GenericProvider(object):
                 results]
 
     def seed_ratio(self):
-        '''
+        """
         Provider should override this value if custom seed ratio enabled
         It should return the value of the provider seed ratio
-        '''
+        """
         return ''
 
     def add_cookies_from_ui(self):

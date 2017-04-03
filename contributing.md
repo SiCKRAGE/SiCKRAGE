@@ -130,7 +130,7 @@ Please follow this process; it's the best way to get your work included in the p
 ## Code guidelines
 
 ### HTML
-- Use tags and elements appropriate for an HTML5 doctype (e.g., self-closing tags)
+- Use tags and elements appropriate for an HTML5 doctype (e.g., cls-closing tags)
 - Use bower components for third-party JS when possible. All other files should be local and not link to a CDN
 - Use [WAI-ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA) attributes in documentation examples to promote accessibility.
 

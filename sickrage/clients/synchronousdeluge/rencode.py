@@ -375,7 +375,7 @@ def test():
     assert loads(dumps(L)) == L
     L = tuple(['a'*n for n in range(1000)]) + (None,True,None)
     assert loads(dumps(L)) == L
-    assert loads(dumps(None)) == None
+    assert loads(dumps(None)) is None
     assert loads(dumps({None:None})) == {None:None}
     assert 1e-10<abs(loads(dumps(1.1))-1.1)<1e-6
     assert 1e-10<abs(loads(dumps(1.1,32))-1.1)<1e-6

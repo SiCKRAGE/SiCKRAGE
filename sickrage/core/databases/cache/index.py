@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -112,6 +111,7 @@ class CacheSceneExceptionsRefreshIndex(HashIndex):
 
     def make_key(self, key):
         return md5(key).hexdigest()
+
 
 class CacheProvidersIndex(HashIndex):
     _version = 1

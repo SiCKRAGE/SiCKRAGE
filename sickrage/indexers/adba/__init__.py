@@ -1,4 +1,3 @@
-
 #
 # This file is part of aDBa.
 #
@@ -19,6 +18,7 @@ from __future__ import unicode_literals
 import threading
 import time
 from time import localtime, strftime
+
 from types import FunctionType, MethodType
 
 import sickrage
@@ -37,10 +37,11 @@ from sickrage.indexers.adba.aniDBerrors import AniDBBannedError, \
 
 version = 100
 
+
 class Connection(threading.Thread):
     def __init__(self, clientname='adba', server='api.anidb.info', port=9000, myport=9876, user=None, password=None,
                  session=None, log=False, logPrivate=False, keepAlive=False):
-        super(Connection, self).__init__()
+        super(Connection, self).__init__(name='AniDB')
         # setting the log function
         self.logPrivate = logPrivate
         if type(log) in (FunctionType, MethodType):  # if we get a function or a method use that.
@@ -144,7 +145,7 @@ class Connection(threading.Thread):
 
     def authed(self, reAuthenticate=False):
         self.lock.acquire()
-        authed = (self.link.session != None)
+        authed = (self.link.session is not None)
         if not authed and (reAuthenticate or self.keepAlive):
             self._reAuthenticate()
             authed = (self.link.session != None)
@@ -155,7 +156,7 @@ class Connection(threading.Thread):
         if self._username and self._password:
             self.log("auto re authenticating !")
             resp = self.auth(self._username, self._password)
-            if resp.rescode not in ('500'):
+            if resp.rescode not in '500':
                 return True
         else:
             return False

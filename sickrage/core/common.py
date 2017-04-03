@@ -25,12 +25,10 @@ import operator
 import os.path
 import re
 
-import six
-
-if six.PY3:
-    from collections import UserDict
-else:
+try:
     from UserDict import UserDict
+except:
+    from collections import UserDict
 
 video_exts = ['3g2', '3gp', '3gp2', 'asf', 'avi', 'divx', 'flv', 'm4v', 'mk2',
               'mka', 'mkv', 'mov', 'mp4', 'mp4a', 'mpeg', 'mpg', 'ogg', 'ogm',
@@ -366,9 +364,9 @@ class Quality(object):
 
         # 2 corresponds to SDDVD quality
         if quality == 2:
-            if re.search(r"b(r|d|rd)?(-| |\.)?(rip|mux)", name.lower()):
+            if re.search(r"b(r|d|rd)?([- .])?(rip|mux)", name.lower()):
                 rip_type = " BDRip"
-            elif re.search(r"(dvd)(-| |\.)?(rip|mux)?", name.lower()):
+            elif re.search(r"(dvd)([- .])?(rip|mux)?", name.lower()):
                 rip_type = " DVDRip"
             else:
                 rip_type = ""

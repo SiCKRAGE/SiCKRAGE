@@ -77,7 +77,8 @@ class ComingEpisodes:
 
         results = []
         for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
+            for e in [e['doc'] for e in
+                      sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
                       if e['doc']['season'] != 0
                       and today <= e['doc']['airdate'] < next_week
                       and e['doc']['status'] not in qualities_list]:
@@ -103,11 +104,13 @@ class ComingEpisodes:
         done_shows_list = [int(result['showid']) for result in results]
 
         for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
+            for e in [e['doc'] for e in
+                      sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
                       if e['doc']['season'] != 0
                       and e['doc']['showid'] not in done_shows_list
                       and e['doc']['airdate'] >= next_week
-                      and e['doc']['status'] not in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER]:
+                      and e['doc'][
+                            'status'] not in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER]:
                 results += [{
                     'airdate': e['airdate'],
                     'airs': s['airs'],
@@ -128,7 +131,8 @@ class ComingEpisodes:
                 }]
 
         for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
+            for e in [e['doc'] for e in
+                      sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
                       if e['doc']['season'] != 0
                       and today > e['doc']['airdate'] >= recently
                       and e['doc']['status'] in [WANTED, UNAIRED] and e['doc']['status'] not in qualities_list]:

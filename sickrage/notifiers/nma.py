@@ -47,7 +47,7 @@ class NMA_Notifier(srNotifiers):
         return list({}.fromkeys(seq).keys())
 
     def addkey(self, key):
-        "Add a key (register ?)"
+        """Add a key (register ?)"""
         self._apikey = self.uniq(key)
         if type(key) == str:
             if not key in self._apikey:
@@ -180,8 +180,9 @@ class NMA_Notifier(srNotifiers):
 
         if len(keys) > 1: batch = True
 
-        sickrage.srCore.srLogger.debug("NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
-        event, message, nma_priority, batch))
+        sickrage.srCore.srLogger.debug(
+            "NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
+                event, message, nma_priority, batch))
         response = self.push(application=title, event=event, description=message, priority=nma_priority,
                              batch_mode=batch)
 

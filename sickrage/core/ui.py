@@ -109,7 +109,7 @@ class Notification(object):
         return self
 
 
-class ProgressIndicator():
+class ProgressIndicator:
     def __init__(self, percentComplete=0, currentStatus=None):
         if currentStatus is None:
             currentStatus = {'title': ''}

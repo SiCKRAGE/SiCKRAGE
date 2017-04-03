@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -18,6 +17,7 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
+
 
 def cmp(a, b):
     return (a > b) - (a < b)

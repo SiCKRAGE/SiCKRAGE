@@ -120,7 +120,7 @@ class RarbgProvider(TorrentProvider):
                     if ep_indexer == INDEXER_TVDB:
                         searchURL = self.urls['search_tvdb'] % (ep_indexerid, search_string) + self.defaultOptions
                     else:
-                        searchURL = self.urls['search'] % (search_string) + self.defaultOptions
+                        searchURL = self.urls['search'] % search_string + self.defaultOptions
                 elif mode == 'Episode':
                     if ep_indexer == INDEXER_TVDB:
                         searchURL = self.urls['search_tvdb'] % (ep_indexerid, search_string) + self.defaultOptions

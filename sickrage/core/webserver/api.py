@@ -153,7 +153,7 @@ class ApiHandler(RequestHandler):
         self.finish(outputCallback(outDict))
 
     def route(self, function, *args, **kwargs):
-        #threading.currentThread().setName('API')
+        # threading.currentThread().setName('API')
         return recursive_unicode(function(
             **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
                     recursive_unicode(kwargs.items())])
@@ -1028,7 +1028,8 @@ class CMD_Exceptions(ApiCall):
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             scene_exceptions = []
-            for dbData in [x['doc'] for x in sickrage.srCore.cacheDB.db.all('scene_exceptions', self.indexerid, with_doc=True)]:
+            for dbData in [x['doc'] for x in
+                           sickrage.srCore.cacheDB.db.all('scene_exceptions', self.indexerid, with_doc=True)]:
                 scene_exceptions.append(dbData['show_name'])
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
@@ -1162,8 +1163,9 @@ class CMD_Backlog(ApiCall):
 
         for s in sickrage.srCore.SHOWLIST:
             showEps = []
-            for e in sorted([e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
-                             s.paused == 0], key=lambda x: (x['season'], x['episode']), reverse=True):
+            for e in sorted(
+                    [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
+                     s.paused == 0], key=lambda x: (x['season'], x['episode']), reverse=True):
 
                 curEpCat = s.getOverview(int(e["status"] or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
@@ -2557,11 +2559,13 @@ class CMD_ShowSeasonList(ApiCall):
 
         if self.sort == "asc":
             seasonList = sorted(
-                [x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                [x['doc']['season'] for x in
+                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
                 key=lambda d: d['season'])
         else:
             seasonList = sorted(
-                [x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
+                [x['doc']['season'] for x in
+                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
                 key=lambda d: d['season'], reverse=True)
 
         return _responds(RESULT_SUCCESS, seasonList)
@@ -2597,7 +2601,8 @@ class CMD_ShowSeasons(ApiCall):
         if self.season is None:
             seasons = {}
 
-            for row in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+            for row in [x['doc'] for x in
+                        sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)

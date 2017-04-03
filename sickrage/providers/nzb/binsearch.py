@@ -75,7 +75,7 @@ class BinSearchCache(tv_cache.TVCache):
 
         url = item.get('link', '').replace('&amp;', '&')
 
-        return (title, url)
+        return title, url
 
     def update(self):
         # check if we should update

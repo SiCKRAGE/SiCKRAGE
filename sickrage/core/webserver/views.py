@@ -548,7 +548,7 @@ class UI(WebHandler):
     def __init__(self, *args, **kwargs):
         super(UI, self).__init__(*args, **kwargs)
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-        self.set_header("Content-Type", "application/json")
+        self.set_header('Content-Type', 'application/json')
 
     @staticmethod
     def add_message():
@@ -578,12 +578,12 @@ class WebFileBrowser(WebHandler):
 
     def index(self, path='', includeFiles=False, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-        self.set_header("Content-Type", "application/json")
+        self.set_header('Content-Type', 'application/json')
         return json_encode(foldersAtPath(path, True, bool(int(includeFiles))))
 
     def complete(self, term, includeFiles=0):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-        self.set_header("Content-Type", "application/json")
+        self.set_header('Content-Type', 'application/json')
         paths = [entry['path'] for entry in
                  foldersAtPath(os.path.dirname(term), includeFiles=bool(int(includeFiles))) if 'path' in entry]
 
@@ -691,7 +691,7 @@ class Home(WebHandler):
 
                 if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
                     show_stat[showid]['ep_airs_next'] = airdate
-                elif airdate < today and status != UNAIRED and airdate > show_stat[showid]['ep_airs_prev']:
+                elif airdate < today and status != UNAIRED > show_stat[showid]['ep_airs_prev']:
                     show_stat[showid]['ep_airs_prev'] = airdate
 
                 if show_stat[showid]['ep_total'] > max_download_count:

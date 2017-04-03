@@ -77,7 +77,7 @@ def utorrent():
     dirName = sys.argv[1]
     nzbName = sys.argv[2]
 
-    return (dirName, nzbName)
+    return dirName, nzbName
 
 
 def transmission():
@@ -215,9 +215,9 @@ def main():
 
     try:
         response = sickrage.srCore.srWebSession.get(url, auth=(username, password), params=params, verify=False)
-    except Exception as e:
-        scriptlogger.error(': Unknown exception raised when opening url: ' + str(e))
-        sys.exit('Unknown exception raised when opening url: ' + str(e))
+    except Exception as err:
+        scriptlogger.error(': Unknown exception raised when opening url: ' + str(err))
+        sys.exit('Unknown exception raised when opening url: ' + str(err))
 
     if response.status_code == 401:
         scriptlogger.error('Invalid SiCKRAGE Username or Password, check your config')

@@ -8,6 +8,7 @@ import sickrage
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import findCertainShow
 
+
 class Media(object):
     def __init__(self, indexer_id, media_format=None):
         """
@@ -37,7 +38,7 @@ class Media(object):
         :return: The content of the desired media file
         """
 
-        return os.path.realpath(self.get_static_media_path()).replace('\\','/')
+        return os.path.realpath(self.get_static_media_path()).replace('\\', '/')
 
     @property
     def get_media_bytes(self):

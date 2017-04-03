@@ -23,7 +23,7 @@ import string
 import struct
 
 import core
-from exceptions import ParseError
+from .exceptions import ParseError
 
 __all__ = ['Parser']
 
@@ -116,7 +116,7 @@ class Asf(core.AVContainer):
         (guidstr, objsize, objnum, reserved1, reserved2) = struct.unpack('<16sQIBB', h)
         guid = self._parseguid(guidstr)
 
-        if (guid != GUIDS['ASF_Header_Object']):
+        if guid != GUIDS['ASF_Header_Object']:
             raise ParseError()
         if reserved1 != 0x01 or reserved2 != 0x02:
             raise ParseError()
@@ -140,7 +140,7 @@ class Asf(core.AVContainer):
         if not stream or streamid not in self._extinfo:
             return
         stream.bitrate, stream.fps, langid, metadata = self._extinfo[streamid]
-        if langid is not None and langid >= 0 and langid < len(self._languages):
+        if langid is not None and 0 <= langid < len(self._languages):
             stream.language = self._languages[langid]
         if metadata:
             stream._appendtable('ASFMETADATA', metadata)

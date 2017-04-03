@@ -5226,7 +5226,7 @@ jQuery(document).ready(function ($) {
                         $(this).prop("checked", false);
                     });
                 });
-            },
+            }
         },
 
         logs: {

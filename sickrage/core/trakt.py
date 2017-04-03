@@ -1,5 +1,4 @@
 
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
@@ -132,7 +131,8 @@ class TraktAPI():
                     sickrage.srCore.srLogger.warning('Unauthorized. Please check your Trakt settings')
             elif code in (500, 501, 503, 504, 520, 521, 522):
                 # http://docs.trakt.apiary.io/#introduction/status-codes
-                sickrage.srCore.srLogger.debug('Trakt may have some issues and it\'s unavailable. Try again later please')
+                sickrage.srCore.srLogger.debug \
+                    ('Trakt may have some issues and it\'s unavailable. Try again later please')
             elif code == 404:
                 sickrage.srCore.srLogger.debug('Trakt error (404) the resource does not exist: %s' % url + path)
             else:

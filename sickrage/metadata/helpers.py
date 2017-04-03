@@ -26,7 +26,6 @@ import sickrage
 from sickrage.core.common import Quality, get_quality_string
 from sickrage.core.helpers import tryInt
 
-
 extensions = {
     'tvshow': ['mkv', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4', 'm2ts', 'iso', 'img', 'mdf', 'ts', 'm4v', 'flv'],
     'tvshow_extra': ['mds'],
@@ -73,6 +72,7 @@ audio_codec_map = {
     0x00ff: 'AAC',
 }
 
+
 def getResolution(filename):
     try:
         for key in resolutions:
@@ -82,6 +82,7 @@ def getResolution(filename):
         pass
 
     return resolutions['default']
+
 
 def getShowImage(url, imgNum=None):
     if url is None:
@@ -99,19 +100,23 @@ def getShowImage(url, imgNum=None):
     except Exception:
         sickrage.srCore.srLogger.warning("There was an error trying to retrieve the image, aborting")
 
+
 def getFileMetadata(filename):
-    import enzyme
+    import sickrage.metadata.enzyme
+    import sickrage.metadata.enzyme.exceptions
 
     try:
-        p = enzyme.parse(filename)
+        p = sickrage.metadata.enzyme.parse(filename)
 
         # Video codec
         vc = ('H264' if p.video[0].codec == 'AVC1' else 'x265' if p.video[0].codec == 'HEVC' else p.video[0].codec)
 
         # Audio codec
         ac = p.audio[0].codec
-        try: ac = audio_codec_map.get(p.audio[0].codec)
-        except: pass
+        try:
+            ac = audio_codec_map.get(p.audio[0].codec)
+        except:
+            pass
 
         # Find title in video headers
         titles = []
@@ -137,14 +142,15 @@ def getFileMetadata(filename):
             'resolution_height': tryInt(p.video[0].height),
             'audio_channels': p.audio[0].channels,
         }
-    except enzyme.exceptions.ParseError:
+    except sickrage.metadata.enzyme.exceptions.ParseError:
         sickrage.srCore.srLogger.debug('Failed to parse meta for %s', filename)
-    except enzyme.exceptions.NoParserError:
+    except sickrage.metadata.enzyme.exceptions.NoParserError:
         sickrage.srCore.srLogger.debug('No parser found for %s', filename)
     except:
         sickrage.srCore.srLogger.debug('Failed parsing %s', filename)
 
     return {}
+
 
 def qualityFromFileMeta(filename):
     """

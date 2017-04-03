@@ -1526,7 +1526,7 @@ def removetree(tgt):
     count = 0
     while count < 10:  # prevents indefinite loop
         count += 1
-        tmp = os.path.join(os.path.dirname(tgt), "_removetree_tmp_%d" % (count))
+        tmp = os.path.join(os.path.dirname(tgt), "_removetree_tmp_%d" % count)
         try:
             os.rename(tgt, tmp)
             shutil.rmtree(tmp, onerror=error_handler)

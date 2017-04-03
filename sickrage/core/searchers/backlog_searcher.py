@@ -172,7 +172,7 @@ class srBacklogSearcher(object):
                 epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
 
                 # only fetch if not archive on first match, or if show is lowest than the lower expected quality
-                if (epObj.show.archive_firstmatch == 0 or curQuality < lowestBestQuality):
+                if epObj.show.archive_firstmatch == 0 or curQuality < lowestBestQuality:
                     if epObj.season not in wanted:
                         wanted[epObj.season] = [epObj]
                     else:
@@ -181,7 +181,7 @@ class srBacklogSearcher(object):
         return wanted
 
     @classmethod
-    def _set_lastBacklog(self, when):
+    def _set_lastBacklog(cls, when):
 
         sickrage.srCore.srLogger.debug("Setting the last backlog in the DB to " + str(when))
 

@@ -143,8 +143,7 @@ class Riff(core.AVContainer):
 
 
     def _parseSTRH(self, t):
-        retval = {}
-        retval['fccType'] = t[0:4]
+        retval = {'fccType': t[0:4]}
         log.debug('_parseSTRH(%r) : %d bytes' % (retval['fccType'], len(t)))
         if retval['fccType'] != 'auds':
             retval['fccHandler'] = t[4:8]

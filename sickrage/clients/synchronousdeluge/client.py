@@ -87,7 +87,7 @@ class DelugeClient(object):
                         continue
 
                     if username == "localclient":
-                        return (username, password)
+                        return username, password
 
         return ("", "")
 

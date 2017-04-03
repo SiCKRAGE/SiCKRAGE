@@ -27,7 +27,7 @@ import stat
 import struct
 
 import core
-from exceptions import ParseError
+from .exceptions import ParseError
 
 # get logging object
 log = logging.getLogger(__name__)
@@ -335,13 +335,12 @@ class MPEG(core.AVContainer):
         highbit = (ord(buffer[0]) >> 3) & 0x01
 
         low4Bytes = ((long(ord(buffer[0])) >> 1) & 0x03) << 30
-        low4Bytes |= ord(buffer[1]) << 22;
-        low4Bytes |= (ord(buffer[2]) >> 1) << 15;
-        low4Bytes |= ord(buffer[3]) << 7;
-        low4Bytes |= ord(buffer[4]) >> 1;
+        low4Bytes |= ord(buffer[1]) << 22
+        low4Bytes |= (ord(buffer[2]) >> 1) << 15
+        low4Bytes |= ord(buffer[3]) << 7
+        low4Bytes |= ord(buffer[4]) >> 1
 
-        return (long(highbit) * (1 << 16) * (1 << 16) + low4Bytes) / 90000;
-
+        return (long(highbit) * (1 << 16) * (1 << 16) + low4Bytes) / 90000
 
     def ReadPTS(self, buffer):
         """
