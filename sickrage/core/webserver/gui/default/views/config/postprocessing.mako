@@ -1092,7 +1092,7 @@
                             <label>
                                 <span class="component-title">Metadata Type:</span>
                                 <span class="component-desc">
-                                    <% m_dict = sickrage.srCore.metadataProviderDict %>
+                                    <% m_dict = sickrage.srCore.metadataProvidersDict %>
                                     <select id="metadataType" class="form-control input-sm">
                                     % for (cur_name, cur_generator) in sorted(m_dict.items()):
                                         <option value="${cur_generator.get_id()}">${cur_name}</option>
@@ -1104,7 +1104,7 @@
                         </div>
 
                         % for (cur_name, cur_generator) in m_dict.items():
-                        <% cur_metadata_inst = sickrage.srCore.metadataProviderDict[cur_generator.name] %>
+                        <% cur_metadata_inst = sickrage.srCore.metadataProvidersDict[cur_generator.name] %>
                         <% cur_id = cur_generator.get_id() %>
                         <div class="metadataDiv container-fluid" id="${cur_id}">
                             <div>

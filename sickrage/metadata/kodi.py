@@ -121,7 +121,3 @@ class KODIMetadata(KODI_12PlusMetadata):
             season_poster_filename = 'season' + str(season).zfill(2)
 
         return os.path.join(show_obj.location, season_poster_filename + '.tbn')
-
-
-# present a standard "interface" from the module
-metadata_class = KODIMetadata

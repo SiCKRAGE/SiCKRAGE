@@ -432,7 +432,3 @@ class Mede8erMetadata(MediaBrowserMetadata):
             return False
 
         return True
-
-
-# present a standard "interface" from the module
-metadata_class = Mede8erMetadata

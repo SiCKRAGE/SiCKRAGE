@@ -123,7 +123,3 @@ class PS3Metadata(GenericMetadata):
             return None
 
         return tbn_filename
-
-
-# present a standard "interface" from the module
-metadata_class = PS3Metadata

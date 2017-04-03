@@ -295,7 +295,3 @@ class WDTVMetadata(GenericMetadata):
         indentXML(rootNode)
         data = ElementTree(rootNode)
         return data
-
-
-# present a standard "interface" from the module
-metadata_class = WDTVMetadata

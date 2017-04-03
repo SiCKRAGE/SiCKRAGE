@@ -573,7 +573,3 @@ class MediaBrowserMetadata(GenericMetadata):
         data = ElementTree(rootNode)
 
         return data
-
-
-# present a standard "interface" from the module
-metadata_class = MediaBrowserMetadata

@@ -333,7 +333,3 @@ class TIVOMetadata(GenericMetadata):
             return False
 
         return True
-
-
-# present a standard "interface" from the module
-metadata_class = TIVOMetadata

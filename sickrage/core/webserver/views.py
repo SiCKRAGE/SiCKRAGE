@@ -2378,7 +2378,7 @@ class HomeAddShows(Home):
                 dir_list.append(cur_dir)
 
                 showid = show_name = indexer = None
-                for cur_provider in sickrage.srCore.metadataProviderDict.values():
+                for cur_provider in sickrage.srCore.metadataProvidersDict.values():
                     # if not cur_provider.enabled:
                     #    continue
 
@@ -3907,14 +3907,12 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.NO_RESTART = sickrage.srCore.srConfig.checkbox_to_value(no_restart)
         sickrage.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
         sickrage.srCore.srConfig.SSL_VERIFY = sickrage.srCore.srConfig.checkbox_to_value(ssl_verify)
-        # sickrage.LOG_DIR is set in sickrage.CONFIG.change_log_dir()
         sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srCore.srConfig.to_int(coming_eps_missed_range,
                                                                                            default=7)
         sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS = sickrage.srCore.srConfig.checkbox_to_value(display_all_seasons)
 
         sickrage.srCore.srConfig.WEB_PORT = sickrage.srCore.srConfig.to_int(web_port)
         sickrage.srCore.srConfig.WEB_IPV6 = sickrage.srCore.srConfig.checkbox_to_value(web_ipv6)
-        # sickrage.WEB_LOG is set in sickrage.CONFIG.change_log_dir()
         if sickrage.srCore.srConfig.checkbox_to_value(encryption_version) == 1:
             sickrage.srCore.srConfig.ENCRYPTION_VERSION = 2
         else:
@@ -3940,10 +3938,6 @@ class ConfigGeneral(Config):
             sickrage.srCore.srConfig.TIME_PRESET = sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS.replace(":%S", "")
 
         sickrage.srCore.srConfig.TIMEZONE_DISPLAY = timezone_display
-
-        if not sickrage.srCore.srConfig.change_log_dir(os.path.abspath(os.path.join(sickrage.DATA_DIR, log_dir)),
-                                                       web_log):
-            results += ["Unable to create directory " + os.path.normpath(log_dir) + ", log directory not changed."]
 
         sickrage.srCore.srConfig.API_KEY = api_key
 
@@ -4213,22 +4207,6 @@ class ConfigPostProcessing(Config):
         sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS = sickrage.srCore.srConfig.checkbox_to_value(use_failed_downloads)
         sickrage.srCore.srConfig.DELETE_FAILED = sickrage.srCore.srConfig.checkbox_to_value(delete_failed)
         sickrage.srCore.srConfig.NFO_RENAME = sickrage.srCore.srConfig.checkbox_to_value(nfo_rename)
-
-        sickrage.srCore.srConfig.METADATA_KODI = kodi_data
-        sickrage.srCore.srConfig.METADATA_KODI_12PLUS = kodi_12plus_data
-        sickrage.srCore.srConfig.METADATA_MEDIABROWSER = mediabrowser_data
-        sickrage.srCore.srConfig.METADATA_PS3 = sony_ps3_data
-        sickrage.srCore.srConfig.METADATA_WDTV = wdtv_data
-        sickrage.srCore.srConfig.METADATA_TIVO = tivo_data
-        sickrage.srCore.srConfig.METADATA_MEDE8ER = mede8er_data
-
-        sickrage.srCore.metadataProviderDict['KODI'].set_config(sickrage.srCore.srConfig.METADATA_KODI)
-        sickrage.srCore.metadataProviderDict['KODI 12+'].set_config(sickrage.srCore.srConfig.METADATA_KODI_12PLUS)
-        sickrage.srCore.metadataProviderDict['MediaBrowser'].set_config(sickrage.srCore.srConfig.METADATA_MEDIABROWSER)
-        sickrage.srCore.metadataProviderDict['Sony PS3'].set_config(sickrage.srCore.srConfig.METADATA_PS3)
-        sickrage.srCore.metadataProviderDict['WDTV'].set_config(sickrage.srCore.srConfig.METADATA_WDTV)
-        sickrage.srCore.metadataProviderDict['TIVO'].set_config(sickrage.srCore.srConfig.METADATA_TIVO)
-        sickrage.srCore.metadataProviderDict['Mede8er'].set_config(sickrage.srCore.srConfig.METADATA_MEDE8ER)
 
         if self.isNamingValid(naming_pattern, naming_multi_ep, anime_type=naming_anime) != "invalid":
             sickrage.srCore.srConfig.NAMING_PATTERN = naming_pattern

@@ -188,13 +188,6 @@ class srWebServer(object):
                                  sickrage.srCore.srConfig.WEB_PORT
                              )).start()
 
-        sickrage.srCore.srLogger.info("SiCKRAGE :: STARTED")
-        sickrage.srCore.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(sickrage.srCore.VERSIONUPDATER.updater.version))
-        sickrage.srCore.srLogger.info("SiCKRAGE :: CONFIG:[{}]".format(sickrage.CONFIG_FILE))
-        sickrage.srCore.srLogger.info("SiCKRAGE :: URL:[{}://{}:{}/]".format(
-            ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
-            get_lan_ip(), sickrage.srCore.srConfig.WEB_PORT))
-
     def shutdown(self):
         if self.started:
             self.server.close_all_connections()

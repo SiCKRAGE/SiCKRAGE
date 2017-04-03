@@ -330,7 +330,7 @@ class TVEpisode(object):
 
         # check for nfo and tbn
         if os.path.isfile(self.location):
-            for cur_provider in sickrage.srCore.metadataProviderDict.values():
+            for cur_provider in sickrage.srCore.metadataProvidersDict.values():
                 if not cur_provider.enabled:
                     continue
 
@@ -701,7 +701,7 @@ class TVEpisode(object):
 
         result = False
 
-        for cur_provider in sickrage.srCore.metadataProviderDict.values():
+        for cur_provider in sickrage.srCore.metadataProvidersDict.values():
             if not cur_provider.enabled:
                 continue
 
@@ -713,7 +713,7 @@ class TVEpisode(object):
 
         result = False
 
-        for cur_provider in sickrage.srCore.metadataProviderDict.values():
+        for cur_provider in sickrage.srCore.metadataProvidersDict.values():
             if not cur_provider.enabled:
                 continue
 

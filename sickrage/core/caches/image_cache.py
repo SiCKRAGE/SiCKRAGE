@@ -280,7 +280,7 @@ class ImageCache(object):
                 sickrage.srCore.srLogger.warning("Unable to search for images in show dir because it doesn't exist")
                 return
 
-            for cur_provider in sickrage.srCore.metadataProviderDict.values():
+            for cur_provider in sickrage.srCore.metadataProvidersDict.values():
                 if not cur_provider.enabled:
                     continue
 

@@ -37,8 +37,6 @@ import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType
-from sickrage.core.nameparser import validator
-from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.searchers import backlog_searcher
 
 
@@ -47,7 +45,7 @@ class srConfig(object):
         self.loaded = False
 
         self.CONFIG_OBJ = None
-        self.CONFIG_VERSION = 10
+        self.CONFIG_VERSION = 11
         self.ENCRYPTION_VERSION = 0
         self.ENCRYPTION_SECRET = ""
 
@@ -125,13 +123,7 @@ class srConfig(object):
         self.DISPLAY_ALL_SEASONS = True
         self.DEFAULT_PAGE = None
         self.USE_LISTVIEW = False
-        self.METADATA_KODI = None
-        self.METADATA_KODI_12PLUS = None
-        self.METADATA_MEDIABROWSER = None
-        self.METADATA_PS3 = None
-        self.METADATA_WDTV = None
-        self.METADATA_TIVO = None
-        self.METADATA_MEDE8ER = None
+
         self.QUALITY_DEFAULT = None
         self.STATUS_DEFAULT = None
         self.STATUS_DEFAULT_AFTER = None
@@ -464,448 +456,6 @@ class srConfig(object):
 
         self.CUSTOM_PROVIDERS = None
 
-    def defaults(self):
-        sickrage.srCore.srLogger.debug("Loading default config values")
-
-        # default config object
-        defaults = ConfigObj()
-        defaults.clear()
-
-        defaults['General'] = {}
-        defaults['General']['config_version'] = self.CONFIG_VERSION
-        defaults['General']['encryption_version'] = int(self.ENCRYPTION_VERSION)
-        defaults['General']['encryption_secret'] = self.ENCRYPTION_SECRET
-        defaults['General']['last_db_compact'] = self.LAST_DB_COMPACT
-        defaults['General']['git_autoissues'] = int(self.GIT_AUTOISSUES)
-        defaults['General']['git_username'] = self.GIT_USERNAME
-        defaults['General']['git_password'] = self.GIT_PASSWORD
-        defaults['General']['git_reset'] = int(self.GIT_RESET)
-        defaults['General']['git_newver'] = int(self.GIT_NEWVER)
-        defaults['General']['log_dir'] = os.path.abspath(
-            os.path.join(sickrage.DATA_DIR, self.LOG_DIR or 'Logs'))
-        defaults['General']['log_nr'] = int(self.LOG_NR)
-        defaults['General']['log_size'] = int(self.LOG_SIZE)
-        defaults['General']['socket_timeout'] = self.SOCKET_TIMEOUT
-        defaults['General']['web_port'] = self.WEB_PORT
-        defaults['General']['web_host'] = self.WEB_HOST
-        defaults['General']['web_ipv6'] = int(self.WEB_IPV6)
-        defaults['General']['web_log'] = int(self.WEB_LOG)
-        defaults['General']['web_root'] = self.WEB_ROOT
-        defaults['General']['web_username'] = self.WEB_USERNAME
-        defaults['General']['web_password'] = self.WEB_PASSWORD
-        defaults['General']['web_cookie_secret'] = self.WEB_COOKIE_SECRET
-        defaults['General']['web_use_gzip'] = int(self.WEB_USE_GZIP)
-        defaults['General']['ssl_verify'] = int(self.SSL_VERIFY)
-        defaults['General']['download_url'] = self.DOWNLOAD_URL
-        defaults['General']['localhost_ip'] = self.LOCALHOST_IP
-        defaults['General']['cpu_preset'] = self.CPU_PRESET
-        defaults['General']['anon_redirect'] = self.ANON_REDIRECT
-        defaults['General']['api_key'] = self.API_KEY
-        defaults['General']['debug'] = int(sickrage.DEBUG)
-        defaults['General']['default_page'] = self.DEFAULT_PAGE
-        defaults['General']['enable_https'] = int(self.ENABLE_HTTPS)
-        defaults['General']['https_cert'] = self.HTTPS_CERT
-        defaults['General']['https_key'] = self.HTTPS_KEY
-        defaults['General']['handle_reverse_proxy'] = int(self.HANDLE_REVERSE_PROXY)
-        defaults['General']['use_nzbs'] = int(self.USE_NZBS)
-        defaults['General']['use_torrents'] = int(self.USE_TORRENTS)
-        defaults['General']['nzb_method'] = self.NZB_METHOD
-        defaults['General']['torrent_method'] = self.TORRENT_METHOD
-        defaults['General']['usenet_retention'] = int(self.USENET_RETENTION)
-        defaults['General']['autopostprocessor_frequency'] = int(self.AUTOPOSTPROCESSOR_FREQ)
-        defaults['General']['dailysearch_frequency'] = int(self.DAILY_SEARCHER_FREQ)
-        defaults['General']['backlog_frequency'] = int(self.BACKLOG_SEARCHER_FREQ)
-        defaults['General']['update_frequency'] = int(self.VERSION_UPDATER_FREQ)
-        defaults['General']['showupdate_hour'] = int(self.SHOWUPDATE_HOUR)
-        defaults['General']['showupdate_stale'] = int(self.SHOWUPDATE_STALE)
-        defaults['General']['download_propers'] = int(self.DOWNLOAD_PROPERS)
-        defaults['General']['enable_rss_cache'] = int(self.ENABLE_RSS_CACHE)
-        defaults['General']['randomize_providers'] = int(self.RANDOMIZE_PROVIDERS)
-        defaults['General']['check_propers_interval'] = self.PROPER_SEARCHER_INTERVAL
-        defaults['General']['allow_high_priority'] = int(self.ALLOW_HIGH_PRIORITY)
-        defaults['General']['skip_removed_files'] = int(self.SKIP_REMOVED_FILES)
-        defaults['General']['quality_default'] = int(self.QUALITY_DEFAULT)
-        defaults['General']['status_default'] = int(self.STATUS_DEFAULT)
-        defaults['General']['status_default_after'] = int(self.STATUS_DEFAULT_AFTER)
-        defaults['General']['flatten_folders_default'] = int(self.FLATTEN_FOLDERS_DEFAULT)
-        defaults['General']['indexer_default'] = int(self.INDEXER_DEFAULT)
-        defaults['General']['indexer_timeout'] = int(self.INDEXER_TIMEOUT)
-        defaults['General']['anime_default'] = int(self.ANIME_DEFAULT)
-        defaults['General']['scene_default'] = int(self.SCENE_DEFAULT)
-        defaults['General']['archive_default'] = int(self.ARCHIVE_DEFAULT)
-        defaults['General']['version_notify'] = int(self.VERSION_NOTIFY)
-        defaults['General']['auto_update'] = int(self.AUTO_UPDATE)
-        defaults['General']['notify_on_update'] = int(self.NOTIFY_ON_UPDATE)
-        defaults['General']['naming_strip_year'] = int(self.NAMING_STRIP_YEAR)
-        defaults['General']['naming_pattern'] = self.NAMING_PATTERN
-        defaults['General']['naming_custom_abd'] = int(self.NAMING_CUSTOM_ABD)
-        defaults['General']['naming_abd_pattern'] = self.NAMING_ABD_PATTERN
-        defaults['General']['naming_custom_sports'] = int(self.NAMING_CUSTOM_SPORTS)
-        defaults['General']['naming_sports_pattern'] = self.NAMING_SPORTS_PATTERN
-        defaults['General']['naming_custom_anime'] = int(self.NAMING_CUSTOM_ANIME)
-        defaults['General']['naming_anime_pattern'] = self.NAMING_ANIME_PATTERN
-        defaults['General']['naming_multi_ep'] = int(self.NAMING_MULTI_EP)
-        defaults['General']['naming_anime_multi_ep'] = int(self.NAMING_ANIME_MULTI_EP)
-        defaults['General']['naming_anime'] = int(self.NAMING_ANIME)
-        defaults['General']['indexerDefaultLang'] = self.INDEXER_DEFAULT_LANGUAGE
-        defaults['General']['ep_default_deleted_status'] = int(self.EP_DEFAULT_DELETED_STATUS)
-        defaults['General']['launch_browser'] = int(self.LAUNCH_BROWSER)
-        defaults['General']['trash_remove_show'] = int(self.TRASH_REMOVE_SHOW)
-        defaults['General']['trash_rotate_logs'] = int(self.TRASH_ROTATE_LOGS)
-        defaults['General']['sort_article'] = int(self.SORT_ARTICLE)
-        defaults['General']['proxy_setting'] = self.PROXY_SETTING
-        defaults['General']['proxy_indexers'] = int(self.PROXY_INDEXERS)
-        defaults['General']['use_listview'] = int(self.USE_LISTVIEW)
-        defaults['General']['metadata_kodi'] = self.METADATA_KODI
-        defaults['General']['metadata_kodi_12plus'] = self.METADATA_KODI_12PLUS
-        defaults['General']['metadata_mediabrowser'] = self.METADATA_MEDIABROWSER
-        defaults['General']['metadata_ps3'] = self.METADATA_PS3
-        defaults['General']['metadata_wdtv'] = self.METADATA_WDTV
-        defaults['General']['metadata_tivo'] = self.METADATA_TIVO
-        defaults['General']['metadata_mede8er'] = self.METADATA_MEDE8ER
-        defaults['General']['backlog_days'] = int(self.BACKLOG_DAYS)
-        defaults['General']['root_dirs'] = self.ROOT_DIRS
-        defaults['General']['tv_download_dir'] = self.TV_DOWNLOAD_DIR
-        defaults['General']['keep_processed_dir'] = int(self.KEEP_PROCESSED_DIR)
-        defaults['General']['process_method'] = self.PROCESS_METHOD
-        defaults['General']['del_rar_contents'] = int(self.DELRARCONTENTS)
-        defaults['General']['move_associated_files'] = int(self.MOVE_ASSOCIATED_FILES)
-        defaults['General']['sync_files'] = self.SYNC_FILES
-        defaults['General']['postpone_if_sync_files'] = int(self.POSTPONE_IF_SYNC_FILES)
-        defaults['General']['nfo_rename'] = int(self.NFO_RENAME)
-        defaults['General']['process_automatically'] = int(self.PROCESS_AUTOMATICALLY)
-        defaults['General']['no_delete'] = int(self.NO_DELETE)
-        defaults['General']['unpack'] = int(self.UNPACK)
-        defaults['General']['rename_episodes'] = int(self.RENAME_EPISODES)
-        defaults['General']['airdate_episodes'] = int(self.AIRDATE_EPISODES)
-        defaults['General']['file_timestamp_timezone'] = self.FILE_TIMESTAMP_TIMEZONE
-        defaults['General']['create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
-        defaults['General']['add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
-        defaults['General']['extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
-        defaults['General']['pip_path'] = self.PIP_PATH
-        defaults['General']['git_path'] = self.GIT_PATH
-        defaults['General']['ignore_words'] = self.IGNORE_WORDS
-        defaults['General']['require_words'] = self.REQUIRE_WORDS
-        defaults['General']['ignored_subs_list'] = self.IGNORED_SUBS_LIST
-        defaults['General']['calendar_unprotected'] = int(self.CALENDAR_UNPROTECTED)
-        defaults['General']['calendar_icons'] = int(self.CALENDAR_ICONS)
-        defaults['General']['no_restart'] = int(self.NO_RESTART)
-        defaults['General']['developer'] = int(sickrage.DEVELOPER)
-        defaults['General']['display_all_seasons'] = int(self.DISPLAY_ALL_SEASONS)
-        defaults['General']['news_last_read'] = self.NEWS_LAST_READ
-
-        defaults['GUI'] = {}
-        defaults['GUI']['gui_name'] = self.GUI_NAME
-        defaults['GUI']['theme_name'] = self.THEME_NAME
-        defaults['GUI']['home_layout'] = self.HOME_LAYOUT
-        defaults['GUI']['history_layout'] = self.HISTORY_LAYOUT
-        defaults['GUI']['history_limit'] = self.HISTORY_LIMIT
-        defaults['GUI']['display_show_specials'] = int(self.DISPLAY_SHOW_SPECIALS)
-        defaults['GUI']['coming_eps_layout'] = self.COMING_EPS_LAYOUT
-        defaults['GUI']['coming_eps_display_paused'] = int(self.COMING_EPS_DISPLAY_PAUSED)
-        defaults['GUI']['coming_eps_sort'] = self.COMING_EPS_SORT
-        defaults['GUI']['coming_eps_missed_range'] = int(self.COMING_EPS_MISSED_RANGE)
-        defaults['GUI']['fuzzy_dating'] = int(self.FUZZY_DATING)
-        defaults['GUI']['trim_zero'] = int(self.TRIM_ZERO)
-        defaults['GUI']['date_preset'] = self.DATE_PRESET
-        defaults['GUI']['time_preset'] = self.TIME_PRESET_W_SECONDS
-        defaults['GUI']['timezone_display'] = self.TIMEZONE_DISPLAY
-        defaults['GUI']['poster_sortby'] = self.POSTER_SORTBY
-        defaults['GUI']['poster_sortdir'] = self.POSTER_SORTDIR
-        defaults['GUI']['filter_row'] = int(self.FILTER_ROW)
-
-        defaults['Blackhole'] = {}
-        defaults['Blackhole']['nzb_dir'] = self.NZB_DIR
-        defaults['Blackhole']['torrent_dir'] = self.TORRENT_DIR
-
-        defaults['NZBs'] = {}
-        defaults['NZBs']['nzbs'] = int(self.NZBS)
-        defaults['NZBs']['nzbs_uid'] = self.NZBS_UID
-        defaults['NZBs']['nzbs_hash'] = self.NZBS_HASH
-
-        defaults['Newzbin'] = {}
-        defaults['Newzbin']['newzbin'] = int(self.NEWZBIN)
-        defaults['Newzbin']['newzbin_username'] = self.NEWZBIN_USERNAME
-        defaults['Newzbin']['newzbin_password'] = self.NEWZBIN_PASSWORD
-
-        defaults['SABnzbd'] = {}
-        defaults['SABnzbd']['sab_username'] = self.SAB_USERNAME
-        defaults['SABnzbd']['sab_password'] = self.SAB_PASSWORD
-        defaults['SABnzbd']['sab_apikey'] = self.SAB_APIKEY
-        defaults['SABnzbd']['sab_category'] = self.SAB_CATEGORY
-        defaults['SABnzbd']['sab_category_backlog'] = self.SAB_CATEGORY_BACKLOG
-        defaults['SABnzbd']['sab_category_anime'] = self.SAB_CATEGORY_ANIME
-        defaults['SABnzbd']['sab_category_anime_backlog'] = self.SAB_CATEGORY_ANIME_BACKLOG
-        defaults['SABnzbd']['sab_host'] = self.SAB_HOST
-        defaults['SABnzbd']['sab_forced'] = int(self.SAB_FORCED)
-
-        defaults['NZBget'] = {}
-        defaults['NZBget']['nzbget_username'] = self.NZBGET_USERNAME
-        defaults['NZBget']['nzbget_password'] = self.NZBGET_PASSWORD
-        defaults['NZBget']['nzbget_category'] = self.NZBGET_CATEGORY
-        defaults['NZBget']['nzbget_category_backlog'] = self.NZBGET_CATEGORY_BACKLOG
-        defaults['NZBget']['nzbget_category_anime'] = self.NZBGET_CATEGORY_ANIME
-        defaults['NZBget']['nzbget_category_anime_backlog'] = self.NZBGET_CATEGORY_ANIME_BACKLOG
-        defaults['NZBget']['nzbget_host'] = self.NZBGET_HOST
-        defaults['NZBget']['nzbget_use_https'] = int(self.NZBGET_USE_HTTPS)
-        defaults['NZBget']['nzbget_priority'] = self.NZBGET_PRIORITY
-
-        defaults['TORRENT'] = {}
-        defaults['TORRENT']['torrent_username'] = self.TORRENT_USERNAME
-        defaults['TORRENT']['torrent_password'] = self.TORRENT_PASSWORD
-        defaults['TORRENT']['torrent_host'] = self.TORRENT_HOST
-        defaults['TORRENT']['torrent_path'] = self.TORRENT_PATH
-        defaults['TORRENT']['torrent_seed_time'] = int(self.TORRENT_SEED_TIME)
-        defaults['TORRENT']['torrent_paused'] = int(self.TORRENT_PAUSED)
-        defaults['TORRENT']['torrent_high_bandwidth'] = int(self.TORRENT_HIGH_BANDWIDTH)
-        defaults['TORRENT']['torrent_label'] = self.TORRENT_LABEL
-        defaults['TORRENT']['torrent_label_anime'] = self.TORRENT_LABEL_ANIME
-        defaults['TORRENT']['torrent_verify_cert'] = int(self.TORRENT_VERIFY_CERT)
-        defaults['TORRENT']['torrent_rpcurl'] = self.TORRENT_RPCURL
-        defaults['TORRENT']['torrent_auth_type'] = self.TORRENT_AUTH_TYPE
-        defaults['TORRENT']['torrent_trackers'] = self.TORRENT_TRACKERS
-
-        defaults['KODI'] = {}
-        defaults['KODI']['use_kodi'] = int(self.USE_KODI)
-        defaults['KODI']['kodi_always_on'] = int(self.KODI_ALWAYS_ON)
-        defaults['KODI']['kodi_notify_onsnatch'] = int(self.KODI_NOTIFY_ONSNATCH)
-        defaults['KODI']['kodi_notify_ondownload'] = int(self.KODI_NOTIFY_ONDOWNLOAD)
-        defaults['KODI']['kodi_notify_onsubtitledownload'] = int(self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['KODI']['kodi_update_library'] = int(self.KODI_UPDATE_LIBRARY)
-        defaults['KODI']['kodi_update_full'] = int(self.KODI_UPDATE_FULL)
-        defaults['KODI']['kodi_update_onlyfirst'] = int(self.KODI_UPDATE_ONLYFIRST)
-        defaults['KODI']['kodi_host'] = self.KODI_HOST
-        defaults['KODI']['kodi_username'] = self.KODI_USERNAME
-        defaults['KODI']['kodi_password'] = self.KODI_PASSWORD
-
-        defaults['Plex'] = {}
-        defaults['Plex']['use_plex'] = int(self.USE_PLEX)
-        defaults['Plex']['plex_notify_onsnatch'] = int(self.PLEX_NOTIFY_ONSNATCH)
-        defaults['Plex']['plex_notify_ondownload'] = int(self.PLEX_NOTIFY_ONDOWNLOAD)
-        defaults['Plex']['plex_notify_onsubtitledownload'] = int(self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Plex']['plex_update_library'] = int(self.PLEX_UPDATE_LIBRARY)
-        defaults['Plex']['plex_server_host'] = self.PLEX_SERVER_HOST
-        defaults['Plex']['plex_server_token'] = self.PLEX_SERVER_TOKEN
-        defaults['Plex']['plex_host'] = self.PLEX_HOST
-        defaults['Plex']['plex_username'] = self.PLEX_USERNAME
-        defaults['Plex']['plex_password'] = self.PLEX_PASSWORD
-
-        defaults['Emby'] = {}
-        defaults['Emby']['use_emby'] = int(self.USE_EMBY)
-        defaults['Emby']['emby_host'] = self.EMBY_HOST
-        defaults['Emby']['emby_apikey'] = self.EMBY_APIKEY
-
-        defaults['Growl'] = {}
-        defaults['Growl']['use_growl'] = int(self.USE_GROWL)
-        defaults['Growl']['growl_notify_onsnatch'] = int(self.GROWL_NOTIFY_ONSNATCH)
-        defaults['Growl']['growl_notify_ondownload'] = int(self.GROWL_NOTIFY_ONDOWNLOAD)
-        defaults['Growl']['growl_notify_onsubtitledownload'] = int(self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Growl']['growl_host'] = self.GROWL_HOST
-        defaults['Growl']['growl_password'] = self.GROWL_PASSWORD
-
-        defaults['FreeMobile'] = {}
-        defaults['FreeMobile']['use_freemobile'] = int(self.USE_FREEMOBILE)
-        defaults['FreeMobile']['freemobile_notify_onsnatch'] = int(self.FREEMOBILE_NOTIFY_ONSNATCH)
-        defaults['FreeMobile']['freemobile_notify_ondownload'] = int(self.FREEMOBILE_NOTIFY_ONDOWNLOAD)
-        defaults['FreeMobile']['freemobile_notify_onsubtitledownload'] = int(
-            self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['FreeMobile']['freemobile_id'] = self.FREEMOBILE_ID
-        defaults['FreeMobile']['freemobile_apikey'] = self.FREEMOBILE_APIKEY
-
-        defaults['Prowl'] = {}
-        defaults['Prowl']['use_prowl'] = int(self.USE_PROWL)
-        defaults['Prowl']['prowl_notify_onsnatch'] = int(self.PROWL_NOTIFY_ONSNATCH)
-        defaults['Prowl']['prowl_notify_ondownload'] = int(self.PROWL_NOTIFY_ONDOWNLOAD)
-        defaults['Prowl']['prowl_notify_onsubtitledownload'] = int(self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Prowl']['prowl_api'] = self.PROWL_API
-        defaults['Prowl']['prowl_priority'] = self.PROWL_PRIORITY
-
-        defaults['Twitter'] = {}
-        defaults['Twitter']['use_twitter'] = int(self.USE_TWITTER)
-        defaults['Twitter']['twitter_notify_onsnatch'] = int(self.TWITTER_NOTIFY_ONSNATCH)
-        defaults['Twitter']['twitter_notify_ondownload'] = int(self.TWITTER_NOTIFY_ONDOWNLOAD)
-        defaults['Twitter']['twitter_notify_onsubtitledownload'] = int(
-            self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Twitter']['twitter_username'] = self.TWITTER_USERNAME
-        defaults['Twitter']['twitter_password'] = self.TWITTER_PASSWORD
-        defaults['Twitter']['twitter_prefix'] = self.TWITTER_PREFIX
-        defaults['Twitter']['twitter_dmto'] = self.TWITTER_DMTO
-        defaults['Twitter']['twitter_usedm'] = int(self.TWITTER_USEDM)
-
-        defaults['Boxcar'] = {}
-        defaults['Boxcar']['use_boxcar'] = int(self.USE_BOXCAR)
-        defaults['Boxcar']['boxcar_notify_onsnatch'] = int(self.BOXCAR_NOTIFY_ONSNATCH)
-        defaults['Boxcar']['boxcar_notify_ondownload'] = int(self.BOXCAR_NOTIFY_ONDOWNLOAD)
-        defaults['Boxcar']['boxcar_notify_onsubtitledownload'] = int(self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Boxcar']['boxcar_username'] = self.BOXCAR_USERNAME
-
-        defaults['Boxcar2'] = {}
-        defaults['Boxcar2']['use_boxcar2'] = int(self.USE_BOXCAR2)
-        defaults['Boxcar2']['boxcar2_notify_onsnatch'] = int(self.BOXCAR2_NOTIFY_ONSNATCH)
-        defaults['Boxcar2']['boxcar2_notify_ondownload'] = int(self.BOXCAR2_NOTIFY_ONDOWNLOAD)
-        defaults['Boxcar2']['boxcar2_notify_onsubtitledownload'] = int(
-            self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Boxcar2']['boxcar2_accesstoken'] = self.BOXCAR2_ACCESSTOKEN
-
-        defaults['Pushover'] = {}
-        defaults['Pushover']['use_pushover'] = int(self.USE_PUSHOVER)
-        defaults['Pushover']['pushover_notify_onsnatch'] = int(self.PUSHOVER_NOTIFY_ONSNATCH)
-        defaults['Pushover']['pushover_notify_ondownload'] = int(self.PUSHOVER_NOTIFY_ONDOWNLOAD)
-        defaults['Pushover']['pushover_notify_onsubtitledownload'] = int(
-            self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Pushover']['pushover_userkey'] = self.PUSHOVER_USERKEY
-        defaults['Pushover']['pushover_apikey'] = self.PUSHOVER_APIKEY
-        defaults['Pushover']['pushover_device'] = self.PUSHOVER_DEVICE
-        defaults['Pushover']['pushover_sound'] = self.PUSHOVER_SOUND
-
-        defaults['Libnotify'] = {}
-        defaults['Libnotify']['use_libnotify'] = int(self.USE_LIBNOTIFY)
-        defaults['Libnotify']['libnotify_notify_onsnatch'] = int(self.LIBNOTIFY_NOTIFY_ONSNATCH)
-        defaults['Libnotify']['libnotify_notify_ondownload'] = int(self.LIBNOTIFY_NOTIFY_ONDOWNLOAD)
-        defaults['Libnotify']['libnotify_notify_onsubtitledownload'] = int(
-            self.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD)
-
-        defaults['NMJ'] = {}
-        defaults['NMJ']['use_nmj'] = int(self.USE_NMJ)
-        defaults['NMJ']['nmj_host'] = self.NMJ_HOST
-        defaults['NMJ']['nmj_database'] = self.NMJ_DATABASE
-        defaults['NMJ']['nmj_mount'] = self.NMJ_MOUNT
-
-        defaults['NMJv2'] = {}
-        defaults['NMJv2']['use_nmjv2'] = int(self.USE_NMJv2)
-        defaults['NMJv2']['nmjv2_host'] = self.NMJv2_HOST
-        defaults['NMJv2']['nmjv2_database'] = self.NMJv2_DATABASE
-        defaults['NMJv2']['nmjv2_dbloc'] = self.NMJv2_DBLOC
-
-        defaults['Synology'] = {}
-        defaults['Synology']['use_synoindex'] = int(self.USE_SYNOINDEX)
-
-        defaults['SynologyNotifier'] = {}
-        defaults['SynologyNotifier']['use_synologynotifier'] = int(self.USE_SYNOLOGYNOTIFIER)
-        defaults['SynologyNotifier']['synologynotifier_notify_onsnatch'] = int(
-            self.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH)
-        defaults['SynologyNotifier']['synologynotifier_notify_ondownload'] = int(
-            self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD)
-        defaults['SynologyNotifier']['synologynotifier_notify_onsubtitledownload'] = int(
-            self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD)
-
-        defaults['theTVDB'] = {}
-        defaults['theTVDB']['thetvdb_apitoken'] = self.THETVDB_APITOKEN
-
-        defaults['Trakt'] = {}
-        defaults['Trakt']['use_trakt'] = int(self.USE_TRAKT)
-        defaults['Trakt']['trakt_username'] = self.TRAKT_USERNAME
-        defaults['Trakt']['trakt_access_token'] = self.TRAKT_ACCESS_TOKEN
-        defaults['Trakt']['trakt_refresh_token'] = self.TRAKT_REFRESH_TOKEN
-        defaults['Trakt']['trakt_remove_watchlist'] = int(self.TRAKT_REMOVE_WATCHLIST)
-        defaults['Trakt']['trakt_remove_serieslist'] = int(self.TRAKT_REMOVE_SERIESLIST)
-        defaults['Trakt']['trakt_remove_show_from_sickrage'] = int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE)
-        defaults['Trakt']['trakt_sync_watchlist'] = int(self.TRAKT_SYNC_WATCHLIST)
-        defaults['Trakt']['trakt_method_add'] = int(self.TRAKT_METHOD_ADD)
-        defaults['Trakt']['trakt_start_paused'] = int(self.TRAKT_START_PAUSED)
-        defaults['Trakt']['trakt_use_recommended'] = int(self.TRAKT_USE_RECOMMENDED)
-        defaults['Trakt']['trakt_sync'] = int(self.TRAKT_SYNC)
-        defaults['Trakt']['trakt_sync_remove'] = int(self.TRAKT_SYNC_REMOVE)
-        defaults['Trakt']['trakt_default_indexer'] = int(self.TRAKT_DEFAULT_INDEXER)
-        defaults['Trakt']['trakt_timeout'] = int(self.TRAKT_TIMEOUT)
-        defaults['Trakt']['trakt_blacklist_name'] = self.TRAKT_BLACKLIST_NAME
-
-        defaults['pyTivo'] = {}
-        defaults['pyTivo']['use_pytivo'] = int(self.USE_PYTIVO)
-        defaults['pyTivo']['pytivo_notify_onsnatch'] = int(self.PYTIVO_NOTIFY_ONSNATCH)
-        defaults['pyTivo']['pytivo_notify_ondownload'] = int(self.PYTIVO_NOTIFY_ONDOWNLOAD)
-        defaults['pyTivo']['pytivo_notify_onsubtitledownload'] = int(self.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['pyTivo']['pyTivo_update_library'] = int(self.PYTIVO_UPDATE_LIBRARY)
-        defaults['pyTivo']['pytivo_host'] = self.PYTIVO_HOST
-        defaults['pyTivo']['pytivo_share_name'] = self.PYTIVO_SHARE_NAME
-        defaults['pyTivo']['pytivo_tivo_name'] = self.PYTIVO_TIVO_NAME
-
-        defaults['NMA'] = {}
-        defaults['NMA']['use_nma'] = int(self.USE_NMA)
-        defaults['NMA']['nma_notify_onsnatch'] = int(self.NMA_NOTIFY_ONSNATCH)
-        defaults['NMA']['nma_notify_ondownload'] = int(self.NMA_NOTIFY_ONDOWNLOAD)
-        defaults['NMA']['nma_notify_onsubtitledownload'] = int(self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['NMA']['nma_api'] = self.NMA_API
-        defaults['NMA']['nma_priority'] = self.NMA_PRIORITY
-
-        defaults['Pushalot'] = {}
-        defaults['Pushalot']['use_pushalot'] = int(self.USE_PUSHALOT)
-        defaults['Pushalot']['pushalot_notify_onsnatch'] = int(self.PUSHALOT_NOTIFY_ONSNATCH)
-        defaults['Pushalot']['pushalot_notify_ondownload'] = int(self.PUSHALOT_NOTIFY_ONDOWNLOAD)
-        defaults['Pushalot']['pushalot_notify_onsubtitledownload'] = int(
-            self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Pushalot']['pushalot_authorizationtoken'] = self.PUSHALOT_AUTHORIZATIONTOKEN
-
-        defaults['Pushbullet'] = {}
-        defaults['Pushbullet']['use_pushbullet'] = int(self.USE_PUSHBULLET)
-        defaults['Pushbullet']['pushbullet_notify_onsnatch'] = int(self.PUSHBULLET_NOTIFY_ONSNATCH)
-        defaults['Pushbullet']['pushbullet_notify_ondownload'] = int(self.PUSHBULLET_NOTIFY_ONDOWNLOAD)
-        defaults['Pushbullet']['pushbullet_notify_onsubtitledownload'] = int(
-            self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Pushbullet']['pushbullet_api'] = self.PUSHBULLET_API
-        defaults['Pushbullet']['pushbullet_device'] = self.PUSHBULLET_DEVICE
-
-        defaults['Email'] = {}
-        defaults['Email']['use_email'] = int(self.USE_EMAIL)
-        defaults['Email']['email_notify_onsnatch'] = int(self.EMAIL_NOTIFY_ONSNATCH)
-        defaults['Email']['email_notify_ondownload'] = int(self.EMAIL_NOTIFY_ONDOWNLOAD)
-        defaults['Email']['email_notify_onsubtitledownload'] = int(self.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD)
-        defaults['Email']['email_host'] = self.EMAIL_HOST
-        defaults['Email']['email_port'] = int(self.EMAIL_PORT)
-        defaults['Email']['email_tls'] = int(self.EMAIL_TLS)
-        defaults['Email']['email_user'] = self.EMAIL_USER
-        defaults['Email']['email_password'] = self.EMAIL_PASSWORD
-        defaults['Email']['email_from'] = self.EMAIL_FROM
-        defaults['Email']['email_list'] = self.EMAIL_LIST
-
-        defaults['Subtitles'] = {}
-        defaults['Subtitles']['use_subtitles'] = int(self.USE_SUBTITLES)
-        defaults['Subtitles']['subtitles_languages'] = ','.join(self.SUBTITLES_LANGUAGES)
-        defaults['Subtitles']['subtitles_services_list'] = ','.join(self.SUBTITLES_SERVICES_LIST)
-        defaults['Subtitles']['subtitles_services_enabled'] = '|'.join(
-            [str(x) for x in self.SUBTITLES_SERVICES_ENABLED])
-        defaults['Subtitles']['subtitles_dir'] = self.SUBTITLES_DIR
-        defaults['Subtitles']['subtitles_default'] = int(self.SUBTITLES_DEFAULT)
-        defaults['Subtitles']['subtitles_history'] = int(self.SUBTITLES_HISTORY)
-        defaults['Subtitles']['embedded_subtitles_all'] = int(self.EMBEDDED_SUBTITLES_ALL)
-        defaults['Subtitles']['subtitles_hearing_impaired'] = int(self.SUBTITLES_HEARING_IMPAIRED)
-        defaults['Subtitles']['subtitles_finder_frequency'] = int(self.SUBTITLE_SEARCHER_FREQ)
-        defaults['Subtitles']['subtitles_multi'] = int(self.SUBTITLES_MULTI)
-        defaults['Subtitles']['subtitles_extra_scripts'] = '|'.join(self.SUBTITLES_EXTRA_SCRIPTS)
-        defaults['Subtitles']['addic7ed_username'] = self.ADDIC7ED_USER
-        defaults['Subtitles']['addic7ed_password'] = self.ADDIC7ED_PASS
-        defaults['Subtitles']['legendastv_username'] = self.LEGENDASTV_USER
-        defaults['Subtitles']['legendastv_password'] = self.LEGENDASTV_PASS
-        defaults['Subtitles']['opensubtitles_username'] = self.OPENSUBTITLES_USER
-        defaults['Subtitles']['opensubtitles_password'] = self.OPENSUBTITLES_PASS
-
-        defaults['FailedDownloads'] = {}
-        defaults['FailedDownloads']['use_failed_downloads'] = int(self.USE_FAILED_DOWNLOADS)
-        defaults['FailedDownloads']['delete_failed'] = int(self.DELETE_FAILED)
-
-        defaults['ANIDB'] = {}
-        defaults['ANIDB']['use_anidb'] = int(self.USE_ANIDB)
-        defaults['ANIDB']['anidb_username'] = self.ANIDB_USERNAME
-        defaults['ANIDB']['anidb_password'] = self.ANIDB_PASSWORD
-        defaults['ANIDB']['anidb_use_mylist'] = int(self.ANIDB_USE_MYLIST)
-
-        defaults['ANIME'] = {}
-        defaults['ANIME']['anime_split_home'] = int(self.ANIME_SPLIT_HOME)
-
-        defaults['Providers'] = {}
-        defaults['Providers']['providers_order'] = sickrage.srCore.providersDict.provider_order
-
-        provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
-                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
-                         'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
-
-        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
-            defaults['Providers'][providerID] = dict(
-                [(x, providerObj.__dict__[x]) for x in provider_keys if x in providerObj.__dict__])
-
-        return defaults
-
     def change_https_cert(self, https_cert):
         """
         Replace HTTPS Certificate file path
@@ -944,37 +494,6 @@ class srConfig(object):
                 sickrage.srCore.srLogger.info("Changed https key path to " + https_key)
             else:
                 return False
-
-        return True
-
-    def change_log_dir(self, new_log_dir, new_web_log):
-        """
-        Change logger directory for application and webserver
-    
-        :param new_log_dir: Path to new logger directory
-        :param new_web_log: Enable/disable web logger
-        :return: True on success, False on failure
-        """
-
-        web_log = self.checkbox_to_value(new_web_log)
-
-        if self.LOG_DIR != new_log_dir:
-            if not makeDir(new_log_dir):
-                return False
-
-            self.LOG_DIR = new_log_dir
-            self.LOG_FILE = os.path.abspath(os.path.join(self.LOG_DIR, 'sickrage.log'))
-
-            sickrage.srCore.srLogger.logFile = self.LOG_FILE
-            sickrage.srCore.srLogger.logSize = self.LOG_SIZE
-            sickrage.srCore.srLogger.logNr = self.LOG_NR
-            sickrage.srCore.srLogger.fileLogging = True
-            sickrage.srCore.srLogger.debugLogging = sickrage.DEBUG
-            sickrage.srCore.srLogger.start()
-
-            sickrage.srCore.srLogger.info("Initialized new log file in " + self.LOG_DIR)
-            if self.WEB_LOG != web_log:
-                self.WEB_LOG = web_log
 
         return True
 
@@ -1389,13 +908,8 @@ class srConfig(object):
         # logging settings
         self.LOG_NR = self.check_setting_int('General', 'log_nr', 5)
         self.LOG_SIZE = self.check_setting_int('General', 'log_size', 1048576)
-        self.LOG_DIR = self.check_setting_str('General', 'log_dir', 'Logs')
-
-        if not os.path.isabs(self.LOG_DIR):
-            self.LOG_DIR = os.path.abspath(os.path.join(sickrage.DATA_DIR, self.LOG_DIR))
-
-        self.LOG_FILE = os.path.abspath(
-            os.path.join(self.LOG_DIR, self.check_setting_str('General', 'log_file', 'sickrage.log')))
+        self.LOG_DIR = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'logs'))
+        self.LOG_FILE = os.path.abspath(os.path.join(self.LOG_DIR, 'sickrage.log'))
 
         # misc settings
         self.GUI_NAME = self.check_setting_str('GUI', 'gui_name', 'default')
@@ -1865,14 +1379,6 @@ class srConfig(object):
 
         self.ANIME_SPLIT_HOME = bool(self.check_setting_int('ANIME', 'anime_split_home', 0))
 
-        self.METADATA_KODI = self.check_setting_str('General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_KODI_12PLUS = self.check_setting_str('General', 'metadata_kodi_12plus', '0|0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_MEDIABROWSER = self.check_setting_str('General', 'metadata_mediabrowser', '0|0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_PS3 = self.check_setting_str('General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_WDTV = self.check_setting_str('General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_TIVO = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0|0')
-        self.METADATA_MEDE8ER = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
-
         self.HOME_LAYOUT = self.check_setting_str('GUI', 'home_layout', 'poster')
         self.HISTORY_LAYOUT = self.check_setting_str('GUI', 'history_layout', 'detailed')
         self.HISTORY_LIMIT = self.check_setting_str('GUI', 'history_limit', '100')
@@ -1909,6 +1415,11 @@ class srConfig(object):
         # order providers
         sickrage.srCore.providersDict.provider_order = self.check_setting_str('Providers', 'providers_order', [])
 
+        for metadataProviderID, metadataProviderObj in sickrage.srCore.metadataProvidersDict.items():
+            metadataProviderObj.set_config(
+                self.check_setting_str('MetadataProviders', metadataProviderID, '0|0|0|0|0|0|0|0|0|0|0')
+            )
+
         # mark config settings loaded
         self.loaded = True
 
@@ -1935,8 +1446,6 @@ class srConfig(object):
         new_config['General']['git_password'] = self.GIT_PASSWORD
         new_config['General']['git_reset'] = int(self.GIT_RESET)
         new_config['General']['git_newver'] = int(self.GIT_NEWVER)
-        new_config['General']['log_dir'] = os.path.abspath(
-            os.path.join(sickrage.DATA_DIR, self.LOG_DIR or 'Logs'))
         new_config['General']['log_nr'] = int(self.LOG_NR)
         new_config['General']['log_size'] = int(self.LOG_SIZE)
         new_config['General']['socket_timeout'] = self.SOCKET_TIMEOUT
@@ -2010,13 +1519,6 @@ class srConfig(object):
         new_config['General']['proxy_setting'] = self.PROXY_SETTING
         new_config['General']['proxy_indexers'] = int(self.PROXY_INDEXERS)
         new_config['General']['use_listview'] = int(self.USE_LISTVIEW)
-        new_config['General']['metadata_kodi'] = self.METADATA_KODI
-        new_config['General']['metadata_kodi_12plus'] = self.METADATA_KODI_12PLUS
-        new_config['General']['metadata_mediabrowser'] = self.METADATA_MEDIABROWSER
-        new_config['General']['metadata_ps3'] = self.METADATA_PS3
-        new_config['General']['metadata_wdtv'] = self.METADATA_WDTV
-        new_config['General']['metadata_tivo'] = self.METADATA_TIVO
-        new_config['General']['metadata_mede8er'] = self.METADATA_MEDE8ER
         new_config['General']['backlog_days'] = int(self.BACKLOG_DAYS)
         new_config['General']['root_dirs'] = self.ROOT_DIRS
         new_config['General']['tv_download_dir'] = self.TV_DOWNLOAD_DIR
@@ -2364,6 +1866,10 @@ class srConfig(object):
             new_config['Providers'][providerID] = dict(
                 [(x, providerObj.__dict__[x]) for x in provider_keys if hasattr(providerObj, x)])
 
+        new_config['MetadataProviders'] = {}
+        for metadataProviderID, metadataProviderObj in sickrage.srCore.metadataProvidersDict.items():
+            new_config['MetadataProviders'][metadataProviderID] = metadataProviderObj.get_config()
+
         # encrypt settings
         new_config.walk(self.encrypt)
         new_config.write()
@@ -2417,16 +1923,17 @@ class ConfigMigrator(srConfig):
         self.expected_config_version = self.CONFIG_VERSION
 
         self.migration_names = {
-            1: 'Custom naming',
+            1: 'Sync backup number with version number',
             2: 'Sync backup number with version number',
-            3: 'Rename omgwtfnzb variables',
-            4: 'Add newznab catIDs',
-            5: 'Metadata update',
-            6: 'Convert from XBMC to new KODI variables',
-            7: 'Use version 2 for password encryption',
-            8: 'Convert config provider settings to new provider object database style',
+            3: 'Sync backup number with version number',
+            4: 'Sync backup number with version number',
+            5: 'Sync backup number with version number',
+            6: 'Sync backup number with version number',
+            7: 'Sync backup number with version number',
+            8: 'Use version 2 for password encryption',
             9: 'Rename slick gui template name to default',
-            10: 'Metadata update'
+            10: 'Add enabled attribute to metadata settings',
+            11: 'Rename all metadata settings'
         }
 
     def migrate_config(self):
@@ -2469,122 +1976,8 @@ class ConfigMigrator(srConfig):
 
         return self.CONFIG_OBJ
 
-    # Migration v1: Custom naming
+    # Migration v1: Dummy migration to sync backup number with config version number
     def _migrate_v1(self):
-        """
-        Reads in the old naming settings from your config and generates a new config template from them.
-        """
-
-        def _name_to_pattern(abd=False):
-
-            # get the old settings from the file
-            use_periods = bool(self.check_setting_int('General', 'naming_use_periods', 0))
-            ep_type = self.check_setting_int('General', 'NAMING_EP_TYPE', 0)
-            sep_type = self.check_setting_int('General', 'NAMING_SEP_TYPE', 0)
-            use_quality = bool(self.check_setting_int('General', 'naming_quality', 0))
-
-            use_show_name = bool(self.check_setting_int('General', 'naming_show_name', 1))
-            use_ep_name = bool(self.check_setting_int('General', 'naming_ep_name', 1))
-
-            # make the presets into templates
-            naming_ep_type = ("%Sx%0E",
-                              "s%0Se%0E",
-                              "S%0SE%0E",
-                              "%0Sx%0E")
-            naming_sep_type = (" - ", " ")
-
-            # set up our data to use
-            if use_periods:
-                show_name = '%S.N'
-                ep_name = '%E.N'
-                ep_quality = '%Q.N'
-                abd_string = '%A.D'
-            else:
-                show_name = '%SN'
-                ep_name = '%EN'
-                ep_quality = '%QN'
-                abd_string = '%A-D'
-
-            if abd:
-                ep_string = abd_string
-            else:
-                ep_string = naming_ep_type[ep_type]
-
-            finalName = ""
-
-            # start with the show name
-            if use_show_name:
-                finalName += show_name + naming_sep_type[sep_type]
-
-            # add the season/ep stuff
-            finalName += ep_string
-
-            # add the episode name
-            if use_ep_name:
-                finalName += naming_sep_type[sep_type] + ep_name
-
-            # add the quality
-            if use_quality:
-                finalName += naming_sep_type[sep_type] + ep_quality
-
-            if use_periods:
-                finalName = re.sub(r"\s+", ".", finalName)
-
-            return finalName
-
-        self.CONFIG_OBJ['General']['naming_pattern'] = _name_to_pattern()
-        sickrage.srCore.srLogger.info(
-            "Based on your old settings I'm setting your new naming pattern to: " + self.CONFIG_OBJ['General'][
-                'naming_pattern'])
-
-        self.CONFIG_OBJ['General']['naming_custom_abd'] = bool(self.check_setting_int('General', 'naming_dates', 0))
-
-        if self.CONFIG_OBJ['General']['naming_custom_abd']:
-            self.CONFIG_OBJ['General']['naming_abd_pattern'] = _name_to_pattern(True)
-            sickrage.srCore.srLogger.info(
-                "Adding a custom air-by-date naming pattern to your config: " + self.CONFIG_OBJ['General'][
-                    'naming_abd_pattern'])
-        else:
-            self.CONFIG_OBJ['General']['naming_abd_pattern'] = validator.name_abd_presets[0]
-
-        self.CONFIG_OBJ['General']['naming_multi_ep'] = int(
-            self.check_setting_int('General', 'NAMING_MULTI_EP_TYPE', 1))
-
-        # see if any of their shows used season folders
-        season_folder_shows = [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)
-                               if x['flatten_folders'] == 0]
-
-        # if any shows had season folders on then prepend season folder to the pattern
-        if season_folder_shows:
-            old_season_format = self.check_setting_str('General', 'season_folders_format', 'Season %02d')
-
-            if old_season_format:
-                try:
-                    new_season_format = old_season_format % 9
-                    new_season_format = str(new_season_format).replace('09', '%0S')
-                    new_season_format = new_season_format.replace('9', '%S')
-
-                    sickrage.srCore.srLogger.info(
-                        "Changed season folder format from " + old_season_format + " to " + new_season_format + ", prepending it to your naming config")
-                    self.CONFIG_OBJ['General']['naming_pattern'] = new_season_format + os.sep + \
-                                                                   self.CONFIG_OBJ['General']['naming_pattern']
-
-                except (TypeError, ValueError):
-                    sickrage.srCore.srLogger.error("Can't change " + old_season_format + " to new season format")
-
-        # if no shows had it on then don't flatten any shows and don't put season folders in the config
-        else:
-
-            sickrage.srCore.srLogger.info(
-                "No shows were using season folders before so I'm disabling flattening on all shows")
-
-            # don't flatten any shows at all
-            for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-                dbData['flatten_folders'] = 0
-                sickrage.srCore.mainDB.db.update(dbData)
-
-        self.CONFIG_OBJ['General']['naming_force_folders'] = check_force_season_folders()
-
         return self.CONFIG_OBJ
 
     # Migration v2: Dummy migration to sync backup number with config version number
@@ -2595,280 +1988,25 @@ class ConfigMigrator(srConfig):
     def _migrate_v3(self):
         return self.CONFIG_OBJ
 
-    # Migration v4: Add default newznab catIDs
+    # Migration v4: Dummy migration to sync backup number with config version number
     def _migrate_v4(self):
-        """ Update newznab providers so that the category IDs can be set independently via the config """
-
-        new_newznab_data = []
-        old_newznab_data = self.check_setting_str('Newznab', 'newznab_data', '')
-
-        if old_newznab_data:
-            old_newznab_data_list = old_newznab_data.split("!!!")
-
-            for cur_provider_data in old_newznab_data_list:
-                try:
-                    name, url, key, enabled = cur_provider_data.split("|")
-                except ValueError:
-                    sickrage.srCore.srLogger.error(
-                        "Skipping Newznab provider string: '" + cur_provider_data + "', incorrect format")
-                    continue
-
-                if name == 'Sick Beard Index':
-                    key = '0'
-
-                if name == 'NZBs.org':
-                    catIDs = '5030,5040,5060,5070,5090'
-                else:
-                    catIDs = '5030,5040,5060'
-
-                cur_provider_data_list = [name, url, key, catIDs, enabled]
-                new_newznab_data.append("|".join(cur_provider_data_list))
-
-            self.CONFIG_OBJ['Newznab']['newznab_data'] = "!!!".join(new_newznab_data)
-
         return self.CONFIG_OBJ
 
-    # Migration v5: Metadata upgrade
+    # Migration v5: Dummy migration to sync backup number with config version number
     def _migrate_v5(self):
-        """ Updates metadata values to the new format """
-
-        """ Quick overview of what the upgrade does:
-
-        new | old | description (new)
-        ----+-----+--------------------
-          1 |  1  | show metadata
-          2 |  2  | episode metadata
-          3 |  4  | show fanart
-          4 |  3  | show poster
-          5 |  -  | show banner
-          6 |  5  | episode thumb
-          7 |  6  | season poster
-          8 |  -  | season banner
-          9 |  -  | season all poster
-         10 |  -  | season all banner
-
-        Note that the ini places start at 1 while the list index starts at 0.
-        old format: 0|0|0|0|0|0 -- 6 places
-        new format: 0|0|0|0|0|0|0|0|0|0 -- 10 places
-
-        Drop the use of use_banner option.
-        Migrate the poster override to just using the banner option (applies to xbmc only).
-        """
-
-        metadata_xbmc = self.check_setting_str('General', 'metadata_xbmc', '0|0|0|0|0|0')
-        metadata_xbmc_12plus = self.check_setting_str('General', 'metadata_xbmc_12plus',
-                                                      '0|0|0|0|0|0')
-        metadata_mediabrowser = self.check_setting_str('General', 'metadata_mediabrowser',
-                                                       '0|0|0|0|0|0')
-        metadata_ps3 = self.check_setting_str('General', 'metadata_ps3', '0|0|0|0|0|0')
-        metadata_wdtv = self.check_setting_str('General', 'metadata_wdtv', '0|0|0|0|0|0')
-        metadata_tivo = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0')
-        metadata_mede8er = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0')
-
-        use_banner = bool(self.check_setting_int('General', 'use_banner', 0))
-
-        def _migrate_metadata(metadata, metadata_name, use_banner):
-            cur_metadata = metadata.split('|')
-            # if target has the old number of values, do upgrade
-            if len(cur_metadata) == 6:
-                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, old value: " + metadata)
-                cur_metadata.insert(4, '0')
-                cur_metadata.append('0')
-                cur_metadata.append('0')
-                cur_metadata.append('0')
-                # swap show fanart, show poster
-                cur_metadata[3], cur_metadata[2] = cur_metadata[2], cur_metadata[3]
-                # if user was using use_banner to override the poster, instead enable the banner option and deactivate poster
-                if metadata_name == 'XBMC' and use_banner:
-                    cur_metadata[4], cur_metadata[3] = cur_metadata[3], '0'
-                # write new format
-                metadata = '|'.join(cur_metadata)
-                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, new value: " + metadata)
-
-            elif len(cur_metadata) == 10:
-
-                metadata = '|'.join(cur_metadata)
-                sickrage.srCore.srLogger.info("Keeping " + metadata_name + " metadata, value: " + metadata)
-
-            else:
-                sickrage.srCore.srLogger.error(
-                    "Skipping " + metadata_name + " metadata: '" + metadata + "', incorrect format")
-                metadata = '0|0|0|0|0|0|0|0|0|0'
-                sickrage.srCore.srLogger.info("Setting " + metadata_name + " metadata, new value: " + metadata)
-
-            return metadata
-
-        self.CONFIG_OBJ['General']['metadata_xbmc'] = _migrate_metadata(metadata_xbmc, 'XBMC', use_banner)
-        self.CONFIG_OBJ['General']['metadata_xbmc_12plus'] = _migrate_metadata(metadata_xbmc_12plus, 'XBMC 12+',
-                                                                               use_banner)
-        self.CONFIG_OBJ['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser, 'MediaBrowser',
-                                                                                use_banner)
-        self.CONFIG_OBJ['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3, 'PS3', use_banner)
-        self.CONFIG_OBJ['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv, 'WDTV', use_banner)
-        self.CONFIG_OBJ['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo, 'TIVO', use_banner)
-        self.CONFIG_OBJ['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er, 'Mede8er', use_banner)
-
         return self.CONFIG_OBJ
 
-    # Migration v6: Convert from XBMC to KODI variables
+    # Migration v6: Dummy migration to sync backup number with config version number
     def _migrate_v6(self):
-        self.CONFIG_OBJ['KODI']['use_kodi'] = bool(self.check_setting_int('XBMC', 'use_xbmc', 0))
-        self.CONFIG_OBJ['KODI']['kodi_always_on'] = bool(self.check_setting_int('XBMC', 'xbmc_always_on', 1))
-        self.CONFIG_OBJ['KODI']['kodi_notify_onsnatch'] = bool(
-            self.check_setting_int('XBMC', 'xbmc_notify_onsnatch', 0))
-        self.CONFIG_OBJ['KODI']['kodi_notify_ondownload'] = bool(
-            self.check_setting_int('XBMC', 'xbmc_notify_ondownload', 0))
-        self.CONFIG_OBJ['KODI']['kodi_notify_onsubtitledownload'] = bool(
-            self.check_setting_int('XBMC', 'xbmc_notify_onsubtitledownload', 0))
-        self.CONFIG_OBJ['KODI']['kodi_update_library'] = bool(
-            self.check_setting_int('XBMC', 'xbmc_update_library', 0))
-        self.CONFIG_OBJ['KODI']['kodi_update_full'] = bool(self.check_setting_int('XBMC', 'xbmc_update_full', 0))
-        self.CONFIG_OBJ['KODI']['kodi_update_onlyfirst'] = bool(
-            self.check_setting_int('XBMC', 'xbmc_update_onlyfirst', 0))
-        self.CONFIG_OBJ['KODI']['kodi_host'] = self.check_setting_str('XBMC', 'xbmc_host', '')
-        self.CONFIG_OBJ['KODI']['kodi_username'] = self.check_setting_str('XBMC', 'xbmc_username', '')
-        self.CONFIG_OBJ['KODI']['kodi_password'] = self.check_setting_str('XBMC', 'xbmc_password', '')
-        self.CONFIG_OBJ['General']['metadata_kodi'] = self.check_setting_str('General', 'metadata_xbmc',
-                                                                             '0|0|0|0|0|0|0|0|0|0')
-        self.CONFIG_OBJ['General']['metadata_kodi_12plus'] = self.check_setting_str('General',
-                                                                                    'metadata_xbmc_12plus',
-                                                                                    '0|0|0|0|0|0|0|0|0|0')
-
         return self.CONFIG_OBJ
 
-    # Migration v7: Use version 2 for password encryption
+    # Migration v6: Dummy migration to sync backup number with config version number
     def _migrate_v7(self):
-        self.CONFIG_OBJ['General']['encryption_version'] = 2
         return self.CONFIG_OBJ
 
-    # Migration v8: Convert config provider settings to new provider object database style
+    # Migration v8: Use version 2 for password encryption
     def _migrate_v8(self):
-        sickrage.srCore.providersDict.provider_order = \
-            self.check_setting_str('General', 'provider_order', ' '.join(
-                [p for providers in sickrage.srCore.providersDict.all() for p in providers])).split()
-
-        # TORRENT PROVIDER SETTINGS
-        for providerID, providerObj in sickrage.srCore.providersDict.all_torrent().items():
-            providerObj.enabled = bool(self.check_setting_int(providerID.upper(), providerID, 0))
-
-            if hasattr(providerObj, 'api_key'):
-                providerObj.api_key = self.check_setting_str(
-                    providerID.upper(), providerID + '_api_key', ''
-                )
-
-            if hasattr(providerObj, 'hash'):
-                providerObj.hash = self.check_setting_str(
-                    providerID.upper(), providerID + '_hash', ''
-                )
-
-            if hasattr(providerObj, 'digest'):
-                providerObj.digest = self.check_setting_str(
-                    providerID.upper(), providerID + '_digest', ''
-                )
-
-            if hasattr(providerObj, 'username'):
-                providerObj.username = self.check_setting_str(
-                    providerID.upper(), providerID + '_username', ''
-                )
-
-            if hasattr(providerObj, 'password'):
-                providerObj.password = self.check_setting_str(
-                    providerID.upper(), providerID + '_password', ''
-                )
-
-            if hasattr(providerObj, 'passkey'):
-                providerObj.passkey = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_passkey', '')
-            if hasattr(providerObj, 'pin'):
-                providerObj.pin = self.check_setting_str(providerID.upper(),
-                                                         providerID + '_pin', '')
-            if hasattr(providerObj, 'confirmed'):
-                providerObj.confirmed = bool(self.check_setting_int(providerID.upper(),
-                                                                    providerID + '_confirmed', 1))
-            if hasattr(providerObj, 'ranked'):
-                providerObj.ranked = bool(self.check_setting_int(providerID.upper(),
-                                                                 providerID + '_ranked', 1))
-
-            if hasattr(providerObj, 'engrelease'):
-                providerObj.engrelease = bool(self.check_setting_int(providerID.upper(),
-                                                                     providerID + '_engrelease', 0))
-
-            if hasattr(providerObj, 'onlyspasearch'):
-                providerObj.onlyspasearch = bool(self.check_setting_int(providerID.upper(),
-                                                                        providerID + '_onlyspasearch',
-                                                                        0))
-
-            if hasattr(providerObj, 'sorting'):
-                providerObj.sorting = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_sorting', 'seeders')
-            if hasattr(providerObj, 'options'):
-                providerObj.options = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_options', '')
-            if hasattr(providerObj, 'ratio'):
-                providerObj.ratio = self.check_setting_str(providerID.upper(),
-                                                           providerID + '_ratio', '')
-            if hasattr(providerObj, 'minseed'):
-                providerObj.minseed = self.check_setting_int(providerID.upper(),
-                                                             providerID + '_minseed', 1)
-            if hasattr(providerObj, 'minleech'):
-                providerObj.minleech = self.check_setting_int(providerID.upper(),
-                                                              providerID + '_minleech', 0)
-            if hasattr(providerObj, 'freeleech'):
-                providerObj.freeleech = bool(self.check_setting_int(providerID.upper(),
-                                                                    providerID + '_freeleech', 0))
-            if hasattr(providerObj, 'search_mode'):
-                providerObj.search_mode = self.check_setting_str(providerID.upper(),
-                                                                 providerID + '_search_mode',
-                                                                 'eponly')
-            if hasattr(providerObj, 'search_fallback'):
-                providerObj.search_fallback = bool(self.check_setting_int(providerID.upper(),
-                                                                          providerID + '_search_fallback',
-                                                                          0))
-
-            if hasattr(providerObj, 'enable_daily'):
-                providerObj.enable_daily = bool(self.check_setting_int(providerID.upper(),
-                                                                       providerID + '_enable_daily',
-                                                                       1))
-
-            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supports_backlog'):
-                providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
-                                                                         providerID + '_enable_backlog',
-                                                                         providerObj.supports_backlog))
-
-            if hasattr(providerObj, 'cat'):
-                providerObj.cat = self.check_setting_int(providerID.upper(),
-                                                         providerID + '_cat', 0)
-            if hasattr(providerObj, 'subtitle'):
-                providerObj.subtitle = bool(self.check_setting_int(providerID.upper(),
-                                                                   providerID + '_subtitle', 0))
-
-        # NZB PROVIDER SETTINGS
-        for providerID, providerObj in sickrage.srCore.providersDict.all_nzb().items():
-            providerObj.enabled = bool(self.check_setting_int(providerID.upper(), providerID, 0))
-
-            if hasattr(providerObj, 'api_key'):
-                providerObj.api_key = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_api_key', '')
-            if hasattr(providerObj, 'username'):
-                providerObj.username = self.check_setting_str(providerID.upper(),
-                                                              providerID + '_username', '')
-            if hasattr(providerObj, 'search_mode'):
-                providerObj.search_mode = self.check_setting_str(providerID.upper(),
-                                                                 providerID + '_search_mode',
-                                                                 'eponly')
-            if hasattr(providerObj, 'search_fallback'):
-                providerObj.search_fallback = bool(self.check_setting_int(providerID.upper(),
-                                                                          providerID + '_search_fallback',
-                                                                          0))
-            if hasattr(providerObj, 'enable_daily'):
-                providerObj.enable_daily = bool(self.check_setting_int(providerID.upper(),
-                                                                       providerID + '_enable_daily',
-                                                                       1))
-
-            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supports_backlog'):
-                providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
-                                                                         providerID + '_enable_backlog',
-                                                                         providerObj.supports_backlog))
+        self.CONFIG_OBJ['General']['encryption_version'] = 2
         return self.CONFIG_OBJ
 
     # Migration v9: Rename gui template name from slick to default
@@ -2876,7 +2014,7 @@ class ConfigMigrator(srConfig):
         self.CONFIG_OBJ['GUI']['gui_name'] = 'default'
         return self.CONFIG_OBJ
 
-    # Migration v10: Metadata upgrade
+    # Migration v10: Metadata upgrade to add enabled attribute
     def _migrate_v10(self):
         """
         Updates metadata values to the new format
@@ -2909,33 +2047,52 @@ class ConfigMigrator(srConfig):
         metadata_tivo = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0|0')
         metadata_mede8er = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
 
-        def _migrate_metadata(metadata, metadata_name):
+        def _migrate_metadata(metadata):
             cur_metadata = metadata.split('|')
 
             # if target has the old number of values, do upgrade
             if len(cur_metadata) == 10:
                 # write new format
-                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, old value: " + metadata)
                 cur_metadata.append('0')
                 metadata = '|'.join(cur_metadata)
-                sickrage.srCore.srLogger.info("Upgrading " + metadata_name + " metadata, new value: " + metadata)
             elif len(cur_metadata) == 11:
                 metadata = '|'.join(cur_metadata)
-                sickrage.srCore.srLogger.info("Keeping " + metadata_name + " metadata, value: " + metadata)
             else:
-                sickrage.srCore.srLogger.error(
-                    "Skipping " + metadata_name + " metadata: '" + metadata + "', incorrect format")
                 metadata = '0|0|0|0|0|0|0|0|0|0|0'
-                sickrage.srCore.srLogger.info("Setting " + metadata_name + " metadata, new value: " + metadata)
 
             return metadata
 
-        self.CONFIG_OBJ['General']['metadata_kodi'] = _migrate_metadata(metadata_kodi, 'KODI')
-        self.CONFIG_OBJ['General']['metadata_kodi_12plus'] = _migrate_metadata(metadata_kodi_12plus, 'KODI 12+')
-        self.CONFIG_OBJ['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser, 'MediaBrowser')
-        self.CONFIG_OBJ['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3, 'PS3')
-        self.CONFIG_OBJ['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv, 'WDTV')
-        self.CONFIG_OBJ['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo, 'TIVO')
-        self.CONFIG_OBJ['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er, 'Mede8er')
+        self.CONFIG_OBJ['General']['metadata_kodi'] = _migrate_metadata(metadata_kodi)
+        self.CONFIG_OBJ['General']['metadata_kodi_12plus'] = _migrate_metadata(metadata_kodi_12plus)
+        self.CONFIG_OBJ['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser)
+        self.CONFIG_OBJ['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3)
+        self.CONFIG_OBJ['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv)
+        self.CONFIG_OBJ['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo)
+        self.CONFIG_OBJ['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er)
+
+        return self.CONFIG_OBJ
+
+    # Migration v11: Renames metadata setting keys
+    def _migrate_v11(self):
+        """
+        Renames metadata setting keys
+        """
+
+        metadata_kodi = self.check_setting_str('General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_kodi_12plus = self.check_setting_str('General', 'metadata_kodi_12plus', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_mediabrowser = self.check_setting_str('General', 'metadata_mediabrowser', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_ps3 = self.check_setting_str('General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_wdtv = self.check_setting_str('General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_tivo = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0|0')
+        metadata_mede8er = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
+
+        self.CONFIG_OBJ['MetadataProviders'] = {}
+        self.CONFIG_OBJ['MetadataProviders']['kodi'] = metadata_kodi
+        self.CONFIG_OBJ['MetadataProviders']['kodi_12plus'] = metadata_kodi_12plus
+        self.CONFIG_OBJ['MetadataProviders']['mediabrowser'] = metadata_mediabrowser
+        self.CONFIG_OBJ['MetadataProviders']['sony_ps3'] = metadata_ps3
+        self.CONFIG_OBJ['MetadataProviders']['wdtv'] = metadata_wdtv
+        self.CONFIG_OBJ['MetadataProviders']['tivo'] = metadata_tivo
+        self.CONFIG_OBJ['MetadataProviders']['mede8er'] = metadata_mede8er
 
         return self.CONFIG_OBJ

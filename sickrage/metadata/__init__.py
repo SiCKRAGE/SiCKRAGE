@@ -18,10 +18,10 @@
 
 from __future__ import unicode_literals
 
+import importlib
 import io
 import os
 import re
-import sys
 from xml.etree.ElementTree import ElementTree, SubElement
 
 import sickrage
@@ -32,37 +32,34 @@ from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 
-__all__ = ['metadata_helpers.py', 'kodi', 'kodi_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
-
-
-def available_generators():
-    return [x for x in __all__ if x not in ['generic', 'helpers']]
-
-
-def _getMetadataModule(name):
-    name = name.lower()
-    prefix = "sickrage.metadata."
-    if name in available_generators() and prefix + name in sys.modules:
-        return sys.modules[prefix + name]
-    else:
-        return None
-
 
 def _getMetadataClass(name):
-    module = _getMetadataModule(name)
-    if not module:
-        return None
-    return module.metadata_class()
+    import inspect
+
+    try:
+        return dict(
+            inspect.getmembers(
+                importlib.import_module('.{}'.format(name), 'sickrage.metadata'),
+                predicate=lambda o: inspect.isclass(o) and issubclass(o, GenericMetadata) and o is not GenericMetadata)
+        ).values()[0]
+    except:
+        pass
 
 
-def get_metadata_generator_dict():
-    result = {}
-    for cur_generator_id in available_generators():
-        cur_generator = _getMetadataClass(cur_generator_id)
-        if not cur_generator:
+def metadataProvidersDict():
+    results = {}
+
+    pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
+    names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__))]
+
+    for name in names:
+        try:
+            klass = _getMetadataClass(name.group(1))
+            results[klass().id] = klass()
+        except:
             continue
-        result[cur_generator.name] = cur_generator
-    return result
+
+    return results
 
 
 class GenericMetadata(object):
@@ -133,14 +130,9 @@ class GenericMetadata(object):
 
         return '|'.join([str(int(x)) for x in config_list])
 
-    def get_id(self):
-        return GenericMetadata.makeID(self.name)
-
-    @staticmethod
-    def makeID(name):
-        name_id = re.sub(r"[+]", "plus", name)
-        name_id = re.sub(r"[^\w\d_]", "_", name_id).lower()
-        return name_id
+    @property
+    def id(self):
+        return str(re.sub(r"[^\w\d_]", "_", str(re.sub(r"[+]", "plus", self.name))).lower())
 
     def set_config(self, string):
         config_list = [bool(int(x)) for x in string.split('|')]

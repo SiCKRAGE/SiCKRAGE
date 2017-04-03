@@ -1,6 +1,7 @@
 # Changelog
 
-- * c613c72 - 2017-04-02: Fixed template error for app status 
+- * c51c034 - 2017-04-03: Migrated to new-style settings for metadata provider objects Display Tornado version 
+- * e1e541f - 2017-04-02: Fixed template error for app status 
 - * fbb3999 - 2017-04-02: Cleaned up web server init code 
 - * 6a75c06 - 2017-04-02: Updated requirements 
 - * 7f2b8cf - 2017-04-02: Updated requirements 

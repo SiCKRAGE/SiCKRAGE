@@ -1,6 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
-    import sys, os
+    import sys, os, tornado
 
     import sickrage
     from sickrage.core.helpers import anon_url
@@ -59,6 +59,7 @@
             <td class="infoTableCell">${sickrage.srCore.srConfig.WEB_ROOT}</td>
         </tr>
 % endif
+    <tr><td class="infoTableHeader">Tornado Version:</td><td class="infoTableCell">${tornado.version}</td></tr>
     <tr><td class="infoTableHeader">Python Version:</td><td class="infoTableCell">${sys.version[:120]}</td></tr>
     <tr class="infoTableSeperator"><td class="infoTableHeader"><i class="icon16-sb"></i> Homepage</td><td class="infoTableCell"><a href="${anon_url('https://www.sickrage.ca/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">https://www.sickrage.ca/</a></td></tr>
     <tr><td class="infoTableHeader"><i class="icon16-WiKi"></i> WiKi</td><td class="infoTableCell"><a href="${anon_url('https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home</a></td></tr>

@@ -535,7 +535,7 @@ class TVShow(object):
             return False
 
         sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Writing NFOs for show")
-        for cur_provider in sickrage.srCore.metadataProviderDict.values():
+        for cur_provider in sickrage.srCore.metadataProvidersDict.values():
             if not cur_provider.enabled:
                 continue
 
@@ -589,7 +589,7 @@ class TVShow(object):
             return False
 
         sickrage.srCore.srLogger.info(str(self.indexerid) + ": Updating NFOs for show with new indexer info")
-        for cur_provider in sickrage.srCore.metadataProviderDict.values():
+        for cur_provider in sickrage.srCore.metadataProvidersDict.values():
             if not cur_provider.enabled:
                 continue
 
@@ -760,7 +760,7 @@ class TVShow(object):
         fanart_result = poster_result = banner_result = False
         season_posters_result = season_banners_result = season_all_poster_result = season_all_banner_result = False
 
-        for cur_provider in sickrage.srCore.metadataProviderDict.values():
+        for cur_provider in sickrage.srCore.metadataProvidersDict.values():
             if not cur_provider.enabled:
                 continue
 

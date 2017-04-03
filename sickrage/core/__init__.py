@@ -63,8 +63,7 @@ from sickrage.core.version_updater import srVersionUpdater
 from sickrage.core.webclient.session import srSession
 from sickrage.core.webserver import srWebServer
 from sickrage.indexers import adba
-from sickrage.metadata import get_metadata_generator_dict, kodi, kodi_12plus, \
-    mede8er, mediabrowser, ps3, tivo, wdtv
+from sickrage.metadata import metadataProvidersDict
 from sickrage.notifiers.boxcar import BoxcarNotifier
 from sickrage.notifiers.boxcar2 import Boxcar2Notifier
 from sickrage.notifiers.emailnotify import EmailNotifier
@@ -127,7 +126,7 @@ class Core(object):
         )
 
         # generate metadata providers dict
-        self.metadataProviderDict = get_metadata_generator_dict()
+        self.metadataProvidersDict = metadataProvidersDict()
 
         # generate providers dict
         self.providersDict = providersDict()
@@ -156,7 +155,7 @@ class Core(object):
         self.srWebSession = srSession()
 
         # google api
-        self.googleAuth = googleAuth()
+        self.googleAuth = None  # googleAuth()
 
         # name cache
         self.NAMECACHE = srNameCache()
@@ -339,20 +338,6 @@ class Core(object):
         if self.srConfig.SUBTITLES_LANGUAGES[0] == '':
             self.srConfig.SUBTITLES_LANGUAGES = []
 
-        # initialize metadata_providers
-        for cur_metadata_tuple in [(self.srConfig.METADATA_KODI, kodi),
-                                   (self.srConfig.METADATA_KODI_12PLUS, kodi_12plus),
-                                   (self.srConfig.METADATA_MEDIABROWSER, mediabrowser),
-                                   (self.srConfig.METADATA_PS3, ps3),
-                                   (self.srConfig.METADATA_WDTV, wdtv),
-                                   (self.srConfig.METADATA_TIVO, tivo),
-                                   (self.srConfig.METADATA_MEDE8ER, mede8er)]:
-            (cur_metadata_config, cur_metadata_class) = cur_metadata_tuple
-            tmp_provider = cur_metadata_class.metadata_class()
-            tmp_provider.set_config(cur_metadata_config)
-
-            self.metadataProviderDict[tmp_provider.name] = tmp_provider
-
         # add version checker job
         self.srScheduler.add_job(
             self.VERSIONUPDATER.run,
@@ -466,6 +451,14 @@ class Core(object):
 
         # start webserver
         self.srWebServer.start()
+
+        self.srLogger.info("SiCKRAGE :: STARTED")
+        self.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(self.VERSIONUPDATER.updater.version))
+        self.srLogger.info("SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.CONFIG_FILE, self.srConfig.CONFIG_VERSION))
+        self.srLogger.info("SiCKRAGE :: URL:[{}://{}:{}/]".format(
+            ('http', 'https')[self.srConfig.ENABLE_HTTPS],
+            get_lan_ip(), self.srConfig.WEB_PORT)
+        )
 
         # start ioloop event handler
         self.io_loop.start()
