@@ -105,7 +105,7 @@ class srQueue(threading.Thread):
     def shutdown(self):
         self.stop.set()
         try:
-            [t.join(1) for t in self.threads if t.isAlive()]
+            [t.join() for t in self.threads if t.isAlive()]
             self.join(1)
         except:
             pass
