@@ -6,7 +6,7 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
     from sickrage.core.nameparser import validator
-    from sickrage.metadata import GenericMetadata, get_metadata_generator_dict
+    from sickrage.metadata import GenericMetadata, metadataProvidersDict
 %>
 
 <%block name="content">
@@ -1094,8 +1094,8 @@
                                 <span class="component-desc">
                                     <% m_dict = sickrage.srCore.metadataProvidersDict %>
                                     <select id="metadataType" class="form-control input-sm">
-                                    % for (cur_name, cur_generator) in sorted(m_dict.items()):
-                                        <option value="${cur_generator.get_id()}">${cur_name}</option>
+                                    % for (cur_id, cur_generator) in sorted(m_dict.items()):
+                                        <option value="${cur_id}">${cur_generator.name}</option>
                                     % endfor
                                     </select>
                                 </span>
@@ -1103,9 +1103,8 @@
                             <span>Toggle the metadata options that you wish to be created. <b>Multiple targets may be used.</b></span>
                         </div>
 
-                        % for (cur_name, cur_generator) in m_dict.items():
-                        <% cur_metadata_inst = sickrage.srCore.metadataProvidersDict[cur_generator.name] %>
-                        <% cur_id = cur_generator.get_id() %>
+                        % for (cur_id, _) in m_dict.items():
+                        <% cur_metadata_inst = sickrage.srCore.metadataProvidersDict[cur_id] %>
                         <div class="metadataDiv container-fluid" id="${cur_id}">
                             <div>
                                 <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_metadata_inst.enabled)]}/>&nbsp;Enabled</label>

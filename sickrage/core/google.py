@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -19,9 +18,6 @@
 
 from __future__ import unicode_literals
 
-import os
-import pickle
-
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 
 import sickrage
@@ -29,15 +25,13 @@ import sickrage
 
 class googleAuth(object):
     def __init__(self):
-        self.filename = 'google.db'
-
         self.client_id = '48901323822-ebum0n1ago1bo2dku4mqm9l6kl2j60uv.apps.googleusercontent.com'
         self.client_secret = 'vFQy_bojwJ1f2X0hYD3wPu7U'
         self.scopes = ['https://www.googleapis.com/auth/drive.file',
                        'email',
                        'profile']
 
-        self.credentials = self.load()
+        self.credentials = None
 
         self.flow = OAuth2WebServerFlow(self.client_id, self.client_secret, ' '.join(self.scopes))
 
@@ -46,7 +40,6 @@ class googleAuth(object):
 
     def get_credentials(self, flow_info):
         self.credentials = self.flow.step2_exchange(device_flow_info=flow_info)
-        self.save()
 
         return self.credentials
 
@@ -55,13 +48,4 @@ class googleAuth(object):
             self.credentials.refresh(sickrage.srCore.srWebSession)
 
     def logout(self):
-        self.credentials = ""
-        self.save()
-
-    def save(self):
-        pickle.dump(self.credentials, open(os.path.join(sickrage.DATA_DIR, self.filename), 'wb'))
-
-    def load(self):
-        if os.path.isfile(os.path.join(sickrage.DATA_DIR, self.filename)):
-            return pickle.load(open(os.path.join(sickrage.DATA_DIR, self.filename), 'rb'))
-        return ""
+        self.credentials = None

@@ -155,7 +155,7 @@ class Core(object):
         self.srWebSession = srSession()
 
         # google api
-        self.googleAuth = None  # googleAuth()
+        self.googleAuth = googleAuth()
 
         # name cache
         self.NAMECACHE = srNameCache()

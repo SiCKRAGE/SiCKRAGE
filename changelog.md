@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3b25226 - 2017-04-03: Released v9.0.1 
+- * e401dab - 2017-04-03: Fixed issue with metadata view template code 
+- * fb0e818 - 2017-04-03: Released v9.0.1 
 - * 639ce93 - 2017-04-03: Cleaned up version updater code to reduce memory usage 
 - * 9ee5c8c - 2017-04-03: Removed the ability to change the log directory location and log file name 
 - * 14ce167 - 2017-04-03: Queue threads joined on shutdown 
