@@ -1001,7 +1001,7 @@ class TVShow(object):
             self.genre = safe_getattr(myEp, 'genre', self.genre)
             self.network = safe_getattr(myEp, 'network', self.network)
             self.runtime = safe_getattr(myEp, 'runtime', self.runtime)
-            self.imdbid = safe_getattr(myEp, 'imdb_id', self.imdbid)
+            self.imdbid = safe_getattr(myEp, 'imdbid', self.imdbid)
 
             try:
                 self.airs = safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')

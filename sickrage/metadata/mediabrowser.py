@@ -334,19 +334,19 @@ class MediaBrowserMetadata(GenericMetadata):
             Runtime = SubElement(tv_node, "Runtime")
             Runtime.text = myShow['runtime']
 
-        if getattr(myShow, 'imdb_id', None):
+        if getattr(myShow, 'imdbid', None):
             imdb_id = SubElement(tv_node, "IMDB_ID")
-            imdb_id.text = myShow['imdb_id']
+            imdb_id.text = myShow['imdbid']
 
             imdb_id = SubElement(tv_node, "IMDB")
-            imdb_id.text = myShow['imdb_id']
+            imdb_id.text = myShow['imdbid']
 
             imdb_id = SubElement(tv_node, "IMDbId")
-            imdb_id.text = myShow['imdb_id']
+            imdb_id.text = myShow['imdbid']
 
-        if getattr(myShow, 'zap2it_id', None):
+        if getattr(myShow, 'zap2itid', None):
             Zap2ItId = SubElement(tv_node, "Zap2ItId")
-            Zap2ItId.text = myShow['zap2it_id']
+            Zap2ItId.text = myShow['zap2itid']
 
         if getattr(myShow, 'genre', None) and isinstance(myShow["genre"], basestring):
             Genres = SubElement(tv_node, "Genres")
