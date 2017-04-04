@@ -23,6 +23,8 @@ import operator
 import os.path
 import re
 
+from sickrage.core.helpers.metadata import getFileMetadata, getResolution
+
 try:
     from UserDict import UserDict
 except:
@@ -342,8 +344,7 @@ class Quality(object):
         :return: Quality prefix
         """
 
-        from sickrage.metadata.helpers import qualityFromFileMeta
-        quality = qualityFromFileMeta(name)
+        quality = Quality.qualityFromFileMeta(name)
         if quality != Quality.UNKNOWN:
             return quality
         elif name.lower().endswith(".ts"):
@@ -370,6 +371,49 @@ class Quality(object):
                 return (status - q * 100, q)
 
         return (status, Quality.NONE)
+
+    @staticmethod
+    def qualityFromFileMeta(filename):
+        """
+        Get quality from file metadata
+
+        :param filename: Filename to analyse
+        :return: Quality prefix
+        """
+
+        data = {}
+        quality = Quality.UNKNOWN
+
+        if os.path.isfile(filename):
+            meta = getFileMetadata(filename)
+
+            try:
+                if meta.get('resolution_width'):
+                    data['resolution_width'] = meta.get('resolution_width')
+                    data['resolution_height'] = meta.get('resolution_height')
+                    data['aspect'] = round(float(meta.get('resolution_width')) / meta.get('resolution_height', 1), 2)
+                else:
+                    data.update(getResolution(filename))
+            except:
+                return quality
+
+            base_filename = os.path.basename(filename)
+            bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
+            webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
+
+            if 3240 < data['resolution_height']:
+                ret = ((Quality.UHD_8K_TV, Quality.UHD_8K_BLURAY)[bluray], Quality.UHD_8K_WEBDL)[webdl]
+            if 1620 < data['resolution_height'] <= 3240:
+                ret = ((Quality.UHD_4K_TV, Quality.UHD_4K_BLURAY)[bluray], Quality.UHD_4K_WEBDL)[webdl]
+            elif 800 < data['resolution_height'] <= 1620:
+                quality = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+            elif 680 < data['resolution_height'] < 800:
+                quality = ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+            elif data['resolution_height'] < 680:
+                quality = (Quality.SDTV, Quality.SDDVD)[
+                    re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+
+        return quality
 
     @staticmethod
     def sceneQualityFromName(name, quality):
