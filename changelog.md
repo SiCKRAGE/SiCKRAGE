@@ -1,6 +1,7 @@
 # Changelog
 
-- * ba02a00 - 2017-04-03: Misc code updates and cleanups 
+- * 5bc5130 - 2017-04-04: Moved custom libs folder and added in code to add to python libs path 
+- * dbafd0b - 2017-04-03: Misc code updates and cleanups 
 - * 9ac60e3 - 2017-04-03: Updated JS and CSS code 
 - * 40ddccc - 2017-04-03: Updated subtitles downloader 
 - * 338f1e5 - 2017-04-03: Misc code cleanup 

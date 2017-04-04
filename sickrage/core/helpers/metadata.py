@@ -18,9 +18,10 @@
 
 from __future__ import unicode_literals
 
+import enzyme
+
 import sickrage
 from sickrage.core.helpers import tryInt
-from sickrage.libs import enzyme
 
 extensions = {
     'tvshow': ['mkv', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4', 'm2ts', 'iso', 'img', 'mdf', 'ts', 'm4v', 'flv'],

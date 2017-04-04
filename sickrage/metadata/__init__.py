@@ -24,11 +24,12 @@ import os
 import re
 from xml.etree.ElementTree import ElementTree, SubElement
 
+import fanart
+
 import sickrage
 from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
-from sickrage.libs import fanart as FanArt
 from sickrage.metadata.helpers import getShowImage
 
 
@@ -878,11 +879,11 @@ class GenericMetadata(object):
     @staticmethod
     def _retrieve_show_images_from_fanart(show, img_type, thumb=False):
         types = {
-            'poster': FanArt.TYPE.TV.POSTER,
-            'series': FanArt.TYPE.TV.BANNER,
-            'poster_thumb': FanArt.TYPE.TV.POSTER,
-            'series_thumb': FanArt.TYPE.TV.BANNER,
-            'fanart': FanArt.TYPE.TV.BACKGROUND,
+            'poster': fanart.TYPE.TV.POSTER,
+            'series': fanart.TYPE.TV.BANNER,
+            'poster_thumb': fanart.TYPE.TV.POSTER,
+            'series_thumb': fanart.TYPE.TV.BANNER,
+            'fanart': fanart.TYPE.TV.BACKGROUND,
         }
 
         sickrage.srCore.srLogger.debug("Searching for any " + img_type + " images on Fanart.tv for " + show.name)
@@ -890,13 +891,13 @@ class GenericMetadata(object):
         try:
             indexerid = show.mapIndexers()[1]
             if indexerid:
-                request = FanArt.Request(
+                request = fanart.Request(
                     apikey=sickrage.srCore.srConfig.FANART_API_KEY,
                     id=indexerid,
-                    ws=FanArt.WS.TV,
+                    ws=fanart.WS.TV,
                     type=types[img_type],
-                    sort=FanArt.SORT.POPULAR,
-                    limit=FanArt.LIMIT.ONE,
+                    sort=fanart.SORT.POPULAR,
+                    limit=fanart.LIMIT.ONE,
                 )
 
                 resp = request.response()

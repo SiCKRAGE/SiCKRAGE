@@ -1,4 +1,3 @@
-#!/usr/bin/env python2.7
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -19,6 +18,4 @@
 
 from __future__ import unicode_literals
 
-if __name__ == '__main__':
-    from sickrage import main
-    main()
+__version__ = '0.2'

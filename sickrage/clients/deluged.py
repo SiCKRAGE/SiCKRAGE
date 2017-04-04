@@ -20,9 +20,10 @@ from __future__ import unicode_literals
 
 from base64 import b64encode
 
+from synchronousdeluge.client import DelugeClient
+
 import sickrage
 from sickrage.clients import GenericClient
-from sickrage.libs.synchronousdeluge.client import DelugeClient
 
 
 class DelugeDAPI(GenericClient):

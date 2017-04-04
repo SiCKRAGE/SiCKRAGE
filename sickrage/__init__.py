@@ -47,6 +47,7 @@ daemon = None
 
 MAIN_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 PROG_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+LIBS_DIR = os.path.abspath(os.path.join(MAIN_DIR, 'libs'))
 REQS_FILE = os.path.abspath(os.path.join(MAIN_DIR, 'requirements.txt'))
 
 SYS_ENCODING = None
@@ -68,6 +69,11 @@ time.strptime("2012", "%Y")
 # set thread name
 threading.currentThread().setName('MAIN')
 
+# add sickrage libs path to python system path
+if not (LIBS_DIR in sys.path):
+    sys.path, remainder = sys.path[:1], sys.path[1:]
+    site.addsitedir(LIBS_DIR)
+    sys.path.extend(remainder)
 
 class Daemon(object):
     """
