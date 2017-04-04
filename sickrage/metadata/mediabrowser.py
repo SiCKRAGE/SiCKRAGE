@@ -281,13 +281,13 @@ class MediaBrowserMetadata(GenericMetadata):
             Network = SubElement(tv_node, "Network")
             Network.text = myShow['network']
 
-        if getattr(myShow, 'airs_time', None):
+        if getattr(myShow, 'airstime', None):
             Airs_Time = SubElement(tv_node, "Airs_Time")
-            Airs_Time.text = myShow['airs_time']
+            Airs_Time.text = myShow['airstime']
 
-        if getattr(myShow, 'airs_dayofweek', None):
+        if getattr(myShow, 'airsdayofweek', None):
             Airs_DayOfWeek = SubElement(tv_node, "Airs_DayOfWeek")
-            Airs_DayOfWeek.text = myShow['airs_dayofweek']
+            Airs_DayOfWeek.text = myShow['airsdayofweek']
 
         FirstAired = SubElement(tv_node, "FirstAired")
         if getattr(myShow, 'firstaired', None):

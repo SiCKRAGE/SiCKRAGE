@@ -1004,7 +1004,7 @@ class TVShow(object):
             self.imdbid = safe_getattr(myEp, 'imdb_id', self.imdbid)
 
             try:
-                self.airs = safe_getattr(myEp, 'airs_dayofweek') + " " + safe_getattr(myEp, 'airs_time')
+                self.airs = safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')
             except:
                 pass
 
