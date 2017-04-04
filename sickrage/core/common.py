@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca/
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
@@ -98,6 +96,12 @@ class Quality(object):
     FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl
     HDBLURAY = 1 << 7  # 128
     FULLHDBLURAY = 1 << 8  # 256
+    UHD_4K_TV = 1 << 9  # 512 -- 2160p aka 4K UHD aka UHD-1
+    UHD_4K_WEBDL = 1 << 10  # 1024
+    UHD_4K_BLURAY = 1 << 11  # 2048
+    UHD_8K_TV = 1 << 12  # 4096 -- 4320p aka 8K UHD aka UHD-2
+    UHD_8K_WEBDL = 1 << 13  # 8192
+    UHD_8K_BLURAY = 1 << 14  # 16384
     ANYHDTV = HDTV | FULLHDTV  # 20
     ANYWEBDL = HDWEBDL | FULLHDWEBDL  # 96
     ANYBLURAY = HDBLURAY | FULLHDBLURAY  # 384
@@ -127,7 +131,13 @@ class Quality(object):
                       HDWEBDL: "720p WEB-DL",
                       FULLHDWEBDL: "1080p WEB-DL",
                       HDBLURAY: "720p BluRay",
-                      FULLHDBLURAY: "1080p BluRay"}
+                      FULLHDBLURAY: "1080p BluRay",
+                      UHD_4K_TV: "4K UHD TV",
+                      UHD_8K_TV: "8K UHD TV",
+                      UHD_4K_WEBDL: "4K UHD WEB-DL",
+                      UHD_8K_WEBDL: "8K UHD WEB-DL",
+                      UHD_4K_BLURAY: "4K UHD BluRay",
+                      UHD_8K_BLURAY: "8K UHD BluRay"}
 
     sceneQualityStrings = {NONE: "N/A",
                            UNKNOWN: "Unknown",
@@ -139,7 +149,13 @@ class Quality(object):
                            HDWEBDL: "720p WEB-DL",
                            FULLHDWEBDL: "1080p WEB-DL",
                            HDBLURAY: "720p BluRay",
-                           FULLHDBLURAY: "1080p BluRay"}
+                           FULLHDBLURAY: "1080p BluRay",
+                           UHD_4K_TV: "4K UHD TV",
+                           UHD_8K_TV: "8K UHD TV",
+                           UHD_4K_WEBDL: "4K UHD WEB-DL",
+                           UHD_8K_WEBDL: "8K UHD WEB-DL",
+                           UHD_4K_BLURAY: "4K UHD BluRay",
+                           UHD_8K_BLURAY: "8K UHD BluRay"}
 
     combinedQualityStrings = {ANYHDTV: "HDTV",
                               ANYWEBDL: "WEB-DL",
@@ -156,6 +172,12 @@ class Quality(object):
                        FULLHDWEBDL: "HD1080p",
                        HDBLURAY: "HD720p",
                        FULLHDBLURAY: "HD1080p",
+                       UHD_4K_TV: "UHD-4K",
+                       UHD_8K_TV: "UHD-8K",
+                       UHD_4K_WEBDL: "UHD-4K",
+                       UHD_8K_WEBDL: "UHD-8K",
+                       UHD_4K_BLURAY: "UHD-4K",
+                       UHD_8K_BLURAY: "UHD-8K",
                        ANYHDTV: "any-hd",
                        ANYWEBDL: "any-hd",
                        ANYBLURAY: "any-hd"}
@@ -242,14 +264,14 @@ class Quality(object):
 
         name = os.path.basename(name)
 
-        checkName = lambda list, func: func([re.search(x, name, re.I) for x in list])
+        check_name = lambda l, func: func([re.search(x, name, re.I) for x in l])
 
         if anime:
-            dvdOptions = checkName([r"dvd", r"dvdrip"], any)
-            blueRayOptions = checkName([r"BD", r"blue?-?ray"], any)
-            sdOptions = checkName([r"360p", r"480p", r"848x480", r"XviD"], any)
-            hdOptions = checkName([r"720p", r"1280x720", r"960x720"], any)
-            fullHD = checkName([r"1080p", r"1920x1080"], any)
+            dvdOptions = check_name([r"dvd", r"dvdrip"], any)
+            blueRayOptions = check_name([r"BD", r"blue?-?ray"], any)
+            sdOptions = check_name([r"360p", r"480p", r"848x480", r"XviD"], any)
+            hdOptions = check_name([r"720p", r"1280x720", r"960x720"], any)
+            fullHD = check_name([r"1080p", r"1920x1080"], any)
 
             if sdOptions and not blueRayOptions and not dvdOptions:
                 ret = Quality.SDTV
@@ -268,32 +290,47 @@ class Quality(object):
 
             return ret
 
-        if (checkName([r"480p|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
-                      all)
-            and not checkName([r"(720|1080)[pi]"], all) and not checkName([r"hr.ws.pdtv.[xh].?26[45]"], any)):
+        if (check_name([r"480p|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip",r"xvid|divx|[xh].?26[45]"], all)
+            and not check_name([r"(720|1080)[pi]"], all)
+            and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDTV
-        elif (checkName([r"dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray", r"xvid|divx|[xh].?26[45]"], all)
-              and not checkName([r"(720|1080)[pi]"], all) and not checkName([r"hr.ws.pdtv.[xh].?26[45]"], any)):
+        elif (check_name([r"dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray", r"xvid|divx|[xh].?26[45]"], all)
+              and not check_name([r"(720|1080)[pi]"], all)
+              and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDDVD
-        elif (checkName([r"720p", r"hd.?tv", r"[xh].?26[45]"], all) or checkName([r"hr.ws.pdtv.[xh].?26[45]"], any)
-        and not checkName([r"1080[pi]"], all)):
+        elif (check_name([r"720p", r"hd.?tv", r"[xh].?26[45]"], all)
+              or check_name([r"hr.ws.pdtv.[xh].?26[45]"], any) and not check_name([r"1080[pi]"], all)):
             ret = Quality.HDTV
-        elif checkName([r"720p|1080i", r"hd.?tv", r"mpeg-?2"], all) or checkName([r"1080[pi].hdtv", r"h.?26[45]"], all):
+        elif (check_name([r"720p|1080i", r"hd.?tv", r"mpeg-?2"], all)
+              or check_name([r"1080[pi].hdtv", r"h.?26[45]"], all)):
             ret = Quality.RAWHDTV
-        elif checkName([r"1080p", r"hd.?tv", r"[xh].?26[45]"], all):
+        elif check_name([r"1080p", r"hd.?tv", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDTV
-        elif checkName([r"720p", r"web.?dl|web(rip|mux|hd)"], all) or checkName([r"720p", r"itunes", r"[xh].?26[45]"],
-                                                                                all):
+        elif (check_name([r"720p", r"web.?dl|web(rip|mux|hd)"], all)
+              or check_name([r"720p", r"itunes", r"[xh].?26[45]"], all)):
             ret = Quality.HDWEBDL
-        elif checkName([r"1080p", r"web.?dl|web(rip|mux|hd)"], all) or checkName([r"1080p", r"itunes", r"[xh].?26[45]"],
-                                                                                 all):
+        elif (check_name([r"1080p", r"web.?dl|web(rip|mux|hd)"], all)
+              or check_name([r"1080p", r"itunes", r"[xh].?26[45]"], all)):
             ret = Quality.FULLHDWEBDL
-        elif checkName([r"720p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
+        elif check_name([r"720p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
             ret = Quality.HDBLURAY
-        elif checkName([r"1080p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
+        elif check_name([r"1080p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDBLURAY
+        elif check_name([r"2160p", r"hd.?tv", r"[xh].?26[45]"], all):
+            ret = Quality.UHD_4K_TV
+        elif check_name([r"4320p", r"hd.?tv", r"[xh].?26[45]"], all):
+            ret = Quality.UHD_8K_TV
+        elif (check_name([r"2160p", r"web.?dl|web(rip|mux|hd)"], all)
+              or check_name([r"2160p", r"itunes", r"[xh].?26[45]"], all)):
+            ret = Quality.UHD_4K_WEBDL
+        elif (check_name([r"4320p", r"web.?dl|web(rip|mux|hd)"], all)
+              or check_name([r"4320p", r"itunes", r"[xh].?26[45]"], all)):
+            ret = Quality.UHD_8K_WEBDL
+        elif check_name([r"2160p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
+            ret = Quality.UHD_4K_BLURAY
+        elif check_name([r"4320p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
+            ret = Quality.UHD_8K_BLURAY
 
-        del checkName
         return ret
 
     @staticmethod
@@ -428,19 +465,33 @@ Quality.IGNORED = [Quality.compositeStatus(IGNORED, x) for x in Quality.qualityS
 
 HD720p = Quality.combineQualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
 HD1080p = Quality.combineQualities([Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
+UHD_4K = Quality.combineQualities([Quality.UHD_4K_TV, Quality.UHD_4K_WEBDL, Quality.UHD_4K_BLURAY], [])
+UHD_8K = Quality.combineQualities([Quality.UHD_8K_TV, Quality.UHD_8K_WEBDL, Quality.UHD_8K_BLURAY], [])
 
 SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
 HD = Quality.combineQualities([HD720p, HD1080p], [])
+UHD = Quality.combineQualities([UHD_4K, UHD_8K], [])
 ANY = Quality.combineQualities([SD, HD], [])
 
 # legacy template, cant remove due to reference in mainDB upgrade?
 BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
 
-qualityPresets = (SD, HD, HD720p, HD1080p, ANY)
+qualityPresets = (SD,
+                  HD,
+                  HD720p,
+                  HD1080p,
+                  UHD,
+                  UHD_4K,
+                  UHD_8K,
+                  ANY)
+
 qualityPresetStrings = {SD: "SD",
                         HD: "HD",
                         HD720p: "HD720p",
                         HD1080p: "HD1080p",
+                        UHD: "UHD",
+                        UHD_4K: "UHD-4K",
+                        UHD_8K: "UHD-8K",
                         ANY: "Any"}
 
 
@@ -514,20 +565,18 @@ class StatusStrings(UserDict):
             pass  # ...suppress the ValueError and do nothing, the key does not exist
 
 
-statusStrings = StatusStrings(
-    {UNKNOWN: "Unknown",
-     UNAIRED: "Unaired",
-     SNATCHED: "Snatched",
-     DOWNLOADED: "Downloaded",
-     SKIPPED: "Skipped",
-     SNATCHED_PROPER: "Snatched (Proper)",
-     WANTED: "Wanted",
-     ARCHIVED: "Archived",
-     IGNORED: "Ignored",
-     SUBTITLED: "Subtitled",
-     FAILED: "Failed",
-     SNATCHED_BEST: "Snatched (Best)"
-     })
+statusStrings = StatusStrings({UNKNOWN: "Unknown",
+                               UNAIRED: "Unaired",
+                               SNATCHED: "Snatched",
+                               DOWNLOADED: "Downloaded",
+                               SKIPPED: "Skipped",
+                               SNATCHED_PROPER: "Snatched (Proper)",
+                               WANTED: "Wanted",
+                               ARCHIVED: "Archived",
+                               IGNORED: "Ignored",
+                               SUBTITLED: "Subtitled",
+                               FAILED: "Failed",
+                               SNATCHED_BEST: "Snatched (Best)"})
 
 
 class Overview(object):

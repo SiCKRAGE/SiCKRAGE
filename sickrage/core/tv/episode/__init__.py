@@ -284,7 +284,7 @@ class TVEpisode(object):
 
     def refreshSubtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
-        self.subtitles, save_subtitles = subtitle_searcher.subtitlesLanguages(self.location)
+        self.subtitles, save_subtitles = subtitle_searcher.refresh_subtitles(self)
         if save_subtitles:
             self.saveToDB()
 
@@ -298,13 +298,7 @@ class TVEpisode(object):
             "%s: Downloading subtitles for S%02dE%02d" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
 
-        subtitles_info = {'location': self.location, 'subtitles': self.subtitles,
-                          'show.indexerid': self.show.indexerid,
-                          'season': self.season,
-                          'episode': self.episode, 'name': self.name, 'show.name': self.show.name,
-                          'status': self.status}
-
-        self.subtitles, newSubtitles = subtitle_searcher.downloadSubtitles(subtitles_info)
+        self.subtitles, newSubtitles = subtitle_searcher.download_subtitles(self)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)

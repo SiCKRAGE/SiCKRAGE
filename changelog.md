@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9865a81 - 2017-04-03: Misc code cleanup 
+- * 86f86ec - 2017-04-03: Updated subtitles downloader 
+- * 338f1e5 - 2017-04-03: Misc code cleanup 
 - * 92175c1 - 2017-04-03: Small code cleanup for metadata providers template 
 - * d791a3a - 2017-04-03: Fixed issue with saving metadata provider settings 
 - * 3f87196 - 2017-04-03: Fixed issue with metadata view template code 
