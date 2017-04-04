@@ -33,6 +33,10 @@ from sickrage.notifiers import srNotifiers
 class PushbulletNotifier(srNotifiers):
     TEST_EVENT = 'Test'
 
+    def __init__(self):
+        super(PushbulletNotifier, self).__init__()
+        self.name = 'pushbullet'
+
     def test_notify(self, pushbullet_api):
         sickrage.srCore.srLogger.debug("Sending a test Pushbullet notification.")
         return self._sendPushbullet(pushbullet_api, event=self.TEST_EVENT,

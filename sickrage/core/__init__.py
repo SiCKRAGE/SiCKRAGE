@@ -64,27 +64,7 @@ from sickrage.core.webclient.session import srSession
 from sickrage.core.webserver import srWebServer
 from sickrage.indexers import adba
 from sickrage.metadata import metadataProvidersDict
-from sickrage.notifiers.boxcar import BoxcarNotifier
-from sickrage.notifiers.boxcar2 import Boxcar2Notifier
-from sickrage.notifiers.emailnotify import EmailNotifier
-from sickrage.notifiers.emby import EMBYNotifier
-from sickrage.notifiers.freemobile import FreeMobileNotifier
-from sickrage.notifiers.growl import GrowlNotifier
-from sickrage.notifiers.kodi import KODINotifier
-from sickrage.notifiers.libnotify import LibnotifyNotifier
-from sickrage.notifiers.nma import NMA_Notifier
-from sickrage.notifiers.nmj import NMJNotifier
-from sickrage.notifiers.nmjv2 import NMJv2Notifier
-from sickrage.notifiers.plex import PLEXNotifier
-from sickrage.notifiers.prowl import ProwlNotifier
-from sickrage.notifiers.pushalot import PushalotNotifier
-from sickrage.notifiers.pushbullet import PushbulletNotifier
-from sickrage.notifiers.pushover import PushoverNotifier
-from sickrage.notifiers.pytivo import pyTivoNotifier
-from sickrage.notifiers.synoindex import synoIndexNotifier
-from sickrage.notifiers.synologynotifier import synologyNotifier
-from sickrage.notifiers.trakt import TraktNotifier
-from sickrage.notifiers.tweet import TwitterNotifier
+from sickrage.notifiers import notifiersDict
 from sickrage.providers import providersDict
 
 
@@ -100,30 +80,7 @@ class Core(object):
         self.CPU_COUNT = cpu_count()
 
         # generate notifiers dict
-        self.notifiersDict = AttrDict(
-            libnotify=LibnotifyNotifier(),
-            kodi_notifier=KODINotifier(),
-            plex_notifier=PLEXNotifier(),
-            emby_notifier=EMBYNotifier(),
-            nmj_notifier=NMJNotifier(),
-            nmjv2_notifier=NMJv2Notifier(),
-            synoindex_notifier=synoIndexNotifier(),
-            synology_notifier=synologyNotifier(),
-            pytivo_notifier=pyTivoNotifier(),
-            growl_notifier=GrowlNotifier(),
-            prowl_notifier=ProwlNotifier(),
-            libnotify_notifier=LibnotifyNotifier(),
-            pushover_notifier=PushoverNotifier(),
-            boxcar_notifier=BoxcarNotifier(),
-            boxcar2_notifier=Boxcar2Notifier(),
-            nma_notifier=NMA_Notifier(),
-            pushalot_notifier=PushalotNotifier(),
-            pushbullet_notifier=PushbulletNotifier(),
-            freemobile_notifier=FreeMobileNotifier(),
-            twitter_notifier=TwitterNotifier(),
-            trakt_notifier=TraktNotifier(),
-            email_notifier=EmailNotifier()
-        )
+        self.notifiersDict = notifiersDict()
 
         # generate metadata providers dict
         self.metadataProvidersDict = metadataProvidersDict()

@@ -27,6 +27,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class pyTivoNotifier(srNotifiers):
+    def __init__(self):
+        super(pyTivoNotifier, self).__init__()
+        self.name = 'pytivo'
+
     def _notify_snatch(self, ep_name):
         pass
 

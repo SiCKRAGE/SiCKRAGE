@@ -30,6 +30,9 @@ class TraktNotifier(srNotifiers):
     """
     A "notifier" for trakt.tv which keeps track of what has and hasn't been added to your library.
     """
+    def __init__(self):
+        super(TraktNotifier, self).__init__()
+        self.name = 'trakt'
 
     def _notify_snatch(self, ep_name):
         pass

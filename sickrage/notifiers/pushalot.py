@@ -31,6 +31,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class PushalotNotifier(srNotifiers):
+    def __init__(self):
+        super(PushalotNotifier, self).__init__()
+        self.name = 'pushalot'
+
     def test_notify(self, pushalot_authorizationtoken):
         return self._sendPushalot(pushalot_authorizationtoken, event="Test",
                                   message="Testing Pushalot settings from SiCKRAGE", force=True)

@@ -26,6 +26,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class synoIndexNotifier(srNotifiers):
+    def __init__(self):
+        super(synoIndexNotifier, self).__init__()
+        self.name = 'synoindex'
+
     def _notify_snatch(self, ep_name):
         pass
 

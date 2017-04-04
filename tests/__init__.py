@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -29,7 +27,6 @@ import threading
 import unittest
 
 import sickrage
-from sickrage.core import Core
 from sickrage.core.caches import tv_cache
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.cache import CacheDB
@@ -42,12 +39,14 @@ def createFolder(dirname):
     if not os.path.isdir(dirname):
         os.mkdir(dirname)
 
+
 # =================
 # dummy functions
 # =================
 # the real one tries to contact tvdb just stop it from getting more info on the ep
 def _fake_specifyEP(self, season, episode):
     pass
+
 
 # =================
 # test classes
@@ -59,13 +58,11 @@ class SiCKRAGETestCase(unittest.TestCase):
 
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
-    def setUp(self, web=False, force_db=False):
+    def setUp(self):
         sickrage.srCore.SHOWLIST = []
-        setUp_test_db(force_db)
+        setUp_test_db()
         setUp_test_episode_file()
         setUp_test_show_dir()
-        if web:
-            setUp_test_web_server()
 
     def tearDown(self, web=False):
         sickrage.srCore.SHOWLIST = []
@@ -122,36 +119,25 @@ def setUp_test_db(force=False):
     """upgrades the db to the latest version
     """
 
-    global TESTDB_INITALIZED
+    # remove old db files
+    tearDown_test_db()
 
-    if not TESTDB_INITALIZED or force:
-        # remove old db files
-        tearDown_test_db()
+    # upgrade main
+    MainDB().initialize()
 
-        # upgrade main
-        MainDB().initialize()
+    # upgrade cache
+    CacheDB().initialize()
 
-        # upgrade cache
-        CacheDB().initialize()
+    # upgrade failed
+    FailedDB().initialize()
 
-        # upgrade failed
-        FailedDB().initialize()
-
-        # populate scene exceiptions table
-        # retrieve_exceptions(False, False)
-
-        TESTDB_INITALIZED = True
+    # populate scene exceiptions table
+    # retrieve_exceptions(False, False)
 
 
 def tearDown_test_db():
-    for current_db in [TESTDBNAME, TESTCACHEDBNAME, TESTFAILEDDBNAME]:
-        file_name = os.path.join(TESTDIR, current_db)
-        if os.path.exists(file_name):
-            try:
-                os.remove(file_name)
-            except Exception as e:
-                print(e.message)
-                continue
+    if os.path.exists(TESTDB_DIR):
+        shutil.rmtree(TESTDB_DIR)
 
 
 def setUp_test_episode_file():
@@ -196,6 +182,7 @@ def load_tests(loader, tests):
     TESTALL = True
     return tests
 
+
 # =================
 # test globals
 # =================
@@ -205,17 +192,10 @@ PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 's
 if PROG_DIR not in sys.path:
     sys.path.insert(0, PROG_DIR)
 
-sickrage.DATA_DIR = TESTDIR = os.path.abspath(os.path.dirname(__file__))
-sickrage.CONFIG_FILE = TESTCONFIGNAME = os.path.abspath(os.path.join(TESTDIR, "config.ini"))
-sickrage.NOLAUNCH = True
-sickrage.srCore = Core()
-
 TESTALL = False
 TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
-TESTDBNAME = "sickrage.db"
-TESTCACHEDBNAME = "cache.db"
-TESTFAILEDDBNAME = "failed.db"
-TESTDB_INITALIZED = False
+TESTDIR = os.path.abspath(os.path.dirname(__file__))
+TESTDB_DIR = os.path.join(TESTDIR, 'databases')
 
 SHOWNAME = "show name"
 SEASON = 4
@@ -227,5 +207,3 @@ SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
 
 episode.TVEpisode.populateEpisode = _fake_specifyEP
 tv_cache.CacheDBConnection = TestCacheDBConnection
-
-threading.Thread(target=sickrage.srCore.start).start()

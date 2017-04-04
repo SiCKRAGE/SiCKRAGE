@@ -54,7 +54,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
-    sanitizeFileName, tryInt
+    sanitizeFileName, tryInt, clean_url
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
@@ -737,7 +737,7 @@ class Home(WebHandler):
     def testSABnzbd(host=None, username=None, password=None, apikey=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
-        host = sickrage.srCore.srConfig.clean_url(host)
+        host = clean_url(host)
 
         connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
         if connection:
@@ -752,7 +752,7 @@ class Home(WebHandler):
     @staticmethod
     def testTorrent(torrent_method=None, host=None, username=None, password=None):
 
-        host = sickrage.srCore.srConfig.clean_url(host)
+        host = clean_url(host)
 
         client = getClientIstance(torrent_method)
 
@@ -763,7 +763,7 @@ class Home(WebHandler):
     @staticmethod
     def testFreeMobile(freemobile_id=None, freemobile_apikey=None):
 
-        result, message = sickrage.srCore.notifiersDict.freemobile_notifier.test_notify(freemobile_id,
+        result, message = sickrage.srCore.notifiersDict['freemobile'].test_notify(freemobile_id,
                                                                                         freemobile_apikey)
         if result:
             return "SMS sent successfully"
@@ -776,7 +776,7 @@ class Home(WebHandler):
 
         host = sickrage.srCore.srConfig.clean_host(host, default_port=23053)
 
-        result = sickrage.srCore.notifiersDict.growl_notifier.test_notify(host, password)
+        result = sickrage.srCore.notifiersDict['growl'].test_notify(host, password)
         if password is None or password == '':
             pw_append = ''
         else:
@@ -790,7 +790,7 @@ class Home(WebHandler):
     @staticmethod
     def testProwl(prowl_api=None, prowl_priority=0):
 
-        result = sickrage.srCore.notifiersDict.prowl_notifier.test_notify(prowl_api, prowl_priority)
+        result = sickrage.srCore.notifiersDict['prowl'].test_notify(prowl_api, prowl_priority)
         if result:
             return "Test prowl notice sent successfully"
         else:
@@ -799,7 +799,7 @@ class Home(WebHandler):
     @staticmethod
     def testBoxcar(username=None):
 
-        result = sickrage.srCore.notifiersDict.boxcar_notifier.test_notify(username)
+        result = sickrage.srCore.notifiersDict['boxcar'].test_notify(username)
         if result:
             return "Boxcar notification succeeded. Check your Boxcar clients to make sure it worked"
         else:
@@ -808,7 +808,7 @@ class Home(WebHandler):
     @staticmethod
     def testBoxcar2(accesstoken=None):
 
-        result = sickrage.srCore.notifiersDict.boxcar2_notifier.test_notify(accesstoken)
+        result = sickrage.srCore.notifiersDict['boxcar2'].test_notify(accesstoken)
         if result:
             return "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
         else:
@@ -817,7 +817,7 @@ class Home(WebHandler):
     @staticmethod
     def testPushover(userKey=None, apiKey=None):
 
-        result = sickrage.srCore.notifiersDict.pushover_notifier.test_notify(userKey, apiKey)
+        result = sickrage.srCore.notifiersDict['pushover'].test_notify(userKey, apiKey)
         if result:
             return "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
         else:
@@ -825,12 +825,12 @@ class Home(WebHandler):
 
     @staticmethod
     def twitterStep1():
-        return sickrage.srCore.notifiersDict.twitter_notifier._get_authorization()
+        return sickrage.srCore.notifiersDict['twitter']._get_authorization()
 
     @staticmethod
     def twitterStep2(key):
 
-        result = sickrage.srCore.notifiersDict.twitter_notifier._get_credentials(key)
+        result = sickrage.srCore.notifiersDict['twitter']._get_credentials(key)
         sickrage.srCore.srLogger.info("result: " + str(result))
         if result:
             return "Key verification successful"
@@ -840,7 +840,7 @@ class Home(WebHandler):
     @staticmethod
     def testTwitter():
 
-        result = sickrage.srCore.notifiersDict.twitter_notifier.test_notify()
+        result = sickrage.srCore.notifiersDict['twitter'].test_notify()
         if result:
             return "Tweet successful, check your twitter to make sure it worked"
         else:
@@ -852,7 +852,7 @@ class Home(WebHandler):
         host = sickrage.srCore.srConfig.clean_hosts(host)
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            curResult = sickrage.srCore.notifiersDict.kodi_notifier.test_notify(urllib.unquote_plus(curHost), username,
+            curResult = sickrage.srCore.notifiersDict['kodi'].test_notify(urllib.unquote_plus(curHost), username,
                                                                                 password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
                 finalResult += "Test KODI notice sent successfully to " + urllib.unquote_plus(curHost)
@@ -870,7 +870,7 @@ class Home(WebHandler):
 
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            curResult = sickrage.srCore.notifiersDict.plex_notifier.test_notify_pmc(urllib.unquote_plus(curHost),
+            curResult = sickrage.srCore.notifiersDict['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
                                                                                     username,
                                                                                     password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
@@ -891,7 +891,7 @@ class Home(WebHandler):
 
         finalResult = ''
 
-        curResult = sickrage.srCore.notifiersDict.plex_notifier.test_notify_pms(urllib.unquote_plus(host), username,
+        curResult = sickrage.srCore.notifiersDict['plex'].test_notify_pms(urllib.unquote_plus(host), username,
                                                                                 password,
                                                                                 plex_server_token)
         if curResult is None:
@@ -911,16 +911,16 @@ class Home(WebHandler):
     @staticmethod
     def testLibnotify():
 
-        if sickrage.srCore.notifiersDict.libnotify_notifier.test_notify():
+        if sickrage.srCore.notifiersDict['libnotify'].notifier.test_notify():
             return "Tried sending desktop notification via libnotify"
         else:
-            return sickrage.srCore.notifiersDict.libnotify.diagnose()
+            return sickrage.srCore.notifiersDict['libnotify'].diagnose()
 
     @staticmethod
     def testEMBY(host=None, emby_apikey=None):
 
         host = sickrage.srCore.srConfig.clean_host(host)
-        result = sickrage.srCore.notifiersDict.emby_notifier.test_notify(urllib.unquote_plus(host), emby_apikey)
+        result = sickrage.srCore.notifiersDict['emby'].test_notify(urllib.unquote_plus(host), emby_apikey)
         if result:
             return "Test notice sent successfully to " + urllib.unquote_plus(host)
         else:
@@ -930,7 +930,7 @@ class Home(WebHandler):
     def testNMJ(host=None, database=None, mount=None):
 
         host = sickrage.srCore.srConfig.clean_host(host)
-        result = sickrage.srCore.notifiersDict.nmj_notifier.test_notify(urllib.unquote_plus(host), database, mount)
+        result = sickrage.srCore.notifiersDict['nmj'].test_notify(urllib.unquote_plus(host), database, mount)
         if result:
             return "Successfully started the scan update"
         else:
@@ -940,7 +940,7 @@ class Home(WebHandler):
     def settingsNMJ(host=None):
 
         host = sickrage.srCore.srConfig.clean_host(host)
-        result = sickrage.srCore.notifiersDict.nmj_notifier.notify_settings(urllib.unquote_plus(host))
+        result = sickrage.srCore.notifiersDict['nmj'].notify_settings(urllib.unquote_plus(host))
         if result:
             return '{"message": "Got settings from %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                 "host": host, "database": sickrage.srCore.srConfig.NMJ_DATABASE,
@@ -952,7 +952,7 @@ class Home(WebHandler):
     def testNMJv2(host=None):
 
         host = sickrage.srCore.srConfig.clean_host(host)
-        result = sickrage.srCore.notifiersDict.nmjv2_notifier.test_notify(urllib.unquote_plus(host))
+        result = sickrage.srCore.notifiersDict['nmjv2'].test_notify(urllib.unquote_plus(host))
         if result:
             return "Test notice sent successfully to " + urllib.unquote_plus(host)
         else:
@@ -962,7 +962,7 @@ class Home(WebHandler):
     def settingsNMJv2(host=None, dbloc=None, instance=None):
 
         host = sickrage.srCore.srConfig.clean_host(host)
-        result = sickrage.srCore.notifiersDict.nmjv2_notifier.notify_settings(urllib.unquote_plus(host), dbloc,
+        result = sickrage.srCore.notifiersDict['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
                                                                               instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
@@ -982,7 +982,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testTrakt(username=None, blacklist_name=None):
-        return sickrage.srCore.notifiersDict.trakt_notifier.test_notify(username, blacklist_name)
+        return sickrage.srCore.notifiersDict['trakt'].test_notify(username, blacklist_name)
 
     @staticmethod
     def loadShowNotifyLists():
@@ -1011,15 +1011,15 @@ class Home(WebHandler):
     @staticmethod
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
         host = sickrage.srCore.srConfig.clean_host(host)
-        if sickrage.srCore.notifiersDict.email_notifier.test_notify(host, port, smtp_from, use_tls, user, pwd, to):
+        if sickrage.srCore.notifiersDict['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
             return 'Test email sent successfully! Check inbox.'
         else:
-            return 'ERROR: %s' % sickrage.srCore.notifiersDict.email_notifier.last_err
+            return 'ERROR: %s' % sickrage.srCore.notifiersDict['email'].last_err
 
     @staticmethod
     def testNMA(nma_api=None, nma_priority=0):
 
-        result = sickrage.srCore.notifiersDict.nma_notifier.test_notify(nma_api, nma_priority)
+        result = sickrage.srCore.notifiersDict['nma'].test_notify(nma_api, nma_priority)
         if result:
             return "Test NMA notice sent successfully"
         else:
@@ -1027,7 +1027,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushalot(authorizationToken=None):
-        result = sickrage.srCore.notifiersDict.pushalot_notifier.test_notify(authorizationToken)
+        result = sickrage.srCore.notifiersDict['pushalot'].test_notify(authorizationToken)
         if result:
             return "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
         else:
@@ -1035,7 +1035,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushbullet(api=None):
-        result = sickrage.srCore.notifiersDict.pushbullet_notifier.test_notify(api)
+        result = sickrage.srCore.notifiersDict['pushbullet'].test_notify(api)
         if result:
             return "Pushbullet notification succeeded. Check your device to make sure it worked"
         else:
@@ -1043,7 +1043,7 @@ class Home(WebHandler):
 
     @staticmethod
     def getPushbulletDevices(api=None):
-        result = sickrage.srCore.notifiersDict.pushbullet_notifier.get_devices(api)
+        result = sickrage.srCore.notifiersDict['pushbullet'].get_devices(api)
         if result:
             return result
         else:
@@ -1611,7 +1611,7 @@ class Home(WebHandler):
         else:
             host = sickrage.srCore.srConfig.KODI_HOST
 
-        if sickrage.srCore.notifiersDict.kodi_notifier.update_library(showName=showName):
+        if sickrage.srCore.notifiersDict['kodi'].update_library(showName=showName):
             sickrage.srCore.srNotifications.message("Library update command sent to KODI host(s): " + host)
         else:
             sickrage.srCore.srNotifications.error("Unable to contact one or more KODI host(s): " + host)
@@ -1622,7 +1622,7 @@ class Home(WebHandler):
             return self.redirect('/home/')
 
     def updatePLEX(self):
-        if None is sickrage.srCore.notifiersDict.plex_notifier.update_library():
+        if None is sickrage.srCore.notifiersDict['plex'].update_library():
             sickrage.srCore.srNotifications.message(
                 "Library update command sent to Plex Media Server host: " + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
         else:
@@ -1636,7 +1636,7 @@ class Home(WebHandler):
         if show:
             showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
-        if sickrage.srCore.notifiersDict.emby_notifier.update_library(showObj):
+        if sickrage.srCore.notifiersDict['emby'].update_library(showObj):
             sickrage.srCore.srNotifications.message(
                 "Library update command sent to Emby host: " + sickrage.srCore.srConfig.EMBY_HOST)
         else:
@@ -1785,19 +1785,19 @@ class Home(WebHandler):
 
                     trakt_data.append((epObj.season, epObj.episode))
 
-            data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate(trakt_data)
+            data = sickrage.srCore.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
             if data and sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
                     sickrage.srCore.srLogger.debug(
                         "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
-                    sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(showObj, data_episode=data,
+                    sickrage.srCore.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
                                                                                   update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.srCore.srLogger.debug(
                         "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
-                    sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(showObj, data_episode=data,
+                    sickrage.srCore.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
                                                                                   update="remove")
 
         if int(status) == WANTED and not showObj.paused:
@@ -4097,7 +4097,7 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.SAB_CATEGORY_BACKLOG = sab_category_backlog
         sickrage.srCore.srConfig.SAB_CATEGORY_ANIME = sab_category_anime
         sickrage.srCore.srConfig.SAB_CATEGORY_ANIME_BACKLOG = sab_category_anime_backlog
-        sickrage.srCore.srConfig.SAB_HOST = sickrage.srCore.srConfig.clean_url(sab_host)
+        sickrage.srCore.srConfig.SAB_HOST = clean_url(sab_host)
         sickrage.srCore.srConfig.SAB_FORCED = sickrage.srCore.srConfig.checkbox_to_value(sab_forced)
 
         sickrage.srCore.srConfig.NZBGET_USERNAME = nzbget_username
@@ -4120,7 +4120,7 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.TORRENT_PAUSED = sickrage.srCore.srConfig.checkbox_to_value(torrent_paused)
         sickrage.srCore.srConfig.TORRENT_HIGH_BANDWIDTH = sickrage.srCore.srConfig.checkbox_to_value(
             torrent_high_bandwidth)
-        sickrage.srCore.srConfig.TORRENT_HOST = sickrage.srCore.srConfig.clean_url(torrent_host)
+        sickrage.srCore.srConfig.TORRENT_HOST = clean_url(torrent_host)
         sickrage.srCore.srConfig.TORRENT_RPCURL = torrent_rpcurl
         sickrage.srCore.srConfig.TORRENT_AUTH_TYPE = torrent_auth_type
 
@@ -4401,7 +4401,7 @@ class ConfigProviders(Config):
 
             if cur_type == "newznab":
                 cur_name, cur_url, cur_key, cur_cat = curProviderData.split('|')
-                cur_url = sickrage.srCore.srConfig.clean_url(cur_url)
+                cur_url = clean_url(cur_url)
 
                 providerObj = NewznabProvider(cur_name, cur_url, bool(not cur_key == 0), key=cur_key)
                 if providerObj.id not in sickrage.srCore.providersDict.newznab():
@@ -4415,7 +4415,7 @@ class ConfigProviders(Config):
 
             elif cur_type == "torrentrss":
                 cur_name, cur_url, cur_cookies, cur_title_tag = curProviderData.split('|')
-                cur_url = sickrage.srCore.srConfig.clean_url(cur_url)
+                cur_url = clean_url(cur_url)
 
                 providerObj = TorrentRssProvider(cur_name, cur_url, False, cur_cookies, cur_title_tag)
                 if providerObj.id not in sickrage.srCore.providersDict.torrentrss():

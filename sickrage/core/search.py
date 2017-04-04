@@ -174,14 +174,14 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
             trakt_data.append((curEpObj.season, curEpObj.episode))
 
-    data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate(trakt_data)
+    data = sickrage.srCore.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
 
     if sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
         sickrage.srCore.srLogger.debug(
             "Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(
                 result.show.name) + " to Traktv Watchlist")
         if data:
-            sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
+            sickrage.srCore.notifiersDict['trakt'].update_watchlist(result.show, data_episode=data, update="add")
 
     return True
 

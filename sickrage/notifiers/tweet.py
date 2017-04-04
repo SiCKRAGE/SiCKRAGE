@@ -21,8 +21,9 @@ from __future__ import unicode_literals
 from urlparse import parse_qsl
 
 import oauth2
-import sickrage
 import twitter
+
+import sickrage
 from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
@@ -36,6 +37,10 @@ class TwitterNotifier(srNotifiers):
     ACCESS_TOKEN_URL = 'https://api.twitter.com/oauth/access_token'
     AUTHORIZATION_URL = 'https://api.twitter.com/oauth/authorize'
     SIGNIN_URL = 'https://api.twitter.com/oauth/authenticate'
+
+    def __init__(self):
+        super(TwitterNotifier, self).__init__()
+        self.name = 'twitter'
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.TWITTER_NOTIFY_ONSNATCH:

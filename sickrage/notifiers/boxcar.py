@@ -32,6 +32,10 @@ API_URL = "https://boxcar.io/devices/providers/fWc4sgSmpcN6JujtBmR6/notification
 
 
 class BoxcarNotifier(srNotifiers):
+    def __init__(self):
+        super(BoxcarNotifier, self).__init__()
+        self.name = 'boxcar'
+
     def test_notify(self, boxcar_username):
         return self._notifyBoxcar("This is a test notification from Sick Beard", "Test", boxcar_username, force=True)
 

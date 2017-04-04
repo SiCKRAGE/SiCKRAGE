@@ -37,6 +37,10 @@ from sickrage.notifiers import srNotifiers
 class KODINotifier(srNotifiers):
     sr_logo_url = 'https://www.sickrage.ca/favicon.ico'
 
+    def __init__(self):
+        super(KODINotifier, self).__init__()
+        self.name = 'kodi'
+
     def _get_kodi_version(self, host, username, password):
         """Returns KODI JSON-RPC API version (odd # = dev, even # = stable)
 

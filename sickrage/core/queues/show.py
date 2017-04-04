@@ -434,7 +434,7 @@ class QueueItemAdd(ShowQueueItem):
 
             if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
                 sickrage.srCore.srLogger.info("update watchlist")
-                sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(show_obj=self.show)
+                sickrage.srCore.notifiersDict['trakt'].update_watchlist(show_obj=self.show)
 
         # After initial add, set to default_status_after.
         sickrage.srCore.srLogger.info(

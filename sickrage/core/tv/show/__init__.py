@@ -1169,7 +1169,7 @@ class TVShow(object):
             sickrage.srCore.srLogger.debug(
                 "Removing show: indexerid " + str(self.indexerid) + ", Title " + str(
                     self.name) + " from Watchlist")
-            sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(self, update="remove")
+            sickrage.srCore.notifiersDict['trakt'].update_watchlist(self, update="remove")
 
     def populateCache(self):
         cache_inst = image_cache.ImageCache()

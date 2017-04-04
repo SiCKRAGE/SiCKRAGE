@@ -29,6 +29,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class FreeMobileNotifier(srNotifiers):
+    def __init__(self):
+        super(FreeMobileNotifier, self).__init__()
+        self.name = 'freemobile'
+
     def test_notify(self, id=None, apiKey=None):
         return self._notifyFreeMobile('Test', "This is a test notification from SiCKRAGE", id, apiKey, force=True)
 

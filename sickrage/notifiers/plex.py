@@ -32,6 +32,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class PLEXNotifier(srNotifiers):
+    def __init__(self):
+        super(PLEXNotifier, self).__init__()
+        self.name = 'plex'
+
     def _send_to_plex(self, command, host, username=None, password=None):
         """Handles communication to Plex hosts via HTTP API
 

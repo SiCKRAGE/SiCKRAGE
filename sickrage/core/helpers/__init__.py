@@ -412,7 +412,7 @@ def makeDir(path):
     if not os.path.isdir(path):
         try:
             os.makedirs(path)
-            sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(path)
+            sickrage.srCore.notifiersDict['synoindex'].addFolder(path)
         except OSError:
             return False
     return True
@@ -582,7 +582,7 @@ def make_dirs(path):
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmodAsParent(os.path.normpath(sofar))
                     # do the library update for synoindex
-                    sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(sofar)
+                    sickrage.srCore.notifiersDict['synoindex'].addFolder(sofar)
                 except (OSError, IOError) as e:
                     sickrage.srCore.srLogger.error("Failed creating %s : %r" % (sofar, e))
                     return False
@@ -665,7 +665,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
                     os.rmdir(check_empty_dir)
 
                     # do the library update for synoindex
-                    sickrage.srCore.notifiersDict.synoindex_notifier.deleteFolder(check_empty_dir)
+                    sickrage.srCore.notifiersDict['synoindex'].deleteFolder(check_empty_dir)
                 except OSError as e:
                     sickrage.srCore.srLogger.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
                     raise StopIteration
@@ -1708,3 +1708,29 @@ def convert_size(size, default=0):
 
 def randomString(size=8, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for x in range(size))
+
+
+def clean_url(url):
+    """
+    Returns an cleaned url starting with a scheme and folder with trailing /
+    or an empty string
+    """
+
+    if url and url.strip():
+
+        url = url.strip()
+
+        if '://' not in url:
+            url = '//' + url
+
+        scheme, netloc, path, query, fragment = urlparse.urlsplit(url, 'http')
+
+        if not path:
+            path += '/'
+
+        cleaned_url = urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+
+    else:
+        cleaned_url = ''
+
+    return cleaned_url

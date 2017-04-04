@@ -29,6 +29,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class NMJNotifier(srNotifiers):
+    def __init__(self):
+        super(NMJNotifier, self).__init__()
+        self.name = 'nmj'
+
     def notify_settings(self, host):
         """
         Retrieves the settings from a NMJ/Popcorn hour

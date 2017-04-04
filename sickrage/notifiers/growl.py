@@ -22,6 +22,7 @@ import socket
 
 import gntp
 import gntp.core
+
 import sickrage
 from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
@@ -30,6 +31,10 @@ from sickrage.notifiers import srNotifiers
 
 class GrowlNotifier(srNotifiers):
     sr_logo_url = 'https://www.sickrage.ca/favicon.ico'
+
+    def __init__(self):
+        super(GrowlNotifier, self).__init__()
+        self.name = 'growl'
 
     def test_notify(self, host, password):
         self._sendRegistration(host, password, 'Test')

@@ -21,19 +21,18 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-import sickrage
-import sickrage.core
+from sickrage.core.helpers import clean_url
 from tests import SiCKRAGETestCase
 
 
 class QualityTests(SiCKRAGETestCase):
     def test_clean_url(self):
-        self.assertEqual(sickrage.srCore.srConfig.clean_url("https://subdomain.domain.tld/endpoint"),
+        self.assertEqual(clean_url("https://subdomain.domain.tld/endpoint"),
                          "https://subdomain.domain.tld/endpoint")
-        self.assertEqual(sickrage.srCore.srConfig.clean_url("google.com/xml.rpc"), "http://google.com/xml.rpc")
-        self.assertEqual(sickrage.srCore.srConfig.clean_url("google.com"), "http://google.com/")
-        self.assertEqual(sickrage.srCore.srConfig.clean_url("http://www.example.com/folder/"), "http://www.example.com/folder/")
-        self.assertEqual(sickrage.srCore.srConfig.clean_url("scgi:///home/user/.config/path/socket"),
+        self.assertEqual(clean_url("google.com/xml.rpc"), "http://google.com/xml.rpc")
+        self.assertEqual(clean_url("google.com"), "http://google.com/")
+        self.assertEqual(clean_url("http://www.example.com/folder/"), "http://www.example.com/folder/")
+        self.assertEqual(clean_url("scgi:///home/user/.config/path/socket"),
                          "scgi:///home/user/.config/path/socket")
 
 

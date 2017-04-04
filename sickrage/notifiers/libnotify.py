@@ -66,6 +66,8 @@ def diagnose():
 
 class LibnotifyNotifier(srNotifiers):
     def __init__(self):
+        super(LibnotifyNotifier, self).__init__()
+        self.name = 'libnotify'
         self.Notify = None
         self.gobject = None
 

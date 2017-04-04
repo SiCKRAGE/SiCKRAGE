@@ -29,6 +29,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class NMJv2Notifier(srNotifiers):
+    def __init__(self):
+        super(NMJv2Notifier, self).__init__()
+        self.name = 'nmjv2'
+
     def _notify_snatch(self, ep_name):
         return False
         # Not implemented: Start the scanner when snatched does not make any sense

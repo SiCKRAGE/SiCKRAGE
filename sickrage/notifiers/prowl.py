@@ -22,13 +22,18 @@ import socket
 from httplib import HTTPException, HTTPSConnection
 from urllib import urlencode
 
-import sickrage
 from requests.exceptions import SSLError
+
+import sickrage
 from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
 
 class ProwlNotifier(srNotifiers):
+    def __init__(self):
+        super(ProwlNotifier, self).__init__()
+        self.name = 'prowl'
+
     def test_notify(self, prowl_api, prowl_priority):
         return self._sendProwl(prowl_api, prowl_priority, event="Test",
                                message="Testing Prowl settings from SiCKRAGE", force=True)

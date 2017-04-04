@@ -35,6 +35,8 @@ from sickrage.notifiers import srNotifiers
 
 class EmailNotifier(srNotifiers):
     def __init__(self):
+        super(EmailNotifier, self).__init__()
+        self.name = 'email'
         self.last_err = None
 
     def test_notify(self, host, port, smtp_from, use_tls, user, pwd, to):

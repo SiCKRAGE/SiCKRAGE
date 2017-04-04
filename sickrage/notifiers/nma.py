@@ -34,6 +34,8 @@ class NMA_Notifier(srNotifiers):
     ADD_PATH = '/publicapi/notify'
 
     def __init__(self):
+        super(NMA_Notifier, self).__init__()
+        self.name = 'nma'
         self._developerkey = None
         self._apikey = None
 

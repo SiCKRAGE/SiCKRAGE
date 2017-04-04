@@ -27,6 +27,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class synologyNotifier(srNotifiers):
+    def __init__(self):
+        super(synologyNotifier, self).__init__()
+        self.name = 'synology'
+
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH:
             self._send_synologyNotifier(ep_name, notifyStrings[NOTIFY_SNATCH])

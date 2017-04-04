@@ -27,7 +27,6 @@ import pickle
 import platform
 import re
 import sys
-import urlparse
 import uuid
 from itertools import izip, cycle
 
@@ -761,31 +760,6 @@ class srConfig(object):
             cleaned_hosts = ''
 
         return cleaned_hosts
-
-    def clean_url(self, url):
-        """
-        Returns an cleaned url starting with a scheme and folder with trailing /
-        or an empty string
-        """
-
-        if url and url.strip():
-
-            url = url.strip()
-
-            if '://' not in url:
-                url = '//' + url
-
-            scheme, netloc, path, query, fragment = urlparse.urlsplit(url, 'http')
-
-            if not path:
-                path += '/'
-
-            cleaned_url = urlparse.urlunsplit((scheme, netloc, path, query, fragment))
-
-        else:
-            cleaned_url = ''
-
-        return cleaned_url
 
     def to_int(self, val, default=0):
         """ Return int value of val or default on error """

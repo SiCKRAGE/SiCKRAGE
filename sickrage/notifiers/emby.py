@@ -27,6 +27,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class EMBYNotifier(srNotifiers):
+    def __init__(self):
+        super(EMBYNotifier, self).__init__()
+        self.name = 'emby'
+
     def _notify_emby(self, message, host=None, emby_apikey=None):
         """Handles notifying Emby host via HTTP API
 

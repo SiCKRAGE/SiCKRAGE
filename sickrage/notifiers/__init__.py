@@ -18,10 +18,50 @@
 
 from __future__ import unicode_literals
 
+import importlib
+import os
+import re
+
 import sickrage
 
 
+def _getNotifiersClass(name):
+    import inspect
+
+    try:
+        return dict(
+            inspect.getmembers(
+                importlib.import_module('.{}'.format(name), 'sickrage.notifiers'),
+                predicate=lambda o: inspect.isclass(o) and issubclass(o, srNotifiers) and o is not srNotifiers)
+        ).values()[0]
+    except:
+        pass
+
+
+def notifiersDict():
+    results = {}
+
+    pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
+    names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__))]
+
+    for name in names:
+        try:
+            klass = _getNotifiersClass(name.group(1))
+            results[klass().id] = klass()
+        except:
+            continue
+
+    return results
+
+
 class srNotifiers(object):
+    def __init__(self):
+        self.name = "Generic"
+
+    @property
+    def id(self):
+        return str(re.sub(r"[^\w\d_]", "_", str(re.sub(r"[+]", "plus", self.name))).lower())
+
     @staticmethod
     def notify_download(ep_name):
         for n in sickrage.srCore.notifiersDict.values():

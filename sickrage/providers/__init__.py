@@ -47,7 +47,7 @@ from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import chmodAsParent, \
     findCertainShow, remove_file_failed, \
-    sanitizeFileName, sanitizeSceneName
+    sanitizeFileName, sanitizeSceneName, clean_url
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -890,7 +890,7 @@ class TorrentRssProvider(TorrentProvider):
                     cur_type, curProviderData = curProviderStr.split('|', 1)
                     if cur_type == "torrentrss":
                         cur_name, cur_url, cur_cookies, cur_title_tag = curProviderData.split('|')
-                        cur_url = sickrage.srCore.srConfig.clean_url(cur_url)
+                        cur_url = clean_url(cur_url)
 
                         providers += [TorrentRssProvider(cur_name, cur_url, False, cur_cookies, cur_title_tag)]
                 except Exception:
@@ -1177,7 +1177,7 @@ class NewznabProvider(NZBProvider):
 
                     if cur_type == "newznab":
                         cur_name, cur_url, cur_key, cur_cat = curProviderData.split('|')
-                        cur_url = sickrage.srCore.srConfig.clean_url(cur_url)
+                        cur_url = clean_url(cur_url)
 
                         provider = NewznabProvider(
                             cur_name,

@@ -731,10 +731,10 @@ class TVEpisode(object):
         [sickrage.srCore.mainDB.db.delete(x['doc']) for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
          if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
-        data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
+        data = sickrage.srCore.notifiersDict['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST and data:
             sickrage.srCore.srLogger.debug("Deleting myself from Trakt")
-            sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
+            sickrage.srCore.notifiersDict['trakt'].update_watchlist(self.show, data_episode=data, update="remove")
 
         if full and os.path.isfile(self.location):
             sickrage.srCore.srLogger.info('Attempt to delete episode file %s' % self.location)

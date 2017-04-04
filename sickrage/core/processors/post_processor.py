@@ -260,7 +260,7 @@ class PostProcessor(object):
                 os.remove(cur_file)
 
                 # do the library update for synoindex
-                sickrage.srCore.notifiersDict.synoindex_notifier.deleteFile(cur_file)
+                sickrage.srCore.notifiersDict['synoindex'].deleteFile(cur_file)
 
     def _combined_file_operation(self, file_path, new_path, new_base_name, associated_files=False, action=None,
                                  subs=False):
@@ -990,7 +990,7 @@ class PostProcessor(object):
                 chmodAsParent(ep_obj.show.location)
 
                 # do the library update for synoindex
-                sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(ep_obj.show.location)
+                sickrage.srCore.notifiersDict['synoindex'].addFolder(ep_obj.show.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
                     "Unable to create the show directory: " + ep_obj.show.location)
@@ -1125,25 +1125,25 @@ class PostProcessor(object):
             srNotifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
-            sickrage.srCore.notifiersDict.kodi_notifier.update_library(ep_obj.show.name)
+            sickrage.srCore.notifiersDict['kodi'].update_library(ep_obj.show.name)
 
             # do the library update for Plex
-            sickrage.srCore.notifiersDict.plex_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict['plex'].update_library(ep_obj)
 
             # do the library update for EMBY
-            sickrage.srCore.notifiersDict.emby_notifier.update_library(ep_obj.show)
+            sickrage.srCore.notifiersDict['emby'].update_library(ep_obj.show)
 
             # do the library update for NMJ
             # nmj_notifier kicks off its library update when the notify_download is issued (inside notifiers)
 
             # do the library update for Synology Indexer
-            sickrage.srCore.notifiersDict.synoindex_notifier.addFile(ep_obj.location)
+            sickrage.srCore.notifiersDict['synoindex'].addFile(ep_obj.location)
 
             # do the library update for pyTivo
-            sickrage.srCore.notifiersDict.pytivo_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict['pytivo'].update_library(ep_obj)
 
             # do the library update for Trakt
-            sickrage.srCore.notifiersDict.trakt_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict['trakt'].update_library(ep_obj)
         except:
             sickrage.srCore.srLogger.info("Some notifications could not be sent. Continuing with post-processing...")
 
