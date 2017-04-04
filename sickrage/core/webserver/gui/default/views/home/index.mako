@@ -16,7 +16,9 @@
 
     <div class="h2footer pull-right">
         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-            <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
+            <span class="badge" style="background-color: #333333;">Select Columns:
+                <button id="popover" type="button" class="form-control form-control-inline input-sm"><b class="caret"></b></button>
+            </span>
         % endif
 
         % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
@@ -72,15 +74,6 @@
             </select>
         </span>
     </div>
-
-    % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-        <div class="pull-right">
-            <span>
-                <input class="form-control form-control-inline input-sm input200" type="search" data-column="2" placeholder="Search Show Name">
-                <button type="button" class="resetsorting btn btn-inline">Reset Search</button>
-            </span>
-        </div>
-    % endif
 
     % for curShowlist in showlists:
         <% curListType = curShowlist[0] %>
@@ -230,7 +223,6 @@
                 </div>
             </div>
         % else:
-            <br><br>
             <table id="showListTable${curListType}" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
                 <thead>
                     <tr>
