@@ -1,17 +1,17 @@
-<%inherit file="../layouts/main.mako"/>
+    import sickrage.subtitles    import sickrage.core.subtitles<%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.searchers import subtitle_searcher
+    import sickrage.subtitles
     from sickrage.core.helpers import anon_url
 %>
 <%block name="scripts">
 <script type="text/javascript" src="/js/config/configSubtitles.js?${srPID}"></script>
 <script>
-$("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtitles + "\", name: \"" + lang.name + "\"}" for lang in subtitle_searcher.subtitleLanguageFilter())}], {
+    $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + code + "\", name: \"" + sickrage.subtitles.name_from_code(code) + "\"}" for code in sickrage.subtitles.subtitle_code_filter())}], {
     method: "POST",
     hintText: "Write to search a language and select it",
     preventDuplicates: true,
-    prePopulate: [${','.join("{\"id\": \"" + subtitle_searcher.fromietf(lang).opensubtitles + "\", name: \"" + subtitle_searcher.fromietf(lang).name + "\"}" for lang in subtitle_searcher.wantedLanguages()) if subtitle_searcher.wantedLanguages() else ''}]
+    prePopulate: [${','.join("{\"id\": \"" + code + "\", name: \"" + sickrage.subtitles.name_from_code(code) + "\"}" for code in sickrage.subtitles.wanted_languages())}]
 });
 </script>
 </%block>
@@ -164,7 +164,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
 
                     <fieldset class="component-group-list" style="margin-left: 50px; margin-top:36px">
                         <ul id="service_order_list">
-                            % for curService in subtitle_searcher.sortedServiceList():
+                            % for curService in sickrage.subtitles.sortedServiceList():
                             <li class="ui-state-default" id="${curService['name']}">
                                 <input type="checkbox" id="enable_${curService['name']}" class="service_enabler" ${('', 'checked="checked"')[curService['enabled'] == True]}/>
                                 <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
@@ -176,7 +176,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                         % endfor
                         </ul>
                         <input type="hidden" name="service_order" id="service_order"
-                               value="<% ''.join(['%s:%d' % (x['name'], x['enabled']) for x in subtitle_searcher.sortedServiceList()])%>"/>
+                               value="<% ''.join(['%s:%d' % (x['name'], x['enabled']) for x in sickrage.subtitles.sortedServiceList()])%>"/>
 
                         <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
@@ -195,7 +195,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                                 'addic7ed': {'user': sickrage.srCore.srConfig.ADDIC7ED_USER, 'pass': sickrage.srCore.srConfig.ADDIC7ED_PASS},
                                 'opensubtitles': {'user': sickrage.srCore.srConfig.OPENSUBTITLES_USER, 'pass': sickrage.srCore.srConfig.OPENSUBTITLES_PASS}}
                         %>
-                        % for curService in subtitle_searcher.sortedServiceList():
+                        % for curService in sickrage.subtitles.sortedServiceList():
                         <%
                             if curService['name'] not in providerLoginDict.keys():
                                     continue

@@ -25,21 +25,17 @@ import time
 import traceback
 import urllib
 
+import dateutil.tz
 import markdown2
 from CodernityDB.database import RecordNotFound
 from UnRAR2 import RarFile
-from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.web import RequestHandler, authenticated
 
-try:
-    from futures import ThreadPoolExecutor
-except ImportError:
-    from concurrent.futures import ThreadPoolExecutor
-
 import sickrage
+import sickrage.subtitles
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
@@ -67,7 +63,6 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_absolute_numbering_for_show, get_scene_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_xem_numbering_for_show, set_scene_numbering, xem_refresh
-from sickrage.core.searchers import subtitle_searcher
 from sickrage.core.trakt import TraktAPI, traktException
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
@@ -83,9 +78,6 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-
-        self.io_loop = sickrage.srCore.io_loop
-        self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
         # template settings
         self.mako_lookup = TemplateLookup(
@@ -195,7 +187,7 @@ class BaseHandler(RequestHandler):
         return self.render_string(template_name, **kwargs)
 
     def route(self, function, **kwargs):
-        #threading.currentThread().setName('WEB')
+        # threading.currentThread().setName('WEB')
         return recursive_unicode(function(
             **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
                     recursive_unicode(kwargs.items())])
@@ -286,7 +278,7 @@ class CalendarHandler(BaseHandler):
         """ Provides a subscribeable URL for iCal subscriptions
         """
 
-        utc = tz.gettz('GMT')
+        utc = dateutil.tz.gettz('GMT')
 
         sickrage.srCore.srLogger.info("Receiving iCal request from %s" % self.request.remote_ip)
 
@@ -764,7 +756,7 @@ class Home(WebHandler):
     def testFreeMobile(freemobile_id=None, freemobile_apikey=None):
 
         result, message = sickrage.srCore.notifiersDict['freemobile'].test_notify(freemobile_id,
-                                                                                        freemobile_apikey)
+                                                                                  freemobile_apikey)
         if result:
             return "SMS sent successfully"
         else:
@@ -853,7 +845,7 @@ class Home(WebHandler):
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
             curResult = sickrage.srCore.notifiersDict['kodi'].test_notify(urllib.unquote_plus(curHost), username,
-                                                                                password)
+                                                                          password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
                 finalResult += "Test KODI notice sent successfully to " + urllib.unquote_plus(curHost)
             else:
@@ -871,8 +863,8 @@ class Home(WebHandler):
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
             curResult = sickrage.srCore.notifiersDict['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
-                                                                                    username,
-                                                                                    password)
+                                                                              username,
+                                                                              password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
                 finalResult += 'Successful test notice sent to Plex client ... ' + urllib.unquote_plus(curHost)
             else:
@@ -892,8 +884,8 @@ class Home(WebHandler):
         finalResult = ''
 
         curResult = sickrage.srCore.notifiersDict['plex'].test_notify_pms(urllib.unquote_plus(host), username,
-                                                                                password,
-                                                                                plex_server_token)
+                                                                          password,
+                                                                          plex_server_token)
         if curResult is None:
             finalResult += 'Successful test of Plex server(s) ... ' + urllib.unquote_plus(host.replace(',', ', '))
         elif curResult is False:
@@ -963,7 +955,7 @@ class Home(WebHandler):
 
         host = sickrage.srCore.srConfig.clean_host(host)
         result = sickrage.srCore.notifiersDict['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
-                                                                              instance)
+                                                                        instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
                                                                                                    "database": sickrage.srCore.srConfig.NMJv2_DATABASE}
@@ -1086,7 +1078,7 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
-        self.io_loop.add_timeout(datetime.timedelta(seconds=10), sickrage.srCore.io_loop.stop)
+        sickrage.srCore.io_loop.add_timeout(datetime.timedelta(seconds=10), sickrage.srCore.io_loop.stop)
 
         return self.render(
             "/home/restart.mako",
@@ -1792,13 +1784,13 @@ class Home(WebHandler):
                         "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
                     sickrage.srCore.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
-                                                                                  update="add")
+                                                                            update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.srCore.srLogger.debug(
                         "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
                     sickrage.srCore.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
-                                                                                  update="remove")
+                                                                            update="remove")
 
         if int(status) == WANTED and not showObj.paused:
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br>"
@@ -2044,7 +2036,7 @@ class Home(WebHandler):
             # return the correct json value
             newSubtitles = frozenset(ep_obj.subtitles).difference(previous_subtitles)
             if newSubtitles:
-                newLangs = [subtitle_searcher.fromietf(newSub) for newSub in newSubtitles]
+                newLangs = [sickrage.subtitles.name_from_code(newSub) for newSub in newSubtitles]
                 status = 'New subtitles downloaded: %s' % ', '.join([newLang.name for newLang in newLangs])
             else:
                 status = 'No subtitles downloaded'
@@ -3000,7 +2992,7 @@ class Manage(Home, WebRoot):
                        if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]:
 
             if whichSubs == 'all':
-                if not frozenset(subtitle_searcher.wantedLanguages()).difference(dbData["subtitles"].split(',')):
+                if not frozenset(sickrage.subtitles.wanted_languages()).difference(dbData["subtitles"].split(',')):
                     continue
             elif whichSubs in dbData["subtitles"]:
                 continue
@@ -3051,7 +3043,7 @@ class Manage(Home, WebRoot):
         sorted_show_ids = []
         for cur_status_result in status_results:
             if whichSubs == 'all':
-                if not frozenset(subtitle_searcher.wantedLanguages()).difference(
+                if not frozenset(sickrage.subtitles.wanted_languages()).difference(
                         cur_status_result["subtitles"].split(',')):
                     continue
             elif whichSubs in cur_status_result["subtitles"]:
@@ -4866,9 +4858,8 @@ class ConfigSubtitles(Config):
         sickrage.srCore.srConfig.change_subtitle_searcher_freq(subtitles_finder_frequency)
         sickrage.srCore.srConfig.change_use_subtitles(use_subtitles)
 
-        sickrage.srCore.srConfig.SUBTITLES_LANGUAGES = [lang.strip() for lang in subtitles_languages.split(',') if
-                                                        subtitle_searcher.isValidLanguage(
-                                                            lang.strip())] if subtitles_languages else []
+        sickrage.srCore.srConfig.SUBTITLES_LANGUAGES = [code.strip() for code in subtitles_languages.split(',') if
+                                                        code.strip() in sickrage.subtitles.subtitle_code_filter()] if subtitles_languages else []
         sickrage.srCore.srConfig.SUBTITLES_DIR = subtitles_dir
         sickrage.srCore.srConfig.SUBTITLES_HISTORY = sickrage.srCore.srConfig.checkbox_to_value(subtitles_history)
         sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL = sickrage.srCore.srConfig.checkbox_to_value(

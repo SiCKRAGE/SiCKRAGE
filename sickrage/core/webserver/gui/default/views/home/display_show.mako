@@ -1,4 +1,4 @@
-<%inherit file="../layouts/main.mako"/>
+    import sickrage.subtitles    import sickrage.core.subtitles<%inherit file="../layouts/main.mako"/>
 <%!
     import os
     import datetime
@@ -6,8 +6,8 @@
     import ntpath
 
     import sickrage
+    import sickrage.subtitles
     from sickrage.core.updaters import tz_updater
-    from sickrage.core.searchers import subtitle_searcher
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
     from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
@@ -260,7 +260,7 @@
                 </table>
 
                 <table style="width:180px; float: right; vertical-align: middle; height: 100%;">
-                    <% info_flag = subtitle_searcher.fromietf(show.lang).opensubtitles if show.lang else '' %>
+                    <% info_flag = sickrage.subtitles.name_from_code(show.lang).opensubtitles if show.lang else '' %>
                     <tr>
                         <td class="showLegend">Info Language:</td>
                         <td><img src="/images/subtitles/flags/${info_flag}.png" width="16" height="11"
@@ -651,9 +651,9 @@
             </td>
 
             <td class="col-subtitles" align="center">
-                % for sub_lang in [subtitle_searcher.fromietf(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
+                % for sub_lang in [sickrage.subtitles.name_from_code(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
                 <% flag = sub_lang.opensubtitles %>
-                % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
+                % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(sickrage.subtitles.wanted_languages()) is 1) and sickrage.subtitles.wanted_languages()[0] in sub_lang.opensubtitles:
                     <% flag = 'checkbox' %>
                 % endif
                     <img src="/images/subtitles/flags/${flag}.png" width="16" height="11"
@@ -686,7 +686,7 @@
                                 title="Manual Search"/></a>
                     % endif
                 % endif
-                % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult["subtitles"].split(',')):
+                % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
                     <a class="epSubtitlesSearch"
                        href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
                             src="/images/closed_captioning.png" height="16" alt="search subtitles"

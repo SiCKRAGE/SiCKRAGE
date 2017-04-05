@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -32,16 +31,17 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateT
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
-    rename_ep_file, touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
-    safe_getattr
+    touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
+    safe_getattr, make_dirs, moveFile, delete_empty_folders
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
-from sickrage.core.searchers import subtitle_searcher
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import srNotifiers
+from sickrage.subtitles import subtitle_extensions, download_subtitles, refresh_subtitles, subtitle_code_filter, \
+    name_from_code
 
 
 class TVEpisode(object):
@@ -284,7 +284,7 @@ class TVEpisode(object):
 
     def refreshSubtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
-        self.subtitles, save_subtitles = subtitle_searcher.refresh_subtitles(self)
+        self.subtitles, save_subtitles = refresh_subtitles(self)
         if save_subtitles:
             self.saveToDB()
 
@@ -298,14 +298,14 @@ class TVEpisode(object):
             "%s: Downloading subtitles for S%02dE%02d" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
 
-        self.subtitles, newSubtitles = subtitle_searcher.download_subtitles(self)
+        self.subtitles, newSubtitles = download_subtitles(self)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)
         self.saveToDB()
 
         if newSubtitles:
-            subtitleList = ", ".join([subtitle_searcher.fromietf(newSub).name for newSub in newSubtitles])
+            subtitleList = ", ".join([name_from_code(newSub).name for newSub in newSubtitles])
             sickrage.srCore.srLogger.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
                                            (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
@@ -912,7 +912,7 @@ class TVEpisode(object):
         sickrage.srCore.srLogger.debug("Files associated to " + self.location + ": " + str(related_files))
 
         # move the ep file
-        result = rename_ep_file(self.location, absolute_proper_path, absolute_current_path_no_ext_length)
+        result = self.rename_ep_file(self.location, absolute_proper_path, absolute_current_path_no_ext_length)
 
         # move related files
         for cur_related_file in related_files:
@@ -924,14 +924,14 @@ class TVEpisode(object):
             proper_related_dir = os.path.dirname(os.path.abspath(absolute_proper_path + file_ext))
             proper_related_path = absolute_proper_path.replace(proper_related_dir, proper_related_dir + subfolder)
 
-            cur_result = rename_ep_file(cur_related_file, proper_related_path,
+            cur_result = self.rename_ep_file(cur_related_file, proper_related_path,
                                         absolute_current_path_no_ext_length + len(subfolder))
             if not cur_result:
                 sickrage.srCore.srLogger.error(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
 
         for cur_related_sub in related_subs:
             absolute_proper_subs_path = os.path.join(sickrage.srCore.srConfig.SUBTITLES_DIR, self.formatted_filename())
-            cur_result = rename_ep_file(cur_related_sub, absolute_proper_subs_path,
+            cur_result = self.rename_ep_file(cur_related_sub, absolute_proper_subs_path,
                                         absolute_current_path_no_ext_length)
             if not cur_result:
                 sickrage.srCore.srLogger.error(str(self.indexerid) + ": Unable to rename file " + cur_related_sub)
@@ -1374,6 +1374,52 @@ class TVEpisode(object):
             return ''
         else:
             return self._format_pattern(os.sep.join(name_groups[:-1]), multi)
+
+    def rename_ep_file(self, cur_path, new_path, old_path_length=0):
+        """
+        Creates all folders needed to move a file to its new location, renames it, then cleans up any folders
+        left that are now empty.
+
+        :param  cur_path: The absolute path to the file you want to move/rename
+        :param new_path: The absolute path to the destination for the file WITHOUT THE EXTENSION
+        :param old_path_length: The length of media file path (old name) WITHOUT THE EXTENSION
+        """
+
+        # new_dest_dir, new_dest_name = os.path.split(new_path)  # @UnusedVariable
+
+        if old_path_length == 0 or old_path_length > len(cur_path):
+            # approach from the right
+            cur_file_name, cur_file_ext = os.path.splitext(cur_path)  # @UnusedVariable
+        else:
+            # approach from the left
+            cur_file_ext = cur_path[old_path_length:]
+            cur_file_name = cur_path[:old_path_length]
+
+        if cur_file_ext[1:] in subtitle_extensions:
+            # Extract subtitle language from filename
+            sublang = os.path.splitext(cur_file_name)[1][1:]
+
+            # Check if the language extracted from filename is a valid language
+            if sublang in subtitle_code_filter():
+                cur_file_ext = '.' + sublang + cur_file_ext
+
+        # put the extension on the incoming file
+        new_path += cur_file_ext
+
+        make_dirs(os.path.dirname(new_path))
+
+        # move the file
+        try:
+            sickrage.srCore.srLogger.info("Renaming file from %s to %s" % (cur_path, new_path))
+            moveFile(cur_path, new_path)
+        except (OSError, IOError) as e:
+            sickrage.srCore.srLogger.error("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
+            return False
+
+        # clean up any old folders that are empty
+        delete_empty_folders(os.path.dirname(cur_path))
+
+        return True
 
     def __getstate__(self):
         d = dict(self.__dict__)

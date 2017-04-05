@@ -30,6 +30,8 @@ import urllib
 from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler
 
+import sickrage.subtitles
+
 try:
     from futures import ThreadPoolExecutor
 except ImportError:
@@ -51,7 +53,6 @@ from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
-from sickrage.core.searchers import subtitle_searcher
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History
@@ -104,11 +105,6 @@ class KeyHandler(RequestHandler):
 class ApiHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
-
-    def __init__(self, application, request, *args, **kwargs):
-        super(ApiHandler, self).__init__(application, request)
-        self.io_loop = sickrage.srCore.io_loop
-        self.executor = ThreadPoolExecutor(sickrage.srCore.CPU_COUNT)
 
     def prepare(self, *args, **kwargs):
         args = args[1:]
@@ -982,7 +978,7 @@ class CMD_SubtitleSearch(ApiCall):
         # return the correct json value
         newSubtitles = frozenset(epObj.subtitles).difference(previous_subtitles)
         if newSubtitles:
-            newLangs = [subtitle_searcher.fromietf(newSub) for newSub in newSubtitles]
+            newLangs = [sickrage.subtitles.name_from_code(newSub) for newSub in newSubtitles]
             status = 'New subtitles downloaded: %s' % ', '.join([newLang.name for newLang in newLangs])
             response = _responds(RESULT_SUCCESS, msg='New subtitles found')
         else:

@@ -59,8 +59,6 @@ mediaExtensions = [
     'ogv', '3gp', 'webm', 'tp'
 ]
 
-subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
-
 
 def get_remote_md5_sum(url, max_file_size=100 * 1024 * 1024):
     remote = urllib2.urlopen(url)
@@ -586,54 +584,6 @@ def make_dirs(path):
                 except (OSError, IOError) as e:
                     sickrage.srCore.srLogger.error("Failed creating %s : %r" % (sofar, e))
                     return False
-
-    return True
-
-
-def rename_ep_file(cur_path, new_path, old_path_length=0):
-    """
-    Creates all folders needed to move a file to its new location, renames it, then cleans up any folders
-    left that are now empty.
-
-    :param  cur_path: The absolute path to the file you want to move/rename
-    :param new_path: The absolute path to the destination for the file WITHOUT THE EXTENSION
-    :param old_path_length: The length of media file path (old name) WITHOUT THE EXTENSION
-    """
-
-    # new_dest_dir, new_dest_name = os.path.split(new_path)  # @UnusedVariable
-
-    if old_path_length == 0 or old_path_length > len(cur_path):
-        # approach from the right
-        cur_file_name, cur_file_ext = os.path.splitext(cur_path)  # @UnusedVariable
-    else:
-        # approach from the left
-        cur_file_ext = cur_path[old_path_length:]
-        cur_file_name = cur_path[:old_path_length]
-
-    if cur_file_ext[1:] in subtitleExtensions:
-        # Extract subtitle language from filename
-        sublang = os.path.splitext(cur_file_name)[1][1:]
-
-        # Check if the language extracted from filename is a valid language
-        from sickrage.core.searchers import subtitle_searcher
-        if subtitle_searcher.isValidLanguage(sublang):
-            cur_file_ext = '.' + sublang + cur_file_ext
-
-    # put the extension on the incoming file
-    new_path += cur_file_ext
-
-    make_dirs(os.path.dirname(new_path))
-
-    # move the file
-    try:
-        sickrage.srCore.srLogger.info("Renaming file from %s to %s" % (cur_path, new_path))
-        moveFile(cur_path, new_path)
-    except (OSError, IOError) as e:
-        sickrage.srCore.srLogger.error("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
-        return False
-
-    # clean up any old folders that are empty
-    delete_empty_folders(os.path.dirname(cur_path))
 
     return True
 

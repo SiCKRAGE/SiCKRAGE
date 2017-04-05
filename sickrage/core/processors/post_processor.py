@@ -28,15 +28,15 @@ import subprocess
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException
-from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
+from sickrage.core.helpers import findCertainShow, show_names, fixGlob, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from sickrage.core.searchers.subtitle_searcher import wantedLanguages
-from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
 from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.notifiers import srNotifiers
+from sickrage.subtitles import subtitle_extensions, wanted_languages
 
 
 class PostProcessor(object):
@@ -204,7 +204,7 @@ class PostProcessor(object):
             if associated_file_path == file_path:
                 continue
             # only list it if the only non-shared part is the extension or if it is a subtitle
-            if subtitles_only and not associated_file_path[len(associated_file_path) - 3:] in subtitleExtensions:
+            if subtitles_only and not associated_file_path[len(associated_file_path) - 3:] in subtitle_extensions:
                 continue
 
             # Exclude .rar files from associated list
@@ -304,9 +304,9 @@ class PostProcessor(object):
             cur_extension = cur_file_path[old_base_name_length + 1:]
 
             # check if file have subtitles language
-            if os.path.splitext(cur_extension)[1][1:] in subtitleExtensions:
+            if os.path.splitext(cur_extension)[1][1:] in subtitle_extensions:
                 cur_lang = os.path.splitext(cur_extension)[0]
-                if cur_lang in wantedLanguages():
+                if cur_lang in wanted_languages():
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
@@ -320,7 +320,7 @@ class PostProcessor(object):
             else:
                 new_file_name = replaceExtension(cur_file_name, cur_extension)
 
-            if sickrage.srCore.srConfig.SUBTITLES_DIR and cur_extension in subtitleExtensions:
+            if sickrage.srCore.srConfig.SUBTITLES_DIR and cur_extension in subtitle_extensions:
                 subs_new_path = os.path.join(new_path, sickrage.srCore.srConfig.SUBTITLES_DIR)
                 dir_exists = makeDir(subs_new_path)
                 if not dir_exists:

@@ -26,7 +26,6 @@ import socket
 import threading
 import time
 import traceback
-from multiprocessing import cpu_count
 
 from apscheduler.schedulers.tornado import TornadoScheduler
 from tornado.ioloop import IOLoop
@@ -41,7 +40,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, removetree, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace
-from sickrage.core.nameparser.validator import check_force_season_folders
+from sickrage.core.nameparser.validator import check_force_season_folders  # memory intensive
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
 from sickrage.core.queues.search import srSearchQueue
@@ -75,9 +74,6 @@ class Core(object):
 
         # process id
         self.PID = os.getpid()
-
-        # cpu count
-        self.CPU_COUNT = cpu_count()
 
         # generate notifiers dict
         self.notifiersDict = notifiersDict()

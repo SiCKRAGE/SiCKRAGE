@@ -1,8 +1,7 @@
-    <%
+<%
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
-    from sickrage.core.searchers import subtitle_searcher
 %>
 % if sickrage.srCore.srConfig.USE_SUBTITLES:
     <br>
