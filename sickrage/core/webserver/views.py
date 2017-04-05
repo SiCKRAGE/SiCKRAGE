@@ -2037,7 +2037,7 @@ class Home(WebHandler):
             newSubtitles = frozenset(ep_obj.subtitles).difference(previous_subtitles)
             if newSubtitles:
                 newLangs = [sickrage.subtitles.name_from_code(newSub) for newSub in newSubtitles]
-                status = 'New subtitles downloaded: %s' % ', '.join([newLang.name for newLang in newLangs])
+                status = 'New subtitles downloaded: %s' % ', '.join([newLang for newLang in newLangs])
             else:
                 status = 'No subtitles downloaded'
             sickrage.srCore.srNotifications.message(ep_obj.show.name, status)
@@ -3623,7 +3623,7 @@ class ManageSearches(Manage):
             "/manage/searches.mako",
             backlogPaused=sickrage.srCore.SEARCHQUEUE.is_backlog_paused(),
             backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
-            dailySearchStatus=sickrage.srCore.DAILYSEARCHER.amActive,
+            dailySearchStatus=sickrage.srCore.SEARCHQUEUE.is_dailysearch_in_progress(),
             findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
             queueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
             title='Manage Searches',

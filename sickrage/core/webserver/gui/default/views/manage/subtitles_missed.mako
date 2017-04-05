@@ -8,7 +8,7 @@
 <%block name="content">
     <div id="content960">
         % if whichSubs:
-            <% subsLanguage = sickrage.subtitles.name_from_code(whichSubs).name if not whichSubs == 'all' else 'All' %>
+            <% subsLanguage = sickrage.subtitles.name_from_code(whichSubs) if not whichSubs == 'all' else 'All' %>
         % endif
         % if not whichSubs or (whichSubs and not ep_counts):
         % if whichSubs:
@@ -21,7 +21,7 @@
                 <option value="all">All</option>
                 <% sub_langs = [sickrage.subtitles.name_from_code(x) for x in sickrage.subtitles.wanted_languages()] %>
                 % for sub_lang in sub_langs:
-                    <option value="${sub_lang.opensubtitles}">${sub_lang.name}</option>
+                    <option value="${sub_lang.opensubtitles}">${sub_lang}</option>
                 % endfor
             </select>
                 subtitles

@@ -321,6 +321,10 @@ def name_from_code(code):
     return from_code(code).name
 
 
+def code_from_code(code):
+    return from_code(code).opensubtitles
+
+
 def run_subs_extra_scripts(episode, found_subtitles, video, single=False):
     for curScriptName in sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS:
         script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]

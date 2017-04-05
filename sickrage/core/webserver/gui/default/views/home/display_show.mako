@@ -260,7 +260,7 @@
                 </table>
 
                 <table style="width:180px; float: right; vertical-align: middle; height: 100%;">
-                    <% info_flag = sickrage.subtitles.name_from_code(show.lang).opensubtitles if show.lang else '' %>
+                    <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
                     <tr>
                         <td class="showLegend">Info Language:</td>
                         <td><img src="/images/subtitles/flags/${info_flag}.png" width="16" height="11"
@@ -651,7 +651,7 @@
             </td>
 
             <td class="col-subtitles" align="center">
-                % for sub_lang in [sickrage.subtitles.name_from_code(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
+                % for sub_lang in [sickrage.subtitles.from_code(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
                 <% flag = sub_lang.opensubtitles %>
                 % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(sickrage.subtitles.wanted_languages()) is 1) and sickrage.subtitles.wanted_languages()[0] in sub_lang.opensubtitles:
                     <% flag = 'checkbox' %>

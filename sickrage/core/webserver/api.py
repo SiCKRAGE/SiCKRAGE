@@ -979,7 +979,7 @@ class CMD_SubtitleSearch(ApiCall):
         newSubtitles = frozenset(epObj.subtitles).difference(previous_subtitles)
         if newSubtitles:
             newLangs = [sickrage.subtitles.name_from_code(newSub) for newSub in newSubtitles]
-            status = 'New subtitles downloaded: %s' % ', '.join([newLang.name for newLang in newLangs])
+            status = 'New subtitles downloaded: %s' % ', '.join([newLang for newLang in newLangs])
             response = _responds(RESULT_SUCCESS, msg='New subtitles found')
         else:
             status = 'No subtitles downloaded'

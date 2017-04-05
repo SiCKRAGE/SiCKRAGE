@@ -305,7 +305,7 @@ class TVEpisode(object):
         self.saveToDB()
 
         if newSubtitles:
-            subtitleList = ", ".join([name_from_code(newSub).name for newSub in newSubtitles])
+            subtitleList = ", ".join([name_from_code(newSub) for newSub in newSubtitles])
             sickrage.srCore.srLogger.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
                                            (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
