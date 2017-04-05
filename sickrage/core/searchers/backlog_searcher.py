@@ -154,7 +154,8 @@ class srBacklogSearcher(object):
 
         # check through the list of statuses to see if we want any
         wanted = {}
-        for result in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+        for result in [x['doc'] for x in
+                       sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                        if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
             curCompositeStatus = int(result["status"] or -1)
             curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)

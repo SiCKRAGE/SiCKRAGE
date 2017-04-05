@@ -68,7 +68,8 @@ class TorrentBytesProvider(TorrentProvider):
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

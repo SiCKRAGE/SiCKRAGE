@@ -43,7 +43,7 @@ class TransmissionAPI(GenericClient):
 
     def _get_auth(self):
         self.response = sickrage.srCore.srWebSession.post(self.url,
-                                                          data=json.dumps({'method': 'session-get',}),
+                                                          data=json.dumps({'method': 'session-get', }),
                                                           timeout=120,
                                                           auth=(self.username, self.password),
                                                           verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))

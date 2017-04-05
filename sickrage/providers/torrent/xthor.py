@@ -34,7 +34,7 @@ from sickrage.providers import TorrentProvider
 class XthorProvider(TorrentProvider):
     def __init__(self):
 
-        super(XthorProvider, self).__init__("Xthor","xthor.bz", True)
+        super(XthorProvider, self).__init__("Xthor", "xthor.bz", True)
 
         self.supports_backlog = True
 
@@ -61,13 +61,15 @@ class XthorProvider(TorrentProvider):
                         'submitme': 'X'}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
+                                                         timeout=30).text
         except Exception:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('donate.php', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

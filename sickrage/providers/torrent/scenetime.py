@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class SceneTimeProvider(TorrentProvider):
     def __init__(self):
 
-        super(SceneTimeProvider, self).__init__("SceneTime",'www.scenetime.com', True)
+        super(SceneTimeProvider, self).__init__("SceneTime", 'www.scenetime.com', True)
 
         self.supports_backlog = True
 
@@ -153,7 +153,8 @@ class SceneTimeProvider(TorrentProvider):
                             items[mode].append(item)
 
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
+                    sickrage.srCore.srLogger.error(
+                        "Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

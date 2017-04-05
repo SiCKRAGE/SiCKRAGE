@@ -82,7 +82,8 @@ class IPTorrentsProvider(TorrentProvider):
 
         # You tried too often, please try again after 2 hours!
         if re.search('You tried too often', response.text):
-            sickrage.srCore.srLogger.warning(u"You tried too often, please try again after 2 hours! Disable IPTorrents for at least 2 hours")
+            sickrage.srCore.srLogger.warning(
+                u"You tried too often, please try again after 2 hours! Disable IPTorrents for at least 2 hours")
             return False
 
         # Captcha!

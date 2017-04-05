@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class FreshOnTVProvider(TorrentProvider):
     def __init__(self):
-        super(FreshOnTVProvider, self).__init__("FreshOnTV",'freshon.tv', True)
+        super(FreshOnTVProvider, self).__init__("FreshOnTV", 'freshon.tv', True)
 
         self.supports_backlog = True
 
@@ -50,7 +50,8 @@ class FreshOnTVProvider(TorrentProvider):
         self.urls.update({
             'login': '{base_url}/login.php?action=makelogin'.format(base_url=self.urls['base_url']),
             'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/browse.php?incldead=%s&words=0&cat=0&search=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?incldead=%s&words=0&cat=0&search=%s'.format(
+                base_url=self.urls['base_url']),
             'download': '{base_url}/download.php?id=%s&type=torrent'.format(base_url=self.urls['base_url'])
         })
 
@@ -59,7 +60,8 @@ class FreshOnTVProvider(TorrentProvider):
     def _check_auth(self):
 
         if not self.username or not self.password:
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -97,10 +99,12 @@ class FreshOnTVProvider(TorrentProvider):
 
             else:
                 if re.search('Username does not exist in the userbase or the account is not confirmed yet.', response):
-                    sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+                    sickrage.srCore.srLogger.warning(
+                        "[{}]: Invalid username or password. Check your settings".format(self.name))
 
                 if re.search('DDoS protection by CloudFlare', response):
-                    sickrage.srCore.srLogger.warning("Unable to login to provider due to CloudFlare DDoS javascript check")
+                    sickrage.srCore.srLogger.warning(
+                        "Unable to login to provider due to CloudFlare DDoS javascript check")
 
                     return False
 
@@ -184,7 +188,8 @@ class FreshOnTVProvider(TorrentProvider):
 
                             # Continue only if a Release is found
                             if len(torrent_rows) == 0:
-                                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                                sickrage.srCore.srLogger.debug(
+                                    "Data returned from provider does not contain any torrents")
                                 continue
 
                             for individual_torrent in torrent_rows:

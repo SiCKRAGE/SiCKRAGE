@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -96,7 +94,8 @@ class PushbulletNotifier(srNotifiers):
         try:
             response = sickrage.srCore.srWebSession.request(method, url, data=data, headers=headers)
         except Exception:
-            sickrage.srCore.srLogger.debug('Pushbullet authorization failed with exception: %r' % traceback.format_exc())
+            sickrage.srCore.srLogger.debug(
+                'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
         if response.status_code == 410:

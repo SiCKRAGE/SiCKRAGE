@@ -78,13 +78,15 @@ class LibnotifyNotifier(srNotifiers):
             # noinspection PyUnresolvedReferences
             from gi.repository import Notify
         except ImportError:
-            sickrage.srCore.srLogger.error("Unable to import Notify from gi.repository. libnotify notifications won't work.")
+            sickrage.srCore.srLogger.error(
+                "Unable to import Notify from gi.repository. libnotify notifications won't work.")
             return False
         try:
             # noinspection PyUnresolvedReferences
             from gi.repository import GObject
         except ImportError:
-            sickrage.srCore.srLogger.error("Unable to import GObject from gi.repository. We can't catch a GError in display.")
+            sickrage.srCore.srLogger.error(
+                "Unable to import GObject from gi.repository. We can't catch a GError in display.")
             return False
         if not Notify.init('SiCKRAGE'):
             sickrage.srCore.srLogger.error("Initialization of Notify failed. libnotify notifications won't work.")

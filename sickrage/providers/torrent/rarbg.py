@@ -30,9 +30,10 @@ from sickrage.core.helpers import convert_size
 from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
 
+
 class RarbgProvider(TorrentProvider):
     def __init__(self):
-        super(RarbgProvider, self).__init__("Rarbg",'torrentapi.org', False)
+        super(RarbgProvider, self).__init__("Rarbg", 'torrentapi.org', False)
 
         self.supports_backlog = True
 
@@ -45,10 +46,13 @@ class RarbgProvider(TorrentProvider):
         self.tokenExpireDate = None
 
         self.urls.update({
-            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage'.format(base_url=self.urls['base_url']),
+            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage'.format(
+                base_url=self.urls['base_url']),
             'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string=%s'.format(base_url=self.urls['base_url']),
-            'search_tvdb': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb=%s&search_string=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string=%s'.format(
+                base_url=self.urls['base_url']),
+            'search_tvdb': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb=%s&search_string=%s'.format(
+                base_url=self.urls['base_url']),
             'api_spec': '{base_url}/apidocs_v2.txt'.format(base_url=self.urls['base_url'])
         })
 
@@ -154,7 +158,8 @@ class RarbgProvider(TorrentProvider):
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
                         try:
-                            data = sickrage.srCore.srWebSession.get(searchURL + self.urlOptions['token'].format(token=self.token)).text
+                            data = sickrage.srCore.srWebSession.get(
+                                searchURL + self.urlOptions['token'].format(token=self.token)).text
                         except Exception:
                             sickrage.srCore.srLogger.debug("No data returned from provider")
                             raise StopIteration

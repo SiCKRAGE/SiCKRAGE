@@ -76,11 +76,11 @@ class NMJv2Notifier(srNotifiers):
                 responsedb = handledb.read()
                 xmldb = parseString(responsedb)
                 returnvalue = xmldb.getElementsByTagName('returnValue')[0].toxml().replace('<returnValue>', '').replace(
-                        '</returnValue>', '')
+                    '</returnValue>', '')
                 if returnvalue == "0":
                     DB_path = xmldb.getElementsByTagName('database_path')[0].toxml().replace('<database_path>',
                                                                                              '').replace(
-                            '</database_path>', '').replace('[=]', '')
+                        '</database_path>', '').replace('[=]', '')
                     if dbloc == "local" and DB_path.find("localhost") > -1:
                         sickrage.srCore.srConfig.NMJv2_HOST = host
                         sickrage.srCore.srConfig.NMJv2_DATABASE = DB_path
@@ -126,13 +126,15 @@ class NMJv2Notifier(srNotifiers):
             et = ElementTree.fromstring(response1)
             result1 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srCore.srLogger.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e.message))
+            sickrage.srCore.srLogger.error(
+                "Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e.message))
             return False
         try:
             et = ElementTree.fromstring(response2)
             result2 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srCore.srLogger.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e.message))
+            sickrage.srCore.srLogger.error(
+                "Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e.message))
             return False
 
         # if the result was a number then consider that an error

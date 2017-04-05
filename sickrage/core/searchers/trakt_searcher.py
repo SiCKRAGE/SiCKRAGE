@@ -203,7 +203,8 @@ class srTraktSearcher(object):
 
             trakt_data = []
             for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                for e in [e['doc'] for e in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     trakt_id = srIndexerApi(s["indexer"]).config['trakt_id']
 
                     if self._checkInList(trakt_id, str(e["showid"]), str(e["season"]), str(e["episode"]),
@@ -232,7 +233,8 @@ class srTraktSearcher(object):
 
             trakt_data = []
             for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                for e in [e['doc'] for e in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     trakt_id = srIndexerApi(s["indexer"]).config['trakt_id']
 
                     if not self._checkInList(trakt_id, str(e["showid"]), str(e["season"]),
@@ -275,7 +277,8 @@ class srTraktSearcher(object):
 
             trakt_data = []
             for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                for e in [e['doc'] for e in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     trakt_id = srIndexerApi(s["indexer"]).config['trakt_id']
 
                     if self._checkInList(trakt_id, str(e["showid"]), str(e["season"]),
@@ -304,7 +307,8 @@ class srTraktSearcher(object):
 
             trakt_data = []
             for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                for e in [e['doc'] for e in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     trakt_id = srIndexerApi(s["indexer"]).config['trakt_id']
 
                     if not self._checkInList(trakt_id, str(e["showid"]), str(e["season"]), str(e["episode"])):

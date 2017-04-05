@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
@@ -127,7 +125,8 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
 
         try:
             existing_exceptions = [x['doc']["show_name"] for x in
-                                   sickrage.srCore.cacheDB.db.get_many('scene_exceptions', cur_indexer_id, with_doc=True)]
+                                   sickrage.srCore.cacheDB.db.get_many('scene_exceptions', cur_indexer_id,
+                                                                       with_doc=True)]
         except RecordNotFound:
             continue
 
@@ -191,7 +190,8 @@ def get_all_scene_exceptions(indexer_id):
     """
     exceptionsDict = {}
 
-    for cur_exception in [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('scene_exceptions', indexer_id, with_doc=True)]:
+    for cur_exception in [x['doc'] for x in
+                          sickrage.srCore.cacheDB.db.get_many('scene_exceptions', indexer_id, with_doc=True)]:
         if not cur_exception['season'] in exceptionsDict:
             exceptionsDict[cur_exception['season']] = []
         exceptionsDict[cur_exception['season']].append(cur_exception['show_name'])
@@ -231,7 +231,8 @@ def get_scene_exception_by_name_multiple(show_name):
 
     out = []
 
-    dbData = sorted([x['doc'] for x in sickrage.srCore.cacheDB.db.all('scene_exceptions', with_doc=True)], key=lambda d: d['season'])
+    dbData = sorted([x['doc'] for x in sickrage.srCore.cacheDB.db.all('scene_exceptions', with_doc=True)],
+                    key=lambda d: d['season'])
 
     # try the obvious case first
     exception_result = [x for x in dbData if x['show_name'].lower() == show_name.lower()]
@@ -259,7 +260,8 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
     """
-    [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in sickrage.srCore.cacheDB.db.get_many('scene_exceptions', indexer_id, with_doc=True)
+    [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in
+     sickrage.srCore.cacheDB.db.get_many('scene_exceptions', indexer_id, with_doc=True)
      if x['doc']['season'] == season]
 
     sickrage.srCore.srLogger.info("Updating scene exceptions")
@@ -342,7 +344,8 @@ def _xem_exceptions_fetcher():
 
 def getSceneSeasons(indexer_id):
     """get a list of season numbers that have scene exceptions"""
-    return [x['doc']['season'] for x in sickrage.srCore.cacheDB.db.get_many('scene_exceptions', indexer_id, with_doc=True)]
+    return [x['doc']['season'] for x in
+            sickrage.srCore.cacheDB.db.get_many('scene_exceptions', indexer_id, with_doc=True)]
 
 
 def check_against_names(nameInQuestion, show, season=-1):

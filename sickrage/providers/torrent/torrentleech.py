@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentLeechProvider, self).__init__("TorrentLeech",'torrentleech.org', True)
+        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'torrentleech.org', True)
 
         self.supports_backlog = True
 
@@ -70,7 +70,8 @@ class TorrentLeechProvider(TorrentProvider):
 
         if re.search('Invalid Username/password', response) or re.search('<title>Login :: TorrentLeech.org</title>',
                                                                          response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -144,7 +145,8 @@ class TorrentLeechProvider(TorrentProvider):
                             items[mode].append(item)
 
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
+                    sickrage.srCore.srLogger.error(
+                        "Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

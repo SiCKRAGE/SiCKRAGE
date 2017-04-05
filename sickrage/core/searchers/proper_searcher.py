@@ -174,7 +174,8 @@ class srProperSearcher(object):
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            dbData = [x['doc'] for x in sickrage.srCore.mainDB().db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
+            dbData = [x['doc'] for x in
+                      sickrage.srCore.mainDB().db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
                       if x['doc']['season'] == bestResult.season and x['doc']['episode'] == bestResult.episode]
             if not dbData: continue
 
@@ -185,7 +186,8 @@ class srProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if bestResult.show.is_anime:
-                dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
+                dbData = [x['doc'] for x in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
                           if x['doc']['season'] == bestResult.season and x['doc']['episode'] == bestResult.episode]
 
                 oldVersion = int(dbData[0]["version"])
@@ -221,7 +223,8 @@ class srProperSearcher(object):
             historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            historyResults = [x for x in sickrage.srCore.mainDB.db.get_many('history', curProper.indexerid, with_doc=True)
+            historyResults = [x for x in
+                              sickrage.srCore.mainDB.db.get_many('history', curProper.indexerid, with_doc=True)
                               if x['doc']['season'] == curProper.season and x['doc']['episode'] == curProper.episode
                               and x['doc']['quality'] == curProper.quality
                               and x['doc']['date'] >= historyLimit.strftime(History.date_format)

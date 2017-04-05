@@ -47,13 +47,14 @@ class srPostProcessor(object):
         threading.currentThread().setName(self.name)
 
         if not os.path.isdir(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
-            sickrage.srCore.srLogger.error("Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " doesn't exist")
+            sickrage.srCore.srLogger.error(
+                "Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " doesn't exist")
             self.amActive = False
             return
 
         if not os.path.isabs(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
             sickrage.srCore.srLogger.error(
-                    "Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)")
+                "Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)")
             self.amActive = False
             return
 

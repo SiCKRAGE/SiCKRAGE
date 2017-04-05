@@ -293,6 +293,7 @@ class AttrDict(dict):
         else:
             raise AttributeError("No such attribute: " + name)
 
+
 class srIntervalTrigger(IntervalTrigger):
     def __init__(self, weeks=0, days=0, hours=0, minutes=0, seconds=0, start_date=None, end_date=None, timezone=None,
                  **kwargs):

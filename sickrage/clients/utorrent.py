@@ -1,5 +1,3 @@
-
-
 # Authors: Mr_Orange <mr_orange@hotmail.it>, EchelonFour
 # URL: https://sickrage.ca
 #

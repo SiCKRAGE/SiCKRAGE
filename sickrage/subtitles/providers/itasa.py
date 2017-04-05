@@ -25,6 +25,7 @@ import re
 
 from babelfish import Language
 from guessit import guessit
+
 try:
     from lxml import etree
 except ImportError:
@@ -309,7 +310,7 @@ class ItaSAProvider(Provider):
                              subtitle.find('version').text)
 
                 content = self._download_zip(int(subtitle.find('id').text))
-                if not is_zipfile(io.BytesIO(content)):   # pragma: no cover
+                if not is_zipfile(io.BytesIO(content)):  # pragma: no cover
                     if 'limite di download' in content:
                         raise TooManyRequests()
                     else:
@@ -382,7 +383,7 @@ class ItaSAProvider(Provider):
             'show_id': show_id,
             'q': '{0}x{1:02}'.format(season, episode),
             'version': sub_format
-            }
+        }
         r = self.session.get(self.server_url + 'subtitles/search', params=params, timeout=30)
         r.raise_for_status()
         root = etree.fromstring(r.content)
@@ -412,27 +413,26 @@ class ItaSAProvider(Provider):
         # Looking for subtitles in first page
         for subtitle in root.findall('data/subtitles/subtitle'):
             if '{0}x{1:02}'.format(season, episode) in subtitle.find('name').text.lower():
-
                 logger.debug('Found subtitle id %d - %r - %r',
                              int(subtitle.find('id').text),
                              subtitle.find('name').text,
                              subtitle.find('version').text)
 
                 sub = ItaSASubtitle(
-                        int(subtitle.find('id').text),
-                        subtitle.find('show_name').text,
-                        season,
-                        episode,
-                        video_format,
-                        year,
-                        tvdb_id,
-                        subtitle.find('name').text)
+                    int(subtitle.find('id').text),
+                    subtitle.find('show_name').text,
+                    season,
+                    episode,
+                    video_format,
+                    year,
+                    tvdb_id,
+                    subtitle.find('name').text)
 
                 subtitles.append(sub)
 
         # Not in the first page of result try next (if any)
         next_page = root.find('data/next')
-        while next_page.text is not None:   # pragma: no cover
+        while next_page.text is not None:  # pragma: no cover
 
             r = self.session.get(next_page.text, timeout=30)
             r.raise_for_status()
@@ -443,7 +443,6 @@ class ItaSAProvider(Provider):
             # Looking for show in following pages
             for subtitle in root.findall('data/subtitles/subtitle'):
                 if '{0}x{1:02}'.format(season, episode) in subtitle.find('name').text.lower():
-
                     logger.debug('Found subtitle id %d - %r - %r',
                                  int(subtitle.find('id').text),
                                  subtitle.find('name').text,
@@ -469,14 +468,14 @@ class ItaSAProvider(Provider):
 
             # open the zip
             content = self._download_zip(sub.sub_id)
-            if not is_zipfile(io.BytesIO(content)):   # pragma: no cover
+            if not is_zipfile(io.BytesIO(content)):  # pragma: no cover
                 if 'limite di download' in content:
                     raise TooManyRequests()
                 else:
                     raise ConfigurationError('Not a zip file: {!r}'.format(content))
 
             with ZipFile(io.BytesIO(content)) as zf:
-                if len(zf.namelist()) > 1:   # pragma: no cover
+                if len(zf.namelist()) > 1:  # pragma: no cover
 
                     for index, name in enumerate(zf.namelist()):
 
@@ -498,5 +497,5 @@ class ItaSAProvider(Provider):
     def list_subtitles(self, video, languages):
         return self.query(video.series, video.season, video.episode, video.format, video.resolution)
 
-    def download_subtitle(self, subtitle):   # pragma: no cover
+    def download_subtitle(self, subtitle):  # pragma: no cover
         pass

@@ -81,7 +81,7 @@ class Command:
         pass
 
 
-#first run
+# first run
 class AuthCommand(Command):
     def __init__(self, username, password, protover, client, clientver, nat=None, comp=None, enc=None, mtu=None):
         parameters = {'user': username, 'pass': password, 'protover': protover, 'client': client,
@@ -94,7 +94,7 @@ class LogoutCommand(Command):
         Command.__init__(self, 'LOGOUT')
 
 
-#third run (at the same time as second)
+# third run (at the same time as second)
 class PushCommand(Command):
     def __init__(self, notify, msg, buddy=None):
         parameters = {'notify': notify, 'msg': msg, 'buddy': buddy}
@@ -192,7 +192,7 @@ class BuddyStateCommand(Command):
         Command.__init__(self, 'BUDDYSTATE', **parameters)
 
 
-#first run
+# first run
 class AnimeCommand(Command):
     def __init__(self, aid=None, aname=None, amask=None):
         if not (aid or aname):
@@ -213,10 +213,10 @@ class FileCommand(Command):
     def __init__(self, fid=None, size=None, ed2k=None, aid=None, aname=None, gid=None, gname=None, epno=None,
                  fmask=None, amask=None):
         if not (fid or (size and ed2k) or ((aid or aname) and (gid or gname) and epno)) or (
-            fid and (size or ed2k or aid or aname or gid or gname or epno)) or (
-            (size and ed2k) and (fid or aid or aname or gid or gname or epno)) or (
-            ((aid or aname) and (gid or gname) and epno) and (fid or size or ed2k)) or (aid and aname) or (
-            gid and gname):
+                    fid and (size or ed2k or aid or aname or gid or gname or epno)) or (
+                    (size and ed2k) and (fid or aid or aname or gid or gname or epno)) or (
+                    ((aid or aname) and (gid or gname) and epno) and (fid or size or ed2k)) or (aid and aname) or (
+                    gid and gname):
             raise AniDBIncorrectParameterError, "You must provide <fid XOR size+ed2k XOR a(id|name)+g(id|name)+epno> for FILE command"
         parameters = {'fid': fid, 'size': size, 'ed2k': ed2k, 'aid': aid, 'aname': aname, 'gid': gid, 'gname': gname,
                       'epno': epno, 'fmask': fmask, 'amask': amask}
@@ -287,10 +287,10 @@ class ProducerCommand(Command):
 class MyListCommand(Command):
     def __init__(self, lid=None, fid=None, size=None, ed2k=None, aid=None, aname=None, gid=None, gname=None, epno=None):
         if not (lid or fid or (size and ed2k) or (aid or aname)) or (
-            lid and (fid or size or ed2k or aid or aname or gid or gname or epno)) or (
-            fid and (lid or size or ed2k or aid or aname or gid or gname or epno)) or (
-            (size and ed2k) and (lid or fid or aid or aname or gid or gname or epno)) or (
-            (aid or aname) and (lid or fid or size or ed2k)) or (aid and aname) or (gid and gname):
+                    lid and (fid or size or ed2k or aid or aname or gid or gname or epno)) or (
+                    fid and (lid or size or ed2k or aid or aname or gid or gname or epno)) or (
+                    (size and ed2k) and (lid or fid or aid or aname or gid or gname or epno)) or (
+                    (aid or aname) and (lid or fid or size or ed2k)) or (aid and aname) or (gid and gname):
             raise AniDBIncorrectParameterError, "You must provide <lid XOR fid XOR size+ed2k XOR a(id|name)+g(id|name)+epno> for MYLIST command"
         parameters = {'lid': lid, 'fid': fid, 'size': size, 'ed2k': ed2k, 'aid': aid, 'aname': aname, 'gid': gid,
                       'gname': gname, 'epno': epno}
@@ -380,11 +380,11 @@ class MyListAddCommand(Command):
     def __init__(self, lid=None, fid=None, size=None, ed2k=None, aid=None, aname=None, gid=None, gname=None, epno=None,
                  edit=None, state=None, viewed=None, source=None, storage=None, other=None):
         if not (lid or fid or (size and ed2k) or ((aid or aname) and (gid or gname))) or (
-            lid and (fid or size or ed2k or aid or aname or gid or gname or epno)) or (
-            fid and (lid or size or ed2k or aid or aname or gid or gname or epno)) or (
-            (size and ed2k) and (lid or fid or aid or aname or gid or gname or epno)) or (
-            ((aid or aname) and (gid or gname)) and (lid or fid or size or ed2k)) or (aid and aname) or (
-            gid and gname) or (lid and not edit):
+                    lid and (fid or size or ed2k or aid or aname or gid or gname or epno)) or (
+                    fid and (lid or size or ed2k or aid or aname or gid or gname or epno)) or (
+                    (size and ed2k) and (lid or fid or aid or aname or gid or gname or epno)) or (
+                    ((aid or aname) and (gid or gname)) and (lid or fid or size or ed2k)) or (aid and aname) or (
+                    gid and gname) or (lid and not edit):
             raise AniDBIncorrectParameterError, "You must provide <lid XOR fid XOR size+ed2k XOR a(id|name)+g(id|name)+epno> for MYLISTADD command"
         parameters = {'lid': lid, 'fid': fid, 'size': size, 'ed2k': ed2k, 'aid': aid, 'aname': aname, 'gid': gid,
                       'gname': gname, 'epno': epno, 'edit': edit, 'state': state, 'viewed': viewed, 'source': source,
@@ -395,9 +395,10 @@ class MyListAddCommand(Command):
 class MyListDelCommand(Command):
     def __init__(self, lid=None, fid=None, aid=None, aname=None, gid=None, gname=None, epno=None):
         if not (lid or fid or ((aid or aname) and (gid or gname) and epno)) or (
-            lid and (fid or aid or aname or gid or gname or epno)) or (
-            fid and (lid or aid or aname or gid or gname or epno)) or (
-            ((aid or aname) and (gid or gname) and epno) and (lid or fid)) or (aid and aname) or (gid and gname):
+                    lid and (fid or aid or aname or gid or gname or epno)) or (
+                    fid and (lid or aid or aname or gid or gname or epno)) or (
+                    ((aid or aname) and (gid or gname) and epno) and (lid or fid)) or (aid and aname) or (
+            gid and gname):
             raise AniDBIncorrectParameterError, "You must provide <lid+edit=1 XOR fid XOR a(id|name)+g(id|name)+epno> for MYLISTDEL command"
         parameters = {'lid': lid, 'fid': fid, 'aid': aid, 'aname': aname, 'gid': gid, 'gname': gname, 'epno': epno}
         Command.__init__(self, 'MYLISTDEL', **parameters)
@@ -427,7 +428,7 @@ class PingCommand(Command):
         Command.__init__(self, 'PING')
 
 
-#second run
+# second run
 class EncryptCommand(Command):
     def __init__(self, user, apipassword, type):
         self.apipassword = apipassword
@@ -463,4 +464,3 @@ class UptimeCommand(Command):
 class VersionCommand(Command):
     def __init__(self):
         Command.__init__(self, 'VERSION')
-

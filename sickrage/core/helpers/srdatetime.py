@@ -26,7 +26,6 @@ from datetime import datetime
 import sickrage
 from sickrage.core.updaters.tz_updater import sr_timezone
 
-
 date_presets = (
     '%Y-%m-%d',
     '%a, %Y-%m-%d',

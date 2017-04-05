@@ -381,7 +381,8 @@ class TVEpisode(object):
         sickrage.srCore.srLogger.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+        dbData = [x['doc'] for x in
+                  sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
                   if x['doc']['season'] == season and x['doc']['episode'] == episode]
 
         if len(dbData) > 1:
@@ -619,7 +620,7 @@ class TVEpisode(object):
                 for epDetails in showXML.iter('episodedetails'):
                     if epDetails.findtext('season') is None or int(
                             epDetails.findtext('season')) != self.season or epDetails.findtext(
-                            'episode') is None or int(epDetails.findtext('episode')) != self.episode:
+                        'episode') is None or int(epDetails.findtext('episode')) != self.episode:
                         sickrage.srCore.srLogger.debug(
                             "%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got S%02dE%02d" %
                             (
@@ -728,7 +729,8 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.srCore.srLogger.debug("Deleting myself from the database")
 
-        [sickrage.srCore.mainDB.db.delete(x['doc']) for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+        [sickrage.srCore.mainDB.db.delete(x['doc']) for x in
+         sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
          if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
         data = sickrage.srCore.notifiersDict['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
@@ -797,8 +799,9 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
-                      if x['doc']['indexerid'] == self.indexerid][0]
+            dbData = \
+            [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+             if x['doc']['indexerid'] == self.indexerid][0]
 
             dbData.update(tv_episode)
             sickrage.srCore.mainDB.db.update(dbData)
@@ -925,14 +928,14 @@ class TVEpisode(object):
             proper_related_path = absolute_proper_path.replace(proper_related_dir, proper_related_dir + subfolder)
 
             cur_result = self.rename_ep_file(cur_related_file, proper_related_path,
-                                        absolute_current_path_no_ext_length + len(subfolder))
+                                             absolute_current_path_no_ext_length + len(subfolder))
             if not cur_result:
                 sickrage.srCore.srLogger.error(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
 
         for cur_related_sub in related_subs:
             absolute_proper_subs_path = os.path.join(sickrage.srCore.srConfig.SUBTITLES_DIR, self.formatted_filename())
             cur_result = self.rename_ep_file(cur_related_sub, absolute_proper_subs_path,
-                                        absolute_current_path_no_ext_length)
+                                             absolute_current_path_no_ext_length)
             if not cur_result:
                 sickrage.srCore.srLogger.error(str(self.indexerid) + ": Unable to rename file " + cur_related_sub)
 

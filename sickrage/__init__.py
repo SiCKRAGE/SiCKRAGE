@@ -75,6 +75,7 @@ if not (LIBS_DIR in sys.path):
     site.addsitedir(LIBS_DIR)
     sys.path.extend(remainder)
 
+
 class Daemon(object):
     """
     Usage: subclass the Daemon class
@@ -373,6 +374,7 @@ def main():
             print("Failed to import required libs, please run 'pip install -r {}' from console".format(REQS_FILE))
     except:
         traceback.print_exc()
+
 
 if __name__ == '__main__':
     main()

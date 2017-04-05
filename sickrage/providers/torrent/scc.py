@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class SCCProvider(TorrentProvider):
     def __init__(self):
 
-        super(SCCProvider, self).__init__("SceneAccess",'sceneaccess.eu', True)
+        super(SCCProvider, self).__init__("SceneAccess", 'sceneaccess.eu', True)
 
         self.supports_backlog = True
 
@@ -68,7 +68,8 @@ class SCCProvider(TorrentProvider):
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

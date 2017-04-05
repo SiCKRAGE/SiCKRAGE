@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -67,7 +65,7 @@ class Response:
 
     def __repr__(self):
         tmp = "%s(%s,%s,%s) %s\n" % (
-        self.__class__.__name__, repr(self.restag), repr(self.rescode), repr(self.resstr), repr(self.attrs))
+            self.__class__.__name__, repr(self.restag), repr(self.rescode), repr(self.resstr), repr(self.attrs))
 
         m = 0
         for line in self.datalines:
@@ -379,7 +377,7 @@ class FileResponse(Response):
         codeListF = self.maper.getFileCodesF(fmask)
         codeListA = self.maper.getFileCodesA(amask)
         # print "File - codelistF: "+str(codeListF)
-        #print "File - codelistA: "+str(codeListA)
+        # print "File - codelistA: "+str(codeListA)
 
 
         self.codetail = tuple(['fid'] + codeListF + codeListA)
@@ -438,8 +436,8 @@ class MylistStatsResponse(Response):
         self.codestr = 'MYLIST_STATS'
         self.codehead = ()
         self.codetail = (
-        'animes', 'eps', 'files', 'filesizes', 'animesadded', 'epsadded', 'filesadded', 'groupsadded', 'leechperc',
-        'lameperc', 'viewedofdb', 'mylistofdb', 'viewedofmylist', 'viewedeps', 'votes', 'reviews')
+            'animes', 'eps', 'files', 'filesizes', 'animesadded', 'epsadded', 'filesadded', 'groupsadded', 'leechperc',
+            'lameperc', 'viewedofdb', 'mylistofdb', 'viewedofmylist', 'viewedeps', 'votes', 'reviews')
         self.coderep = ()
 
 
@@ -575,7 +573,7 @@ class GroupResponse(Response):
         self.codestr = 'GROUP'
         self.codehead = ()
         self.codetail = (
-        'gid', 'rating', 'votes', 'animes', 'files', 'name', 'shortname', 'ircchannel', 'ircserver', 'url')
+            'gid', 'rating', 'votes', 'animes', 'files', 'name', 'shortname', 'ircchannel', 'ircserver', 'url')
         self.coderep = ()
 
 
@@ -786,6 +784,7 @@ class NotificationAddedResponse(Response):
         self.codehead = ()
         self.codetail = ('nid')
         self.coderep = ()
+
 
 class NotificationDeletedResponse(Response):
     def __init__(self, cmd, restag, rescode, resstr, datalines):

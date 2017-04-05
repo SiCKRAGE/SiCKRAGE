@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 class SpeedCDProvider(TorrentProvider):
     def __init__(self):
 
-        super(SpeedCDProvider, self).__init__("Speedcd",'speed.cd', True)
+        super(SpeedCDProvider, self).__init__("Speedcd", 'speed.cd', True)
 
         self.supports_backlog = True
 
@@ -64,7 +64,8 @@ class SpeedCDProvider(TorrentProvider):
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

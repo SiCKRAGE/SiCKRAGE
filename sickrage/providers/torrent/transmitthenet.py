@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 class TransmitTheNetProvider(TorrentProvider):
     def __init__(self):
 
-        super(TransmitTheNetProvider, self).__init__("TransmitTheNet",'transmithe.net', True)
+        super(TransmitTheNetProvider, self).__init__("TransmitTheNet", 'transmithe.net', True)
 
         self.supports_backlog = True
 
@@ -58,13 +58,15 @@ class TransmitTheNetProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['base_url'], params={'page': 'login'},
+                                                         data=login_params, timeout=30).text
         except Exception:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username Incorrect', response) or re.search('Password Incorrect', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -120,11 +122,11 @@ class TransmitTheNetProvider(TorrentProvider):
                             title = torrent_row.find('a', {"data-src": True})['data-src'].rsplit('.', 1)[0]
                             download_href = torrent_row.find('img', {"alt": 'Download Torrent'}).findParent()['href']
                             seeders = int(
-                                    torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
-                                        0].text.strip())
+                                torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
+                                    0].text.strip())
                             leechers = int(
-                                    torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
-                                        1].text.strip())
+                                torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
+                                    1].text.strip())
                             download_url = self.urls['base_url'] + download_href
                             # FIXME
                             size = -1
@@ -136,8 +138,8 @@ class TransmitTheNetProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
@@ -147,7 +149,8 @@ class TransmitTheNetProvider(TorrentProvider):
                             items[mode].append(item)
 
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
+                    sickrage.srCore.srLogger.error(
+                        "Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

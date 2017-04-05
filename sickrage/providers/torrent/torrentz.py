@@ -92,7 +92,9 @@ class TORRENTZProvider(TorrentProvider):
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(title, seeders, leechers))
+                                sickrage.srCore.srLogger.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
+                                        title, seeders, leechers))
                             continue
 
                         items += [{
@@ -109,4 +111,3 @@ class TORRENTZProvider(TorrentProvider):
             results += items
 
         return results
-

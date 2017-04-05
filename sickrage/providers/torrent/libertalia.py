@@ -35,7 +35,7 @@ from sickrage.providers import TorrentProvider
 
 class LibertaliaProvider(TorrentProvider):
     def __init__(self):
-        super(LibertaliaProvider, self).__init__("Libertalia","libertalia.me", True)
+        super(LibertaliaProvider, self).__init__("Libertalia", "libertalia.me", True)
 
         self.supports_backlog = True
 
@@ -64,13 +64,15 @@ class LibertaliaProvider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/login.php', data=login_params, timeout=30).text
+            response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/login.php', data=login_params,
+                                                         timeout=30).text
         except Exception:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('upload.php', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

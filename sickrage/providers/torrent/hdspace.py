@@ -47,7 +47,8 @@ class HDSpaceProvider(TorrentProvider):
 
         self.urls.update({
             'login': '{base_url}/index.php?page=login'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(
+                base_url=self.urls['base_url']),
             'rss': '{base_url}/rss_torrents.php?feed=dl'.format(base_url=self.urls['base_url'])
         })
 
@@ -60,7 +61,8 @@ class HDSpaceProvider(TorrentProvider):
     def _check_auth(self):
 
         if not self.username or not self.password:
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -79,7 +81,8 @@ class HDSpaceProvider(TorrentProvider):
             return False
 
         if re.search('Password Incorrect', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

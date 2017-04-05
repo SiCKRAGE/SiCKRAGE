@@ -88,14 +88,17 @@ class srNameCache(object):
         """
         Deletes all "unknown" entries from the cache (names with indexer_id of 0).
         """
-        [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True)
+        [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in
+         sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True)
          if x['doc']['indexer_id'] in [indexerid, 0]]
 
         for item in [self.cache[key] for key, value in self.cache.items() if value == 0 or value == indexerid]:
             del item
 
     def load(self):
-        self.cache = dict([(key, d['doc'][key]) for d in sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True) for key in d['doc']])
+        self.cache = dict(
+            [(key, d['doc'][key]) for d in sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True) for key in
+             d['doc']])
 
     def save(self):
         """Commit cache to database file"""

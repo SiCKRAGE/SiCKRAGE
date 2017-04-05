@@ -1,4 +1,3 @@
-
 #
 # This file is part of aDBa.
 #
@@ -89,7 +88,6 @@ class aniDBabstractObject(object):
 
         return initialList
 
-
     def load_data(self):
         return False
 
@@ -170,7 +168,7 @@ class Anime(aniDBabstractObject):
             self.release_groups.append({"name": unicode(line["name"], "utf-8"),
                                         "rating": line["rating"],
                                         "range": line["episode_range"]
-            })
+                                        })
         return self.release_groups
 
     # TODO: refactor and use the new functions in anidbFileinfo
@@ -180,7 +178,7 @@ class Anime(aniDBabstractObject):
 
         regex = re.compile(
             '( \(\d{4}\))|[%s]' % re.escape(string.punctuation))  # remove any punctuation and e.g. ' (2011)'
-        #regex = re.compile('[%s]'  % re.escape(string.punctuation)) # remove any punctuation and e.g. ' (2011)'
+        # regex = re.compile('[%s]'  % re.escape(string.punctuation)) # remove any punctuation and e.g. ' (2011)'
         name = regex.sub('', name.lower())
         lastAid = 0
         for element in self.allAnimeXML.getiterator():
@@ -193,7 +191,7 @@ class Anime(aniDBabstractObject):
                     return lastAid
         return 0
 
-    #TODO: refactor and use the new functions in anidbFileinfo
+    # TODO: refactor and use the new functions in anidbFileinfo
     def _get_name_from_xml(self, aid, onlyMain=True):
         if not self.allAnimeXML:
             self.allAnimeXML = read_anidb_xml()
@@ -279,7 +277,6 @@ class Episode(aniDBabstractObject):
         else:
             # TODO: add the name or something
             self.log("Added the episode to anidb")
-
 
     def _calculate_file_stuff(self, filePath):
         if not filePath:

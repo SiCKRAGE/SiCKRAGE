@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -30,7 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class CpasbienProvider(TorrentProvider):
     def __init__(self):
-        super(CpasbienProvider, self).__init__("Cpasbien","www.cpasbien.io", False)
+        super(CpasbienProvider, self).__init__("Cpasbien", "www.cpasbien.io", False)
 
         self.supports_backlog = True
 

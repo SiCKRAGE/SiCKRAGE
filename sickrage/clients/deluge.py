@@ -68,7 +68,8 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
-                                                                  verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                                  verify=bool(
+                                                                      sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
@@ -85,7 +86,8 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
-                                                                  verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                                  verify=bool(
+                                                                      sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
@@ -97,7 +99,8 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
-                                                                  verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                                  verify=bool(
+                                                                      sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
@@ -153,7 +156,8 @@ class DelugeAPI(GenericClient):
 
             if labels is not None:
                 if label not in labels:
-                    sickrage.srCore.srLogger.debug(self.name + ': ' + label + " label does not exist in Deluge we must add it")
+                    sickrage.srCore.srLogger.debug(
+                        self.name + ': ' + label + " label does not exist in Deluge we must add it")
                     post_data = json.dumps({"method": 'label.add',
                                             "params": [label],
                                             "id": 4})

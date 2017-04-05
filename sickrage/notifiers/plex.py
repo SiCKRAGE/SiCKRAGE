@@ -212,7 +212,7 @@ class PLEXNotifier(srNotifiers):
 
                 except urllib2.URLError as e:
                     sickrage.srCore.srLogger.debug(
-                            'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
+                        'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
 
                 except (ValueError, IndexError) as e:
                     sickrage.srCore.srLogger.debug('PLEX: Error parsing plex.tv response: ' + e)
@@ -229,14 +229,16 @@ class PLEXNotifier(srNotifiers):
                     xml_tree = ElementTree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
                 except IOError as e:
-                    sickrage.srCore.srLogger.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
+                    sickrage.srCore.srLogger.warning(
+                        'PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
                         sickrage.srCore.srLogger.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
-                        sickrage.srCore.srLogger.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
+                        sickrage.srCore.srLogger.error(
+                            'PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
                     continue
 
                 sections = media_container.findall('.//Directory')
@@ -271,13 +273,16 @@ class PLEXNotifier(srNotifiers):
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
                 except Exception as e:
-                    sickrage.srCore.srLogger.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e.message))
+                    sickrage.srCore.srLogger.warning(
+                        'PLEX: Error updating library section for Plex Media Server: {}'.format(e.message))
                     hosts_failed.append(cur_host)
 
             if hosts_match:
-                sickrage.srCore.srLogger.debug('PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(
-                    set(host_list)))
+                sickrage.srCore.srLogger.debug(
+                    'PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(
+                        set(host_list)))
             else:
-                sickrage.srCore.srLogger.debug('PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)))
+                sickrage.srCore.srLogger.debug(
+                    'PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)))
 
             return (', '.join(set(hosts_failed)), None)[not len(hosts_failed)]

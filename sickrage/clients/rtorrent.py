@@ -47,7 +47,7 @@ class rTorrentAPI(GenericClient):
 
         if self.username and self.password:
             url_parts = self.host.split('//')
-            self.auth = RTorrent( url_parts[0] + "{0}:{1}@".format(self.username, self.password) + url_parts[1])
+            self.auth = RTorrent(url_parts[0] + "{0}:{1}@".format(self.username, self.password) + url_parts[1])
         else:
             self.auth = RTorrent(self.host)
 

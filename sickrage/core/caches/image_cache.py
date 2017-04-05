@@ -162,7 +162,8 @@ class ImageCache(object):
         with io.open(path, 'rb') as fh:
             img_metadata = extractMetadata(guessParser(StringInputStream(fh.read())))
             if not img_metadata:
-                sickrage.srCore.srLogger.debug("Unable to get metadata from " + str(path) + ", not using your existing image")
+                sickrage.srCore.srLogger.debug(
+                    "Unable to get metadata from " + str(path) + ", not using your existing image")
                 return None
 
             img_ratio = float(img_metadata.get('width', 0)) / float(img_metadata.get('height', 0))
@@ -208,7 +209,8 @@ class ImageCache(object):
             os.makedirs(self._cache_dir())
 
         if not os.path.isdir(self._thumbnails_dir()):
-            sickrage.srCore.srLogger.info("Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
+            sickrage.srCore.srLogger.info(
+                "Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
             os.makedirs(self._thumbnails_dir())
 
         sickrage.srCore.srLogger.info("Copying from " + image_path + " to " + dest_path)
@@ -284,7 +286,8 @@ class ImageCache(object):
                 if not cur_provider.enabled:
                     continue
 
-                sickrage.srCore.srLogger.debug("Checking if we can use the show image from the " + cur_provider.name + " metadata")
+                sickrage.srCore.srLogger.debug(
+                    "Checking if we can use the show image from the " + cur_provider.name + " metadata")
                 if os.path.isfile(cur_provider.get_poster_path(show_obj)):
                     cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
                     cur_file_type = self.which_type(cur_file_name)
@@ -296,18 +299,19 @@ class ImageCache(object):
                         continue
 
                     sickrage.srCore.srLogger.debug("Checking if image " + cur_file_name + " (type " + str(
-                            cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
+                        cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
 
                     if cur_file_type in need_images and need_images[cur_file_type]:
                         sickrage.srCore.srLogger.debug(
-                                "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
-                                        cur_file_type))
+                            "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
+                                cur_file_type))
                         self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
                         need_images[cur_file_type] = False
 
         # download from indexer for missing ones
         for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:
-            sickrage.srCore.srLogger.debug("Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
+            sickrage.srCore.srLogger.debug(
+                "Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
                     need_images[cur_image_type]))
             if cur_image_type in need_images and need_images[cur_image_type]:
                 self._cache_image_from_indexer(show_obj, cur_image_type)

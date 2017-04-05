@@ -198,7 +198,8 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                     seasonStrings.append("%02d" % ab_number)
 
     else:
-        numseasons = len({x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+        numseasons = len({x['doc']['season'] for x in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                           if x['doc']['season'] != 0})
 
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
@@ -231,8 +232,9 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 def makeSceneSearchString(show, ep_obj):
     toReturn = []
 
-    numseasons = len({x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                      if x['doc']['season'] != 0})
+    numseasons = len(
+        {x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+         if x['doc']['season'] != 0})
 
     # see if we should use dates instead of episodes
     if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):
@@ -401,7 +403,8 @@ def searchDBForShow(regShowName, log=False):
     yearRegex = r"([^()]+?)\s*(\()?(\d{4})(?(2)\))$"
 
     for showName in showNames:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if x['doc']['show_name'] == showName]
+        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if
+                  x['doc']['show_name'] == showName]
         if len(dbData) == 1:
             return int(dbData[0]["indexer_id"])
         else:

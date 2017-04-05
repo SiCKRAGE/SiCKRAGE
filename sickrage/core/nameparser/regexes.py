@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-
 # all regexes are case insensitive
 
 normal_regexes = [

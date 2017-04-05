@@ -25,7 +25,6 @@ import string
 import sickrage
 
 
-
 def getWinDrives():
     """ Return list of detected drives """
     assert os.name == 'nt'

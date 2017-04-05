@@ -31,7 +31,6 @@ import MultipartPostHandler
 import sickrage
 
 
-
 class SabNZBd(object):
     @staticmethod
     def sendNZB(nzb):
@@ -79,7 +78,8 @@ class SabNZBd(object):
                 if nzb.provider.id == 'newzbin':
                     id = nzb.provider.getIDFromURL(nzb.url)
                     if not id:
-                        sickrage.srCore.srLogger.error("Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
+                        sickrage.srCore.srLogger.error(
+                            "Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
                         return False
                     params['mode'] = 'addid'
                     params['name'] = id

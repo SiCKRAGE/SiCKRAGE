@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class BitCannonProvider(TorrentProvider):
     def __init__(self):
-        super(BitCannonProvider, self).__init__("BitCannon",'127.0.0.1:1337', False)
+        super(BitCannonProvider, self).__init__("BitCannon", '127.0.0.1:1337', False)
 
         self.supports_backlog = True
 
@@ -83,15 +83,15 @@ class BitCannonProvider(TorrentProvider):
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode != 'RSS':
                             sickrage.srCore.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     # Only build the url if we selected it
                     download_url = 'magnet:?xt=urn:btih:%s&dn=%s&tr=%s' % (info_hash, quote_plus(title.encode('utf-8')),
                                                                            '&tr='.join(
-                                                                                   [quote_plus(x.encode('utf-8')) for x
-                                                                                    in trackers]))
+                                                                               [quote_plus(x.encode('utf-8')) for x
+                                                                                in trackers]))
 
                     item = title, download_url, size, seeders, leechers
                     if mode != 'RSS':

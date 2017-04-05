@@ -650,7 +650,8 @@ class PostProcessor(object):
                 airdate = episodes[0].toordinal()
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
-                dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                dbData = [x['doc'] for x in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                           if x['doc']['indexer'] == show.indexer
                           and x['doc']['airdate'] == airdate
                           and x['doc']['season'] != 0]
@@ -660,7 +661,8 @@ class PostProcessor(object):
                     episodes = [int(dbData[0]['episode'])]
                 else:
                     # Found no result, try with season 0
-                    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                    dbData = [x['doc'] for x in
+                              sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                               if x['doc']['indexer'] == show.indexer and x['doc']['airdate'] == airdate]
 
                     if dbData:
@@ -677,7 +679,8 @@ class PostProcessor(object):
 
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
-                if len({x['doc']['season'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                if len({x['doc']['season'] for x in
+                        sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                         if x['doc']['season'] != 0 and x['doc']['indexer'] == show.indexer}) == 1 and season is None:
                     season = 1
                     self._log(

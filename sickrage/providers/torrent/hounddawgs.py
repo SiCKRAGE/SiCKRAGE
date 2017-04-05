@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
-        super(HoundDawgsProvider, self).__init__("HoundDawgs",'hounddawgs.org', True)
+        super(HoundDawgsProvider, self).__init__("HoundDawgs", 'hounddawgs.org', True)
 
         self.supports_backlog = True
 
@@ -78,7 +78,8 @@ class HoundDawgsProvider(TorrentProvider):
         if re.search('Dit brugernavn eller kodeord er forkert.', response) \
                 or re.search('<title>Login :: HoundDawgs</title>', response) \
                 or re.search('Dine cookies er ikke aktiveret.', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -66,7 +64,8 @@ class AlphaRatioProvider(TorrentProvider):
 
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

@@ -81,7 +81,8 @@ def update_network_dict():
 
     for x in network_dict:
         try:
-            sickrage.srCore.cacheDB.db.delete(sickrage.srCore.cacheDB.db.get('network_timezones', x, with_doc=True)['doc'])
+            sickrage.srCore.cacheDB.db.delete(
+                sickrage.srCore.cacheDB.db.get('network_timezones', x, with_doc=True)['doc'])
         except RecordNotFound:
             continue
 

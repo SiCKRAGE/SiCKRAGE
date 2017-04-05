@@ -1167,18 +1167,18 @@ def restoreSR(srcDir, dstDir):
         if os.path.exists(os.path.join(srcDir, 'database')):
             if os.path.exists(os.path.join(dstDir, 'database')):
                 moveFile(os.path.join(dstDir, 'database'), os.path.join(dstDir, '{}.bak-{}'
-                                                                     .format('database',
-                                                                             datetime.datetime.now().strftime(
-                                                                                 '%Y%m%d_%H%M%S'))))
+                                                                        .format('database',
+                                                                                datetime.datetime.now().strftime(
+                                                                                    '%Y%m%d_%H%M%S'))))
             moveFile(os.path.join(srcDir, 'database'), dstDir)
 
         # databse backups
         if os.path.exists(os.path.join(srcDir, 'db_backup')):
             if os.path.exists(os.path.join(dstDir, 'db_backup')):
                 moveFile(os.path.join(dstDir, 'db_backup'), os.path.join(dstDir, '{}.bak-{}'
-                                                                     .format('db_backup',
-                                                                             datetime.datetime.now().strftime(
-                                                                                 '%Y%m%d_%H%M%S'))))
+                                                                         .format('db_backup',
+                                                                                 datetime.datetime.now().strftime(
+                                                                                     '%Y%m%d_%H%M%S'))))
             moveFile(os.path.join(srcDir, 'db_backup'), dstDir)
 
         # cache

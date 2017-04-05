@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class GFTrackerProvider(TorrentProvider):
     def __init__(self):
-        super(GFTrackerProvider, self).__init__("GFTracker",'www.thegft.org', True)
+        super(GFTrackerProvider, self).__init__("GFTracker", 'www.thegft.org', True)
 
         self.supports_backlog = True
 
@@ -68,8 +68,6 @@ class GFTrackerProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-
-
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
@@ -78,7 +76,8 @@ class GFTrackerProvider(TorrentProvider):
 
         # Save cookies from response
         if re.search('Username or password incorrect', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)

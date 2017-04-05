@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
-        super(MoreThanTVProvider, self).__init__("MoreThanTV",'www.morethan.tv', True)
+        super(MoreThanTVProvider, self).__init__("MoreThanTV", 'www.morethan.tv', True)
 
         self.supports_backlog = True
 
@@ -48,7 +48,8 @@ class MoreThanTVProvider(TorrentProvider):
         self.urls.update({
             'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
             'detail': '{base_url}/torrents.php?id=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s'.format(
+                base_url=self.urls['base_url']),
             'download': '{base_url}/torrents.php?action=download&id=%s'.format(base_url=self.urls['base_url'])
         })
 
@@ -84,7 +85,8 @@ class MoreThanTVProvider(TorrentProvider):
                 return False
 
             if re.search('Your username or password was incorrect.', response):
-                sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+                sickrage.srCore.srLogger.warning(
+                    "[{}]: Invalid username or password. Check your settings".format(self.name))
                 return False
 
             return True

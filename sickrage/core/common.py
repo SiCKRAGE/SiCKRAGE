@@ -292,7 +292,8 @@ class Quality(object):
 
             return ret
 
-        if (check_name([r"480p|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip",r"xvid|divx|[xh].?26[45]"], all)
+        if (check_name([r"480p|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
+                       all)
             and not check_name([r"(720|1080)[pi]"], all)
             and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDTV

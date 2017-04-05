@@ -29,6 +29,7 @@ from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, 
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
 
+
 class ProwlNotifier(srNotifiers):
     def __init__(self):
         super(ProwlNotifier, self).__init__()
@@ -73,8 +74,9 @@ class ProwlNotifier(srNotifiers):
 
         title = "SiCKRAGE"
 
-        sickrage.srCore.srLogger.debug("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
-        event, message, prowl_priority, prowl_api))
+        sickrage.srCore.srLogger.debug(
+            "PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
+                event, message, prowl_priority, prowl_api))
 
         http_handler = HTTPSConnection("api.prowlapp.com")
 

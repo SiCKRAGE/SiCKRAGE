@@ -1,4 +1,3 @@
-
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #

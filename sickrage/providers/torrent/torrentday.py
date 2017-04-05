@@ -140,4 +140,3 @@ class TorrentDayProvider(TorrentProvider):
             results += items[mode]
 
         return results
-

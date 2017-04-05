@@ -30,7 +30,6 @@ from sickrage.core.nameparser import InvalidNameException, InvalidShowException,
     NameParser
 
 
-
 def getSeasonNZBs(name, urlData, season):
     """
     Split a season NZB into episodes
@@ -167,18 +166,19 @@ def splitNZBResult(result):
         if (parse_result.season_number is not None and parse_result.season_number != season) or (
                         parse_result.season_number is None and season != 1):
             sickrage.srCore.srLogger.warning(
-                    "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
+                "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
             continue
         elif len(parse_result.episode_numbers) == 0:
             sickrage.srCore.srLogger.warning(
-                    "Found " + newNZB + " inside " + result.name + " but it doesn't seem to be a valid episode NZB, ignoring it")
+                "Found " + newNZB + " inside " + result.name + " but it doesn't seem to be a valid episode NZB, ignoring it")
             continue
 
         wantEp = True
         for epNo in parse_result.episode_numbers:
             if not result.extraInfo[0].wantEpisode(season, epNo, result.quality):
-                sickrage.srCore.srLogger.info("Ignoring result " + newNZB + " because we don't want an episode that is " +
-                                            Quality.qualityStrings[result.quality])
+                sickrage.srCore.srLogger.info(
+                    "Ignoring result " + newNZB + " because we don't want an episode that is " +
+                    Quality.qualityStrings[result.quality])
                 wantEp = False
                 break
         if not wantEp:

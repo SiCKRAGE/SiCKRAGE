@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class newpctProvider(TorrentProvider):
     def __init__(self):
-        super(newpctProvider, self).__init__("Newpct",'www.newpct.com', False)
+        super(newpctProvider, self).__init__("Newpct", 'www.newpct.com', False)
 
         self.supports_backlog = True
         self.onlyspasearch = None
@@ -77,7 +77,7 @@ class newpctProvider(TorrentProvider):
                 search_params.update({'q': search_string.strip()})
 
                 sickrage.srCore.srLogger.debug(
-                        "Search URL: %s" % self.urls['search'] + '?' + urlencode(search_params))
+                    "Search URL: %s" % self.urls['search'] + '?' + urlencode(search_params))
 
                 try:
                     data = sickrage.srCore.srWebSession.post(self.urls['search'], data=search_params, timeout=30).text

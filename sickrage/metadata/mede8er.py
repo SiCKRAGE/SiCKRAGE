@@ -61,9 +61,9 @@ class Mede8erMetadata(MediaBrowserMetadata):
                  season_all_banner=False):
 
         MediaBrowserMetadata.__init__(
-                self, show_metadata, episode_metadata, fanart,
-                poster, banner, episode_thumbnails, season_posters,
-                season_banners, season_all_poster, season_all_banner
+            self, show_metadata, episode_metadata, fanart,
+            poster, banner, episode_thumbnails, season_posters,
+            season_banners, season_all_poster, season_all_banner
         )
 
         self.name = "Mede8er"
@@ -100,8 +100,6 @@ class Mede8erMetadata(MediaBrowserMetadata):
         indexer_lang = show_obj.lang
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-
-
         if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -119,7 +117,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
         try:
             myShow = t[int(show_obj.indexerid)]
         except indexer_shownotfound:
-            sickrage.srCore.srLogger.error("Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it")
+            sickrage.srCore.srLogger.error(
+                "Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it")
             raise
 
         except indexer_error:
@@ -128,7 +127,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.srCore.srLogger.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
+            sickrage.srCore.srLogger.info(
+                "Incomplete info for show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
                     show_obj.indexer).name + ", skipping it")
             return False
 
@@ -231,7 +231,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.srCore.srLogger.error("Unable to connect to TVDB while creating meta files - skipping - {}".format(e.message))
+            sickrage.srCore.srLogger.error(
+                "Unable to connect to TVDB while creating meta files - skipping - {}".format(e.message))
             return False
 
         rootNode = Element("details")
@@ -247,8 +248,9 @@ class Mede8erMetadata(MediaBrowserMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srCore.srLogger.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                                            (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
+                sickrage.srCore.srLogger.info(
+                    "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
+                    (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None
 
             if curEpToWrite == ep_obj:
@@ -383,7 +385,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.srCore.srLogger.error(
-                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
+                    e.message))
             return False
 
         return True
@@ -428,7 +431,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.srCore.srLogger.error(
-                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
+                    e.message))
             return False
 
         return True

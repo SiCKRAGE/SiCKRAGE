@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -30,8 +28,10 @@ import types
 
 import sickrage
 
+
 def getEncoding():
     return sickrage.SYS_ENCODING or "UTF-8"
+
 
 def f(*args, **kwargs):
     """

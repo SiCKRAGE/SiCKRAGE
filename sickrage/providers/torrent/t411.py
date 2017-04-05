@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -32,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class T411Provider(TorrentProvider):
     def __init__(self):
-        super(T411Provider, self).__init__("T411",'www.t411.li', True)
+        super(T411Provider, self).__init__("T411", 'www.t411.li', True)
 
         self.supports_backlog = True
 
@@ -67,7 +65,8 @@ class T411Provider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30, auth=T411Auth(self.token)).json()
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30,
+                                                         auth=T411Auth(self.token)).json()
         except Exception:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -161,7 +160,8 @@ class T411Provider(TorrentProvider):
                                 continue
 
                     except Exception:
-                        sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                        sickrage.srCore.srLogger.error(
+                            "Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

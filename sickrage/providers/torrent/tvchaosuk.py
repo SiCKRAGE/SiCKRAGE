@@ -26,7 +26,7 @@ from sickrage.providers import TorrentProvider
 
 class TVChaosUKProvider(TorrentProvider):
     def __init__(self):
-        super(TVChaosUKProvider, self).__init__('TvChaosUK','tvchaosuk.com', True)
+        super(TVChaosUKProvider, self).__init__('TvChaosUK', 'tvchaosuk.com', True)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
@@ -86,7 +86,7 @@ class TVChaosUKProvider(TorrentProvider):
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
                     ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                        'episodenumber': ep_obj.scene_episode}
+                                                                               'episodenumber': ep_obj.scene_episode}
 
                 if add_string:
                     ep_string += ' %s' % add_string
@@ -106,7 +106,8 @@ class TVChaosUKProvider(TorrentProvider):
             return False
 
         if re.search('Error: Username or password incorrect!', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

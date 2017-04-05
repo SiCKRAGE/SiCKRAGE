@@ -69,7 +69,8 @@ class NMJNotifier(srNotifiers):
             sickrage.srCore.srLogger.debug("Found NMJ database %s on device %s" % (database, device))
             sickrage.srCore.srConfig.NMJ_DATABASE = database
         else:
-            sickrage.srCore.srLogger.warning("Could not get current NMJ database on %s, NMJ is probably not running!" % (host))
+            sickrage.srCore.srLogger.warning(
+                "Could not get current NMJ database on %s, NMJ is probably not running!" % (host))
             return False
 
         # if the device is a remote host then try to parse the mounting URL and save it to the config
@@ -81,7 +82,8 @@ class NMJNotifier(srNotifiers):
                 sickrage.srCore.srLogger.debug("Found mounting url on the Popcorn Hour in configuration: %s" % (mount))
                 sickrage.srCore.srConfig.NMJ_MOUNT = mount
             else:
-                sickrage.srCore.srLogger.warning("Detected a network share on the Popcorn Hour, but could not get the mounting url")
+                sickrage.srCore.srLogger.warning(
+                    "Detected a network share on the Popcorn Hour, but could not get the mounting url")
                 return False
 
         return True
@@ -124,7 +126,8 @@ class NMJNotifier(srNotifiers):
                 handle = urllib2.urlopen(req)
             except IOError as e:
                 if hasattr(e, 'reason'):
-                    sickrage.srCore.srLogger.warning("NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
+                    sickrage.srCore.srLogger.warning(
+                        "NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
                 elif hasattr(e, 'code'):
                     sickrage.srCore.srLogger.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
                 return False
@@ -151,7 +154,8 @@ class NMJNotifier(srNotifiers):
             response = handle.read()
         except IOError as e:
             if hasattr(e, 'reason'):
-                sickrage.srCore.srLogger.warning("NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
+                sickrage.srCore.srLogger.warning(
+                    "NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
             elif hasattr(e, 'code'):
                 sickrage.srCore.srLogger.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
             return False

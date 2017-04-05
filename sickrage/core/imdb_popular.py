@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -49,7 +47,8 @@ class imdbPopular(object):
         popular_shows = []
 
         try:
-            data = sickrage.srCore.srWebSession.get(self.url, headers={'Referer': 'http://akas.imdb.com/'}, params=self.params).text
+            data = sickrage.srCore.srWebSession.get(self.url, headers={'Referer': 'http://akas.imdb.com/'},
+                                                    params=self.params).text
         except Exception:
             return None
 

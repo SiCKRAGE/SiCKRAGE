@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -24,6 +23,7 @@ import datetime
 from sickrage.core.common import Quality, DOWNLOADED
 from sickrage.core.nameparser.show import Show
 from sickrage.core.tv.episode import TVEpisode
+
 
 class Episode(TVEpisode):
     def __init__(self, season, episode, absolute_number, name):

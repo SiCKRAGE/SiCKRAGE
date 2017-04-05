@@ -25,11 +25,11 @@ from sickrage.indexers import srIndexerApi
 from sickrage.notifiers import srNotifiers
 
 
-
 class TraktNotifier(srNotifiers):
     """
     A "notifier" for trakt.tv which keeps track of what has and hasn't been added to your library.
     """
+
     def __init__(self):
         super(TraktNotifier, self).__init__()
         self.name = 'trakt'

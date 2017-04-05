@@ -32,6 +32,7 @@ from sickrage.notifiers import srNotifiers
 
 API_URL = "https://api.pushover.net/1/messages.json"
 
+
 class PushoverNotifier(srNotifiers):
     def __init__(self):
         super(PushoverNotifier, self).__init__()
@@ -107,7 +108,8 @@ class PushoverNotifier(srNotifiers):
 
             # HTTP status 404 if the provided email address isn't a Pushover user.
             if e.code == 404:
-                sickrage.srCore.srLogger.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
+                sickrage.srCore.srLogger.warning(
+                    "Username is wrong/not a pushover email. Pushover will send an email to it")
                 return False
 
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.

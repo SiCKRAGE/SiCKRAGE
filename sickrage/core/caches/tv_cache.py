@@ -1,5 +1,3 @@
-
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -43,7 +41,8 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
+            [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in
+             sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -242,7 +241,8 @@ class TVCache(object):
         neededEps = {}
 
         if not episode:
-            dbData = [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
+            dbData = [x['doc'] for x in
+                      sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
         else:
             dbData = [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
                       if x['doc']['indexerid'] == episode.show.indexerid

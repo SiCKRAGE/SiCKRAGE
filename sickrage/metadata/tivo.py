@@ -173,8 +173,6 @@ class TIVOMetadata(GenericMetadata):
         try:
             lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
 
-
-
             if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -187,7 +185,7 @@ class TIVOMetadata(GenericMetadata):
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
             sickrage.srCore.srLogger.error("Unable to connect to " + srIndexerApi(
-                    ep_obj.show.indexer).name + " while creating meta files - skipping - " + str(e))
+                ep_obj.show.indexer).name + " while creating meta files - skipping - " + str(e))
             return False
 
         for curEpToWrite in eps_to_write:
@@ -195,7 +193,9 @@ class TIVOMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srCore.srLogger.info("Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
+                sickrage.srCore.srLogger.info(
+                    "Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (
+                    curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
@@ -329,7 +329,8 @@ class TIVOMetadata(GenericMetadata):
 
         except EnvironmentError as e:
             sickrage.srCore.srLogger.error(
-                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
+                    e.message))
             return False
 
         return True

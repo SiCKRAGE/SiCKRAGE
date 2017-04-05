@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class PretomeProvider(TorrentProvider):
     def __init__(self):
-        super(PretomeProvider, self).__init__("Pretome",'pretome.info', True)
+        super(PretomeProvider, self).__init__("Pretome", 'pretome.info', True)
 
         self.supports_backlog = True
 
@@ -74,7 +74,8 @@ class PretomeProvider(TorrentProvider):
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

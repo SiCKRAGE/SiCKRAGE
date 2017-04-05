@@ -176,7 +176,8 @@ class MediaBrowserMetadata(GenericMetadata):
             sickrage.srCore.srLogger.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.srCore.srLogger.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
+        sickrage.srCore.srLogger.debug(
+            "Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
 
@@ -217,7 +218,8 @@ class MediaBrowserMetadata(GenericMetadata):
             sickrage.srCore.srLogger.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.srCore.srLogger.debug("Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season))
+        sickrage.srCore.srLogger.debug(
+            "Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'banner.jpg')
 
@@ -234,8 +236,6 @@ class MediaBrowserMetadata(GenericMetadata):
         # change the language value elsewhere
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-
-
         if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -249,8 +249,9 @@ class MediaBrowserMetadata(GenericMetadata):
         try:
             myShow = t[int(show_obj.indexerid)]
         except indexer_shownotfound:
-            sickrage.srCore.srLogger.error("Unable to find show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
-                show_obj.indexer).name + ", skipping it")
+            sickrage.srCore.srLogger.error(
+                "Unable to find show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
+                    show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
@@ -407,8 +408,6 @@ class MediaBrowserMetadata(GenericMetadata):
 
         try:
             lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
-
-
 
             if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang

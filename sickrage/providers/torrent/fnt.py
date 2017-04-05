@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class FNTProvider(TorrentProvider):
     def __init__(self):
-        super(FNTProvider, self).__init__("FNT",'fnt.nu', True)
+        super(FNTProvider, self).__init__("FNT", 'fnt.nu', True)
 
         self.supports_backlog = True
 
@@ -65,7 +65,8 @@ class FNTProvider(TorrentProvider):
             return False
 
         if re.search('Pseudo ou mot de passe non valide', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

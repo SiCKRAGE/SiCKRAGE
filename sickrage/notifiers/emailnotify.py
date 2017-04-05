@@ -65,11 +65,11 @@ class EmailNotifier(srNotifiers):
                 try:
                     msg = MIMEMultipart('alternative')
                     msg.attach(MIMEText(
-                            "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SiCKRAGE Notification - Snatched</h3>\n<p>Show: <b>" + re.search(
-                                    "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                                    ".+ - (.+?-.+) -.+", ep_name).group(
-                                    1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SiCKRAGE.</footer></body>",
-                            'html'))
+                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SiCKRAGE Notification - Snatched</h3>\n<p>Show: <b>" + re.search(
+                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
+                            ".+ - (.+?-.+) -.+", ep_name).group(
+                            1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SiCKRAGE.</footer></body>",
+                        'html'))
                 except:
                     try:
                         msg = MIMEText(ep_name)
@@ -80,9 +80,11 @@ class EmailNotifier(srNotifiers):
                 msg['From'] = sickrage.srCore.srConfig.EMAIL_FROM
                 msg['To'] = ','.join(to)
                 msg['Date'] = formatdate(localtime=True)
-                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT, sickrage.srCore.srConfig.EMAIL_FROM,
+                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT,
+                                  sickrage.srCore.srConfig.EMAIL_FROM,
                                   sickrage.srCore.srConfig.EMAIL_TLS,
-                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to, msg):
+                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to,
+                                  msg):
                     sickrage.srCore.srLogger.debug("Snatch notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
                     sickrage.srCore.srLogger.error("Snatch notification ERROR: %s" % self.last_err)
@@ -105,11 +107,11 @@ class EmailNotifier(srNotifiers):
                 try:
                     msg = MIMEMultipart('alternative')
                     msg.attach(MIMEText(
-                            "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SiCKRAGE Notification - Downloaded</h3>\n<p>Show: <b>" + re.search(
-                                    "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                                    ".+ - (.+?-.+) -.+", ep_name).group(
-                                    1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SiCKRAGE.</footer></body>",
-                            'html'))
+                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SiCKRAGE Notification - Downloaded</h3>\n<p>Show: <b>" + re.search(
+                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
+                            ".+ - (.+?-.+) -.+", ep_name).group(
+                            1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SiCKRAGE.</footer></body>",
+                        'html'))
                 except:
                     try:
                         msg = MIMEText(ep_name)
@@ -120,9 +122,11 @@ class EmailNotifier(srNotifiers):
                 msg['From'] = sickrage.srCore.srConfig.EMAIL_FROM
                 msg['To'] = ','.join(to)
                 msg['Date'] = formatdate(localtime=True)
-                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT, sickrage.srCore.srConfig.EMAIL_FROM,
+                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT,
+                                  sickrage.srCore.srConfig.EMAIL_FROM,
                                   sickrage.srCore.srConfig.EMAIL_TLS,
-                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to, msg):
+                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to,
+                                  msg):
                     sickrage.srCore.srLogger.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
                     sickrage.srCore.srLogger.error("Download notification ERROR: %s" % self.last_err)
@@ -145,11 +149,11 @@ class EmailNotifier(srNotifiers):
                 try:
                     msg = MIMEMultipart('alternative')
                     msg.attach(MIMEText(
-                            "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SiCKRAGE Notification - Subtitle Downloaded</h3>\n<p>Show: <b>" + re.search(
-                                    "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                                    ".+ - (.+?-.+) -.+", ep_name).group(
-                                    1) + "</b></p>\n<p>Language: <b>" + lang + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SiCKRAGE.</footer></body>",
-                            'html'))
+                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SiCKRAGE Notification - Subtitle Downloaded</h3>\n<p>Show: <b>" + re.search(
+                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
+                            ".+ - (.+?-.+) -.+", ep_name).group(
+                            1) + "</b></p>\n<p>Language: <b>" + lang + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SiCKRAGE.</footer></body>",
+                        'html'))
                 except:
                     try:
                         msg = MIMEText(ep_name + ": " + lang)
@@ -159,9 +163,11 @@ class EmailNotifier(srNotifiers):
                 msg['Subject'] = lang + ' Subtitle Downloaded: ' + ep_name
                 msg['From'] = sickrage.srCore.srConfig.EMAIL_FROM
                 msg['To'] = ','.join(to)
-                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT, sickrage.srCore.srConfig.EMAIL_FROM,
+                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT,
+                                  sickrage.srCore.srConfig.EMAIL_FROM,
                                   sickrage.srCore.srConfig.EMAIL_TLS,
-                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to, msg):
+                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to,
+                                  msg):
                     sickrage.srCore.srLogger.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
                     sickrage.srCore.srLogger.error("Download notification ERROR: %s" % self.last_err)
@@ -179,7 +185,8 @@ class EmailNotifier(srNotifiers):
 
         # Grab the recipients for the show
         for s in show:
-            for subs in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if x['doc']['show_name'] == s]:
+            for subs in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if
+                         x['doc']['show_name'] == s]:
                 if subs['notify_list']:
                     for addr in subs['notify_list'].split(','):
                         if (len(addr.strip()) > 0):

@@ -58,7 +58,8 @@ class HDTorrentsProvider(TorrentProvider):
     def _check_auth(self):
 
         if not self.username or not self.password:
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -78,7 +79,8 @@ class HDTorrentsProvider(TorrentProvider):
             return False
 
         if re.search('You need cookies enabled to log in.', response):
-            sickrage.srCore.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
+            sickrage.srCore.srLogger.warning(
+                "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

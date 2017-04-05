@@ -1,4 +1,3 @@
-
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
@@ -26,7 +25,6 @@ import time
 import requests
 
 import sickrage
-
 
 
 class TraktAPI():
@@ -101,9 +99,9 @@ class TraktAPI():
 
         try:
             resp = sickrage.srCore.srWebSession.request(method, url + path,
-                                        headers=headers,
-                                        timeout=self.timeout,
-                                        data=json.dumps(data) if data else [])
+                                                        headers=headers,
+                                                        timeout=self.timeout,
+                                                        data=json.dumps(data) if data else [])
 
             # check for http errors and raise if any are present
             resp.raise_for_status()
