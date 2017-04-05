@@ -19,8 +19,9 @@
 
 from __future__ import unicode_literals
 
-import sickrage
 from CodernityDB.database import RecordNotFound
+
+import sickrage
 from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 

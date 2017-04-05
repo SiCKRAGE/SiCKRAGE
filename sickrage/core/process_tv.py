@@ -22,9 +22,10 @@ import os
 import stat
 
 import UnRAR2
-import sickrage
 from UnRAR2.rar_exceptions import ArchiveHeaderBroken, FileOpenError, \
     IncorrectRARPassword, InvalidRARArchive, InvalidRARArchiveUsage
+
+import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException

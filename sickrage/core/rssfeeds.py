@@ -21,8 +21,9 @@ from __future__ import unicode_literals
 import random
 
 import feedparser
-import sickrage
 from feedparser import FeedParserDict
+
+import sickrage
 from sickrage.core.webclient import USER_AGENTS
 
 

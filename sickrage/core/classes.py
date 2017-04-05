@@ -23,9 +23,10 @@ import datetime
 import re
 import sys
 
-import sickrage
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import parser
+
+import sickrage
 from sickrage.core.common import Quality, dateFormat, dateTimeFormat
 
 

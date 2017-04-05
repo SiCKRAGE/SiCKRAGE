@@ -22,9 +22,10 @@ from __future__ import unicode_literals
 import re
 from datetime import datetime
 
-import sickrage
 from CodernityDB.database import RecordNotFound
 from dateutil import tz
+
+import sickrage
 from sickrage.core.helpers import tryInt
 
 network_dict = {}

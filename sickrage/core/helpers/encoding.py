@@ -22,11 +22,11 @@ from __future__ import unicode_literals
 
 import collections
 import functools
-import types
 from itertools import imap
 from os import name
 
 import six
+import types
 
 import sickrage
 
