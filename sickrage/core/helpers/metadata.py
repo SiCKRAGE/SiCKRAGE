@@ -99,7 +99,7 @@ def getFileMetadata(filename):
         titles = []
 
         try:
-            if p.title:
+            if hasattr(p, 'title') and p.title:
                 titles.append(p.title)
         except:
             sickrage.srCore.srLogger.error('Failed getting title from meta')

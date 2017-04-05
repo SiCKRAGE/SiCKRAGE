@@ -23,7 +23,7 @@ import os
 
 import requests
 
-from .core import Request
+from . import Request
 from .immutable import Immutable
 
 

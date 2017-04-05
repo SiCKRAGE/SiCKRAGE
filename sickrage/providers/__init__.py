@@ -752,7 +752,7 @@ class NZBProvider(GenericProvider):
                 for segment in file.segments:
                     total_length += int(segment.bytes)
 
-                files[files.subject] = total_length
+                files[file.subject] = total_length
         except Exception:
             pass
 
