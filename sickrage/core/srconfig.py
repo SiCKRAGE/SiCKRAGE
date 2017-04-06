@@ -36,7 +36,6 @@ import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType
-from sickrage.core.searchers import backlog_searcher
 
 
 class srConfig(object):
@@ -592,7 +591,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.BACKLOG_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_BACKLOG_SEARCHER_FREQ)
-        self.MIN_BACKLOG_SEARCHER_FREQ = backlog_searcher.get_backlog_cycle_time()
+        self.MIN_BACKLOG_SEARCHER_FREQ = sickrage.srCore.BACKLOGSEARCHER.get_backlog_cycle_time()
         sickrage.srCore.srScheduler.modify_job('BACKLOG',
                                                trigger=srIntervalTrigger(
                                                    **{'minutes': self.BACKLOG_SEARCHER_FREQ,

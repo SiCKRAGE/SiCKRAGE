@@ -46,8 +46,7 @@ from sickrage.core.processors.auto_postprocessor import srPostProcessor
 from sickrage.core.queues.search import srSearchQueue
 from sickrage.core.queues.show import srShowQueue
 from sickrage.core.scene_exceptions import retrieve_exceptions
-from sickrage.core.searchers.backlog_searcher import srBacklogSearcher, \
-    get_backlog_cycle_time
+from sickrage.core.searchers.backlog_searcher import srBacklogSearcher
 from sickrage.core.searchers.daily_searcher import srDailySearcher
 from sickrage.core.searchers.proper_searcher import srProperSearcher
 from sickrage.core.searchers.subtitle_searcher import srSubtitleSearcher
@@ -271,7 +270,7 @@ class Core(object):
         if self.srConfig.DAILY_SEARCHER_FREQ < self.srConfig.MIN_DAILY_SEARCHER_FREQ:
             self.srConfig.DAILY_SEARCHER_FREQ = self.srConfig.MIN_DAILY_SEARCHER_FREQ
 
-        self.srConfig.MIN_BACKLOG_SEARCHER_FREQ = get_backlog_cycle_time()
+        self.srConfig.MIN_BACKLOG_SEARCHER_FREQ = self.BACKLOGSEARCHER.get_backlog_cycle_time()
         if self.srConfig.BACKLOG_SEARCHER_FREQ < self.srConfig.MIN_BACKLOG_SEARCHER_FREQ:
             self.srConfig.BACKLOG_SEARCHER_FREQ = self.srConfig.MIN_BACKLOG_SEARCHER_FREQ
 

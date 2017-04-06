@@ -181,8 +181,7 @@ class srBacklogSearcher(object):
 
         return wanted
 
-    @classmethod
-    def _set_lastBacklog(cls, when):
+    def _set_lastBacklog(self, when):
 
         sickrage.srCore.srLogger.debug("Setting the last backlog in the DB to " + str(when))
 
@@ -197,7 +196,5 @@ class srBacklogSearcher(object):
             dbData[0]['last_backlog'] = str(when)
             sickrage.srCore.mainDB.db.update(dbData[0])
 
-
-def get_backlog_cycle_time():
-    cycletime = sickrage.srCore.srConfig.DAILY_SEARCHER_FREQ * 4
-    return max([cycletime, 30])
+    def get_backlog_cycle_time(self):
+        return max([sickrage.srCore.srConfig.DAILY_SEARCHER_FREQ * 4, 30])
