@@ -44,16 +44,15 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
-from sickrage.core.exceptions import CantUpdateShowException
+from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
-    pretty_filesize, sanitizeFileName, srdatetime, tryInt, readFileBuffered
+    pretty_filesize, sanitizeFileName, srdatetime, tryInt, readFileBuffered, overall_stats
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
-from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History
 from sickrage.core.updaters import tz_updater
@@ -2318,12 +2317,16 @@ class CMD_ShowDelete(ApiCall):
 
     def run(self):
         """ Delete a show in SiCKRAGE """
-        error, show = TVShow.delete(self.indexerid, self.removefiles)
+        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(self.indexerid))
+        if not showObj:
+            return _responds(RESULT_FAILURE, msg="Show not found")
 
-        if error is not None:
-            return _responds(RESULT_FAILURE, msg=error)
+        try:
+            sickrage.srCore.SHOWQUEUE.removeShow(showObj, bool(self.removefiles))
+        except CantRemoveShowException as exception:
+            return _responds(RESULT_FAILURE, msg=exception.message)
 
-        return _responds(RESULT_SUCCESS, msg='%s has been queued to be deleted' % show.name)
+        return _responds(RESULT_SUCCESS, msg='%s has been queued to be deleted' % showObj.name)
 
 
 class CMD_ShowGetQuality(ApiCall):
@@ -2489,10 +2492,16 @@ class CMD_ShowPause(ApiCall):
 
     def run(self):
         """ Pause or unpause a show """
-        error, show = TVShow.pause(self.indexerid, self.pause)
+        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(self.indexerid))
+        if not showObj:
+            return _responds(RESULT_FAILURE, msg="Show not found")
 
-        if error is not None:
-            return _responds(RESULT_FAILURE, msg=error)
+        if self.pause is None:
+            showObj.paused = not showObj.paused
+        else:
+            showObj.paused = self.pause
+
+        showObj.saveToDB()
 
         return _responds(RESULT_SUCCESS, msg='%s has been %s' % (show.name, ('resumed', 'paused')[show.paused]))
 
@@ -2518,12 +2527,16 @@ class CMD_ShowRefresh(ApiCall):
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
-        error, show = TVShow.refresh(self.indexerid)
+        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(self.indexerid))
+        if not showObj:
+            return _responds(RESULT_FAILURE, msg="Show not found")
 
-        if error is not None:
-            return _responds(RESULT_FAILURE, msg=error)
+        try:
+            sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
+        except CantRefreshShowException as e:
+            return _responds(RESULT_FAILURE, msg=e.message)
 
-        return _responds(RESULT_SUCCESS, msg='%s has queued to be refreshed' % show.name)
+        return _responds(RESULT_SUCCESS, msg='%s has queued to be refreshed' % showObj.name)
 
 
 class CMD_ShowSeasonList(ApiCall):
@@ -2929,7 +2942,7 @@ class CMD_ShowsStats(ApiCall):
 
     def run(self):
         """ Get the global shows and episodes statistics """
-        stats = TVShow.overall_stats()
+        stats = overall_stats()
 
         return _responds(RESULT_SUCCESS, {
             'ep_downloaded': stats['episodes']['downloaded'],

@@ -49,6 +49,7 @@ import six
 from bs4 import BeautifulSoup
 
 import sickrage
+from sickrage.core.common import Quality, SKIPPED, WANTED
 from sickrage.core.exceptions import MultipleShowObjectsException
 
 mediaExtensions = [
@@ -1651,3 +1652,39 @@ def clean_url(url):
         cleaned_url = ''
 
     return cleaned_url
+
+
+def overall_stats():
+    shows = sickrage.srCore.SHOWLIST
+    today = str(datetime.date.today().toordinal())
+
+    downloaded_status = Quality.DOWNLOADED + Quality.ARCHIVED
+    snatched_status = Quality.SNATCHED + Quality.SNATCHED_PROPER
+    total_status = [SKIPPED, WANTED]
+
+    stats = {
+        'episodes': {
+            'downloaded': 0,
+            'snatched': 0,
+            'total': 0,
+        },
+        'shows': {
+            'active': len([show for show in shows if show.paused == 0 and show.status.lower() == 'continuing']),
+            'total': len(shows),
+        },
+    }
+
+    for result in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)]:
+        if not (result['season'] > 0 and result['episode'] > 0 and result['airdate'] > 1):
+            continue
+
+        if result['status'] in downloaded_status:
+            stats['episodes']['downloaded'] += 1
+            stats['episodes']['total'] += 1
+        elif result['status'] in snatched_status:
+            stats['episodes']['snatched'] += 1
+            stats['episodes']['total'] += 1
+        elif result['airdate'] <= today and result['status'] in total_status:
+            stats['episodes']['total'] += 1
+
+    return stats

@@ -6,8 +6,7 @@
 
     import sickrage
     from sickrage.core.updaters import tz_updater
-    from sickrage.core.tv.show import TVShow
-    from sickrage.core.helpers import pretty_filesize
+    from sickrage.core.helpers import pretty_filesize, overall_stats
 
     # resource module is unix only
     has_resource_module = True
@@ -327,7 +326,7 @@
         <footer>
             <div class="panel panel-default panel-footer footer clearfix">
                 <%
-                    stats = TVShow.overall_stats()
+                    stats = overall_stats()
                     ep_downloaded = stats['episodes']['downloaded']
                     ep_snatched = stats['episodes']['snatched']
                     ep_total = stats['episodes']['total']

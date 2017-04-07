@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import enzyme
 
 import sickrage
-from sickrage.core.helpers import tryInt
 
 extensions = {
     'tvshow': ['mkv', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4', 'm2ts', 'iso', 'img', 'mdf', 'ts', 'm4v', 'flv'],
@@ -115,8 +114,8 @@ def getFileMetadata(filename):
             'titles': list(set(titles)),
             'video': vc,
             'audio': ac,
-            'resolution_width': tryInt(p.video[0].width),
-            'resolution_height': tryInt(p.video[0].height),
+            'resolution_width': int(p.video[0].width or 0),
+            'resolution_height': int(p.video[0].height or 0),
             'audio_channels': p.audio[0].channels,
         }
     except enzyme.exceptions.ParseError:

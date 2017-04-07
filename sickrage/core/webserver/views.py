@@ -46,7 +46,7 @@ from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException, NoNFOException
+    MultipleShowObjectsException, NoNFOException, CantRemoveShowException
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
@@ -65,7 +65,6 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_xem_numbering_for_show, set_scene_numbering, xem_refresh
 from sickrage.core.trakt import TraktAPI, traktException
 from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
@@ -1506,22 +1505,33 @@ class Home(WebHandler):
         return self.redirect("/home/displayShow?show=" + show)
 
     def togglePause(self, show=None):
-        error, show = TVShow.pause(show)
+        if show is None:
+            return self._genericMessage("Error", "Invalid show ID")
 
-        if error is not None:
-            return self._genericMessage('Error', error)
+        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
-        sickrage.srCore.srNotifications.message('%s has been %s' % (show.name, ('resumed', 'paused')[show.paused]))
+        if showObj is None:
+            return self._genericMessage("Error", "Unable to find the specified show")
+
+        showObj.paused = not showObj.paused
+
+        showObj.saveToDB()
+
+        sickrage.srCore.srNotifications.message('%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
 
         return self.redirect("/home/displayShow?show=%i" % show.indexerid)
 
     def deleteShow(self, show=None, full=0):
-        if show:
-            error, show = TVShow.delete(show, full)
+        if show is None:
+            return self._genericMessage("Error", "Invalid show ID")
 
-            if error is not None:
-                return self._genericMessage('Error', error)
+        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
+        if showObj is None:
+            return self._genericMessage("Error", "Unable to find the specified show")
+
+        try:
+            sickrage.srCore.SHOWQUEUE.removeShow(showObj, bool(full))
             sickrage.srCore.srNotifications.message(
                 '%s has been %s %s' %
                 (
@@ -1530,29 +1540,33 @@ class Home(WebHandler):
                     ('(media untouched)', '(with all related media)')[bool(full)]
                 )
             )
+        except CantRemoveShowException as e:
+            sickrage.srCore.srNotifications.error('Unable to delete this show.', e.message)
 
-            time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
         # Don't redirect to the default page, so the user can confirm that the show was deleted
         return self.redirect('/home/')
 
     def refreshShow(self, show=None):
-        error, show = TVShow.refresh(show)
+        if show is None:
+            return self._genericMessage("Error", "Invalid show ID")
 
-        # This is a show validation error
-        if error is not None and show is None:
-            return self._genericMessage('Error', error)
+        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
-        # This is a refresh error
-        if error is not None:
-            sickrage.srCore.srNotifications.error('Unable to refresh this show.', error)
+        if showObj is None:
+            return self._genericMessage("Error", "Unable to find the specified show")
+
+        try:
+            sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
+        except CantRefreshShowException as e:
+            sickrage.srCore.srNotifications.error('Unable to refresh this show.', e.message)
 
         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(show.indexerid))
 
     def updateShow(self, show=None, force=0):
-
         if show is None:
             return self._genericMessage("Error", "Invalid show ID")
 
