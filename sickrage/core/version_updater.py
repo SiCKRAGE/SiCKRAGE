@@ -23,6 +23,7 @@ import io
 import os
 import platform
 import re
+import shutil
 import stat
 import subprocess
 import tarfile
@@ -31,7 +32,7 @@ import time
 import traceback
 
 import sickrage
-from sickrage.core.helpers import backupSR, removetree
+from sickrage.core.helpers import backupSR
 from sickrage.notifiers import srNotifiers
 
 
@@ -238,7 +239,7 @@ class srVersionUpdater(object):
 
                     for root, dirs, files in os.walk(to_clean, topdown=False):
                         [os.remove(os.path.join(root, name)) for name in files]
-                        [os.rmdir(os.path.join(root, name)) for name in dirs]
+                        [shutil.rmtree(os.path.join(root, name)) for name in dirs]
 
                     return True
 
@@ -580,7 +581,7 @@ class SourceUpdateManager(UpdateManager):
 
             if os.path.isdir(sr_update_dir):
                 sickrage.srCore.srLogger.info("Clearing out update folder " + sr_update_dir + " before extracting")
-                removetree(sr_update_dir)
+                shutil.rmtree(sr_update_dir)
 
             sickrage.srCore.srLogger.info("Creating update folder " + sr_update_dir + " before extracting")
             os.makedirs(sr_update_dir)

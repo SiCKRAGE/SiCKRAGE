@@ -22,6 +22,7 @@ import datetime
 import glob
 import os
 import re
+import shutil
 import stat
 import threading
 import traceback
@@ -40,7 +41,7 @@ from sickrage.core.exceptions import CantRefreshShowException, CantRemoveShowExc
 from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
 from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, \
-    safe_getattr, removetree
+    safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
@@ -1169,7 +1170,7 @@ class TVShow(object):
                 if sickrage.srCore.srConfig.TRASH_REMOVE_SHOW:
                     send2trash.send2trash(self.location)
                 else:
-                    removetree(self.location)
+                    shutil.rmtree(self.location)
 
                 sickrage.srCore.srLogger.info('%s show folder %s' %
                                               (('Deleted', 'Trashed')[sickrage.srCore.srConfig.TRASH_REMOVE_SHOW],

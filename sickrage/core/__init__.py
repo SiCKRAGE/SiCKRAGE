@@ -39,7 +39,7 @@ from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
-    generateCookieSecret, makeDir, removetree, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace
+    generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace
 from sickrage.core.nameparser.validator import check_force_season_folders  # memory intensive
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor

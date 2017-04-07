@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import os
+import shutil
 import stat
 
 import UnRAR2
@@ -30,7 +31,7 @@ from sickrage.core.common import Quality
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException
 from sickrage.core.helpers import isMediaFile, isRarFile, isSyncFile, \
-    is_hidden_folder, notTorNZBFile, real_path, removetree
+    is_hidden_folder, notTorNZBFile, real_path
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.processors import failed_processor, post_processor
@@ -72,10 +73,10 @@ def delete_folder(folder, check_empty=True):
                 return False
 
             sickrage.srCore.srLogger.info("Deleting folder (if it's empty): " + folder)
-            os.rmdir(folder)
+            shutil.rmtree(folder)
         else:
             sickrage.srCore.srLogger.info("Deleting folder: " + folder)
-            removetree(folder)
+            shutil.rmtree(folder)
     except (OSError, IOError) as e:
         sickrage.srCore.srLogger.warning("Warning: unable to delete folder: {}: {}".format(folder, e))
         return False

@@ -612,7 +612,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
                 try:
                     # directory is empty or contains only ignore_items
                     sickrage.srCore.srLogger.info("Deleting empty folder: " + check_empty_dir)
-                    os.rmdir(check_empty_dir)
+                    shutil.rmtree(check_empty_dir)
 
                     # do the library update for synoindex
                     sickrage.srCore.notifiersDict['synoindex'].deleteFolder(check_empty_dir)
@@ -1105,7 +1105,7 @@ def restoreConfigZip(archive, targetDir):
         return True
     except Exception as e:
         sickrage.srCore.srLogger.error("Zip extraction error: {}".format(e.message))
-        removetree(targetDir)
+        shutil.rmtree(targetDir)
 
 
 def backupSR(backupDir):
@@ -1459,39 +1459,6 @@ def getFreeSpace(directories):
         free_space[folder] = size
 
     return free_space
-
-
-def removetree(tgt):
-    def error_handler(func, path, execinfo):
-        # figure out recovery based on error...
-        e = execinfo[1]
-        if e.errno == errno.ENOENT or not os.path.exists(path):
-            return  # path does not exist
-        if func in (os.rmdir, os.remove) and e.errno == errno.EACCES:
-            os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
-            func(path)  # read-only file; make writable and retry
-        raise e
-
-    # Rename target directory to temporary value, then remove it
-    count = 0
-    while count < 10:  # prevents indefinite loop
-        count += 1
-        tmp = os.path.join(os.path.dirname(tgt), "_removetree_tmp_%d" % count)
-        try:
-            os.rename(tgt, tmp)
-            shutil.rmtree(tmp, onerror=error_handler)
-            break
-        except OSError as e:
-            time.sleep(1)
-            if e.errno in [errno.EACCES, errno.ENOTEMPTY]:
-                continue  # Try another temp name
-            if e.errno == errno.EEXIST:
-                shutil.rmtree(tmp, ignore_errors=True)  # Try to clean up old files
-                continue  # Try another temp name
-            if e.errno == errno.ENOENT:
-                break  # 'src' does not exist(?)
-            raise  # Other error - propagate
-    return
 
 
 def restoreVersionedFile(backup_file, version):

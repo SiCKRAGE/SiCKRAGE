@@ -51,16 +51,16 @@ class srShowUpdater(object):
             dbData = sickrage.srCore.cacheDB.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
             last_update = long(dbData['time'])
         except RecordNotFound:
-            last_update = long(time.mktime(datetime.datetime.min.timetuple()))
+            last_update = update_timestamp
             dbData = sickrage.srCore.cacheDB.db.insert({
                 '_t': 'lastUpdate',
                 'provider': 'theTVDB',
-                'time': long(last_update)
+                'time': last_update
             })
 
         # get indexer updated show ids
         updated_shows = set(d["id"] for d in
-                            srIndexerApi().indexer(**srIndexerApi().api_params.copy()).updated(long(last_update)) or {})
+                            srIndexerApi().indexer(**srIndexerApi().api_params.copy()).updated(last_update) or {})
 
         # start update process
         pi_list = []
@@ -77,7 +77,7 @@ class srShowUpdater(object):
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
-        dbData['time'] = long(update_timestamp)
+        dbData['time'] = update_timestamp
         sickrage.srCore.cacheDB.db.update(dbData)
 
         self.amActive = False
