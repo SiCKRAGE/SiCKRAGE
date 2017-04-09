@@ -457,9 +457,6 @@ class QueueItemRefresh(ShowQueueItem):
     def __init__(self, show=None, force=False):
         super(QueueItemRefresh, self).__init__(show, ShowQueueActions.REFRESH)
 
-        # do refreshes first because they're quick
-        self.priority = srQueuePriorities.NORMAL
-
         # force refresh certain items
         self.force = force
 

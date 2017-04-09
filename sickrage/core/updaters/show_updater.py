@@ -37,7 +37,7 @@ class srShowUpdater(object):
         self.amActive = False
 
     def run(self, force=False):
-        if self.amActive:
+        if self.amActive or sickrage.DEVELOPER:
             return
 
         self.amActive = True

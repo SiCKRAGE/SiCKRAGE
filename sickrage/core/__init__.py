@@ -311,7 +311,7 @@ class Core(object):
         self.srScheduler.add_job(
             self.SHOWUPDATER.run,
             srIntervalTrigger(
-                **{'hours': 1,
+                **{'hours': 24,
                    'start_date': datetime.datetime.now().replace(hour=self.srConfig.SHOWUPDATE_HOUR)}),
             name="SHOWUPDATER",
             id="SHOWUPDATER"

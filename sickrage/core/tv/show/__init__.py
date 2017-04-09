@@ -1183,13 +1183,10 @@ class TVShow(object):
             sickrage.srCore.notifiersDict['trakt'].update_watchlist(self, update="remove")
 
     def populateCache(self):
-        cache_inst = image_cache.ImageCache()
-
         sickrage.srCore.srLogger.debug("Checking & filling cache for show " + self.name)
-        cache_inst.fill_cache(self)
+        image_cache.ImageCache().fill_cache(self)
 
     def refreshDir(self):
-
         # make sure the show dir is where we think it is unless dirs are created on the fly
         if not os.path.isdir(self.location) and not sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS:
             return False

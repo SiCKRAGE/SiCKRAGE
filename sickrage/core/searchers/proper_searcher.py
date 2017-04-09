@@ -46,7 +46,7 @@ class srProperSearcher(object):
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)
         """
-        if self.amActive:
+        if self.amActive or sickrage.DEVELOPER:
             return
 
         self.amActive = True
