@@ -105,12 +105,10 @@
             % endfor
             </span>
     % endif
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 </div>
 <div class="modal-body">
         <%block name="content" />
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
 </div>
 </body>
 </html>
