@@ -62,7 +62,7 @@
 }
 
 .ui-widget.ui-widget-content {
-	border: none;
+    border: none;
 }
 
 .ui-state-default,
@@ -2704,7 +2704,7 @@ ul.token-input-list {
     border: 1px solid #ccc;
     cursor: text;
     font-size: 10px;
-    font-family: Verdana,Geneva,sans-serif;
+    font-family: Verdana, Geneva, sans-serif;
     z-index: 999;
     margin: 0;
     padding: 0 0 1px 0;
@@ -2788,7 +2788,7 @@ div.token-input-dropdown {
     border-bottom: 1px solid;
     cursor: default;
     font-size: 11px;
-    font-family: Verdana,Geneva,sans-serif;
+    font-family: Verdana, Geneva, sans-serif;
     z-index: 1;
 }
 
@@ -4138,3 +4138,4 @@ Country Flags
     width: 38px; /* Width of image */
     height: 38px; /* Height of image */
 }
+

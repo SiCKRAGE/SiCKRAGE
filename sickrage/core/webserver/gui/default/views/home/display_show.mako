@@ -1,4 +1,4 @@
-    import sickrage.subtitles    import sickrage.core.subtitles<%inherit file="../layouts/main.mako"/>
+<%inherit file="../layouts/modal.mako"/>
 <%!
     import os
     import datetime

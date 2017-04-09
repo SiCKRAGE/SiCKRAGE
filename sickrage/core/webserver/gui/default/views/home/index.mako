@@ -13,7 +13,6 @@
 </%block>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-
     <div class="h2footer pull-right">
         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
             <span class="badge" style="background-color: #333333;">Select Columns:
@@ -161,7 +160,7 @@
                         %>
                         <div class="show" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
                             <div class="show-image">
-                                <a href="/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
+                                <a href="/home/displayShow?show=${curShow.indexerid}" data-target="#displayShowModal" data-toggle="modal"><img alt="" class="show-image" src="${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
                             </div>
 
                             <div class="progressbar hidden-print" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
@@ -264,7 +263,7 @@
                                     % if curLoadingShow.show is None:
                                         <span title="">Loading... (${curLoadingShow.show_name})</span>
                                     % else:
-                                        <a href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
+                                        <a href="displayShow?show=${curLoadingShow.show.indexerid}" data-target="#displayShowModal" data-toggle="modal">${curLoadingShow.show.name}</a>
                                     % endif
                                 </td>
                                 <td></td>
@@ -353,25 +352,25 @@
                             % if sickrage.srCore.srConfig.HOME_LAYOUT == 'small':
                                 <td class="tvShow">
                                     <div class="imgsmallposter ${sickrage.srCore.srConfig.HOME_LAYOUT}">
-                                        <a href="/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
+                                        <a href="/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}" data-target="#displayShowModal" data-toggle="modal">
                                             <img src="${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
                                                  alt="${curShow.indexerid}"/>
                                         </a>
-                                        <a href="/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
+                                        <a href="/home/displayShow?show=${curShow.indexerid}" data-target="#displayShowModal" data-toggle="modal" style="vertical-align: middle;">${curShow.name}</a>
                                     </div>
                                 </td>
                             % elif sickrage.srCore.srConfig.HOME_LAYOUT == 'banner':
                                 <td>
                                     <span style="display: none;">${curShow.name}</span>
                                     <div class="imgbanner ${sickrage.srCore.srConfig.HOME_LAYOUT}">
-                                        <a href="/home/displayShow?show=${curShow.indexerid}">
+                                        <a href="/home/displayShow?show=${curShow.indexerid}" data-target="#displayShowModal" data-toggle="modal">
                                             <img src="${showImage(curShow.indexerid, 'banner')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
                                                  alt="${curShow.indexerid}" title="${curShow.name}"/>
                                         </a>
                                     </div>
                                 </td>
                             % elif sickrage.srCore.srConfig.HOME_LAYOUT == 'simple':
-                                <td class="tvShow"><a href="/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></td>
+                                <td class="tvShow"><a href="/home/displayShow?show=${curShow.indexerid}" data-target="#displayShowModal" data-toggle="modal">${curShow.name}</a></td>
                             % endif
 
                             % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
@@ -418,4 +417,12 @@
             </table>
         % endif
     % endfor
+
+    <!--Begin - Bootstrap Modal-->
+    <div class="modal fade" id="displayShowModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+    <!--End - Bootstrap Modal-->
 </%block>
