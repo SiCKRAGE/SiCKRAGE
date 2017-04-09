@@ -281,7 +281,7 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-    % if submenu:
+    % if current_user and submenu:
         <div id="SubMenu" class="hidden-print">
             <span class="panel panel-default btn-group btn-inline">
             <% first = True %>
