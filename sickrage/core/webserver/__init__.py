@@ -159,7 +159,7 @@ class srWebServer(object):
                 (r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
                  {"path": self.video_root}),
             ] + Route.get_routes(sickrage.srCore.srConfig.WEB_ROOT),
-            debug=False,
+            debug=sickrage.DEBUG,
             autoreload=False,
             gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
             xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
