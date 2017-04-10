@@ -836,10 +836,6 @@ ul#rootDirStaticList li input[type="checkbox"] {
     margin-bottom: 20px;
 }
 
-.navShow {
-    display: inline;
-    cursor: pointer;
-}
 
 #prevShow,
 #nextShow,
@@ -859,11 +855,6 @@ h1.title {
     border-bottom: 1px solid #888;
 }
 
-.displayspecials {
-    position: relative;
-    top: -24px;
-}
-
 #showinfo {
     cursor: default;
     display: inline-block;
@@ -871,14 +862,14 @@ h1.title {
     top: -3px;
 }
 
-span.imdbstars {
+.imdbstars {
     display: inline-block;
     vertical-align: top;
     cursor: help;
     margin-top: 4px;
 }
 
-span.imdbstars, span.imdbstars > * {
+.imdbstars, .imdbstars > * {
     height: 12px;
     background: url(../images/rating.png) 0 -12px repeat-x;
     width: 120px;
@@ -886,7 +877,7 @@ span.imdbstars, span.imdbstars > * {
     vertical-align: top;
 }
 
-span.imdbstars > * {
+.imdbstars > * {
     background-position: 0 0;
     max-width: 120px;
 }
@@ -939,7 +930,8 @@ ul.tags li a {
 }
 
 #checkboxControls {
-    padding-top: 5px;
+    padding-top: 28px;
+    left: 35px;
 }
 
 #checkboxControls span {
@@ -1048,7 +1040,7 @@ span.snatched b {
     color: #000 !important;
 }
 
-.displayShowTable.display_show {
+.displayShowTable .display_show {
     clear: both
 }
 

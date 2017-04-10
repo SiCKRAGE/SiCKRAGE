@@ -6,14 +6,6 @@
 <meta data-var="srDefaultPage" data-content="${srDefaultPage}">
 </%block>
 
-<%block name="css">
-<style>
-.upgrade-notification {
-    display: none;
-}
-</style>
-</%block>
-
 <%block name="content">
 <%
 try:

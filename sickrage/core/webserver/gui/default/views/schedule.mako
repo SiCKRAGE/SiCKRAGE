@@ -9,17 +9,6 @@
     from sickrage.core.media.util import showImage
     from sickrage.indexers import srIndexerApi
 %>
-<%block name="css">
-    <style type="text/css">
-        #SubMenu {
-            display: none;
-        }
-
-        #contentWrapper {
-            padding-top: 30px;
-        }
-    </style>
-</%block>
 <%block name="content">
     <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
 
