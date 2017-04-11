@@ -155,11 +155,13 @@ class Connection(threading.Thread):
     def _reAuthenticate(self):
         if self._username and self._password:
             self.log("auto re authenticating !")
-            resp = self.auth(self._username, self._password)
-            if resp.rescode not in '500':
-                return True
-        else:
-            return False
+            try:
+                resp = self.auth(self._username, self._password)
+                if resp.rescode not in '500':
+                    return True
+            except Exception:
+                pass
+        return False
 
     def _keep_alive(self):
         self.lastKeepAliveCheck = time.time()

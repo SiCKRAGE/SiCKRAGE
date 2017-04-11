@@ -19,32 +19,6 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <label for="pickShow">Change Show:</label>
-                <span class="glyphicon glyphicon-chevron-left" id="prevShow" title="Prev Show"></span>
-                <select id="pickShow" class="form-control form-control-inline input-sm" title="Change Show">
-                    % for curShowList in sortedShowLists:
-                        <% curShowType = curShowList[0] %>
-                        <% curShowList = curShowList[1] %>
-
-                        % if len(sortedShowLists) > 1:
-                            <optgroup label="${curShowType}">
-                        % endif
-                        % for curShow in curShowList:
-                            <option value="${curShow.indexerid}" ${('', 'selected="selected"')[curShow == show]}>${curShow.name}</option>
-                        % endfor
-                        % if len(sortedShowLists) > 1:
-                            </optgroup>
-                        % endif
-                    % endfor
-                </select>
-                <span class="glyphicon glyphicon-chevron-right" id="nextShow" title="Next Show"></span>
-            </div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="row">
-            <div class="col-md-12">
                 <div id="showtitle" data-showname="${show.name}">
                     <h1 class="title" id="scene_exception_${show.indexerid}"
                         data-tooltip="${all_scene_exceptions}">${show.name}</h1>

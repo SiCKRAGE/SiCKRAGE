@@ -1084,6 +1084,7 @@ bootstrap modal
 
 .modal-body {
     background-color: #3D3D3D;
+    overflow-x: auto;
 }
 
 .modal-header {

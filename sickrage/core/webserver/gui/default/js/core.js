@@ -1746,14 +1746,20 @@ jQuery(document).ready(function ($) {
                     if (SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
                         $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
                     }
+                });
 
+                $('#displayShowModal').on('shown.bs.modal', function () {
+                    SICKRAGE.home.display_show.init();
                 });
             },
 
             display_show: {
                 init: function () {
-                    SICKRAGE.home.display_show.imdb_stars();
                     SICKRAGE.ajax_search.init();
+
+                    $('.imdbstars').each(function (i, e) {
+                        $(e).html($('<span>').width($(e).text() * 12));
+                    });
 
                     $('#seasonJump').on('change', function () {
                         var id = $('#seasonJump option:selected').val();
@@ -1946,11 +1952,9 @@ jQuery(document).ready(function ($) {
                         placement: 'bottom',
                         html: true, // required if content has HTML
                         content: '<div id="popover-target"></div>'
-                    })
-                    // bootstrap popover event triggered when the popover opens
-                        .on('shown.bs.popover', function () {
-                            $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
-                        });
+                    }).on('shown.bs.popover', function () {
+                        $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
+                    });
                 },
 
                 showHideRows: function (whichClass) {
@@ -2044,12 +2048,6 @@ jQuery(document).ready(function ($) {
                                 }
                             }
                         });
-                },
-
-                imdb_stars: function () {
-                    return $('.imdbstars').each(function (i, e) {
-                        $(e).html($('<span/>').width($(e).text() * 12));
-                    });
                 }
             },
 
@@ -4471,7 +4469,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     var newznab_providers = SICKRAGE.getMeta('NEWZNAB_PROVIDERS').split('!!!');
-                    for(var newznab_id = 0; newznab_id < newznab_providers.length; newznab_id++) {
+                    for (var newznab_id = 0; newznab_id < newznab_providers.length; newznab_id++) {
                         var newznab_provider = newznab_providers[newznab_id];
                         if (newznab_provider.length > 0) {
                             SICKRAGE.config.providers.addNewznabProvider.apply(this, newznab_provider.split('|'));
@@ -4479,7 +4477,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     var torrentrss_providers = SICKRAGE.getMeta('TORRENTRSS_PROVIDERS').split('!!!');
-                    for(var torrentrss_id = 0; torrentrss_id < torrentrss_providers.length; torrentrss_id++) {
+                    for (var torrentrss_id = 0; torrentrss_id < torrentrss_providers.length; torrentrss_id++) {
                         var torrentrss_provider = torrentrss_providers[torrentrss_id];
                         if (torrentrss_provider.length > 0) {
                             SICKRAGE.config.providers.addTorrentRssProvider.apply(this, torrentrss_provider.split('|'));
