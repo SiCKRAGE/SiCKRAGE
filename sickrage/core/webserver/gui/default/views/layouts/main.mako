@@ -309,8 +309,8 @@
 
         % if current_user and submenu:
             <div class="row">
-                <div id="SubMenu" class="text-center hidden-print">
-                    <span class="btn-group">
+                <div id="SubMenu" class="hidden-print clearfix">
+                    <span class="btn-group btn-group-justified">
                     <% first = True %>
                         % for menuItem in submenu:
                             % if 'requires' not in menuItem or menuItem['requires']:
