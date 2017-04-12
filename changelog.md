@@ -1,6 +1,7 @@
 # Changelog
 
-- * da3702b - 2017-04-11: Removed FancyBox Main show view is now responsive Updated to latest jQuery and Bootstrap releases 
+- * b7f9d6f - 2017-04-11: Removed FancyBox Main show view is now responsive Updated to latest jQuery and Bootstrap releases 
+- * ef7074c - 2017-04-11: Removed FancyBox Main show view is now responsive Updated to latest jQuery and Bootstrap releases 
 - * e0e7af6 - 2017-04-10: Added FancyBox for lightbox usage 
 - * 6f8a986 - 2017-04-10: Converted display show template to be responsive 
 - * 47daaf0 - 2017-04-09: Added close button for modal 
