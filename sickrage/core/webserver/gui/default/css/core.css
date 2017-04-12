@@ -466,7 +466,7 @@
 }
 
 .show {
-    margin: 12px;
+    margin-top: 10px;
     width: 188px;
     height: 352px;
     background-color: #DFDACF;
@@ -931,7 +931,6 @@ ul.tags li a {
 
 #checkboxControls {
     padding-top: 28px;
-    left: 35px;
 }
 
 #checkboxControls span {
@@ -1886,7 +1885,7 @@ div.blackwhitelist.anidb, div.blackwhitelist.manual {
 bootstrap Overrides
 ========================================================================== */
 body {
-    padding-top: 60px;
+    padding-top: 30px;
     overflow-y: scroll;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #000;
@@ -4066,12 +4065,14 @@ Country Flags
     background-position: -176px -165px
 }
 
-/* scrollUp Image style */
 #scrollUp {
     background-image: url("../images/top.png");
     bottom: 20px;
     right: 20px;
-    width: 38px; /* Width of image */
-    height: 38px; /* Height of image */
+    width: 38px;
+    height: 38px;
 }
 
+.posterview {
+    margin: 0 auto;
+}

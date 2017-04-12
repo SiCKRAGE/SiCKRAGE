@@ -1,4 +1,4 @@
-<%inherit file="../layouts/modal.mako"/>
+<%inherit file="../layouts/main.mako"/>
 <%!
     import os
     import datetime
@@ -16,6 +16,8 @@
 %>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
+    <%namespace file="../includes/modals.mako" import="displayShowModals"/>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -70,8 +72,6 @@
                 % endif
             </div>
         </div>
-
-        <div class="clearfix"></div>
 
         <!-- Alert -->
         % if show_message:
@@ -325,10 +325,8 @@
             </div>
         </div>
 
-        <div class="clearfix"></div>
-
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <label for="statusSelect">Change selected episodes to:<br/>
                     <select id="statusSelect" class="form-control form-control-inline input-sm">
                         <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
@@ -346,7 +344,7 @@
                 <input type="hidden" id="indexer" value="${show.indexer}"/>
             </div>
 
-            <div class="col-md-6" id="checkboxControls">
+            <div class="col-md-7 pull-right" id="checkboxControls">
                 <label for="wanted"><span class="wanted"><input type="checkbox" id="wanted"
                                                                 checked="checked"/> Wanted: <b>${epCounts[Overview.WANTED]}</b></span></label>
                 <label for="qual"><span class="qual"><input type="checkbox" id="qual"
@@ -356,7 +354,6 @@
                 <label for="skipped"><span class="skipped"><input type="checkbox" id="skipped" checked="checked"/> Skipped: <b>${epCounts[Overview.SKIPPED]}</b></span></label>
                 <label for="snatched"><span class="snatched"><input type="checkbox" id="snatched" checked="checked"/> Snatched: <b>${epCounts[Overview.SNATCHED]}</b></span></label>
             </div>
-
         </div>
 
         <div class="row">
@@ -369,14 +366,13 @@
 
             <div class="col-md-6">
                 <div class="btn-group pull-right">
-                    <button class="btn btn-inline" id="popover" type="button">Select Columns <b class="caret"></b></button>
+                    <button class="btn btn-inline" id="popover" type="button">Select Columns <b class="caret"></b>
+                    </button>
                     <button class="btn btn-inline seriesCheck">Select Filtered Episodes</button>
                     <button class="btn btn-inline clearAll">Clear All</button>
                 </div>
             </div>
         </div>
-
-        <br/>
 
         <div class="row">
             <div class="col-md-12">
@@ -480,7 +476,8 @@
                                 </th>
                             </tr>
                             <tr id="season-${epResult["season"]}-cols" class="seasoncols">
-                                <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult["season"]}"
+                                <th class="col-checkbox"><input type="checkbox" class="seasonCheck"
+                                                                id="${epResult["season"]}"
                                                                 title=""/>
                                 </th>
                                 <th class="col-metadata">NFO</th>
@@ -526,7 +523,8 @@
                                 </th>
                             </tr>
                             <tr id="season-${epResult["season"]}-cols" class="seasoncols">
-                                <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult["season"]}"
+                                <th class="col-checkbox"><input type="checkbox" class="seasonCheck"
+                                                                id="${epResult["season"]}"
                                                                 title=""/>
                                 </th>
                                 <th class="col-metadata">NFO</th>
@@ -550,8 +548,11 @@
                         % endif
 
                         % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
-                            <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult['season']}">
+                            <tbody class="collapse${("", " in")[curSeason == -1]}"
+                                   id="collapseSeason-${epResult['season']}">
                         % else:
+
+
 
                             <tbody>
                         % endif
@@ -568,25 +569,29 @@
                             </td>
 
                             <td align="center"><img src="/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
-                                                    alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/></td>
+                                                    alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/>
+                            </td>
 
                             <td align="center"><img src="/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
-                                                    alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/></td>
+                                                    alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/>
+                            </td>
 
                             <td align="center">
                                 <%
                                     text = str(epResult['episode'])
                                     if epLoc != '' and epLoc is not None:
-                                            text = '<span title="' + epLoc + '" class="addQTip">' + text + "</span>"
+                                                text = '<span title="' + epLoc + '" class="addQTip">' + text + "</span>"
                                 %>
-                                ${text}
+                                    ${text}
                             </td>
 
                             <td align="center">${epResult["absolute_number"]}</td>
 
                             <td align="center">
-                                <input type="text" placeholder="${str(dfltSeas) + 'x' + str(dfltEpis)}" size="6" maxlength="8"
-                                       class="sceneSeasonXEpisode form-control input-scene" data-for-season="${epResult["season"]}"
+                                <input type="text" placeholder="${str(dfltSeas) + 'x' + str(dfltEpis)}" size="6"
+                                       maxlength="8"
+                                       class="sceneSeasonXEpisode form-control input-scene"
+                                       data-for-season="${epResult["season"]}"
                                        data-for-episode="${epResult["episode"]}"
                                        id="sceneSeasonXEpisode_${show.indexerid}_${str(epResult["season"])}_${str(epResult["episode"])}"
                                        title="Change the value here if scene numbering differs from the indexer episode numbering"
@@ -630,7 +635,7 @@
 
                             <td class="col-ep">
                                 % if epResult["file_size"]:
-                                    <% file_size = pretty_filesize(epResult["file_size"]) %>
+                                        <% file_size = pretty_filesize(epResult["file_size"]) %>
                                 ${file_size}
                                 % endif
                             </td>
@@ -655,8 +660,8 @@
                                 <%
                                     filename = epResult['location']
                                     for rootDir in sickrage.srCore.srConfig.ROOT_DIRS.split('|'):
-                                            if rootDir.startswith('/'):
-                                                filename = filename.replace(rootDir, "")
+                                                if rootDir.startswith('/'):
+                                                    filename = filename.replace(rootDir, "")
                                     filename = sickrage.srCore.srConfig.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
                                 %>
                                     <div style="text-align: center;"><a href="${filename}">Download</a></div>
@@ -689,7 +694,8 @@
                                            id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                            name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                            href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                                src="/images/search16.png" height="16" alt="retry" title="Retry Download"/></a>
+                                                src="/images/search16.png" height="16" alt="retry"
+                                                title="Retry Download"/></a>
                                     % else:
                                         <a class="epSearch"
                                            id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
@@ -713,52 +719,4 @@
             </div>
         </div>
     </div>
-
-    <!--Begin - Bootstrap Modal-->
-    <div id="manualSearchModalFailed" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Manual Search</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Do you want to mark this episode as failed?</p>
-                    <p class="text-warning">
-                        <small>The episode release name will be added to the failed history, preventing it to be
-                            downloaded again.
-                        </small>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Failed</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="manualSearchModalQuality" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Manual Search</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Do you want to include the current episode quality in the search?</p>
-                    <p class="text-warning">
-                        <small>Choosing No will ignore any releases with the same episode quality as the one currently
-                            downloaded/snatched.
-                        </small>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--End - Bootstrap Modal-->
 </%block>

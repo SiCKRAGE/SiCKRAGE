@@ -71,12 +71,6 @@ inc_top.mako
     background: #333;
 }
 
-.ui-tabs {
-    padding: 0;
-    background: none;
-    border-width: 0;
-}
-
 .ui-tabs .ui-tabs-panel {
     background-color: #3d3d3d !important;
     border: 1px solid #111 !important;
@@ -84,18 +78,10 @@ inc_top.mako
 
 .ui-tabs-nav > :not(.ui-tabs-active) {
     background: #333;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
 }
 
 [class^="menu-icon-"], [class*=" menu-icon-"] {
     background: url("../../images/menu/menu-icons-white.png");
-    height: 16px;
-    width: 16px;
-    display: inline-block;
-    position: relative;
-    top: 2px;
-    float: left;
 }
 
 .menu-icon-addshow {
@@ -180,8 +166,6 @@ inc_top.mako
 
 [class^="submenu-icon-"], [class*=" submenu-icon-"] {
     background: url("../../images/menu/menu-icons-white.png");
-    height: 16px;
-    width: 16px;
 }
 
 .submenu-icon-anime {
@@ -213,16 +197,11 @@ inc_bottom.mako
 ========================================================================== */
 
 .footer {
-    width: 100%;
-    padding: 20px 0;
     color: #fff;
-    text-align: center;
-    font-size: 12px;
 }
 
 .footerhighlight {
     color: #09A2FF;
-    display: inline;
 }
 
 /* =======================================================================
@@ -231,57 +210,23 @@ index.mako
 
 .imgbanner .banner {
     border: 1px solid #111;
-    overflow: hidden;
-    height: 66px;
-    overflow: hidden;
-    border-radius: 8px;
-    vertical-align: top;
-    width: 360px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .imgsmallposter .small {
-    height: 66px;
-    overflow: hidden;
-    border-radius: 3px;
-    vertical-align: middle;
-    width: 45px;
     border: 1px solid #111;
-    margin-right: 5px;
 }
 
 .progressbarText {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    text-align: center;
     text-shadow: 0 0 0.1em #000;
-    vertical-align: middle;
-    font-size: 12px;
     color: #fff;
 }
 
 .show {
-    margin: 12px;
-    width: 188px;
-    height: 352px;
     background-color: #333;
     border: 1px solid #111;
-    border-radius: 6px;
 }
 
 .show-title:after {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    width: 20px;
-    height: 100%;
-    top: 0;
-    right: 0;
     background-image: -webkit-linear-gradient(right, rgba(51, 51, 51, 1), rgba(51, 51, 51, 0));
     background-image: -moz-linear-gradient(right, rgba(51, 51, 51, 1), rgba(51, 51, 51, 0));
     background-image: -ms-linear-gradient(right, rgba(51, 51, 51, 1), rgba(51, 51, 51, 0));
@@ -290,13 +235,6 @@ index.mako
 }
 
 .show-date:after {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    width: 20px;
-    height: 100%;
-    top: 0;
-    right: 0;
     background-image: -webkit-linear-gradient(right, rgba(51, 51, 51, 1), rgba(51, 51, 51, 0));
     background-image: -moz-linear-gradient(right, rgba(51, 51, 51, 1), rgba(51, 51, 51, 0));
     background-image: -ms-linear-gradient(right, rgba(51, 51, 51, 1), rgba(51, 51, 51, 0));
@@ -306,7 +244,6 @@ index.mako
 
 td.tvShow a {
     color: #fff;
-    text-decoration: none;
 }
 
 td.tvShow a:hover {
@@ -686,7 +623,7 @@ bootstrap Overrides
 ========================================================================== */
 
 body {
-    padding-top: 60px;
+    padding-top: 30px;
     overflow-y: scroll;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #fff;

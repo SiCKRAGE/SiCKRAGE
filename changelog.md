@@ -1,6 +1,7 @@
 # Changelog
 
-- * def12b5 - 2017-04-10: Added FancyBox for lightbox usage 
+- * da3702b - 2017-04-11: Removed FancyBox Main show view is now responsive Updated to latest jQuery and Bootstrap releases 
+- * e0e7af6 - 2017-04-10: Added FancyBox for lightbox usage 
 - * 6f8a986 - 2017-04-10: Converted display show template to be responsive 
 - * 47daaf0 - 2017-04-09: Added close button for modal 
 - * 8ab1894 - 2017-04-09: Developer mode disables scheduled jobs Login page is now responsive 

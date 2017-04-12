@@ -1747,10 +1747,6 @@ jQuery(document).ready(function ($) {
                         $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
                     }
                 });
-
-                $('#displayShowModal').on('shown.bs.modal', function () {
-                    SICKRAGE.home.display_show.init();
-                });
             },
 
             display_show: {
