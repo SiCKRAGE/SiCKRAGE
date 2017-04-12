@@ -623,9 +623,6 @@ bootstrap Overrides
 ========================================================================== */
 
 body {
-    padding-top: 30px;
-    overflow-y: scroll;
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #fff;
     background-color: #222;
 }
@@ -1048,4 +1045,11 @@ bootstrap panel
 .panel-heading {
     background-color: #3D3D3D !important;
     color: #FFFFFF !important;
+}
+
+/* =======================================================================
+bootstrap badge
+========================================================================== */
+.badge {
+    background-color: #333333;
 }

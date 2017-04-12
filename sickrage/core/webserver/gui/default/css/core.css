@@ -184,10 +184,7 @@
 }
 
 #SubMenu {
-    padding-right: 20px;
-    clear: both;
     font-size: 12px;
-    float: right;
 }
 
 .upgrade-notification {
@@ -476,8 +473,8 @@
 
 .show-image {
     overflow: hidden;
-    height: 273px;
     width: 186px;
+    height: 273px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
@@ -835,7 +832,6 @@ ul#rootDirStaticList li input[type="checkbox"] {
     overflow: hidden;
     margin-bottom: 20px;
 }
-
 
 #prevShow,
 #nextShow,
@@ -1885,7 +1881,7 @@ div.blackwhitelist.anidb, div.blackwhitelist.manual {
 bootstrap Overrides
 ========================================================================== */
 body {
-    padding-top: 30px;
+    padding-top: 4%;
     overflow-y: scroll;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #000;
@@ -4073,6 +4069,44 @@ Country Flags
     height: 38px;
 }
 
-.posterview {
-    margin: 0 auto;
+@media (min-width: 768px) {
+    .pull-sm-left {
+        float: left !important;
+    }
+
+    .pull-sm-right {
+        float: right !important;
+    }
+
+    .pull-sm-none {
+        float: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .pull-md-left {
+        float: left !important;
+    }
+
+    .pull-md-right {
+        float: right !important;
+    }
+
+    .pull-md-none {
+        float: none !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .pull-lg-left {
+        float: left !important;
+    }
+
+    .pull-lg-right {
+        float: right !important;
+    }
+
+    .pull-lg-none {
+        float: none !important;
+    }
 }

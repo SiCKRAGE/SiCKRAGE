@@ -1682,18 +1682,17 @@ jQuery(document).ready(function ($) {
                     sortAppend: [[2, 0]]
                 });
 
-                if ($("#showListTableShows").find("tbody").find("tr").size() > 0) {
+                if ($("#showListTableShows").find("tbody").find("tr").length > 0) {
                     $.tablesorter.filter.bindSearch("#showListTableShows", $('.search'));
                 }
 
                 if (SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
-                    if ($("#showListTableAnime").find("tbody").find("tr").size() > 0) {
+                    if ($("#showListTableAnime").find("tbody").find("tr").length > 0) {
                         $.tablesorter.filter.bindSearch("#showListTableAnime", $('.search'));
                     }
                 }
 
-                var $container = [$('#container'), $('#container-anime')];
-                $.each($container, function () {
+                $.each([$('#container'), $('#container-anime')], function () {
                     $(this).isotope({
                         itemSelector: '.show',
                         sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
@@ -1722,18 +1721,19 @@ jQuery(document).ready(function ($) {
                 });
 
                 $('#postersort').on('change', function () {
-                    var sortValue = $(this).value;
-                    $('#container').isotope({sortBy: sortValue});
-                    $('#container-anime').isotope({sortBy: sortValue});
-                    $.get($(this).options[$(this).selectedIndex].getAttribute('data-sort'));
+                    var sortValue = $(this).val();
+                    $.each([$('#container'), $('#container-anime')], function () {
+                        $(this).isotope({sortBy: sortValue});
+                    });
+                    $.post($(this).find('option[value=' + $(this).val() +']').attr('data-sort'));
                 });
 
                 $('#postersortdirection').on('change', function () {
-                    var sortDirection = $(this).value;
-                    sortDirection = sortDirection === 'true';
-                    $('#container').isotope({sortAscending: sortDirection});
-                    $('#container-anime').isotope({sortAscending: sortDirection});
-                    $.get($(this).options[$(this).selectedIndex].getAttribute('data-sort'));
+                    var sortDirection = $(this).val() === 'true';
+                    $.each([$('#container'), $('#container-anime')], function () {
+                        $(this).isotope({sortAscending: sortDirection});
+                    });
+                    $.post($(this).find('option[value=' + $(this).val() +']').attr('data-sort'));
                 });
 
                 $('#popover').popover({
