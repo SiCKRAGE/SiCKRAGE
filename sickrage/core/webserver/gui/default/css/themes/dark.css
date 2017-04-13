@@ -490,13 +490,7 @@ table.cal-even {
 config*.mako
 ========================================================================== */
 
-.component-group {
-    border-bottom: 1px dotted #555;
-}
-
-.component-group-desc p {
-    width: 90%;
-    margin: 10px 0;
+.tab-pane-desc p {
     color: #ddd;
 }
 

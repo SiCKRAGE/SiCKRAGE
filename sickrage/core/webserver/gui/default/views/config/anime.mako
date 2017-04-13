@@ -14,18 +14,18 @@
             <div id="ui-components">
 
                 <ul>
-                    <li><a href="#core-component-group1">AnimeDB Settings</a></li>
-                    <li><a href="#core-component-group2">Look &amp; Feel</a></li>
+                    <li><a href="#core-tab-pane1">AnimeDB Settings</a></li>
+                    <li><a href="#core-tab-pane2">Look &amp; Feel</a></li>
                 </ul>
 
-                <div id="core-component-group1" class="tab-pane active component-group">
-                    <div class="component-group-desc">
+                <div id="core-tab-pane1" class="tab-pane active tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/anidb24.png" alt="AniDB" title="AniDB" width="24" height="24" />
                         <h3><a href="${anon_url('http://anidb.info')}" onclick="window.open(this.href, '_blank'); return false;">AniDB</a></h3>
                         <p>AniDB is non-profit database of anime information that is freely open to the public</p>
                     </div>
 
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" name="use_anidb"
                                    id="use_anidb" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_ANIDB)]} />
@@ -73,14 +73,14 @@
                         <input type="submit" class="btn config_submitter" value="Save Changes" />
                     </fieldset>
 
-                </div><!-- /component-group //-->
+                </div><!-- /tab-pane //-->
 
-                <div id="core-component-group2" class="tab-pane component-group">
+                <div id="core-tab-pane2" class="tab-pane tab-pane">
 
-                    <div class="component-group-desc">
+                    <div class="tab-pane-desc">
                         <h3>Look and Feel</h3>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" name="split_home"
                                    id="split_home" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ANIME_SPLIT_HOME)]}/>
@@ -91,7 +91,7 @@
                         </div>
                         <input type="submit" class="btn config_submitter" value="Save Changes" />
                    </fieldset>
-                </div><!-- /component-group //-->
+                </div><!-- /tab-pane //-->
 
                 <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
 

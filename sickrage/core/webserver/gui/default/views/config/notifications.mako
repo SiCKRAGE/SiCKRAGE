@@ -22,14 +22,14 @@
                 </ul>
 
                 <div id="tabs-1">
-                <div class="component-group">
+                <div class="tab-pane">
 
-                    <div class="component-group-desc">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/kodi.png" alt="" title="KODI" />
                         <h3><a href="${anon_url('http://kodi.tv/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">KODI</a></h3>
                         <p>A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label class="clearfix" for="use_kodi">
                                 <span class="component-title">Enable</span>
@@ -158,17 +158,17 @@
 
                     </fieldset>
 
-                </div><!-- /kodi component-group //-->
+                </div><!-- /kodi tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/plex.png" alt="" title="Plex Media Server" />
                         <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Plex Media Server</a></h3>
                         <p>Experience your media on a visually stunning, easy to use interface on your Mac connected to your TV. Your media library has never looked this good!</p>
                         <p class="plexinfo hide">For sending notifications to Plex Home Theater (PHT) clients, use the KODI notifier with port <b>3005</b>.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_plex">
                                 <span class="component-title">Enable</span>
@@ -197,7 +197,7 @@
                                     <span class="component-desc">(<a href="${anon_url('https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;"><u>Finding your account token</u></a>)</span>
                                 </label>
                             </div>
-                            <div class="component-group" style="padding: 0; min-height: 130px">
+                            <div class="tab-pane" style="padding: 0; min-height: 130px">
                                 <div class="field-pair">
                                     <label for="plex_username">
                                         <span class="component-title">Server Username</span>
@@ -222,7 +222,7 @@
                                 </div>
                             </div>
 
-                            <div class="component-group" style="padding: 0; min-height: 50px">
+                            <div class="tab-pane" style="padding: 0; min-height: 50px">
                                 <div class="field-pair">
                                     <label for="plex_update_library">
                                         <span class="component-title">Update server library</span>
@@ -258,14 +258,14 @@
                             </div>
                         </div><!-- /content_use_plex -->
                     </fieldset>
-                </div><!-- /plex media server component-group -->
+                </div><!-- /plex media server tab-pane -->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/plex.png" alt="" title="Plex Media Client" />
                         <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Plex Media Client</a></h3>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_plex_client">
                                 <span class="component-title">Enable</span>
@@ -320,7 +320,7 @@
                                     </span>
                                 </label>
                             </div>
-                            <div class="component-group" style="padding: 0; min-height: 130px">
+                            <div class="tab-pane" style="padding: 0; min-height: 130px">
                                 <div class="field-pair">
                                     <label for="plex_username">
                                         <span class="component-title">Server Username</span>
@@ -353,16 +353,16 @@
                             </div>
                         </div><!-- /content_use_plex_client -->
                     </fieldset>
-                </div><!-- /plex client component-group -->
+                </div><!-- /plex client tab-pane -->
 
 
-                 <div class="component-group">
-                     <div class="component-group-desc">
+                 <div class="tab-pane">
+                     <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/emby.png" alt="" title="Emby" />
                         <h3><a href="${anon_url('http://emby.media/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Emby</a></h3>
                         <p>A home media server built using other popular open source technologies.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_emby">
                                 <span class="component-title">Enable</span>
@@ -399,16 +399,16 @@
                             </div>
                         <!-- /content_use_emby //-->
                     </fieldset>
-                </div><!-- /emby component-group //-->
+                </div><!-- /emby tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/nmj.png" alt="" title="Networked Media Jukebox" />
                         <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">NMJ</a></h3>
                         <p>The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_nmj">
                                 <span class="component-title">Enable</span>
@@ -472,15 +472,15 @@
                         </div><!-- /content_use_nmj //-->
 
                     </fieldset>
-                </div><!-- /nmj component-group //-->
+                </div><!-- /nmj tab-pane //-->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/nmj.png" alt="" title="Networked Media Jukebox v2"/>
                         <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">NMJv2</a></h3>
                         <p>The Networked Media Jukebox, or NMJv2, is the official media jukebox interface made available for the Popcorn Hour 300 & 400-series.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_nmjv2">
                                 <span class="component-title">Enable</span>
@@ -567,18 +567,18 @@
                         </div><!-- /content_use_nmjv2 //-->
 
                     </fieldset>
-                </div><!-- /nmjv2 component-group //-->
+                </div><!-- /nmjv2 tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/synoindex.png" alt="" title="Synology" />
                         <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Synology</a></h3>
                         <p>The Synology DiskStation NAS.</p>
                         <p>Synology Indexer is the daemon running on the Synology NAS to build its media database.</p>
                     </div>
 
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_synoindex">
                                 <span class="component-title">Enable</span>
@@ -599,17 +599,17 @@
                         </div><!-- /content_use_synoindex //-->
 
                     </fieldset>
-                </div><!-- /synoindex component-group //-->
+                </div><!-- /synoindex tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/synologynotifier.png" alt="" title="Synology Indexer" />
                         <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Synology Notifier</a></h3>
                         <p>Synology Notifier is the notification system of Synology DSM</p>
                     </div>
 
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_synologynotifier">
                                 <span class="component-title">Enable</span>
@@ -658,16 +658,16 @@
                             <input type="submit" class="config_submitter btn" value="Save Changes" />
                            </div>
                     </fieldset>
-                </div><!-- /synology notifier component-group //-->
+                </div><!-- /synology notifier tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/pytivo.png" alt="" title="pyTivo" />
                         <h3><a href="${anon_url('http://pytivo.sourceforge.net/wiki/index.php/PyTivo')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">pyTivo</a></h3>
                         <p>pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_pytivo">
                                 <span class="component-title">Enable</span>
@@ -724,19 +724,19 @@
                         </div><!-- /content_use_pytivo //-->
 
                     </fieldset>
-                </div><!-- /component-group //-->
+                </div><!-- /tab-pane //-->
 
             </div>
 
 
             <div id="tabs-2">
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/growl.png" alt="" title="Growl" />
                         <h3><a href="${anon_url('http://growl.info/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Growl</a></h3>
                         <p>A cross-platform unobtrusive global notification system.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_growl">
                                 <span class="component-title">Enable</span>
@@ -812,16 +812,16 @@
                         </div><!-- /content_use_growl //-->
 
                     </fieldset>
-                </div><!-- /growl component-group //-->
+                </div><!-- /growl tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/prowl.png" alt="Prowl" title="Prowl" />
                         <h3><a href="${anon_url('http://www.prowlapp.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Prowl</a></h3>
                         <p>A Growl client for iOS.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_prowl">
                                 <span class="component-title">Enable</span>
@@ -907,16 +907,16 @@
                         </div><!-- /content_use_prowl //-->
 
                     </fieldset>
-                </div><!-- /prowl component-group //-->
+                </div><!-- /prowl tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/libnotify.png" alt="" title="Libnotify" />
                         <h3><a href="${anon_url('http://library.gnome.org/devel/libnotify/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Libnotify</a></h3>
                         <p>The standard desktop notification API for Linux/*nix systems.  This notifier will only function if the pynotify module is installed (Ubuntu/Debian package <a href="apt:python-notify">python-notify</a>).</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_libnotify">
                                 <span class="component-title">Enable</span>
@@ -965,16 +965,16 @@
                         </div><!-- /content_use_libnotify //-->
 
                     </fieldset>
-                </div><!-- /libnotify component-group //-->
+                </div><!-- /libnotify tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/pushover.png" alt="" title="Pushover" />
                         <h3><a href="${anon_url('https://pushover.net/apps/clone/sickrage')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Pushover</a></h3>
                         <p>Pushover makes it easy to send real-time notifications to your Android and iOS devices.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_pushover">
                                 <span class="component-title">Enable</span>
@@ -1139,15 +1139,15 @@
                         </div><!-- /content_use_pushover //-->
 
                     </fieldset>
-                </div><!-- /pushover component-group //-->
+                </div><!-- /pushover tab-pane //-->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/boxcar.png" alt="" title="Boxcar" />
                         <h3><a href="${anon_url('http://boxcar.io/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Boxcar</a></h3>
                         <p>Universal push notification for iOS. Read your messages where and when you want them! A subscription will be sent if needed.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_boxcar">
                                 <span class="component-title">Enable</span>
@@ -1208,15 +1208,15 @@
                         </div><!-- /content_use_boxcar //-->
 
                     </fieldset>
-                </div><!-- /boxcar component-group //-->
+                </div><!-- /boxcar tab-pane //-->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/boxcar2.png" alt="" title="Boxcar2"/>
                         <h3><a href="${anon_url('https://new.boxcar.io/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Boxcar2</a></h3>
                         <p>Read your messages where and when you want them!</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_boxcar2">
                                 <span class="component-title">Enable</span>
@@ -1277,15 +1277,15 @@
                         </div><!-- /content_use_boxcar2 //-->
 
                     </fieldset>
-                </div><!-- /boxcar2 component-group //-->
+                </div><!-- /boxcar2 tab-pane //-->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/nma.png" alt="" title="NMA"/>
                         <h3><a href="${anon_url('http://nma.usk.bz')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Notify My Android</a></h3>
                         <p>Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_nma">
                                 <span class="component-title">Enable</span>
@@ -1371,15 +1371,15 @@
                         </div><!-- /content_use_nma //-->
 
                     </fieldset>
-                </div><!-- /nma component-group //-->
+                </div><!-- /nma tab-pane //-->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/pushalot.png" alt="" title="Pushalot" />
                         <h3><a href="${anon_url('https://pushalot.com')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Pushalot</a></h3>
                         <p>Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_pushalot">
                                 <span class="component-title">Enable</span>
@@ -1441,15 +1441,15 @@
                         </div><!-- /content_use_pushalot //-->
 
                     </fieldset>
-                </div><!-- /pushalot component-group //-->
+                </div><!-- /pushalot tab-pane //-->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/pushbullet.png" alt="" title="Pushbullet" />
                         <h3><a href="${anon_url('https://www.pushbullet.com')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Pushbullet</a></h3>
                         <p>Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_pushbullet">
                                 <span class="component-title">Enable</span>
@@ -1522,14 +1522,14 @@
                         </div><!-- /content_use_pushbullet //-->
 
                     </fieldset>
-                </div><!-- /pushbullet component-group //-->
-                <div class="component-group">
-                    <div class="component-group-desc">
+                </div><!-- /pushbullet tab-pane //-->
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/freemobile.png" alt="" title="Free Mobile" />
                         <h3><a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Free Mobile</a></h3>
                         <p>Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_freemobile">
                                 <span class="component-title">Enable</span>
@@ -1602,18 +1602,18 @@
                         </div><!-- /content_use_freemobile //-->
 
                     </fieldset>
-                </div><!-- /freemobile component-group //-->
+                </div><!-- /freemobile tab-pane //-->
 
             </div>
 
             <div id="tabs-3">
-                <div class="component-group">
-                       <div class="component-group-desc">
+                <div class="tab-pane">
+                       <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/twitter.png" alt="" title="Twitter"/>
                         <h3><a href="${anon_url('http://www.twitter.com/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Twitter</a></h3>
                         <p>A social networking and microblogging service, enabling its users to send and read other users' messages called tweets.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_twitter">
                                 <span class="component-title">Enable</span>
@@ -1713,16 +1713,16 @@
                         </div><!-- /content_use_twitter //-->
 
                     </fieldset>
-                </div><!-- /twitter component-group //-->
+                </div><!-- /twitter tab-pane //-->
 
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/trakt.png" alt="" title="Trakt"/>
                         <h3><a href="${anon_url('http://trakt.tv/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Trakt</a></h3>
                         <p>trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you'll enjoy!</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_trakt">
                                 <span class="component-title">Enable</span>
@@ -1895,15 +1895,15 @@
                             <input type="submit" class="btn config_submitter" value="Save Changes" />
                         </div><!-- /content_use_trakt //-->
                     </fieldset>
-                </div><!-- /trakt component-group //-->
+                </div><!-- /trakt tab-pane //-->
 
-                <div class="component-group">
-                    <div class="component-group-desc">
+                <div class="tab-pane">
+                    <div class="tab-pane-desc">
                         <img class="notifier-icon" src="/images/notifiers/email.png" alt="" title="Email" />
                         <h3><a href="${anon_url('http://en.wikipedia.org/wiki/Comparison_of_webmail_providers')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Email</a></h3>
                         <p>Allows configuration of email notifications on a per show basis.</p>
                     </div>
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_email">
                                 <span class="component-title">Enable</span>
@@ -2049,7 +2049,7 @@
                             <input class="btn" type="submit" class="config_submitter" value="Save Changes" />
                         </div><!-- /content_use_email //-->
                     </fieldset>
-                </div><!-- /email component-group //-->
+                </div><!-- /email tab-pane //-->
 
             </div><!-- /ui-components //-->
             </div>

@@ -19,26 +19,25 @@
         <% indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT %>
     % endif
 
-    <div class="row">
         <div id="config">
             <form id="configForm" action="saveGeneral" method="post">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#core-component-group1">Misc</a></li>
-                    <li><a data-toggle="tab" href="#core-component-group2">Interface</a></li>
-                    <li><a data-toggle="tab" href="#core-component-group3">Advanced Settings</a></li>
+                    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Misc</a></li>
+                    <li><a data-toggle="tab" href="#core-tab-pane2">Interface</a></li>
+                    <li><a data-toggle="tab" href="#core-tab-pane3">Advanced Settings</a></li>
                 </ul>
 
                 <div class="tab-content">
-                    <div id="core-component-group1" class="tab-pane fade in active">
-                        <div class="component-group">
+                    <div id="core-tab-pane1" class="tab-pane fade in active">
+                        <div class="tab-pane">
 
-                            <div class="component-group-desc">
+                            <div class="tab-pane-desc">
                                 <h3>Misc</h3>
                                 <p>Startup options. Indexer options. Log and show file locations.</p>
                                 <p><b>Some options may require a manual restart to take effect.</b></p>
                             </div>
 
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
                                 <div class="field-pair">
                                     <label for="indexerDefaultLang">
                                         <span class="component-title">Default Indexer Language</span>
@@ -191,12 +190,12 @@
                             </fieldset>
                         </div>
 
-                        <div class="component-group">
-                            <div class="component-group-desc">
+                        <div class="tab-pane">
+                            <div class="tab-pane-desc">
                                 <h3>Updates</h3>
                                 <p>Options for software updates.</p>
                             </div>
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
 
                                 <div class="field-pair">
                                     <label for="version_notify">
@@ -249,18 +248,18 @@
                             </fieldset>
 
                         </div>
-                    </div><!-- /component-group1 //-->
+                    </div><!-- /tab-pane1 //-->
 
 
-                    <div id="core-component-group2" class="tab-pane fade" >
-                        <div class="component-group">
+                    <div id="core-tab-pane2" class="tab-pane fade">
+                        <div class="tab-pane">
 
-                            <div class="component-group-desc">
+                            <div class="tab-pane-desc">
                                 <h3>User Interface</h3>
                                 <p>Options for visual appearance.</p>
                             </div>
 
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
 
                                 <div class="field-pair">
                                     <label for="theme_name">
@@ -421,18 +420,18 @@
 
                             </fieldset>
 
-                        </div><!-- /User interface component-group -->
+                        </div><!-- /User interface tab-pane -->
 
-                        <div class="component-group">
+                        <div class="tab-pane">
 
-                            <div class="component-group-desc">
+                            <div class="tab-pane-desc">
                                 <h3>Web Interface</h3>
                                 <p>It is recommended that you enable a username and password to secure SickRage from
                                     being tampered with remotely.</p>
                                 <p><b>These options require a manual restart to take effect.</b></p>
                             </div>
 
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
 
                                 <div class="field-pair">
                                     <label for="api_key">
@@ -561,19 +560,19 @@
 
                             </fieldset>
 
-                        </div><!-- /component-group2 //-->
-                    </div><!-- /component-group2 //-->
+                        </div><!-- /tab-pane2 //-->
+                    </div><!-- /tab-pane2 //-->
 
 
-                    <div id="core-component-group3" class="tab-pane fade" >
+                    <div id="core-tab-pane3" class="tab-pane fade">
 
-                        <div class="component-group">
+                        <div class="tab-pane">
 
-                            <div class="component-group-desc">
+                            <div class="tab-pane-desc">
                                 <h3>Advanced Settings</h3>
                             </div>
 
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
 
                                 <div class="field-pair">
                                     <label>
@@ -759,11 +758,11 @@
                             git_branch = sickrage.srCore.VERSIONUPDATER.updater.remote_branches
                         %>
 
-                            <div class="component-group">
-                                <div class="component-group-desc">
+                            <div class="tab-pane">
+                                <div class="tab-pane-desc">
                                     <h3>Git Settings</h3>
                                 </div>
-                                <fieldset class="component-group-list">
+                                <fieldset class="tab-pane-list">
 
                                     <div class="field-pair">
                                         <label>
@@ -804,7 +803,8 @@
                                         <label>
                                             <span class="component-title">Git executable path</span>
                                             <span class="component-desc">
-                                            <input type="text" name="git_path" value="${sickrage.srCore.srConfig.GIT_PATH}"
+                                            <input type="text" name="git_path"
+                                                   value="${sickrage.srCore.srConfig.GIT_PATH}"
                                                    class="form-control input-sm input300" autocapitalize="off"/>
                                             <div class="clear-left"><p>only needed if OS is unable to locate git from env</p></div>
                                         </span>
@@ -839,14 +839,15 @@
 
                             </div>
                         % endif
-                    </div><!-- /component-group3 //-->
-                </div>
+                    </div><!-- /tab-pane3 //-->
 
-                <br>
-                <h6 class="pull-right"><b>All non-absolute folder locations are relative to <span
-                        class="path">${sickrage.DATA_DIR}</span></b></h6>
-                <input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
+                    <h6 class="pull-right">
+                        <b>All non-absolute folder locations are relative to
+                            <span class="path">${sickrage.DATA_DIR}</span>
+                        </b>
+                    </h6>
+                    <input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
+                </div>
             </form>
         </div>
-    </div>
 </%block>

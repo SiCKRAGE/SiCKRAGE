@@ -6,10 +6,10 @@
     <div id="newShowPortal">
         <div id="ui-components">
             <ul>
-                <li><a href="#core-component-group1">Add Existing Show</a></li>
+                <li><a href="#core-tab-pane1">Add Existing Show</a></li>
             </ul>
 
-            <div id="core-component-group1" class="tab-pane active component-group">
+            <div id="core-tab-pane1" class="tab-pane active tab-pane">
 
                 <form id="addShowForm" method="post" action="/home/addShows/addNewShow" accept-charset="utf-8">
 

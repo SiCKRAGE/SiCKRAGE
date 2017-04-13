@@ -19,15 +19,15 @@
 
                 <div id="ui-components">
                     <ul>
-                        <li><a href="#core-component-group1">Main</a></li>
-                        <li><a href="#core-component-group2">Format</a></li>
-                        <li><a href="#core-component-group3">Advanced</a></li>
+                        <li><a href="#core-tab-pane1">Main</a></li>
+                        <li><a href="#core-tab-pane2">Format</a></li>
+                        <li><a href="#core-tab-pane3">Advanced</a></li>
                     </ul>
 
-                    <div id="core-component-group1">
-                        <div class="component-group">
+                    <div id="core-tab-pane1">
+                        <div class="tab-pane">
                             <h3>Main Settings</h3>
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
 
                                 <div class="field-pair">
                                     <label for="location">
@@ -126,10 +126,10 @@
                         </div>
                     </div>
 
-                    <div id="core-component-group2">
-                        <div class="component-group">
+                    <div id="core-tab-pane2">
+                        <div class="tab-pane">
                             <h3>Format Settings</h3>
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
 
                                 <div class="field-pair">
                                     <label for="airbydate">
@@ -203,10 +203,10 @@
                         </div>
                     </div>
 
-                    <div id="core-component-group3">
-                        <div class="component-group">
+                    <div id="core-tab-pane3">
+                        <div class="tab-pane">
                             <h3>Advanced Settings</h3>
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
 
                                 <div class="field-pair">
                                     <label for="rls_ignore_words">

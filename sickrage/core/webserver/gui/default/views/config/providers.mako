@@ -51,19 +51,19 @@
             <form id="configForm" action="saveProviders" method="post">
                 <div id="ui-components">
                     <ul>
-                        <li><a href="#core-component-group1">Provider Priorities</a></li>
-                        <li><a href="#core-component-group2">Provider Options</a></li>
+                        <li><a href="#core-tab-pane1">Provider Priorities</a></li>
+                        <li><a href="#core-tab-pane2">Provider Options</a></li>
                         % if sickrage.srCore.srConfig.USE_NZBS:
-                            <li><a href="#core-component-group3">Configure Custom Newznab Providers</a></li>
+                            <li><a href="#core-tab-pane3">Configure Custom Newznab Providers</a></li>
                         % endif
                         % if sickrage.srCore.srConfig.USE_TORRENTS:
-                            <li><a href="#core-component-group4">Configure Custom Torrent Providers</a></li>
+                            <li><a href="#core-tab-pane4">Configure Custom Torrent Providers</a></li>
                         % endif
                     </ul>
 
-                    <div id="core-component-group1" class="component-group" style='min-height: 550px;'>
+                    <div id="core-tab-pane1" class="tab-pane" style='min-height: 550px;'>
 
-                        <div class="component-group-desc">
+                        <div class="tab-pane-desc">
                             <h3>Provider Priorities</h3>
                             <p>Check off and drag the providers into the order you want them to be used.</p>
                             <p>At least one provider is required but two are recommended.</p>
@@ -82,7 +82,7 @@
                             </div>
                         </div>
 
-                        <fieldset class="component-group-list">
+                        <fieldset class="tab-pane-list">
                             <ul id="provider_order_list">
                                 % for providerID, providerObj in sickrage.srCore.providersDict.sort().items():
                                     % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srCore.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.srCore.srConfig.USE_TORRENTS):
@@ -111,16 +111,16 @@
                                    value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.srCore.providersDict.all().items()])}"/>
                             <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
                         </fieldset>
-                    </div><!-- /component-group1 //-->
+                    </div><!-- /tab-pane1 //-->
 
-                    <div id="core-component-group2" class="component-group">
-                        <div class="component-group-desc">
+                    <div id="core-tab-pane2" class="tab-pane">
+                        <div class="tab-pane-desc">
                             <h3>Provider Options</h3>
                             <p>Configure individual provider settings here.</p>
                             <p>Check with provider's website on how to obtain an API key if needed.</p>
                         </div>
 
-                        <fieldset class="component-group-list">
+                        <fieldset class="tab-pane-list">
                             <div class="field-pair">
                                 <label for="editAProvider" id="provider-list">
                                     <span class="component-title">Configure provider:</span>
@@ -725,17 +725,17 @@
                             <!-- end div for editing providers -->
                             <input type="submit" class="btn config_submitter" value="Save Changes"/><br>
                         </fieldset>
-                    </div><!-- /component-group2 //-->
+                    </div><!-- /tab-pane2 //-->
 
                     % if sickrage.srCore.srConfig.USE_NZBS:
-                        <div id="core-component-group3" class="component-group">
+                        <div id="core-tab-pane3" class="tab-pane">
 
-                            <div class="component-group-desc">
+                            <div class="tab-pane-desc">
                                 <h3>Configure Custom<br>Newznab Providers</h3>
                                 <p>Add and setup or remove custom Newznab providers.</p>
                             </div>
 
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
                                 <div class="field-pair">
                                     <label for="newznab_string">
                                         <span class="component-title">Select provider:</span>
@@ -805,19 +805,19 @@
                                 </div>
 
                             </fieldset>
-                        </div><!-- /component-group3 //-->
+                        </div><!-- /tab-pane3 //-->
                     % endif
 
                     % if sickrage.srCore.srConfig.USE_TORRENTS:
 
-                        <div id="core-component-group4" class="component-group">
+                        <div id="core-tab-pane4" class="tab-pane">
 
-                            <div class="component-group-desc">
+                            <div class="tab-pane-desc">
                                 <h3>Configure Custom Torrent Providers</h3>
                                 <p>Add and setup or remove custom RSS providers.</p>
                             </div>
 
-                            <fieldset class="component-group-list">
+                            <fieldset class="tab-pane-list">
                                 <div class="field-pair">
                                     <label for="torrentrss_string">
                                         <span class="component-title">Select provider:</span>
@@ -877,7 +877,7 @@
                                     </div>
                                 </div>
                             </fieldset>
-                        </div><!-- /component-group4 //-->
+                        </div><!-- /tab-pane4 //-->
                     % endif
 
                     <input type="hidden" name="provider_strings" id="provider_strings"/>

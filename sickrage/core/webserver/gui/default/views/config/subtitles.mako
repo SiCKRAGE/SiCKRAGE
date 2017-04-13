@@ -24,19 +24,19 @@
 
             <div id="ui-components">
                 <ul>
-                    <li><a href="#core-component-group1">Subtitles Search</a></li>
-                    <li><a href="#core-component-group2">Subtitles Plugin</a></li>
-                    <li><a href="#core-component-group3">Plugin Settings</a></li>
+                    <li><a href="#core-tab-pane1">Subtitles Search</a></li>
+                    <li><a href="#core-tab-pane2">Subtitles Plugin</a></li>
+                    <li><a href="#core-tab-pane3">Plugin Settings</a></li>
                 </ul>
 
-                <div id="core-component-group1" class="component-group">
+                <div id="core-tab-pane1" class="tab-pane">
 
-                    <div class="component-group-desc">
+                    <div class="tab-pane-desc">
                         <h3>Subtitles Search</h3>
                         <p>Settings that dictate how SickRage handles subtitles search results.</p>
                     </div>
 
-                    <fieldset class="component-group-list">
+                    <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <label for="use_subtitles" class="clearfix">
                                 <span class="component-title">Search Subtitles</span>
@@ -151,18 +151,18 @@
                         <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                         </div>
                     </fieldset>
-                </div><!-- /component-group1 //-->
+                </div><!-- /tab-pane1 //-->
 
-                <div id="core-component-group2" class="component-group">
+                <div id="core-tab-pane2" class="tab-pane">
 
-                    <div class="component-group-desc">
+                    <div class="tab-pane-desc">
                         <h3>Subtitle Plugins</h3>
                         <p>Check off and drag the plugins into the order you want them to be used.</p>
                         <p class="note">At least one plugin is required.</p>
                         <p class="note"><span style="font-size: 16px;">*</span> Web-scraping plugin</p>
                     </div>
 
-                    <fieldset class="component-group-list" style="margin-left: 50px; margin-top:36px">
+                    <fieldset class="tab-pane-list" style="margin-left: 50px; margin-top:36px">
                         <ul id="service_order_list">
                             % for curService in sickrage.subtitles.sortedServiceList():
                             <li class="ui-state-default" id="${curService['name']}">
@@ -180,14 +180,14 @@
 
                         <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
-                </div><!-- /component-group2 //-->
-                <div id="core-component-group3" class="component-group">
-                    <div class="component-group-desc">
+                </div><!-- /tab-pane2 //-->
+                <div id="core-tab-pane3" class="tab-pane">
+                    <div class="tab-pane-desc">
                         <h3>Subtitle Settings</h3>
                         <p>Set user and password for each provider</p>
-                    </div><!-- /component-group-desc //-->
+                    </div><!-- /tab-pane-desc //-->
 
-                    <fieldset class="component-group-list" style="margin-left: 50px; margin-top:36px">
+                    <fieldset class="tab-pane-list" style="margin-left: 50px; margin-top:36px">
                         <%
                             providerLoginDict = {
                                 'legendastv': {'user': sickrage.srCore.srConfig.LEGENDASTV_USER, 'pass': sickrage.srCore.srConfig.LEGENDASTV_PASS},
@@ -218,7 +218,7 @@
                         % endfor
                         <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
-                </div><!-- /component-group3 //-->
+                </div><!-- /tab-pane3 //-->
             </div><!-- /ui-components //-->
 
 </form>

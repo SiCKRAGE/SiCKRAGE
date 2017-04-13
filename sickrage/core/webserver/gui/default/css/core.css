@@ -1,13 +1,45 @@
 /* =======================================================================
     DEFAULTS
     ========================================================================== */
-.tab-contents {
+.nav-tabs {
     display: block;
-    width: 960px;
-    padding: 5px 5px 0 5px;
+    margin: 0 auto;
+    border: none;
+}
+
+.nav-tabs > li > a {
+    background-color: #333;
+    color: #ddd;
+}
+
+.tab-content {
+    display: block;
     margin: 0 auto;
     clear: both;
     text-align: left;
+    border: none;
+    border-radius: 4px;
+    background-color: #333;
+}
+
+.tab-pane {
+    padding: 15px 15px 25px;
+    min-height: 200px;
+}
+
+.tab-pane-desc {
+    float: left;
+    width: 250px;
+}
+
+.tab-pane-desc h3 {
+    margin-top: 5px;
+}
+
+.tab-pane-desc p {
+    width: 90%;
+    margin: 10px 0;
+    color: #666;
 }
 
 .navbaricon {
@@ -1370,32 +1402,6 @@ h2.day, h2.network {
 /* =======================================================================
     config*.mako
     ========================================================================== */
-.component-group {
-    padding: 15px 15px 25px;
-    border-bottom: 1px dotted #ccc;
-    min-height: 200px;
-}
-
-.component-item {
-    border-bottom: 1px dotted #666;
-    min-height: 200px;
-}
-
-.component-group-desc {
-    float: left;
-    width: 250px;
-}
-
-.component-group-desc h3 {
-    margin-top: 5px;
-}
-
-.component-group-desc p {
-    width: 90%;
-    margin: 10px 0;
-    color: #666;
-}
-
 #config div.field-pair {
     padding: 12px 0;
 }
@@ -1437,7 +1443,7 @@ h2.day, h2.network {
     display: none;
 }
 
-.component-group-save {
+.tab-pane-save {
     float: right;
     padding-top: 10px;
 }
@@ -1837,12 +1843,12 @@ option.flag {
     font-size: 14px;
 }
 
-#Anime div.component-group-desc {
+#Anime div.tab-pane-desc {
     float: left;
     width: 165px;
 }
 
-#Anime div.component-group-desc p {
+#Anime div.tab-pane-desc p {
     margin-bottom: 0.4em;
     margin-left: 0;
     margin-right: 0;
@@ -2543,13 +2549,13 @@ jquery-steps.css
     clear: both;
 }
 
-#customQuality div.component-group-desc {
+#customQuality div.tab-pane-desc {
     float: left;
     width: 172px;
     margin-right: 10px;
 }
 
-#customQuality div.component-group-desc p {
+#customQuality div.tab-pane-desc p {
     width: 85%;
     margin: .8em 0;
     font-size: 1.13em;

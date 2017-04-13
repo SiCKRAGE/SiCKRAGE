@@ -1,13 +1,38 @@
 /* =======================================================================
     DEFAULTS
     ========================================================================== */
-#ui-content {
+.nav-tabs {
   display: block;
   width: 960px;
-  padding: 0 0 40px;
+  padding: 5px 5px 0 5px;
   margin: 0 auto;
   clear: both;
   text-align: left; }
+
+.tab-content {
+  display: block;
+  width: 960px;
+  padding: 5px 5px 0 5px;
+  margin: 0 auto;
+  clear: both;
+  text-align: left; }
+
+.tab-pane {
+  padding: 15px 15px 25px;
+  border-bottom: 1px dotted #ccc;
+  min-height: 200px; }
+
+.tab-pane-desc {
+  float: left;
+  width: 250px; }
+
+.tab-pane-desc h3 {
+  margin-top: 5px; }
+
+.tab-pane-desc p {
+  width: 90%;
+  margin: 10px 0;
+  color: #666; }
 
 .navbaricon {
   margin-top: -15px;
@@ -144,7 +169,7 @@
 
 #content {
   width: 100%;
-  padding: 15px;
+  margin: 10px;
   margin-left: auto;
   margin-right: auto;
   clear: both; }
@@ -263,7 +288,6 @@
 
 .footer {
   width: 100%;
-  padding: 20px 0;
   color: #4e4e4e;
   text-align: center;
   font-size: 12px; }
@@ -381,7 +405,7 @@
   margin: 0 auto; }
 
 .show-container {
-  margin-top: 10px;
+  margin: 10px;
   width: 188px;
   height: 352px;
   background-color: #DFDACF;
@@ -1145,27 +1169,6 @@ h2.day, h2.network {
 /* =======================================================================
     config*.mako
     ========================================================================== */
-.component-group {
-  padding: 15px 15px 25px;
-  border-bottom: 1px dotted #ccc;
-  min-height: 200px; }
-
-.component-item {
-  border-bottom: 1px dotted #666;
-  min-height: 200px; }
-
-.component-group-desc {
-  float: left;
-  width: 250px; }
-
-.component-group-desc h3 {
-  margin-top: 5px; }
-
-.component-group-desc p {
-  width: 90%;
-  margin: 10px 0;
-  color: #666; }
-
 #config div.field-pair {
   padding: 12px 0; }
 
@@ -1199,7 +1202,7 @@ h2.day, h2.network {
 #config .metadataDiv {
   display: none; }
 
-.component-group-save {
+.tab-pane-save {
   float: right;
   padding-top: 10px; }
 
@@ -1521,11 +1524,11 @@ option.flag {
   overflow-y: hidden;
   font-size: 14px; }
 
-#Anime div.component-group-desc {
+#Anime div.tab-pane-desc {
   float: left;
   width: 165px; }
 
-#Anime div.component-group-desc p {
+#Anime div.tab-pane-desc p {
   margin-bottom: 0.4em;
   margin-left: 0;
   margin-right: 0;
@@ -2126,12 +2129,12 @@ jquery-steps.css
   overflow: hidden;
   clear: both; }
 
-#customQuality div.component-group-desc {
+#customQuality div.tab-pane-desc {
   float: left;
   width: 172px;
   margin-right: 10px; }
 
-#customQuality div.component-group-desc p {
+#customQuality div.tab-pane-desc p {
   width: 85%;
   margin: .8em 0;
   font-size: 1.13em;

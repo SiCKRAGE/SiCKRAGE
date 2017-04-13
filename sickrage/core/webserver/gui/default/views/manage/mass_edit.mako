@@ -24,17 +24,17 @@
 
             <div id="ui-components">
                 <ul>
-                    <li><a href="#core-component-group1">Main</a></li>
+                    <li><a href="#core-tab-pane1">Main</a></li>
                 </ul>
 
-                <div id="core-component-group1">
-                    <div class="component-group">
+                <div id="core-tab-pane1">
+                    <div class="tab-pane">
                         <h3>Main Settings</h3>
 
                         ==> <span style="text-decoration: underline;">Changing any settings marked with (<span class="separator">*</span>) will force a refresh of the selected shows.</span><br>
                         <br>
 
-                        <fieldset class="component-group-list">
+                        <fieldset class="tab-pane-list">
 
                         <div class="field-pair">
                             <label for="shows">

@@ -11,12 +11,12 @@
             <form id="configForm" action="saveQualities" method="post">
                 <div id="ui-components">
                     <ul>
-                        <li><a href="#core-component-group1">Quality Sizes</a></li>
+                        <li><a href="#core-tab-pane1">Quality Sizes</a></li>
                     </ul>
 
-                    <div id="core-component-group1" class="component-group" style='min-height: 550px;'>
+                    <div id="core-tab-pane1" class="tab-pane" style='min-height: 550px;'>
 
-                        <div class="component-group-desc">
+                        <div class="tab-pane-desc">
                             <h3>Quality Sizes</h3>
                             <p>Use default qualitiy sizes or specify custom ones per quality definition.</p>
 
@@ -25,7 +25,7 @@
                             </div>
                         </div>
 
-                        <fieldset class="component-group-list">
+                        <fieldset class="tab-pane-list">
                             <table>
                                 % for qtype, qsize in sickrage.srCore.srConfig.QUALITY_SIZES.items():
                                 <% if qsize == 0: continue %>
@@ -43,7 +43,7 @@
                             </table>
                             <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
                         </fieldset>
-                    </div><!-- /component-group1 //-->
+                    </div><!-- /tab-pane1 //-->
 
                     <br><input type="submit" class="btn config_submitter_refresh" value="Save Changes"/><br>
 
