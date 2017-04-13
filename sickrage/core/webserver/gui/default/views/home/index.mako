@@ -163,7 +163,7 @@
                             <a href="/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
                         </div>
 
-                        <div class="progressbar hidden-print" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
+                        <div class="progressbar" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
 
                         <div class="show-title">
                             ${curShow.name}
@@ -235,7 +235,7 @@
                     </tr>
                 </thead>
 
-                <tfoot class="hidden-print">
+                <tfoot>
                     <tr>
                         <th rowspan="1" colspan="1" align="center"><a href="/home/addShows/">Add ${('Show', 'Anime')[curListType == 'Anime']}</a></th>
                         <th>&nbsp;</th>
@@ -375,10 +375,10 @@
                             % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
                                 <td align="center">
                                     % if curShow.network:
-                                        <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
+                                        <span title="${curShow.network}"><img id="network" width="54" height="27" src="${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
                                         <span class="visible-print-inline">${curShow.network}</span>
                                     % else:
-                                        <span title="No Network" class="hidden-print"><img id="network" width="54" height="27" src="/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
+                                        <span title="No Network"><img id="network" width="54" height="27" src="/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
                                         <span class="visible-print-inline">No Network</span>
                                     % endif
                                 </td>
@@ -392,7 +392,7 @@
 
                             <td align="center">
                                 <span style="display: none;">${download_stat}</span>
-                                <div class="progressbar hidden-print" style="position:relative" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}" data-progress-text="${download_stat}" data-progress-tip="${download_stat_tip}"></div>
+                                <div class="progressbar" style="position:relative" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}" data-progress-text="${download_stat}" data-progress-tip="${download_stat_tip}"></div>
                                 ## <span class="visible-print-inline">${download_stat}</span>
                             </td>
 

@@ -1,8 +1,13 @@
 /* =======================================================================
     DEFAULTS
     ========================================================================== */
-.body {
-  padding-top: 60px; }
+#ui-content {
+  display: block;
+  width: 960px;
+  padding: 0 0 40px;
+  margin: 0 auto;
+  clear: both;
+  text-align: left; }
 
 .navbaricon {
   margin-top: -15px;
@@ -3315,6 +3320,14 @@ Country Flags
   right: 20px;
   width: 38px;
   height: 38px; }
+
+@media (min-width: 320px) {
+  .pull-xs-left {
+    float: left !important; }
+  .pull-xs-right {
+    float: right !important; }
+  .pull-xs-none {
+    float: none !important; } }
 
 @media (min-width: 768px) {
   .pull-sm-left {

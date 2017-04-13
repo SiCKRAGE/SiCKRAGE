@@ -94,7 +94,7 @@
 </head>
 <body data-controller="${controller}" data-action="${action}">
 <div class="header">
-    <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -125,7 +125,7 @@
                                 <li><a href="/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
                                     Post-Processing</a></li>
                                 % if sickrage.srCore.srConfig.SHOWS_RECENT:
-                                    <li role="separator" class="divider"></li>
+                                    <li class="divider"></li>
                                 % for recentShow in sickrage.srCore.srConfig.SHOWS_RECENT:
                                     <li><a href="/home/displayShow/?show=${recentShow['indexerid']}"><i
                                             class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a>
@@ -269,7 +269,7 @@
                                 <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
                                        onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
                                         class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
-                                <li role="separator" class="divider"></li>
+                                <li class="divider"></li>
                                 %if numErrors:
                                     <li><a href="/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors
                                         <span
@@ -282,7 +282,7 @@
                                 %endif
                                 <li><a href="/logs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a>
                                 </li>
-                                <li role="separator" class="divider"></li>
+                                <li class="divider"></li>
                                 <li><a href="/home/updateCheck?pid=${srPID}"><i class="menu-icon-update"></i>&nbsp;Check
                                     For
                                     Updates</a></li>
@@ -294,7 +294,7 @@
                                     <li><a href="/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a>
                                     </li>
                                 % endif
-                                <li role="separator" class="divider"></li>
+                                <li class="divider"></li>
                                 <li><a href="/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a>
                                 </li>
                             </ul>
@@ -307,13 +307,13 @@
     </nav>
 
     % if sickrage.srCore.NEWEST_VERSION_STRING and current_user:
-        <div class="alert alert-success upgrade-notification hidden-print" role="alert">
+        <div class="alert alert-success upgrade-notification">
             <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
         </div>
     % endif
 
     % if current_user and submenu:
-        <div id="SubMenu" class="hidden-print clearfix">
+        <div id="SubMenu" class="clearfix">
             <span class="btn-group btn-group-justified">
             <% first = True %>
                 % for menuItem in submenu:

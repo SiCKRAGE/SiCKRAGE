@@ -23,9 +23,9 @@
         <div id="config">
             <form id="configForm" action="saveGeneral" method="post">
                 <ul class="nav nav-tabs">
-                    <li role="presentation" class="active"><a data-toggle="tab" href="#core-component-group1">Misc</a></li>
-                    <li role="presentation"><a data-toggle="tab" href="#core-component-group2">Interface</a></li>
-                    <li role="presentation"><a data-toggle="tab" href="#core-component-group3">Advanced Settings</a></li>
+                    <li class="active"><a data-toggle="tab" href="#core-component-group1">Misc</a></li>
+                    <li><a data-toggle="tab" href="#core-component-group2">Interface</a></li>
+                    <li><a data-toggle="tab" href="#core-component-group3">Advanced Settings</a></li>
                 </ul>
 
                 <div class="tab-content">

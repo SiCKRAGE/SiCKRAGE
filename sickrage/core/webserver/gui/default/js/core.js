@@ -384,7 +384,7 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.check_notifications();
 
                 // auto-resize body to accomodate height of navbar
-                $('body').animate({ paddingTop: $('nav').height()});
+                $('body').animate({ paddingTop: $('nav').height() + 5});
             }
         },
 
