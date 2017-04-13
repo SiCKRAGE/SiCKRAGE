@@ -12,79 +12,76 @@
 <%block name="content">
     <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
 
-    <div class="h2footer pull-right">
-        % if layout == 'list':
-            <span class="badge" style="background-color: #333333;">Select Columns:
-        <button id="popover" type="button" class="form-control form-control-inline input-sm"><b
-                class="caret"></b></button>
-    </span>
-        % else:
-            <span class="badge" style="background-color: #333333;">Sort By:
-        <select name="sort" class="form-control form-control-inline input-sm"
-                onchange="location = this.options[this.selectedIndex].value;">
-            <option value="/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'date']} >
-                Date
-            </option>
-            <option value="/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'network']} >
-                Network
-            </option>
-            <option value="/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'show']} >
-                Show
-            </option>
-        </select>
-    </span>
-        % endif
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            % if layout == 'list':
+                <label for="popover" class="badge" style="background-color: #333333;">Select Columns:
+                    <button id="popover" type="button" class="form-control form-control-inline input-sm"><b class="caret"></b></button>
+                </label>
+            % else:
+                <label for="sortby" class="badge" style="background-color: #333333;">Sort By:
+                    <select id="sortby" name="sort" class="form-control form-control-inline input-sm"
+                            onchange="location = this.options[this.selectedIndex].value;">
+                        <option value="/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'date']} >
+                            Date
+                        </option>
+                        <option value="/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'network']} >
+                            Network
+                        </option>
+                        <option value="/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'show']} >
+                            Show
+                        </option>
+                    </select>
+                </label>
+            % endif
 
-        <span class="badge" style="background-color: #333333;">View Paused:
-        <select name="viewpaused" class="form-control form-control-inline input-sm"
-                onchange="location = this.options[this.selectedIndex].value;">
-            <option value="/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
-                Hidden
-            </option>
-            <option value="/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
-                Shown
-            </option>
-        </select>
-    </span>
+            <label for="viewpaused" class="badge" style="background-color: #333333;">View Paused:
+                <select id="viewpaused" name="viewpaused" class="form-control form-control-inline input-sm"
+                        onchange="location = this.options[this.selectedIndex].value;">
+                    <option value="/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
+                        Hidden
+                    </option>
+                    <option value="/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
+                        Shown
+                    </option>
+                </select>
+            </label>
 
-        <span class="badge" style="background-color: #333333;">Layout:
-        <select name="layout" class="form-control form-control-inline input-sm"
-                onchange="location = this.options[this.selectedIndex].value;">
-            <option value="/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'poster']} >
-                Poster
-            </option>
-            <option value="/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
-                Calendar
-            </option>
-            <option value="/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'banner']} >
-                Banner
-            </option>
-            <option value="/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'list']} >
-                List
-            </option>
-        </select>
-    </span>
+            <label for="layout" class="badge" style="background-color: #333333;">Layout:
+                <select id="layout" name="layout" class="form-control form-control-inline input-sm"
+                        onchange="location = this.options[this.selectedIndex].value;">
+                    <option value="/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'poster']} >
+                        Poster
+                    </option>
+                    <option value="/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
+                        Calendar
+                    </option>
+                    <option value="/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'banner']} >
+                        Banner
+                    </option>
+                    <option value="/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'list']} >
+                        List
+                    </option>
+                </select>
+            </label>
+
+            <div class="key">
+                % if 'calendar' != layout:
+                    <b>Key:</b>
+                    <span class="listing-key listing-overdue">Missed</span>
+                    <span class="listing-key listing-current">Today</span>
+                    <span class="listing-key listing-default">Soon</span>
+                    <span class="listing-key listing-toofar">Later</span>
+                % endif
+                <a class="btn btn-inline forceBacklog" href="webcal://${srHost}:${srHttpPort}/calendar">
+                    <i class="icon-calendar icon-white"></i>Subscribe</a>
+            </div>
+        </div>
     </div>
-
-    <div class="key pull-right">
-        % if 'calendar' != layout:
-            <b>Key:</b>
-            <span class="listing-key listing-overdue">Missed</span>
-            <span class="listing-key listing-current">Today</span>
-            <span class="listing-key listing-default">Soon</span>
-            <span class="listing-key listing-toofar">Later</span>
-        % endif
-        <a class="btn btn-inline forceBacklog" href="webcal://${srHost}:${srHttpPort}/calendar">
-            <i class="icon-calendar icon-white"></i>Subscribe</a>
-    </div>
-
-    <br>
 
     % if 'list' == layout:
         <!-- start list view //-->
         <% show_div = 'listing-default' %>
-
-
 
         <table id="showListTable" class="sickrageTable tablesorter seasonstyle" cellspacing="1" border="0"
                cellpadding="0">

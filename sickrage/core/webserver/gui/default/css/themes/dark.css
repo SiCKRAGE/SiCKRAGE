@@ -221,7 +221,7 @@ index.mako
     color: #fff;
 }
 
-.show {
+.show-container {
     background-color: #333;
     border: 1px solid #111;
 }
@@ -491,9 +491,7 @@ config*.mako
 ========================================================================== */
 
 .component-group {
-    padding: 15px 15px 25px;
     border-bottom: 1px dotted #555;
-    min-height: 200px;
 }
 
 .component-group-desc p {

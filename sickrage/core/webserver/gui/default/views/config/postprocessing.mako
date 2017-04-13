@@ -1104,7 +1104,7 @@
                         </div>
 
                         % for (cur_id, cur_generator) in m_dict.items():
-                        <div class="metadataDiv container-fluid" id="${cur_id}">
+                        <div class="metadataDiv" id="${cur_id}">
                             <div>
                                 <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_generator.enabled)]}/>&nbsp;Enabled</label>
                             </div>

@@ -93,158 +93,157 @@
     <%block name="scripts" />
 </head>
 <body data-controller="${controller}" data-action="${action}">
-<div class="container-fluid">
-    <div class="header">
-        <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/home/" title="SiCKRAGE">
-                        <img alt="SiCKRAGE"
-                             src="/images/logo.png"
-                             style="width: 200px;height: 50px;"
-                             class="img-responsive pull-left"/>
-                    </a>
-                </div>
-                % if current_user:
-                    <div class="collapse navbar-collapse" id="navbar-collapse-1">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
-                                <a href="/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
-                                   data-hover="dropdown"><span>Shows</span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
-                                    <li><a href="/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a>
+<div class="header">
+    <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/home/" title="SiCKRAGE">
+                    <img alt="SiCKRAGE"
+                         src="/images/logo.png"
+                         style="width: 200px;height: 50px;"
+                         class="img-responsive pull-left"/>
+                </a>
+            </div>
+            % if current_user:
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
+                            <a href="/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
+                               data-hover="dropdown"><span>Shows</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
+                                <li><a href="/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a>
+                                </li>
+                                <li><a href="/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
+                                    Post-Processing</a></li>
+                                % if sickrage.srCore.srConfig.SHOWS_RECENT:
+                                    <li role="separator" class="divider"></li>
+                                % for recentShow in sickrage.srCore.srConfig.SHOWS_RECENT:
+                                    <li><a href="/home/displayShow/?show=${recentShow['indexerid']}"><i
+                                            class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a>
                                     </li>
-                                    <li><a href="/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
-                                        Post-Processing</a></li>
-                                    % if sickrage.srCore.srConfig.SHOWS_RECENT:
-                                        <li role="separator" class="divider"></li>
-                                    % for recentShow in sickrage.srCore.srConfig.SHOWS_RECENT:
-                                        <li><a href="/home/displayShow/?show=${recentShow['indexerid']}"><i
-                                                class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a>
-                                        </li>
-                                    % endfor
-                                    % endif
-                                </ul>
-                                <div style="clear:both;"></div>
-                            </li>
+                                % endfor
+                                % endif
+                            </ul>
+                            <div style="clear:both;"></div>
+                        </li>
 
-                            <li id="NAVmanage" class="navbar-split dropdown${('', ' active')[topmenu == 'manage']}">
-                                <a href="/manage/episodeStatuses/" class="dropdown-toggle" aria-haspopup="true"
-                                   data-toggle="dropdown" data-hover="dropdown">
-                                    <span>Manage</span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
-                                    <li><a href="/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog
-                                        Overview</a></li>
-                                    <li><a href="/manage/manageSearches/"><i class="menu-icon-manage-searches"></i>&nbsp;Manage
-                                        Searches</a></li>
-                                    <li><a href="/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode
-                                        Status
+                        <li id="NAVmanage" class="navbar-split dropdown${('', ' active')[topmenu == 'manage']}">
+                            <a href="/manage/episodeStatuses/" class="dropdown-toggle" aria-haspopup="true"
+                               data-toggle="dropdown" data-hover="dropdown">
+                                <span>Manage</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
+                                <li><a href="/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog
+                                    Overview</a></li>
+                                <li><a href="/manage/manageSearches/"><i class="menu-icon-manage-searches"></i>&nbsp;Manage
+                                    Searches</a></li>
+                                <li><a href="/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode
+                                    Status
+                                    Management</a></li>
+                                % if sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_SERVER_HOST != "":
+                                    <li><a href="/home/updatePLEX/"><i class="menu-icon-backlog-view"></i>&nbsp;Update
+                                        PLEX</a>
+                                    </li>
+                                % endif
+                                % if sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_HOST != "":
+                                    <li><a href="/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update KODI</a>
+                                    </li>
+                                % endif
+                                % if sickrage.srCore.srConfig.USE_EMBY and sickrage.srCore.srConfig.EMBY_HOST != "" and sickrage.srCore.srConfig.EMBY_APIKEY != "":
+                                    <li><a href="/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update
+                                        Emby</a>
+                                    </li>
+                                % endif
+                                % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
+                                    <li><a href="/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage
+                                        Torrents</a></li>
+                                % endif
+                                % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
+                                    <li><a href="/manage/failedDownloads/"><i class="menu-icon-failed-download"></i>&nbsp;Failed
+                                        Downloads</a></li>
+                                % endif
+                                % if sickrage.srCore.srConfig.USE_SUBTITLES:
+                                    <li><a href="/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed
+                                        Subtitle
                                         Management</a></li>
-                                    % if sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_SERVER_HOST != "":
-                                        <li><a href="/home/updatePLEX/"><i class="menu-icon-backlog-view"></i>&nbsp;Update
-                                            PLEX</a>
-                                        </li>
-                                    % endif
-                                    % if sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_HOST != "":
-                                        <li><a href="/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update KODI</a>
-                                        </li>
-                                    % endif
-                                    % if sickrage.srCore.srConfig.USE_EMBY and sickrage.srCore.srConfig.EMBY_HOST != "" and sickrage.srCore.srConfig.EMBY_APIKEY != "":
-                                        <li><a href="/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update
-                                            Emby</a>
-                                        </li>
-                                    % endif
-                                    % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
-                                        <li><a href="/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage
-                                            Torrents</a></li>
-                                    % endif
-                                    % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-                                        <li><a href="/manage/failedDownloads/"><i class="menu-icon-failed-download"></i>&nbsp;Failed
-                                            Downloads</a></li>
-                                    % endif
-                                    % if sickrage.srCore.srConfig.USE_SUBTITLES:
-                                        <li><a href="/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed
-                                            Subtitle
-                                            Management</a></li>
-                                    % endif
-                                </ul>
-                                <div style="clear:both;"></div>
-                            </li>
+                                % endif
+                            </ul>
+                            <div style="clear:both;"></div>
+                        </li>
 
-                            <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
-                                <a href="/schedule/">Schedule</a>
-                            </li>
+                        <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
+                            <a href="/schedule/">Schedule</a>
+                        </li>
 
-                            <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
-                                <a href="/history/">History</a>
-                            </li>
+                        <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
+                            <a href="/history/">History</a>
+                        </li>
 
-                            <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
-                                <a href="/config/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
-                                   data-hover="dropdown"><span class="visible-xs">Config</span><img
-                                        src="/images/menu/system18.png" class="navbaricon hidden-xs"/>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup
-                                            &amp;
-                                            Restore</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/search/"><i class="menu-icon-config"></i>&nbsp;Search
-                                            Clients</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search
-                                            Providers</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
-                                            Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/qualitySettings/"><i class="menu-icon-config"></i>&nbsp;Quality
-                                            Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/postProcessing/"><i class="menu-icon-config"></i>&nbsp;Post
-                                            Processing</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a>
-                                    </li>
-                                    <li>
-                                        <a href="/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a>
-                                    </li>
-                                </ul>
-                                <div style="clear:both;"></div>
-                            </li>
+                        <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
+                            <a href="/config/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
+                               data-hover="dropdown"><span class="visible-xs">Config</span><img
+                                    src="/images/menu/system18.png" class="navbaricon hidden-xs"/>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a>
+                                </li>
+                                <li>
+                                    <a href="/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a>
+                                </li>
+                                <li>
+                                    <a href="/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup
+                                        &amp;
+                                        Restore</a>
+                                </li>
+                                <li>
+                                    <a href="/config/search/"><i class="menu-icon-config"></i>&nbsp;Search
+                                        Clients</a>
+                                </li>
+                                <li>
+                                    <a href="/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search
+                                        Providers</a>
+                                </li>
+                                <li>
+                                    <a href="/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
+                                        Settings</a>
+                                </li>
+                                <li>
+                                    <a href="/config/qualitySettings/"><i class="menu-icon-config"></i>&nbsp;Quality
+                                        Settings</a>
+                                </li>
+                                <li>
+                                    <a href="/config/postProcessing/"><i class="menu-icon-config"></i>&nbsp;Post
+                                        Processing</a>
+                                </li>
+                                <li>
+                                    <a href="/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a>
+                                </li>
+                                <li>
+                                    <a href="/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a>
+                                </li>
+                            </ul>
+                            <div style="clear:both;"></div>
+                        </li>
 
-                            <%
-                                if sickrage.srCore.srConfig.NEWS_UNREAD:
+                        <%
+                            if sickrage.srCore.srConfig.NEWS_UNREAD:
                                             newsBadge = ' <span class="badge">'+str(sickrage.srCore.srConfig.NEWS_UNREAD)+'</span>'
-                                else:
+                            else:
                                             newsBadge = ''
 
-                                numCombined = numErrors + numWarnings + sickrage.srCore.srConfig.NEWS_UNREAD
-                                if numCombined:
+                            numCombined = numErrors + numWarnings + sickrage.srCore.srConfig.NEWS_UNREAD
+                            if numCombined:
                                             if numErrors:
                                                 toolsBadgeClass = ' btn-danger'
                                             elif numWarnings:
@@ -253,140 +252,137 @@
                                                 toolsBadgeClass = ''
 
                                             toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
-                                else:
+                            else:
                                             toolsBadge = ''
-                            %>
+                        %>
 
-                            <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
-                                <a href="/home/status/" class="dropdown-toggle" aria-haspopup="true"
-                                   data-toggle="dropdown"
-                                   data-hover="dropdown"><span class="visible-xs">Tools</span><img
-                                        src="/images/menu/system18-2.png" class="navbaricon hidden-xs"/>${toolsBadge}
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
-                                    <li><a href="/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
-                                    <li><a href="/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
-                                    <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
-                                           onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
-                                            class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    %if numErrors:
-                                        <li><a href="/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors
-                                            <span
-                                                    class="badge btn-danger">${numErrors}</span></a></li>
-                                    %endif
-                                    %if numWarnings:
-                                        <li><a href="/logs/?level=${sickrage.srCore.srLogger.WARNING}"><i
-                                                class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span
-                                                class="badge btn-warning">${numWarnings}</span></a></li>
-                                    %endif
-                                    <li><a href="/logs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a>
+                        <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
+                            <a href="/home/status/" class="dropdown-toggle" aria-haspopup="true"
+                               data-toggle="dropdown"
+                               data-hover="dropdown"><span class="visible-xs">Tools</span><img
+                                    src="/images/menu/system18-2.png" class="navbaricon hidden-xs"/>${toolsBadge}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
+                                <li><a href="/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
+                                <li><a href="/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
+                                <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
+                                       onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
+                                        class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
+                                <li role="separator" class="divider"></li>
+                                %if numErrors:
+                                    <li><a href="/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors
+                                        <span
+                                                class="badge btn-danger">${numErrors}</span></a></li>
+                                %endif
+                                %if numWarnings:
+                                    <li><a href="/logs/?level=${sickrage.srCore.srLogger.WARNING}"><i
+                                            class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span
+                                            class="badge btn-warning">${numWarnings}</span></a></li>
+                                %endif
+                                <li><a href="/logs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/home/updateCheck?pid=${srPID}"><i class="menu-icon-update"></i>&nbsp;Check
+                                    For
+                                    Updates</a></li>
+                                <li><a href="/home/restart/?pid=${srPID}" class="confirm restart"><i
+                                        class="menu-icon-restart"></i>&nbsp;Restart</a></li>
+                                <li><a href="/home/shutdown/?pid=${srPID}" class="confirm shutdown"><i
+                                        class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
+                                % if current_user != True:
+                                    <li><a href="/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a>
                                     </li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="/home/updateCheck?pid=${srPID}"><i class="menu-icon-update"></i>&nbsp;Check
-                                        For
-                                        Updates</a></li>
-                                    <li><a href="/home/restart/?pid=${srPID}" class="confirm restart"><i
-                                            class="menu-icon-restart"></i>&nbsp;Restart</a></li>
-                                    <li><a href="/home/shutdown/?pid=${srPID}" class="confirm shutdown"><i
-                                            class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
-                                    % if current_user != True:
-                                        <li><a href="/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a>
-                                        </li>
-                                    % endif
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a>
-                                    </li>
-                                </ul>
-                                <div style="clear:both;"></div>
-                            </li>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
-                % endif
-            </div><!-- /.container-fluid -->
-        </nav>
-
-        % if current_user and submenu:
-            <div class="row">
-                <div id="SubMenu" class="hidden-print clearfix">
-                    <span class="btn-group btn-group-justified">
-                    <% first = True %>
-                        % for menuItem in submenu:
-                            % if 'requires' not in menuItem or menuItem['requires']:
-                                <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
-                                % if type(menuItem['path']) == dict:
-                                ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
-                                <%
-                                    first = False
-                                    inner_first = True
-                                %>
-                                % for cur_link in menuItem['path']:
-                                ${("&middot; ", "")[bool(inner_first)]}<a class="inner"
-                                                                          href="${menuItem['path'][cur_link]}">${cur_link}</a>
-                                <% inner_first = False %>
-                                % endfor
-                                % else:
-                                    <a href="${menuItem['path']}"
-                                       class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
-                                <% first = False %>
                                 % endif
-                            % endif
-                        % endfor
-                    </span>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a>
+                                </li>
+                            </ul>
+                            <div style="clear:both;"></div>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-        % endif
+            % endif
+        </div>
+    </nav>
 
-        % if sickrage.srCore.NEWEST_VERSION_STRING and current_user:
-            <div class="alert alert-success upgrade-notification hidden-print" role="alert">
-                <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
-            </div>
-        % endif
-    </div>
+    % if sickrage.srCore.NEWEST_VERSION_STRING and current_user:
+        <div class="alert alert-success upgrade-notification hidden-print" role="alert">
+            <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
+        </div>
+    % endif
 
-    <div id="content">
-            <%block name="content" />
-    </div>
+    % if current_user and submenu:
+        <div id="SubMenu" class="hidden-print clearfix">
+            <span class="btn-group btn-group-justified">
+            <% first = True %>
+                % for menuItem in submenu:
+                    % if 'requires' not in menuItem or menuItem['requires']:
+                        <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
+                        % if type(menuItem['path']) == dict:
+                        ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                        <%
+                            first = False
+                            inner_first = True
+                        %>
+                        % for cur_link in menuItem['path']:
+                        ${("&middot; ", "")[bool(inner_first)]}<a class="inner"
+                                                                  href="${menuItem['path'][cur_link]}">${cur_link}</a>
+                        <% inner_first = False %>
+                        % endfor
+                        % else:
+                            <a href="${menuItem['path']}"
+                               class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
+                        <% first = False %>
+                        % endif
+                    % endif
+                % endfor
+            </span>
+        </div>
+    % endif
+</div>
 
-    <div class="panel panel-default panel-footer footer clearfix">
-        % if current_user:
-        <%
-            stats = overall_stats()
-            ep_downloaded = stats['episodes']['downloaded']
-            ep_snatched = stats['episodes']['snatched']
-            ep_total = stats['episodes']['total']
-            ep_percentage = '' if ep_total == 0 else '(<span class="footerhighlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
-        %>
-            <span class="footerhighlight">${stats['shows']['total']}</span> Shows (<span
-                class="footerhighlight">${stats['shows']['active']}</span> Active)
-            | <span class="footerhighlight">${ep_downloaded}</span>
+<div class="container-fluid" id="content">
+        <%block name="content" />
+</div>
 
-        % if ep_snatched:
-            <span class="footerhighlight"><a href="/manage/episodeStatuses?whichStatus=2"
-                                             title="View overview of snatched episodes">+${ep_snatched}</a></span>
-            Snatched
-        % endif
+<div class="panel panel-default panel-footer footer clearfix">
+    % if current_user:
+    <%
+        stats = overall_stats()
+        ep_downloaded = stats['episodes']['downloaded']
+        ep_snatched = stats['episodes']['snatched']
+        ep_total = stats['episodes']['total']
+        ep_percentage = '' if ep_total == 0 else '(<span class="footerhighlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
+    %>
+        <span class="footerhighlight">${stats['shows']['total']}</span> Shows (<span
+            class="footerhighlight">${stats['shows']['active']}</span> Active)
+        | <span class="footerhighlight">${ep_downloaded}</span>
 
-            &nbsp;/&nbsp;<span class="footerhighlight">${ep_total}</span> Episodes Downloaded ${ep_percentage}
-            | Daily Search: <span
-                class="footerhighlight">${str(sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
-            | Backlog Search: <span
-                class="footerhighlight">${str(sickrage.srCore.srScheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+    % if ep_snatched:
+        <span class="footerhighlight"><a href="/manage/episodeStatuses?whichStatus=2"
+                                         title="View overview of snatched episodes">+${ep_snatched}</a></span>
+        Snatched
+    % endif
 
-            <div>
-                % if has_resource_module:
-                    Memory used: <span
-                        class="footerhighlight">${pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
-                    |
-                % endif
-                Load time: <span class="footerhighlight">${"%.4f" % (time() - srStartTime)}s</span> / Mako: <span
-                    class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
-                Now: <span
-                    class="footerhighlight">${str(datetime.datetime.now(tz_updater.sr_timezone)).split('.')[0]}</span>
-            </div>
-        % endif
-    </div>
+        &nbsp;/&nbsp;<span class="footerhighlight">${ep_total}</span> Episodes Downloaded ${ep_percentage}
+        | Daily Search: <span
+            class="footerhighlight">${str(sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
+        | Backlog Search: <span
+            class="footerhighlight">${str(sickrage.srCore.srScheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+
+        <div>
+            % if has_resource_module:
+                Memory used: <span
+                    class="footerhighlight">${pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
+                |
+            % endif
+            Load time: <span class="footerhighlight">${"%.4f" % (time() - srStartTime)}s</span> / Mako: <span
+                class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
+            Now: <span
+                class="footerhighlight">${str(datetime.datetime.now(tz_updater.sr_timezone)).split('.')[0]}</span>
+        </div>
+    % endif
 </div>
 </body>
 </html>

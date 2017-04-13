@@ -462,34 +462,6 @@ class WebRoot(WebHandler):
                                                      False)
         today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
 
-        submenu = [
-            {
-                'title': 'Sort by:',
-                'path': {
-                    'Date': '/setScheduleSort/?sort=date',
-                    'Show': '/setScheduleSort/?sort=show',
-                    'Network': '/setScheduleSort/?sort=network',
-                }
-            },
-            {
-                'title': 'Layout:',
-                'path': {
-                    'Banner': '/setScheduleLayout/?layout=banner',
-                    'Poster': '/setScheduleLayout/?layout=poster',
-                    'List': '/setScheduleLayout/?layout=list',
-                    'Calendar': '/setScheduleLayout/?layout=calendar',
-                }
-            },
-            {
-                'title': 'View Paused:',
-                'path': {
-                    'Hide': '/toggleScheduleDisplayPaused'
-                } if sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED else {
-                    'Show': '/toggleScheduleDisplayPaused'
-                }
-            },
-        ]
-
         # Allow local overriding of layout parameter
         if layout and layout in ('poster', 'banner', 'list', 'calendar'):
             layout = layout
@@ -498,7 +470,6 @@ class WebRoot(WebHandler):
 
         return self.render(
             'schedule.mako',
-            submenu=submenu,
             next_week=next_week1,
             today=today,
             results=results,

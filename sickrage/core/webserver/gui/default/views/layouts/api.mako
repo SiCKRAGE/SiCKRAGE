@@ -120,8 +120,10 @@
         </div>
     </div>
 </nav>
+
 <div class="container-fluid" id="content">
         <%block name="content" />
 </div>
+
 </body>
 </html>

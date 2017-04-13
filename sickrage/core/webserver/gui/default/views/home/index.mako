@@ -86,7 +86,7 @@
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}" class="clearfix">
                 % for curLoadingShow in sickrage.srCore.SHOWQUEUE.loadingShowList:
                     % if not curLoadingShow.show:
-                        <div class="show" data-name="0" data-date="010101" data-network="0" data-progress="101">
+                        <div class="show-container" data-name="0" data-date="010101" data-network="0" data-progress="101">
                             <img alt="" title="${curLoadingShow.show_name}" class="show-image"
                                  style="border-bottom: 1px solid #111;" src="/images/poster.png"/>
                             <div class="show-details">
@@ -158,7 +158,7 @@
                             elif 'nded' in display_status:
                                 data_date = '5000000100.0'
                     %>
-                    <div class="show" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
+                    <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
                         <div class="show-image">
                             <a href="/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
                         </div>

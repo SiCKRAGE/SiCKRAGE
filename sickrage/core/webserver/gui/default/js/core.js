@@ -378,48 +378,13 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $("#ui-components").tabs({
-                    activate: function (event, ui) {
-                        var lastOpenedPanel = $(this).data("lastOpenedPanel");
-                        //var selected = this.tabs('option', 'selected');
-
-                        if (!lastOpenedPanel) {
-                            lastOpenedPanel = $(ui.oldPanel);
-                        }
-
-                        if (!$(this).data("topPositionTab")) {
-                            $(this).data("topPositionTab", $(ui.newPanel).position().top);
-                        }
-
-                        //Dont use the builtin fx effects. This will fade in/out both tabs, we dont want that
-                        //Fadein the new tab yourself
-                        $(ui.newPanel).hide().fadeIn(0);
-
-                        if (lastOpenedPanel) {
-                            // 1. Show the previous opened tab by removing the jQuery UI class
-                            // 2. Make the tab temporary position:absolute so the two tabs will overlap
-                            // 3. Set topposition so they will overlap if you go from tab 1 to tab 0
-                            // 4. Remove position:absolute after animation
-                            lastOpenedPanel
-                                .toggleClass("ui-tabs-hide")
-                                .css("position", "absolute")
-                                .css("top", $(this).data("topPositionTab") + "px")
-                                .fadeOut(0, function () {
-                                    $(this)
-                                        .css("position", "");
-                                });
-                        }
-
-                        //Saving the last tab has been opened
-                        $(this).data("lastOpenedPanel", $(ui.newPanel));
-                    }
-                });
-
                 SICKRAGE.browser.init();
                 SICKRAGE.root_dirs.init();
                 SICKRAGE.quality_chooser.init();
-
                 SICKRAGE.check_notifications();
+
+                // auto-resize body to accomodate height of navbar
+                $('body').animate({ paddingTop: $('nav').height()});
             }
         },
 
@@ -1694,7 +1659,7 @@ jQuery(document).ready(function ($) {
 
                 $.each([$('#container'), $('#container-anime')], function () {
                     $(this).isotope({
-                        itemSelector: '.show',
+                        itemSelector: '.show-container',
                         sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
                         sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
                         layoutMode: 'masonry',
