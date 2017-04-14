@@ -74,7 +74,7 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.srWebRoot = SICKRAGE.getMeta('srWebRoot');
                 SICKRAGE.srDefaultPage = SICKRAGE.getMeta('srDefaultPage');
                 SICKRAGE.themeSpinner = SICKRAGE.getMeta('themeSpinner');
-                SICKRAGE.loading = '<img src="' + SICKRAGE.srWebRoot + '/images/loading16' + SICKRAGE.themeSpinner + '.gif" height="16" width="16" />';
+                SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
                 // init scrollUp
@@ -425,7 +425,7 @@ jQuery(document).ready(function ($) {
         },
 
         ajax_search: {
-            searchStatusUrl: SICKRAGE.srWebRoot + '/home/getManualSearchStatus',
+            searchStatusUrl: parent.srWebRoot + '/home/getManualSearchStatus',
             failedDownload: false,
             qualityDownload: false,
             selectedEpisode: '',
@@ -730,8 +730,8 @@ jQuery(document).ready(function ($) {
         browser: {
             defaults: {
                 title: 'Choose Directory',
-                url: SICKRAGE.srWebRoot + '/browser/',
-                autocompleteURL: SICKRAGE.srWebRoot + '/browser/complete',
+                url: parent.srWebRoot + '/browser/',
+                autocompleteURL: parent.srWebRoot + '/browser/complete',
                 includeFiles: 0,
                 showBrowseButton: true
             },
@@ -2646,7 +2646,7 @@ jQuery(document).ready(function ($) {
                     beforeSubmit: function () {
                         $('.config_submitter .config_submitter_refresh').each(function () {
                             $(this).attr("disabled", "disabled");
-                            $(this).after('<span>' + SICKRAGE.loading + ' Saving...</span>');
+                            $(this).after('<span>' + SICKRAGE.loadingHTML + ' Saving...</span>');
                             $(this).hide();
                         });
                     },
@@ -2843,7 +2843,7 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.config.search.torrentMethodHandler();
 
                     $('#testSABnzbd').click(function () {
-                        $('#testSABnzbd_result').html(SICKRAGE.loading);
+                        $('#testSABnzbd_result').html(SICKRAGE.loadingHTML);
                         var sab_host = $('#sab_host').val();
                         var sab_username = $('#sab_username').val();
                         var sab_password = $('#sab_password').val();
@@ -2865,7 +2865,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#test_torrent').click(function () {
-                        $('#test_torrent_result').html(SICKRAGE.loading);
+                        $('#test_torrent_result').html(SICKRAGE.loadingHTML);
                         var torrent_method = $('#torrent_method :selected').val();
                         var torrent_host = $('#torrent_host').val();
                         var torrent_username = $('#torrent_username').val();
@@ -3255,7 +3255,10 @@ jQuery(document).ready(function ($) {
                     var multi = $('#naming_multi_ep :selected').val();
                     var anime_type = $('input[name="naming_anime"]:checked').val();
 
-                    $.get(SICKRAGE.srWebRoot + '/config/postProcessing/testNaming', {pattern: pattern, anime_type: 3}, function (data) {
+                    $.get(SICKRAGE.srWebRoot + '/config/postProcessing/testNaming', {
+                        pattern: pattern,
+                        anime_type: 3
+                    }, function (data) {
                         if (data) {
                             $('#naming_example').text(data + '.ext');
                             $('#naming_example_div').show();
@@ -3310,7 +3313,10 @@ jQuery(document).ready(function ($) {
                 fill_abd_examples: function () {
                     var pattern = $('#naming_abd_pattern').val();
 
-                    $.get(SICKRAGE.srWebRoot + '/config/postProcessing/testNaming', {pattern: pattern, abd: 'True'}, function (data) {
+                    $.get(SICKRAGE.srWebRoot + '/config/postProcessing/testNaming', {
+                        pattern: pattern,
+                        abd: 'True'
+                    }, function (data) {
                         if (data) {
                             $('#naming_abd_example').text(data + '.ext');
                             $('#naming_abd_example_div').show();
@@ -3583,7 +3589,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#growl_host').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testGrowl-result').html(SICKRAGE.loading);
+                        $('#testGrowl-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testGrowl', {'host': growl_host, 'password': growl_password})
                             .done(function (data) {
                                 $('#testGrowl-result').html(data);
@@ -3601,7 +3607,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#prowl_api').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testProwl-result').html(SICKRAGE.loading);
+                        $('#testProwl-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testProwl', {
                             'prowl_api': prowl_api,
                             'prowl_priority': prowl_priority
@@ -3622,7 +3628,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#kodi_host').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testKODI-result').html(SICKRAGE.loading);
+                        $('#testKODI-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testKODI', {
                             'host': kodi_host,
                             'username': kodi_username,
@@ -3644,7 +3650,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#plex_host').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testPMC-result').html(SICKRAGE.loading);
+                        $('#testPMC-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testPMC', {
                             'host': plex_host,
                             'username': plex_client_username,
@@ -3667,7 +3673,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#plex_server_host').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testPMS-result').html(SICKRAGE.loading);
+                        $('#testPMS-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testPMS', {
                             'host': plex_server_host,
                             'username': plex_username,
@@ -3698,7 +3704,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#emby_host,#emby_apikey').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testEMBY-result').html(SICKRAGE.loading);
+                        $('#testEMBY-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testEMBY', {
                             'host': emby_host,
                             'emby_apikey': emby_apikey
@@ -3717,7 +3723,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#boxcar_username').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testBoxcar-result').html(SICKRAGE.loading);
+                        $('#testBoxcar-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testBoxcar', {'username': boxcar_username}).done(function (data) {
                             $('#testBoxcar-result').html(data);
                             $('#testBoxcar').prop('disabled', false);
@@ -3733,7 +3739,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#boxcar2_accesstoken').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testBoxcar2-result').html(SICKRAGE.loading);
+                        $('#testBoxcar2-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testBoxcar2', {'accesstoken': boxcar2_accesstoken}).done(function (data) {
                             $('#testBoxcar2-result').html(data);
                             $('#testBoxcar2').prop('disabled', false);
@@ -3759,7 +3765,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#pushover_userkey,#pushover_apikey').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testPushover-result').html(SICKRAGE.loading);
+                        $('#testPushover-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testPushover', {
                             'userKey': pushover_userkey,
                             'apiKey': pushover_apikey
@@ -3770,14 +3776,14 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#testLibnotify').click(function () {
-                        $('#testLibnotify-result').html(SICKRAGE.loading);
+                        $('#testLibnotify-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testLibnotify', function (data) {
                             $('#testLibnotify-result').html(data);
                         });
                     });
 
                     $('#twitterStep1').click(function () {
-                        $('#testTwitter-result').html(SICKRAGE.loading);
+                        $('#testTwitter-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/twitterStep1', function (data) {
                             window.open(data);
                         }).done(function () {
@@ -3793,7 +3799,7 @@ jQuery(document).ready(function ($) {
                             return;
                         }
                         $('#twitter_key').removeClass('warning');
-                        $('#testTwitter-result').html(SICKRAGE.loading);
+                        $('#testTwitter-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/twitterStep2', {'key': twitter_key}, function (data) {
                             $('#testTwitter-result').html(data);
                         });
@@ -3811,7 +3817,7 @@ jQuery(document).ready(function ($) {
                             $('#nmj_host').focus();
                             return;
                         }
-                        $('#testNMJ-result').html(SICKRAGE.loading);
+                        $('#testNMJ-result').html(SICKRAGE.loadingHTML);
                         var nmj_host = $('#nmj_host').val();
 
                         $.get(SICKRAGE.srWebRoot + '/home/settingsNMJ', {'host': nmj_host}, function (data) {
@@ -3848,7 +3854,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#nmj_host').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testNMJ-result').html(SICKRAGE.loading);
+                        $('#testNMJ-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testNMJ', {
                             'host': nmj_host,
                             'database': nmj_database,
@@ -3865,7 +3871,7 @@ jQuery(document).ready(function ($) {
                             $('#nmjv2_host').focus();
                             return;
                         }
-                        $('#testNMJv2-result').html(SICKRAGE.loading);
+                        $('#testNMJv2-result').html(SICKRAGE.loadingHTML);
                         var nmjv2_host = $('#nmjv2_host').val();
                         var nmjv2_dbloc;
                         var radios = document.getElementsByName('nmjv2_dbloc');
@@ -3906,7 +3912,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#nmjv2_host').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testNMJv2-result').html(SICKRAGE.loading);
+                        $('#testNMJv2-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testNMJv2', {'host': nmjv2_host}).done(function (data) {
                             $('#testNMJv2-result').html(data);
                             $('#testNMJv2').prop('disabled', false);
@@ -3932,7 +3938,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#freemobile_id,#freemobile_apikey').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testFreeMobile-result').html(SICKRAGE.loading);
+                        $('#testFreeMobile-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testFreeMobile', {
                             'freemobile_id': freemobile_id,
                             'freemobile_apikey': freemobile_apikey
@@ -3993,7 +3999,7 @@ jQuery(document).ready(function ($) {
                         $('#trakt_username').removeClass('warning');
                         $('#trakt_blacklist_name').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testTrakt-result').html(SICKRAGE.loading);
+                        $('#testTrakt-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testTrakt', {
                             'username': trakt_username,
                             'blacklist_name': trakt_trending_blacklist
@@ -4006,7 +4012,7 @@ jQuery(document).ready(function ($) {
                     $('#testEmail').click(function () {
                         var status, host, port, tls, from, user, pwd, err, to;
                         status = $('#testEmail-result');
-                        status.html(SICKRAGE.loading);
+                        status.html(SICKRAGE.loadingHTML);
                         host = $('#email_host').val();
                         host = host.length > 0 ? host : null;
                         port = $('#email_port').val();
@@ -4058,7 +4064,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#nma_api').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testNMA-result').html(SICKRAGE.loading);
+                        $('#testNMA-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testNMA', {
                             'nma_api': nma_api,
                             'nma_priority': nma_priority
@@ -4077,7 +4083,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#pushalot_authorizationtoken').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testPushalot-result').html(SICKRAGE.loading);
+                        $('#testPushalot-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testPushalot', {'authorizationToken': pushalot_authorizationtoken}).done(function (data) {
                             $('#testPushalot-result').html(data);
                             $('#testPushalot').prop('disabled', false);
@@ -4093,7 +4099,7 @@ jQuery(document).ready(function ($) {
                         }
                         $('#pushbullet_api').removeClass('warning');
                         $(this).prop('disabled', true);
-                        $('#testPushbullet-result').html(SICKRAGE.loading);
+                        $('#testPushbullet-result').html(SICKRAGE.loadingHTML);
                         $.get(SICKRAGE.srWebRoot + '/home/testPushbullet', {'api': pushbullet_api}).done(function (data) {
                             $('#testPushbullet-result').html(data);
                             $('#testPushbullet').prop('disabled', false);
@@ -4150,7 +4156,7 @@ jQuery(document).ready(function ($) {
 
                 get_pushbullet_devices: function (msg) {
                     if (msg) {
-                        $('#testPushbullet-result').html(SICKRAGE.loading);
+                        $('#testPushbullet-result').html(SICKRAGE.loadingHTML);
                     }
 
                     var pushbullet_api = $("#pushbullet_api").val();
@@ -4231,7 +4237,7 @@ jQuery(document).ready(function ($) {
             backup_restore: function () {
                 $('#Backup').click(function () {
                     $("#Backup").attr("disabled", true);
-                    $('#Backup-result').html(SICKRAGE.loading);
+                    $('#Backup-result').html(SICKRAGE.loadingHTML);
                     var backupDir = $("#backupDir").val();
                     $.get(SICKRAGE.srWebRoot + "/config/backuprestore/backup", {'backupDir': backupDir})
                         .done(function (data) {
@@ -4242,7 +4248,7 @@ jQuery(document).ready(function ($) {
 
                 $('#Restore').click(function () {
                     $("#Restore").attr("disabled", true);
-                    $('#Restore-result').html(SICKRAGE.loading);
+                    $('#Restore-result').html(SICKRAGE.loadingHTML);
                     var backupFile = $("#backupFile").val();
                     $.get(SICKRAGE.srWebRoot + "/config/backuprestore/restore", {'backupFile': backupFile})
                         .done(function (data) {
@@ -4472,7 +4478,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     var newznab_providers = SICKRAGE.getMeta('NEWZNAB_PROVIDERS').split('!!!');
-                    for(var newznab_id = 0; newznab_id < newznab_providers.length; newznab_id++) {
+                    for (var newznab_id = 0; newznab_id < newznab_providers.length; newznab_id++) {
                         var newznab_provider = newznab_providers[newznab_id];
                         if (newznab_provider.length > 0) {
                             SICKRAGE.config.providers.addNewznabProvider.apply(this, newznab_provider.split('|'));
@@ -4480,7 +4486,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     var torrentrss_providers = SICKRAGE.getMeta('TORRENTRSS_PROVIDERS').split('!!!');
-                    for(var torrentrss_id = 0; torrentrss_id < torrentrss_providers.length; torrentrss_id++) {
+                    for (var torrentrss_id = 0; torrentrss_id < torrentrss_providers.length; torrentrss_id++) {
                         var torrentrss_provider = torrentrss_providers[torrentrss_id];
                         if (torrentrss_provider.length > 0) {
                             SICKRAGE.config.providers.addTorrentRssProvider.apply(this, torrentrss_provider.split('|'));
@@ -4527,7 +4533,7 @@ jQuery(document).ready(function ($) {
 
                     var params = {url: url, name: name, key: key};
 
-                    $(".updating_categories").wrapInner('<span>' + SICKRAGE.loading + ' Updating Categories ...</span>');
+                    $(".updating_categories").wrapInner('<span>' + SICKRAGE.loadingHTML + ' Updating Categories ...</span>');
                     $.getJSON(SICKRAGE.srWebRoot + '/config/providers/getNewznabCategories', params, function (data) {
                         SICKRAGE.config.providers.updateNewznabCaps(data, selectedProvider);
                     }).always(function () {
