@@ -723,9 +723,7 @@ h1.title {
   top: -24px; }
 
 #showinfo {
-  cursor: default; }
-
-#showinfo {
+  cursor: default;
   display: inline-block;
   position: relative;
   top: -3px; }
@@ -2477,50 +2475,6 @@ pnotify.css
 .ui-pnotify-closer {
   margin-top: -12px;
   margin-right: -10px; }
-
-/* =======================================================================
-login.css
-========================================================================== */
-.login {
-  display: block; }
-
-.login h1 {
-  padding: 0 0 10px;
-  font-size: 60px;
-  font-family: Lobster;
-  font-weight: normal; }
-
-.login form {
-  width: 50%;
-  margin-left: auto;
-  margin-right: auto; }
-
-.login .ctrlHolder {
-  padding: 0;
-  margin: 0 0 20px; }
-
-.login .ctrlHolder:hover {
-  background: none; }
-
-.login input[type=text],
-.login input[type=password] {
-  width: 100% !important;
-  font-size: 25px;
-  padding: 14px !important; }
-
-.login .remember_me {
-  font-size: 15px;
-  float: left;
-  width: 150px;
-  padding: 20px 0; }
-
-.login .remember_me .check {
-  margin: 5px 5px 0 0; }
-
-.login .button {
-  font-size: 25px;
-  padding: 20px;
-  float: right; }
 
 /* =======================================================================
 IMDB Popular

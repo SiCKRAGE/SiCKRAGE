@@ -1,6 +1,7 @@
 # Changelog
 
-- * b04ff27 - 2017-04-13: Fixed issues with web root variable and reverse proxies 
+- * c0158ec - 2017-04-14: Released v9.0.3 
+- * 5d0de31 - 2017-04-13: Fixed issues with web root variable and reverse proxies 
 - * 8ab1894 - 2017-04-09: Developer mode disables scheduled jobs Login page is now responsive 
 - * 618ec57 - 2017-04-08: Show updates are now executed every 24hrs, misc code cleanup 
 - * ef6fc73 - 2017-04-07: Misc code cleanup 
