@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9b174f8 - 2017-04-14: Misc ShowImage ref fixes 
+- * 73e78d3 - 2017-04-14: Removed unrequires loop continues in templates 
+- * b177032 - 2017-04-14: Misc ShowImage ref fixes 
 - * d0aebf1 - 2017-04-14: Fixed issue with quality chooser template 
 - * eba7fc2 - 2017-04-14: Fixed issue with quality chooser template 
 - * 0ab30ee - 2017-04-14: Fixed issue with quality chooser template 
