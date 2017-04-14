@@ -4,6 +4,8 @@ import io
 import os
 from mimetypes import guess_type
 
+from tornado.escape import url_escape
+
 import sickrage
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import findCertainShow
@@ -33,12 +35,13 @@ class Media(object):
         return ''
 
     @property
-    def get_media(self):
+    def get_media_url(self):
         """
         :return: The content of the desired media file
         """
 
-        return os.path.realpath(self.get_static_media_path()).replace('\\', '/')
+        path = os.path.realpath(self.get_static_media_path()).replace(sickrage.srCore.srConfig.GUI_DIR, "")
+        return url_escape(path.replace('\\', '/'), False)
 
     @property
     def get_media_bytes(self):
