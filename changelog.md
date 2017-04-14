@@ -1,6 +1,13 @@
 # Changelog
 
-- * d4a83b9 - 2017-04-14: Performed grunt tasks 
+- * d0aebf1 - 2017-04-14: Fixed issue with quality chooser template 
+- * eba7fc2 - 2017-04-14: Fixed issue with quality chooser template 
+- * 0ab30ee - 2017-04-14: Fixed issue with quality chooser template 
+- * 2f24fcc - 2017-04-14: Appended srWebRoot variable to ShowImage refs in templates 
+- * a16c75e - 2017-04-14: Fixed regex for web server images path 
+- * 2c8ea5b - 2017-04-14: Fixed url path returned by ShowImage function 
+- * dbe50a0 - 2017-04-14: Fixed url path returned by ShowImage function 
+- * 34fd2d5 - 2017-04-14: Performed grunt tasks 
 - * 5e69c16 - 2017-04-14: Fixed JS misc code issues Released v9.0.5 
 - * 1aecdce - 2017-04-14: Released v9.0.4 
 - * 1e68c51 - 2017-04-14: Updated JS core to reflect new webroot changes 

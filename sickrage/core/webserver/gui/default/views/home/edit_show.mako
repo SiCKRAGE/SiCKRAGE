@@ -47,8 +47,6 @@
                                         <span class="component-desc">
                                             <%
                                                 qualities = Quality.splitQuality(int(show.quality))
-                                                anyQualities = qualities[0]
-                                                bestQualities = qualities[1]
                                             %>
                                             <%include file="../includes/quality_chooser.mako"/>
                                         </span>

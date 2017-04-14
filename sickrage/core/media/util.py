@@ -18,8 +18,6 @@
 
 from __future__ import unicode_literals
 
-from tornado.escape import url_escape
-
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
@@ -40,7 +38,6 @@ def showImage(show=None, which=None):
         elif which[0:7] == 'network':
             media = Network(show, media_format)
 
-        static_url = url_escape(media.get_media, False)
-        return static_url
+        return media.get_media_url
     except:
         pass
