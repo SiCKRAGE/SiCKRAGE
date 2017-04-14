@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
         },
 
         notify: function (type, title, message) {
-            var myDesktop = {'desktop': true, 'icon': 'images/ico/favicon-64.png'};
+            var myDesktop = {'desktop': true, 'icon': SICKRAGE.srWebRoot + '/images/ico/favicon-64.png'};
             var myStack = {'dir1': 'up', 'dir2': 'left', 'firstpos1': 25, 'firstpos2': 25};
 
             PNotify.desktop.permission();
@@ -83,7 +83,7 @@ jQuery(document).ready(function ($) {
                     scrollImg: {
                         active: true,
                         type: 'background',
-                        src: 'images/top.png'
+                        src: SICKRAGE.srWebRoot + '/images/top.png'
                     }
                 });
 
