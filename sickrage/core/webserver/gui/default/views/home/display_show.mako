@@ -39,7 +39,7 @@
                     % if season_special:
                         Display Specials:
                     <a class="inner"
-                       href="/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS)]}</a>
+                       href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS)]}</a>
                     % endif
                 </span>
                 <div class="h2footer pull-right">
@@ -105,7 +105,7 @@
                         % else:
                         % if 'country_codes' in show.imdb_info:
                             % for country in show.imdb_info['country_codes'].split('|'):
-                                <img src="/images/blank.png" class="country-flag flag-${country}" width="16"
+                                <img src="${srWebRoot}/images/blank.png" class="country-flag flag-${country}" width="16"
                                      height="11" style="margin-left: 3px; vertical-align:middle;"/>
                             % endfor
                         % endif
@@ -116,21 +116,21 @@
                                onclick="window.open(this.href, '_blank'); return false;"
                                title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]" height="16"
                                                                                      width="16"
-                                                                                     src="/images/imdb.png"
+                                                                                     src="${srWebRoot}/images/imdb.png"
                                                                                      style="margin-top: -1px; vertical-align:middle;"/></a>
                         % endif
                         <a href="${anon_url(srIndexerApi(_show.indexer).config['show_url'], _show.indexerid)}"
                            onclick="window.open(this.href, '_blank'); return false;"
                            title="${srIndexerApi(show.indexer).config["show_url"] + str(show.indexerid)}"><img
                                 alt="${srIndexerApi(show.indexer).name}" height="16" width="16"
-                                src="/images/${srIndexerApi(show.indexer).config["icon"]}"
+                                src="${srWebRoot}/images/${srIndexerApi(show.indexer).config["icon"]}"
                                 style="margin-top: -1px; vertical-align:middle;"/></a>
                         % if xem_numbering or xem_absolute_numbering:
                             <a href="${anon_url('http://thexem.de/search?q=', _show.name)}" rel="noreferrer"
                                onclick="window.open(this.href, '_blank'); return false;"
                                title="http://thexem.de/search?q-${show.name}"><img alt="[xem]" height="16"
                                                                                    width="16"
-                                                                                   src="/images/xem.png"
+                                                                                   src="${srWebRoot}/images/xem.png"
                                                                                    style="margin-top: -1px; vertical-align:middle;"/></a>
                         % endif
                     </div>
@@ -259,15 +259,15 @@
                             <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
                             <tr>
                                 <td class="showLegend">Info Language:</td>
-                                <td><img src="/images/subtitles/flags/${info_flag}.png" width="16" height="11"
+                                <td><img src="${srWebRoot}/images/subtitles/flags/${info_flag}.png" width="16" height="11"
                                          alt="${show.lang}" title="${show.lang}"
-                                         onError="this.onerror=null;this.src='/images/flags/unknown.png';"/>
+                                         onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
                                 </td>
                             </tr>
                             % if sickrage.srCore.srConfig.USE_SUBTITLES:
                                 <tr>
                                     <td class="showLegend">Subtitles:</td>
-                                    <td><img src="/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
+                                    <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
                                              alt="${("N", "Y")[bool(show.subtitles)]}" width="16" height="16"/>
                                     </td>
                                 </tr>
@@ -275,45 +275,45 @@
                             <tr>
                                 <td class="showLegend">Season Folders:</td>
                                 <td><img
-                                        src="/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
+                                        src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
                                         alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
                                         width="16" height="16"/></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Paused:</td>
-                                <td><img src="/images/${("no16.png", "yes16.png")[bool(show.paused)]}"
+                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.paused)]}"
                                          alt="${("N", "Y")[bool(show.paused)]}" width="16" height="16"/></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Air-by-Date:</td>
-                                <td><img src="/images/${("no16.png", "yes16.png")[bool(show.air_by_date)]}"
+                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.air_by_date)]}"
                                          alt="${("N", "Y")[bool(show.air_by_date)]}" width="16" height="16"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Sports:</td>
-                                <td><img src="/images/${("no16.png", "yes16.png")[bool(show.is_sports)]}"
+                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_sports)]}"
                                          alt="${("N", "Y")[bool(show.is_sports)]}" width="16" height="16"/></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Anime:</td>
-                                <td><img src="/images/${("no16.png", "yes16.png")[bool(show.is_anime)]}"
+                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_anime)]}"
                                          alt="${("N", "Y")[bool(show.is_anime)]}" width="16" height="16"/></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">DVD Order:</td>
-                                <td><img src="/images/${("no16.png", "yes16.png")[bool(show.dvdorder)]}"
+                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.dvdorder)]}"
                                          alt="${("N", "Y")[bool(show.dvdorder)]}" width="16" height="16"/></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Scene Numbering:</td>
-                                <td><img src="/images/${("no16.png", "yes16.png")[bool(show.scene)]}"
+                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.scene)]}"
                                          alt="${("N", "Y")[bool(show.scene)]}" width="16" height="16"/></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Archive First Match:</td>
                                 <td><img
-                                        src="/images/${("no16.png", "yes16.png")[bool(show.archive_firstmatch)]}"
+                                        src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.archive_firstmatch)]}"
                                         alt="${("N", "Y")[bool(show.archive_firstmatch)]}" width="16"
                                         height="16"/></td>
                             </tr>
@@ -567,11 +567,11 @@
                             % endif
                         </td>
 
-                        <td align="center"><img src="/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
+                        <td align="center"><img src="${srWebRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
                                                 alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/>
                         </td>
 
-                        <td align="center"><img src="/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
+                        <td align="center"><img src="${srWebRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
                                                 alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/>
                         </td>
 
@@ -618,11 +618,11 @@
 
                         <td class="col-name">
                             % if epResult["description"]:
-                                <img src="/images/info32.png" width="16" height="16" class="plotInfo" alt=""
+                                <img src="${srWebRoot}/images/info32.png" width="16" height="16" class="plotInfo" alt=""
                                      id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
                                      data-tooltip="${epResult["description"]}"/>
                             % else:
-                                <img src="/images/info32.png" width="16" height="16" class="plotInfoNone" alt=""
+                                <img src="${srWebRoot}/images/info32.png" width="16" height="16" class="plotInfoNone" alt=""
                                      id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
                                      data-tooltip=""/>
                             % endif
@@ -673,9 +673,9 @@
                             % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(sickrage.subtitles.wanted_languages()) is 1) and sickrage.subtitles.wanted_languages()[0] in sub_lang.opensubtitles:
                                 <% flag = 'checkbox' %>
                             % endif
-                                <img src="/images/subtitles/flags/${flag}.png" width="16" height="11"
+                                <img src="${srWebRoot}/images/subtitles/flags/${flag}.png" width="16" height="11"
                                      alt="${sub_lang.name}"
-                                     onError="this.onerror=null;this.src='/images/flags/unknown.png';"/>
+                                     onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
                             % endfor
                         </td>
 
@@ -693,21 +693,21 @@
                                        id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                        name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                        href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                            src="/images/search16.png" height="16" alt="retry"
+                                            src="${srWebRoot}/images/search16.png" height="16" alt="retry"
                                             title="Retry Download"/></a>
                                 % else:
                                     <a class="epSearch"
                                        id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                        name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                        href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                            src="/images/search16.png" width="16" height="16" alt="search"
+                                            src="${srWebRoot}/images/search16.png" width="16" height="16" alt="search"
                                             title="Manual Search"/></a>
                                 % endif
                             % endif
                             % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
                                 <a class="epSubtitlesSearch"
                                    href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                        src="/images/closed_captioning.png" height="16" alt="search subtitles"
+                                        src="${srWebRoot}/images/closed_captioning.png" height="16" alt="search subtitles"
                                         title="Search Subtitles"/></a>
                             % endif
                         </td>

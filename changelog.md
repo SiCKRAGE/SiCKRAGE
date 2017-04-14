@@ -1,5 +1,6 @@
 # Changelog
 
+- * c18c006 - 2017-04-14: Fixed issues with web root variable and reverse proxies 
 - * 5d0de31 - 2017-04-13: Fixed issues with web root variable and reverse proxies 
 - * 550018e - 2017-04-13: Fixed CSS for bootstrap tabs 
 - * 602ea34 - 2017-04-13: More misc CSS code changes and cleanups 
