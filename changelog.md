@@ -1,6 +1,7 @@
 # Changelog
 
-- * 27ded35 - 2017-04-14: Appended srWebRoot variable to ShowImage refs in templates 
+- * 30462aa - 2017-04-14: Fixed issue with quality chooser template 
+- * 2f24fcc - 2017-04-14: Appended srWebRoot variable to ShowImage refs in templates 
 - * a16c75e - 2017-04-14: Fixed regex for web server images path 
 - * 2c8ea5b - 2017-04-14: Fixed url path returned by ShowImage function 
 - * dbe50a0 - 2017-04-14: Fixed url path returned by ShowImage function 

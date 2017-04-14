@@ -5,7 +5,6 @@
 
 <%
     selected = None
-    qualities = Quality.splitQuality(quality)
 
     anyQualities = qualities[0]
     anyQualityList = filter(lambda x: x > Quality.NONE, Quality.qualityStrings)
