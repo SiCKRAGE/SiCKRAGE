@@ -1,6 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
+    from sickrage.core.common import Quality
 %>
 
 <%block name="content">
