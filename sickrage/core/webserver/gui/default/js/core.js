@@ -425,7 +425,7 @@ jQuery(document).ready(function ($) {
         },
 
         ajax_search: {
-            searchStatusUrl: parent.srWebRoot + '/home/getManualSearchStatus',
+            searchStatusUrl: '/home/getManualSearchStatus',
             failedDownload: false,
             qualityDownload: false,
             selectedEpisode: '',
@@ -434,6 +434,7 @@ jQuery(document).ready(function ($) {
             init: function () {
                 PNotify.prototype.options.maxonscreen = 5;
 
+                SICKRAGE.ajax_search.searchStatusUrl = SICKRAGE.srWebRoot + SICKRAGE.ajax_search.searchStatusUrl;
                 SICKRAGE.ajax_search.ajaxEpSearch({'colorRow': true});
                 SICKRAGE.ajax_search.checkManualSearches();
                 SICKRAGE.ajax_search.ajaxEpSubtitlesSearch();
@@ -730,8 +731,8 @@ jQuery(document).ready(function ($) {
         browser: {
             defaults: {
                 title: 'Choose Directory',
-                url: parent.srWebRoot + '/browser/',
-                autocompleteURL: parent.srWebRoot + '/browser/complete',
+                url: '/browser/',
+                autocompleteURL: '/browser/complete',
                 includeFiles: 0,
                 showBrowseButton: true
             },
@@ -740,6 +741,9 @@ jQuery(document).ready(function ($) {
             currentRequest: null,
 
             init: function () {
+                SICKRAGE.browser.defaults.url = SICKRAGE.srWebRoot + SICKRAGE.browser.defaults.url;
+                SICKRAGE.browser.defaults.autocomplete = SICKRAGE.srWebRoot + SICKRAGE.browser.defaults.autocompleteURL;
+
                 $.fn.nFileBrowser = SICKRAGE.browser.nFileBrowser;
                 $.fn.fileBrowser = SICKRAGE.browser.fileBrowser;
             },
