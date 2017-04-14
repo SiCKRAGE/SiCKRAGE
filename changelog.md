@@ -1,6 +1,7 @@
 # Changelog
 
-- * 44e9f7d - 2017-04-14: Fixed regex for web server images path 
+- * 27ded35 - 2017-04-14: Appended srWebRoot variable to ShowImage refs in templates 
+- * a16c75e - 2017-04-14: Fixed regex for web server images path 
 - * 2c8ea5b - 2017-04-14: Fixed url path returned by ShowImage function 
 - * dbe50a0 - 2017-04-14: Fixed url path returned by ShowImage function 
 - * 5e69c16 - 2017-04-14: Fixed JS misc code issues Released v9.0.5 

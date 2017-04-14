@@ -102,8 +102,8 @@
 
     <div id="container">
         <div id="posterCol">
-            <a href="${showImage(show.indexerid, 'poster')}" rel="dialog" title="View Poster for ${show.name}"><img
-                    src="${showImage(show.indexerid, 'poster_thumb')}" class="tvshowImg" alt=""/></a>
+            <a href="${srWebRoot}${showImage(show.indexerid, 'poster')}" rel="dialog" title="View Poster for ${show.name}"><img
+                    src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb')}" class="tvshowImg" alt=""/></a>
         </div>
 
         <div id="showCol">

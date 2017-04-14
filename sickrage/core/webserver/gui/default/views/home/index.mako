@@ -161,7 +161,7 @@
                         %>
                         <div class="show" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
                             <div class="show-image">
-                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
+                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
                             </div>
 
                             <div class="progressbar hidden-print" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
@@ -204,7 +204,7 @@
                                     <td class="show-table">
                                         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
                                             % if curShow.network:
-                                                <span title="${curShow.network}"><img class="show-network-image" src="${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
+                                                <span title="${curShow.network}"><img class="show-network-image" src="${srWebRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
                                             % else:
                                                 <span title="No Network"><img class="show-network-image" src="${srWebRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
                                             % endif
@@ -354,7 +354,7 @@
                                 <td class="tvShow">
                                     <div class="imgsmallposter ${sickrage.srCore.srConfig.HOME_LAYOUT}">
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
-                                            <img src="${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
+                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
                                                  alt="${curShow.indexerid}"/>
                                         </a>
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
@@ -365,7 +365,7 @@
                                     <span style="display: none;">${curShow.name}</span>
                                     <div class="imgbanner ${sickrage.srCore.srConfig.HOME_LAYOUT}">
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
-                                            <img src="${showImage(curShow.indexerid, 'banner')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
+                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
                                                  alt="${curShow.indexerid}" title="${curShow.name}"/>
                                         </a>
                                     </div>
@@ -377,7 +377,7 @@
                             % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
                                 <td align="center">
                                     % if curShow.network:
-                                        <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
+                                        <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srWebRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
                                         <span class="visible-print-inline">${curShow.network}</span>
                                     % else:
                                         <span title="No Network" class="hidden-print"><img id="network" width="54" height="27" src="${srWebRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>

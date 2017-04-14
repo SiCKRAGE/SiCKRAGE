@@ -340,7 +340,7 @@
                     <th ${('class="nobg"', 'rowspan="2"')['banner' == layout]} valign="top">
                         <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
                             <img alt="" class="${('posterThumb', 'bannerThumb')[layout == 'banner']}"
-                                 src="${showImage(cur_result['showid'], (layout, 'poster_thumb')[layout == 'poster'])}"/>
+                                 src="${srWebRoot}${showImage(cur_result['showid'], (layout, 'poster_thumb')[layout == 'poster'])}"/>
                         </a>
                     </th>
                     % if 'banner' == layout:
@@ -462,7 +462,7 @@
                                         <div class="poster">
                                             <a title="${cur_result['show_name']}"
                                                href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}"><img alt=""
-                                                                                                          src="${showImage(cur_result['showid'], 'poster_thumb')}"/></a>
+                                                                                                          src="${srWebRoot}${showImage(cur_result['showid'], 'poster_thumb')}"/></a>
                                         </div>
                                         <div class="text">
                             <span class="airtime">
