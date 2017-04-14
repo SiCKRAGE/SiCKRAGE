@@ -20,6 +20,8 @@ jQuery(document).ready(function ($) {
             var myDesktop = {'desktop': true, 'icon': SICKRAGE.srWebRoot + '/images/ico/favicon-64.png'};
             var myStack = {'dir1': 'up', 'dir2': 'left', 'firstpos1': 25, 'firstpos2': 25};
 
+            console.log('notify icon url: ' + myDesktop);
+
             PNotify.desktop.permission();
             new PNotify({
                 desktop: myDesktop,
