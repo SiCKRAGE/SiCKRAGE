@@ -1,6 +1,7 @@
 # Changelog
 
-- * e43465f - 2017-04-14: Removed unrequires loop continues in templates 
+- * a971731 - 2017-04-14: Grunt tasks performed Fixed travis script 
+- * 73e78d3 - 2017-04-14: Removed unrequires loop continues in templates 
 - * d0aebf1 - 2017-04-14: Fixed issue with quality chooser template 
 - * eba7fc2 - 2017-04-14: Fixed issue with quality chooser template 
 - * 0ab30ee - 2017-04-14: Fixed issue with quality chooser template 
