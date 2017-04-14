@@ -85,9 +85,9 @@
 
     <div class="row">
         <div class="col-md-12">
-            <a href="${showImage(show.indexerid, 'poster')}" rel="dialog"
+            <a href="${srWebRoot}${showImage(show.indexerid, 'poster')}" rel="dialog"
                title="View Poster for ${show.name}"><img
-                    src="${showImage(show.indexerid, 'poster_thumb')}" class="tvshowImg" alt=""/></a>
+                    src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb')}" class="tvshowImg" alt=""/></a>
 
             <div class="col-md-9 pull-right panel panel-default panel-body">
                 <div class="row">
