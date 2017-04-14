@@ -1,6 +1,7 @@
 # Changelog
 
-- * 403083d - 2017-04-14: Misc web root fixes in JS code 
+- * 7e7e9a5 - 2017-04-14: Updated favicon&#x27;s for all devices Grunt task performed Released v9.0.7 
+- * 661f5ad - 2017-04-14: Misc web root fixes in JS code 
 - * de7db86 - 2017-04-14: Misc web root fixes in JS code 
 - * 5cdf2a9 - 2017-04-14: Misc web root fixes in JS code 
 - * 4a8fc9c - 2017-04-14: Use showObj when referencing indexerid Fix some more issues with web root in templates Released v9.0.6 
