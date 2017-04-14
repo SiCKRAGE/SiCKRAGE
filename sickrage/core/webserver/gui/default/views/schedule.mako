@@ -397,8 +397,8 @@
     % endif
 
     % if 'calendar' == layout:
-    <% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
-    <% tbl_day = 0 %>
+        <% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
+        <% tbl_day = 0 %>
         <br>
         <br>
         <div class="calendarWrapper">
@@ -415,45 +415,44 @@
                     <tbody>
                         <% day_has_show = False %>
                         % for cur_result in results:
-                            % if int(cur_result['paused']) and not sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED:
-                                <% continue %>
-                            % endif
+                            % if not int(cur_result['paused']) or sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED:
 
-                            <% cur_indexer = int(cur_result['indexer']) %>
-                            <% run_time = int(cur_result['runtime']) %>
-                            <% airday = cur_result['localtime'].date() %>
+                                <% cur_indexer = int(cur_result['indexer']) %>
+                                <% run_time = int(cur_result['runtime']) %>
+                                <% airday = cur_result['localtime'].date() %>
 
-                            % if airday == day:
-                                % try:
-                                <% day_has_show = True %>
-                                <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple())).srftime().decode(sickrage.SYS_ENCODING) %>
-                                % if sickrage.srCore.srConfig.TRIM_ZERO:
-                                    <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
+                                % if airday == day:
+                                    % try:
+                                    <% day_has_show = True %>
+                                    <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple())).srftime().decode(sickrage.SYS_ENCODING) %>
+                                    % if sickrage.srCore.srConfig.TRIM_ZERO:
+                                        <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
+                                    % endif
+                                    % except OverflowError:
+                                    <% airtime = "Invalid" %>
+                                    % endtry
+
+                                    <tr>
+                                        <td class="calendarShow">
+                                            <div class="poster">
+                                                <a title="${cur_result['show_name']}"
+                                                   href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}"><img alt=""
+                                                                                                              src="${srWebRoot}${srWebRoot}${showImage(cur_result['showid'], 'poster_thumb')}"/></a>
+                                            </div>
+                                            <div class="text">
+                                                <span class="airtime">
+                                                    ${airtime} on ${cur_result["network"]}
+                                                </span>
+                                                <span class="episode-title" title="${cur_result['name']}">
+                                                    ${'S%02iE%02i' % (int(cur_result['season']), int(cur_result['episode']))}
+                                                                    - ${cur_result['name']}
+                                                </span>
+                                            </div>
+                                        </td> <!-- end ${cur_result['show_name']} -->
+                                    </tr>
                                 % endif
-                                % except OverflowError:
-                                <% airtime = "Invalid" %>
-                                % endtry
 
-                                <tr>
-                                    <td class="calendarShow">
-                                        <div class="poster">
-                                            <a title="${cur_result['show_name']}"
-                                               href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}"><img alt=""
-                                                                                                          src="${srWebRoot}${srWebRoot}${showImage(cur_result['showid'], 'poster_thumb')}"/></a>
-                                        </div>
-                                        <div class="text">
-                            <span class="airtime">
-                                ${airtime} on ${cur_result["network"]}
-                            </span>
-                                            <span class="episode-title" title="${cur_result['name']}">
-                                ${'S%02iE%02i' % (int(cur_result['season']), int(cur_result['episode']))}
-                                                - ${cur_result['name']}
-                            </span>
-                                        </div>
-                                    </td> <!-- end ${cur_result['show_name']} -->
-                                </tr>
                             % endif
-
                         % endfor
                         % if not day_has_show:
                             <tr>
@@ -464,9 +463,5 @@
                 </table>
             % endfor
         </div>
-        <!-- end calender view //-->
-    </div>
     % endif
-    </div>
-    <div class="clearfix"></div>
 </%block>
