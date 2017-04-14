@@ -75,6 +75,8 @@ class srDailySearcher(object):
                 if not show or show.paused:
                     continue
 
+                # get next episode air date/time
+                show.nextEpisode()
             except MultipleShowObjectsException:
                 sickrage.srCore.srLogger.info("ERROR: expected to find a single show matching " + str(dbData['showid']))
                 continue
