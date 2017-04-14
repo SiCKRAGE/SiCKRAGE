@@ -1520,7 +1520,7 @@ class Home(WebHandler):
 
         sickrage.srCore.srNotifications.message('%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
 
-        return self.redirect("/home/displayShow?show=%i" % show.indexerid)
+        return self.redirect("/home/displayShow?show=%i" % showObj.indexerid)
 
     def deleteShow(self, show=None, full=0):
         if show is None:
@@ -1565,7 +1565,7 @@ class Home(WebHandler):
 
         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
-        return self.redirect("/home/displayShow?show=" + str(show.indexerid))
+        return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
     def updateShow(self, show=None, force=0):
         if show is None:
