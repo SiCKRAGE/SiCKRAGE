@@ -297,11 +297,11 @@
                         %>
                         % for cur_link in menuItem['path']:
                         ${("&middot; ", "")[bool(inner_first)]}<a class="inner"
-                                                                  href="${menuItem['path'][cur_link]}">${cur_link}</a>
+                                                                  href="${srWebRoot}${menuItem['path'][cur_link]}">${cur_link}</a>
                         <% inner_first = False %>
                         % endfor
                         % else:
-                            <a href="${menuItem['path']}"
+                            <a href="${srWebRoot}${menuItem['path']}"
                                class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
                         <% first = False %>
                         % endif
