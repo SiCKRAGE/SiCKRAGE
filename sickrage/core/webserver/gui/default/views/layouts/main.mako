@@ -291,7 +291,7 @@
                     % if 'requires' not in menuItem or menuItem['requires']:
                         <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
                         % if type(menuItem['path']) == dict:
-                        ${("</span><span>", "")[bool(first)]}<b>${srWebRoot}${menuItem['title']}</b>
+                        ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
                         <%
                             first = False
                             inner_first = True
@@ -303,7 +303,7 @@
                         % endfor
                         % else:
                             <a href="${srWebRoot}${menuItem['path']}"
-                               class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${srWebRoot}${menuItem['title']}</a>
+                               class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
                         <% first = False %>
                         % endif
                     % endif
