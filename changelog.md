@@ -1,6 +1,8 @@
 # Changelog
 
-- * c18c006 - 2017-04-14: Fixed issues with web root variable and reverse proxies 
+- * 8b69555 - 2017-04-14: Added next episode air date/time updates to daily searcher routine 
+- * 5c1022e - 2017-04-14: Released v9.0.3 
+- * 02bcefa - 2017-04-14: Fixed issues with web root variable and reverse proxies 
 - * 5d0de31 - 2017-04-13: Fixed issues with web root variable and reverse proxies 
 - * 550018e - 2017-04-13: Fixed CSS for bootstrap tabs 
 - * 602ea34 - 2017-04-13: More misc CSS code changes and cleanups 
