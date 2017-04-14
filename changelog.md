@@ -1,5 +1,8 @@
 # Changelog
 
+- * 5e69c16 - 2017-04-14: Fixed JS misc code issues Released v9.0.5 
+- * 1aecdce - 2017-04-14: Released v9.0.4 
+- * 1e68c51 - 2017-04-14: Updated JS core to reflect new webroot changes 
 - * 8b69555 - 2017-04-14: Added next episode air date/time updates to daily searcher routine 
 - * 5c1022e - 2017-04-14: Released v9.0.3 
 - * 02bcefa - 2017-04-14: Fixed issues with web root variable and reverse proxies 
