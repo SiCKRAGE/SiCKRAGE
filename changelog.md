@@ -1,6 +1,10 @@
 # Changelog
 
-- * 32a0e46 - 2017-04-14: Removed unrequires loop continues in templates 
+- * de7db86 - 2017-04-14: Misc web root fixes in JS code 
+- * 5cdf2a9 - 2017-04-14: Misc web root fixes in JS code 
+- * 4a8fc9c - 2017-04-14: Use showObj when referencing indexerid Fix some more issues with web root in templates Released v9.0.6 
+- * 53076ab - 2017-04-14: Grunt tasks performed Fixed travis script 
+- * 8b9b81a - 2017-04-14: Removed unrequires loop continues in templates 
 - * 19fe437 - 2017-04-14: Removed unrequires loop continues in templates 
 - * 46d5408 - 2017-04-14: Removed unrequires loop continues in templates 
 - * 73e78d3 - 2017-04-14: Removed unrequires loop continues in templates 
