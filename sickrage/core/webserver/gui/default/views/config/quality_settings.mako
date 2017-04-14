@@ -28,17 +28,18 @@
                         <fieldset class="component-group-list">
                             <table>
                                 % for qtype, qsize in sickrage.srCore.srConfig.QUALITY_SIZES.items():
-                                <% if qsize == 0: continue %>
-
-                                    <tr>
-                                        <td>
-                                            <label for="${qtype}"
-                                                   style="vertical-align:middle;">${Quality.qualityStrings[qtype]}</label>
-                                        </td>
-                                        <td>
-                                            <input type="number" value="${qsize}" name="${qtype}" id="${qtype}" min="1"> MB
-                                        </td>
-                                    </tr>
+                                    % if not qsize == 0:
+                                        <tr>
+                                            <td>
+                                                <label for="${qtype}"
+                                                       style="vertical-align:middle;">${Quality.qualityStrings[qtype]}</label>
+                                            </td>
+                                            <td>
+                                                <input type="number" value="${qsize}" name="${qtype}" id="${qtype}"
+                                                       min="1"> MB
+                                            </td>
+                                        </tr>
+                                    % endif
                                 % endfor
                             </table>
                             <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>

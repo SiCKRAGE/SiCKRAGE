@@ -1,6 +1,7 @@
 # Changelog
 
-- * b252780 - 2017-04-14: Fixed issue with quality chooser template 
+- * e43465f - 2017-04-14: Removed unrequires loop continues in templates 
+- * d0aebf1 - 2017-04-14: Fixed issue with quality chooser template 
 - * eba7fc2 - 2017-04-14: Fixed issue with quality chooser template 
 - * 0ab30ee - 2017-04-14: Fixed issue with quality chooser template 
 - * 2f24fcc - 2017-04-14: Appended srWebRoot variable to ShowImage refs in templates 
