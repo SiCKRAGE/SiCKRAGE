@@ -1,5 +1,9 @@
 <%!
     import sickrage
+    
+    web_root = ''
+    if sickrage.srCore.srConfig.WEB_ROOT:
+        web_root = sickrage.srCore.srConfig.WEB_ROOT
 %>
 <!DOCTYPE html>
 <html>
@@ -16,12 +20,6 @@
     % elif srThemeName == "light":
         <meta name="theme-color" content="#333333">
     % endif
-
-    <%
-        web_root = '/'
-        if sickrage.srCore.srConfig.WEB_ROOT:
-            web_root = sickrage.srCore.srConfig.WEB_ROOT
-    %>
 
 
     <meta name="msapplication-TileColor" content="#FFFFFF">
@@ -45,6 +43,7 @@
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.srConfig.SORT_ARTICLE}">
     <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.srConfig.TIME_PRESET}">
     <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.srConfig.TRIM_ZERO}">
+    <meta data-var="sickrage.WEB_ROOT" data-content="${web_root}">
     <%block name="metas" />
 
     <link rel="shortcut icon" href="${web_root}/images/ico/favicon.ico">

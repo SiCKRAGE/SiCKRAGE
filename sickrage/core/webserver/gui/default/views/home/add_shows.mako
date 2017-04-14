@@ -8,7 +8,7 @@
 
 
     <div id="addShowPortal">
-        <a href="/home/addShows/newShow/" id="btnNewShow" class="btn btn-large">
+        <a href="${parent.web_root()}/home/addShows/newShow/" id="btnNewShow" class="btn btn-large">
             <div class="button">
                 <div class="icon-addnewshow"></div>
             </div>
@@ -21,7 +21,7 @@
 
         <br><br>
         % if sickrage.srCore.srConfig.USE_TRAKT == True:
-            <a href="/home/addShows/trendingShows/" id="btnNewShow" class="btn btn-large">
+            <a href="${parent.web_root()}/home/addShows/trendingShows/" id="btnNewShow" class="btn btn-large">
                 <div class="button">
                     <div class="icon-addtrendingshow"></div>
                 </div>
@@ -34,7 +34,7 @@
 
             <br><br>
 
-            <a href="/home/addShows/recommendedShows/" id="btnNewShow" class="btn btn-large">
+            <a href="${parent.web_root()}/home/addShows/recommendedShows/" id="btnNewShow" class="btn btn-large">
                 <div class="button">
                     <div class="icon-addrecommendedshow"></div>
                 </div>
@@ -48,7 +48,7 @@
             <br><br>
         % endif
 
-        <a href="/home/addShows/popularShows/" id="btnNewShow" class="btn btn-large">
+        <a href="${parent.web_root()}/home/addShows/popularShows/" id="btnNewShow" class="btn btn-large">
             <div class="button">
                 <div class="icon-addtrendingshow"></div>
             </div>
@@ -61,7 +61,7 @@
 
         <br><br>
 
-        <a href="/home/addShows/existingShows/" id="btnExistingShow" class="btn btn-large">
+        <a href="${parent.web_root()}/home/addShows/existingShows/" id="btnExistingShow" class="btn btn-large">
             <div class="button">
                 <div class="icon-addexistingshow"></div>
             </div>

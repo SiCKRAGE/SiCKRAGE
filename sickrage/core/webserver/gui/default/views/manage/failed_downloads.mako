@@ -52,11 +52,11 @@
                     <td align="center">
                         <% provider = [x for x in sickrage.srCore.providersDict.all() if x.name == hItem["provider"]] %>
                         % if provider is not None:
-                            <img src="/images/providers/${provider.imageName}" width="16" height="16"
+                            <img src="${parent.web_root()}/images/providers/${provider.imageName}" width="16" height="16"
                                  alt="${provider.name}"
                                  title="${provider.name}"/>
                         % else:
-                            <img src="/images/providers/missing.png" width="16" height="16" alt="missing provider"
+                            <img src="${parent.web_root()}/images/providers/missing.png" width="16" height="16" alt="missing provider"
                                  title="missing provider"/>
                         % endif
                     </td>

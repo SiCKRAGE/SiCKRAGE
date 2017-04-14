@@ -47,7 +47,7 @@
 
     <br>
     <input type="submit" value="Rename Selected" class="btn btn-success"/>
-    <a href="/home/displayShow?show=${show.indexerid}" class="btn btn-danger">Cancel Rename</a>
+    <a href="${parent.web_root()}/home/displayShow?show=${show.indexerid}" class="btn btn-danger">Cancel Rename</a>
 
     <table id="testRenameTable" class="sickrageTable" cellspacing="1" border="0" cellpadding="0">
 
@@ -101,5 +101,5 @@
         % endfor
     </table><br>
     <input type="submit" value="Rename Selected" class="btn btn-success"/>
-    <a href="/home/displayShow?show=${show.indexerid}" class="btn btn-danger">Cancel Rename</a>
+    <a href="${parent.web_root()}/home/displayShow?show=${show.indexerid}" class="btn btn-danger">Cancel Rename</a>
 </%block>

@@ -21,7 +21,7 @@
 
                         <div class="component-group-desc">
                             <h3>Search Settings</h3>
-                            <p>How to manage searching with <a href="/config/providers">providers</a>.</p>
+                            <p>How to manage searching with <a href="${parent.web_root()}/config/providers">providers</a>.</p>
                         </div>
 
                         <fieldset class="component-group-list">
