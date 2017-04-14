@@ -9,17 +9,17 @@
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no">
 
-    % if srThemeName == "dark":
+    % if sickrage.srCore.srConfig.THEME_NAME == "dark":
         <meta name="theme-color" content="#15528F">
-    % elif srThemeName == "light":
+    % elif sickrage.srCore.srConfig.THEME_NAME == "light":
         <meta name="theme-color" content="#333333">
     % endif
 
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-TileImage" content="${srWebRoot}/images/ico/favicon-144.png">
-    <meta name="msapplication-config" content="${srWebRoot}/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="${srWebRoot}/images/ico/ms-icon-144x144.png">
+    <meta name="msapplication-config" content="${srWebRoot}/images/ico/browserconfig.xml">
 
     <meta data-var="srPID" data-content="${srPID}">
     <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}">
@@ -41,21 +41,20 @@
     <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.srConfig.TRIM_ZERO}">
     <%block name="metas" />
 
-    <link rel="shortcut icon" href="${srWebRoot}/images/ico/favicon.ico">
-    <link rel="icon" sizes="16x16 32x32 64x64" href="${srWebRoot}/images/ico/favicon.ico">
-    <link rel="icon" type="image/png" sizes="196x196" href="${srWebRoot}/images/ico/favicon-196.png">
-    <link rel="icon" type="image/png" sizes="160x160" href="${srWebRoot}/images/ico/favicon-160.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="${srWebRoot}/images/ico/favicon-96.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="${srWebRoot}/images/ico/favicon-64.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="${srWebRoot}/images/ico/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="${srWebRoot}/images/ico/favicon-16.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="${srWebRoot}/images/ico/favicon-152.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="${srWebRoot}/images/ico/favicon-144.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="${srWebRoot}/images/ico/favicon-120.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="${srWebRoot}/images/ico/favicon-114.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="${srWebRoot}/images/ico/favicon-76.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="${srWebRoot}/images/ico/favicon-72.png">
-    <link rel="apple-touch-icon" href="${srWebRoot}/images/ico/favicon-57.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="${srWebRoot}/images/ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="${srWebRoot}/images/ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="${srWebRoot}/images/ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="${srWebRoot}/images/ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="${srWebRoot}/images/ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="${srWebRoot}/images/ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="${srWebRoot}/images/ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="${srWebRoot}/images/ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="${srWebRoot}/images/ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="${srWebRoot}/images/ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="${srWebRoot}/images/ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="${srWebRoot}/images/ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="${srWebRoot}/images/ico/favicon-16x16.png">
+    <link rel="manifest" href="${srWebRoot}/images/ico/manifest.json">
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css?${srPID}"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css?${srPID}"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/${srThemeName}.css?${srPID}"/>
