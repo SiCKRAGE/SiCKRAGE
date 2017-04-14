@@ -162,6 +162,7 @@ class BaseHandler(RequestHandler):
             'srHandleReverseProxy': sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
             'srThemeName': sickrage.srCore.srConfig.THEME_NAME,
             'srDefaultPage': sickrage.srCore.srConfig.DEFAULT_PAGE,
+            'srWebRoot': sickrage.srCore.srConfig.WEB_ROOT,
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,

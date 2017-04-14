@@ -43,11 +43,11 @@ Jump to Show
     % endif
     <tr class="seasonheader" id="show-${curShow.indexerid}">
         <td colspan="3" class="align-left">
-            <br><h2><a href="/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></h2>
+            <br><h2><a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></h2>
             <div class="pull-right">
                 <span class="listing-key wanted">Wanted: <b>${showCounts[curShow.indexerid][Overview.WANTED]}</b></span>
                 <span class="listing-key qual">Low Quality: <b>${showCounts[curShow.indexerid][Overview.QUAL]}</b></span>
-                <a class="btn btn-inline forceBacklog" href="/manage/backlogShow?indexer_id=${curShow.indexerid}"><i class="icon-play-circle icon-white"></i> Force Backlog</a>
+                <a class="btn btn-inline forceBacklog" href="${srWebRoot}/manage/backlogShow?indexer_id=${curShow.indexerid}"><i class="icon-play-circle icon-white"></i> Force Backlog</a>
             </div>
         </td>
     </tr>

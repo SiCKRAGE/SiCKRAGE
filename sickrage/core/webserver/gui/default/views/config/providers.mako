@@ -70,7 +70,7 @@
 
                             % if not sickrage.srCore.srConfig.USE_NZBS or not sickrage.srCore.srConfig.USE_TORRENTS:
                                 <blockquote style="margin: 20px 0;">NZB/Torrent providers can be toggled in <b><a
-                                        href="/config/search">Search Clients</a></b></blockquote>
+                                        href="${srWebRoot}/config/search">Search Clients</a></b></blockquote>
                             % else:
                                 <br>
                             % endif
@@ -93,7 +93,7 @@
                                             <a href="${anon_url(providerObj.urls['base_url'])}" class="imgLink"
                                                rel="noreferrer"
                                                onclick="window.open(this.href, '_blank'); return false;"><img
-                                                    src="/images/providers/${providerObj.imageName}"
+                                                    src="${srWebRoot}/images/providers/${providerObj.imageName}"
                                                     alt="${providerObj.name}" title="${providerObj.name}" width="16"
                                                     height="16" style="vertical-align:middle;"/></a>
                                             <label for="enable_${providerID}"

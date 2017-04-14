@@ -285,7 +285,7 @@
                                         <input type="text" name="naming_pattern" id="naming_pattern"
                                                value="${sickrage.srCore.srConfig.NAMING_PATTERN}"
                                                class="form-control input-sm input350"/>
-                                        <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend" class="legend" class="legend" />
+                                        <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend" class="legend" class="legend" />
                                     </span>
                                 </label>
                                 <label class="nocheck">
@@ -513,7 +513,7 @@
                                             <input type="text" name="naming_abd_pattern" id="naming_abd_pattern"
                                                    value="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}"
                                                    class="form-control input-sm input350"/>
-                                            <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_abd_key" title="Toggle ABD Naming Legend" class="legend" />
+                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_abd_key" title="Toggle ABD Naming Legend" class="legend" />
                                         </span>
                                     </label>
                                 </div>
@@ -695,7 +695,7 @@
                                             <input type="text" name="naming_sports_pattern" id="naming_sports_pattern"
                                                    value="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}"
                                                    class="form-control input-sm input350"/>
-                                            <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_sports_key" title="Toggle Sports Naming Legend" class="legend" />
+                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_sports_key" title="Toggle Sports Naming Legend" class="legend" />
                                         </span>
                                     </label>
                                 </div>
@@ -878,7 +878,7 @@
                                             <input type="text" name="naming_anime_pattern" id="naming_anime_pattern"
                                                    value="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}"
                                                    class="form-control input-sm input350"/>
-                                            <img src="/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_anime_key" title="Toggle Anime Naming Legend" class="legend" />
+                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_anime_key" title="Toggle Anime Naming Legend" class="legend" />
                                         </span>
                                     </label>
                                 </div>

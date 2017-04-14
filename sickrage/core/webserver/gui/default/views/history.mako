@@ -32,10 +32,10 @@
         <span class="badge" style="background-color: #333333;"> Layout:
             <select name="HistoryLayout" class="form-control form-control-inline input-sm"
                     onchange="location = this.options[this.selectedIndex].value;">
-                <option value="/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
+                <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
                     Compact
                 </option>
-                <option value="/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
+                <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
                     Detailed
                 </option>
             </select>
@@ -72,14 +72,14 @@
                             <time datetime="${isoDate}" class="date">${airDate}</time>
                         </td>
                         <td class="tvShow" width="35%"><a
-                                href="/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">${hItem["show_name"]}
+                                href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">${hItem["show_name"]}
                             - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}</a>
                         </td>
                         <td align="center" ${('', 'class="subtitles_column"')[curStatus == SUBTITLED]}>
                             % if curStatus == SUBTITLED:
                                 <img width="16" height="11" style="vertical-align:middle;"
-                                     src="/images/subtitles/flags/${hItem['resource']}.png"
-                                     onError="this.onerror=null;this.src='/images/flags/unknown.png';">
+                                     src="${srWebRoot}/images/subtitles/flags/${hItem['resource']}.png"
+                                     onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';">
                             % endif
                             <span style="cursor: help; vertical-align:middle;"
                                   title="${os.path.basename(hItem['resource'])}">${statusStrings[curStatus]}</span>
@@ -94,14 +94,14 @@
                                     % if curStatus in [SNATCHED, FAILED]:
                                         % if hItem["provider"].lower() in sickrage.srCore.providersDict.all():
                                             <% provider = sickrage.srCore.providersDict.all()[hItem["provider"].lower()] %>
-                                            <img src="/images/providers/${provider.imageName}" width="16" height="16"
+                                            <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                                  style="vertical-align:middle;"/> <span
                                                 style="vertical-align:middle;">${provider.name}</span>
                                         % else:
                                             <span style="vertical-align:middle;">${hItem["provider"]}</span>
                                         % endif
                                     % else:
-                                        <img src="/images/subtitles/${hItem['provider']}.png" width="16" height="16"
+                                        <img src="${srWebRoot}/images/subtitles/${hItem['provider']}.png" width="16" height="16"
                                              style="vertical-align:middle;"/> <span
                                             style="vertical-align:middle;">${hItem["provider"].capitalize()}</span>
                                     % endif
@@ -146,7 +146,7 @@
                         </td>
                         <td class="tvShow" width="25%">
                             <span><a
-                                    href="/home/displayShow?show=${hItem["show_id"]}#season-${hItem["season"]}">${hItem["show_name"]}
+                                    href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#season-${hItem["season"]}">${hItem["show_name"]}
                                 - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])}${('', ' <span class="quality Proper">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}</a></span>
                         </td>
                         <td align="center" data-provider="${str(sorted(hItem["actions"])[0]["provider"])}">
@@ -155,11 +155,11 @@
                                 % if curStatus in [SNATCHED, FAILED]:
                                     % if action["provider"].lower() in sickrage.srCore.providersDict.all():
                                     <% provider = sickrage.srCore.providersDict.all()[action["provider"].lower()] %>
-                                        <img src="/images/providers/${provider.imageName}" width="16" height="16"
+                                        <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                              style="vertical-align:middle;cursor: help;" alt="${provider.name}"
                                              title="${provider.name}: ${os.path.basename(action["resource"])}"/>
                                     % else:
-                                        <img src="/images/providers/missing.png" width="16" height="16"
+                                        <img src="${srWebRoot}/images/providers/missing.png" width="16" height="16"
                                              style="vertical-align:middle;" alt="missing provider"
                                              title="missing provider"/>
                                     % endif
@@ -185,13 +185,13 @@
                                 % for action in sorted(hItem["actions"]):
                                     <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                                     % if curStatus == SUBTITLED:
-                                        <img src="/images/subtitles/${action['provider']}.png" width="16" height="16"
+                                        <img src="${srWebRoot}/images/subtitles/${action['provider']}.png" width="16" height="16"
                                              style="vertical-align:middle;" alt="${action["provider"]}"
                                              title="${action["provider"].capitalize()}: ${os.path.basename(action["resource"])}"/>
                                         <span style="vertical-align:middle;"> / </span>
                                         <img width="16" height="11" style="vertical-align:middle;!important;"
-                                             src="/images/subtitles/flags/${action['resource']}.png"
-                                             onError="this.onerror=null;this.src='/images/flags/unknown.png';">
+                                             src="${srWebRoot}/images/subtitles/flags/${action['resource']}.png"
+                                             onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';">
                                         &nbsp;
                                     % endif
                                 % endfor

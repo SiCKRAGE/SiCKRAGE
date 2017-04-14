@@ -19,7 +19,7 @@
 
                         <div class="tab-pane-desc">
                             <h3>Search Settings</h3>
-                            <p>How to manage searching with <a href="/config/providers">providers</a>.</p>
+                            <p>How to manage searching with <a href="${srWebRoot}/config/providers">providers</a>.</p>
                         </div>
 
                         <fieldset class="tab-pane-list">

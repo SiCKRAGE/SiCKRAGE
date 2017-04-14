@@ -1,6 +1,7 @@
 # Changelog
 
-- * 84bafb9 - 2017-04-13: Fixed CSS for bootstrap tabs 
+- * 5d0de31 - 2017-04-13: Fixed issues with web root variable and reverse proxies 
+- * 550018e - 2017-04-13: Fixed CSS for bootstrap tabs 
 - * 602ea34 - 2017-04-13: More misc CSS code changes and cleanups 
 - * 724f848 - 2017-04-12: Cleaned up more CSS code Added in more responsive code Removed JS tabs code and replaced it with bootstrap HTML code 
 - * 07684e3 - 2017-04-12: Cleaned up more CSS code Made main menu and sub menus responsive Fixed some JS code issues 
