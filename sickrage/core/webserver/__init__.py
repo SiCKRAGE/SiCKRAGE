@@ -136,7 +136,7 @@ class srWebServer(object):
                  {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images/ico/favicon.ico')}),
 
                 # images
-                (r'%s.*?/images/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticImageHandler,
+                (r'%s/images/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticImageHandler,
                  {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images')}),
 
                 # css
