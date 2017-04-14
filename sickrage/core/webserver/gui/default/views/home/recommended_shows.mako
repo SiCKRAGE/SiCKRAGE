@@ -1,7 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.common import Quality
 %>
 
 <%block name="content">
@@ -14,9 +13,6 @@
                 <%include file="../includes/root_dirs.mako"/>
         </div>
         <div id="tabs-2" class="existingtabs">
-            <%
-                qualities = Quality.splitQuality(sickrage.srCore.srConfig.QUALITY_DEFAULT)
-            %>
             <%include file="../includes/add_show_options.mako"/>
         </div>
         <br>

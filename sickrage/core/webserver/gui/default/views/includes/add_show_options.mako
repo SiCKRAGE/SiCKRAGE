@@ -79,9 +79,6 @@
     </label>
 </div>
 
-<%
-    qualities = Quality.splitQuality(sickrage.srCore.srConfig.QUALITY_DEFAULT)
-%>
 <%include file="quality_chooser.mako"/>
 
 <br/>
