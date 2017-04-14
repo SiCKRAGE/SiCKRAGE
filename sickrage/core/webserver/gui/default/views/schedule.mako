@@ -33,13 +33,13 @@
             <span class="badge" style="background-color: #333333;">Sort By:
         <select name="sort" class="form-control form-control-inline input-sm"
                 onchange="location = this.options[this.selectedIndex].value;">
-            <option value="/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'date']} >
+            <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'date']} >
                 Date
             </option>
-            <option value="/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'network']} >
+            <option value="${srWebRoot}/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'network']} >
                 Network
             </option>
-            <option value="/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'show']} >
+            <option value="${srWebRoot}/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'show']} >
                 Show
             </option>
         </select>
@@ -49,10 +49,10 @@
         <span class="badge" style="background-color: #333333;">View Paused:
         <select name="viewpaused" class="form-control form-control-inline input-sm"
                 onchange="location = this.options[this.selectedIndex].value;">
-            <option value="/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
+            <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                 Hidden
             </option>
-            <option value="/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
+            <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                 Shown
             </option>
         </select>
@@ -61,16 +61,16 @@
         <span class="badge" style="background-color: #333333;">Layout:
         <select name="layout" class="form-control form-control-inline input-sm"
                 onchange="location = this.options[this.selectedIndex].value;">
-            <option value="/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'poster']} >
+            <option value="${srWebRoot}/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'poster']} >
                 Poster
             </option>
-            <option value="/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
+            <option value="${srWebRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
                 Calendar
             </option>
-            <option value="/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'banner']} >
+            <option value="${srWebRoot}/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'banner']} >
                 Banner
             </option>
-            <option value="/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'list']} >
+            <option value="${srWebRoot}/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'list']} >
                 List
             </option>
         </select>
@@ -156,7 +156,7 @@
                         </td>
 
                         <td class="tvShow" nowrap="nowrap"><a
-                                href="/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}</a>
+                                href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}</a>
                             % if int(cur_result['paused']):
                                 <span class="pause">[paused]</span>
                             % endif
@@ -168,10 +168,10 @@
 
                         <td>
                             % if cur_result['description']:
-                                <img alt="" src="/images/info32.png" height="16" width="16" class="plotInfo"
+                                <img alt="" src="${srWebRoot}/images/info32.png" height="16" width="16" class="plotInfo"
                                      id="plot_info_${'%s_%s_%s' % (cur_result['showid'], cur_result['season'], cur_result['episode'])}"/>
                             % else:
-                                <img alt="" src="/images/info32.png" width="16" height="16" class="plotInfoNone"/>
+                                <img alt="" src="${srWebRoot}/images/info32.png" width="16" height="16" class="plotInfoNone"/>
                             % endif
                             ${cur_result['name']}
                         </td>
@@ -195,22 +195,22 @@
                                    title="http://www.imdb.com/title/${cur_result['imdb_id']}"><img alt="[imdb]"
                                                                                                    height="16"
                                                                                                    width="16"
-                                                                                                   src="/images/imdb.png"/></a>
+                                                                                                   src="${srWebRoot}/images/imdb.png"/></a>
                             % endif
                             <a href="${anon_url(srIndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
                                rel="noreferrer" onclick="window.open(this.href, '_blank'); return false"
                                title="${srIndexerApi(cur_indexer).config['show_url']}${cur_result['showid']}">
                                 <img alt="${srIndexerApi(cur_indexer).name}" height="16" width="16"
-                                     src="/images/${srIndexerApi(cur_indexer).config['icon']}"/>
+                                     src="${srWebRoot}/images/${srIndexerApi(cur_indexer).config['icon']}"/>
                             </a>
                         </td>
 
                         <td align="center">
-                            <a href="/home/searchEpisode?show=${cur_result['showid']}&amp;season=${cur_result['season']}&amp;episode=${cur_result['episode']}"
+                            <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&amp;season=${cur_result['season']}&amp;episode=${cur_result['episode']}"
                                title="Manual Search"
                                id="forceUpdate-${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
                                class="forceUpdate epSearch">
-                                <img alt="[search]" height="16" width="16" src="/images/search16.png"
+                                <img alt="[search]" height="16" width="16" src="${srWebRoot}/images/search16.png"
                                      id="forceUpdateImage-${cur_result['showid']}"/>
                             </a>
                         </td>
@@ -338,7 +338,7 @@
                 <table width="100%" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                     <th ${('class="nobg"', 'rowspan="2"')['banner' == layout]} valign="top">
-                        <a href="/home/displayShow?show=${cur_result['showid']}">
+                        <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
                             <img alt="" class="${('posterThumb', 'bannerThumb')[layout == 'banner']}"
                                  src="${showImage(cur_result['showid'], (layout, 'poster_thumb')[layout == 'poster'])}"/>
                         </a>
@@ -350,7 +350,7 @@
                     <td class="next_episode">
                         <div class="clearfix">
                     <span class="tvshowTitle">
-                        <a href="/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}
+                        <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}
                             ${('', '<span class="pause">[paused]</span>')[int(cur_result['paused'])]}
                         </a>
                     </span>
@@ -361,18 +361,18 @@
                                onclick="window.open(this.href, '_blank'); return false"
                                title="http://www.imdb.com/title/${cur_result['imdb_id']}"><img alt="[imdb]" height="16"
                                                                                                width="16"
-                                                                                               src="/images/imdb.png"/></a>
+                                                                                               src="${srWebRoot}/images/imdb.png"/></a>
                         % endif
                                 <a href="${anon_url(srIndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
                                    rel="noreferrer" onclick="window.open(this.href, '_blank'); return false"
                                    title="${srIndexerApi(cur_indexer).config['show_url']}"><img
                                         alt="${srIndexerApi(cur_indexer).name}" height="16" width="16"
-                                        src="/images/${srIndexerApi(cur_indexer).config['icon']}"/></a>
+                                        src="${srWebRoot}/images/${srIndexerApi(cur_indexer).config['icon']}"/></a>
                         <span><a
-                                href="/home/searchEpisode?show=${cur_result['showid']}&amp;season=${cur_result['season']}&amp;episode=${cur_result['episode']}"
+                                href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&amp;season=${cur_result['season']}&amp;episode=${cur_result['episode']}"
                                 title="Manual Search" id="forceUpdate-${cur_result['showid']}"
                                 class="epSearch forceUpdate"><img alt="[search]" height="16" width="16"
-                                                                  src="/images/search16.png"
+                                                                  src="${srWebRoot}/images/search16.png"
                                                                   id="forceUpdateImage-${cur_result['showid']}"/></a></span>
                     </span>
                         </div>
@@ -397,13 +397,13 @@
                             <div>
                                 % if cur_result['description']:
                                     <span class="title" style="vertical-align:middle;">Plot:</span>
-                                    <img class="ep_summaryTrigger" src="/images/plus.png" height="16" width="16" alt=""
+                                    <img class="ep_summaryTrigger" src="${srWebRoot}/images/plus.png" height="16" width="16" alt=""
                                          title="Toggle Summary"/>
                                     <div class="ep_summary">${cur_result['description']}</div>
                                 % else:
                                     <span class="title ep_summaryTriggerNone"
                                           style="vertical-align:middle;">Plot:</span>
-                                    <img class="ep_summaryTriggerNone" src="/images/plus.png" height="16" width="16"
+                                    <img class="ep_summaryTriggerNone" src="${srWebRoot}/images/plus.png" height="16" width="16"
                                          alt=""/>
                                 % endif
                             </div>
@@ -461,7 +461,7 @@
                                     <td class="calendarShow">
                                         <div class="poster">
                                             <a title="${cur_result['show_name']}"
-                                               href="/home/displayShow?show=${cur_result['showid']}"><img alt=""
+                                               href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}"><img alt=""
                                                                                                           src="${showImage(cur_result['showid'], 'poster_thumb')}"/></a>
                                         </div>
                                         <div class="text">

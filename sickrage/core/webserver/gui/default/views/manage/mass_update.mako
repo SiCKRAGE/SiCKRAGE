@@ -59,29 +59,29 @@
                             <input type="checkbox" class="showCheck"
                                    id="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
                         </td>
-                        <td class="tvShow"><a href="/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
+                        <td class="tvShow"><a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
                         </td>
                         <td align="center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_sports)]}"
+                                src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_sports)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_scene)]}"
+                                src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_scene)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_anime)]}"
+                                src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_anime)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not bool(curShow.flatten_folders)]}"
+                                src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not bool(curShow.flatten_folders)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.archive_firstmatch)]}"
+                                src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.archive_firstmatch)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.paused)]}"
+                                src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.paused)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.subtitles)]}"
+                                src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.subtitles)]}"
                                 width="16" height="16"/></td>
                         <td align="center">${statusStrings[curShow.default_ep_status]}</td>
                         <td align="center">${curShow.status}</td>

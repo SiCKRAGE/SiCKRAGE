@@ -1,6 +1,21 @@
 # Changelog
 
-- * 5bc5130 - 2017-04-04: Moved custom libs folder and added in code to add to python libs path 
+- * b04ff27 - 2017-04-13: Fixed issues with web root variable and reverse proxies 
+- * 8ab1894 - 2017-04-09: Developer mode disables scheduled jobs Login page is now responsive 
+- * 618ec57 - 2017-04-08: Show updates are now executed every 24hrs, misc code cleanup 
+- * ef6fc73 - 2017-04-07: Misc code cleanup 
+- * c77b996 - 2017-04-07: Migrated from os.rmdir to shutil.rmtree 
+- * 8fc50ca - 2017-04-06: v9.0.2 
+- * 417d5e2 - 2017-04-05: Fixed issues with new subtitles code 
+- * d2d7244 - 2017-04-04: Misc code reference cleanups 
+- * e4d8300 - 2017-04-04: Reformatted and rearranged code 
+- * 40fd11e - 2017-04-04: Optimized Imports 
+- * 17f64bc - 2017-04-04: Cleaned up subtitles code 
+- * 13dea70 - 2017-04-04: Cleaned up home and scheduler views 
+- * ae89023 - 2017-04-04: Fixed issue with parsing show airing info from thetvdb api 
+- * 0e3cda5 - 2017-04-04: Fixed issue with parsing show airing info from thetvdb api 
+- * 4658201 - 2017-04-04: Migrated old-style notifiers code to new-style with generators 
+- * cf5506f - 2017-04-04: Moved custom libs folder and added in code to add to python libs path 
 - * dbafd0b - 2017-04-03: Misc code updates and cleanups 
 - * 9ac60e3 - 2017-04-03: Updated JS and CSS code 
 - * 40ddccc - 2017-04-03: Updated subtitles downloader 

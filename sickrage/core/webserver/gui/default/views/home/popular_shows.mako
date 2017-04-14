@@ -24,7 +24,7 @@
                     <tr>
                         <td class="popularShow">
                             <div class="left">
-                                <img class="coverImage" src="/cache/${cur_result['image_path']}"/>
+                                <img class="coverImage" src="${srWebRoot}/cache/${cur_result['image_path']}"/>
                             </div>
                             <div class="right">
                                 <h3>${cur_result['name']}</h3>
@@ -36,7 +36,7 @@
                                 </span>&nbsp;&nbsp;|&nbsp;&nbsp;
                                 % if cur_result['imdb_tt'] not in imdb_tt:
                                     <span class="imdb_sickrage_search">
-                                        <a href="/home/addShows/newShow/?search_string=${cur_result['name']}">Add
+                                        <a href="${srWebRoot}/home/addShows/newShow/?search_string=${cur_result['name']}">Add
                                             Show</a>
                                     </span>
                                 % else:

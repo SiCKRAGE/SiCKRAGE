@@ -16,8 +16,8 @@
                 ${('', 'Paused:')[bool(backlogPaused)]}<span style="color: green; ">Currently running</span><br/>
                 % endif
             </h4>
-            <a class="btn" href="/manage/manageSearches/forceBacklog"><i class="icon-exclamation-sign"></i> Force</a>
-            <a class="btn" href="/manage/manageSearches/pauseBacklog?paused=${('1', '0')[bool(backlogPaused)]}"><i
+            <a class="btn" href="${srWebRoot}/manage/manageSearches/forceBacklog"><i class="icon-exclamation-sign"></i> Force</a>
+            <a class="btn" href="${srWebRoot}/manage/manageSearches/pauseBacklog?paused=${('1', '0')[bool(backlogPaused)]}"><i
                     class="icon-${('paused', 'play')[bool(backlogPaused)]}"></i> ${('Pause', 'Unpause')[bool(backlogPaused)]}
             </a>
             <br/>
@@ -28,7 +28,7 @@
                 Search: ${('<span style="color: red; ">Not in progress</span>', '<span style="color: green; ">In Progress</span>')[bool(dailySearchStatus)]}
                 <br/>
             </h4>
-            <a class="btn" href="/manage/manageSearches/forceSearch"><i class="icon-exclamation-sign"></i> Force</a>
+            <a class="btn" href="${srWebRoot}/manage/manageSearches/forceSearch"><i class="icon-exclamation-sign"></i> Force</a>
             <br/>
             <br/>
 
@@ -42,7 +42,7 @@
                 % endif
             </h4>
             <a class="btn ${('disabled', '')[bool(sickrage.srCore.srConfig.DOWNLOAD_PROPERS)]}"
-               href="/manage/manageSearches/forceFindPropers"><i class="icon-exclamation-sign"></i> Force
+               href="${srWebRoot}/manage/manageSearches/forceFindPropers"><i class="icon-exclamation-sign"></i> Force
             </a>
             <br/>
             <br/>
