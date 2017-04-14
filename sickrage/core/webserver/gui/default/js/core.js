@@ -2190,7 +2190,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
-                    $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.getMeta('web_root') + '/images/loading32.gif" height="32" width="32" /> loading folders...');
+                    $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.web_root + '/images/loading32.gif" height="32" width="32" /> loading folders...');
                     $.get(SICKRAGE.web_root + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
                         $("#addRootDirTable").tablesorter({
