@@ -3,23 +3,24 @@
     ========================================================================== */
 .nav-tabs {
   display: block;
-  width: 960px;
-  padding: 5px 5px 0 5px;
   margin: 0 auto;
-  clear: both;
-  text-align: left; }
+  border: none; }
+
+.nav-tabs > li > a {
+  background-color: #333;
+  color: #ddd; }
 
 .tab-content {
   display: block;
-  width: 960px;
-  padding: 5px 5px 0 5px;
   margin: 0 auto;
   clear: both;
-  text-align: left; }
+  text-align: left;
+  border: none;
+  border-radius: 4px;
+  background-color: #333; }
 
 .tab-pane {
   padding: 15px 15px 25px;
-  border-bottom: 1px dotted #ccc;
   min-height: 200px; }
 
 .tab-pane-desc {

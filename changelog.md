@@ -1,5 +1,6 @@
 # Changelog
 
+- * d4a83b9 - 2017-04-14: Performed grunt tasks 
 - * 5e69c16 - 2017-04-14: Fixed JS misc code issues Released v9.0.5 
 - * 1aecdce - 2017-04-14: Released v9.0.4 
 - * 1e68c51 - 2017-04-14: Updated JS core to reflect new webroot changes 
