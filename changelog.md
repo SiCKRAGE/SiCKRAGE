@@ -1,6 +1,7 @@
 # Changelog
 
-- * ec8aa9d - 2017-04-14: Added next episode air date/time updates to daily searcher routine 
+- * cec73b7 - 2017-04-14: Updated JS core to reflect new webroot changes 
+- * 8b69555 - 2017-04-14: Added next episode air date/time updates to daily searcher routine 
 - * 5c1022e - 2017-04-14: Released v9.0.3 
 - * 5d0de31 - 2017-04-13: Fixed issues with web root variable and reverse proxies 
 - * 8ab1894 - 2017-04-09: Developer mode disables scheduled jobs Login page is now responsive 
