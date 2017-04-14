@@ -1,6 +1,7 @@
 # Changelog
 
-- * 695e37a - 2017-04-14: Removed unrequires loop continues in templates 
+- * 32a0e46 - 2017-04-14: Removed unrequires loop continues in templates 
+- * 19fe437 - 2017-04-14: Removed unrequires loop continues in templates 
 - * 46d5408 - 2017-04-14: Removed unrequires loop continues in templates 
 - * 73e78d3 - 2017-04-14: Removed unrequires loop continues in templates 
 - * b177032 - 2017-04-14: Misc ShowImage ref fixes 

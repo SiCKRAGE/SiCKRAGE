@@ -251,25 +251,23 @@
                 % if sickrage.srCore.SHOWQUEUE.loadingShowList:
                     <tbody class="tablesorter-infoOnly">
                         % for curLoadingShow in sickrage.srCore.SHOWQUEUE.loadingShowList:
-                            % if curLoadingShow.show is not None and curLoadingShow.show in sickrage.srCore.SHOWLIST:
-                                continue
+                            % if not curLoadingShow.show or curLoadingShow.show not in sickrage.srCore.SHOWLIST:
+                                <tr>
+                                    <td align="center">(loading)</td>
+                                    <td></td>
+                                    <td>
+                                        % if curLoadingShow.show is None:
+                                            <span title="">Loading... (${curLoadingShow.show_name})</span>
+                                        % else:
+                                            <a data-fancybox href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
+                                        % endif
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                             % endif
-
-                            <tr>
-                                <td align="center">(loading)</td>
-                                <td></td>
-                                <td>
-                                    % if curLoadingShow.show is None:
-                                        <span title="">Loading... (${curLoadingShow.show_name})</span>
-                                    % else:
-                                        <a data-fancybox href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
-                                    % endif
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
                         % endfor
                     </tbody>
                 % endif
