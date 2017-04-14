@@ -2,7 +2,7 @@ jQuery(document).ready(function ($) {
     // SiCKRAGE Core Namespace Object
     var SICKRAGE = {
         check_notifications: function () {
-            var message_url = '/ui/get_messages';
+            var message_url = SICKRAGE.web_root + '/ui/get_messages';
             if ('visible' === document.visibilityState) {
                 $.getJSON(message_url, function (data) {
                     $.each(data, function (name, data) {
@@ -73,6 +73,7 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.srPID = SICKRAGE.getMeta('srPID');
                 SICKRAGE.srDefaultPage = SICKRAGE.getMeta('srDefaultPage');
                 SICKRAGE.themeSpinner = SICKRAGE.getMeta('themeSpinner');
+                SICKRAGE.web_root = SICKRAGE.getMeta('web_root');
                 SICKRAGE.loading = '<img src="/images/loading16' + SICKRAGE.themeSpinner + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
@@ -2189,8 +2190,8 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
-                    $('#tableDiv').html('<img id="searchingAnim" src="/images/loading32.gif" height="32" width="32" /> loading folders...');
-                    $.get('/home/addShows/massAddTable/', url, function (data) {
+                    $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.getMeta('web_root') + '/images/loading32.gif" height="32" width="32" /> loading folders...');
+                    $.get(SICKRAGE.web_root + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
                         $("#addRootDirTable").tablesorter({
                             sortList: [[1, 0]],
@@ -2272,7 +2273,7 @@ jQuery(document).ready(function ($) {
                 },
 
                 loadContent: function (path, loadingTxt, errorTxt) {
-                    $(this).html('<img id="searchingAnim" src="/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="32" width="32" />&nbsp;' + loadingTxt);
+                    $(this).html('<img id="searchingAnim" src="' + SICKRAGE.web_root + '/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="32" width="32" />&nbsp;' + loadingTxt);
                     $(this).load(path + ' #container', function (response, status) {
                         if (status === "error") {
                             $(this).empty().html(errorTxt);
@@ -2348,7 +2349,7 @@ jQuery(document).ready(function ($) {
                 },
 
                 loadContent: function (path, loadingTxt, errorTxt) {
-                    $(this).html('<img id="searchingAnim" src="/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="32" width="32" />&nbsp;' + loadingTxt);
+                    $(this).html('<img id="searchingAnim" src="' + SICKRAGE.web_root + '/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="32" width="32" />&nbsp;' + loadingTxt);
                     $(this).load(path + ' #container', function (response, status) {
                         if (status === "error") {
                             $(this).empty().html(errorTxt);
@@ -2502,7 +2503,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     var searchingFor = '<b>' + $('#nameToSearch').val().trim() + '</b> on ' + $('#providedIndexer option:selected').text() + '<br/>';
-                    $('#messages').empty().html('<img id="searchingAnim" src="/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="24" width="24" /> searching for ' + searchingFor);
+                    $('#messages').empty().html('<img id="searchingAnim" src="' + SICKRAGE.web_root + '/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="24" width="24" /> searching for ' + searchingFor);
 
                     $.ajax({
                         url: '/home/addShows/searchIndexersForShowName',

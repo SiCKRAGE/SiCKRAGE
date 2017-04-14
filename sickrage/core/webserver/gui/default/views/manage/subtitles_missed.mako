@@ -16,7 +16,7 @@
             <br>
         % endif
 
-            <form action="/manage/subtitleMissed" method="get">
+            <form action="${parent.web_root()}/manage/subtitleMissed" method="get">
                 Manage episodes without <select name="whichSubs" class="form-control form-control-inline input-sm">
                 <option value="all">All</option>
                 <% sub_langs = [sickrage.subtitles.name_from_code(x) for x in sickrage.subtitles.wanted_languages()] %>
@@ -31,7 +31,7 @@
         % else:
             <input type="hidden" id="selectSubLang" name="selectSubLang" value="${whichSubs}"/>
 
-            <form action="/manage/downloadSubtitleMissed" method="post">
+            <form action="${parent.web_root()}/manage/downloadSubtitleMissed" method="post">
                 <h2>Episodes without ${subsLanguage} subtitles.</h2>
                 <br>
                 Download missed subtitles for selected episodes <input class="btn btn-inline" type="submit" value="Go"/>
@@ -46,7 +46,7 @@
                             <th><input type="checkbox" class="allCheck" id="allCheck-${cur_indexer_id}"
                                        name="${cur_indexer_id}-all" checked="checked"/></th>
                             <th colspan="3" style="width: 100%; text-align: left;"><a class="whitelink"
-                                                                                      href="/home/displayShow?show=${cur_indexer_id}">${show_names[cur_indexer_id]}</a>
+                                                                                      href="${parent.web_root()}/home/displayShow?show=${cur_indexer_id}">${show_names[cur_indexer_id]}</a>
                                 (${ep_counts[cur_indexer_id]}) <input type="button" class="pull-right get_more_eps btn"
                                                                       id="${cur_indexer_id}" value="Expand"/></th>
                         </tr>

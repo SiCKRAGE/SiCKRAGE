@@ -16,6 +16,11 @@
     except ImportError:
         has_resource_module = False
 %>
+<%block name="web_root">
+% if sickrage.srCore.srConfig.WEB_ROOT:
+    ${sickrage.srCore.srConfig.WEB_ROOT}
+% endif
+</%block>
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,8 +43,8 @@
     % endif
 
     <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-TileImage" content="/images/ico/favicon-144.png">
-    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="msapplication-TileImage" content="${self.web_root()}/images/ico/favicon-144.png">
+    <meta name="msapplication-config" content="${self.web_root()}/browserconfig.xml">
     <meta data-var="srPID" data-content="${srPID}">
     <meta data-var="srDefaultPage" data-content="${srDefaultPage}">
     <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}">
@@ -58,30 +63,31 @@
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.srConfig.SORT_ARTICLE}">
     <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.srConfig.TIME_PRESET}">
     <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.srConfig.TRIM_ZERO}">
+    <meta data-var="sickrage.WEB_ROOT" data-content="${self.web_root()}">
     <%block name="metas" />
 
-    <link rel="shortcut icon" href="/images/ico/favicon.ico">
-    <link rel="icon" sizes="16x16 32x32 64x64" href="/images/ico/favicon.ico">
-    <link rel="icon" type="image/png" sizes="196x196" href="/images/ico/favicon-196.png">
-    <link rel="icon" type="image/png" sizes="160x160" href="/images/ico/favicon-160.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/ico/favicon-96.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="/images/ico/favicon-64.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/ico/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/ico/favicon-16.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/ico/favicon-152.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/ico/favicon-144.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/ico/favicon-120.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/images/ico/favicon-114.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/ico/favicon-76.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/ico/favicon-72.png">
-    <link rel="apple-touch-icon" sizes="57x57" href="/images/ico/favicon-57.png">
-    <link rel="stylesheet" type="text/css" href="/css/bower.min.css"/>
+    <link rel="shortcut icon" href="${self.web_root()}/images/ico/favicon.ico">
+    <link rel="icon" sizes="16x16 32x32 64x64" href="${self.web_root()}/images/ico/favicon.ico">
+    <link rel="icon" type="image/png" sizes="196x196" href="${self.web_root()}/images/ico/favicon-196.png">
+    <link rel="icon" type="image/png" sizes="160x160" href="${self.web_root()}/images/ico/favicon-160.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="${self.web_root()}/images/ico/favicon-96.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="${self.web_root()}/images/ico/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="${self.web_root()}/images/ico/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="${self.web_root()}/images/ico/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="${self.web_root()}/images/ico/favicon-152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="${self.web_root()}/images/ico/favicon-144.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="${self.web_root()}/images/ico/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="${self.web_root()}/images/ico/favicon-114.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="${self.web_root()}/images/ico/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="${self.web_root()}/images/ico/favicon-72.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="${self.web_root()}/images/ico/favicon-57.png">
+    <link rel="stylesheet" type="text/css" href="${self.web_root()}/css/bower.min.css"/>
     % if sickrage.DEVELOPER:
-        <link rel="stylesheet" type="text/css" href="/css/core.css"/>
+        <link rel="stylesheet" type="text/css" href="${self.web_root()}/css/core.css"/>
     % else:
-        <link rel="stylesheet" type="text/css" href="/css/core.min.css"/>
+        <link rel="stylesheet" type="text/css" href="${self.web_root()}/css/core.min.css"/>
     % endif
-    <link rel="stylesheet" type="text/css" href="/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css"/>
+    <link rel="stylesheet" type="text/css" href="${self.web_root()}/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css"/>
     <%block name="css" />
 
 </head>
@@ -95,9 +101,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/home/" title="SiCKRAGE">
+            <a class="navbar-brand" href="${self.web_root()}/home/" title="SiCKRAGE">
                 <img alt="SiCKRAGE"
-                     src="/images/logo.png"
+                     src="${self.web_root()}/images/logo.png"
                      style="width: 200px;height: 50px;"
                      class="img-responsive pull-left"/>
             </a>
@@ -106,18 +112,18 @@
             <div class="collapse navbar-collapse" id="navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
-                        <a href="/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
+                        <a href="${self.web_root()}/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
                            data-hover="dropdown"><span>Shows</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
-                            <li><a href="/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a></li>
-                            <li><a href="/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
+                            <li><a href="${self.web_root()}/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
+                            <li><a href="${self.web_root()}/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a></li>
+                            <li><a href="${self.web_root()}/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
                                 Post-Processing</a></li>
                             % if sickrage.srCore.srConfig.SHOWS_RECENT:
                                 <li role="separator" class="divider"></li>
                             % for recentShow in sickrage.srCore.srConfig.SHOWS_RECENT:
-                                <li><a href="/home/displayShow/?show=${recentShow['indexerid']}"><i
+                                <li><a href="${self.web_root()}/home/displayShow/?show=${recentShow['indexerid']}"><i
                                         class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a></li>
                             % endfor
                             % endif
@@ -126,39 +132,39 @@
                     </li>
 
                     <li id="NAVmanage" class="navbar-split dropdown${('', ' active')[topmenu == 'manage']}">
-                        <a href="/manage/episodeStatuses/" class="dropdown-toggle" aria-haspopup="true"
+                        <a href="${self.web_root()}/manage/episodeStatuses/" class="dropdown-toggle" aria-haspopup="true"
                            data-toggle="dropdown" data-hover="dropdown">
                             <span>Manage</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
-                            <li><a href="/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog
+                            <li><a href="${self.web_root()}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
+                            <li><a href="${self.web_root()}/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog
                                 Overview</a></li>
-                            <li><a href="/manage/manageSearches/"><i class="menu-icon-manage-searches"></i>&nbsp;Manage
+                            <li><a href="${self.web_root()}/manage/manageSearches/"><i class="menu-icon-manage-searches"></i>&nbsp;Manage
                                 Searches</a></li>
-                            <li><a href="/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode Status
+                            <li><a href="${self.web_root()}/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode Status
                                 Management</a></li>
                             % if sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_SERVER_HOST != "":
-                                <li><a href="/home/updatePLEX/"><i class="menu-icon-backlog-view"></i>&nbsp;Update PLEX</a>
+                                <li><a href="${self.web_root()}/home/updatePLEX/"><i class="menu-icon-backlog-view"></i>&nbsp;Update PLEX</a>
                                 </li>
                             % endif
                             % if sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_HOST != "":
-                                <li><a href="/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update KODI</a></li>
+                                <li><a href="${self.web_root()}/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update KODI</a></li>
                             % endif
                             % if sickrage.srCore.srConfig.USE_EMBY and sickrage.srCore.srConfig.EMBY_HOST != "" and sickrage.srCore.srConfig.EMBY_APIKEY != "":
-                                <li><a href="/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update Emby</a>
+                                <li><a href="${self.web_root()}/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update Emby</a>
                                 </li>
                             % endif
                             % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
-                                <li><a href="/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage
+                                <li><a href="${self.web_root()}/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage
                                     Torrents</a></li>
                             % endif
                             % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-                                <li><a href="/manage/failedDownloads/"><i class="menu-icon-failed-download"></i>&nbsp;Failed
+                                <li><a href="${self.web_root()}/manage/failedDownloads/"><i class="menu-icon-failed-download"></i>&nbsp;Failed
                                     Downloads</a></li>
                             % endif
                             % if sickrage.srCore.srConfig.USE_SUBTITLES:
-                                <li><a href="/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed
+                                <li><a href="${self.web_root()}/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed
                                     Subtitle
                                     Management</a></li>
                             % endif
@@ -167,51 +173,51 @@
                     </li>
 
                     <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
-                        <a href="/schedule/">Schedule</a>
+                        <a href="${self.web_root()}/schedule/">Schedule</a>
                     </li>
 
                     <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
-                        <a href="/history/">History</a>
+                        <a href="${self.web_root()}/history/">History</a>
                     </li>
 
                     <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
-                        <a href="/config/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
+                        <a href="${self.web_root()}/config/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
                            data-hover="dropdown"><span class="visible-xs">Config</span><img
-                                src="/images/menu/system18.png" class="navbaricon hidden-xs"/>
+                                src="${self.web_root()}/images/menu/system18.png" class="navbaricon hidden-xs"/>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a>
+                                <a href="${self.web_root()}/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a>
                             </li>
                             <li>
-                                <a href="/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a>
+                                <a href="${self.web_root()}/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a>
                             </li>
                             <li>
-                                <a href="/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup &amp;
+                                <a href="${self.web_root()}/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup &amp;
                                     Restore</a>
                             </li>
                             <li>
-                                <a href="/config/search/"><i class="menu-icon-config"></i>&nbsp;Search Clients</a>
+                                <a href="${self.web_root()}/config/search/"><i class="menu-icon-config"></i>&nbsp;Search Clients</a>
                             </li>
                             <li>
-                                <a href="/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search Providers</a>
+                                <a href="${self.web_root()}/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search Providers</a>
                             </li>
                             <li>
-                                <a href="/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
+                                <a href="${self.web_root()}/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
                                     Settings</a>
                             </li>
                             <li>
-                                <a href="/config/qualitySettings/"><i class="menu-icon-config"></i>&nbsp;Quality
+                                <a href="${self.web_root()}/config/qualitySettings/"><i class="menu-icon-config"></i>&nbsp;Quality
                                     Settings</a>
                             </li>
                             <li>
-                                <a href="/config/postProcessing/"><i class="menu-icon-config"></i>&nbsp;Post Processing</a>
+                                <a href="${self.web_root()}/config/postProcessing/"><i class="menu-icon-config"></i>&nbsp;Post Processing</a>
                             </li>
                             <li>
-                                <a href="/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a>
+                                <a href="${self.web_root()}/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a>
                             </li>
                             <li>
-                                <a href="/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a>
+                                <a href="${self.web_root()}/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a>
                             </li>
                         </ul>
                         <div style="clear:both;"></div>
@@ -238,41 +244,41 @@
                     %>
 
                     <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
-                        <a href="/home/status/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
+                        <a href="${self.web_root()}/home/status/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
                            data-hover="dropdown"><span class="visible-xs">Tools</span><img
-                                src="/images/menu/system18-2.png" class="navbaricon hidden-xs"/>${toolsBadge}
+                                src="${self.web_root()}/images/menu/system18-2.png" class="navbaricon hidden-xs"/>${toolsBadge}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
-                            <li><a href="/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
-                            <li><a href="/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
+                            <li><a href="${self.web_root()}/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
+                            <li><a href="${self.web_root()}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
+                            <li><a href="${self.web_root()}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
                             <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
                                    onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
                                     class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                             <li role="separator" class="divider"></li>
                             %if numErrors:
-                                <li><a href="/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span
+                                <li><a href="${self.web_root()}/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span
                                         class="badge btn-danger">${numErrors}</span></a></li>
                             %endif
                             %if numWarnings:
-                                <li><a href="/logs/?level=${sickrage.srCore.srLogger.WARNING}"><i
+                                <li><a href="${self.web_root()}/logs/?level=${sickrage.srCore.srLogger.WARNING}"><i
                                         class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span
                                         class="badge btn-warning">${numWarnings}</span></a></li>
                             %endif
-                            <li><a href="/logs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a></li>
+                            <li><a href="${self.web_root()}/logs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="/home/updateCheck?pid=${srPID}"><i class="menu-icon-update"></i>&nbsp;Check For
+                            <li><a href="${self.web_root()}/home/updateCheck?pid=${srPID}"><i class="menu-icon-update"></i>&nbsp;Check For
                                 Updates</a></li>
-                            <li><a href="/home/restart/?pid=${srPID}" class="confirm restart"><i
+                            <li><a href="${self.web_root()}/home/restart/?pid=${srPID}" class="confirm restart"><i
                                     class="menu-icon-restart"></i>&nbsp;Restart</a></li>
-                            <li><a href="/home/shutdown/?pid=${srPID}" class="confirm shutdown"><i
+                            <li><a href="${self.web_root()}/home/shutdown/?pid=${srPID}" class="confirm shutdown"><i
                                     class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
                             % if current_user != True:
-                                <li><a href="/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a>
+                                <li><a href="${self.web_root()}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a>
                                 </li>
                             % endif
                             <li role="separator" class="divider"></li>
-                            <li><a href="/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a></li>
+                            <li><a href="${self.web_root()}/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a></li>
                         </ul>
                         <div style="clear:both;"></div>
                     </li>
@@ -297,11 +303,11 @@
                         %>
                         % for cur_link in menuItem['path']:
                         ${("&middot; ", "")[bool(inner_first)]}<a class="inner"
-                                                                  href="${menuItem['path'][cur_link]}">${cur_link}</a>
+                                                                  href="${self.web_root()}${menuItem['path'][cur_link]}">${cur_link}</a>
                         <% inner_first = False %>
                         % endfor
                         % else:
-                            <a href="${menuItem['path']}"
+                            <a href="${self.web_root()}${menuItem['path']}"
                                class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
                         <% first = False %>
                         % endif
@@ -338,7 +344,7 @@
                 | <span class="footerhighlight">${ep_downloaded}</span>
 
                 % if ep_snatched:
-                    <span class="footerhighlight"><a href="/manage/episodeStatuses?whichStatus=2"
+                    <span class="footerhighlight"><a href="${self.web_root()}/manage/episodeStatuses?whichStatus=2"
                                                      title="View overview of snatched episodes">+${ep_snatched}</a></span>
                     Snatched
                 % endif
@@ -362,11 +368,11 @@
                 </div>
             </div>
         </footer>
-        <script src="/js/bower.min.js"></script>
+        <script src="${self.web_root()}/js/bower.min.js"></script>
         % if sickrage.DEVELOPER:
-            <script src="/js/core.js"></script>
+            <script src="${self.web_root()}/js/core.js"></script>
         % else:
-            <script src="/js/core.min.js"></script>
+            <script src="${self.web_root()}/js/core.min.js"></script>
         % endif
         <%block name="scripts" />
     % endif

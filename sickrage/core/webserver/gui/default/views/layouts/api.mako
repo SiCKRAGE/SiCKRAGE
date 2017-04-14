@@ -1,5 +1,9 @@
 <%!
     import sickrage
+    
+    web_root = ''
+    if sickrage.srCore.srConfig.WEB_ROOT:
+        web_root = sickrage.srCore.srConfig.WEB_ROOT
 %>
 <!DOCTYPE html>
 <html>
@@ -17,9 +21,10 @@
         <meta name="theme-color" content="#333333">
     % endif
 
+
     <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-TileImage" content="/images/ico/favicon-144.png">
-    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="msapplication-TileImage" content="${web_root}/images/ico/favicon-144.png">
+    <meta name="msapplication-config" content="${web_root}/browserconfig.xml">
 
     <meta data-var="srPID" data-content="${srPID}">
     <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}">
@@ -38,26 +43,27 @@
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.srConfig.SORT_ARTICLE}">
     <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.srConfig.TIME_PRESET}">
     <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.srConfig.TRIM_ZERO}">
+    <meta data-var="sickrage.WEB_ROOT" data-content="${web_root}">
     <%block name="metas" />
 
-    <link rel="shortcut icon" href="/images/ico/favicon.ico">
-    <link rel="icon" sizes="16x16 32x32 64x64" href="/images/ico/favicon.ico">
-    <link rel="icon" type="image/png" sizes="196x196" href="/images/ico/favicon-196.png">
-    <link rel="icon" type="image/png" sizes="160x160" href="/images/ico/favicon-160.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/ico/favicon-96.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="/images/ico/favicon-64.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/ico/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/ico/favicon-16.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/ico/favicon-152.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/ico/favicon-144.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/ico/favicon-120.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/images/ico/favicon-114.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/ico/favicon-76.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/ico/favicon-72.png">
-    <link rel="apple-touch-icon" href="/images/ico/favicon-57.png">
-    <link rel="stylesheet" type="text/css" href="/css/bower.min.css?${srPID}"/>
-    <link rel="stylesheet" type="text/css" href="/css/core.min.css?${srPID}"/>
-    <link rel="stylesheet" type="text/css" href="/css/${srThemeName}.css?${srPID}"/>
+    <link rel="shortcut icon" href="${web_root}/images/ico/favicon.ico">
+    <link rel="icon" sizes="16x16 32x32 64x64" href="${web_root}/images/ico/favicon.ico">
+    <link rel="icon" type="image/png" sizes="196x196" href="${web_root}/images/ico/favicon-196.png">
+    <link rel="icon" type="image/png" sizes="160x160" href="${web_root}/images/ico/favicon-160.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="${web_root}/images/ico/favicon-96.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="${web_root}/images/ico/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="${web_root}/images/ico/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="${web_root}/images/ico/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="${web_root}/images/ico/favicon-152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="${web_root}/images/ico/favicon-144.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="${web_root}/images/ico/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="${web_root}/images/ico/favicon-114.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="${web_root}/images/ico/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="${web_root}/images/ico/favicon-72.png">
+    <link rel="apple-touch-icon" href="${web_root}/images/ico/favicon-57.png">
+    <link rel="stylesheet" type="text/css" href="${web_root}/css/bower.min.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="${web_root}/css/core.min.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="${web_root}/css/${srThemeName}.css?${srPID}"/>
     <%block name="css" />
 
     <!--[if lt IE 9]>
@@ -65,11 +71,11 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <script type="text/javascript" src="/js/bower.min.js"></script>
+    <script type="text/javascript" src="${web_root}/js/bower.min.js"></script>
     % if sickrage.DEVELOPER:
-        <script src="/js/core.js"></script>
+        <script src="${web_root}/js/core.js"></script>
     % else:
-        <script src="/js/core.min.js"></script>
+        <script src="${web_root}/js/core.min.js"></script>
     % endif
     <%block name="scripts" />
 
@@ -84,8 +90,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/apibuilder/" title="SiCKRAGE">
-                <img alt="SiCKRAGE" src="/images/logo.png" style="width: 200px; height: 50px;" class="img-responsive pull-left"/>
+            <a class="navbar-brand" href="${web_root}/apibuilder/" title="SiCKRAGE">
+                <img alt="SiCKRAGE" src="${web_root}/images/logo.png" style="width: 200px; height: 50px;" class="img-responsive pull-left"/>
                 <p class="navbar-text hidden-xs">${title}</p>
             </a>
         </div>
@@ -101,11 +107,11 @@
             </div>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/home/">Back to SickRage</a></li>
+                <li><a href="${web_root}/home/">Back to SickRage</a></li>
                 <li class="hidden-xs">
                     <a href="https://www.gofundme.com/sickrage" rel="noreferrer"
                        onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;">
-                        <img src="/images/donate.jpg" alt="[donate]" class="navbaricon"/>
+                        <img src="${web_root}/images/donate.jpg" alt="[donate]" class="navbaricon"/>
                     </a>
                 </li>
             </ul>

@@ -53,7 +53,7 @@
         <td class="infoTableHeader">SR Arguments:</td>
         <td class="infoTableCell">${sys.argv[1:]}</td>
     </tr>
-    % if sickrage.srCore.srConfig.WEB_ROOT:
+% if sickrage.srCore.srConfig.WEB_ROOT:
         <tr>
             <td class="infoTableHeader">SR Web Root:</td>
             <td class="infoTableCell">${sickrage.srCore.srConfig.WEB_ROOT}</td>

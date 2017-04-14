@@ -34,13 +34,13 @@
                         </div>
 
                         <div class="clearfix">
-                            <p>${int(cur_show['show']['rating']*10)}% <img src="/images/heart.png"></p>
+                            <p>${int(cur_show['show']['rating']*10)}% <img src="${parent.web_root()}/images/heart.png"></p>
                             <i>${cur_show['show']['votes']} votes</i>
                             <div class="traktShowTitleIcons">
-                                <a href="/home/addShows/addTraktShow?indexer_id=${cur_show['show']['ids']['tvdb']}&amp;showName=${cur_show['show']['title']}"
+                                <a href="${parent.web_root()}/home/addShows/addTraktShow?indexer_id=${cur_show['show']['ids']['tvdb']}&amp;showName=${cur_show['show']['title']}"
                                    class="btn btn-xs">Add Show</a>
                                 % if blacklist:
-                                    <a href="/home/addShows/addShowToBlacklist?indexer_id=${cur_show['show']['ids']['tvdb'] or cur_show['show']['ids']['tvrage']}"
+                                    <a href="${parent.web_root()}/home/addShows/addShowToBlacklist?indexer_id=${cur_show['show']['ids']['tvdb'] or cur_show['show']['ids']['tvrage']}"
                                        class="btn btn-xs">Remove Show</a>
                                 % endif
                             </div>

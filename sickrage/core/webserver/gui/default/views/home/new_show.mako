@@ -13,7 +13,7 @@
 <%block name="content">
 
     <div id="newShowPortal">
-        <form id="addShowForm" class="form-inline" method="post" action="/home/addShows/addNewShow">
+        <form id="addShowForm" class="form-inline" method="post" action="${parent.web_root()}/home/addShows/addNewShow">
             <h1>Find a show</h1>
             <section data-step="0">
                 <div class="form-group">
