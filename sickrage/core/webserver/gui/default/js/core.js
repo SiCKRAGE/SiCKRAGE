@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
         },
 
         notify: function (type, title, message) {
-            var myDesktop = {'desktop': true, 'icon': SICKRAGE.srWebRoot + '/images/ico/favicon-60x60.png'};
+            var myDesktop = {'desktop': true, 'icon': SICKRAGE.srWebRoot + '/images/ico/favicon-32x32.png'};
             var myStack = {'dir1': 'up', 'dir2': 'left', 'firstpos1': 25, 'firstpos2': 25};
 
             PNotify.desktop.permission();

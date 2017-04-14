@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7e7e9a5 - 2017-04-14: Updated favicon&#x27;s for all devices Grunt task performed Released v9.0.7 
+- * cde088d - 2017-04-14: Fixed url paths to image files Released v9.0.8 
+- * b1edb65 - 2017-04-14: Updated favicon&#x27;s for all devices Grunt task performed Released v9.0.7 
 - * 661f5ad - 2017-04-14: Misc web root fixes in JS code 
 - * de7db86 - 2017-04-14: Misc web root fixes in JS code 
 - * 5cdf2a9 - 2017-04-14: Misc web root fixes in JS code 
