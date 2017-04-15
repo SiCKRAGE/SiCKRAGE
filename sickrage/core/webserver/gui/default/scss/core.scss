@@ -761,13 +761,11 @@ h1.title {
 
 ul.tags {
   list-style-type: none;
-  position: relative;
-  top: -5px;
   margin-left: -40px; }
 
 ul.tags li {
   margin-right: 4px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   padding: 3px 4px 3px 25px;
   background: url(../images/tag.png) no-repeat scroll 5px 4px #555;
   border-radius: 3px;
@@ -780,13 +778,6 @@ ul.tags li {
 ul.tags li a {
   color: #FFF; }
 
-.tvshowImg {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  height: 311px;
-  width: auto;
-  float: left; }
-
 #summary {
   padding: 10px;
   background-color: #efefef;
@@ -795,13 +786,6 @@ ul.tags li a {
   height: 250px;
   overflow: auto;
   cursor: default; }
-
-.summaryTable {
-  max-width: 70%;
-  overflow: hidden; }
-
-#checkboxControls {
-  padding-top: 28px; }
 
 #checkboxControls span {
   padding: 5px;
