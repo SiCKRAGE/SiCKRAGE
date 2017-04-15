@@ -105,9 +105,6 @@
                     % if not show.imdbid:
                         <span>(${show.startyear}) - ${show.runtime} minutes - </span>
                     % else:
-                    % if 'year' in show.imdb_info:
-                        <span>(${show.imdb_info['year']}) - ${show.imdb_info['runtime']} minutes - </span>
-                    % endif
                         <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}" rel="noreferrer"
                            onclick="window.open(this.href, '_blank'); return false;"
                            title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]" height="16"

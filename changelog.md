@@ -1,6 +1,7 @@
 # Changelog
 
-- * e4282a7 - 2017-04-15: Released v9.0.9 Grunt tasks performed 
+- * d653c09 - 2017-04-15: Removed showing imdb runtime/year info, uses show runtime/year instead 
+- * e126a23 - 2017-04-15: Released v9.0.9 Grunt tasks performed 
 - * 681aee3 - 2017-04-15: Updated responsiveness for display show template 
 - * 8b0193a - 2017-04-14: Performed grunt tasks 
 - * 9941ce1 - 2017-04-14: Performed grunt tasks 
