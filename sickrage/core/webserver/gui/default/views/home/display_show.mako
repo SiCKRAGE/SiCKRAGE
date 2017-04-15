@@ -154,7 +154,7 @@
             </div>
 
             <div class="panel panel-default panel-body">
-                % if show.overview:
+                % if hasattr(show, 'overview') and show.overview:
                     <div class="row">
                         <div class="col-xs-12">
                             <i>${show.overview}</i>
