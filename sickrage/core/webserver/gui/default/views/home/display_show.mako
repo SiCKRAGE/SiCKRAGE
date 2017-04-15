@@ -84,85 +84,82 @@
     % endif
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-xs-4 col-md-2">
             <a href="${srWebRoot}${showImage(show.indexerid, 'poster')}" rel="dialog"
-               title="View Poster for ${show.name}"><img
-                    src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb')}" class="tvshowImg" alt=""/></a>
+               title="View Poster for ${show.name}">
+                <img src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb')}" class="img-responsive img-rounded"
+                     alt=""/>
+            </a>
+        </div>
 
-            <div class="col-md-9 pull-right panel panel-default panel-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        % if 'rating' in show.imdb_info:
-                        <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
-                            <span class="imdbstars" data-tooltip="${rating_tip}">
-                                ${show.imdb_info['rating']}
-                            </span>
-                        % endif
+        <div class="col-xs-8 col-md-10">
+            <div class="row">
+                <div class="col-xs-12">
+                    % if 'rating' in show.imdb_info:
+                    <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
+                        <span class="imdbstars" data-tooltip="${rating_tip}">
+                            ${show.imdb_info['rating']}
+                        </span>
+                    % endif
 
-                        <% _show = show %>
-                        % if not show.imdbid:
-                            <span>(${show.startyear}) - ${show.runtime} minutes - </span>
-                        % else:
-                        % if 'country_codes' in show.imdb_info:
-                            % for country in show.imdb_info['country_codes'].split('|'):
-                                <img src="${srWebRoot}/images/blank.png" class="country-flag flag-${country}" width="16"
-                                     height="11" style="margin-left: 3px; vertical-align:middle;"/>
+                    % if not show.imdbid:
+                        <span>(${show.startyear}) - ${show.runtime} minutes - </span>
+                    % else:
+                    % if 'year' in show.imdb_info:
+                        <span>(${show.imdb_info['year']}) - ${show.imdb_info['runtime']} minutes - </span>
+                    % endif
+                        <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}" rel="noreferrer"
+                           onclick="window.open(this.href, '_blank'); return false;"
+                           title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]" height="16"
+                                                                                 width="16"
+                                                                                 src="${srWebRoot}/images/imdb.png"
+                                                                                 style="margin-top: -1px; vertical-align:middle;"/></a>
+                    % endif
+                    <a href="${anon_url(srIndexerApi(show.indexer).config['show_url'], show.indexerid)}"
+                       onclick="window.open(this.href, '_blank'); return false;"
+                       title="${srIndexerApi(show.indexer).config["show_url"] + str(show.indexerid)}"><img
+                            alt="${srIndexerApi(show.indexer).name}" height="16" width="16"
+                            src="${srWebRoot}/images/${srIndexerApi(show.indexer).config["icon"]}"
+                            style="margin-top: -1px; vertical-align:middle;"/></a>
+                    % if xem_numbering or xem_absolute_numbering:
+                        <a href="${anon_url('http://thexem.de/search?q=', show.name)}" rel="noreferrer"
+                           onclick="window.open(this.href, '_blank'); return false;"
+                           title="http://thexem.de/search?q-${show.name}"><img alt="[xem]" height="16"
+                                                                               width="16"
+                                                                               src="${srWebRoot}/images/xem.png"
+                                                                               style="margin-top: -1px; vertical-align:middle;"/></a>
+                    % endif
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="tags">
+                        % if not show.imdbid and show.genre:
+                            % for genre in show.genre[1:-1].split('|'):
+                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
+                                   target="_blank" title="View other popular ${genre} shows on trakt.tv.">
+                                    <li>${genre}</li>
+                                </a>
                             % endfor
                         % endif
                         % if 'year' in show.imdb_info:
-                            <span>(${show.imdb_info['year']}) - ${show.imdb_info['runtimes']} minutes - </span>
+                            % for imdbgenre in show.imdb_info['genres'].replace('Sci-Fi','Science-Fiction').split('|'):
+                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
+                                   target="_blank"
+                                   title="View other popular ${imdbgenre} shows on trakt.tv.">
+                                    <li>${imdbgenre}</li>
+                                </a>
+                            % endfor
                         % endif
-                            <a href="${anon_url('http://www.imdb.com/title/', _show.imdbid)}" rel="noreferrer"
-                               onclick="window.open(this.href, '_blank'); return false;"
-                               title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]" height="16"
-                                                                                     width="16"
-                                                                                     src="${srWebRoot}/images/imdb.png"
-                                                                                     style="margin-top: -1px; vertical-align:middle;"/></a>
-                        % endif
-                        <a href="${anon_url(srIndexerApi(_show.indexer).config['show_url'], _show.indexerid)}"
-                           onclick="window.open(this.href, '_blank'); return false;"
-                           title="${srIndexerApi(show.indexer).config["show_url"] + str(show.indexerid)}"><img
-                                alt="${srIndexerApi(show.indexer).name}" height="16" width="16"
-                                src="${srWebRoot}/images/${srIndexerApi(show.indexer).config["icon"]}"
-                                style="margin-top: -1px; vertical-align:middle;"/></a>
-                        % if xem_numbering or xem_absolute_numbering:
-                            <a href="${anon_url('http://thexem.de/search?q=', _show.name)}" rel="noreferrer"
-                               onclick="window.open(this.href, '_blank'); return false;"
-                               title="http://thexem.de/search?q-${show.name}"><img alt="[xem]" height="16"
-                                                                                   width="16"
-                                                                                   src="${srWebRoot}/images/xem.png"
-                                                                                   style="margin-top: -1px; vertical-align:middle;"/></a>
-                        % endif
-                    </div>
+                    </ul>
                 </div>
+            </div>
 
+            <div class="panel panel-default panel-body">
                 <div class="row">
-                    <div class="col-md-12">
-                        <ul class="tags">
-                            % if not show.imdbid and show.genre:
-                                % for genre in show.genre[1:-1].split('|'):
-                                    <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
-                                       target="_blank" title="View other popular ${genre} shows on trakt.tv.">
-                                        <li>${genre}</li>
-                                    </a>
-                                % endfor
-                            % endif
-                            % if 'year' in show.imdb_info:
-                                % for imdbgenre in show.imdb_info['genres'].replace('Sci-Fi','Science-Fiction').split('|'):
-                                    <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
-                                       target="_blank"
-                                       title="View other popular ${imdbgenre} shows on trakt.tv.">
-                                        <li>${imdbgenre}</li>
-                                    </a>
-                                % endfor
-                            % endif
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-8">
-                        <table class="summaryTable pull-left">
+                    <div class="col-xs-12 col-md-8">
+                        <table class="pull-left">
                             <% anyQualities, bestQualities = Quality.splitQuality(int(show.quality)) %>
                         <tr>
                             <td class="showLegend">Quality:</td>
@@ -254,12 +251,13 @@
                         </table>
                     </div>
 
-                    <div class="col-md-4">
-                        <table style="float: right;">
+                    <div class="col-xs-12 col-md-4">
+                        <table class="pull-xs-left pull-md-right">
                             <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
                             <tr>
                                 <td class="showLegend">Info Language:</td>
-                                <td><img src="${srWebRoot}/images/subtitles/flags/${info_flag}.png" width="16" height="11"
+                                <td><img src="${srWebRoot}/images/subtitles/flags/${info_flag}.png" width="16"
+                                         height="11"
                                          alt="${show.lang}" title="${show.lang}"
                                          onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
                                 </td>
@@ -267,8 +265,9 @@
                             % if sickrage.srCore.srConfig.USE_SUBTITLES:
                                 <tr>
                                     <td class="showLegend">Subtitles:</td>
-                                    <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
-                                             alt="${("N", "Y")[bool(show.subtitles)]}" width="16" height="16"/>
+                                    <td><img
+                                            src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
+                                            alt="${("N", "Y")[bool(show.subtitles)]}" width="16" height="16"/>
                                     </td>
                                 </tr>
                             % endif
@@ -325,50 +324,66 @@
     </div>
 
     <div class="row">
-        <div class="col-md-5">
-            <label for="statusSelect">Change selected episodes to:<br/>
-                <select id="statusSelect" class="form-control form-control-inline input-sm">
-                    <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                    % if not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-                        <% availableStatus.remove(FAILED) %>
-                    % endif
-                    % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
-                        % if curStatus not in [DOWNLOADED, ARCHIVED]:
-                            <option value="${curStatus}">${statusStrings[curStatus]}</option>
-                        % endif
-                    % endfor
-                </select>
-            </label>
-            <input type="hidden" id="showID" value="${show.indexerid}"/>
-            <input type="hidden" id="indexer" value="${show.indexer}"/>
-        </div>
+        <!-- Labels -->
+        <div class="col-xs-12 col-md-8">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="pull-left" id="checkboxControls">
+                        <label for="wanted"><span class="wanted"><input type="checkbox" id="wanted"
+                                                                        checked="checked"/> Wanted: <b>${epCounts[Overview.WANTED]}</b></span></label>
+                        <label for="qual"><span class="qual"><input type="checkbox" id="qual"
+                                                                    checked="checked"/> Low Quality: <b>${epCounts[Overview.QUAL]}</b></span></label>
+                        <label for="good"><span class="good"><input type="checkbox" id="good"
+                                                                    checked="checked"/> Downloaded: <b>${epCounts[Overview.GOOD]}</b></span></label>
+                        <label for="skipped"><span class="skipped"><input type="checkbox" id="skipped"
+                                                                          checked="checked"/> Skipped: <b>${epCounts[Overview.SKIPPED]}</b></span></label>
+                        <label for="snatched"><span class="snatched"><input type="checkbox" id="snatched"
+                                                                            checked="checked"/> Snatched: <b>${epCounts[Overview.SNATCHED]}</b></span></label>
+                    </div>
+                </div>
+            </div>
 
-        <div class="col-md-7 pull-right" id="checkboxControls">
-            <label for="wanted"><span class="wanted"><input type="checkbox" id="wanted"
-                                                            checked="checked"/> Wanted: <b>${epCounts[Overview.WANTED]}</b></span></label>
-            <label for="qual"><span class="qual"><input type="checkbox" id="qual"
-                                                        checked="checked"/> Low Quality: <b>${epCounts[Overview.QUAL]}</b></span></label>
-            <label for="good"><span class="good"><input type="checkbox" id="good"
-                                                        checked="checked"/> Downloaded: <b>${epCounts[Overview.GOOD]}</b></span></label>
-            <label for="skipped"><span class="skipped"><input type="checkbox" id="skipped" checked="checked"/> Skipped: <b>${epCounts[Overview.SKIPPED]}</b></span></label>
-            <label for="snatched"><span class="snatched"><input type="checkbox" id="snatched" checked="checked"/> Snatched: <b>${epCounts[Overview.SNATCHED]}</b></span></label>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="btn-group">
-                <input class="btn btn-inline" type="button" id="changeStatus" value="Go"/>
-                <input class="btn btn-inline" type="button" id="deleteEpisode" value="Delete Episodes"/>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="btn-group pull-left">
+                        <button class="btn" id="popover" type="button">Select Columns <b class="caret"></b>
+                        </button>
+                        <button class="btn seriesCheck">Select Filtered Episodes</button>
+                        <button class="btn clearAll">Clear All</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="btn-group pull-right">
-                <button class="btn btn-inline" id="popover" type="button">Select Columns <b class="caret"></b>
-                </button>
-                <button class="btn btn-inline seriesCheck">Select Filtered Episodes</button>
-                <button class="btn btn-inline clearAll">Clear All</button>
+        <!-- Statuses -->
+        <div class="col-xs-12 col-md-4">
+            <div class="row">
+                <div class="col-xs-12">
+                    <label for="statusSelect" class="pull-md-right pull-xs-left">Change selected episodes to:<br/>
+                        <select id="statusSelect" class="form-control form-control-inline input-sm">
+                            <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
+                            % if not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
+                                <% availableStatus.remove(FAILED) %>
+                            % endif
+                            % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
+                                % if curStatus not in [DOWNLOADED, ARCHIVED]:
+                                    <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                % endif
+                            % endfor
+                        </select>
+                    </label>
+                    <input type="hidden" id="showID" value="${show.indexerid}"/>
+                    <input type="hidden" id="indexer" value="${show.indexer}"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="btn-group pull-md-right pull-xs-left">
+                        <input class="btn" type="button" id="changeStatus" value="Go"/>
+                        <input class="btn" type="button" id="deleteEpisode" value="Delete Episodes"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -553,6 +568,25 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <tbody>
                     % endif
 
@@ -567,12 +601,14 @@
                             % endif
                         </td>
 
-                        <td align="center"><img src="${srWebRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
-                                                alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/>
+                        <td align="center"><img
+                                src="${srWebRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
+                                alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/>
                         </td>
 
-                        <td align="center"><img src="${srWebRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
-                                                alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/>
+                        <td align="center"><img
+                                src="${srWebRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
+                                alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/>
                         </td>
 
                         <td align="center">
@@ -622,7 +658,8 @@
                                      id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
                                      data-tooltip="${epResult["description"]}"/>
                             % else:
-                                <img src="${srWebRoot}/images/info32.png" width="16" height="16" class="plotInfoNone" alt=""
+                                <img src="${srWebRoot}/images/info32.png" width="16" height="16" class="plotInfoNone"
+                                     alt=""
                                      id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
                                      data-tooltip=""/>
                             % endif
@@ -707,7 +744,8 @@
                             % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
                                 <a class="epSubtitlesSearch"
                                    href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                        src="${srWebRoot}/images/closed_captioning.png" height="16" alt="search subtitles"
+                                        src="${srWebRoot}/images/closed_captioning.png" height="16"
+                                        alt="search subtitles"
                                         title="Search Subtitles"/></a>
                             % endif
                         </td>

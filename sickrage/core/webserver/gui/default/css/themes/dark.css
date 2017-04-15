@@ -349,24 +349,12 @@ h1.title {
 }
 
 ul.tags li {
-    margin-right: 4px;
-    margin-bottom: 5px;
-    padding: 3px 4px 3px 25px;
     background: url(../../images/tag.png) no-repeat scroll 5px 4px #15528F;
     border-radius: 3px;
     border: 1px solid #111;
     color: #FFF;
     font: 14px/18px "Open Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
     text-shadow: 0 1px rgba(0, 0, 0, 0.8);
-    float: left;
-}
-
-.tvshowImg {
-    border: 1px solid #111;
-    border-radius: 5px;
-    height: 311px;
-    width: auto;
-    float: left;
 }
 
 #summary {

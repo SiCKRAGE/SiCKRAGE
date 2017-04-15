@@ -1031,7 +1031,7 @@ class TVShow(object):
                      'title': '',
                      'year': '',
                      'akas': [],
-                     'runtimes': '',
+                     'runtime': '',
                      'genres': [],
                      'countries': '',
                      'country_codes': [],
@@ -1040,7 +1040,7 @@ class TVShow(object):
                      'votes': '',
                      'last_update': ''}
 
-        i = imdbpie.Imdb()
+        i = imdbpie.Imdb(cache=True)
         if not self.imdbid:
             for x in i.search_for_title(self.name):
                 try:
@@ -1062,10 +1062,10 @@ class TVShow(object):
                     imdb_info[key] = getattr(imdbTv, key.replace('_', ' '))
 
             # Filter only the value
-            if imdb_info['runtimes']:
-                imdb_info['runtimes'] = re.search(r'\d+', imdb_info['runtimes']).group(0)
+            if imdb_info['runtime']:
+                imdb_info['runtime'] = int(imdb_info['runtime']) / 60
             else:
-                imdb_info['runtimes'] = self.runtime
+                imdb_info['runtime'] = self.runtime
 
             if imdb_info['akas']:
                 imdb_info['akas'] = '|'.join(imdb_info['akas'])

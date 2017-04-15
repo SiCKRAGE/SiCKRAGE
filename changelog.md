@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3962650 - 2017-04-14: Performed grunt tasks 
+- * ed676eb - 2017-04-15: Updated responsiveness for display show template 
+- * 8b0193a - 2017-04-14: Performed grunt tasks 
 - * 9941ce1 - 2017-04-14: Performed grunt tasks 
 - * 0cb6d54 - 2017-04-14: More web root fixes for templates and JS code 
 - * 313279e - 2017-04-14: Fixed paths in dark theme CSS 
