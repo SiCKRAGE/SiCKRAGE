@@ -102,9 +102,9 @@
                         </span>
                     % endif
 
-                    % if not show.imdbid:
-                        <span>(${show.startyear}) - ${show.runtime} minutes - </span>
-                    % else:
+                    <span>(${show.startyear}) - ${show.runtime} minutes - </span>
+
+                    % if show.imdbid:
                         <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}" rel="noreferrer"
                            onclick="window.open(this.href, '_blank'); return false;"
                            title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]" height="16"
@@ -562,6 +562,7 @@
                         <tbody class="collapse${("", " in")[curSeason == -1]}"
                                id="collapseSeason-${epResult['season']}">
                     % else:
+
 
 
 
