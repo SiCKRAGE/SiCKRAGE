@@ -154,23 +154,35 @@
             </div>
 
             <div class="panel panel-default panel-body">
+                % if show.overview:
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <i>${show.overview}</i>
+                        </div>
+                    </div>
+
+                    <hr>
+                % endif
+
                 <div class="row">
                     <div class="col-xs-12 col-md-8">
                         <table class="pull-left">
-                            <% anyQualities, bestQualities = Quality.splitQuality(int(show.quality)) %>
-                        <tr>
-                            <td class="showLegend">Quality:</td>
-                        <td>
-                            % if show.quality in qualityPresets:
-                                ${renderQualityPill(show.quality)}
-                            % else:
-                                % if anyQualities:
-                                    <i>Allowed:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(anyQualities)])}${("", "<br>")[bool(bestQualities)]}
-                                % endif
-                                % if bestQualities:
-                                    <i>Preferred:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(bestQualities)])}
-                                % endif
-                            % endif
+                            <tr>
+                                <td class="showLegend">Quality:</td>
+                                <td>
+                                    <% anyQualities, bestQualities = Quality.splitQuality(int(show.quality)) %>
+                                    % if show.quality in qualityPresets:
+                                        ${renderQualityPill(show.quality)}
+                                    % else:
+                                        % if anyQualities:
+                                            <i>Allowed:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(anyQualities)])}${("", "<br>")[bool(bestQualities)]}
+                                        % endif
+                                        % if bestQualities:
+                                            <i>Preferred:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(bestQualities)])}
+                                        % endif
+                                    % endif
+                                </td>
+                            </tr>
 
                             % if show.network and show.airs:
                                 <tr>
@@ -562,28 +574,6 @@
                         <tbody class="collapse${("", " in")[curSeason == -1]}"
                                id="collapseSeason-${epResult['season']}">
                     % else:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                         <tbody>
                     % endif

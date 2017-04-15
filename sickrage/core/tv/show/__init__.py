@@ -58,6 +58,7 @@ class TVShow(object):
         self._imdbid = ""
         self._network = ""
         self._genre = ""
+        self._overview = ""
         self._classification = 'Scripted'
         self._runtime = 0
         self._imdb_info = {}
@@ -152,6 +153,16 @@ class TVShow(object):
         if self._genre != value:
             self.dirty = True
         self._genre = value
+
+    @property
+    def overview(self):
+        return self._overview
+
+    @overview.setter
+    def overview(self, value):
+        if self._overview != value:
+            self.dirty = True
+        self._overview = value
 
     @property
     def classification(self):
@@ -940,6 +951,7 @@ class TVShow(object):
         self._name = dbData[0].get("show_name", self.name)
         self._network = dbData[0].get("network", self.network)
         self._genre = dbData[0].get("genre", self.genre)
+        self._overview = dbData[0].get("overview", self.overview)
         self._classification = dbData[0].get("classification", self.classification)
         self._runtime = dbData[0].get("runtime", self.runtime)
         self._status = dbData[0].get("status", self.status)
@@ -1003,6 +1015,7 @@ class TVShow(object):
                 raise indexer_attributenotfound(
                     "Found %s, but attribute 'seriesname' was empty." % self.indexerid)
 
+            self.overview = safe_getattr(myEp, 'overview', self.overview)
             self.classification = safe_getattr(myEp, 'classification', self.classification)
             self.genre = safe_getattr(myEp, 'genre', self.genre)
             self.network = safe_getattr(myEp, 'network', self.network)
@@ -1289,6 +1302,7 @@ class TVShow(object):
             "location": self.location,
             "network": self.network,
             "genre": self.genre,
+            "overview": self.overview,
             "classification": self.classification,
             "runtime": self.runtime,
             "quality": self.quality,
@@ -1349,6 +1363,7 @@ class TVShow(object):
         toReturn += "startyear: " + str(self.startyear) + "\n"
         if self.genre:
             toReturn += "genre: " + self.genre + "\n"
+        toReturn += "overview: " + self.overview + "\n"
         toReturn += "classification: " + self.classification + "\n"
         toReturn += "runtime: " + str(self.runtime) + "\n"
         toReturn += "quality: " + str(self.quality) + "\n"

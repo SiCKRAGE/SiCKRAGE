@@ -1,6 +1,7 @@
 # Changelog
 
-- * e30a478 - 2017-04-15: Removed showing imdb runtime/year info, uses show runtime/year instead 
+- * fa3561f - 2017-04-15: Added show overview to show objects and display show template 
+- * 010345a - 2017-04-15: Removed showing imdb runtime/year info, uses show runtime/year instead 
 - * 4f851b3 - 2017-04-15: Removed showing imdb runtime/year info, uses show runtime/year instead 
 - * e126a23 - 2017-04-15: Released v9.0.9 Grunt tasks performed 
 - * 681aee3 - 2017-04-15: Updated responsiveness for display show template 
