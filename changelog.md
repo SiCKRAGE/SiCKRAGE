@@ -1,6 +1,7 @@
 # Changelog
 
-- * e43688f - 2017-04-15: Fixed show overview attribute error 
+- * 3cf67d3 - 2017-04-16: Fixed issues with navbar and anchors 
+- * 4a4538b - 2017-04-15: Fixed show overview attribute error 
 - * e12ff3e - 2017-04-15: Fixed show overview attribute error 
 - * 55421b3 - 2017-04-15: Added show overview to show objects and display show template 
 - * 010345a - 2017-04-15: Removed showing imdb runtime/year info, uses show runtime/year instead 

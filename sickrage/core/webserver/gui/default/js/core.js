@@ -385,7 +385,14 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.check_notifications();
 
                 // auto-resize body to accomodate height of navbar
-                $('body').animate({ paddingTop: $('nav').height() + 5});
+                $('body').animate({paddingTop: $('nav').height() + 5});
+                var shiftWindow = function () {
+                    scrollBy(0, -$('nav').height());
+                };
+                if (location.hash) {
+                    shiftWindow();
+                }
+                window.addEventListener("hashchange", shiftWindow);
             }
         },
 
@@ -1695,7 +1702,7 @@ jQuery(document).ready(function ($) {
                     $.each([$('#container'), $('#container-anime')], function () {
                         $(this).isotope({sortBy: sortValue});
                     });
-                    $.post($(this).find('option[value=' + $(this).val() +']').attr('data-sort'));
+                    $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
                 });
 
                 $('#postersortdirection').on('change', function () {
@@ -1703,7 +1710,7 @@ jQuery(document).ready(function ($) {
                     $.each([$('#container'), $('#container-anime')], function () {
                         $(this).isotope({sortAscending: sortDirection});
                     });
-                    $.post($(this).find('option[value=' + $(this).val() +']').attr('data-sort'));
+                    $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
                 });
 
                 $('#popover').popover({
