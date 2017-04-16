@@ -1,6 +1,7 @@
 # Changelog
 
-- * ce3f0d7 - 2017-04-16: Changed display shows background from poster to banner 
+- * fbe7e12 - 2017-04-16: Released v9.0.10 
+- * 3771cf2 - 2017-04-16: Changed display shows background from poster to banner 
 - * 4a93dfb - 2017-04-16: Changed layout of display shows template 
 - * c4825da - 2017-04-16: Fixed layout for history template 
 - * 01b56d9 - 2017-04-16: Misc changes 
