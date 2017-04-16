@@ -14,35 +14,35 @@
 <%block name="content">
     <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
 
-    <div class="h2footer pull-right">
-        <span class="badge" style="background-color: #333333;">Limit:
-            <select name="history_limit" id="history_limit" class="form-control form-control-inline input-sm">
-                <option value="10" ${('', 'selected="selected"')[limit == 10]}>10</option>
-                <option value="25" ${('', 'selected="selected"')[limit == 25]}>25</option>
-                <option value="50" ${('', 'selected="selected"')[limit == 50]}>50</option>
-                <option value="100" ${('', 'selected="selected"')[limit == 100]}>100</option>
-                <option value="250" ${('', 'selected="selected"')[limit == 250]}>250</option>
-                <option value="500" ${('', 'selected="selected"')[limit == 500]}>500</option>
-                <option value="750" ${('', 'selected="selected"')[limit == 750]}>750</option>
-                <option value="1000" ${('', 'selected="selected"')[limit == 1000]}>1000</option>
-                <option value="0"   ${('', 'selected="selected"')[limit == 0  ]}>All</option>
-            </select>
-        </span>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <label for="history_limit" class="badge">Limit:
+                <select name="history_limit" id="history_limit" class="form-control form-control-inline input-sm">
+                    <option value="10" ${('', 'selected="selected"')[limit == 10]}>10</option>
+                    <option value="25" ${('', 'selected="selected"')[limit == 25]}>25</option>
+                    <option value="50" ${('', 'selected="selected"')[limit == 50]}>50</option>
+                    <option value="100" ${('', 'selected="selected"')[limit == 100]}>100</option>
+                    <option value="250" ${('', 'selected="selected"')[limit == 250]}>250</option>
+                    <option value="500" ${('', 'selected="selected"')[limit == 500]}>500</option>
+                    <option value="750" ${('', 'selected="selected"')[limit == 750]}>750</option>
+                    <option value="1000" ${('', 'selected="selected"')[limit == 1000]}>1000</option>
+                    <option value="0"   ${('', 'selected="selected"')[limit == 0  ]}>All</option>
+                </select>
+            </label>
 
-        <span class="badge" style="background-color: #333333;"> Layout:
-            <select name="HistoryLayout" class="form-control form-control-inline input-sm"
-                    onchange="location = this.options[this.selectedIndex].value;">
-                <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
-                    Compact
-                </option>
-                <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
-                    Detailed
-                </option>
-            </select>
-        </span>
+            <label for="HistoryLayout" class="badge">Layout:
+                <select name="HistoryLayout" class="form-control form-control-inline input-sm"
+                        onchange="location = this.options[this.selectedIndex].value;">
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
+                        Compact
+                    </option>
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
+                        Detailed
+                    </option>
+                </select>
+            </label>
+        </div>
     </div>
-
-    <br>
 
     % if sickrage.srCore.srConfig.HISTORY_LAYOUT == "detailed":
         <table id="historyTable" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
@@ -93,15 +93,17 @@
                                 % if hItem["provider"] > 0:
                                     % if curStatus in [SNATCHED, FAILED]:
                                         % if hItem["provider"].lower() in sickrage.srCore.providersDict.all():
-                                            <% provider = sickrage.srCore.providersDict.all()[hItem["provider"].lower()] %>
-                                            <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16" height="16"
+                                        <% provider = sickrage.srCore.providersDict.all()[hItem["provider"].lower()] %>
+                                            <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16"
+                                                 height="16"
                                                  style="vertical-align:middle;"/> <span
                                                 style="vertical-align:middle;">${provider.name}</span>
                                         % else:
                                             <span style="vertical-align:middle;">${hItem["provider"]}</span>
                                         % endif
                                     % else:
-                                        <img src="${srWebRoot}/images/subtitles/${hItem['provider']}.png" width="16" height="16"
+                                        <img src="${srWebRoot}/images/subtitles/${hItem['provider']}.png" width="16"
+                                             height="16"
                                              style="vertical-align:middle;"/> <span
                                             style="vertical-align:middle;">${hItem["provider"].capitalize()}</span>
                                     % endif
@@ -155,7 +157,8 @@
                                 % if curStatus in [SNATCHED, FAILED]:
                                     % if action["provider"].lower() in sickrage.srCore.providersDict.all():
                                     <% provider = sickrage.srCore.providersDict.all()[action["provider"].lower()] %>
-                                        <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16" height="16"
+                                        <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16"
+                                             height="16"
                                              style="vertical-align:middle;cursor: help;" alt="${provider.name}"
                                              title="${provider.name}: ${os.path.basename(action["resource"])}"/>
                                     % else:
@@ -185,7 +188,8 @@
                                 % for action in sorted(hItem["actions"]):
                                     <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                                     % if curStatus == SUBTITLED:
-                                        <img src="${srWebRoot}/images/subtitles/${action['provider']}.png" width="16" height="16"
+                                        <img src="${srWebRoot}/images/subtitles/${action['provider']}.png" width="16"
+                                             height="16"
                                              style="vertical-align:middle;" alt="${action["provider"]}"
                                              title="${action["provider"].capitalize()}: ${os.path.basename(action["resource"])}"/>
                                         <span style="vertical-align:middle;"> / </span>
