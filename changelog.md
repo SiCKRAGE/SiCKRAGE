@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6d9c2d0 - 2017-04-16: Misc changes 
+- * 8606bc3 - 2017-04-16: Misc changes 
+- * 245f6bf - 2017-04-16: Misc changes 
 - * 46a6106 - 2017-04-16: Fixed issues with navbar and anchors 
 - * 4a4538b - 2017-04-15: Fixed show overview attribute error 
 - * e12ff3e - 2017-04-15: Fixed show overview attribute error 
