@@ -1,6 +1,7 @@
 # Changelog
 
-- * c5d74af - 2017-04-16: Fixed layout for history template 
+- * 22cb47d - 2017-04-16: Changed layout of display shows template 
+- * c4825da - 2017-04-16: Fixed layout for history template 
 - * 01b56d9 - 2017-04-16: Misc changes 
 - * 245f6bf - 2017-04-16: Misc changes 
 - * 46a6106 - 2017-04-16: Fixed issues with navbar and anchors 

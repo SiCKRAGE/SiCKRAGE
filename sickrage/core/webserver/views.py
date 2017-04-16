@@ -1155,7 +1155,7 @@ class Home(WebHandler):
                                 'class': 'removeshow', 'confirm': True, 'icon': 'ui-icon ui-icon-trash'})
                 submenu.append({'title': 'Re-scan files', 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-refresh'})
-                submenu.append({'title': 'Force Full Update',
+                submenu.append({'title': 'Full Update',
                                 'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-transfer-e-w'})
                 submenu.append({'title': 'Update show in KODI', 'path': '/home/updateKODI?show=%d' % showObj.indexerid,

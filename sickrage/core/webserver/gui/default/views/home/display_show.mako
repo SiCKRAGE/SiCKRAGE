@@ -84,76 +84,12 @@
     % endif
 
     <div class="row">
-        <div class="col-xs-4 col-md-2">
-            <a href="${srWebRoot}${showImage(show.indexerid, 'poster')}" rel="dialog"
-               title="View Poster for ${show.name}">
-                <img src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb')}" class="img-responsive img-rounded"
-                     alt=""/>
-            </a>
-        </div>
+        <div class="col-xs-12">
+            <div class="panel panel-default panel-body"
+                 style="background-image:linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%),
+                         url(${srWebRoot}${showImage(show.indexerid, 'poster_thumb')});
+                         background-size: 100% 100%;">
 
-        <div class="col-xs-8 col-md-10">
-            <div class="row">
-                <div class="col-xs-12">
-                    % if 'rating' in show.imdb_info:
-                    <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
-                        <span class="imdbstars" data-tooltip="${rating_tip}">
-                            ${show.imdb_info['rating']}
-                        </span>
-                    % endif
-
-                    <span>(${show.startyear}) - ${show.runtime} minutes - </span>
-
-                    % if show.imdbid:
-                        <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}" rel="noreferrer"
-                           onclick="window.open(this.href, '_blank'); return false;"
-                           title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]" height="16"
-                                                                                 width="16"
-                                                                                 src="${srWebRoot}/images/imdb.png"
-                                                                                 style="margin-top: -1px; vertical-align:middle;"/></a>
-                    % endif
-                    <a href="${anon_url(srIndexerApi(show.indexer).config['show_url'], show.indexerid)}"
-                       onclick="window.open(this.href, '_blank'); return false;"
-                       title="${srIndexerApi(show.indexer).config["show_url"] + str(show.indexerid)}"><img
-                            alt="${srIndexerApi(show.indexer).name}" height="16" width="16"
-                            src="${srWebRoot}/images/${srIndexerApi(show.indexer).config["icon"]}"
-                            style="margin-top: -1px; vertical-align:middle;"/></a>
-                    % if xem_numbering or xem_absolute_numbering:
-                        <a href="${anon_url('http://thexem.de/search?q=', show.name)}" rel="noreferrer"
-                           onclick="window.open(this.href, '_blank'); return false;"
-                           title="http://thexem.de/search?q-${show.name}"><img alt="[xem]" height="16"
-                                                                               width="16"
-                                                                               src="${srWebRoot}/images/xem.png"
-                                                                               style="margin-top: -1px; vertical-align:middle;"/></a>
-                    % endif
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12">
-                    <ul class="tags">
-                        % if not show.imdbid and show.genre:
-                            % for genre in show.genre[1:-1].split('|'):
-                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
-                                   target="_blank" title="View other popular ${genre} shows on trakt.tv.">
-                                    <li>${genre}</li>
-                                </a>
-                            % endfor
-                        % endif
-                        % if 'year' in show.imdb_info:
-                            % for imdbgenre in show.imdb_info['genres'].replace('Sci-Fi','Science-Fiction').split('|'):
-                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
-                                   target="_blank"
-                                   title="View other popular ${imdbgenre} shows on trakt.tv.">
-                                    <li>${imdbgenre}</li>
-                                </a>
-                            % endfor
-                        % endif
-                    </ul>
-                </div>
-            </div>
-
-            <div class="panel panel-default panel-body">
                 % if show.overview:
                     <div class="row">
                         <div class="col-xs-12">
@@ -167,6 +103,17 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-8">
                         <table class="pull-left">
+                            <tr>
+                                <td class="showLegend">Rating:</td>
+                                <td>
+                                    % if 'rating' in show.imdb_info:
+                                    <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
+                                        <span class="imdbstars" data-tooltip="${rating_tip}">
+                                            ${show.imdb_info['rating']}
+                                        </span>
+                                    % endif
+                                </td>
+                            </tr>
                             <tr>
                                 <td class="showLegend">Quality:</td>
                                 <td>
@@ -183,7 +130,10 @@
                                     % endif
                                 </td>
                             </tr>
-
+                            <tr>
+                                <td class="showLegend">Show Status:</td>
+                                <td>${show.status}</td>
+                            </tr>
                             % if show.network and show.airs:
                                 <tr>
                                     <td class="showLegend">Originally Airs:</td>
@@ -202,8 +152,73 @@
                                 </tr>
                             % endif
                             <tr>
-                                <td class="showLegend">Show Status:</td>
-                                <td>${show.status}</td>
+                                <td class="showLegend">Start Year:</td>
+                                <td>
+                                    <span>${show.startyear}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">Runtime:</td>
+                                <td>
+                                    <span>${show.runtime} minutes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">Info Sites:</td>
+                                <td>
+                                    % if show.imdbid:
+                                        <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}"
+                                           rel="noreferrer"
+                                           onclick="window.open(this.href, '_blank'); return false;"
+                                           title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]"
+                                                                                                 height="16"
+                                                                                                 width="16"
+                                                                                                 src="${srWebRoot}/images/imdb.png"
+                                                                                                 style="margin-top: -1px; vertical-align:middle;"/></a>
+                                    % endif
+                                    <a href="${anon_url(srIndexerApi(show.indexer).config['show_url'], show.indexerid)}"
+                                       onclick="window.open(this.href, '_blank'); return false;"
+                                       title="${srIndexerApi(show.indexer).config["show_url"] + str(show.indexerid)}"><img
+                                            alt="${srIndexerApi(show.indexer).name}" height="16" width="16"
+                                            src="${srWebRoot}/images/${srIndexerApi(show.indexer).config["icon"]}"
+                                            style="margin-top: -1px; vertical-align:middle;"/></a>
+                                    % if xem_numbering or xem_absolute_numbering:
+                                        <a href="${anon_url('http://thexem.de/search?q=', show.name)}"
+                                           rel="noreferrer"
+                                           onclick="window.open(this.href, '_blank'); return false;"
+                                           title="http://thexem.de/search?q-${show.name}"><img alt="[xem]"
+                                                                                               height="16"
+                                                                                               width="16"
+                                                                                               src="${srWebRoot}/images/xem.png"
+                                                                                               style="margin-top: -1px; vertical-align:middle;"/></a>
+                                    % endif
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="showLegend">Genre:</td>
+                                <td>
+                                    <ul class="tags">
+                                        % if not show.imdbid and show.genre:
+                                            % for genre in show.genre[1:-1].split('|'):
+                                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
+                                                   target="_blank"
+                                                   title="View other popular ${genre} shows on trakt.tv.">
+                                                    <li>${genre}</li>
+                                                </a>
+                                            % endfor
+                                        % endif
+                                        % if 'year' in show.imdb_info:
+                                            % for imdbgenre in show.imdb_info['genres'].replace('Sci-Fi','Science-Fiction').split('|'):
+                                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
+                                                   target="_blank"
+                                                   title="View other popular ${imdbgenre} shows on trakt.tv.">
+                                                    <li>${imdbgenre}</li>
+                                                </a>
+                                            % endfor
+                                        % endif
+                                    </ul>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Default EP Status:</td>
@@ -220,11 +235,16 @@
                                     <td><span style="color: red;">${showLoc}</span> (Missing)</td>
                                 </tr>
                             % endif
+                            % if os.path.isdir(showLoc):
+                                <tr>
+                                    <td class="showLegend">Size:</td>
+                                    <td>${pretty_filesize(get_size(showLoc))}</td>
+                                </tr>
+                            % endif
                             <tr>
                                 <td class="showLegend">Scene Name:</td>
                                 <td>${(show.name, " | ".join(show.exceptions))[show.exceptions != 0]}</td>
                             </tr>
-
                             % if show.rls_require_words:
                                 <tr>
                                     <td class="showLegend">Required Words:</td>
@@ -251,12 +271,6 @@
                                     <td>${', '.join(bwl.blacklist)}</td>
                                 </tr>
                             % endif
-
-                            <tr>
-                                <td class="showLegend">Size:</td>
-                                <td>${pretty_filesize(get_size(showLoc))}</td>
-                            </tr>
-
                         </table>
                     </div>
 
@@ -294,14 +308,16 @@
                             </tr>
                             <tr>
                                 <td class="showLegend">Air-by-Date:</td>
-                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.air_by_date)]}"
-                                         alt="${("N", "Y")[bool(show.air_by_date)]}" width="16" height="16"/>
+                                <td><img
+                                        src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.air_by_date)]}"
+                                        alt="${("N", "Y")[bool(show.air_by_date)]}" width="16" height="16"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Sports:</td>
-                                <td><img src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_sports)]}"
-                                         alt="${("N", "Y")[bool(show.is_sports)]}" width="16" height="16"/></td>
+                                <td><img
+                                        src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_sports)]}"
+                                        alt="${("N", "Y")[bool(show.is_sports)]}" width="16" height="16"/></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Anime:</td>
@@ -334,10 +350,10 @@
 
     <div class="row">
         <!-- Labels -->
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="pull-left" id="checkboxControls">
+                    <div class="pull-right" id="checkboxControls">
                         <label for="wanted"><span class="wanted"><input type="checkbox" id="wanted"
                                                                         checked="checked"/> Wanted: <b>${epCounts[Overview.WANTED]}</b></span></label>
                         <label for="qual"><span class="qual"><input type="checkbox" id="qual"
@@ -354,7 +370,7 @@
 
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="btn-group pull-left">
+                    <div class="btn-group pull-right">
                         <button class="btn" id="popover" type="button">Select Columns <b class="caret"></b>
                         </button>
                         <button class="btn seriesCheck">Select Filtered Episodes</button>
@@ -365,10 +381,10 @@
         </div>
 
         <!-- Statuses -->
-        <div class="col-xs-12 col-md-4">
+        <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-12">
-                    <label for="statusSelect" class="pull-md-right pull-xs-left">Change selected episodes to:<br/>
+                    <label for="statusSelect" class="pull-right">Change selected episodes to:<br/>
                         <select id="statusSelect" class="form-control form-control-inline input-sm">
                             <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
                             % if not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
@@ -388,7 +404,7 @@
 
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="btn-group pull-md-right pull-xs-left">
+                    <div class="btn-group pull-right">
                         <input class="btn" type="button" id="changeStatus" value="Go"/>
                         <input class="btn" type="button" id="deleteEpisode" value="Delete Episodes"/>
                     </div>
@@ -574,6 +590,18 @@
                         <tbody class="collapse${("", " in")[curSeason == -1]}"
                                id="collapseSeason-${epResult['season']}">
                     % else:
+
+
+
+
+
+
+
+
+
+
+
+
 
                         <tbody>
                     % endif
