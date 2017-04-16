@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3cf67d3 - 2017-04-16: Fixed issues with navbar and anchors 
+- * 6d9c2d0 - 2017-04-16: Misc changes 
+- * 46a6106 - 2017-04-16: Fixed issues with navbar and anchors 
 - * 4a4538b - 2017-04-15: Fixed show overview attribute error 
 - * e12ff3e - 2017-04-15: Fixed show overview attribute error 
 - * 55421b3 - 2017-04-15: Added show overview to show objects and display show template 

@@ -22,11 +22,6 @@ autoProcessTV.cfg
 /.imdbpie_cache/
 /server.crt
 /server.key
-/backup*
-/cache
-/logs
-/data
-/restore
 
 #  SR Test Related   #
 ######################
@@ -57,8 +52,7 @@ sickrage.egg-info
 /.idea
 /.ropeproject/*
 /.settings/*
-/dist
-/build
+/build/
 
 # OS generated files #
 ######################
@@ -73,16 +67,14 @@ Thumbs.db
 
 # GruntJS Files #
 ######################
-/Gruntfile.js
 /.sass-cache
 
 # NodeJS Files #
 ######################
-/package.json
-/node_modules
+/node_modules/
 
 # Bower #
 ######################
 _bower.js
-/bower.json
-/bower_components
+/bower_components/
+/dist/
