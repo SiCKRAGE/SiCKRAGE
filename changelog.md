@@ -1,6 +1,7 @@
 # Changelog
 
-- * c9f0160 - 2017-04-18: Added improved show selector element to display show template 
+- * c12ce9b - 2017-04-18: Released v9.0.11 
+- * f1a2f83 - 2017-04-18: Added improved show selector element to display show template 
 - * 321387e - 2017-04-18: Added filterBy inputbox to main show page for poster view 
 - * 6822e6d - 2017-04-16: Released v9.0.10 
 - * 3771cf2 - 2017-04-16: Changed display shows background from poster to banner 
