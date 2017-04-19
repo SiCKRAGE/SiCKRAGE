@@ -22,6 +22,10 @@
             % endif
 
             % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
+                <label for="posterfilter" class="badge">Filter By:
+                    <input id="posterfilter" class="form-control form-control-inline input-sm" type="search" placeholder="Search Show Name">
+                </label>
+
                 <label for="postersort" class="badge">Sort By:
                     <select id="postersort" class="form-control form-control-inline input-sm">
                         <option value="name"

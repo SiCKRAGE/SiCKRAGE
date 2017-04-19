@@ -1521,6 +1521,8 @@ jQuery(document).ready(function ($) {
             },
 
             index: function () {
+                var qsRegex;
+
                 // Resets the tables sorting, needed as we only use a single call for both tables in tablesorter
                 $('.resetsorting').on('click', function () {
                     $('table').trigger('filterReset');
@@ -1693,7 +1695,10 @@ jQuery(document).ready(function ($) {
                                 var progress = $(itemElem).attr('data-progress');
                                 return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
                             }
-                        }
+                        },
+                        filter: function() {
+                            return qsRegex ? $(this).text().match( qsRegex ) : true;
+                          }
                     });
                 });
 
@@ -1723,6 +1728,14 @@ jQuery(document).ready(function ($) {
                     if (SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
                         $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
                     }
+                });
+
+                $('#posterfilter').keyup(function () {
+                    var filterValue = $(this).val();
+                    $.each([$('#container'), $('#container-anime')], function () {
+                        qsRegex = new RegExp( filterValue, 'gi' );
+                        $(this).isotope();
+                    });
                 });
             },
 
