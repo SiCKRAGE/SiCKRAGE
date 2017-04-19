@@ -19,6 +19,30 @@
     <%namespace file="../includes/modals.mako" import="displayShowModals"/>
 
     <div class="row">
+        <div class="col-md-12 text-center">
+            <label class="badge">Change Show<br/>
+                <span id="prevShow" class="glyphicon glyphicon-arrow-left" alt="&lt;&lt;" title="Prev Show"></span>
+                <select id="pickShow" class="form-control form-control-inline input-sm">
+                    % for curShowList in sortedShowLists:
+                        <% curShowType = curShowList[0] %>
+                        <% curShowList = curShowList[1] %>
+                        % if len(sortedShowLists) > 1:
+                            <optgroup label="${curShowType}">
+                        % endif
+                        % for curShow in curShowList:
+                            <option value="${curShow.indexerid}" ${('', 'selected="selected"')[curShow == show]}>${curShow.name}</option>
+                        % endfor
+                        % if len(sortedShowLists) > 1:
+                            </optgroup>
+                        % endif
+                    % endfor
+                </select>
+                <span id="nextShow" class="glyphicon glyphicon-arrow-right" alt="&gt;&gt;" title="Next Show"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-12">
             <div id="showtitle" data-showname="${show.name}">
                 <h1 class="title" id="scene_exception_${show.indexerid}"
@@ -590,6 +614,7 @@
                         <tbody class="collapse${("", " in")[curSeason == -1]}"
                                id="collapseSeason-${epResult['season']}">
                     % else:
+
 
 
 
