@@ -18,8 +18,6 @@
 
 from __future__ import unicode_literals
 
-import enzyme
-
 import sickrage
 
 extensions = {
@@ -82,6 +80,7 @@ def getResolution(filename):
 
 def getFileMetadata(filename):
     try:
+        import enzyme
         p = enzyme.parse(filename)
 
         # Video codec
@@ -118,11 +117,7 @@ def getFileMetadata(filename):
             'resolution_height': int(p.video[0].height or 0),
             'audio_channels': p.audio[0].channels,
         }
-    except enzyme.exceptions.ParseError:
+    except Exception:
         sickrage.srCore.srLogger.debug('Failed to parse meta for %s', filename)
-    except enzyme.exceptions.NoParserError:
-        sickrage.srCore.srLogger.debug('No parser found for %s', filename)
-    except:
-        sickrage.srCore.srLogger.debug('Failed parsing %s', filename)
 
     return {}

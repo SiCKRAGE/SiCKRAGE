@@ -1,6 +1,7 @@
 # Changelog
 
-- * c12ce9b - 2017-04-18: Released v9.0.11 
+- * 84a45cf - 2017-04-19: Fixed issues with enzyme exceptions Released v9.0.12 
+- * 1259eb2 - 2017-04-18: Released v9.0.11 
 - * f1a2f83 - 2017-04-18: Added improved show selector element to display show template 
 - * 321387e - 2017-04-18: Added filterBy inputbox to main show page for poster view 
 - * 6822e6d - 2017-04-16: Released v9.0.10 
