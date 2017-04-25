@@ -359,7 +359,7 @@ class WebRoot(WebHandler):
         shows = sorted(sickrage.srCore.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
-        for result in sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes')],
+        for result in sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)],
                              key=lambda d: (d['season'], d['episode'])):
 
             if result['showid'] not in episodes:
