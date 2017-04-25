@@ -877,10 +877,9 @@
                         </fieldset>
                     </div><!-- /tab-pane4 //-->
                 % endif
-
                 <input type="hidden" name="provider_strings" id="provider_strings"/>
-                <br><input type="submit" class="btn config_submitter_refresh" value="Save Changes"/><br>
             </div><!-- /ui-components //-->
+            <br><input type="submit" class="btn config_submitter_refresh" value="Save Changes"/><br>
         </form>
     </div>
 </%block>

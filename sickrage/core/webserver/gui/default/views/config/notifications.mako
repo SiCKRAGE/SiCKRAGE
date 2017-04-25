@@ -2191,8 +2191,8 @@
                     </div><!-- /email tab-pane //-->
 
                 </div>
-                <input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
             </div>
+            <br/><input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
         </form>
     </div>
 </%block>

@@ -1,6 +1,7 @@
 # Changelog
 
-- * f19fc00 - 2017-04-25: Added exception handling for iterating over actors with thetvdb api 
+- * c553b94 - 2017-04-25: Fixed tabs in templates, reformtted templates 
+- * 5f4d664 - 2017-04-25: Added exception handling for iterating over actors with thetvdb api 
 - * 9eb7122 - 2017-04-24: Fixed tabs for search provider config template 
 - * 4e4ad23 - 2017-04-24: Fixed tabs for search provider config template 
 - * e9f3913 - 2017-04-24: Fixed tabs for post-processing config template 
@@ -13,6 +14,8 @@
 - * 3771cf2 - 2017-04-16: Changed display shows background from poster to banner 
 - * 4a93dfb - 2017-04-16: Changed layout of display shows template 
 - * c4825da - 2017-04-16: Fixed layout for history template 
+- * 4b804ea - 2017-04-16: Add with_doc to db query for apibuilder 
+- * 02c1fb2 - 2017-04-16: Change working directory to DATA_DIR if in daemon mode This resolves the issue with imdbpie trying to create its cache in the root directory and failing if it doesn&#x27;t have permissions 
 - * 01b56d9 - 2017-04-16: Misc changes 
 - * 245f6bf - 2017-04-16: Misc changes 
 - * 46a6106 - 2017-04-16: Fixed issues with navbar and anchors 

@@ -840,14 +840,14 @@
                             </div>
                         % endif
                     </div><!-- /tab-pane3 //-->
-
-                    <h6 class="pull-right">
-                        <b>All non-absolute folder locations are relative to
-                            <span class="path">${sickrage.DATA_DIR}</span>
-                        </b>
-                    </h6>
-                    <input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
                 </div>
+                <br/>
+                <h6 class="pull-right">
+                    <b>All non-absolute folder locations are relative to
+                        <span class="path">${sickrage.DATA_DIR}</span>
+                    </b>
+                </h6>
+                <input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
             </form>
         </div>
 </%block>

@@ -43,11 +43,8 @@
                         <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
                     </fieldset>
                 </div><!-- /tab-pane1 //-->
-
-                <br><input type="submit" class="btn config_submitter_refresh" value="Save Changes"/><br>
-
             </div><!-- /ui-components //-->
-
+            <br><input type="submit" class="btn config_submitter_refresh" value="Save Changes"/><br>
         </form>
     </div>
 </%block>
