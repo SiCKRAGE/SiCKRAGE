@@ -59,7 +59,7 @@
             </ul>
 
             <div class="tab-content">
-                <div id="core-tab-pane1" class="tab-pane fade in active" style='min-height: 550px;'>
+                <div id="core-tab-pane1" class="tab-pane fade in active">
 
                     <div class="tab-pane-desc">
                         <h3>Provider Priorities</h3>
