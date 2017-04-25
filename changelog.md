@@ -1,6 +1,7 @@
 # Changelog
 
-- * 15d6547 - 2017-04-24: Fixed tabs for search provider config template 
+- * f19fc00 - 2017-04-25: Added exception handling for iterating over actors with thetvdb api 
+- * 9eb7122 - 2017-04-24: Fixed tabs for search provider config template 
 - * 4e4ad23 - 2017-04-24: Fixed tabs for search provider config template 
 - * e9f3913 - 2017-04-24: Fixed tabs for post-processing config template 
 - * c2983f8 - 2017-04-24: Fixed tabs for notifications config template 

@@ -503,30 +503,28 @@ class Tvdb:
     def _parseActors(self, sid):
         sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
 
-        try:
-            actorsEt = self._request('get', self.config['api']['actors'].format(id=sid))['data']
-        except tvdb_error:
-            sickrage.srCore.srLogger.debug('Actors result returned zero')
-            return
-
         cur_actors = Actors()
-        for cur_actor in actorsEt:
-            curActor = Actor()
-            for k, v in cur_actor.items():
-                if k is None or v is None:
-                    continue
 
-                k = k.lower()
-                if k == "image":
-                    v = self.config['api']['imagesPrefix'].format(id=v)
-                else:
-                    v = self._cleanData(v)
+        try:
+            for cur_actor in self._request('get', self.config['api']['actors'].format(id=sid))['data']:
+                curActor = Actor()
+                for k, v in cur_actor.items():
+                    if k is None or v is None:
+                        continue
 
-                curActor[k] = v
+                    k = k.lower()
+                    if k == "image":
+                        v = self.config['api']['imagesPrefix'].format(id=v)
+                    else:
+                        v = self._cleanData(v)
 
-            cur_actors.append(curActor)
+                    curActor[k] = v
 
-        self._setShowData(sid, '_actors', cur_actors)
+                cur_actors.append(curActor)
+
+            self._setShowData(sid, '_actors', cur_actors)
+        except Exception:
+            sickrage.srCore.srLogger.debug('Actors result returned zero')
 
     @login_required
     def _getShowData(self, sid):
@@ -540,7 +538,7 @@ class Tvdb:
 
         try:
             seriesInfoEt = self._request('get', self.config['api']['series'].format(id=sid))['data']
-        except tvdb_error:
+        except Exception:
             sickrage.srCore.srLogger.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
 
