@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7461ec5 - 2017-04-24: Fixed tabs for notifications config template 
+- * f644610 - 2017-04-24: Fixed tabs for post-processing config template 
+- * c2983f8 - 2017-04-24: Fixed tabs for notifications config template 
 - * 2f73691 - 2017-04-19: Fixed issues with enzyme exceptions Released v9.0.12 
 - * 1259eb2 - 2017-04-18: Released v9.0.11 
 - * f1a2f83 - 2017-04-18: Added improved show selector element to display show template 

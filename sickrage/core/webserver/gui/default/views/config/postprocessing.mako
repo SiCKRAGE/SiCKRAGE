@@ -10,18 +10,16 @@
 %>
 
 <%block name="content">
-<div id="content960">
-
-<div id="config">
-    <div id="ui-content">
+    <div id="config">
         <form id="configForm" action="savePostProcessing" method="post">
-            <div id="ui-components">
-                <ul>
-                    <li><a href="#core-tab-pane1">Post-Processing</a></li>
-                    <li><a href="#core-tab-pane2">Episode Naming</a></li>
-                    <li><a href="#core-tab-pane3">Metadata</a></li>
-                </ul>
-                <div id="core-tab-pane1" class="tab-pane">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Post-Processing</a></li>
+                <li><a data-toggle="tab" href="#core-tab-pane2">Episode Naming</a></li>
+                <li><a data-toggle="tab" href="#core-tab-pane3">Metadata</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="core-tab-pane1" class="tab-pane fade in active">
                     <div class="tab-pane-desc">
                         <h3>Post-Processing</h3>
                         <p>Settings that dictate how SickRage should process completed downloads.</p>
@@ -43,7 +41,8 @@
                             <label class="nocheck" for="tv_download_dir">
                                 <span class="component-title">Post Processing Dir</span>
                                 <input type="text" name="tv_download_dir" id="tv_download_dir"
-                                       value="${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}" class="form-control input-sm input350"
+                                       value="${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}"
+                                       class="form-control input-sm input350"
                                        autocapitalize="off"/>
                             </label>
                             <label class="nocheck">
@@ -80,7 +79,8 @@
                             <label class="nocheck">
                                 <span class="component-title">Auto Post-Processing Frequency</span>
                                 <input type="number" min="10" name="autopostprocessor_frequency"
-                                       id="autopostprocessor_frequency" value="${sickrage.srCore.srConfig.AUTOPOSTPROCESSOR_FREQ}"
+                                       id="autopostprocessor_frequency"
+                                       value="${sickrage.srCore.srConfig.AUTOPOSTPROCESSOR_FREQ}"
                                        class="form-control input-sm input75"/>
                             </label>
                             <label class="nocheck">
@@ -99,7 +99,8 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Sync File Extensions</span>
-                                <input type="text" name="sync_files" id="sync_files" value="${sickrage.srCore.srConfig.SYNC_FILES}"
+                                <input type="text" name="sync_files" id="sync_files"
+                                       value="${sickrage.srCore.srConfig.SYNC_FILES}"
                                        class="form-control input-sm input350" autocapitalize="off"/>
                             </label>
                             <label class="nocheck">
@@ -163,7 +164,8 @@
                             <label class="nocheck" for="file_timestamp_timezone">
                                 <span class="component-title">Timezone for File Date:</span>
                                 <span class="component-desc">
-                                    <select name="file_timestamp_timezone" id="file_timestamp_timezone" class="form-control input-sm">
+                                    <select name="file_timestamp_timezone" id="file_timestamp_timezone"
+                                            class="form-control input-sm">
                                         % for curTimezone in ('local','network'):
                                             <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
                                         % endfor
@@ -235,18 +237,21 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Extra Scripts</span>
-                                <input type="text" name="extra_scripts" value="${'|'.join(sickrage.srCore.srConfig.EXTRA_SCRIPTS)}"
+                                <input type="text" name="extra_scripts"
+                                       value="${'|'.join(sickrage.srCore.srConfig.EXTRA_SCRIPTS)}"
                                        class="form-control input-sm input350" autocapitalize="off"/>
                             </label>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
-                                <span class="component-desc">See <a href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts"><font color='red'><b>Wiki</b></font></a> for script arguments description and usage.</span>
+                                <span class="component-desc">See <a
+                                        href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts"><font
+                                        color='red'><b>Wiki</b></font></a> for script arguments description and usage.</span>
                             </label>
                         </div>
-                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/><br>
                     </fieldset>
                 </div><!-- /tab-pane1 //-->
-                <div id="core-tab-pane2" class="tab-pane">
+                <div id="core-tab-pane2" class="tab-pane fade">
 
                     <div class="tab-pane-desc">
                         <h3>Episode Naming</h3>
@@ -261,11 +266,11 @@
                                     <select id="name_presets" class="form-control input-sm">
                                         <% is_custom = True %>
                                         % for cur_preset in validator.name_presets:
-                                            <% tmp = validator.test_name(cur_preset, anime_type=3) %>
-                                            % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
-                                                <% is_custom = False %>
-                                            % endif
-                                                <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                        <% tmp = validator.test_name(cur_preset, anime_type=3) %>
+                                        % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
+                                            <% is_custom = False %>
+                                        % endif
+                                            <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                         % endfor
                                         <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
                                             Custom...
@@ -285,148 +290,158 @@
                                         <input type="text" name="naming_pattern" id="naming_pattern"
                                                value="${sickrage.srCore.srConfig.NAMING_PATTERN}"
                                                class="form-control input-sm input350"/>
-                                        <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend" class="legend" class="legend" />
+                                        <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                             alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend"
+                                             class="legend" class="legend"/>
                                     </span>
                                 </label>
                                 <label class="nocheck">
                                     <span class="component-title">&nbsp;</span>
                                     <span class="component-desc"><b>NOTE:</b> Don't forget to add quality pattern. Otherwise after post-processing the episode will have UNKNOWN quality</span>
-                                 </label>
+                                </label>
                             </div>
 
                             <div id="naming_key" class="nocheck" style="display: none;">
-                                  <table class="Key">
+                                <table class="Key">
                                     <thead>
-                                        <tr>
-                                          <th class="align-right">Meaning</th>
-                                          <th>Pattern</th>
-                                          <th width="60%">Result</th>
-                                        </tr>
+                                    <tr>
+                                        <th class="align-right">Meaning</th>
+                                        <th>Pattern</th>
+                                        <th width="60%">Result</th>
+                                    </tr>
                                     </thead>
                                     <tfoot>
-                                        <tr>
-                                          <th colspan="3">Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)</th>
-                                        </tr>
+                                    <tr>
+                                        <th colspan="3">
+                                            Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                        </th>
+                                    </tr>
                                     </tfoot>
                                     <tbody>
-                                        <tr>
-                                          <td class="align-right"><b>Show Name:</b></td>
-                                          <td>%SN</td>
-                                          <td>Show Name</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td>&nbsp;</td>
-                                          <td>%S.N</td>
-                                          <td>Show.Name</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%S_N</td>
-                                          <td>Show_Name</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td class="align-right"><b>Season Number:</b></td>
-                                          <td>%S</td>
-                                          <td>2</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%0S</td>
-                                          <td>02</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td class="align-right"><b>XEM Season Number:</b></td>
-                                          <td>%XMS</td>
-                                          <td>2</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%0XMS</td>
-                                          <td>02</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td class="align-right"><b>Episode Number:</b></td>
-                                          <td>%E</td>
-                                          <td>3</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%0E</td>
-                                          <td>03</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td class="align-right"><b>XEM Episode Number:</b></td>
-                                          <td>%XME</td>
-                                          <td>3</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%0XME</td>
-                                          <td>03</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td class="align-right"><b>Episode Name:</b></td>
-                                          <td>%EN</td>
-                                          <td>Episode Name</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%E.N</td>
-                                          <td>Episode.Name</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td>&nbsp;</td>
-                                          <td>%E_N</td>
-                                          <td>Episode_Name</td>
-                                        </tr>
-                                        <tr>
-                                          <td class="align-right"><b>Quality:</b></td>
-                                          <td>%QN</td>
-                                          <td>720p BluRay</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td>&nbsp;</td>
-                                          <td>%Q.N</td>
-                                          <td>720p.BluRay</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%Q_N</td>
-                                          <td>720p_BluRay</td>
-                                        </tr>
-                                        <tr>
-                                          <td class="align-right"><b>Scene Quality:</b></td>
-                                          <td>%SQN</td>
-                                          <td>720p HDTV x264</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td>&nbsp;</td>
-                                          <td>%SQ.N</td>
-                                          <td>720p.HDTV.x264</td>
-                                        </tr>
-                                        <tr>
-                                          <td>&nbsp;</td>
-                                          <td>%SQ_N</td>
-                                          <td>720p_HDTV_x264</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="Multi-EP style is ignored"></i> <b>Release Name:</b></td>
-                                          <td>%RN</td>
-                                          <td>Show.Name.S02E03.HDTV.XviD-RLSGROUP</td>
-                                        </tr>
-                                        <tr>
-                                          <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i> <b>Release Group:</b></td>
-                                          <td>%RG</td>
-                                          <td>RLSGROUP</td>
-                                        </tr>
-                                        <tr class="even">
-                                          <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="If episode is proper/repack add 'proper' to name."></i> <b>Release Type:</b></td>
-                                          <td>%RT</td>
-                                          <td>PROPER</td>
-                                        </tr>
+                                    <tr>
+                                        <td class="align-right"><b>Show Name:</b></td>
+                                        <td>%SN</td>
+                                        <td>Show Name</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td>&nbsp;</td>
+                                        <td>%S.N</td>
+                                        <td>Show.Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%S_N</td>
+                                        <td>Show_Name</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="align-right"><b>Season Number:</b></td>
+                                        <td>%S</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%0S</td>
+                                        <td>02</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="align-right"><b>XEM Season Number:</b></td>
+                                        <td>%XMS</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%0XMS</td>
+                                        <td>02</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="align-right"><b>Episode Number:</b></td>
+                                        <td>%E</td>
+                                        <td>3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%0E</td>
+                                        <td>03</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="align-right"><b>XEM Episode Number:</b></td>
+                                        <td>%XME</td>
+                                        <td>3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%0XME</td>
+                                        <td>03</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="align-right"><b>Episode Name:</b></td>
+                                        <td>%EN</td>
+                                        <td>Episode Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%E.N</td>
+                                        <td>Episode.Name</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td>&nbsp;</td>
+                                        <td>%E_N</td>
+                                        <td>Episode_Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-right"><b>Quality:</b></td>
+                                        <td>%QN</td>
+                                        <td>720p BluRay</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td>&nbsp;</td>
+                                        <td>%Q.N</td>
+                                        <td>720p.BluRay</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%Q_N</td>
+                                        <td>720p_BluRay</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-right"><b>Scene Quality:</b></td>
+                                        <td>%SQN</td>
+                                        <td>720p HDTV x264</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td>&nbsp;</td>
+                                        <td>%SQ.N</td>
+                                        <td>720p.HDTV.x264</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>%SQ_N</td>
+                                        <td>720p_HDTV_x264</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                   title="Multi-EP style is ignored"></i> <b>Release
+                                            Name:</b></td>
+                                        <td>%RN</td>
+                                        <td>Show.Name.S02E03.HDTV.XviD-RLSGROUP</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                   title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                            <b>Release Group:</b></td>
+                                        <td>%RG</td>
+                                        <td>RLSGROUP</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                   title="If episode is proper/repack add 'proper' to name."></i>
+                                            <b>Release Type:</b></td>
+                                        <td>%RT</td>
+                                        <td>PROPER</td>
+                                    </tr>
                                     </tbody>
-                                  </table>
-                                  <br>
+                                </table>
+                                <br>
                             </div>
                         </div>
 
@@ -435,9 +450,9 @@
                                 <span class="component-title">Multi-Episode Style:</span>
                                 <span class="component-desc">
                                     <select id="naming_multi_ep" name="naming_multi_ep" class="form-control input-sm">
-                                    % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
-                                        <option value="${cur_multi_ep[0]}" ${('', 'selected="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
-                                    % endfor
+                                        % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
+                                            <option value="${cur_multi_ep[0]}" ${('', 'selected="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
+                                        % endfor
                                     </select>
                                 </span>
                             </label>
@@ -489,11 +504,11 @@
                                         <select id="name_abd_presets" class="form-control input-sm">
                                             <% is_abd_custom = True %>
                                             % for cur_preset in validator.name_abd_presets:
-                                                <% tmp = validator.test_name(cur_preset) %>
-                                                % if cur_preset == sickrage.srCore.srConfig.NAMING_ABD_PATTERN:
-                                                    <% is_abd_custom = False %>
-                                                % endif
-                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_ABD_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                            <% tmp = validator.test_name(cur_preset) %>
+                                            % if cur_preset == sickrage.srCore.srConfig.NAMING_ABD_PATTERN:
+                                                <% is_abd_custom = False %>
+                                            % endif
+                                                <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_ABD_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                             % endfor
                                             <option id="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}" ${('', 'selected="selected"')[bool(is_abd_custom)]}>
                                                 Custom...
@@ -513,134 +528,144 @@
                                             <input type="text" name="naming_abd_pattern" id="naming_abd_pattern"
                                                    value="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}"
                                                    class="form-control input-sm input350"/>
-                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_abd_key" title="Toggle ABD Naming Legend" class="legend" />
+                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                                 alt="[Toggle Key]" id="show_naming_abd_key"
+                                                 title="Toggle ABD Naming Legend" class="legend"/>
                                         </span>
                                     </label>
                                 </div>
 
                                 <div id="naming_abd_key" class="nocheck" style="display: none;">
-                                      <table class="Key">
+                                    <table class="Key">
                                         <thead>
-                                            <tr>
-                                              <th class="align-right">Meaning</th>
-                                              <th>Pattern</th>
-                                              <th width="60%">Result</th>
-                                            </tr>
+                                        <tr>
+                                            <th class="align-right">Meaning</th>
+                                            <th>Pattern</th>
+                                            <th width="60%">Result</th>
+                                        </tr>
                                         </thead>
                                         <tfoot>
-                                            <tr>
-                                              <th colspan="3">Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)</th>
-                                            </tr>
+                                        <tr>
+                                            <th colspan="3">
+                                                Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                            </th>
+                                        </tr>
                                         </tfoot>
                                         <tbody>
-                                            <tr>
-                                              <td class="align-right"><b>Show Name:</b></td>
-                                              <td>%SN</td>
-                                              <td>Show Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%S.N</td>
-                                              <td>Show.Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%S_N</td>
-                                              <td>Show_Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Regular Air Date:</b></td>
-                                              <td>%AD</td>
-                                              <td>2010 03 09</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%A.D</td>
-                                              <td>2010.03.09</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%A_D</td>
-                                              <td>2010_03_09</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%A-D</td>
-                                              <td>2010-03-09</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Episode Name:</b></td>
-                                              <td>%EN</td>
-                                              <td>Episode Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%E.N</td>
-                                              <td>Episode.Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%E_N</td>
-                                              <td>Episode_Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><b>Quality:</b></td>
-                                              <td>%QN</td>
-                                              <td>720p BluRay</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%Q.N</td>
-                                              <td>720p.BluRay</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%Q_N</td>
-                                              <td>720p_BluRay</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Year:</b></td>
-                                              <td>%Y</td>
-                                              <td>2010</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><b>Month:</b></td>
-                                              <td>%M</td>
-                                              <td>3</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right">&nbsp;</td>
-                                              <td>%0M</td>
-                                              <td>03</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><b>Day:</b></td>
-                                              <td>%D</td>
-                                              <td>9</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right">&nbsp;</td>
-                                              <td>%0D</td>
-                                              <td>09</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="Multi-EP style is ignored"></i> <b>Release Name:</b></td>
-                                              <td>%RN</td>
-                                              <td>Show.Name.2010.03.09.HDTV.XviD-RLSGROUP</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i> <b>Release Group:</b></td>
-                                              <td>%RG</td>
-                                              <td>RLSGROUP</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="If episode is proper/repack add 'proper' to name."></i> <b>Release Type:</b></td>
-                                              <td>%RT</td>
-                                              <td>PROPER</td>
-                                            </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Show Name:</b></td>
+                                            <td>%SN</td>
+                                            <td>Show Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%S.N</td>
+                                            <td>Show.Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%S_N</td>
+                                            <td>Show_Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Regular Air Date:</b></td>
+                                            <td>%AD</td>
+                                            <td>2010 03 09</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%A.D</td>
+                                            <td>2010.03.09</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%A_D</td>
+                                            <td>2010_03_09</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%A-D</td>
+                                            <td>2010-03-09</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Episode Name:</b></td>
+                                            <td>%EN</td>
+                                            <td>Episode Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%E.N</td>
+                                            <td>Episode.Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%E_N</td>
+                                            <td>Episode_Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Quality:</b></td>
+                                            <td>%QN</td>
+                                            <td>720p BluRay</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%Q.N</td>
+                                            <td>720p.BluRay</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%Q_N</td>
+                                            <td>720p_BluRay</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Year:</b></td>
+                                            <td>%Y</td>
+                                            <td>2010</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Month:</b></td>
+                                            <td>%M</td>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right">&nbsp;</td>
+                                            <td>%0M</td>
+                                            <td>03</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Day:</b></td>
+                                            <td>%D</td>
+                                            <td>9</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right">&nbsp;</td>
+                                            <td>%0D</td>
+                                            <td>09</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="Multi-EP style is ignored"></i> <b>Release
+                                                Name:</b></td>
+                                            <td>%RN</td>
+                                            <td>Show.Name.2010.03.09.HDTV.XviD-RLSGROUP</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                                <b>Release Group:</b></td>
+                                            <td>%RG</td>
+                                            <td>RLSGROUP</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="If episode is proper/repack add 'proper' to name."></i>
+                                                <b>Release Type:</b></td>
+                                            <td>%RT</td>
+                                            <td>PROPER</td>
+                                        </tr>
                                         </tbody>
-                                      </table>
-                                      <br>
+                                    </table>
+                                    <br>
                                 </div>
                             </div><!-- /naming_abd_custom -->
 
@@ -671,11 +696,11 @@
                                         <select id="name_sports_presets" class="form-control input-sm">
                                             <% is_sports_custom = True %>
                                             % for cur_preset in validator.name_sports_presets:
-                                                <% tmp = validator.test_name(cur_preset) %>
-                                                % if cur_preset == sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN:
-                                                    <% is_sports_custom = False %>
-                                                % endif
-                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                            <% tmp = validator.test_name(cur_preset) %>
+                                            % if cur_preset == sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN:
+                                                <% is_sports_custom = False %>
+                                            % endif
+                                                <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                             % endfor
                                             <option id="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}" ${('', 'selected="selected"')[bool(is_sports_custom)]}>
                                                 Custom...
@@ -695,134 +720,144 @@
                                             <input type="text" name="naming_sports_pattern" id="naming_sports_pattern"
                                                    value="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}"
                                                    class="form-control input-sm input350"/>
-                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_sports_key" title="Toggle Sports Naming Legend" class="legend" />
+                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                                 alt="[Toggle Key]" id="show_naming_sports_key"
+                                                 title="Toggle Sports Naming Legend" class="legend"/>
                                         </span>
                                     </label>
                                 </div>
 
                                 <div id="naming_sports_key" class="nocheck" style="display: none;">
-                                      <table class="Key">
+                                    <table class="Key">
                                         <thead>
-                                            <tr>
-                                              <th class="align-right">Meaning</th>
-                                              <th>Pattern</th>
-                                              <th width="60%">Result</th>
-                                            </tr>
+                                        <tr>
+                                            <th class="align-right">Meaning</th>
+                                            <th>Pattern</th>
+                                            <th width="60%">Result</th>
+                                        </tr>
                                         </thead>
                                         <tfoot>
-                                            <tr>
-                                              <th colspan="3">Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)</th>
-                                            </tr>
+                                        <tr>
+                                            <th colspan="3">
+                                                Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                            </th>
+                                        </tr>
                                         </tfoot>
                                         <tbody>
-                                            <tr>
-                                              <td class="align-right"><b>Show Name:</b></td>
-                                              <td>%SN</td>
-                                              <td>Show Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%S.N</td>
-                                              <td>Show.Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%S_N</td>
-                                              <td>Show_Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Sports Air Date:</b></td>
-                                              <td>%AD</td>
-                                              <td>9 Mar 2011</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%A.D</td>
-                                              <td>9.Mar.2011</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%A_D</td>
-                                              <td>9_Mar_2011</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%A-D</td>
-                                              <td>9-Mar-2011</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Episode Name:</b></td>
-                                              <td>%EN</td>
-                                              <td>Episode Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%E.N</td>
-                                              <td>Episode.Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%E_N</td>
-                                              <td>Episode_Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><b>Quality:</b></td>
-                                              <td>%QN</td>
-                                              <td>720p BluRay</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%Q.N</td>
-                                              <td>720p.BluRay</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%Q_N</td>
-                                              <td>720p_BluRay</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Year:</b></td>
-                                              <td>%Y</td>
-                                              <td>2010</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><b>Month:</b></td>
-                                              <td>%M</td>
-                                              <td>3</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right">&nbsp;</td>
-                                              <td>%0M</td>
-                                              <td>03</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><b>Day:</b></td>
-                                              <td>%D</td>
-                                              <td>9</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right">&nbsp;</td>
-                                              <td>%0D</td>
-                                              <td>09</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="Multi-EP style is ignored"></i> <b>Release Name:</b></td>
-                                              <td>%RN</td>
-                                              <td>Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i> <b>Release Group:</b></td>
-                                              <td>%RG</td>
-                                              <td>RLSGROUP</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="If episode is proper/repack add 'proper' to name."></i> <b>Release Type:</b></td>
-                                              <td>%RT</td>
-                                              <td>PROPER</td>
-                                            </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Show Name:</b></td>
+                                            <td>%SN</td>
+                                            <td>Show Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%S.N</td>
+                                            <td>Show.Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%S_N</td>
+                                            <td>Show_Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Sports Air Date:</b></td>
+                                            <td>%AD</td>
+                                            <td>9 Mar 2011</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%A.D</td>
+                                            <td>9.Mar.2011</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%A_D</td>
+                                            <td>9_Mar_2011</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%A-D</td>
+                                            <td>9-Mar-2011</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Episode Name:</b></td>
+                                            <td>%EN</td>
+                                            <td>Episode Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%E.N</td>
+                                            <td>Episode.Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%E_N</td>
+                                            <td>Episode_Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Quality:</b></td>
+                                            <td>%QN</td>
+                                            <td>720p BluRay</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%Q.N</td>
+                                            <td>720p.BluRay</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%Q_N</td>
+                                            <td>720p_BluRay</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Year:</b></td>
+                                            <td>%Y</td>
+                                            <td>2010</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Month:</b></td>
+                                            <td>%M</td>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right">&nbsp;</td>
+                                            <td>%0M</td>
+                                            <td>03</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Day:</b></td>
+                                            <td>%D</td>
+                                            <td>9</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right">&nbsp;</td>
+                                            <td>%0D</td>
+                                            <td>09</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="Multi-EP style is ignored"></i> <b>Release
+                                                Name:</b></td>
+                                            <td>%RN</td>
+                                            <td>Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                                <b>Release Group:</b></td>
+                                            <td>%RG</td>
+                                            <td>RLSGROUP</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="If episode is proper/repack add 'proper' to name."></i>
+                                                <b>Release Type:</b></td>
+                                            <td>%RT</td>
+                                            <td>PROPER</td>
+                                        </tr>
                                         </tbody>
-                                      </table>
-                                      <br>
+                                    </table>
+                                    <br>
                                 </div>
                             </div><!-- /naming_sports_custom -->
 
@@ -854,11 +889,11 @@
                                         <select id="name_anime_presets" class="form-control input-sm">
                                             <% is_anime_custom = True %>
                                             % for cur_preset in validator.name_anime_presets:
-                                                <% tmp = validator.test_name(cur_preset) %>
-                                                % if cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN:
-                                                    <% is_anime_custom = False %>
-                                                % endif
-                                                    <option id="${cur_preset}" ${('', 'selected="selected"')[cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                            <% tmp = validator.test_name(cur_preset) %>
+                                            % if cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN:
+                                                <% is_anime_custom = False %>
+                                            % endif
+                                                <option id="${cur_preset}" ${('', 'selected="selected"')[cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                             % endfor
                                             <option id="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}" ${('', 'selected="selected"')[bool(is_anime_custom)]}>
                                                 Custom...
@@ -878,129 +913,139 @@
                                             <input type="text" name="naming_anime_pattern" id="naming_anime_pattern"
                                                    value="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}"
                                                    class="form-control input-sm input350"/>
-                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_anime_key" title="Toggle Anime Naming Legend" class="legend" />
+                                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                                 alt="[Toggle Key]" id="show_naming_anime_key"
+                                                 title="Toggle Anime Naming Legend" class="legend"/>
                                         </span>
                                     </label>
                                 </div>
 
                                 <div id="naming_anime_key" class="nocheck" style="display: none;">
-                                      <table class="Key">
+                                    <table class="Key">
                                         <thead>
-                                            <tr>
-                                              <th class="align-right">Meaning</th>
-                                              <th>Pattern</th>
-                                              <th width="60%">Result</th>
-                                            </tr>
+                                        <tr>
+                                            <th class="align-right">Meaning</th>
+                                            <th>Pattern</th>
+                                            <th width="60%">Result</th>
+                                        </tr>
                                         </thead>
                                         <tfoot>
-                                            <tr>
-                                              <th colspan="3">Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)</th>
-                                            </tr>
+                                        <tr>
+                                            <th colspan="3">
+                                                Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                            </th>
+                                        </tr>
                                         </tfoot>
                                         <tbody>
-                                            <tr>
-                                              <td class="align-right"><b>Show Name:</b></td>
-                                              <td>%SN</td>
-                                              <td>Show Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%S.N</td>
-                                              <td>Show.Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%S_N</td>
-                                              <td>Show_Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Season Number:</b></td>
-                                              <td>%S</td>
-                                              <td>2</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%0S</td>
-                                              <td>02</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>XEM Season Number:</b></td>
-                                              <td>%XMS</td>
-                                              <td>2</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%0XMS</td>
-                                              <td>02</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Episode Number:</b></td>
-                                              <td>%E</td>
-                                              <td>3</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%0E</td>
-                                              <td>03</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>XEM Episode Number:</b></td>
-                                              <td>%XME</td>
-                                              <td>3</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%0XME</td>
-                                              <td>03</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><b>Episode Name:</b></td>
-                                              <td>%EN</td>
-                                              <td>Episode Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%E.N</td>
-                                              <td>Episode.Name</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%E_N</td>
-                                              <td>Episode_Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><b>Quality:</b></td>
-                                              <td>%QN</td>
-                                              <td>720p BluRay</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td>&nbsp;</td>
-                                              <td>%Q.N</td>
-                                              <td>720p.BluRay</td>
-                                            </tr>
-                                            <tr>
-                                              <td>&nbsp;</td>
-                                              <td>%Q_N</td>
-                                              <td>720p_BluRay</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="Multi-EP style is ignored"></i> <b>Release Name:</b></td>
-                                              <td>%RN</td>
-                                              <td>Show.Name.S02E03.HDTV.XviD-RLSGROUP</td>
-                                            </tr>
-                                            <tr>
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i> <b>Release Group:</b></td>
-                                              <td>%RG</td>
-                                              <td>RLSGROUP</td>
-                                            </tr>
-                                            <tr class="even">
-                                              <td class="align-right"><i class="glyphicon glyphicon-info-sign" title="If episode is proper/repack add 'proper' to name."></i> <b>Release Type:</b></td>
-                                              <td>%RT</td>
-                                              <td>PROPER</td>
-                                            </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Show Name:</b></td>
+                                            <td>%SN</td>
+                                            <td>Show Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%S.N</td>
+                                            <td>Show.Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%S_N</td>
+                                            <td>Show_Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Season Number:</b></td>
+                                            <td>%S</td>
+                                            <td>2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%0S</td>
+                                            <td>02</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>XEM Season Number:</b></td>
+                                            <td>%XMS</td>
+                                            <td>2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%0XMS</td>
+                                            <td>02</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Episode Number:</b></td>
+                                            <td>%E</td>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%0E</td>
+                                            <td>03</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>XEM Episode Number:</b></td>
+                                            <td>%XME</td>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%0XME</td>
+                                            <td>03</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><b>Episode Name:</b></td>
+                                            <td>%EN</td>
+                                            <td>Episode Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%E.N</td>
+                                            <td>Episode.Name</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%E_N</td>
+                                            <td>Episode_Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><b>Quality:</b></td>
+                                            <td>%QN</td>
+                                            <td>720p BluRay</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td>&nbsp;</td>
+                                            <td>%Q.N</td>
+                                            <td>720p.BluRay</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>%Q_N</td>
+                                            <td>720p_BluRay</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="Multi-EP style is ignored"></i> <b>Release
+                                                Name:</b></td>
+                                            <td>%RN</td>
+                                            <td>Show.Name.S02E03.HDTV.XviD-RLSGROUP</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                                <b>Release Group:</b></td>
+                                            <td>%RG</td>
+                                            <td>RLSGROUP</td>
+                                        </tr>
+                                        <tr class="even">
+                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
+                                                                       title="If episode is proper/repack add 'proper' to name."></i>
+                                                <b>Release Type:</b></td>
+                                            <td>%RT</td>
+                                            <td>PROPER</td>
+                                        </tr>
                                         </tbody>
-                                      </table>
-                                      <br>
+                                    </table>
+                                    <br>
                                 </div>
                             </div><!-- /naming_anime_custom -->
 
@@ -1008,10 +1053,11 @@
                                 <label class="nocheck" for="naming_anime_multi_ep">
                                     <span class="component-title">Multi-Episode Style:</span>
                                     <span class="component-desc">
-                                        <select id="naming_anime_multi_ep" name="naming_anime_multi_ep" class="form-control input-sm">
-                                        % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
-                                            <option value="${cur_multi_ep[0]}" ${('', 'selected="selected" class="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_ANIME_MULTI_EP]}>${cur_multi_ep[1]}</option>
-                                        % endfor
+                                        <select id="naming_anime_multi_ep" name="naming_anime_multi_ep"
+                                                class="form-control input-sm">
+                                            % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
+                                                <option value="${cur_multi_ep[0]}" ${('', 'selected="selected" class="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_ANIME_MULTI_EP]}>${cur_multi_ep[1]}</option>
+                                            % endfor
                                         </select>
                                     </span>
                                 </label>
@@ -1075,16 +1121,18 @@
                         </div><!-- /naming_anime_different -->
 
                         <div></div>
-                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/><br>
 
                     </fieldset>
                 </div><!-- /tab-pane2 //-->
 
-                <div id="core-tab-pane3" class="tab-pane">
+                <div id="core-tab-pane3" class="tab-pane fade">
 
                     <div class="tab-pane-desc">
                         <h3>Metadata</h3>
-                        <p>The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience.</p>
+                        <p>The data associated to the data. These are files associated to a TV show in the form of
+                            images
+                            and text that, when supported, will enhance the viewing experience.</p>
                     </div>
 
                     <fieldset class="tab-pane-list">
@@ -1094,9 +1142,9 @@
                                 <span class="component-desc">
                                     <% m_dict = sickrage.srCore.metadataProvidersDict %>
                                     <select id="metadataType" class="form-control input-sm">
-                                    % for (cur_id, cur_generator) in sorted(m_dict.items()):
-                                        <option value="${cur_id}">${cur_generator.name}</option>
-                                    % endfor
+                                        % for (cur_id, cur_generator) in sorted(m_dict.items()):
+                                            <option value="${cur_id}">${cur_generator.name}</option>
+                                        % endfor
                                     </select>
                                 </span>
                             </label>
@@ -1104,58 +1152,101 @@
                         </div>
 
                         % for (cur_id, cur_generator) in m_dict.items():
-                        <div class="metadataDiv" id="${cur_id}">
-                            <div>
-                                <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_generator.enabled)]}/>&nbsp;Enabled</label>
-                            </div>
-                            <div class="metadata_options_wrapper">
-                                <h4>Create:</h4>
-                                <div class="metadata_options">
-                                    <label for="${cur_id}_show_metadata"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_show_metadata" ${('', 'checked="checked"')[bool(cur_generator.show_metadata)]}/>&nbsp;Show Metadata</label>
-                                    <label for="${cur_id}_episode_metadata"><input type="checkbox" class="metadata_checkbox" id="${cur_id}_episode_metadata" ${('', 'checked="checked"')[bool(cur_generator.episode_metadata)]}/>&nbsp;Episode Metadata</label>
-                                    <label for="${cur_id}_fanart"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_fanart" ${('', 'checked="checked"')[bool(cur_generator.fanart)]}/>&nbsp;Show Fanart</label>
-                                    <label for="${cur_id}_poster"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_poster" ${('', 'checked="checked"')[bool(cur_generator.poster)]}/>&nbsp;Show Poster</label>
-                                    <label for="${cur_id}_banner"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_banner" ${('', 'checked="checked"')[bool(cur_generator.banner)]}/>&nbsp;Show Banner</label>
-                                    <label for="${cur_id}_episode_thumbnails"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_episode_thumbnails" ${('', 'checked="checked"')[bool(cur_generator.episode_thumbnails)]}/>&nbsp;Episode Thumbnails</label>
-                                    <label for="${cur_id}_season_posters"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_posters" ${('', 'checked="checked"')[bool(cur_generator.season_posters)]}/>&nbsp;Season Posters</label>
-                                    <label for="${cur_id}_season_banners"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_banners" ${('', 'checked="checked"')[bool(cur_generator.season_banners)]}/>&nbsp;Season Banners</label>
-                                    <label for="${cur_id}_season_all_poster"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_all_poster" ${('', 'checked="checked"')[bool(cur_generator.season_all_poster)]}/>&nbsp;Season All Poster</label>
-                                    <label for="${cur_id}_season_all_banner"><input type="checkbox" class="float-left metadata_checkbox" id="${cur_id}_season_all_banner" ${('', 'checked="checked"')[bool(cur_generator.season_all_banner)]}/>&nbsp;Season All Banner</label>
+                            <div class="metadataDiv" id="${cur_id}">
+                                <div>
+                                    <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox"
+                                                                          id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_generator.enabled)]}/>&nbsp;Enabled</label>
                                 </div>
-                            </div>
-                            <div class="metadata_example_wrapper">
-                                <h4>Results:</h4>
-                                <div class="metadata_example panel panel-default">
-                                    <label for="${cur_id}_show_metadata"><span id="${cur_id}_eg_show_metadata">${cur_generator.eg_show_metadata}</span></label>
-                                    <label for="${cur_id}_episode_metadata"><span id="${cur_id}_eg_episode_metadata">${cur_generator.eg_episode_metadata}</span></label>
-                                    <label for="${cur_id}_fanart"><span id="${cur_id}_eg_fanart">${cur_generator.eg_fanart}</span></label>
-                                    <label for="${cur_id}_poster"><span id="${cur_id}_eg_poster">${cur_generator.eg_poster}</span></label>
-                                    <label for="${cur_id}_banner"><span id="${cur_id}_eg_banner">${cur_generator.eg_banner}</span></label>
-                                    <label for="${cur_id}_episode_thumbnails"><span id="${cur_id}_eg_episode_thumbnails">${cur_generator.eg_episode_thumbnails}</span></label>
-                                    <label for="${cur_id}_season_posters"><span id="${cur_id}_eg_season_posters">${cur_generator.eg_season_posters}</span></label>
-                                    <label for="${cur_id}_season_banners"><span id="${cur_id}_eg_season_banners">${cur_generator.eg_season_banners}</span></label>
-                                    <label for="${cur_id}_season_all_poster"><span id="${cur_id}_eg_season_all_poster">${cur_generator.eg_season_all_poster}</span></label>
-                                    <label for="${cur_id}_season_all_banner"><span id="${cur_id}_eg_season_all_banner">${cur_generator.eg_season_all_banner}</span></label>
+                                <div class="metadata_options_wrapper">
+                                    <h4>Create:</h4>
+                                    <div class="metadata_options">
+                                        <label for="${cur_id}_show_metadata"><input type="checkbox"
+                                                                                    class="metadata_checkbox"
+                                                                                    id="${cur_id}_show_metadata" ${('', 'checked="checked"')[bool(cur_generator.show_metadata)]}/>&nbsp;Show
+                                            Metadata</label>
+                                        <label for="${cur_id}_episode_metadata"><input type="checkbox"
+                                                                                       class="metadata_checkbox"
+                                                                                       id="${cur_id}_episode_metadata" ${('', 'checked="checked"')[bool(cur_generator.episode_metadata)]}/>&nbsp;Episode
+                                            Metadata</label>
+                                        <label for="${cur_id}_fanart"><input type="checkbox"
+                                                                             class="float-left metadata_checkbox"
+                                                                             id="${cur_id}_fanart" ${('', 'checked="checked"')[bool(cur_generator.fanart)]}/>&nbsp;Show
+                                            Fanart</label>
+                                        <label for="${cur_id}_poster"><input type="checkbox"
+                                                                             class="float-left metadata_checkbox"
+                                                                             id="${cur_id}_poster" ${('', 'checked="checked"')[bool(cur_generator.poster)]}/>&nbsp;Show
+                                            Poster</label>
+                                        <label for="${cur_id}_banner"><input type="checkbox"
+                                                                             class="float-left metadata_checkbox"
+                                                                             id="${cur_id}_banner" ${('', 'checked="checked"')[bool(cur_generator.banner)]}/>&nbsp;Show
+                                            Banner</label>
+                                        <label for="${cur_id}_episode_thumbnails"><input type="checkbox"
+                                                                                         class="float-left metadata_checkbox"
+                                                                                         id="${cur_id}_episode_thumbnails" ${('', 'checked="checked"')[bool(cur_generator.episode_thumbnails)]}/>&nbsp;Episode
+                                            Thumbnails</label>
+                                        <label for="${cur_id}_season_posters"><input type="checkbox"
+                                                                                     class="float-left metadata_checkbox"
+                                                                                     id="${cur_id}_season_posters" ${('', 'checked="checked"')[bool(cur_generator.season_posters)]}/>&nbsp;Season
+                                            Posters</label>
+                                        <label for="${cur_id}_season_banners"><input type="checkbox"
+                                                                                     class="float-left metadata_checkbox"
+                                                                                     id="${cur_id}_season_banners" ${('', 'checked="checked"')[bool(cur_generator.season_banners)]}/>&nbsp;Season
+                                            Banners</label>
+                                        <label for="${cur_id}_season_all_poster"><input type="checkbox"
+                                                                                        class="float-left metadata_checkbox"
+                                                                                        id="${cur_id}_season_all_poster" ${('', 'checked="checked"')[bool(cur_generator.season_all_poster)]}/>&nbsp;Season
+                                            All Poster</label>
+                                        <label for="${cur_id}_season_all_banner"><input type="checkbox"
+                                                                                        class="float-left metadata_checkbox"
+                                                                                        id="${cur_id}_season_all_banner" ${('', 'checked="checked"')[bool(cur_generator.season_all_banner)]}/>&nbsp;Season
+                                            All Banner</label>
+                                    </div>
                                 </div>
+                                <div class="metadata_example_wrapper">
+                                    <h4>Results:</h4>
+                                    <div class="metadata_example panel panel-default">
+                                        <label for="${cur_id}_show_metadata"><span
+                                                id="${cur_id}_eg_show_metadata">${cur_generator.eg_show_metadata}</span></label>
+                                        <label for="${cur_id}_episode_metadata"><span
+                                                id="${cur_id}_eg_episode_metadata">${cur_generator.eg_episode_metadata}</span></label>
+                                        <label for="${cur_id}_fanart"><span
+                                                id="${cur_id}_eg_fanart">${cur_generator.eg_fanart}</span></label>
+                                        <label for="${cur_id}_poster"><span
+                                                id="${cur_id}_eg_poster">${cur_generator.eg_poster}</span></label>
+                                        <label for="${cur_id}_banner"><span
+                                                id="${cur_id}_eg_banner">${cur_generator.eg_banner}</span></label>
+                                        <label for="${cur_id}_episode_thumbnails"><span
+                                                id="${cur_id}_eg_episode_thumbnails">${cur_generator.eg_episode_thumbnails}</span></label>
+                                        <label for="${cur_id}_season_posters"><span
+                                                id="${cur_id}_eg_season_posters">${cur_generator.eg_season_posters}</span></label>
+                                        <label for="${cur_id}_season_banners"><span
+                                                id="${cur_id}_eg_season_banners">${cur_generator.eg_season_banners}</span></label>
+                                        <label for="${cur_id}_season_all_poster"><span
+                                                id="${cur_id}_eg_season_all_poster">${cur_generator.eg_season_all_poster}</span></label>
+                                        <label for="${cur_id}_season_all_banner"><span
+                                                id="${cur_id}_eg_season_all_banner">${cur_generator.eg_season_all_banner}</span></label>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="${cur_id}_data" id="${cur_id}_data"
+                                       value="${cur_generator.get_config()}"/>
                             </div>
-                            <input type="hidden" name="${cur_id}_data" id="${cur_id}_data" value="${cur_generator.get_config()}" />
-                        </div>
                         % endfor
 
-                        <div class="clearfix"></div><br>
+                        <div class="clearfix"></div>
+                        <br>
 
-                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/><br>
                     </fieldset>
                 </div><!-- /tab-pane3 //-->
 
                 <br>
-                <h6 class="pull-right"><b>All non-absolute folder locations are relative to <span
-                        class="path">${sickrage.DATA_DIR}</span></b></h6>
-                <input type="submit" class="btn pull-left config_submitter button" value="Save Changes" />
+                <h6 class="pull-right">
+                    <b>All non-absolute folder locations are relative to
+                        <span class="path">${sickrage.DATA_DIR}</span>
+                    </b>
+                </h6>
+                <input type="submit" class="btn pull-left config_submitter button" value="Save Changes"/>
             </div>
         </form>
     </div>
-</div>
-</div>
-<div class="clearfix"></div>
 </%block>
