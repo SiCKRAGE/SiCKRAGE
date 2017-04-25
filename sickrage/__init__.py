@@ -357,6 +357,9 @@ def main():
             QUITE = True
             daemon = Daemon(PID_FILE)
             daemon.daemonize()
+            # While daemonizing, the working dir is reset to /
+            # change it to the data dir so that relative paths end up there.
+            os.chdir(DATA_DIR)
 
         # main app loop
         while restart:
