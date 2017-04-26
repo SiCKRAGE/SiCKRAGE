@@ -1,6 +1,7 @@
 # Changelog
 
-- * c553b94 - 2017-04-25: Fixed tabs in templates, reformtted templates 
+- * 010c9de - 2017-04-26: Fixed issues with subtitle config template and adding languages 
+- * 02d0a89 - 2017-04-25: Fixed tabs in templates, reformtted templates 
 - * 5f4d664 - 2017-04-25: Added exception handling for iterating over actors with thetvdb api 
 - * 9eb7122 - 2017-04-24: Fixed tabs for search provider config template 
 - * 4e4ad23 - 2017-04-24: Fixed tabs for search provider config template 

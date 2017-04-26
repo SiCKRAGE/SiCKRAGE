@@ -70,6 +70,11 @@ module.exports = function (grunt) {
                     "qtip2": [
                         "jquery.qtip.min.js",
                         "jquery.qtip.min.css"
+                    ],
+                    "bootstrap-tokenfield": [
+                        "dist/bootstrap-tokenfield.js",
+                        "dist/css/tokenfield-typeahead.css",
+                        "dist/css/bootstrap-tokenfield.css"
                     ]
                 },
                 bowerOptions: {

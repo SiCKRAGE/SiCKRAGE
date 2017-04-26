@@ -1696,9 +1696,9 @@ jQuery(document).ready(function ($) {
                                 return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
                             }
                         },
-                        filter: function() {
-                            return qsRegex ? $(this).text().match( qsRegex ) : true;
-                          }
+                        filter: function () {
+                            return qsRegex ? $(this).text().match(qsRegex) : true;
+                        }
                     });
                 });
 
@@ -1733,7 +1733,7 @@ jQuery(document).ready(function ($) {
                 $('#posterfilter').keyup(function () {
                     var filterValue = $(this).val();
                     $.each([$('#container'), $('#container-anime')], function () {
-                        qsRegex = new RegExp( filterValue, 'gi' );
+                        qsRegex = new RegExp(filterValue, 'gi');
                         $(this).isotope();
                     });
                 });
@@ -2753,6 +2753,51 @@ jQuery(document).ready(function ($) {
 
             subtitles: {
                 init: function () {
+                    var language = new Bloodhound({
+                        remote: {
+                            url: SICKRAGE.srWebRoot + '/config/subtitles/get_code?q=%QUERY',
+                            wildcard: '%QUERY',
+                            filter: function (response) {
+                                var tagged_lang = $('#subtitles_languages').tokenfield('getTokens');
+                                return $.map(response, function (lang) {
+                                    var exists = false;
+                                    for (var i = 0; i < tagged_lang.length; i++) {
+                                        if (lang.value === tagged_lang[i].value) {
+                                            exists = true;
+                                        }
+                                    }
+                                    if (!exists) {
+                                        return {
+                                            value: lang.value,
+                                            name: lang.name
+                                        };
+                                    }
+                                });
+                            }
+                        },
+                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                        queryTokenizer: Bloodhound.tokenizers.whitespace
+                    });
+
+                    $("#subtitles_languages").tokenfield({
+                        typeahead: {
+                            name: 'subtitles_languages',
+                            source: language,
+                            displayKey: 'name'
+                        }
+                    }).on('tokenfield:createtoken', function (event) {
+                        var available_tokens = language.index.datums;
+                        var exists = true;
+                        $.each(available_tokens, function (index, token) {
+                            if (token.value === event.attrs.value) {
+                                exists = false;
+                            }
+                        });
+                        if (exists === true) {
+                            event.preventDefault();
+                        }
+                    });
+
                     $('#subtitles_dir').fileBrowser({title: 'Select Subtitles Download Directory'});
 
                     $('#editAService').change(function () {

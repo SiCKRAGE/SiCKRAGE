@@ -4,17 +4,6 @@
     import sickrage.subtitles
     from sickrage.core.helpers import anon_url
 %>
-<%block name="scripts">
-    <script type="text/javascript" src="${srWebRoot}/js/config/configSubtitles.js?${srPID}"></script>
-    <script>
-        $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + code + "\", name: \"" + sickrage.subtitles.name_from_code(code) + "\"}" for code in sickrage.subtitles.subtitle_code_filter())}], {
-            method: "POST",
-            hintText: "Write to search a language and select it",
-            preventDuplicates: true,
-            prePopulate: [${','.join("{\"id\": \"" + code + "\", name: \"" + sickrage.subtitles.name_from_code(code) + "\"}" for code in sickrage.subtitles.wanted_languages())}]
-        });
-    </script>
-</%block>
 <%block name="content">
     <div id="config">
         <form id="configForm" action="saveSubtitles" method="post">
@@ -43,97 +32,99 @@
                                     </span>
                             </label>
                         </div>
-                        <div id="content_use_subtitles">
-                            <div class="field-pair">
-                                <label>
-                                    <span class="component-title">Subtitle Languages</span>
-                                    <span class="component-desc"><input class="form-control input-sm input150"
-                                                                        type="text" id="subtitles_languages"
-                                                                        name="subtitles_languages"
-                                                                        autocapitalize="off"/></span>
-                                </label>
-                            </div>
-                            <div class="field-pair">
-                                <label>
-                                    <span class="component-title">Subtitle Directory</span>
-                                    <input type="text" value="${sickrage.srCore.srConfig.SUBTITLES_DIR}"
-                                           id="subtitles_dir"
-                                           name="subtitles_dir" class="form-control input-sm input350"
-                                           autocapitalize="off"/>
-                                </label>
-                                <label>
-                                    <span class="component-title">&nbsp;</span>
-                                    <span class="component-desc">The directory where SickRage should store your <i>Subtitles</i> files.</span>
-                                </label>
-                                <label>
-                                    <span class="component-title">&nbsp;</span>
-                                    <span class="component-desc"><b>NOTE:</b> Leave empty if you want store subtitle in episode path.</span>
-                                </label>
-                            </div>
-                            <div class="field-pair">
-                                <label>
-                                    <span class="component-title">Subtitle Find Frequency</span>
-                                    <input type="number" name="subtitles_finder_frequency"
-                                           value="${sickrage.srCore.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
-                                           class="form-control input-sm input75"/>
-                                    <span class="component-desc">time in hours between scans (default: 1)</span>
-                                </label>
-                            </div>
-                            <div class="field-pair">
-                                <label class="clearfix" for="subtitles_history">
-                                    <span class="component-title">Subtitles History</span>
-                                    <span class="component-desc">
+                        <div class="field-pair">
+                            <label>
+                                <span class="component-title">Subtitle Languages</span>
+                                <span class="component-desc">
+                                    <input type="text" class="form-control input-sm"
+                                           id="subtitles_languages"
+                                           name="subtitles_languages"
+                                           value="${','.join(code for code in sickrage.subtitles.wanted_languages())}"
+                                    />
+                                </span>
+                            </label>
+                        </div>
+                        <div class="field-pair">
+                            <label>
+                                <span class="component-title">Subtitle Directory</span>
+                                <input type="text" value="${sickrage.srCore.srConfig.SUBTITLES_DIR}"
+                                       id="subtitles_dir"
+                                       name="subtitles_dir" class="form-control input-sm input350"
+                                       autocapitalize="off"/>
+                            </label>
+                            <label>
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc">The directory where SickRage should store your <i>Subtitles</i> files.</span>
+                            </label>
+                            <label>
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc"><b>NOTE:</b> Leave empty if you want store subtitle in episode path.</span>
+                            </label>
+                        </div>
+                        <div class="field-pair">
+                            <label>
+                                <span class="component-title">Subtitle Find Frequency</span>
+                                <input type="number" name="subtitles_finder_frequency"
+                                       value="${sickrage.srCore.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
+                                       class="form-control input-sm input75"/>
+                                <span class="component-desc">time in hours between scans (default: 1)</span>
+                            </label>
+                        </div>
+                        <div class="field-pair">
+                            <label class="clearfix" for="subtitles_history">
+                                <span class="component-title">Subtitles History</span>
+                                <span class="component-desc">
                                                 <input type="checkbox" name="subtitles_history"
                                                        id="subtitles_history" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HISTORY)]}/>
                                                 <p>Log downloaded Subtitle on History page?</p>
                                             </span>
-                                </label>
-                            </div>
-                            <div class="field-pair">
-                                <label class="clearfix" for="subtitles_multi">
-                                    <span class="component-title">Subtitles Multi-Language</span>
-                                    <span class="component-desc">
+                            </label>
+                        </div>
+                        <div class="field-pair">
+                            <label class="clearfix" for="subtitles_multi">
+                                <span class="component-title">Subtitles Multi-Language</span>
+                                <span class="component-desc">
                                                 <input type="checkbox" name="subtitles_multi"
                                                        id="subtitles_multi" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_MULTI)]}/>
                                                 <p>Append language codes to subtitle filenames?</p>
                                             </span>
-                                </label>
-                            </div>
-                            <div class="field-pair">
-                                <label class="clearfix" for="embedded_subtitles_all">
-                                    <span class="component-title">Embedded Subtitles</span>
-                                    <span class="component-desc">
+                            </label>
+                        </div>
+                        <div class="field-pair">
+                            <label class="clearfix" for="embedded_subtitles_all">
+                                <span class="component-title">Embedded Subtitles</span>
+                                <span class="component-desc">
                                                 <input type="checkbox" name="embedded_subtitles_all"
                                                        id="embedded_subtitles_all" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
                                                 <p>Ignore subtitles embedded inside video file?</p>
                                                 <p><b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!</p>
                                             </span>
-                                </label>
-                            </div>
-                            <div class="field-pair">
-                                <label class="clearfix" for="subtitles_hearing_impaired">
-                                    <span class="component-title">Hearing Impaired Subtitles</span>
-                                    <span class="component-desc">
+                            </label>
+                        </div>
+                        <div class="field-pair">
+                            <label class="clearfix" for="subtitles_hearing_impaired">
+                                <span class="component-title">Hearing Impaired Subtitles</span>
+                                <span class="component-desc">
                                                 <input type="checkbox" name="subtitles_hearing_impaired"
                                                        id="subtitles_hearing_impaired" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
                                                 <p>Download hearing impaired style subtitles?</p>
                                             </span>
-                                </label>
-                            </div>
-                            <div class="field-pair">
-                                <label class="nocheck">
-                                    <span class="component-title">Extra Scripts</span>
-                                    <input type="text" name="subtitles_extra_scripts"
-                                           value="<% '|'.join(sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
-                                           class="form-control input-sm input350" autocapitalize="off"/>
-                                </label>
-                                <label class="nocheck">
-                                    <span class="component-title">&nbsp;</span>
-                                    <span class="component-desc"><b>NOTE:</b></span>
-                                </label>
-                                <label class="nocheck">
-                                    <span class="component-title">&nbsp;</span>
-                                    <span class="component-desc">
+                            </label>
+                        </div>
+                        <div class="field-pair">
+                            <label class="nocheck">
+                                <span class="component-title">Extra Scripts</span>
+                                <input type="text" name="subtitles_extra_scripts"
+                                       value="<% '|'.join(sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
+                                       class="form-control input-sm input350" autocapitalize="off"/>
+                            </label>
+                            <label class="nocheck">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc"><b>NOTE:</b></span>
+                            </label>
+                            <label class="nocheck">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc">
                                                 <ul>
                                                         <li>See <a
                                                                 href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Subtitle%20Scripts"><font
@@ -147,11 +138,10 @@
                                                         </ul>
                                                 </ul>
                                             </span>
-                                </label>
-                            </div>
-
-                            <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+                            </label>
                         </div>
+
+                        <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
                     </fieldset>
                 </div><!-- /tab-pane1 //-->
 

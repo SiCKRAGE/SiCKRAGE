@@ -27,6 +27,7 @@
     "chai": true,
     "mocha": true,
     "_": true,
-    "window": true
+    "window": true,
+    "Bloodhound": true
   }
 }

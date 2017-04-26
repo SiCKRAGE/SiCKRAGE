@@ -1489,7 +1489,8 @@ class Home(WebHandler):
 
         showObj.saveToDB()
 
-        sickrage.srCore.srNotifications.message('%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
+        sickrage.srCore.srNotifications.message(
+            '%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
 
         return self.redirect("/home/displayShow?show=%i" % showObj.indexerid)
 
@@ -4831,6 +4832,14 @@ class ConfigSubtitles(Config):
             controller='config',
             action='subtitles'
         )
+
+    def get_code(self, q=None):
+        codes = [{"value": code, "name": sickrage.subtitles.name_from_code(code)} for code in
+                 sickrage.subtitles.subtitle_code_filter()]
+
+        codes = filter(lambda code: q.lower() in code['name'].lower(), codes)
+
+        return json_encode(codes)
 
     def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
                       service_order=None, subtitles_history=None, subtitles_finder_frequency=None,
