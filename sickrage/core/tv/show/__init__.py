@@ -982,7 +982,23 @@ class TVShow(object):
         if not skipNFO:
             try:
                 # Get IMDb_info from database
-                self._imdb_info = sickrage.srCore.mainDB.db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+                imdb_info_keys = [
+                    'imdb_id',
+                    'title',
+                    'year',
+                    'akas',
+                    'runtime',
+                    'genres',
+                    'countries',
+                    'country_codes',
+                    'certificates',
+                    'rating',
+                    'votes',
+                    'last_update'
+                ]
+
+                dbData = sickrage.srCore.mainDB.db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+                self._imdb_info = {k:dbData[k] for k in imdb_info_keys if k in dbData}
             except RecordNotFound:
                 pass
 
