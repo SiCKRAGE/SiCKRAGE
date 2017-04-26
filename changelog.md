@@ -1,6 +1,7 @@
 # Changelog
 
-- * b0ad951 - 2017-04-26: Fixed issues with editing show info and saving it Fixed issues with getting imdb data from DB Fixed edit show template tab layout 
+- * 063e049 - 2017-04-26: Fixed issues with returning the wrong interface ip address Released v9.0.14 
+- * cfd1b33 - 2017-04-26: Fixed issues with editing show info and saving it Fixed issues with getting imdb data from DB Fixed edit show template tab layout 
 - * c603415 - 2017-04-26: Removed news functions Fixed changelog view Verision update banner no longer displayed for auto updates 
 - * 7cf729d - 2017-04-26: testing new restart code 
 - * 14cf887 - 2017-04-26: testing new restart code 

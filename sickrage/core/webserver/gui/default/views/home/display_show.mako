@@ -615,19 +615,6 @@
                                id="collapseSeason-${epResult['season']}">
                     % else:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <tbody>
                     % endif
 
