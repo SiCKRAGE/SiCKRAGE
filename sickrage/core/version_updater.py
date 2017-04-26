@@ -183,7 +183,7 @@ class srVersionUpdater(object):
         if not self.updater.need_update():
             if force:
                 sickrage.srCore.srNotifications.message('No new updates!')
-
+        else:
             if not sickrage.srCore.srConfig.AUTO_UPDATE: self.updater.set_newest_text()
             return True
 
