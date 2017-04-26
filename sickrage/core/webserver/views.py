@@ -4844,7 +4844,7 @@ class ConfigSubtitles(Config):
 
         return json_encode(codes)
 
-    def get_codes(self, q=None):
+    def getCode(self, q=None):
         codes = [{"value": code, "name": sickrage.subtitles.name_from_code(code)} for code in
                  sickrage.subtitles.subtitle_code_filter()]
 

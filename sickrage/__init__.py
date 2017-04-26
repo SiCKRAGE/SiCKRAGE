@@ -364,8 +364,7 @@ def main():
         srCore.start()
         srCore.shutdown()
 
-        if restart:
-            os.execl(sys.executable, sys.executable, *sys.argv)
+        if restart: os.execl(sys.executable, sys.executable, *sys.argv)
     except (SystemExit, KeyboardInterrupt):
         try:
             srCore.shutdown()
