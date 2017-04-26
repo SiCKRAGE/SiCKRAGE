@@ -2392,7 +2392,7 @@ jQuery(document).ready(function ($) {
             },
 
             restart: function () {
-                var current_id = '';
+                var current_pid = '';
                 var timeout_id;
                 var num_restart_waits = 0;
 
@@ -2410,8 +2410,8 @@ jQuery(document).ready(function ($) {
                                 $('#restart_message').show();
                                 setTimeout(checkIsAlive, 1000);
                             } else {
-                                if (current_id === '' || data.msg === current_id) {
-                                    current_id = data.msg;
+                                if (current_pid === '' || data.msg === current_pid) {
+                                    current_pid = data.msg;
                                     setTimeout(checkIsAlive, 1000);
                                 } else {
                                     $('#restart_loading').hide();

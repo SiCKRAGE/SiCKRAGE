@@ -674,7 +674,7 @@ class Home(WebHandler):
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
         if sickrage.srCore.started:
-            return "%s({'msg':%s})" % (kwargs['srcallback'], id(sickrage.srCore))
+            return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.srCore.PID))
         else:
             return "%s({'msg':%s})" % (kwargs['srcallback'], "nope")
 
@@ -4837,14 +4837,6 @@ class ConfigSubtitles(Config):
         )
 
     def get_code(self, q=None):
-        codes = [{"value": code, "name": sickrage.subtitles.name_from_code(code)} for code in
-                 sickrage.subtitles.subtitle_code_filter()]
-
-        codes = filter(lambda code: q.lower() in code['name'].lower(), codes)
-
-        return json_encode(codes)
-
-    def getCode(self, q=None):
         codes = [{"value": code, "name": sickrage.subtitles.name_from_code(code)} for code in
                  sickrage.subtitles.subtitle_code_filter()]
 

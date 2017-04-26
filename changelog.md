@@ -1,6 +1,7 @@
 # Changelog
 
-- * cc67724 - 2017-04-26: testing new restart code 
+- * 74743e0 - 2017-04-26: testing new restart code 
+- * 14cf887 - 2017-04-26: testing new restart code 
 - * 71d7bdb - 2017-04-26: testing new restart code 
 - * 256b107 - 2017-04-26: testing 
 - * 748bef3 - 2017-04-26: Fixed issues with restart JS code 
