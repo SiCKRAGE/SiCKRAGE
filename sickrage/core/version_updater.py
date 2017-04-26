@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import io
 import os
 import platform
@@ -71,8 +70,6 @@ class srVersionUpdater(object):
                         else:
                             sickrage.srCore.srLogger.info("Update failed!")
                             sickrage.srCore.srNotifications.message('Update failed!')
-
-                self.check_for_new_news()
         finally:
             self.amActive = False
 
@@ -181,53 +178,18 @@ class srVersionUpdater(object):
         :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
-        if not self.updater or not any([sickrage.srCore.srConfig.VERSION_NOTIFY, force]):
-            return False
+        if not self.updater or not any([
+            sickrage.srCore.srConfig.VERSION_NOTIFY,
+            sickrage.srCore.srConfig.AUTO_UPDATE,
+            force
+        ]): return False
 
-        if self.updater.need_update():
-            self.updater.set_newest_text()
+        if not self.updater.need_update():
+            if force:
+                sickrage.srCore.srNotifications.message('No new updates!')
+
+            if not sickrage.srCore.srConfig.AUTO_UPDATE: self.updater.set_newest_text()
             return True
-
-    @staticmethod
-    def check_for_new_news():
-        """
-        Checks server for the latest news.
-
-        returns: unicode, a copy of the news
-
-        force: ignored
-        """
-
-        # Grab a copy of the news
-        try:
-            news = sickrage.srCore.srWebSession.get(sickrage.srCore.srConfig.NEWS_URL).text
-        except Exception:
-            news = ""
-
-        if news:
-            dates = re.finditer(r'^####(\d{4}-\d{2}-\d{2})####$', news, re.M)
-            if not list(dates):
-                return news or ''
-
-            try:
-                last_read = datetime.datetime.strptime(sickrage.srCore.srConfig.NEWS_LAST_READ, '%Y-%m-%d')
-            except:
-                last_read = 0
-
-            sickrage.srCore.srConfig.NEWS_UNREAD = 0
-            got_latest = False
-            for match in dates:
-                if not got_latest:
-                    got_latest = True
-                    sickrage.srCore.srConfig.NEWS_LATEST = match.group(1)
-
-                try:
-                    if datetime.datetime.strptime(match.group(1), '%Y-%m-%d') > last_read:
-                        sickrage.srCore.srConfig.NEWS_UNREAD += 1
-                except Exception:
-                    pass
-
-        return news
 
     def update(self):
         if self.backup() and self.updater:
@@ -252,7 +214,7 @@ class srVersionUpdater(object):
 class UpdateManager(object):
     @staticmethod
     def get_update_url():
-        return "home/update/?pid={}".format(sickrage.srCore.PID)
+        return "{}/home/update/?pid={}".format(sickrage.srCore.srConfig.WEB_ROOT, sickrage.srCore.PID)
 
     @staticmethod
     def github():
@@ -788,7 +750,7 @@ class PipUpdateManager(UpdateManager):
         # if we're up to date then don't set this
         sickrage.srCore.NEWEST_VERSION_STRING = None
 
-        if self.version:
+        if not self.version:
             sickrage.srCore.srLogger.debug("Unknown current version number, don't know if we should update or not")
 
             newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set."

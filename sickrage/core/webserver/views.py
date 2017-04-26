@@ -1067,17 +1067,9 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
-        # check for news updates
-        sickrage.srCore.VERSIONUPDATER.check_for_new_news()
-
         # check for new app updates
-        sickrage.srCore.srNotifications.message('Checking for new updates ...')
-        if sickrage.srCore.VERSIONUPDATER.check_for_new_version(True):
-            sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
-            return self.update(pid)
-        else:
-            sickrage.srCore.srNotifications.message('No updates found for SiCKRAGE!')
-            return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        sickrage.srCore.VERSIONUPDATER.check_for_new_version(True)
+        return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def update(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
@@ -1086,8 +1078,7 @@ class Home(WebHandler):
         if sickrage.srCore.VERSIONUPDATER.update():
             return self.restart(pid)
         else:
-            sickrage.srCore.srNotifications.message(
-                "Update wasn't successful, not restarting. Check your log for more information.")
+            self._genericMessage("Update Failed", "Update wasn't successful, not restarting. Check your log for more information.")
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def branchCheckout(self, branch):
@@ -2154,37 +2145,6 @@ class irc(WebHandler):
             title="IRC",
             controller='root',
             action='irc'
-        )
-
-
-@Route('/news(/?.*)')
-class news(WebHandler):
-    def __init__(self, *args, **kwargs):
-        super(news, self).__init__(*args, **kwargs)
-
-    def index(self):
-        try:
-            news = sickrage.srCore.VERSIONUPDATER.check_for_new_news(force=True)
-        except Exception:
-            sickrage.srCore.srLogger.debug('Could not load news from repo, giving a link!')
-            news = 'Could not load news from the repo. [Click here for news.md](' + sickrage.srCore.srConfig.NEWS_URL + ')'
-
-        sickrage.srCore.srConfig.NEWS_LAST_READ = sickrage.srCore.srConfig.NEWS_LATEST
-        sickrage.srCore.srConfig.NEWS_UNREAD = 0
-        sickrage.srCore.srConfig.save()
-
-        data = markdown2.markdown(
-            news if news else "The was a problem connecting to github, please refresh and try again",
-            extras=['header-ids'])
-
-        return self.render(
-            "/markdown.mako",
-            title="News",
-            header="News",
-            topmenu="system",
-            data=data,
-            controller='root',
-            action='news'
         )
 
 

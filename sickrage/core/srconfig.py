@@ -82,11 +82,7 @@ class srConfig(object):
         self.GIT_PATH = ""
         self.GIT_AUTOISSUES = False
         self.GIT_NEWVER = False
-        self.NEWS_URL = 'http://sickragetv.github.io/news/news.md'
-        self.CHANGES_URL = 'http://sickragetv.github.io/news/changes.md'
-        self.NEWS_LAST_READ = ""
-        self.NEWS_LATEST = ""
-        self.NEWS_UNREAD = False
+        self.CHANGES_URL = 'https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/changelog.md'
         self.SOCKET_TIMEOUT = 30
         self.WEB_HOST = ""
         self.WEB_PORT = None
@@ -944,8 +940,6 @@ class srConfig(object):
 
         self.HANDLE_REVERSE_PROXY = bool(self.check_setting_int('General', 'handle_reverse_proxy', 0))
 
-        self.NEWS_LAST_READ = self.check_setting_str('General', 'news_last_read', '1970-01-01')
-
         # show settings
         self.ROOT_DIRS = self.check_setting_str('General', 'root_dirs', '')
         self.QUALITY_DEFAULT = self.check_setting_int('General', 'quality_default', SD)
@@ -1521,7 +1515,6 @@ class srConfig(object):
         new_config['General']['no_restart'] = int(self.NO_RESTART)
         new_config['General']['developer'] = int(sickrage.DEVELOPER)
         new_config['General']['display_all_seasons'] = int(self.DISPLAY_ALL_SEASONS)
-        new_config['General']['news_last_read'] = self.NEWS_LAST_READ
 
         new_config['GUI'] = {}
         new_config['GUI']['gui_name'] = self.GUI_NAME

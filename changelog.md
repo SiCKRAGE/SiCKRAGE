@@ -1,6 +1,7 @@
 # Changelog
 
-- * 74743e0 - 2017-04-26: testing new restart code 
+- * 537eb99 - 2017-04-26: Removed news functions Fixed changelog view Verision update banner no longer displayed for auto updates 
+- * 7cf729d - 2017-04-26: testing new restart code 
 - * 14cf887 - 2017-04-26: testing new restart code 
 - * 71d7bdb - 2017-04-26: testing new restart code 
 - * 256b107 - 2017-04-26: testing 

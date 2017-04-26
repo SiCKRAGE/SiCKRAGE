@@ -239,12 +239,7 @@
                         </li>
 
                         <%
-                            if sickrage.srCore.srConfig.NEWS_UNREAD:
-                                            newsBadge = ' <span class="badge">'+str(sickrage.srCore.srConfig.NEWS_UNREAD)+'</span>'
-                            else:
-                                            newsBadge = ''
-
-                            numCombined = numErrors + numWarnings + sickrage.srCore.srConfig.NEWS_UNREAD
+                            numCombined = numErrors + numWarnings
                             if numCombined:
                                             if numErrors:
                                                 toolsBadgeClass = ' btn-danger'
@@ -265,7 +260,6 @@
                                     src="${srWebRoot}/images/menu/system18-2.png" class="navbaricon hidden-xs"/>${toolsBadge}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${srWebRoot}/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
                                 <li><a href="${srWebRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                                 <li><a href="${srWebRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
                                 <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"

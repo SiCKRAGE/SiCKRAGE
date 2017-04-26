@@ -285,8 +285,6 @@ class Core(object):
         if self.srConfig.SUBTITLE_SEARCHER_FREQ < self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ:
             self.srConfig.SUBTITLE_SEARCHER_FREQ = self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ
 
-        self.srConfig.NEWS_LATEST = self.srConfig.NEWS_LAST_READ
-
         if self.srConfig.SUBTITLES_LANGUAGES[0] == '':
             self.srConfig.SUBTITLES_LANGUAGES = []
 
