@@ -81,11 +81,12 @@ class Daemon(object):
     Usage: subclass the Daemon class
     """
 
-    def __init__(self, pidfile):
+    def __init__(self, pidfile, working_dir="/"):
         self.stdin = getattr(os, 'devnull', '/dev/null')
         self.stdout = getattr(os, 'devnull', '/dev/null')
         self.stderr = getattr(os, 'devnull', '/dev/null')
         self.pidfile = pidfile
+        self.working_dir = working_dir
 
     def daemonize(self):
         """
@@ -103,7 +104,7 @@ class Daemon(object):
             sys.exit(1)
 
         # decouple from parent environment
-        os.chdir("/")
+        os.chdir(self.working_dir)
         os.setsid()
         os.umask(0)
 
@@ -355,17 +356,16 @@ def main():
         if DAEMONIZE:
             NOLAUNCH = True
             QUITE = True
-            daemon = Daemon(PID_FILE)
+            daemon = Daemon(PID_FILE, DATA_DIR)
             daemon.daemonize()
-            # While daemonizing, the working dir is reset to /
-            # change it to the data dir so that relative paths end up there.
-            os.chdir(DATA_DIR)
 
-        # main app loop
-        while restart:
-            srCore = core.Core()
-            srCore.start()
-            srCore.shutdown()
+        # main app
+        srCore = core.Core()
+        srCore.start()
+        srCore.shutdown()
+
+        if restart:
+            os.execl(sys.executable, sys.executable, *sys.argv)
     except (SystemExit, KeyboardInterrupt):
         try:
             srCore.shutdown()

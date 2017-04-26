@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2f22b83 - 2017-04-26: testing 
+- * dfd0853 - 2017-04-26: testing new restart code 
+- * 256b107 - 2017-04-26: testing 
 - * 748bef3 - 2017-04-26: Fixed issues with restart JS code 
 - * b1eeac6 - 2017-04-26: Released v9.0.13 
 - * b1a5276 - 2017-04-26: Fixed issues with subtitle config template and adding languages 
