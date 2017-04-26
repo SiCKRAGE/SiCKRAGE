@@ -668,12 +668,15 @@ class Home(WebHandler):
         if not all([kwargs.get('srcallback'), kwargs.get('_')]):
             return "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 
-        # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
+        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'text/javascript')
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
-        return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.srCore.PID))
+        if sickrage.srCore.started:
+            return "%s({'msg':%s})" % (kwargs['srcallback'], id(sickrage.srCore))
+        else:
+            return "%s({'msg':%s})" % (kwargs['srcallback'], "nope")
 
     @staticmethod
     def haveKODI():

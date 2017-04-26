@@ -2,10 +2,6 @@
 <%!
     import sickrage
 %>
-<%block name="metas">
-<meta data-var="srDefaultPage" data-content="${srDefaultPage}">
-</%block>
-
 <%block name="content">
 <%
 try:

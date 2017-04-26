@@ -1,6 +1,7 @@
 # Changelog
 
-- * bc016b8 - 2017-04-26: Released v9.0.13 
+- * b039926 - 2017-04-26: Fixed issues with restart JS code 
+- * b1eeac6 - 2017-04-26: Released v9.0.13 
 - * b1a5276 - 2017-04-26: Fixed issues with subtitle config template and adding languages 
 - * 02d0a89 - 2017-04-25: Fixed tabs in templates, reformtted templates 
 - * 5f4d664 - 2017-04-25: Added exception handling for iterating over actors with thetvdb api 
