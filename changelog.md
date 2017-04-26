@@ -1,6 +1,7 @@
 # Changelog
 
-- * b039926 - 2017-04-26: Fixed issues with restart JS code 
+- * 2f22b83 - 2017-04-26: testing 
+- * 748bef3 - 2017-04-26: Fixed issues with restart JS code 
 - * b1eeac6 - 2017-04-26: Released v9.0.13 
 - * b1a5276 - 2017-04-26: Fixed issues with subtitle config template and adding languages 
 - * 02d0a89 - 2017-04-25: Fixed tabs in templates, reformtted templates 

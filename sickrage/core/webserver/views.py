@@ -4844,6 +4844,14 @@ class ConfigSubtitles(Config):
 
         return json_encode(codes)
 
+    def get_codes(self, q=None):
+        codes = [{"value": code, "name": sickrage.subtitles.name_from_code(code)} for code in
+                 sickrage.subtitles.subtitle_code_filter()]
+
+        codes = filter(lambda code: q.lower() in code['name'].lower(), codes)
+
+        return json_encode(codes)
+
     def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
                       service_order=None, subtitles_history=None, subtitles_finder_frequency=None,
                       subtitles_multi=None, embedded_subtitles_all=None, subtitles_extra_scripts=None,
