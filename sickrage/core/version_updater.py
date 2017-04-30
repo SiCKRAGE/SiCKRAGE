@@ -372,7 +372,7 @@ class GitUpdateManager(UpdateManager):
 
         if self.version != self.get_newest_version:
             newest_text = 'There is a newer version available, version {}'.format(self.get_newest_version)
-            newest_text += "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
+            newest_text += " &mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
             sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
     def need_update(self):

@@ -1,6 +1,7 @@
 # Changelog
 
-- * d14de8a - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
+- * c118f7b - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
+- * 7d2d7d8 - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
 - * 2ff8f73 - 2017-04-30: Moved update notifications code to views updateCheck function 
 - * c111307 - 2017-04-30: Released v9.0.15 
 - * bbab0a7 - 2017-04-30: Fixed display show table layout and column selector 
