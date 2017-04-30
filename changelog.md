@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9afe75d - 2017-04-30: Moved update notifications code to views updateCheck function 
+- * d14de8a - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
+- * 2ff8f73 - 2017-04-30: Moved update notifications code to views updateCheck function 
 - * c111307 - 2017-04-30: Released v9.0.15 
 - * bbab0a7 - 2017-04-30: Fixed display show table layout and column selector 
 - * fcd9cec - 2017-04-30: Fixed usage of WEB_HOST variable via config Removed LOCALHOST_IP variable 

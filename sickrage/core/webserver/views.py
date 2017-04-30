@@ -1078,6 +1078,7 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         if sickrage.srCore.VERSIONUPDATER.update():
+            sickrage.srCore.NEWEST_VERSION_STRING = None
             return self.restart(pid)
         else:
             self._genericMessage("Update Failed", "Update wasn't successful, not restarting. Check your log for more information.")
