@@ -179,11 +179,10 @@
   font-size: 12px; }
 
 .upgrade-notification {
-  width: 600px;
+  width: 90%;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 50px;
   margin-bottom: 0; }
 
 [class^="menu-icon-"], [class*=" menu-icon-"] {
@@ -866,7 +865,7 @@ span.snatched b {
 
 .displayShowTable {
   table-layout: auto;
-  width: 100%;
+  width: auto;
   border-collapse: collapse;
   border-spacing: 0;
   text-align: center;

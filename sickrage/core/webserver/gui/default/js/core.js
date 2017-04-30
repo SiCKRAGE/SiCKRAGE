@@ -1925,7 +1925,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     $("#showTable, #animeTable").tablesorter({
-                        widgets: ['saveSort', 'stickyHeaders', 'columnSelector', 'reflow'],
+                        widgets: ['saveSort', 'columnSelector', 'reflow'],
                         widgetOptions: {
                             reflow_className: 'ui-table-reflow',
                             columnSelector_saveColumns: true,

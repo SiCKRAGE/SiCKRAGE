@@ -1037,7 +1037,7 @@ span.snatched b {
 
 .displayShowTable {
     table-layout: auto;
-    width: 100%;
+    width: auto;
     border-collapse: collapse;
     border-spacing: 0;
     text-align: center;

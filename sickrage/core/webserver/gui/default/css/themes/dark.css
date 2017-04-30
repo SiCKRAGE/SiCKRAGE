@@ -393,11 +393,8 @@ ul.tags li {
 }
 
 th.row-seasonheader {
-    border: none;
     background-color: #222;
     color: #fff;
-    padding-top: 15px;
-    text-align: left;
 }
 
 tr.seasonheader {

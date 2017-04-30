@@ -1,6 +1,7 @@
 # Changelog
 
-- * d9c3eb2 - 2017-04-30: Fixed usage of WEB_HOST variable via config Removed LOCALHOST_IP variable 
+- * 5737bfd - 2017-04-30: Fixed display show table layout and column selector 
+- * fcd9cec - 2017-04-30: Fixed usage of WEB_HOST variable via config Removed LOCALHOST_IP variable 
 - * f2e439d - 2017-04-30: Make upgrade notifications to be 90% of width and responsive 
 - * ec48add - 2017-04-30: Moved upgrade alerts to be positioned below submenu if exists 
 - * a5ca54e - 2017-04-30: Fixed issues with RARBG 
