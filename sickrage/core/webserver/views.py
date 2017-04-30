@@ -631,8 +631,8 @@ class Home(WebHandler):
 
         max_download_count = 1000
 
-        for dbData in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True):
-            showid = dbData['doc']['showid']
+        for epData in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)]:
+            showid = epData['showid']
             if showid not in show_stat:
                 show_stat[showid] = {}
                 show_stat[showid]['ep_snatched'] = 0
@@ -641,10 +641,10 @@ class Home(WebHandler):
                 show_stat[showid]['ep_airs_next'] = None
                 show_stat[showid]['ep_airs_prev'] = None
 
-            season = dbData['doc']['season']
-            episode = dbData['doc']['episode']
-            airdate = dbData['doc']['airdate']
-            status = dbData['doc']['status']
+            season = epData['season']
+            episode = epData['episode']
+            airdate = epData['airdate']
+            status = epData['status']
 
             if season > 0 and episode > 0 and airdate > 1:
                 if status in status_quality: show_stat[showid]['ep_snatched'] += 1
@@ -652,13 +652,13 @@ class Home(WebHandler):
                 if (airdate <= today and status in [SKIPPED, WANTED, FAILED]
                     ) or (status in status_quality + status_download): show_stat[showid]['ep_total'] += 1
 
-                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
-                    show_stat[showid]['ep_airs_next'] = airdate
-                elif airdate < today and status != UNAIRED > show_stat[showid]['ep_airs_prev']:
-                    show_stat[showid]['ep_airs_prev'] = airdate
-
                 if show_stat[showid]['ep_total'] > max_download_count:
                     max_download_count = show_stat[showid]['ep_total']
+
+                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
+                    show_stat[showid]['ep_airs_next'] = airdate
+                elif airdate < today > show_stat[showid]['ep_airs_prev'] and status != UNAIRED:
+                    show_stat[showid]['ep_airs_prev'] = airdate
 
         max_download_count *= 100
 

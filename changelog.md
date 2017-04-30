@@ -1,6 +1,7 @@
 # Changelog
 
-- * cf20606 - 2017-04-26: Fixed version updater issues 
+- * 62fd469 - 2017-04-30: Fixed issue with &#x27;prev episode&#x27; on main show page 
+- * 62dfd77 - 2017-04-26: Fixed version updater issues 
 - * c96a482 - 2017-04-26: Fixed version updater issues 
 - * 2c722b7 - 2017-04-26: Fixed issues with returning the wrong interface ip address Released v9.0.14 
 - * cfd1b33 - 2017-04-26: Fixed issues with editing show info and saving it Fixed issues with getting imdb data from DB Fixed edit show template tab layout 
