@@ -178,11 +178,7 @@ class srVersionUpdater(object):
         :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
-        if not self.updater: return False
-
-        if not self.updater.need_update():
-            if force: sickrage.srCore.srNotifications.message('No new updates!')
-        else:
+        if self.updater and self.updater.need_update():
             if force: self.updater.set_newest_text()
             return True
 

@@ -1068,7 +1068,9 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         # check for new app updates
-        sickrage.srCore.VERSIONUPDATER.check_for_new_version(True)
+        if not sickrage.srCore.VERSIONUPDATER.check_for_new_version(True):
+            sickrage.srCore.srNotifications.message('No new updates!')
+
         return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def update(self, pid=None):
