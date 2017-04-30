@@ -1,6 +1,7 @@
 # Changelog
 
-- * c118f7b - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
+- * 565da57 - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
+- * 69f604d - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
 - * 7d2d7d8 - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
 - * 2ff8f73 - 2017-04-30: Moved update notifications code to views updateCheck function 
 - * c111307 - 2017-04-30: Released v9.0.15 

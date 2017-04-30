@@ -512,11 +512,11 @@ class SourceUpdateManager(UpdateManager):
             sickrage.srCore.srLogger.debug("Unknown current version number, don't know if we should update or not")
 
             newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set."
-            newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
+            newest_text += " &mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
 
         else:
             newest_text = 'There is a newer version available, version {}'.format(self.get_newest_version)
-            newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
+            newest_text += " &mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
 
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
@@ -745,11 +745,11 @@ class PipUpdateManager(UpdateManager):
             sickrage.srCore.srLogger.debug("Unknown current version number, don't know if we should update or not")
 
             newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set."
-            newest_text += "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
+            newest_text += " &mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
             return
         else:
             newest_text = "New SiCKRAGE update found on PyPy servers, version {}".format(self.get_newest_version)
-            newest_text += "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
+            newest_text += " &mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
 
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
