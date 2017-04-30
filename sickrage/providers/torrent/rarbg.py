@@ -19,10 +19,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import json
-import re
-import time
-import traceback
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -148,93 +144,35 @@ class RarbgProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    retry = 3
-                    while retry > 0:
-                        time_out = 0
-                        while (datetime.datetime.now() < self.next_request) and time_out <= 15:
-                            time_out += 1
-                            time.sleep(1)
+                    data = sickrage.srCore.srWebSession.get(
+                        searchURL + self.urlOptions['token'].format(token=self.token)).json()
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    continue
 
-                        self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
+                if data.get('error'):
+                    if data.get('error_code') != 20:
+                        sickrage.srCore.srLogger.debug(data['error'])
+                    continue
 
-                        try:
-                            data = sickrage.srCore.srWebSession.get(
-                                searchURL + self.urlOptions['token'].format(token=self.token)).text
-                        except Exception:
-                            sickrage.srCore.srLogger.debug("No data returned from provider")
-                            raise StopIteration
+                for item in data.get('torrent_results') or []:
+                    try:
+                        title = item['title']
+                        download_url = item['download']
+                        size = convert_size(item['size'])
+                        seeders = item['seeders']
+                        leechers = item['leechers']
+                        # pubdate = item['pubdate']
 
-                        if re.search('ERROR', data):
-                            sickrage.srCore.srLogger.debug("Error returned from provider")
-                            raise StopIteration
-                        if re.search('No results found', data):
-                            sickrage.srCore.srLogger.debug("No results found")
-                            raise StopIteration
-                        if re.search('Invalid token set!', data):
-                            sickrage.srCore.srLogger.warning("Invalid token!")
-                            return results
-                        if re.search('Too many requests per minute. Please try again later!', data):
-                            sickrage.srCore.srLogger.warning("Too many requests per minute")
-                            retry -= 1
-                            time.sleep(10)
-                            continue
-                        if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
-                            sickrage.srCore.srLogger.warning(
-                                "No results found. The tvdb id: %s do not exist on provider" % ep_indexerid)
-                            raise StopIteration
-                        if re.search('Invalid token. Use get_token for a new one!', data):
-                            sickrage.srCore.srLogger.debug("Invalid token, retrieving new token")
-                            retry -= 1
-                            self.token = None
-                            self.tokenExpireDate = None
-                            if not self.login():
-                                sickrage.srCore.srLogger.debug("Failed retrieving new token")
-                                return results
-                            sickrage.srCore.srLogger.debug("Using new token")
+                        if not all([title, download_url]):
                             continue
 
-                        # No error found break
-                        break
-                    else:
-                        sickrage.srCore.srLogger.debug("Retried 3 times without getting results")
+                        item = title, download_url, size, seeders, leechers
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
+                        items[mode].append(item)
+                    except Exception:
                         continue
-                except StopIteration:
-                    continue
-
-                try:
-                    data = re.search(r'\[\{\"title\".*\}\]', data)
-                    if data is not None:
-                        data_json = json.loads(data.group())
-                    else:
-                        data_json = {}
-                except Exception:
-                    sickrage.srCore.srLogger.error("JSON load failed: %s" % traceback.format_exc())
-                    sickrage.srCore.srLogger.debug("JSON load failed. Data dump: %s" % data)
-                    continue
-
-                try:
-                    for item in data_json:
-                        try:
-                            title = item['title']
-                            download_url = item['download']
-                            size = convert_size(item['size'])
-                            seeders = item['seeders']
-                            leechers = item['leechers']
-                            # pubdate = item['pubdate']
-
-                            if not all([title, download_url]):
-                                continue
-
-                            item = title, download_url, size, seeders, leechers
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
-                            items[mode].append(item)
-
-                        except Exception:
-                            sickrage.srCore.srLogger.debug("Skipping invalid result. JSON item: {}".format(item))
-
-                except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
