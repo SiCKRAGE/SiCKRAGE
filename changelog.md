@@ -1,6 +1,7 @@
 # Changelog
 
-- * c77ef21 - 2017-04-30: Moved upgrade alerts to be positioned below submenu if exists 
+- * ba0a828 - 2017-04-30: Make upgrade notifications to be 90% of width and responsive 
+- * ec48add - 2017-04-30: Moved upgrade alerts to be positioned below submenu if exists 
 - * a5ca54e - 2017-04-30: Fixed issues with RARBG 
 - * 88ace11 - 2017-04-30: Updated tablesorter to latest version Updated core js with missing tablesorter widgets 
 - * 1c72547 - 2017-04-30: Fixed column selection issues for display show web view 

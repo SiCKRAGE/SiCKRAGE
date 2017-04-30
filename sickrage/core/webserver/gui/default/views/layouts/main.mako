@@ -71,7 +71,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="${srWebRoot}/images/ico/apple-icon-144x144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="${srWebRoot}/images/ico/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="${srWebRoot}/images/ico/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="${srWebRoot}/images/ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="${srWebRoot}/images/ico/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="${srWebRoot}/images/ico/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="${srWebRoot}/images/ico/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="${srWebRoot}/images/ico/favicon-16x16.png">
@@ -117,12 +117,14 @@
                 <div class="collapse navbar-collapse" id="navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
-                            <a href="${srWebRoot}/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
+                            <a href="${srWebRoot}/home/" class="dropdown-toggle" aria-haspopup="true"
+                               data-toggle="dropdown"
                                data-hover="dropdown"><span>Shows</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srWebRoot}/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
-                                <li><a href="${srWebRoot}/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a>
+                                <li><a href="${srWebRoot}/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add
+                                    Shows</a>
                                 </li>
                                 <li><a href="${srWebRoot}/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
                                     Post-Processing</a></li>
@@ -144,10 +146,13 @@
                                 <span>Manage</span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${srWebRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
-                                <li><a href="${srWebRoot}/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog
+                                <li><a href="${srWebRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a>
+                                </li>
+                                <li><a href="${srWebRoot}/manage/backlogOverview/"><i
+                                        class="menu-icon-backlog-view"></i>&nbsp;Backlog
                                     Overview</a></li>
-                                <li><a href="${srWebRoot}/manage/manageSearches/"><i class="menu-icon-manage-searches"></i>&nbsp;Manage
+                                <li><a href="${srWebRoot}/manage/manageSearches/"><i
+                                        class="menu-icon-manage-searches"></i>&nbsp;Manage
                                     Searches</a></li>
                                 <li><a href="${srWebRoot}/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode
                                     Status
@@ -158,7 +163,8 @@
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_HOST != "":
-                                    <li><a href="${srWebRoot}/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update KODI</a>
+                                    <li><a href="${srWebRoot}/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update
+                                        KODI</a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_EMBY and sickrage.srCore.srConfig.EMBY_HOST != "" and sickrage.srCore.srConfig.EMBY_APIKEY != "":
@@ -167,11 +173,13 @@
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
-                                    <li><a href="${srWebRoot}/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage
+                                    <li><a href="${srWebRoot}/manage/manageTorrents/"><i
+                                            class="menu-icon-bittorrent"></i>&nbsp;Manage
                                         Torrents</a></li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-                                    <li><a href="${srWebRoot}/manage/failedDownloads/"><i class="menu-icon-failed-download"></i>&nbsp;Failed
+                                    <li><a href="${srWebRoot}/manage/failedDownloads/"><i
+                                            class="menu-icon-failed-download"></i>&nbsp;Failed
                                         Downloads</a></li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_SUBTITLES:
@@ -192,13 +200,15 @@
                         </li>
 
                         <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
-                            <a href="${srWebRoot}/config/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
+                            <a href="${srWebRoot}/config/" class="dropdown-toggle" aria-haspopup="true"
+                               data-toggle="dropdown"
                                data-hover="dropdown"><span class="visible-xs">Config</span><img
                                     src="${srWebRoot}/images/menu/system18.png" class="navbaricon hidden-xs"/>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="${srWebRoot}/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a>
+                                    <a href="${srWebRoot}/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp;
+                                        Info</a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a>
@@ -257,17 +267,20 @@
                             <a href="${srWebRoot}/home/status/" class="dropdown-toggle" aria-haspopup="true"
                                data-toggle="dropdown"
                                data-hover="dropdown"><span class="visible-xs">Tools</span><img
-                                    src="${srWebRoot}/images/menu/system18-2.png" class="navbaricon hidden-xs"/>${toolsBadge}
+                                    src="${srWebRoot}/images/menu/system18-2.png"
+                                    class="navbaricon hidden-xs"/>${toolsBadge}
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srWebRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
-                                <li><a href="${srWebRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
+                                <li><a href="${srWebRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a>
+                                </li>
                                 <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
                                        onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
                                         class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                                 <li class="divider"></li>
                                 %if numErrors:
-                                    <li><a href="${srWebRoot}/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors
+                                    <li><a href="${srWebRoot}/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View
+                                        Errors
                                         <span
                                                 class="badge btn-danger">${numErrors}</span></a></li>
                                 %endif
@@ -279,7 +292,8 @@
                                 <li><a href="${srWebRoot}/logs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="${srWebRoot}/home/updateCheck?pid=${srPID}"><i class="menu-icon-update"></i>&nbsp;Check
+                                <li><a href="${srWebRoot}/home/updateCheck?pid=${srPID}"><i
+                                        class="menu-icon-update"></i>&nbsp;Check
                                     For
                                     Updates</a></li>
                                 <li><a href="${srWebRoot}/home/restart/?pid=${srPID}" class="confirm restart"><i
@@ -287,11 +301,13 @@
                                 <li><a href="${srWebRoot}/home/shutdown/?pid=${srPID}" class="confirm shutdown"><i
                                         class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
                                 % if current_user != True:
-                                    <li><a href="${srWebRoot}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a>
+                                    <li><a href="${srWebRoot}/logout" class="confirm logout"><i
+                                            class="menu-icon-shutdown"></i>&nbsp;Logout</a>
                                     </li>
                                 % endif
                                 <li class="divider"></li>
-                                <li><a href="${srWebRoot}/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a>
+                                <li><a href="${srWebRoot}/home/status/"><i class="menu-icon-help"></i>&nbsp;Server
+                                    Status</a>
                                 </li>
                             </ul>
                             <div style="clear:both;"></div>
@@ -332,8 +348,12 @@
     % endif
 
     % if sickrage.srCore.NEWEST_VERSION_STRING and current_user:
-        <div class="alert alert-success upgrade-notification">
-            <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-success upgrade-notification">
+                    <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
+                </div>
+            </div>
         </div>
     % endif
 </div>
