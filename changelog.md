@@ -1,6 +1,7 @@
 # Changelog
 
-- * a5acbf0 - 2017-04-30: Fixed forced update checks to display new update text even when autoupdates are turned on 
+- * 4b5258f - 2017-04-30: Fixed column selection issues for display show web view 
+- * 410c93f - 2017-04-30: Fixed forced update checks to display new update text even when autoupdates are turned on 
 - * 63ba9db - 2017-04-30: Fixed issue with &#x27;prev episode&#x27; on main show page 
 - * 62dfd77 - 2017-04-26: Fixed version updater issues 
 - * c96a482 - 2017-04-26: Fixed version updater issues 

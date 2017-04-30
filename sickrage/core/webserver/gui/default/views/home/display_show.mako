@@ -395,8 +395,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="btn-group pull-right">
-                        <button class="btn" id="popover" type="button">Select Columns <b class="caret"></b>
-                        </button>
+                        <button class="btn" id="popover" type="button">Select Columns <b class="caret"></b></button>
                         <button class="btn seriesCheck">Select Filtered Episodes</button>
                         <button class="btn clearAll">Clear All</button>
                     </div>
@@ -507,6 +506,8 @@
                             <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
                             <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
                             <th data-sorter="false" class="col-airdate">Airdate</th>
+                            <th data-sorter="false" class="col-ep">Download</th>
+                            <th data-sorter="false" class="col-ep">Subtitles</th>
                             <th data-sorter="false" class="col-status">Status</th>
                             <th data-sorter="false" class="col-search">Search</th>
                         </tr>
@@ -614,6 +615,7 @@
                         <tbody class="collapse${("", " in")[curSeason == -1]}"
                                id="collapseSeason-${epResult['season']}">
                     % else:
+
 
                         <tbody>
                     % endif
