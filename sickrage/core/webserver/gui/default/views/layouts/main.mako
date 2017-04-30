@@ -302,12 +302,6 @@
         </div>
     </nav>
 
-    % if sickrage.srCore.NEWEST_VERSION_STRING and current_user:
-        <div class="alert alert-success upgrade-notification">
-            <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
-        </div>
-    % endif
-
     % if current_user and submenu:
         <div id="SubMenu" class="clearfix">
             <span class="btn-group btn-group-justified">
@@ -334,6 +328,12 @@
                     % endif
                 % endfor
             </span>
+        </div>
+    % endif
+
+    % if sickrage.srCore.NEWEST_VERSION_STRING and current_user:
+        <div class="alert alert-success upgrade-notification">
+            <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
         </div>
     % endif
 </div>
