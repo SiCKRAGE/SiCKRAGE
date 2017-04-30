@@ -49,6 +49,9 @@ module.exports = function (grunt) {
                         'dist/js/jquery.tablesorter.combined.min.js',
                         'dist/js/widgets/widget-columnSelector.min.js',
                         'dist/js/widgets/widget-stickyHeaders.min.js',
+                        'dist/js/widgets/widget-reflow.min.js',
+                        'dist/js/widgets/widget-filter.min.js',
+                        'dist/js/widgets/widget-saveSort.min.js',
                         'dist/css/theme.blue.min.css'
                     ],
                     'isotope': [

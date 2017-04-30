@@ -1188,7 +1188,7 @@ jQuery(document).ready(function ($) {
                     var sortList = (sort in sortCodes) ? [[sortCodes[sort], 0]] : [[0, 0]];
 
                     $('#showListTable:has(tbody tr)').tablesorter({
-                        widgets: ['stickyHeaders', 'filter', 'columnSelector', 'saveSort'],
+                        widgets: ['stickyHeaders', 'filter', 'columnSelector', 'saveSort', 'reflow'],
                         sortList: sortList,
                         textExtraction: {
                             0: function (node) {
@@ -1257,7 +1257,7 @@ jQuery(document).ready(function ($) {
 
             history: function () {
                 $("#historyTable:has(tbody tr)").tablesorter({
-                    widgets: ['zebra', 'filter'],
+                    widgets: ['zebra', 'filter', 'reflow'],
                     sortList: [[0, 1]],
                     textExtraction: (function () {
                         if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['detailed'])) {
@@ -1426,10 +1426,10 @@ jQuery(document).ready(function ($) {
 
             status: function () {
                 $("#schedulerStatusTable").tablesorter({
-                    widgets: ['saveSort', 'zebra']
+                    widgets: ['saveSort', 'zebra', 'reflow']
                 });
                 $("#queueStatusTable").tablesorter({
-                    widgets: ['saveSort', 'zebra'],
+                    widgets: ['saveSort', 'zebra', 'reflow'],
                     sortList: [[3, 0], [4, 0], [2, 1]]
                 });
             }
@@ -1567,7 +1567,7 @@ jQuery(document).ready(function ($) {
                             return $(node).find("img").attr("alt");
                         }
                     },
-                    widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector'],
+                    widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector', 'reflow'],
                     headers: (function () {
                         if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
                             return {
@@ -1925,8 +1925,9 @@ jQuery(document).ready(function ($) {
                     });
 
                     $("#showTable, #animeTable").tablesorter({
-                        widgets: ['saveSort', 'stickyHeaders', 'columnSelector'],
+                        widgets: ['saveSort', 'stickyHeaders', 'columnSelector', 'reflow'],
                         widgetOptions: {
+                            reflow_className: 'ui-table-reflow',
                             columnSelector_saveColumns: true,
                             columnSelector_layout: '<br><label><input type="checkbox">{name}</label>',
                             columnSelector_mediaquery: false,
@@ -2178,7 +2179,7 @@ jQuery(document).ready(function ($) {
                         $('#tableDiv').html(data);
                         $("#addRootDirTable").tablesorter({
                             sortList: [[1, 0]],
-                            widgets: ['zebra'],
+                            widgets: ['zebra', 'reflow'],
                             headers: {
                                 0: {sorter: false}
                             }
@@ -4994,7 +4995,7 @@ jQuery(document).ready(function ($) {
                             return $(node).find("img").attr("alt");
                         }
                     },
-                    widgets: ['zebra'],
+                    widgets: ['zebra', 'reflow'],
                     headers: {
                         0: {sorter: false},
                         1: {sorter: 'showNames'},
@@ -5159,7 +5160,7 @@ jQuery(document).ready(function ($) {
 
             failed_downloads: function () {
                 $("#failedTable:has(tbody tr)").tablesorter({
-                    widgets: ['zebra'],
+                    widgets: ['zebra', 'reflow'],
                     sortList: [[0, 0]],
                     headers: {3: {sorter: false}}
                 });

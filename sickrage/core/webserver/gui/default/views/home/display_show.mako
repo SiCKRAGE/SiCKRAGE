@@ -438,7 +438,8 @@
 
     <div class="row">
         <div class="col-md-12">
-            <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="displayShowTable display_show"
+            <table id="${("showTable", "animeTable")[bool(show.is_anime)]}"
+                   class="displayShowTable display_show"
                    cellspacing="0" border="0" cellpadding="0">
 
 
@@ -615,6 +616,7 @@
                         <tbody class="collapse${("", " in")[curSeason == -1]}"
                                id="collapseSeason-${epResult['season']}">
                     % else:
+
 
 
                         <tbody>

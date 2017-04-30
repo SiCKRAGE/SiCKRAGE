@@ -860,30 +860,20 @@ tablesorter.css
 ========================================================================== */
 
 .tablesorter {
-    width: 100%;
-    margin-right: auto;
-    margin-left: auto;
     color: #fff;
-    text-align: left;
     background-color: #333;
-    border-spacing: 0;
 }
 
 .tablesorter th,
 .tablesorter td {
-    padding: 4px;
     border-top: #222 1px solid;
     border-left: #222 1px solid;
-    vertical-align: middle;
 }
 
 .tablesorter th {
     color: #fff;
-    text-align: center;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
     background-color: #15528F;
-    border-collapse: collapse;
-    font-weight: normal;
 }
 
 .tablesorter thead .tablesorter-headerDesc {
@@ -914,7 +904,6 @@ thead.tablesorter-stickyHeader {
 
 .tablesorter tr.tablesorter-filter-row,
 .tablesorter tr.tablesorter-filter-row td {
-    text-align: center;
     background: #333;
     border-bottom: 1px solid #111;
 }
