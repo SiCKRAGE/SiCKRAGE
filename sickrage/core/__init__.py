@@ -407,7 +407,7 @@ class Core(object):
         self.srLogger.info("SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.CONFIG_FILE, self.srConfig.CONFIG_VERSION))
         self.srLogger.info("SiCKRAGE :: URL:[{}://{}:{}/]".format(
             ('http', 'https')[self.srConfig.ENABLE_HTTPS],
-            get_lan_ip(), self.srConfig.WEB_PORT)
+            self.srConfig.WEB_HOST, self.srConfig.WEB_PORT)
         )
 
         # start ioloop event handler

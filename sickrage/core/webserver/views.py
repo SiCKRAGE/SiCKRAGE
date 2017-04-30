@@ -48,7 +48,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, NoNFOException, CantRemoveShowException
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
-    chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, \
+    chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, tryInt, clean_url
 from sickrage.core.helpers.browser import foldersAtPath
@@ -3499,15 +3499,9 @@ class Manage(Home, WebRoot):
     def manageTorrents(self):
         info_download_station = ''
 
+        webui_url = sickrage.srCore.srConfig.TORRENT_HOST
         if re.search('localhost', sickrage.srCore.srConfig.TORRENT_HOST):
-
-            if sickrage.srCore.srConfig.LOCALHOST_IP == '':
-                webui_url = re.sub('localhost', get_lan_ip(), sickrage.srCore.srConfig.TORRENT_HOST)
-            else:
-                webui_url = re.sub('localhost', sickrage.srCore.srConfig.LOCALHOST_IP,
-                                   sickrage.srCore.srConfig.TORRENT_HOST)
-        else:
-            webui_url = sickrage.srCore.srConfig.TORRENT_HOST
+            webui_url = re.sub('localhost', sickrage.srCore.srConfig.WEB_HOST, sickrage.srCore.srConfig.TORRENT_HOST)
 
         if sickrage.srCore.srConfig.TORRENT_METHOD == 'utorrent':
             webui_url = '/'.join(s.strip('/') for s in (webui_url, 'gui/'))

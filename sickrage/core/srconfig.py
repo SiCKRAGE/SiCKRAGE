@@ -35,7 +35,7 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_lan_ip
 
 
 class srConfig(object):
@@ -96,7 +96,6 @@ class srConfig(object):
         self.HANDLE_REVERSE_PROXY = False
         self.PROXY_SETTING = None
         self.PROXY_INDEXERS = True
-        self.LOCALHOST_IP = None
         self.SSL_VERIFY = True
         self.ENABLE_HTTPS = False
         self.HTTPS_CERT = None
@@ -902,7 +901,7 @@ class srConfig(object):
         if sickrage.WEB_PORT != 8081:
             self.WEB_PORT = sickrage.WEB_PORT
 
-        self.WEB_HOST = self.check_setting_str('General', 'web_host', '0.0.0.0')
+        self.WEB_HOST = self.check_setting_str('General', 'web_host', get_lan_ip())
         self.WEB_IPV6 = bool(self.check_setting_int('General', 'web_ipv6', 0))
         self.WEB_ROOT = self.check_setting_str('General', 'web_root', '').rstrip("/")
         self.WEB_LOG = bool(self.check_setting_int('General', 'web_log', 0))
@@ -919,7 +918,6 @@ class srConfig(object):
         self.EP_DEFAULT_DELETED_STATUS = self.check_setting_int('General', 'ep_default_deleted_status',
                                                                 6)
         self.DOWNLOAD_URL = self.check_setting_str('General', 'download_url', "")
-        self.LOCALHOST_IP = self.check_setting_str('General', 'localhost_ip', '')
         self.CPU_PRESET = self.check_setting_str('General', 'cpu_preset', 'NORMAL')
         self.ANON_REDIRECT = self.check_setting_str('General', 'anon_redirect',
                                                     'http://dereferer.org/?')
@@ -1427,7 +1425,6 @@ class srConfig(object):
         new_config['General']['web_use_gzip'] = int(self.WEB_USE_GZIP)
         new_config['General']['ssl_verify'] = int(self.SSL_VERIFY)
         new_config['General']['download_url'] = self.DOWNLOAD_URL
-        new_config['General']['localhost_ip'] = self.LOCALHOST_IP
         new_config['General']['cpu_preset'] = self.CPU_PRESET
         new_config['General']['anon_redirect'] = self.ANON_REDIRECT
         new_config['General']['api_key'] = self.API_KEY
