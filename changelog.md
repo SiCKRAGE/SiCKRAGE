@@ -1,6 +1,7 @@
 # Changelog
 
-- * 80a52e4 - 2017-05-01: Fixed issues with qtip js code 
+- * c27ff16 - 2017-05-01: v9.0.17 Removed filename column from display show page, hovering over epiosde number now displays filename in a tooltip 
+- * 6a10c8e - 2017-05-01: Fixed issues with qtip js code 
 - * 4c8272e - 2017-05-01: v9.0.16 
 - * 58b2dae - 2017-04-30: Fixed season checkboxes in display shows 
 - * 9446ad4 - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 

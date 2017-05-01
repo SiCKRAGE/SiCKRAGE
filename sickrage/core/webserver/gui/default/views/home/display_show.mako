@@ -529,7 +529,6 @@
                             Scene Absolute
                         </th>
                         <th data-sorter="false" class="col-name">Name</th>
-                        <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
                         <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
                         <th data-sorter="false" class="col-airdate">Airdate</th>
                         <th data-sorter="false" class="col-ep">Download</th>
@@ -573,7 +572,7 @@
                             <%
                                 text = str(epResult['episode'])
                                 if epLoc != '' and epLoc is not None:
-                                            text = '<span title="' + epLoc + '" class="addQTip">' + text + "</span>"
+                                            text = '<span title="' + epLoc + '" class="addQTip badge">' + text + "</span>"
                             %>
                                 ${text}
                         </td>
@@ -624,8 +623,6 @@
 
                             ${epResult["name"]}
                         </td>
-
-                        <td class="col-name">${epLoc}</td>
 
                         <td class="col-ep">
                             % if epResult["file_size"]:
