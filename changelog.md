@@ -1,6 +1,7 @@
 # Changelog
 
-- * 00c3c70 - 2017-04-30: Fixed season checkboxes in display shows 
+- * 4c40df0 - 2017-05-01: v9.0.16 
+- * 58b2dae - 2017-04-30: Fixed season checkboxes in display shows 
 - * 9446ad4 - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
 - * 69f604d - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
 - * 7d2d7d8 - 2017-04-30: Clears newest version text variable before redirecting to restart page on updates 
