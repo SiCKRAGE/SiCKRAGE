@@ -512,7 +512,9 @@
                     </tr>
                     <tr class="seasoncols">
                         <th data-sorter="false" data-priority="critical" class="col-checkbox">
-                            <input type="checkbox" class="seasonCheck"/>
+                            <label>
+                                <input type="checkbox" id="${int(epResult["season"])}" class="seasonCheck"/>
+                            </label>
                         </th>
                         <th data-sorter="false" class="col-metadata">NFO</th>
                         <th data-sorter="false" class="col-metadata">TBN</th>

@@ -1743,6 +1743,25 @@ jQuery(document).ready(function ($) {
                 init: function () {
                     SICKRAGE.ajax_search.init();
 
+                    $("#showTable, #animeTable").tablesorter({
+                        widgets: ['saveSort', 'columnSelector', 'reflow'],
+                        widgetOptions: {
+                            reflow_className: 'ui-table-reflow',
+                            columnSelector_saveColumns: true,
+                            columnSelector_layout: '<br><label><input type="checkbox">{name}</label>',
+                            columnSelector_mediaquery: false,
+                            columnSelector_cssChecked: 'checked'
+                        }
+                    });
+
+                    $('#popover').popover({
+                        placement: 'bottom',
+                        html: true, // required if content has HTML
+                        content: '<div id="popover-target"></div>'
+                    }).on('shown.bs.popover', function () {
+                        $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
+                    });
+
                     $('.imdbstars').each(function (i, e) {
                         $(e).html($('<span>').width($(e).text() * 12));
                     });
@@ -1802,7 +1821,7 @@ jQuery(document).ready(function ($) {
 
                     $('.seasonCheck').on('click', function () {
                         var seasCheck = this;
-                        var seasNo = $(seasCheck).attr('id');
+                        var seasNo = $(this).attr('id');
 
                         $('#collapseSeason-' + seasNo).collapse('show');
                         $('.epCheck:visible').each(function () {
@@ -1922,25 +1941,6 @@ jQuery(document).ready(function ($) {
                                 classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
                             }
                         });
-                    });
-
-                    $("#showTable, #animeTable").tablesorter({
-                        widgets: ['saveSort', 'columnSelector', 'reflow'],
-                        widgetOptions: {
-                            reflow_className: 'ui-table-reflow',
-                            columnSelector_saveColumns: true,
-                            columnSelector_layout: '<br><label><input type="checkbox">{name}</label>',
-                            columnSelector_mediaquery: false,
-                            columnSelector_cssChecked: 'checked'
-                        }
-                    });
-
-                    $('#popover').popover({
-                        placement: 'bottom',
-                        html: true, // required if content has HTML
-                        content: '<div id="popover-target"></div>'
-                    }).on('shown.bs.popover', function () {
-                        $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
                     });
                 },
 
