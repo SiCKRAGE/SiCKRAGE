@@ -31,10 +31,11 @@
     "bookmarkscroll": "http://dynamicdrive.com/dynamicindex5/bookmarkscroll.js",
     "jquery.tablesorter": "~2.28.8",
     "scrollup": "~2.4.1",
-    "qtip2": "~2.2.1",
+    "qtip2": "git://github.com/qTip2/qTip2.git#v3.0.3",
     "uri.js": "~1.17.1",
     "jquery.steps": "~1.1.0",
-    "jquery-validation": "~1.15.0"
+    "jquery-validation": "~1.15.0",
+    "jquery-migrate": "~3.0.0"
   },
   "resolutions": {
     "jquery": "~3.2.1",

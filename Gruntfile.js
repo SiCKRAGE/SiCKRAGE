@@ -46,13 +46,14 @@ module.exports = function (grunt) {
                         'themes/base/jquery-ui.min.css'
                     ],
                     'jquery.tablesorter': [
-                        'dist/js/jquery.tablesorter.combined.min.js',
+                        'dist/js/jquery.tablesorter.js',
                         'dist/js/widgets/widget-columnSelector.min.js',
                         'dist/js/widgets/widget-stickyHeaders.min.js',
                         'dist/js/widgets/widget-reflow.min.js',
                         'dist/js/widgets/widget-filter.min.js',
                         'dist/js/widgets/widget-saveSort.min.js',
-                        'dist/css/theme.blue.min.css'
+                        'dist/js/widgets/widget-storage.min.js',
+                        'dist/css/theme.blue.css'
                     ],
                     'isotope': [
                         "dist/isotope.pkgd.min.js"
@@ -69,10 +70,6 @@ module.exports = function (grunt) {
                     "outlayer": [
                         "item.js",
                         "outlayer.js"
-                    ],
-                    "qtip2": [
-                        "jquery.qtip.min.js",
-                        "jquery.qtip.min.css"
                     ],
                     "bootstrap-tokenfield": [
                         "dist/bootstrap-tokenfield.js",

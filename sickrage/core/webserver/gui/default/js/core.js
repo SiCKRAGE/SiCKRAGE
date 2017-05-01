@@ -1744,9 +1744,8 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.ajax_search.init();
 
                     $("#showTable, #animeTable").tablesorter({
-                        widgets: ['saveSort', 'columnSelector', 'reflow'],
+                        widgets: ['saveSort', 'columnSelector'],
                         widgetOptions: {
-                            reflow_className: 'ui-table-reflow',
                             columnSelector_saveColumns: true,
                             columnSelector_layout: '<br><label><input type="checkbox">{name}</label>',
                             columnSelector_mediaquery: false,

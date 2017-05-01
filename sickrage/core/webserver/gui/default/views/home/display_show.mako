@@ -611,16 +611,16 @@
                         </td>
 
                         <td class="col-name">
-                            % if epResult["description"]:
-                                <img src="${srWebRoot}/images/info32.png" width="16" height="16" class="plotInfo" alt=""
-                                     id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
-                                     data-tooltip="${epResult["description"]}"/>
-                            % else:
-                                <img src="${srWebRoot}/images/info32.png" width="16" height="16" class="plotInfoNone"
-                                     alt=""
-                                     id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
-                                     data-tooltip=""/>
-                            % endif
+                            <img src="${srWebRoot}/images/info32.png" width="16" height="16" alt=""
+                                 id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
+                                % if epResult["description"]:
+                                 class="plotInfo"
+                                 data-tooltip="${epResult["description"]}"
+                                % else:
+                                 class="plotInfoNone"
+                                 data-tooltip=""
+                                % endif
+                            />
 
                             ${epResult["name"]}
                         </td>
