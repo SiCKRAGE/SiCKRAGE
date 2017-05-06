@@ -1,6 +1,7 @@
 # Changelog
 
-- * d4818e6 - 2017-05-06: v9.0.18 
+- * 9724068 - 2017-05-06: Fixed width issues with display show page 
+- * c5711cd - 2017-05-06: v9.0.18 
 - * 40a8e32 - 2017-05-06: Fixed issues with Episode Status Management page 
 - * 2f0a101 - 2017-05-06: Added dedicated scheduler job for getting next episode airdates 
 - * 4924eca - 2017-05-06: Fixed update notifications for source updates 
