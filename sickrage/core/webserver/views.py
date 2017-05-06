@@ -2866,6 +2866,7 @@ class Manage(Home, WebRoot):
         status_list = []
 
         if whichStatus:
+            status_list = [int(whichStatus)]
             if int(whichStatus) == SNATCHED:
                 status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
 
