@@ -397,7 +397,7 @@ class GitUpdateManager(UpdateManager):
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from GIT servers")
             if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
-                srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
+                srNotifiers.notify_version_update(self.get_newest_version)
             self.install_requirements()
             return True
 
@@ -761,7 +761,7 @@ class PipUpdateManager(UpdateManager):
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from PyPi servers")
             if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
-                srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
+                srNotifiers.notify_version_update(self.get_newest_version)
             return True
 
         return False
