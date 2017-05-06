@@ -1,6 +1,7 @@
 # Changelog
 
-- * 58bfef7 - 2017-05-06: Fixed issues with Episode Status Management page 
+- * d4818e6 - 2017-05-06: v9.0.18 
+- * 40a8e32 - 2017-05-06: Fixed issues with Episode Status Management page 
 - * 2f0a101 - 2017-05-06: Added dedicated scheduler job for getting next episode airdates 
 - * 4924eca - 2017-05-06: Fixed update notifications for source updates 
 - * 85bd7d7 - 2017-05-06: Fixed update notifications for notifiers to display new version 
