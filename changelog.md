@@ -1,6 +1,7 @@
 # Changelog
 
-- * b1fb1fc - 2017-05-06: Fixed update notifications for source updates 
+- * 528d0e6 - 2017-05-06: Added dedicated scheduler job for getting next episode airdates 
+- * 4924eca - 2017-05-06: Fixed update notifications for source updates 
 - * 85bd7d7 - 2017-05-06: Fixed update notifications for notifiers to display new version 
 - * 49359c4 - 2017-05-06: Misc code cleanup 
 - * 71d381a - 2017-05-06: Fixed misc unicode issues 

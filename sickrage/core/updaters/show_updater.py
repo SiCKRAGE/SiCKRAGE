@@ -66,8 +66,6 @@ class srShowUpdater(object):
         pi_list = []
         for curShow in sickrage.srCore.SHOWLIST:
             try:
-                curShow.nextEpisode()
-
                 if curShow.indexerid in updated_shows:
                     pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
                 else:

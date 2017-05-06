@@ -309,10 +309,19 @@ class Core(object):
         self.srScheduler.add_job(
             self.SHOWUPDATER.run,
             srIntervalTrigger(
-                **{'hours': 24,
+                **{'days': 1,
                    'start_date': datetime.datetime.now().replace(hour=self.srConfig.SHOWUPDATE_HOUR)}),
             name="SHOWUPDATER",
             id="SHOWUPDATER"
+        )
+
+        # add show next episode job
+        self.srScheduler.add_job(
+            lambda: [curShow.nextEpisode() for curShow in self.SHOWLIST],
+            srIntervalTrigger(
+                **{'hours': 1}),
+            name="SHOWUNEXTEP",
+            id="SHOWNEXTEP"
         )
 
         # add daily search job

@@ -72,11 +72,7 @@ class srDailySearcher(object):
                     show = findCertainShow(sickrage.srCore.SHOWLIST, int(dbData['showid']))
 
                 # for when there is orphaned series in the database but not loaded into our showlist
-                if not show or show.paused:
-                    continue
-
-                # get next episode air date/time
-                show.nextEpisode()
+                if not show or show.paused: continue
             except MultipleShowObjectsException:
                 sickrage.srCore.srLogger.info("ERROR: expected to find a single show matching " + str(dbData['showid']))
                 continue
