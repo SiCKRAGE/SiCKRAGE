@@ -37,7 +37,7 @@ class srNameCache(object):
 
     def should_update(self, show):
         # if we've updated recently then skip the update
-        if datetime.today() - getattr(self.last_update, show.name, datetime.fromtimestamp(
+        if datetime.today() - (self.last_update.get(show.name) or datetime.fromtimestamp(
                 int(time.mktime(datetime.today().timetuple())))) < timedelta(minutes=self.min_time):
             return True
 

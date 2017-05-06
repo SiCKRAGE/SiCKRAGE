@@ -24,7 +24,7 @@ from CodernityDB.hash_index import HashIndex
 
 
 class CacheLastUpdateIndex(HashIndex):
-    _version = 1
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -35,11 +35,11 @@ class CacheLastUpdateIndex(HashIndex):
             return md5(data.get('provider')).hexdigest(), None
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheLastSearchIndex(HashIndex):
-    _version = 1
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -50,7 +50,7 @@ class CacheLastSearchIndex(HashIndex):
             return md5(data.get('provider')).hexdigest(), None
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheSceneExceptionsIndex(HashIndex):
@@ -69,7 +69,7 @@ class CacheSceneExceptionsIndex(HashIndex):
 
 
 class CacheSceneNamesIndex(HashIndex):
-    _version = 1
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -80,11 +80,11 @@ class CacheSceneNamesIndex(HashIndex):
             return md5(data.get('name')).hexdigest(), None
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheNetworkTimezonesIndex(HashIndex):
-    _version = 1
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -95,11 +95,11 @@ class CacheNetworkTimezonesIndex(HashIndex):
             return md5(data.get('network_name')).hexdigest(), None
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheSceneExceptionsRefreshIndex(HashIndex):
-    _version = 1
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -110,11 +110,11 @@ class CacheSceneExceptionsRefreshIndex(HashIndex):
             return md5(data.get('list')).hexdigest(), None
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheProvidersIndex(HashIndex):
-    _version = 1
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -125,4 +125,4 @@ class CacheProvidersIndex(HashIndex):
             return md5(data.get('provider')).hexdigest(), None
 
     def make_key(self, key):
-        return md5(key).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()

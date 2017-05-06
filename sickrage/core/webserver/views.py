@@ -2663,9 +2663,8 @@ class HomeAddShows(Home):
             return finishAddShow()
 
         # sanity check on our inputs
-        if (not rootDir and not fullShowPath) or not whichSeries:
-            return "Missing params, no Indexer ID or folder:" + repr(whichSeries) + " and " + repr(
-                rootDir) + "/" + repr(fullShowPath)
+        if not any([rootDir, fullShowPath, whichSeries]):
+            return self.redirect("/home/")
 
         # figure out what show we're adding and where
         series_pieces = whichSeries.split('|')
@@ -2679,8 +2678,7 @@ class HomeAddShows(Home):
 
             indexer = int(series_pieces[1])
             indexer_id = int(series_pieces[3])
-            # Show name was sent in UTF-8 in the form
-            show_name = series_pieces[4].decode('utf-8')
+            show_name = series_pieces[4]
         else:
             # if no indexer was provided use the default indexer set in General settings
             if not providedIndexer:

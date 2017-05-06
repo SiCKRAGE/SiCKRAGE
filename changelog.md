@@ -1,6 +1,7 @@
 # Changelog
 
-- * 57252ca - 2017-05-06: Fixed global name &#x27;get_lan_ip&#x27; is not defined error 
+- * 4495e1b - 2017-05-06: Fixed misc unicode issues 
+- * 4c9b49d - 2017-05-06: Fixed global name &#x27;get_lan_ip&#x27; is not defined error 
 - * 4337b89 - 2017-05-06: Fixed issues with RARBG provider and expired tokens 
 - * 271554a - 2017-05-01: v9.0.17 Removed filename column from display show page, hovering over epiosde number now displays filename in a tooltip 
 - * 6a10c8e - 2017-05-01: Fixed issues with qtip js code 

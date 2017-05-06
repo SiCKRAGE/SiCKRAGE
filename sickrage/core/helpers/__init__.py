@@ -954,7 +954,7 @@ def anon_url(*url):
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
     """
 
-    url = ''.join(map(str, url))
+    url = ''.join(map(unicode, url))
 
     # Handle URL's containing https or http, previously only handled http
     uri_pattern = ur'^https?://'
