@@ -520,8 +520,7 @@ class SourceUpdateManager(UpdateManager):
 
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
-    @staticmethod
-    def update():
+    def update(self):
         """
         Downloads the latest source tarball from server and installs it over the existing version.
         """
@@ -574,7 +573,7 @@ class SourceUpdateManager(UpdateManager):
 
             # walk temp folder and move files to main folder
             sickrage.srCore.srLogger.info("Moving files from " + content_dir + " to " + sickrage.PROG_DIR)
-            for dirname, _, filenames in os.walk(content_dir):  # @UnusedVariable
+            for dirname, _, filenames in os.walk(content_dir):
                 dirname = dirname[len(content_dir) + 1:]
                 for curfile in filenames:
                     old_path = os.path.join(content_dir, dirname, curfile)
@@ -603,7 +602,8 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        sickrage.srCore.notifiersDict.notify_git_update(sickrage.srCore.NEWEST_VERSION_STRING)
+        if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
+            srNotifiers.notify_version_update(self.get_newest_version)
 
         return True
 

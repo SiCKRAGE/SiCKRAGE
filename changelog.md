@@ -1,6 +1,7 @@
 # Changelog
 
-- * 737f527 - 2017-05-06: Fixed update notifications for notifiers to display new version 
+- * b1fb1fc - 2017-05-06: Fixed update notifications for source updates 
+- * 85bd7d7 - 2017-05-06: Fixed update notifications for notifiers to display new version 
 - * 49359c4 - 2017-05-06: Misc code cleanup 
 - * 71d381a - 2017-05-06: Fixed misc unicode issues 
 - * 4c9b49d - 2017-05-06: Fixed global name &#x27;get_lan_ip&#x27; is not defined error 
