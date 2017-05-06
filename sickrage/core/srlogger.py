@@ -100,8 +100,9 @@ class srLogger(logging.getLoggerClass()):
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
-            console.setFormatter(
-                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
+            formatter = logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S')
+
+            console.setFormatter(formatter)
             console.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
             self.addHandler(console)
 
@@ -124,13 +125,13 @@ class srLogger(logging.getLoggerClass()):
                 backupCount=self.logNr
             )
 
-            rfh.setFormatter(
-                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
+            formatter = logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S')
+
+            rfh.setFormatter(formatter)
             rfh.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
             self.addHandler(rfh)
 
-            rfh_errors.setFormatter(
-                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
+            rfh_errors.setFormatter(formatter)
             rfh_errors.setLevel(self.logLevels['ERROR'])
             self.addHandler(rfh_errors)
 
