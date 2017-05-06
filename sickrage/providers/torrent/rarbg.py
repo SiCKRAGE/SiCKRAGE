@@ -81,24 +81,15 @@ class RarbgProvider(TorrentProvider):
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
-        try:
-            if response['token']:
-                self.token = response['token']
-                self.tokenExpireDate = datetime.datetime.now() + datetime.timedelta(minutes=14)
-                return True
-        except Exception as e:
-            sickrage.srCore.srLogger.warning("No token found")
-            sickrage.srCore.srLogger.debug("No token found: %s" % repr(e))
+        self.token = response.get('token')
+        self.tokenExpireDate = datetime.datetime.now() + datetime.timedelta(minutes=14) if self.token else None
 
-        return False
+        return self.token is not None
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
-
-        if not self.login():
-            return results
 
         if epObj is not None:
             ep_indexerid = epObj.show.indexerid
@@ -144,6 +135,9 @@ class RarbgProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
+                    if not self.login():
+                        return results
+
                     data = sickrage.srCore.srWebSession.get(
                         searchURL + self.urlOptions['token'].format(token=self.token)).json()
                 except Exception:

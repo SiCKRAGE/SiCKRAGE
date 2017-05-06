@@ -1,6 +1,7 @@
 # Changelog
 
-- * c27ff16 - 2017-05-01: v9.0.17 Removed filename column from display show page, hovering over epiosde number now displays filename in a tooltip 
+- * 60fb79f - 2017-05-06: Fixed issues with RARBG provider and expired tokens 
+- * 271554a - 2017-05-01: v9.0.17 Removed filename column from display show page, hovering over epiosde number now displays filename in a tooltip 
 - * 6a10c8e - 2017-05-01: Fixed issues with qtip js code 
 - * 4c8272e - 2017-05-01: v9.0.16 
 - * 58b2dae - 2017-04-30: Fixed season checkboxes in display shows 
