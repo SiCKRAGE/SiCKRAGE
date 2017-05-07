@@ -42,6 +42,7 @@ import traceback
 import urllib2
 import urlparse
 import uuid
+import webbrowser
 import zipfile
 from contextlib import contextmanager
 
@@ -1682,3 +1683,16 @@ def overall_stats():
             stats['episodes']['total'] += 1
 
     return stats
+
+def launch_browser(protocol=None, host=None, startport=None):
+    browserurl = '{}://{}:{}/home/'.format(protocol or 'http', host, startport or 8081)
+
+    try:
+        sickrage.srCore.srLogger.info("Launching browser window")
+
+        try:
+            webbrowser.open(browserurl, 2, 1)
+        except webbrowser.Error:
+            webbrowser.open(browserurl, 1, 1)
+    except webbrowser.Error:
+        print("Unable to launch a browser")

@@ -39,7 +39,7 @@ from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
-    generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace
+    generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser
 from sickrage.core.nameparser.validator import check_force_season_folders  # memory intensive
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
@@ -418,6 +418,15 @@ class Core(object):
             ('http', 'https')[self.srConfig.ENABLE_HTTPS],
             self.srConfig.WEB_HOST, self.srConfig.WEB_PORT)
         )
+
+        # launch browser window
+        if all([not sickrage.NOLAUNCH, sickrage.srCore.srConfig.LAUNCH_BROWSER]):
+            threading.Thread(None,
+                             lambda: launch_browser(
+                                 ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
+                                 self.srConfig.WEB_HOST,
+                                 sickrage.srCore.srConfig.WEB_PORT
+                             )).start()
 
         # start ioloop event handler
         self.io_loop.start()

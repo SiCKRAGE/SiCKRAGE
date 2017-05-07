@@ -1,6 +1,7 @@
 # Changelog
 
-- * c118fd2 - 2017-05-07: Fixed issues with buttons being hidden on log viewer 
+- * e599503 - 2017-05-07: Fixed issues with launching browser on incorrect ip address 
+- * 39e1a19 - 2017-05-07: Fixed issues with buttons being hidden on log viewer 
 - * da83091 - 2017-05-07: Fixed issues with daily searches and episodes without a name causing pattern match errors 
 - * 3e87d84 - 2017-05-06: Fixed downloading of torrent files from hanging when issue with connecting server 
 - * 6f7f317 - 2017-05-06: Fixed width issues with display show page 

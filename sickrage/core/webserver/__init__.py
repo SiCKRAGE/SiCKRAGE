@@ -21,31 +21,15 @@ from __future__ import unicode_literals
 import os
 import shutil
 import socket
-import threading
-import webbrowser
 
 from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, generateApiKey, get_lan_ip
+from sickrage.core.helpers import create_https_certificates, generateApiKey
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
-
-
-def launch_browser(protocol=None, host=None, startport=None):
-    browserurl = '{}://{}:{}/home/'.format(protocol or 'http', host, startport or 8081)
-
-    try:
-        sickrage.srCore.srLogger.info("Launching browser window")
-
-        try:
-            webbrowser.open(browserurl, 2, 1)
-        except webbrowser.Error:
-            webbrowser.open(browserurl, 1, 1)
-    except webbrowser.Error:
-        print("Unable to launch a browser")
 
 
 class StaticImageHandler(StaticFileHandler):
@@ -178,15 +162,6 @@ class srWebServer(object):
         except socket.error as e:
             print(e.message)
             raise
-
-        # launch browser window
-        if all([not sickrage.NOLAUNCH, sickrage.srCore.srConfig.LAUNCH_BROWSER]):
-            threading.Thread(None,
-                             lambda: launch_browser(
-                                 ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
-                                 get_lan_ip(),
-                                 sickrage.srCore.srConfig.WEB_PORT
-                             )).start()
 
     def shutdown(self):
         if self.started:
