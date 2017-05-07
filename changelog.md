@@ -1,6 +1,7 @@
 # Changelog
 
-- * 500e869 - 2017-05-06: Fixed downloading of torrent files from hanging when issue with connecting server 
+- * f002edd - 2017-05-07: Fixed issues with daily searches and episodes without a name causing pattern match errors 
+- * 3e87d84 - 2017-05-06: Fixed downloading of torrent files from hanging when issue with connecting server 
 - * 6f7f317 - 2017-05-06: Fixed width issues with display show page 
 - * c5711cd - 2017-05-06: v9.0.18 
 - * 40a8e32 - 2017-05-06: Fixed issues with Episode Status Management page 

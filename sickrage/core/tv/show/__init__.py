@@ -1140,7 +1140,7 @@ class TVShow(object):
         if not self.next_aired or self.next_aired and curDate > self.next_aired:
             dbData = sorted(
                 [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True) if
-                 x['doc']['airdate'] >= datetime.date.today().toordinal() and
+                 x['doc']['airdate'] >= curDate and
                  x['doc']['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
 
             self.next_aired = dbData[0]['airdate'] if dbData else ''

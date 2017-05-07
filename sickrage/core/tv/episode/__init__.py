@@ -83,7 +83,7 @@ class TVEpisode(object):
 
     @property
     def name(self):
-        return self._name
+        return self._name or ""
 
     @name.setter
     def name(self, value):
@@ -1014,6 +1014,7 @@ class TVEpisode(object):
 
         for curName in [self.name] + [x.name for x in self.relatedEps]:
             match = re.match(multiNameRegex, curName)
+
             if not match:
                 singleName = False
                 break

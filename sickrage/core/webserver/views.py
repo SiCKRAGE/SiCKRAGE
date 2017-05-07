@@ -3589,7 +3589,7 @@ class ManageSearches(Manage):
 
     def forceSearch(self):
         # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').func():
+        if sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').func(True):
             sickrage.srCore.srLogger.info("Daily search forced")
             sickrage.srCore.srNotifications.message('Daily search started')
 
