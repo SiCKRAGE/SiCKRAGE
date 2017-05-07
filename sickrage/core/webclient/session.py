@@ -138,17 +138,14 @@ class srSession(cfscrape.CloudflareScraper):
         """
 
         try:
-            r = self.get(url, stream=True, **kwargs)
+            r = self.get(url, timeout=10, stream=True, **kwargs)
             if r.status_code >= 400:
                 return False
 
             with io.open(filename, 'wb') as f:
                 for chunk in r.iter_content(chunk_size=1024):
-                    if not chunk:
-                        break
-
-                    f.write(chunk)
-                    f.flush()
+                    if chunk:
+                        f.write(chunk)
 
             chmodAsParent(filename)
         except Exception:

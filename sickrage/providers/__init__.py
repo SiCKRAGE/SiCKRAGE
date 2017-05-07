@@ -196,9 +196,9 @@ class GenericProvider(object):
         # primitive verification of torrents, just make sure we didn't get a text file or something
         if file_name.endswith('torrent'):
             try:
-                with open(file_name, 'rb') as file:
-                    mime_type = guessParser(StringInputStream(file.read()))._getMimeType()
-                    if mime_type == 'application/x-bittorrent':
+                with io.open(file_name, 'rb') as f:
+                    parser = guessParser(StringInputStream(f.read()))
+                    if parser and parser._getMimeType() == 'application/x-bittorrent':
                         return True
             except Exception as e:
                 sickrage.srCore.srLogger.debug("Failed to validate torrent file: {}".format(e.message))
