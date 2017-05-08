@@ -3581,7 +3581,7 @@ class ManageSearches(Manage):
 
     def forceBacklog(self):
         # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('BACKLOG').func():
+        if sickrage.srCore.srScheduler.get_job('BACKLOG').func(True):
             sickrage.srCore.srLogger.info("Backlog search forced")
             sickrage.srCore.srNotifications.message('Backlog search started')
 
@@ -3597,7 +3597,7 @@ class ManageSearches(Manage):
 
     def forceFindPropers(self):
         # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('PROPERSEARCHER').func():
+        if sickrage.srCore.srScheduler.get_job('PROPERSEARCHER').func(True):
             sickrage.srCore.srLogger.info("Find propers search forced")
             sickrage.srCore.srNotifications.message('Find propers search started')
 

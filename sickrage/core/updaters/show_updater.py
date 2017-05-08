@@ -79,3 +79,13 @@ class srShowUpdater(object):
         sickrage.srCore.cacheDB.db.update(dbData)
 
         self.amActive = False
+
+    def nextEpisode(self):
+        self.amActive = True
+
+        # set thread name
+        threading.currentThread().setName(self.name)
+
+        [curShow.nextEpisode() for curShow in sickrage.srCore.SHOWLIST]
+
+        self.amActive = False

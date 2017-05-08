@@ -42,6 +42,7 @@ from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundE
 from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, \
     safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
+from sickrage.core.updaters import tz_updater
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_attributenotfound
@@ -998,7 +999,7 @@ class TVShow(object):
                 ]
 
                 dbData = sickrage.srCore.mainDB.db.get('imdb_info', self.indexerid, with_doc=True)['doc']
-                self._imdb_info = {k:dbData[k] for k in imdb_info_keys if k in dbData}
+                self._imdb_info = {k: dbData[k] for k in imdb_info_keys if k in dbData}
             except RecordNotFound:
                 pass
 
@@ -1136,14 +1137,59 @@ class TVShow(object):
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
 
     def nextEpisode(self):
-        curDate = datetime.date.today().toordinal()
-        if not self.next_aired or self.next_aired and curDate > self.next_aired:
+        if self.paused: return
+
+        curDate = datetime.date.today()
+
+        if not self.next_aired or self.next_aired and curDate.toordinal() > self.next_aired:
             dbData = sorted(
                 [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True) if
-                 x['doc']['airdate'] >= curDate and
+                 x['doc']['airdate'] >= curDate.toordinal() and
                  x['doc']['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
 
             self.next_aired = dbData[0]['airdate'] if dbData else ''
+
+        sickrage.srCore.srLogger.info("{}: Searching for new released episodes".format(self.name))
+
+        curDate += datetime.timedelta(days=2)
+        if tz_updater.load_network_dict():
+            curDate += datetime.timedelta(days=1)
+
+        curTime = datetime.datetime.now(tz_updater.sr_timezone)
+
+        for dbData in [
+            x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
+            if x['doc']['status'] == UNAIRED
+            and x['doc']['season'] > 0
+            and curDate.toordinal() >= x['doc']['airdate'] > 1]:
+
+            if self.airs and self.network:
+                # This is how you assure it is always converted to local time
+                air_time = tz_updater.parse_date_time(
+                    dbData['airdate'], self.airs, self.network, dateOnly=True
+                ).astimezone(tz_updater.sr_timezone)
+
+                # filter out any episodes that haven't started airing yet,
+                # but set them to the default status while they are airing
+                # so they are snatched faster
+                if air_time > curTime: continue
+
+            ep = self.getEpisode(int(dbData['season']), int(dbData['episode']))
+            with ep.lock:
+                if ep.season == 0:
+                    sickrage.srCore.srLogger.info(
+                        "New episode {} airs today, setting status to SKIPPED because is a special season".format(
+                            ep.prettyName()))
+                    ep.status = SKIPPED
+                else:
+                    sickrage.srCore.srLogger.info(
+                        "New episode {} airs today, setting to default episode status for this show: {}".format(
+                            ep.prettyName(), statusStrings[ep.show.default_ep_status]))
+                    ep.status = ep.show.default_ep_status
+
+                ep.saveToDB()
+        else:
+            sickrage.srCore.srLogger.info("{}: No new released episodes found".format(self.name))
 
     def deleteShow(self, full=False):
         [sickrage.srCore.mainDB.db.delete(x['doc']) for x in

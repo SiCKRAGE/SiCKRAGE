@@ -317,7 +317,7 @@ class Core(object):
 
         # add show next episode job
         self.srScheduler.add_job(
-            lambda: [curShow.nextEpisode() for curShow in self.SHOWLIST],
+            self.SHOWUPDATER.nextEpisode,
             srIntervalTrigger(
                 **{'hours': 1}),
             name="SHOWUNEXTEP",
