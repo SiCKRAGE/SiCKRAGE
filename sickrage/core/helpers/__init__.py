@@ -88,7 +88,7 @@ def safe_getattr(object, name, default=None):
 
 def readFileBuffered(filename, reverse=False):
     blocksize = (1 << 15)
-    with io.open(filename, 'rb') as fh:
+    with io.open(filename, 'r', encoding='utf-8') as fh:
         if reverse:
             fh.seek(0, os.SEEK_END)
         pos = fh.tell()

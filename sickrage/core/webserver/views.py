@@ -4990,14 +4990,12 @@ class Logs(WebHandler):
             for logFile in [x for x in logFiles if os.path.isfile(x)]:
                 data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(logSearch),
                                                  "\n".join(next(readFileBuffered(logFile, reverse=True)).splitlines()),
-                                                 re.S + re.M + re.I)))
+                                                 re.M + re.I)))
                 maxLines -= len(data)
                 if len(data) == maxLines:
                     raise StopIteration
 
         except StopIteration:
-            pass
-        except Exception as e:
             pass
 
         return self.render(

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 32b3cc4 - 2017-05-07: Removed news from list of default homepage choices 
+- * f01b58b - 2017-05-07: Fixed view log search issues by adjusting regex opts 
+- * e412510 - 2017-05-07: Removed news from list of default homepage choices 
 - * 4721bb5 - 2017-05-07: Moved nextEpisode function call for daily searcher to searchForNeededEpisodes function 
 - * 7269f08 - 2017-05-07: Cleaned up next episode function code 
 - * 7d175b2 - 2017-05-07: v9.0.19 
