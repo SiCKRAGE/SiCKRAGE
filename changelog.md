@@ -1,6 +1,7 @@
 # Changelog
 
-- * 74f895d - 2017-05-07: Fixed view log text alignment issue 
+- * de4cf3d - 2017-05-07: v9.0.20 
+- * bc5f92a - 2017-05-07: Fixed view log text alignment issue 
 - * f9f2cd7 - 2017-05-07: Fixed view log search issues by adjusting regex opts 
 - * e412510 - 2017-05-07: Removed news from list of default homepage choices 
 - * 4721bb5 - 2017-05-07: Moved nextEpisode function call for daily searcher to searchForNeededEpisodes function 
