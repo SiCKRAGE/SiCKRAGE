@@ -49,8 +49,6 @@ class srDailySearcher(object):
         if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        sickrage.srCore.srScheduler.get_job('SHOWUNEXTEP').func()
-
         # queue episode for daily search
         sickrage.srCore.SEARCHQUEUE.put(DailySearchQueueItem())
 

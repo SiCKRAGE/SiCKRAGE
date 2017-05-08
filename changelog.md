@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8ca3f65 - 2017-05-07: Cleaned up next episode function code 
+- * 598f76a - 2017-05-07: Moved nextEpisode function call for daily searcher to searchForNeededEpisodes function 
+- * 7269f08 - 2017-05-07: Cleaned up next episode function code 
 - * 7d175b2 - 2017-05-07: v9.0.19 
 - * 112d3a9 - 2017-05-07: Fixed issues with launching browser on incorrect ip address 
 - * 39e1a19 - 2017-05-07: Fixed issues with buttons being hidden on log viewer 
