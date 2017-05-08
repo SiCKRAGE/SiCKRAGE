@@ -32,7 +32,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <pre>
+            <pre style="text-align: left;white-space: pre-line;">
                 ${logLines}
             </pre>
         </div>
