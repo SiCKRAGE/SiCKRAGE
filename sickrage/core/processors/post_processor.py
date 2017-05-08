@@ -441,7 +441,7 @@ class PostProcessor(object):
         to_return = (None, None, [], None, None)
 
         # if we don't have either of these then there's nothing to use to search the history for anyway
-        if not self.nzb_name and not self.folder_name:
+        if not self.nzb_name and not self.file_name:
             self.in_history = False
             return to_return
 
@@ -450,15 +450,14 @@ class PostProcessor(object):
         if self.nzb_name:
             names.append(self.nzb_name)
             if '.' in self.nzb_name: names.append(self.nzb_name.rpartition(".")[0])
-        if self.folder_name: names.append(self.folder_name)
+        if self.file_name:
+            names.append(self.file_name)
+            if '.' in self.file_name: names.append(self.file_name.rpartition(".")[0])
 
         # search the database for a possible match and return immediately if we find one
-
         for curName in names:
-            search_name = re.sub(r"[\.\- ]", "_", curName)
-
             dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.all('history', with_doc=True)
-                      if search_name in x['doc']['resource']]
+                      if curName in x['doc']['resource']]
 
             if len(dbData) == 0:
                 continue

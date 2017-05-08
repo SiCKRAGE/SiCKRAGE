@@ -1,6 +1,7 @@
 # Changelog
 
-- * 170e122 - 2017-05-08: v9.0.21 
+- * b08d182 - 2017-05-08: v9.0.22 Fixed history lookups during post-processing 
+- * 0321941 - 2017-05-08: v9.0.21 
 - * 111cac0 - 2017-05-08: Updated T411 provider url 
 - * 9460c33 - 2017-05-08: Fixed error code handling for RARBG to help with token issues 
 - * 2c557cc - 2017-05-07: v9.0.20 
