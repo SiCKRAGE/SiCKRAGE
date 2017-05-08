@@ -71,8 +71,8 @@ class RarbgProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=10)
 
-    def login(self):
-        if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
+    def login(self, reset=False):
+        if not reset and self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
         try:
@@ -89,6 +89,8 @@ class RarbgProvider(TorrentProvider):
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
+        if not self.login(): return results
+
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if epObj is not None:
@@ -134,39 +136,41 @@ class RarbgProvider(TorrentProvider):
 
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                try:
-                    if not self.login():
-                        return results
-
-                    data = sickrage.srCore.srWebSession.get(
-                        searchURL + self.urlOptions['token'].format(token=self.token)).json()
-                except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                if data.get('error'):
-                    if data.get('error_code') != 20:
-                        sickrage.srCore.srLogger.debug(data['error'])
-                    continue
-
-                for item in data.get('torrent_results') or []:
+                for r in range(0, 3):
                     try:
-                        title = item['title']
-                        download_url = item['download']
-                        size = convert_size(item['size'])
-                        seeders = item['seeders']
-                        leechers = item['leechers']
-                        # pubdate = item['pubdate']
+                        data = sickrage.srCore.srWebSession.get(
+                            searchURL + self.urlOptions['token'].format(token=self.token)).json()
+                    except Exception:
+                        sickrage.srCore.srLogger.debug("No data returned from provider")
+                        continue
 
-                        if not all([title, download_url]):
+                    if data.get('error'):
+                        if data.get('error_code') == 2:
+                            if self.login(True):continue
+                            return results
+                        elif data.get('error_code') != 20:
+                            sickrage.srCore.srLogger.debug(data['error'])
                             continue
 
-                        item = title, download_url, size, seeders, leechers
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
-                        items[mode].append(item)
-                    except Exception:
-                        continue
+                    for item in data.get('torrent_results') or []:
+                        try:
+                            title = item['title']
+                            download_url = item['download']
+                            size = convert_size(item['size'])
+                            seeders = item['seeders']
+                            leechers = item['leechers']
+                            # pubdate = item['pubdate']
+
+                            if not all([title, download_url]):
+                                continue
+
+                            item = title, download_url, size, seeders, leechers
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
+                            items[mode].append(item)
+                        except Exception:
+                            continue
+                    break
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
