@@ -73,9 +73,6 @@
                                         <option value="history" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'history']}>
                                             History
                                         </option>
-                                        <option value="news" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'news']}>
-                                            News
-                                        </option>
                                         <option value="IRC" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'IRC']}>
                                             IRC
                                         </option>
