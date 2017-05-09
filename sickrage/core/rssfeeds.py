@@ -29,7 +29,7 @@ from sickrage.core.webclient import USER_AGENTS
 
 def getFeed(url, params=None, request_headers=None, handlers=None):
     try:
-        resp = sickrage.srCore.srWebSession.get(url, params=params)
+        resp = sickrage.srCore.srWebSession.get(url, params=params, cache=False)
         if resp.ok:
             return feedparser.parse(
                 resp.text,
