@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import datetime
+from time import sleep
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -76,7 +77,7 @@ class RarbgProvider(TorrentProvider):
             return True
 
         try:
-            response = sickrage.srCore.srWebSession.get(self.urls['token'], timeout=30).json()
+            response = sickrage.srCore.srWebSession.get(self.urls['token'], cache=False, timeout=30).json()
         except Exception:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -145,9 +146,12 @@ class RarbgProvider(TorrentProvider):
                         continue
 
                     if data.get('error'):
-                        if data.get('error_code') == 2:
+                        if data.get('error_code') == 4:
                             if self.login(True):continue
                             return results
+                        elif data.get('error_code') == 5:
+                            sleep(5)
+                            continue
                         elif data.get('error_code') != 20:
                             sickrage.srCore.srLogger.debug(data['error'])
                             continue

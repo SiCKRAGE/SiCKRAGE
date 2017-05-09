@@ -1,6 +1,7 @@
 # Changelog
 
-- * b08d182 - 2017-05-08: v9.0.22 Fixed history lookups during post-processing 
+- * 8aada8d - 2017-05-08: v9.0.23 Fixed RARBG provider invalid timeout issues, added 5s timer between requests 
+- * 4c9d85f - 2017-05-08: v9.0.22 Fixed history lookups during post-processing 
 - * 0321941 - 2017-05-08: v9.0.21 
 - * 111cac0 - 2017-05-08: Updated T411 provider url 
 - * 9460c33 - 2017-05-08: Fixed error code handling for RARBG to help with token issues 
