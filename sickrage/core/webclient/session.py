@@ -31,7 +31,6 @@ import cachecontrol
 import certifi
 import cfscrape as cfscrape
 import requests
-from cachecontrol.heuristics import ExpiresAfter
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
@@ -95,9 +94,7 @@ class srSession(cfscrape.CloudflareScraper):
         # setup session caching
         if cache:
             cache_file = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))
-            self.__class__ = cachecontrol.CacheControl(self,
-                                                       cache=DBCache(cache_file),
-                                                       heuristic=ExpiresAfter(days=7)).__class__
+            self.__class__ = cachecontrol.CacheControl(self, cache=DBCache(cache_file)).__class__
 
         # get web response
         response = super(srSession, self).request(
