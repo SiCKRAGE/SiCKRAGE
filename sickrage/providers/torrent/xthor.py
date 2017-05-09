@@ -94,7 +94,7 @@ class XthorProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue

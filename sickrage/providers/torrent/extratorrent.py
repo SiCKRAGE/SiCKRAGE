@@ -64,7 +64,7 @@ class ExtraTorrentProvider(TorrentProvider):
                     search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string})
 
                     try:
-                        data = sickrage.srCore.srWebSession.get(self.urls['rss'], params=search_params).text
+                        data = sickrage.srCore.srWebSession.get(self.urls['rss'], params=search_params, cache=False).text
                     except Exception:
                         sickrage.srCore.srLogger.debug("No data returned from provider")
                         continue

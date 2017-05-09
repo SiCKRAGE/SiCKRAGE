@@ -102,7 +102,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         sickrage.srCore.srLogger.debug("Search url: %s?%s" % (self.urls['search'], urllib.urlencode(params)))
 
         try:
-            parsedJSON = sickrage.srCore.srWebSession.get(self.urls['search'], params=params).json()
+            parsedJSON = sickrage.srCore.srWebSession.get(self.urls['search'], params=params, cache=False).json()
         except Exception:
             return []
 

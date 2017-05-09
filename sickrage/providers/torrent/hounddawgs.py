@@ -102,7 +102,7 @@ class HoundDawgsProvider(TorrentProvider):
                 self.search_params['searchstr'] = search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params).text
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params, cache=False).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue

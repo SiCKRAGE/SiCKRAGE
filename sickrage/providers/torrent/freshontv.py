@@ -130,7 +130,7 @@ class FreshOnTVProvider(TorrentProvider):
                 max_page_number = 0
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
@@ -172,7 +172,7 @@ class FreshOnTVProvider(TorrentProvider):
                         page_searchURL = searchURL + '&page=' + str(i)
 
                         try:
-                            page_html = sickrage.srCore.srWebSession.get(page_searchURL).text
+                            page_html = sickrage.srCore.srWebSession.get(page_searchURL, cache=False).text
                         except Exception:
                             continue
 

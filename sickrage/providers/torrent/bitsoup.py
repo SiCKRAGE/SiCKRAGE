@@ -98,7 +98,7 @@ class BitSoupProvider(TorrentProvider):
                 search_params['search'] = search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], search_params).text
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], search_params, cache=False).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue

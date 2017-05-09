@@ -99,7 +99,7 @@ class SCCProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
@@ -121,7 +121,7 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = sickrage.srCore.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
+                                data = sickrage.srCore.srWebSession.get(self.urls['base_url'] + "/" + link['href'], cache=False).text
                                 with bs4_parser(data) as details_html:
                                     title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                             download_url = self.urls['download'] % url['href']

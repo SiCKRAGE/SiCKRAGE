@@ -586,7 +586,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+                resp = sickrage.srCore.srWebSession.get(url)
                 torrent = bencode.bdecode(resp.content)
 
                 total_length = 0
@@ -606,7 +606,7 @@ class TorrentProvider(GenericProvider):
 
         for url in self.make_url(url):
             try:
-                resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+                resp = sickrage.srCore.srWebSession.get(url)
                 torrent = bencode.bdecode(resp.content)
 
                 for file in torrent['info']['files']:
@@ -727,7 +727,7 @@ class NZBProvider(GenericProvider):
         size = -1
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+            resp = sickrage.srCore.srWebSession.get(url)
 
             total_length = 0
             for file in nzb_parser.parse(resp.content):
@@ -745,7 +745,7 @@ class NZBProvider(GenericProvider):
         files = {}
 
         try:
-            resp = sickrage.srCore.srWebSession.get(url, raise_exceptions=False)
+            resp = sickrage.srCore.srWebSession.get(url)
 
             for file in nzb_parser.parse(resp.content):
                 total_length = 0

@@ -138,7 +138,7 @@ class TVChaosUKProvider(TorrentProvider):
                 search_params['keywords'] = search_string.strip()
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params, cache=False).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
