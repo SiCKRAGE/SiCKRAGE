@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8a4f625 - 2017-05-09: Updated readme files and gitignore file 
+- * 2c65c4a - 2017-05-09: v9.0.24 
+- * d40b187 - 2017-05-09: Updated readme files and gitignore file 
 - * c711cb7 - 2017-05-09: Disabled caching of RSS feeds from providers 
 - * ec347b0 - 2017-05-09: Removed 7 day cache for web sessions 
 - * 7c4bf39 - 2017-05-09: Disabled web session caching for provider searches to ensure all data returned is current 
