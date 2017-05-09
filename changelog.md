@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9d83524 - 2017-05-09: Disabled caching of RSS feeds from providers 
+- * 8a4f625 - 2017-05-09: Updated readme files and gitignore file 
+- * c711cb7 - 2017-05-09: Disabled caching of RSS feeds from providers 
 - * ec347b0 - 2017-05-09: Removed 7 day cache for web sessions 
 - * 7c4bf39 - 2017-05-09: Disabled web session caching for provider searches to ensure all data returned is current 
 - * 95e91a6 - 2017-05-08: v9.0.23 Fixed RARBG provider invalid timeout issues, added 5s timer between requests 

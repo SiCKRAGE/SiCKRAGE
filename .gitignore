@@ -8,12 +8,6 @@
 /.travis.yml
 /.travis/
 
-# SR Markdown Files  #
-######################
-/contributing.md
-/readme.md
-/README.txt
-
 #  SR User Related   #
 ######################
 *.db*
