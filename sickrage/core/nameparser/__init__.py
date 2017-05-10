@@ -278,8 +278,8 @@ class NameParser(object):
 
                         epObj = t[bestResult.show.indexerid].airedOn(bestResult.air_date)[0]
 
-                        season_number = int(epObj["seasonnumber"])
-                        episode_numbers = [int(epObj["episodenumber"])]
+                        season_number = int(epObj["airedseason"])
+                        episode_numbers = [int(epObj["airedepisodenumber"])]
                     except indexer_episodenotfound:
                         sickrage.srCore.srLogger.warning(
                             "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")

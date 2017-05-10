@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2c65c4a - 2017-05-09: v9.0.24 
+- * 6f40d42 - 2017-05-10: Fixed issues with post-processing air-by-date episodes Fixed issues with airedOn function and dates in thetvdb API Fixed issues with parsing air-by-date episodes 
+- * 9af55c5 - 2017-05-09: v9.0.24 
 - * d40b187 - 2017-05-09: Updated readme files and gitignore file 
 - * c711cb7 - 2017-05-09: Disabled caching of RSS feeds from providers 
 - * ec347b0 - 2017-05-09: Removed 7 day cache for web sessions 

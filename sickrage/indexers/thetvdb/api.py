@@ -142,7 +142,7 @@ class Show(dict):
             raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(key)))
 
     def airedOn(self, date):
-        ret = self.search(date, 'firstaired')
+        ret = self.search(str(date), 'firstaired')
         if len(ret) == 0:
             raise tvdb_episodenotfound("Could not find any episodes that aired on {}".format(date))
         return ret
@@ -239,9 +239,11 @@ class Episode(dict):
             raise TypeError("must supply string to search for (contents)")
 
         for cur_key, cur_value in self.items():
-            cur_key, cur_value = cur_key.lower(), cur_value.lower()
-            if key is not None and cur_key != key:
-                # Do not search this key
+            if isinstance(cur_value, dict) or key is None or cur_value is None:
+                continue
+
+            cur_key, cur_value = unicode(cur_key).lower(), unicode(cur_value).lower()
+            if cur_key != key:
                 continue
             if cur_value.find(term.lower()) > -1:
                 return self

@@ -490,8 +490,9 @@ class Core(object):
             try:
                 self.srLogger.debug("Loading data for show: [%s]", dbData['show_name'])
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
-                show.nextEpisode()
-                self.NAMECACHE.build(show)
+                if not sickrage.DEVELOPER:
+                    show.nextEpisode()
+                    self.NAMECACHE.build(show)
                 self.SHOWLIST += [show]
             except Exception as e:
                 self.srLogger.error("Show error in [%s]: %s" % (dbData['location'], e.message))

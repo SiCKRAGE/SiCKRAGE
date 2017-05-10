@@ -668,12 +668,14 @@ class PostProcessor(object):
                         season = int(dbData[0]['season'])
                         episodes = [int(dbData[0]['episode'])]
                     else:
-                        # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
-                        episodes = []
                         self._log(
                             "Unable to find episode with date " +
                             str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping",
-                            sickrage.srCore.srLogger.DEBUG)
+                            sickrage.srCore.srLogger.DEBUG
+                        )
+
+                        # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
+                        episodes = []
                         continue
 
             # if there's no season then we can hopefully just use 1 automatically
