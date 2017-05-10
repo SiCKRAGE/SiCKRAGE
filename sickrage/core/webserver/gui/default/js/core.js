@@ -593,6 +593,7 @@ jQuery(document).ready(function ($) {
                 options = $.extend({}, defaults, options);
 
                 $('.epRetry').click(function (event) {
+                    console.log('Retrying episode search');
                     event.preventDefault();
 
                     // Check if we have disabled the click
@@ -1741,8 +1742,6 @@ jQuery(document).ready(function ($) {
 
             display_show: {
                 init: function () {
-                    SICKRAGE.ajax_search.init();
-
                     $("#showTable, #animeTable").tablesorter({
                         widgets: ['saveSort', 'columnSelector'],
                         widgetOptions: {
@@ -1941,6 +1940,8 @@ jQuery(document).ready(function ($) {
                             }
                         });
                     });
+
+                    SICKRAGE.ajax_search.init();
                 },
 
                 showHideRows: function (whichClass) {

@@ -49,5 +49,5 @@
         else:
             cssClass = overrideClass
     %>
-    <span${title} class="${cssClass}">${qualityString}</span>
+    <span ${title} class="${cssClass}">${qualityString}</span>
 </%def>

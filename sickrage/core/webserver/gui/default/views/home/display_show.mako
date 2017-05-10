@@ -713,4 +713,5 @@
             </table>
         </div>
     </div>
+    ${displayShowModals()}
 </%block>
