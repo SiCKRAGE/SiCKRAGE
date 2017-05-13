@@ -31,7 +31,6 @@ import certifi
 import cfscrape as cfscrape
 import requests
 from cachecontrol import CacheControlAdapter
-from requests.adapters import HTTPAdapter
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
@@ -92,19 +91,16 @@ class srSession(requests.Session):
             proxies.update({"http": address, "https": address})
             headers.update({'Referer': address})
 
-        # default session adapter
-        adapter = HTTPAdapter()
+        sess = cfscrape.create_scraper(sess=self)
 
         # setup session caching adapter
         if cache:
             adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))))
-
-        # mount adapter to session
-        self.mount('http://', adapter)
-        self.mount('https://', adapter)
+            sess.mount('http://', adapter)
+            sess.mount('https://', adapter)
 
         # get web response
-        response = cfscrape.create_scraper(sess=self).request(
+        response = sess.create_scraper(sess=self).request(
             method,
             url,
             headers=headers,
