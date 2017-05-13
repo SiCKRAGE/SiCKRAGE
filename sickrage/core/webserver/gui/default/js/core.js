@@ -226,7 +226,7 @@ jQuery(document).ready(function ($) {
                     dialogClass: "modal-dialog",
                     post: false,
                     confirm: function (e) {
-                        location.href = e.context.href;
+                        location.href = e.attr('href');
                     }
                 };
 
@@ -257,9 +257,14 @@ jQuery(document).ready(function ($) {
 
                 $('a.removeshow').confirm({
                     title: 'Remove Show',
-                    text: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') + '</span> from the database?<br><br><input type="checkbox" id="deleteFiles"> <span class="red-text">Check to delete files as well. IRREVERSIBLE</span></input>',
+                    text: 'Are you sure you want to remove ' +
+                    '<span class="footerhighlight">' +
+                    $('#showtitle').data('showname') +
+                    '</span> from the database?<br><br>' +
+                    '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
+                    '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
                     confirm: function (e) {
-                        location.href = e.context.href + ($('#deleteFiles')[0].checked ? '&full=1' : '');
+                        location.href = e.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
                     }
                 });
 

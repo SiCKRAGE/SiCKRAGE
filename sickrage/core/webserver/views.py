@@ -1505,7 +1505,7 @@ class Home(WebHandler):
             sickrage.srCore.srNotifications.message(
                 '%s has been %s %s' %
                 (
-                    show.name,
+                    showObj.name,
                     ('deleted', 'trashed')[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)],
                     ('(media untouched)', '(with all related media)')[bool(full)]
                 )

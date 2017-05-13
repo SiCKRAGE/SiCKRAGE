@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4fe07cb - 2017-05-13: Fixed web session caching issues 
+- * 3661e19 - 2017-05-13: Fixed unicode issue when deleting shows Fixed JS code issue when removing shows 
+- * 3ff85b7 - 2017-05-13: Fixed web session caching issues 
 - * ffe7b30 - 2017-05-13: Fixed web session caching issues 
 - * 537e7e4 - 2017-05-13: Fixed issues with web sessions 
 - * 8af7715 - 2017-05-10: Fixed template issues with manually searching previously snatched/downloaded episodes 
