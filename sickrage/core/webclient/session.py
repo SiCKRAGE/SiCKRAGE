@@ -27,10 +27,11 @@ import threading
 import urllib2
 from contextlib import closing
 
-import cachecontrol
 import certifi
 import cfscrape as cfscrape
 import requests
+from cachecontrol import CacheControlAdapter
+from requests.adapters import HTTPAdapter
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
@@ -64,7 +65,7 @@ class DBCache(object):
                 cache.clear()
 
 
-class srSession(cfscrape.CloudflareScraper):
+class srSession(requests.Session):
     def request(self, method, url, headers=None, params=None, proxies=None, cache=True, verify=False, *args, **kwargs):
         if headers is None: headers = {}
         if params is None: params = {}
@@ -91,13 +92,19 @@ class srSession(cfscrape.CloudflareScraper):
             proxies.update({"http": address, "https": address})
             headers.update({'Referer': address})
 
-        # setup session caching
+        # default session adapter
+        adapter = HTTPAdapter()
+
+        # setup session caching adapter
         if cache:
-            cache_file = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))
-            self.__class__ = cachecontrol.CacheControl(self, cache=DBCache(cache_file)).__class__
+            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))))
+
+        # mount adapter to session
+        self.mount('http://', adapter)
+        self.mount('https://', adapter)
 
         # get web response
-        response = super(srSession, self).request(
+        response = cfscrape.create_scraper(sess=self).request(
             method,
             url,
             headers=headers,

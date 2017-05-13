@@ -111,7 +111,7 @@ class GenericProvider(object):
     def make_url(self, url):
         urls = []
 
-        btcache_urls = [
+        bt_cache_urls = [
             'http://torrentproject.se/torrent/{torrent_hash}.torrent',
             'http://btdig.com/torrent/{torrent_hash}.torrent',
             'http://torrage.info/torrent/{torrent_hash}.torrent',
@@ -135,7 +135,7 @@ class GenericProvider(object):
                     sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
                     return urls
 
-                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in btcache_urls]
+                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in bt_cache_urls]
             except Exception:
                 sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + url)
                 return urls

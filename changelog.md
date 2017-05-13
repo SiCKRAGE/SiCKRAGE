@@ -1,6 +1,7 @@
 # Changelog
 
-- * d294ef5 - 2017-05-10: Fixed template issues with manually searching previously snatched/downloaded episodes 
+- * 88a090f - 2017-05-13: Fixed issues with web sessions 
+- * 8af7715 - 2017-05-10: Fixed template issues with manually searching previously snatched/downloaded episodes 
 - * 1d137a2 - 2017-05-10: Fixed issues with post-processing air-by-date episodes Fixed issues with airedOn function and dates in thetvdb API Fixed issues with parsing air-by-date episodes 
 - * 9af55c5 - 2017-05-09: v9.0.24 
 - * d40b187 - 2017-05-09: Updated readme files and gitignore file 
