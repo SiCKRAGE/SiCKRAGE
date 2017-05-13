@@ -91,16 +91,17 @@ class srSession(requests.Session):
             proxies.update({"http": address, "https": address})
             headers.update({'Referer': address})
 
+        # setup cloudflare scraper
         sess = cfscrape.create_scraper(sess=self)
 
-        # setup session caching adapter
+        # setup caching adapter
         if cache:
             adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))))
             sess.mount('http://', adapter)
             sess.mount('https://', adapter)
 
         # get web response
-        response = sess.create_scraper(sess=self).request(
+        response = sess.request(
             method,
             url,
             headers=headers,

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5888c14 - 2017-05-13: Fixed web session caching issues 
+- * 4fe07cb - 2017-05-13: Fixed web session caching issues 
+- * ffe7b30 - 2017-05-13: Fixed web session caching issues 
 - * 537e7e4 - 2017-05-13: Fixed issues with web sessions 
 - * 8af7715 - 2017-05-10: Fixed template issues with manually searching previously snatched/downloaded episodes 
 - * 1d137a2 - 2017-05-10: Fixed issues with post-processing air-by-date episodes Fixed issues with airedOn function and dates in thetvdb API Fixed issues with parsing air-by-date episodes 
