@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1ea4064 - 2017-05-14: v9.0.25 
+- * a3847d0 - 2017-05-14: Updated setup file cleanup code 
+- * 809b276 - 2017-05-14: v9.0.25 
 - * ec4bc83 - 2017-05-14: Removed obsolete images Removed dist folder from cleanup 
 - * f894b78 - 2017-05-14: Added css sprite grunt task Moved core javascript and css source files to root Added custom css sprite images Fixed google fonts grunt task 
 - * 568201b - 2017-05-14: Added custom sickrage css sprites 
