@@ -320,7 +320,7 @@ class Core(object):
             self.SHOWUPDATER.nextEpisode,
             srIntervalTrigger(
                 **{'hours': 1}),
-            name="SHOWUNEXTEP",
+            name="SHOWNEXTEP",
             id="SHOWNEXTEP"
         )
 
