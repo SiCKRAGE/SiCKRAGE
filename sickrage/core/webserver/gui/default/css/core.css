@@ -1497,35 +1497,72 @@ select .selected {
     border-top: 1px dotted #666666;
 }
 
-[class^="icon16-"], [class*=" icon16-"] {
-    background-image: url("../images/glyphicons-config-black.png");
-    background-position: -40px 0;
-    background-repeat: no-repeat;
-    display: inline-block;
-    height: 16px;
-    line-height: 16px;
-    vertical-align: text-top;
+.icons-sickrage {
+    background: url("../images/icons-sickrage.png") no-repeat top left;
     width: 16px;
+    height: 16px;
+    display: inline-block;
 }
 
-.icon16-github {
+.icons-sickrage.icons-sickrage-cache {
     background-position: 0 0;
 }
 
-.icon16-mirc {
-    background-position: -20px 0;
+.icons-sickrage.icons-sickrage-cfg {
+    background-position: -26px 0;
 }
 
-.icon16-sb {
-    background-position: -40px 0;
+.icons-sickrage.icons-sickrage-console {
+    background-position: -52px 0;
 }
 
-.icon16-web {
-    background-position: -60px 0;
+.icons-sickrage.icons-sickrage-forums {
+    background-position: -78px 0;
+    height: 15px;
 }
 
-.icon16-win {
-    background-position: -80px 0;
+.icons-sickrage.icons-sickrage-git {
+    background-position: -104px 0;
+}
+
+.icons-sickrage.icons-sickrage-irc {
+    background-position: -130px 0;
+}
+
+.icons-sickrage.icons-sickrage-locale {
+    background-position: -156px 0;
+}
+
+.icons-sickrage.icons-sickrage-log {
+    background-position: -182px 0;
+}
+
+.icons-sickrage.icons-sickrage-logo {
+    background-position: -208px 0;
+}
+
+.icons-sickrage.icons-sickrage-python {
+    background-position: -234px 0;
+}
+
+.icons-sickrage.icons-sickrage-tornado {
+    background-position: -260px 0;
+}
+
+.icons-sickrage.icons-sickrage-type {
+    background-position: -286px 0;
+}
+
+.icons-sickrage.icons-sickrage-user {
+    background-position: -312px 0;
+}
+
+.icons-sickrage.icons-sickrage-version {
+    background-position: -338px 0;
+}
+
+.icons-sickrage.icons-sickrage-wiki {
+    background-position: -364px 0;
 }
 
 /* =======================================================================
@@ -2664,7 +2701,7 @@ thead.tablesorter-stickyHeader {
 
 /* reflow2 widget */
 .ui-table-reflow .ui-table-cell-label {
-  display: none;
+    display: none;
 }
 
 /* =======================================================================
@@ -4060,43 +4097,43 @@ Country Flags
 }
 
 .tt-input {
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .tt-hint {
-  color: #999
+    color: #999
 }
 
-.tt-menu {    /* used to be tt-dropdown-menu in older versions */
-  width: 422px;
-  margin-top: 4px;
-  padding: 4px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+.tt-menu { /* used to be tt-dropdown-menu in older versions */
+    width: 422px;
+    margin-top: 4px;
+    padding: 4px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
 }
 
 .tt-suggestion {
-  padding: 3px 20px;
-  line-height: 24px;
+    padding: 3px 20px;
+    line-height: 24px;
 }
 
-.tt-suggestion.tt-cursor,.tt-suggestion:hover {
-  color: #fff;
-  background-color: #0097cf;
+.tt-suggestion.tt-cursor, .tt-suggestion:hover {
+    color: #fff;
+    background-color: #0097cf;
 
 }
 
 .tt-suggestion p {
-  margin: 0;
+    margin: 0;
 }
 
 @media (min-width: 320px) {
@@ -4156,45 +4193,46 @@ Country Flags
 }
 
 @media ( max-width: 35em ) {
-  /* css for reflow & reflow2 widgets */
-  .ui-table-reflow td,
-  .ui-table-reflow th {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    float: right;
-    /* if not using the stickyHeaders widget (not the css3 version)
-     * the "!important" flag, and "height: auto" can be removed */
-    width: 100% !important;
-    height: auto !important;
-  }
+    /* css for reflow & reflow2 widgets */
+    .ui-table-reflow td,
+    .ui-table-reflow th {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        float: right;
+        /* if not using the stickyHeaders widget (not the css3 version)
+         * the "!important" flag, and "height: auto" can be removed */
+        width: 100% !important;
+        height: auto !important;
+    }
 
-  /* reflow widget only */
-  .ui-table-reflow tbody td[data-title]:before {
-    color: #469;
-    font-size: .9em;
-    content: attr(data-title);
-    float: left;
-    width: 50%;
-    white-space: pre-wrap;
-    text-align: bottom;
-    display: inline-block;
-  }
+    /* reflow widget only */
+    .ui-table-reflow tbody td[data-title]:before {
+        color: #469;
+        font-size: .9em;
+        content: attr(data-title);
+        float: left;
+        width: 50%;
+        white-space: pre-wrap;
+        text-align: bottom;
+        display: inline-block;
+    }
 
-  /* reflow2 widget only */
-  table.ui-table-reflow .ui-table-cell-label.ui-table-cell-label-top {
-    display: block;
-    padding: .4em 0;
-    margin: .4em 0;
-    text-transform: uppercase;
-    font-size: .9em;
-    font-weight: 400;
-  }
-  table.ui-table-reflow .ui-table-cell-label {
-    padding: .4em;
-    min-width: 30%;
-    display: inline-block;
-    margin: -.4em 1em -.4em -.4em;
-  }
+    /* reflow2 widget only */
+    table.ui-table-reflow .ui-table-cell-label.ui-table-cell-label-top {
+        display: block;
+        padding: .4em 0;
+        margin: .4em 0;
+        text-transform: uppercase;
+        font-size: .9em;
+        font-weight: 400;
+    }
+
+    table.ui-table-reflow .ui-table-cell-label {
+        padding: .4em;
+        min-width: 30%;
+        display: inline-block;
+        margin: -.4em 1em -.4em -.4em;
+    }
 
 }

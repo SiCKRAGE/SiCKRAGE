@@ -1246,30 +1246,57 @@ select .selected {
 .infoTableSeperator {
   border-top: 1px dotted #666666; }
 
-[class^="icon16-"], [class*=" icon16-"] {
-  background-image: url("../images/glyphicons-config-black.png");
-  background-position: -40px 0;
-  background-repeat: no-repeat;
-  display: inline-block;
+.icons-sickrage {
+  background: url("../images/icons-sickrage.png") no-repeat top left;
+  width: 16px;
   height: 16px;
-  line-height: 16px;
-  vertical-align: text-top;
-  width: 16px; }
+  display: inline-block; }
 
-.icon16-github {
+.icons-sickrage.icons-sickrage-cache {
   background-position: 0 0; }
 
-.icon16-mirc {
-  background-position: -20px 0; }
+.icons-sickrage.icons-sickrage-cfg {
+  background-position: -26px 0; }
 
-.icon16-sb {
-  background-position: -40px 0; }
+.icons-sickrage.icons-sickrage-console {
+  background-position: -52px 0; }
 
-.icon16-web {
-  background-position: -60px 0; }
+.icons-sickrage.icons-sickrage-forums {
+  background-position: -78px 0;
+  height: 15px; }
 
-.icon16-win {
-  background-position: -80px 0; }
+.icons-sickrage.icons-sickrage-git {
+  background-position: -104px 0; }
+
+.icons-sickrage.icons-sickrage-irc {
+  background-position: -130px 0; }
+
+.icons-sickrage.icons-sickrage-locale {
+  background-position: -156px 0; }
+
+.icons-sickrage.icons-sickrage-log {
+  background-position: -182px 0; }
+
+.icons-sickrage.icons-sickrage-logo {
+  background-position: -208px 0; }
+
+.icons-sickrage.icons-sickrage-python {
+  background-position: -234px 0; }
+
+.icons-sickrage.icons-sickrage-tornado {
+  background-position: -260px 0; }
+
+.icons-sickrage.icons-sickrage-type {
+  background-position: -286px 0; }
+
+.icons-sickrage.icons-sickrage-user {
+  background-position: -312px 0; }
+
+.icons-sickrage.icons-sickrage-version {
+  background-position: -338px 0; }
+
+.icons-sickrage.icons-sickrage-wiki {
+  background-position: -364px 0; }
 
 /* =======================================================================
 postprocessing.mako
@@ -3387,7 +3414,7 @@ Country Flags
     box-sizing: border-box;
     float: right;
     /* if not using the stickyHeaders widget (not the css3 version)
-     * the "!important" flag, and "height: auto" can be removed */
+         * the "!important" flag, and "height: auto" can be removed */
     width: 100% !important;
     height: auto !important; }
   /* reflow widget only */

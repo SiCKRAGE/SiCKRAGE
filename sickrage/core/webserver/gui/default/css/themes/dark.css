@@ -496,15 +496,6 @@ config*.mako
     background-color: #222 !important;
 }
 
-[class^="icon16-"], [class*=" icon16-"] {
-    background: url("../../images/glyphicons-config-white.png") no-repeat -40px 0;
-    display: inline-block;
-    height: 16px;
-    line-height: 16px;
-    vertical-align: text-top;
-    width: 16px;
-}
-
 /* =======================================================================
 postprocessing.mako
 ========================================================================== */
