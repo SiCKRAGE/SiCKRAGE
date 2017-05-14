@@ -66,11 +66,7 @@
     <![endif]-->
 
     <script type="text/javascript" src="${srWebRoot}/js/bower.min.js"></script>
-    % if sickrage.DEVELOPER:
-        <script src="${srWebRoot}/js/core.js"></script>
-    % else:
-        <script src="${srWebRoot}/js/core.min.js"></script>
-    % endif
+    <script src="${srWebRoot}/js/core.min.js"></script>
     <%block name="scripts" />
 
 </head>

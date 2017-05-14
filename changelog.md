@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5d11209 - 2017-05-14: Added custom sickrage css sprites 
+- * aed6134 - 2017-05-14: Added css sprite grunt task Moved core javascript and css source files to root Added custom css sprite images Fixed google fonts grunt task 
+- * 568201b - 2017-05-14: Added custom sickrage css sprites 
 - * 461c001 - 2017-05-14: Fixed typo in scheduled job name 
 - * 8a3edc5 - 2017-05-13: Fixed unicode issue when deleting shows Fixed JS code issue when removing shows 
 - * 3ff85b7 - 2017-05-13: Fixed web session caching issues 

@@ -41,31 +41,31 @@
 
 [class^="icon-"],
 [class*=" icon-"] {
-  background-image: url("../images/glyphicons-halflings.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/glyphicons-halflings.png"); }
 
 .icon-white {
-  background-image: url("../images/glyphicons-halflings-white.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/glyphicons-halflings-white.png"); }
 
 .dropdown-menu li > a:hover > [class^="menu-icon-"],
 .dropdown-menu li > a:hover > [class*=" menu-icon-"] {
-  background-image: url("../images/menu/menu-icons-white.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/menu/menu-icons-white.png"); }
 
 [class^="icon16-"],
 [class*=" icon16-"] {
   background-image: url("../images/glyphicons-config-white.png"); }
 
 .ui-autocomplete-loading {
-  background: white url("../images/loading16.gif") right center no-repeat; }
+  background: white url("../../sickrage/core/webserver/gui/default/images/loading16.gif") right center no-repeat; }
 
 .browserDialog.busy .ui-dialog-buttonpane {
-  background: url("../images/loading.gif") 10px 50% no-repeat !important; }
+  background: url("../../sickrage/core/webserver/gui/default/images/loading.gif") 10px 50% no-repeat !important; }
 
 .ui-progressbar .ui-progressbar-overlay {
-  background: url("../images/animated-overlay.gif"); }
+  background: url("../../sickrage/core/webserver/gui/default/images/animated-overlay.gif"); }
 
 .ui-dialog,
 .ui-dialog-buttonpane {
-  background: #eceadf url("../images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important; }
+  background: #eceadf url("../../sickrage/core/webserver/gui/default/images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important; }
 
 .ui-accordion-content,
 .ui-tabs-panel {
@@ -100,39 +100,39 @@
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-  background: #fbf9ee url("../images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
+  background: #fbf9ee url("../../sickrage/core/webserver/gui/default/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
 
 .ui-state-error,
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
-  background: #fef1ec url("../images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
+  background: #fef1ec url("../../sickrage/core/webserver/gui/default/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
 
 .ui-icon,
 .ui-widget-content .ui-icon {
-  background-image: url("../images/ui-icons_222222_256x240.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/ui-icons_222222_256x240.png"); }
 
 .ui-widget-header .ui-icon {
-  background-image: url("../images/ui-icons_222222_256x240.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/ui-icons_222222_256x240.png"); }
 
 .ui-state-default .ui-icon {
-  background-image: url("../images/ui-icons_8c291d_256x240.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/ui-icons_8c291d_256x240.png"); }
 
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-  background-image: url("../images/ui-icons_222222_256x240.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/ui-icons_222222_256x240.png"); }
 
 .ui-state-active .ui-icon {
-  background-image: url("../images/ui-icons_8c291d_256x240.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/ui-icons_8c291d_256x240.png"); }
 
 .ui-state-highlight .ui-icon {
-  background-image: url("../images/ui-icons_2e83ff_256x240.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/ui-icons_2e83ff_256x240.png"); }
 
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-  background-image: url("../images/ui-icons_cd0a0a_256x240.png"); }
+  background-image: url("../../sickrage/core/webserver/gui/default/images/ui-icons_cd0a0a_256x240.png"); }
 
 .ui-widget-overlay {
-  background: #aaaaaa url("../images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; }
+  background: #aaaaaa url("../../sickrage/core/webserver/gui/default/images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; }
 
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   color: #140F06;
@@ -186,7 +186,7 @@
   margin-bottom: 0; }
 
 [class^="menu-icon-"], [class*=" menu-icon-"] {
-  background: url("../images/menu/menu-icons-black.png");
+  background: url("../../sickrage/core/webserver/gui/default/images/menu/menu-icons-black.png");
   height: 16px;
   width: 16px;
   display: inline-block;
@@ -195,7 +195,7 @@
   float: left; }
 
 [class^="menu-icon-"], [class*=" menu-icon-"] {
-  background: url("../images/menu/menu-icons-white.png");
+  background: url("../../sickrage/core/webserver/gui/default/images/menu/menu-icons-white.png");
   height: 16px;
   width: 16px;
   display: inline-block;
@@ -264,7 +264,7 @@
   background-position: -399px 0; }
 
 [class^="submenu-icon-"], [class*=" submenu-icon-"] {
-  background: url("../images/menu/menu-icons-black.png");
+  background: url("../../sickrage/core/webserver/gui/default/images/menu/menu-icons-black.png");
   height: 16px;
   width: 16px; }
 
@@ -589,22 +589,22 @@ div.buttontext p {
   font-size: 13px; }
 
 .icon-addnewshow {
-  background-image: url("../images/addshows/add-new32-black.png");
+  background-image: url("../../sickrage/core/webserver/gui/default/images/addshows/add-new32-black.png");
   width: 32px;
   height: 32px; }
 
 .icon-addtrendingshow {
-  background-image: url("../images/addshows/add-trending32-black.png");
+  background-image: url("../../sickrage/core/webserver/gui/default/images/addshows/add-trending32-black.png");
   width: 32px;
   height: 32px; }
 
 .icon-addrecommendedshow {
-  background-image: url("../images/addshows/add-trakt32-black.png");
+  background-image: url("../../sickrage/core/webserver/gui/default/images/addshows/add-trakt32-black.png");
   width: 32px;
   height: 32px; }
 
 .icon-addexistingshow {
-  background-image: url("../images/addshows/add-existing32-black.png");
+  background-image: url("../../sickrage/core/webserver/gui/default/images/addshows/add-existing32-black.png");
   width: 32px;
   height: 32px; }
 
@@ -749,7 +749,7 @@ h1.title {
 
 .imdbstars, .imdbstars > * {
   height: 12px;
-  background: url(../images/rating.png) 0 -12px repeat-x;
+  background: url(../../sickrage/core/webserver/gui/default/images/rating.png) 0 -12px repeat-x;
   width: 120px;
   display: inline-block;
   vertical-align: top; }
@@ -766,7 +766,7 @@ ul.tags li {
   margin-right: 4px;
   margin-bottom: 4px;
   padding: 3px 4px 3px 25px;
-  background: url(../images/tag.png) no-repeat scroll 5px 4px #555;
+  background: url(../../sickrage/core/webserver/gui/default/images/tag.png) no-repeat scroll 5px 4px #555;
   border-radius: 3px;
   border: 1px solid #111;
   color: #FFF;
@@ -1246,58 +1246,6 @@ select .selected {
 .infoTableSeperator {
   border-top: 1px dotted #666666; }
 
-.icons-sickrage {
-  background: url("../images/icons-sickrage.png") no-repeat top left;
-  width: 16px;
-  height: 16px;
-  display: inline-block; }
-
-.icons-sickrage.icons-sickrage-cache {
-  background-position: 0 0; }
-
-.icons-sickrage.icons-sickrage-cfg {
-  background-position: -26px 0; }
-
-.icons-sickrage.icons-sickrage-console {
-  background-position: -52px 0; }
-
-.icons-sickrage.icons-sickrage-forums {
-  background-position: -78px 0;
-  height: 15px; }
-
-.icons-sickrage.icons-sickrage-git {
-  background-position: -104px 0; }
-
-.icons-sickrage.icons-sickrage-irc {
-  background-position: -130px 0; }
-
-.icons-sickrage.icons-sickrage-locale {
-  background-position: -156px 0; }
-
-.icons-sickrage.icons-sickrage-log {
-  background-position: -182px 0; }
-
-.icons-sickrage.icons-sickrage-logo {
-  background-position: -208px 0; }
-
-.icons-sickrage.icons-sickrage-python {
-  background-position: -234px 0; }
-
-.icons-sickrage.icons-sickrage-tornado {
-  background-position: -260px 0; }
-
-.icons-sickrage.icons-sickrage-type {
-  background-position: -286px 0; }
-
-.icons-sickrage.icons-sickrage-user {
-  background-position: -312px 0; }
-
-.icons-sickrage.icons-sickrage-version {
-  background-position: -338px 0; }
-
-.icons-sickrage.icons-sickrage-wiki {
-  background-position: -364px 0; }
-
 /* =======================================================================
 postprocessing.mako
 ========================================================================== */
@@ -1380,7 +1328,7 @@ div.metadataDiv .disabled {
 
 .warning {
   border-color: #F89406;
-  background: url("../images/warning16.png") no-repeat right 5px center #fff; }
+  background: url("../../sickrage/core/webserver/gui/default/images/warning16.png") no-repeat right 5px center #fff; }
 
 /* =======================================================================
 manage*.mako
@@ -2389,7 +2337,7 @@ span.token-input-delete-token {
   width: 100%;
   height: 100%;
   z-index: 0;
-  background-image: url(../images/poster-dark.jpg); }
+  background-image: url(../../sickrage/core/webserver/gui/default/images/poster-dark.jpg); }
 
 /* =======================================================================
 jquery.confirm.css
@@ -2400,7 +2348,7 @@ jquery.confirm.css
   position: fixed;
   top: 0;
   left: 0;
-  background: url("../images/bg.gif");
+  background: url("../../sickrage/core/webserver/gui/default/images/bg.gif");
   background: -moz-linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)) repeat-x rgba(0, 0, 0, 0.5);
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.5))) repeat-x rgba(0, 0, 0, 0.5);
   z-index: 100000; }
@@ -2577,7 +2525,7 @@ Country Flags
 .country-flag {
   width: 16px;
   height: 11px;
-  background: url(../images/country-flags.png) no-repeat; }
+  background: url(../../sickrage/core/webserver/gui/default/images/country-flags.png) no-repeat; }
 
 .country-flag.flag-ad {
   background-position: -16px 0; }
@@ -3333,7 +3281,7 @@ Country Flags
   background-position: -176px -165px; }
 
 #scrollUp {
-  background-image: url("../images/top.png");
+  background-image: url("../../sickrage/core/webserver/gui/default/images/top.png");
   bottom: 20px;
   right: 20px;
   width: 38px;

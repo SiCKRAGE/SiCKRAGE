@@ -78,20 +78,12 @@
     <link rel="manifest" href="${srWebRoot}/images/ico/manifest.json">
 
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
-    % if sickrage.DEVELOPER:
-        <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.css"/>
-    % else:
-        <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
-    % endif
+    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css"/>
     <%block name="css" />
 
     <script src="${srWebRoot}/js/bower.min.js"></script>
-    % if sickrage.DEVELOPER:
-        <script src="${srWebRoot}/js/core.js"></script>
-    % else:
-        <script src="${srWebRoot}/js/core.min.js"></script>
-    % endif
+    <script src="${srWebRoot}/js/core.min.js"></script>
     <%block name="scripts" />
 </head>
 <body data-controller="${controller}" data-action="${action}">

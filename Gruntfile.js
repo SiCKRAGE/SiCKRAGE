@@ -3,12 +3,11 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         clean: {
-            dist: 'dist',
             bower_components: 'bower_components',
-            sass: [
-                '.sass-cache',
-                'sickrage/core/webserver/gui/default/scss/'
-            ],
+            //sass: [
+            //    '.sass-cache',
+            //    'sickrage/core/webserver/gui/default/scss/'
+            //],
             options: {
                 force: true
             }
@@ -23,8 +22,8 @@ module.exports = function (grunt) {
         bower_concat: {
             all: {
                 dest: {
-                    js:'dist/bower.js',
-                    css:'dist/bower.css'
+                    js: 'dist/js/bower.js',
+                    css: 'dist/css/bower.css'
                 },
                 callback: function (mainFiles) {
                     return mainFiles.map(function (filepath) {
@@ -90,7 +89,8 @@ module.exports = function (grunt) {
             build: {
                 options: {
                     fontPath: 'sickrage/core/webserver/gui/default/fonts/',
-                    css: 'dist/fonts.css',
+                    cssFile: 'dist/css/fonts.css',
+                    httpPath: '/fonts/',
                     formats: {
                         eot: true,
                         ttf: true,
@@ -159,24 +159,36 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        sprite: {
+            icons_sickrage: {
+                src: 'dist/images/icons/sickrage/*.png',
+                dest: 'sickrage/core/webserver/gui/default/images/icons-sickrage.png',
+                destCss: 'dist/css/icons-sickrage.css',
+                imgPath: '../images/icons-sickrage.png',
+                cssTemplate: 'dist/css/icons-sickrage.css.handlebars',
+                padding: 2
+            }
+        },
         uglify: {
             bower: {
                 files: {
-                    'sickrage/core/webserver/gui/default/js/bower.min.js': ['dist/bower.js']
+                    'sickrage/core/webserver/gui/default/js/bower.min.js': ['dist/js/bower.js']
                 }
             },
             core: {
                 files: {
-                    'sickrage/core/webserver/gui/default/js/core.min.js': [
-                        'sickrage/core/webserver/gui/default/js/core.js'
-                    ]
+                    'sickrage/core/webserver/gui/default/js/core.min.js': ['dist/js/core.js']
                 }
             }
         },
         sass: {
             core: {
                 files: {
-                    'sickrage/core/webserver/gui/default/scss/core.scss': 'sickrage/core/webserver/gui/default/css/core.css'
+                    'sickrage/core/webserver/gui/default/scss/core.scss': [
+                        'dist/css/core.css',
+                        'dist/css/fonts.css',
+                        'dist/css/icons-sickrage.css'
+                    ]
                 }
             }
         },
@@ -187,14 +199,15 @@ module.exports = function (grunt) {
             },
             bower: {
                 files: {
-                    'sickrage/core/webserver/gui/default/css/bower.min.css': ['dist/bower.css']
+                    'sickrage/core/webserver/gui/default/css/bower.min.css': ['dist/css/bower.css']
                 }
             },
             core: {
                 files: {
                     'sickrage/core/webserver/gui/default/css/core.min.css': [
-                        'sickrage/core/webserver/gui/default/css/core.css',
-                        'dist/fonts.css'
+                        'dist/css/core.css',
+                        'dist/css/fonts.css',
+                        'dist/css/icons-sickrage.css'
                     ]
                 }
             }
@@ -203,10 +216,7 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: '.jshintrc'
             },
-            all: [
-                'sickrage/core/webserver/gui/default/js/**/*.js',
-                '!sickrage/core/webserver/gui/default/js/**/*.min.js'
-            ]
+            all: ['dist/js/core.js']
         },
         changelog: {
             release: {
@@ -241,6 +251,7 @@ module.exports = function (grunt) {
             'copy',
             'imagemin',
             'uglify',
+            'sprite',
             'sass',
             'cssmin',
             'jshint'
