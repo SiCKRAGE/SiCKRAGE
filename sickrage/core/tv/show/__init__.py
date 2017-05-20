@@ -48,7 +48,6 @@ from sickrage.indexers.config import INDEXER_TVRAGE
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_attributenotfound
 
 
-# noinspection PyUnresolvedReferences
 class TVShow(object):
     def __init__(self, indexer, indexerid, lang=""):
         self.lock = threading.Lock()

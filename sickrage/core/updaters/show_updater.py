@@ -37,7 +37,7 @@ class srShowUpdater(object):
         self.amActive = False
 
     def run(self, force=False):
-        if self.amActive or sickrage.DEVELOPER:
+        if self.amActive:
             return
 
         self.amActive = True
@@ -45,17 +45,17 @@ class srShowUpdater(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        update_timestamp = long(time.mktime(datetime.datetime.now().timetuple()))
+        update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         try:
             dbData = sickrage.srCore.cacheDB.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
-            last_update = long(dbData['time'])
+            last_update = int(dbData['time'])
         except RecordNotFound:
             last_update = update_timestamp
             dbData = sickrage.srCore.cacheDB.db.insert({
                 '_t': 'lastUpdate',
                 'provider': 'theTVDB',
-                'time': last_update
+                'time': 0
             })
 
         # get indexer updated show ids
@@ -66,7 +66,8 @@ class srShowUpdater(object):
         pi_list = []
         for curShow in sickrage.srCore.SHOWLIST:
             try:
-                if curShow.indexerid in updated_shows:
+                stale = (datetime.datetime.now() - datetime.datetime.fromordinal(curShow.last_update)).days > 7
+                if curShow.indexerid in updated_shows or stale:
                     pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
                 else:
                     pi_list.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))

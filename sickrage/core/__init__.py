@@ -204,6 +204,9 @@ class Core(object):
             # migrate database
             db.migrate()
 
+            # misc database cleanups
+            db.cleanup()
+
         # compact main database
         if self.srConfig.LAST_DB_COMPACT < time.time() - 604800:  # 7 days
             self.mainDB.compact()

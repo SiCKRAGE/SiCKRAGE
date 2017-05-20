@@ -1,6 +1,7 @@
 # Changelog
 
-- * a3847d0 - 2017-05-14: Updated setup file cleanup code 
+- * 0c9db69 - 2017-05-20: Added database cleanup for orphaned episodes Added database cleanup for dupe shows Added database cleanup for dupe episodes Show updater jobs now update shows that have been stale for a week or longer 
+- * 4be05b1 - 2017-05-14: Updated setup file cleanup code 
 - * 809b276 - 2017-05-14: v9.0.25 
 - * ec4bc83 - 2017-05-14: Removed obsolete images Removed dist folder from cleanup 
 - * f894b78 - 2017-05-14: Added css sprite grunt task Moved core javascript and css source files to root Added custom css sprite images Fixed google fonts grunt task 

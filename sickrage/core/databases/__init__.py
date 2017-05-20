@@ -192,6 +192,9 @@ class srDatabase(object):
     def close(self):
         self.db.close()
 
+    def cleanup(self):
+        pass
+
     def check_integrity(self):
         for index_name in self._indexes:
             try:
