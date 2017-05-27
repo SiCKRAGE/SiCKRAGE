@@ -631,18 +631,7 @@ class Tvdb:
 
     def __getitem__(self, key):
         if isinstance(key, (int, long)):
-            if key in self.shows:
-                try:
-                    last_updated = self.shows[key]['last_updated']
-                    stale = last_updated < int(time.time() - 604800)
-                    fromTime = int(last_updated)
-
-                    updated_shows = set(d["id"] for d in self.updated(fromTime) or {})
-
-                    if key not in updated_shows and not stale:
-                        return self.shows[key]
-                except:
-                    pass
+            if key in self.shows and self.config['cache_enabled']: return self.shows[key]
             return self._getShowData(key)
 
         selected_series = self._getSeries(key)
