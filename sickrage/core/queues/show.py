@@ -402,7 +402,7 @@ class QueueItemAdd(ShowQueueItem):
         sickrage.srCore.SHOWLIST.append(self.show)
 
         try:
-            self.show.loadEpisodesFromIndexer(cache=False)
+            self.show.loadEpisodesFromIndexer()
         except Exception as e:
             sickrage.srCore.srLogger.error(
                 "Error with " + srIndexerApi(
@@ -576,7 +576,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         # get episode list from TVDB
         try:
-            IndexerEpList = self.show.loadEpisodesFromIndexer(cache=False)
+            IndexerEpList = self.show.loadEpisodesFromIndexer()
         except indexer_exception as e:
             sickrage.srCore.srLogger.error("Unable to get info from " + srIndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e.message))

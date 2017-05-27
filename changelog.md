@@ -1,6 +1,7 @@
 # Changelog
 
-- * 320ae21 - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
+- * 19ed40d - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
+- * b1d3362 - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
 - * c3f727e - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
 - * ee64711 - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
 - * 3cd30c3 - 2017-05-27: v9.0.26 
