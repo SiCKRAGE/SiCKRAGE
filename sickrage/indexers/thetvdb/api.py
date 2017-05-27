@@ -613,7 +613,7 @@ class Tvdb:
                 self._setItem(sid, seas_no, ep_no, k, v)
 
         # set last updated
-        self._setShowData(sid, 'last_updated', long(time.mktime(datetime.datetime.now().timetuple())))
+        self._setShowData(sid, 'last_updated', int(time.mktime(datetime.datetime.now().timetuple())))
 
         return self.shows[int(sid)]
 
@@ -633,9 +633,13 @@ class Tvdb:
         if isinstance(key, (int, long)):
             if key in self.shows:
                 try:
-                    fromTime = long(self.shows[key]['last_updated'])
+                    last_updated = self.shows[key]['last_updated']
+                    stale = last_updated < int(time.time() - 604800)
+                    fromTime = int(last_updated)
+
                     updated_shows = set(d["id"] for d in self.updated(fromTime) or {})
-                    if key not in updated_shows:
+
+                    if key not in updated_shows and not stale:
                         return self.shows[key]
                 except:
                     pass
