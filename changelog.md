@@ -1,6 +1,7 @@
 # Changelog
 
-- * f86085d - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
+- * 48364ce - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
+- * ee64711 - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
 - * 3cd30c3 - 2017-05-27: v9.0.26 
 - * 3fcf10e - 2017-05-27: Added stale cache check for theTVDB indexer to resolve issues with show updates 
 - * 054c5c6 - 2017-05-20: Added database cleanup for orphaned episodes Added database cleanup for dupe shows Added database cleanup for dupe episodes Show updater jobs now update shows that have been stale for a week or longer 
