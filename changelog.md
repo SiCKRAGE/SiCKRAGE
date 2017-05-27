@@ -1,6 +1,7 @@
 # Changelog
 
-- * f829873 - 2017-05-27: Added stale cache check for theTVDB indexer to resolve issues with show updates 
+- * 6d37b46 - 2017-05-27: v9.0.26 
+- * 3fcf10e - 2017-05-27: Added stale cache check for theTVDB indexer to resolve issues with show updates 
 - * 054c5c6 - 2017-05-20: Added database cleanup for orphaned episodes Added database cleanup for dupe shows Added database cleanup for dupe episodes Show updater jobs now update shows that have been stale for a week or longer 
 - * 4be05b1 - 2017-05-14: Updated setup file cleanup code 
 - * 809b276 - 2017-05-14: v9.0.25 
