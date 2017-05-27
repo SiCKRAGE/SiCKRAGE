@@ -322,7 +322,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
             self.show = TVShow(self.indexer, self.indexer_id, self.lang)
 
-            self.show.loadFromIndexer()
+            self.show.loadFromIndexer(cache=False)
 
             # set up initial values
             self.show.location = self.showDir
@@ -402,7 +402,7 @@ class QueueItemAdd(ShowQueueItem):
         sickrage.srCore.SHOWLIST.append(self.show)
 
         try:
-            self.show.loadEpisodesFromIndexer()
+            self.show.loadEpisodesFromIndexer(cache=False)
         except Exception as e:
             sickrage.srCore.srLogger.error(
                 "Error with " + srIndexerApi(
