@@ -68,7 +68,7 @@ class srShowUpdater(object):
             try:
                 stale = (datetime.datetime.now() - datetime.datetime.fromordinal(curShow.last_update)).days > 7
                 if curShow.indexerid in updated_shows or stale:
-                    pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))
+                    pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, False))
                 else:
                     pi_list.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:

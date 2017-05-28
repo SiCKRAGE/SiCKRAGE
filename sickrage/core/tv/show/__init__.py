@@ -689,6 +689,7 @@ class TVShow(object):
 
         for dbData in [x['doc'] for x in
                        sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+
             deleteEp = False
 
             curSeason = int(dbData["season"])
@@ -711,8 +712,8 @@ class TVShow(object):
                 curEp = self.getEpisode(curSeason, curEpisode)
                 if deleteEp: curEp.deleteEpisode()
 
-                curEp.loadFromDB(curSeason, curEpisode)
-                curEp.loadFromIndexer(tvapi=t, cachedSeason=cachedSeasons[curSeason])
+                #curEp.loadFromDB(curSeason, curEpisode)
+                #curEp.loadFromIndexer(tvapi=t, cachedSeason=cachedSeasons[curSeason])
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
                 continue
@@ -1055,6 +1056,9 @@ class TVShow(object):
                 str(self.indexerid) + ": NOT loading info from " + srIndexerApi(
                     self.indexer).name + " as it is temporarily disabled.")
 
+        # save to database
+        self.saveToDB()
+
     def loadIMDbInfo(self, imdbapi=None):
         imdb_info = {'imdb_id': self.imdbid,
                      'title': '',
@@ -1134,6 +1138,9 @@ class TVShow(object):
 
             sickrage.srCore.srLogger.debug(
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
+
+            # save show to database
+            self.saveToDB()
 
     def nextEpisode(self):
         if self.paused: return

@@ -563,13 +563,6 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.srCore.srLogger.error("Error loading IMDb info: {}".format(e.message))
             sickrage.srCore.srLogger.debug(traceback.format_exc())
 
-        # have to save show before reading episodes from db
-        try:
-            self.show.saveToDB()
-        except Exception as e:
-            sickrage.srCore.srLogger.error("Error saving show info to the database: {}".format(e.message))
-            return
-
         # get episode list from DB
         DBEpList = self.show.loadEpisodesFromDB()
         IndexerEpList = None
