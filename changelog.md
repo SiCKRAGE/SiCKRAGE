@@ -1,6 +1,7 @@
 # Changelog
 
-- * 922f3f6 - 2017-05-28: Misc improvements to show queue functions 
+- * f75c963 - 2017-07-08: Updated bittorrent cache urls to use secure links 
+- * 28e9e8b - 2017-05-28: Misc improvements to show queue functions 
 - * bb55993 - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
 - * b1d3362 - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
 - * c3f727e - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 

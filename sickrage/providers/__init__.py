@@ -112,11 +112,11 @@ class GenericProvider(object):
         urls = []
 
         bt_cache_urls = [
-            'http://torrentproject.se/torrent/{torrent_hash}.torrent',
-            'http://btdig.com/torrent/{torrent_hash}.torrent',
-            'http://torrage.info/torrent/{torrent_hash}.torrent',
-            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
-            'http://itorrents.org/torrent/{torrent_hash}.torrent'
+            'https://torrentproject.se/torrent/{torrent_hash}.torrent',
+            'https://btdig.com/torrent/{torrent_hash}.torrent',
+            'https://torrage.info/torrent/{torrent_hash}.torrent',
+            'https://thetorrent.org/torrent/{torrent_hash}.torrent',
+            'https://itorrents.org/torrent/{torrent_hash}.torrent'
         ]
 
         if url.startswith('magnet'):
