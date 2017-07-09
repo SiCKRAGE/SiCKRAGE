@@ -79,7 +79,7 @@
 
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
-    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.css"/>
+    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.min.css"/>
     <%block name="css" />
 
     <script src="${srWebRoot}/js/bower.min.js"></script>
@@ -114,17 +114,28 @@
                                data-hover="dropdown"><span>Shows</span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${srWebRoot}/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
-                                <li><a href="${srWebRoot}/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add
-                                    Shows</a>
+                                <li>
+                                    <a href="${srWebRoot}/home/">
+                                        <i class="menu-icon-home"></i>&nbsp;Show List
+                                    </a>
                                 </li>
-                                <li><a href="${srWebRoot}/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual
-                                    Post-Processing</a></li>
+                                <li>
+                                    <a href="${srWebRoot}/home/addShows/">
+                                        <i class="menu-icon-addshow"></i>&nbsp;Add Shows
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="${srWebRoot}/home/postprocess/">
+                                        <i class="menu-icon-postprocess"></i>&nbsp;Manual Post-Processing
+                                    </a>
+                                </li>
                                 % if sickrage.srCore.srConfig.SHOWS_RECENT:
                                     <li class="divider"></li>
                                 % for recentShow in sickrage.srCore.srConfig.SHOWS_RECENT:
-                                    <li><a href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}"><i
-                                            class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a>
+                                    <li>
+                                        <a href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}">
+                                            <i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}
+                                        </a>
                                     </li>
                                 % endfor
                                 % endif
@@ -138,46 +149,67 @@
                                 <span>Manage</span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${srWebRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a>
+                                <li>
+                                    <a href="${srWebRoot}/manage/">
+                                        <i class="menu-icon-manage"></i>&nbsp;Mass Update
+                                    </a>
                                 </li>
-                                <li><a href="${srWebRoot}/manage/backlogOverview/"><i
-                                        class="menu-icon-backlog-view"></i>&nbsp;Backlog
-                                    Overview</a></li>
-                                <li><a href="${srWebRoot}/manage/manageSearches/"><i
-                                        class="menu-icon-manage-searches"></i>&nbsp;Manage
-                                    Searches</a></li>
-                                <li><a href="${srWebRoot}/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode
-                                    Status
-                                    Management</a></li>
+                                <li>
+                                    <a href="${srWebRoot}/manage/backlogOverview/">
+                                        <i class="menu-icon-backlog-view"></i>&nbsp;Backlog Overview
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="${srWebRoot}/manage/manageSearches/">
+                                        <i class="menu-icon-manage-searches"></i>&nbsp;Manage Searches
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="${srWebRoot}/manage/episodeStatuses/">
+                                        <i class="menu-icon-backlog"></i>&nbsp;Episode Status Management
+                                    </a>
+                                </li>
                                 % if sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_SERVER_HOST != "":
-                                    <li><a href="${srWebRoot}/home/updatePLEX/"><i class="menu-icon-backlog-view"></i>&nbsp;Update
-                                        PLEX</a>
+                                    <li>
+                                        <a href="${srWebRoot}/home/updatePLEX/">
+                                            <i class="menu-icon-backlog-view"></i>&nbsp;Update PLEX
+                                        </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_HOST != "":
-                                    <li><a href="${srWebRoot}/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update
-                                        KODI</a>
+                                    <li>
+                                        <a href="${srWebRoot}/home/updateKODI/">
+                                            <i class="menu-icon-kodi"></i>&nbsp;Update KODI
+                                        </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_EMBY and sickrage.srCore.srConfig.EMBY_HOST != "" and sickrage.srCore.srConfig.EMBY_APIKEY != "":
-                                    <li><a href="${srWebRoot}/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update
-                                        Emby</a>
+                                    <li>
+                                        <a href="${srWebRoot}/home/updateEMBY/">
+                                            <i class="menu-icon-backlog-view"></i>&nbsp;Update Emby
+                                        </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
-                                    <li><a href="${srWebRoot}/manage/manageTorrents/"><i
-                                            class="menu-icon-bittorrent"></i>&nbsp;Manage
-                                        Torrents</a></li>
+                                    <li>
+                                        <a href="${srWebRoot}/manage/manageTorrents/">
+                                            <i class="menu-icon-bittorrent"></i>&nbsp;Manage Torrents
+                                        </a>
+                                    </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
-                                    <li><a href="${srWebRoot}/manage/failedDownloads/"><i
-                                            class="menu-icon-failed-download"></i>&nbsp;Failed
-                                        Downloads</a></li>
+                                    <li>
+                                        <a href="${srWebRoot}/manage/failedDownloads/">
+                                            <i class="menu-icon-failed-download"></i>&nbsp;Failed Downloads
+                                        </a>
+                                    </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_SUBTITLES:
-                                    <li><a href="${srWebRoot}/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed
-                                        Subtitle
-                                        Management</a></li>
+                                    <li>
+                                        <a href="${srWebRoot}/manage/subtitleMissed/">
+                                            <i class="menu-icon-backlog"></i>&nbsp;Missed Subtitle Management
+                                        </a>
+                                    </li>
                                 % endif
                             </ul>
                             <div style="clear:both;"></div>
@@ -199,42 +231,54 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="${srWebRoot}/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp;
-                                        Info</a>
+                                    <a href="${srWebRoot}/config/">
+                                        <i class="menu-icon-help"></i>&nbsp;Help &amp; Info
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a>
+                                    <a href="${srWebRoot}/config/general/">
+                                        <i class="menu-icon-config"></i>&nbsp;General
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/backuprestore/"><i class="menu-icon-config"></i>&nbsp;Backup
-                                        &amp;
-                                        Restore</a>
+                                    <a href="${srWebRoot}/config/backuprestore/">
+                                        <i class="menu-icon-config"></i>&nbsp;Backup &amp; Restore
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/search/"><i class="menu-icon-config"></i>&nbsp;Search
-                                        Clients</a>
+                                    <a href="${srWebRoot}/config/search/">
+                                        <i class="menu-icon-config"></i>&nbsp;Search Clients
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/providers/"><i class="menu-icon-config"></i>&nbsp;Search
-                                        Providers</a>
+                                    <a href="${srWebRoot}/config/providers/">
+                                        <i class="menu-icon-config"></i>&nbsp;Search Providers
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/subtitles/"><i class="menu-icon-config"></i>&nbsp;Subtitles
-                                        Settings</a>
+                                    <a href="${srWebRoot}/config/subtitles/">
+                                        <i class="menu-icon-config"></i>&nbsp;Subtitles Settings
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/qualitySettings/"><i class="menu-icon-config"></i>&nbsp;Quality
-                                        Settings</a>
+                                    <a href="${srWebRoot}/config/qualitySettings/">
+                                        <i class="menu-icon-config"></i>&nbsp;Quality Settings
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/postProcessing/"><i class="menu-icon-config"></i>&nbsp;Post
-                                        Processing</a>
+                                    <a href="${srWebRoot}/config/postProcessing/">
+                                        <i class="menu-icon-config"></i>&nbsp;Post Processing
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/notifications/"><i class="menu-icon-config"></i>&nbsp;Notifications</a>
+                                    <a href="${srWebRoot}/config/notifications/">
+                                        <i class="menu-icon-config"></i>&nbsp;Notifications
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/config/anime/"><i class="menu-icon-config"></i>&nbsp;Anime</a>
+                                    <a href="${srWebRoot}/config/anime/">
+                                        <i class="menu-icon-config"></i>&nbsp;Anime
+                                    </a>
                                 </li>
                             </ul>
                             <div style="clear:both;"></div>
@@ -263,43 +307,72 @@
                                     class="navbaricon hidden-xs"/>${toolsBadge}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="${srWebRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
-                                <li><a href="${srWebRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a>
+                                <li>
+                                    <a href="${srWebRoot}/IRC/">
+                                        <i class="menu-icon-help"></i>&nbsp;IRC
+                                    </a>
                                 </li>
-                                <li><a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
-                                       onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
-                                        class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
+                                <li>
+                                    <a href="${srWebRoot}/changes/">
+                                        <i class="menu-icon-help"></i>&nbsp;Changelog
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
+                                       onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;">
+                                        <i class="menu-icon-help"></i>&nbsp;Support SickRage
+                                    </a>
+                                </li>
                                 <li class="divider"></li>
                                 %if numErrors:
-                                    <li><a href="${srWebRoot}/logs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View
-                                        Errors
-                                        <span
-                                                class="badge btn-danger">${numErrors}</span></a></li>
+                                    <li>
+                                        <a href="${srWebRoot}/logs/">
+                                            <i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors
+                                            <span class="badge btn-danger">${numErrors}</span>
+                                        </a>
+                                    </li>
                                 %endif
                                 %if numWarnings:
-                                    <li><a href="${srWebRoot}/logs/?level=${sickrage.srCore.srLogger.WARNING}"><i
-                                            class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span
-                                            class="badge btn-warning">${numWarnings}</span></a></li>
+                                    <li>
+                                        <a href="${srWebRoot}/logs/?level=${sickrage.srCore.srLogger.WARNING}">
+                                            <i class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings
+                                            <span class="badge btn-warning">${numWarnings}</span>
+                                        </a>
+                                    </li>
                                 %endif
-                                <li><a href="${srWebRoot}/logs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a>
+                                <li>
+                                    <a href="${srWebRoot}/logs/viewlog/">
+                                        <i class="menu-icon-viewlog"></i>&nbsp;View Log
+                                    </a>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="${srWebRoot}/home/updateCheck?pid=${srPID}"><i
-                                        class="menu-icon-update"></i>&nbsp;Check
-                                    For
-                                    Updates</a></li>
-                                <li><a href="${srWebRoot}/home/restart/?pid=${srPID}" class="confirm restart"><i
-                                        class="menu-icon-restart"></i>&nbsp;Restart</a></li>
-                                <li><a href="${srWebRoot}/home/shutdown/?pid=${srPID}" class="confirm shutdown"><i
-                                        class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
+                                <li>
+                                    <a href="${srWebRoot}/home/updateCheck?pid=${srPID}">
+                                        <i class="menu-icon-update"></i>&nbsp;Check For Updates
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="${srWebRoot}/home/restart/?pid=${srPID}" class="confirm restart">
+                                        <i class="menu-icon-restart"></i>&nbsp;Restart
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="${srWebRoot}/home/shutdown/?pid=${srPID}" class="confirm shutdown">
+                                        <i class="menu-icon-shutdown"></i>&nbsp;Shutdown
+                                    </a>
+                                </li>
                                 % if current_user != True:
-                                    <li><a href="${srWebRoot}/logout" class="confirm logout"><i
-                                            class="menu-icon-shutdown"></i>&nbsp;Logout</a>
+                                    <li>
+                                        <a href="${srWebRoot}/logout" class="confirm logout">
+                                            <i class="menu-icon-shutdown"></i>&nbsp;Logout
+                                        </a>
                                     </li>
                                 % endif
                                 <li class="divider"></li>
-                                <li><a href="${srWebRoot}/home/status/"><i class="menu-icon-help"></i>&nbsp;Server
-                                    Status</a>
+                                <li>
+                                    <a href="${srWebRoot}/home/status/">
+                                        <i class="menu-icon-help"></i>&nbsp;Server Status
+                                    </a>
                                 </li>
                             </ul>
                             <div style="clear:both;"></div>

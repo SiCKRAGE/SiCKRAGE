@@ -51,15 +51,15 @@ inc_top.mako
 
 .ui-icon,
 .ui-widget-content .ui-icon {
-    background-image: url("../../images/ui-icons_ffffff_256x240.png");
+    background-image: url("/images/ui-icons_ffffff_256x240.png");
 }
 
 .ui-state-default .ui-icon {
-    background-image: url("../../images/ui-icons_056b93_256x240.png");
+    background-image: url("/images/ui-icons_056b93_256x240.png");
 }
 
 .ui-widget-overlay {
-    background: #000000 url("../../images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
+    background: #000000 url("/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
 }
 
 .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
@@ -80,117 +80,6 @@ inc_top.mako
     background: #333;
 }
 
-[class^="menu-icon-"], [class*=" menu-icon-"] {
-    background: url("../../images/menu/menu-icons-white.png");
-}
-
-.menu-icon-addshow {
-    background-position: 0 0;
-}
-
-.menu-icon-anime {
-    background-position: -21px 0;
-}
-
-.menu-icon-backlog-view {
-    background-position: -42px 0;
-}
-
-.menu-icon-backlog {
-    background-position: -63px 0;
-}
-
-.menu-icon-bittorrent {
-    background-position: -84px 0;
-}
-
-.menu-icon-config-index {
-    background-position: -105px 0;
-}
-
-.menu-icon-config {
-    background-position: -126px 0;
-}
-
-.menu-icon-failed-download {
-    background-position: -147px 0;
-}
-
-.menu-icon-home {
-    background-position: -168px 0;
-}
-
-.menu-icon-manage {
-    background-position: -189px 0;
-}
-
-.menu-icon-manage-searches {
-    background-position: -210px 0;
-}
-
-.menu-icon-poster {
-    background-position: -231px 0;
-}
-
-.menu-icon-postprocess {
-    background-position: -252px 0;
-}
-
-.menu-icon-restart {
-    background-position: -273px 0;
-}
-
-.menu-icon-shutdown {
-    background-position: -294px 0;
-}
-
-.menu-icon-update {
-    background-position: -315px 0;
-}
-
-.menu-icon-viewlog-errors {
-    background-position: -336px 0;
-}
-
-.menu-icon-viewlog {
-    background-position: -357px 0;
-}
-
-.menu-icon-kodi {
-    background-position: -378px 0;
-}
-
-.menu-icon-help {
-    background-position: -399px 0;
-}
-
-[class^="submenu-icon-"], [class*=" submenu-icon-"] {
-    background: url("../../images/menu/menu-icons-white.png");
-}
-
-.submenu-icon-anime {
-    background-position: -21px 0;
-}
-
-.submenu-icon-bittorrent {
-    background-position: -84px 0;
-}
-
-.submenu-icon-failed-download {
-    background-position: -147px 0;
-}
-
-.submenu-icon-restart {
-    background-position: -273px 0;
-}
-
-.submenu-icon-shutdown {
-    background-position: -294px 0;
-}
-
-.submenu-icon-kodi {
-    background-position: -378px 0;
-}
 
 /* =======================================================================
 inc_bottom.mako
@@ -269,25 +158,25 @@ add_shows.mako
 ========================================================================== */
 
 .icon-addnewshow {
-    background-image: url("../../images/addshows/add-new32-white.png");
+    background-image: url("/images/addshows/add-new32-white.png");
     width: 32px;
     height: 32px;
 }
 
 .icon-addtrendingshow {
-    background-image: url("../../images/addshows/add-trending32-white.png");
+    background-image: url("/images/addshows/add-trending32-white.png");
     width: 32px;
     height: 32px;
 }
 
 .icon-addrecommendedshow {
-    background-image: url("../../images/addshows/add-trakt32-white.png");
+    background-image: url("/images/addshows/add-trakt32-white.png");
     width: 32px;
     height: 32px;
 }
 
 .icon-addexistingshow {
-    background-image: url("../../images/addshows/add-existing32-white.png");
+    background-image: url("/images/addshows/add-existing32-white.png");
     width: 32px;
     height: 32px;
 }
@@ -349,7 +238,7 @@ h1.title {
 }
 
 ul.tags li {
-    background: url(../../images/tag.png) no-repeat scroll 5px 4px #15528F;
+    background: url(/images/tag.png) no-repeat scroll 5px 4px #15528F;
     border-radius: 3px;
     border: 1px solid #111;
     color: #FFF;
@@ -867,13 +756,13 @@ tablesorter.css
 .tablesorter thead .tablesorter-headerDesc {
     background-color: #297AB8;
     background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
-    /* background-image: url(../images/tablesorter/asc.gif); */
+    /* background-image: url(/images/tablesorter/asc.gif); */
 }
 
 .tablesorter thead .tablesorter-headerAsc {
     background-color: #297AB8;
     background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
-    /* background-image: url(../images/tablesorter/desc.gif); */
+    /* background-image: url(/images/tablesorter/desc.gif); */
 }
 
 thead.tablesorter-stickyHeader {

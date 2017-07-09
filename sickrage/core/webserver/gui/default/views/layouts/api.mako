@@ -55,9 +55,9 @@
     <link rel="icon" type="image/png" sizes="96x96" href="${srWebRoot}/images/ico/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="${srWebRoot}/images/ico/favicon-16x16.png">
     <link rel="manifest" href="${srWebRoot}/images/ico/manifest.json">
-    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css?${srPID}"/>
-    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css?${srPID}"/>
-    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/${srThemeName}.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/${srThemeName}.min.css"/>
     <%block name="css" />
 
     <!--[if lt IE 9]>

@@ -208,6 +208,12 @@ module.exports = function (grunt) {
                         'dist/css/core.css',
                         'dist/css/fonts.css',
                         'dist/css/icons-sickrage.css'
+                    ],
+                    'sickrage/core/webserver/gui/default/css/themes/dark.min.css': [
+                        'dist/css/themes/dark.css'
+                    ],
+                    'sickrage/core/webserver/gui/default/css/themes/light.min.css': [
+                        'dist/css/themes/light.css'
                     ]
                 }
             }
