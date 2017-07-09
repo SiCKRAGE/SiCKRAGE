@@ -13,20 +13,23 @@
         <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-12">
+                    <div class="btn-group pull-left">
+                        <button class="btn" id="submitMassEdit">Mass Edit</button>
+                        <button class="btn" id="submitMassUpdate">Mass Update</button>
+                        <button class="btn" id="submitMassRescan">Mass Rescan</button>
+                        <button class="btn" id="submitMassRename">Mass Rename</button>
+                        <button class="btn" id="submitMassDelete">Mass Delete</button>
+                        <button class="btn" id="submitMassRemove">Mass Remove</button>
+                        % if sickrage.srCore.srConfig.USE_SUBTITLES:
+                            <input class="btn pull-left" type="button" value="Mass Subtitle" id="submitMassSubtitle"/>
+                        % endif
+                    </div>
+
                     <div class="pull-right" id="checkboxControls">
                         <label for="continuing"><span class="Continuing"><input type="checkbox" id="Continuing"
-                                                                        checked="checked"/> Continuing</span></label>
+                                                                                checked="checked"/> Continuing</span></label>
                         <label for="ended"><span class="Ended"><input type="checkbox" id="Ended"
-                                                                    checked="checked"/> Ended</span></label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="btn-group pull-right">
-                        <button class="btn seriesCheck">Select Filtered Episodes</button>
-                        <button class="btn clearAll">Clear All</button>
+                                                                      checked="checked"/> Ended</span></label>
                     </div>
                 </div>
             </div>
@@ -55,23 +58,6 @@
             </tr>
             </thead>
 
-            <tfoot>
-            <tr>
-                <td rowspan="1" colspan="${(12, 13)[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}"
-                    class="align-center alt">
-                    <input class="btn pull-left" type="button" value="Mass Edit" id="submitMassEdit"/>
-                    <input class="btn pull-left" type="button" value="Mass Update" id="submitMassUpdate"/>
-                    <input class="btn pull-left" type="button" value="Mass Rescan" id="submitMassRescan"/>
-                    <input class="btn pull-left" type="button" value="Mass Rename" id="submitMassRename"/>
-                    <input class="btn pull-left" type="button" value="Mass Delete" id="submitMassDelete"/>
-                    <input class="btn pull-left" type="button" value="Mass Remove" id="submitMassRemove"/>
-                    % if sickrage.srCore.srConfig.USE_SUBTITLES:
-                        <input class="btn pull-left" type="button" value="Mass Subtitle" id="submitMassSubtitle"/>
-                    % endif
-                </td>
-            </tr>
-            </tfoot>
-
             <tbody>
                 <% myShowList = sickrage.srCore.SHOWLIST %>
                 <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
@@ -82,7 +68,8 @@
                     <tr class="${curShow.status}" id="${curShow.indexerid}">
                         <td align="center">
                             <input type="checkbox" class="showCheck"
-                                   id="${curShow.indexerid}" name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
+                                   id="${curShow.indexerid}"
+                                   name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
                         </td>
                         <td class="tvShow"><a
                                 href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>

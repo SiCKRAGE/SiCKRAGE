@@ -5113,30 +5113,10 @@ jQuery(document).ready(function ($) {
                 });
 
                 $('.bulkCheck').on('click', function () {
-                    $('.showCheck').each(function () {
+                    $('.showCheck:visible').each(function () {
                         if (!$(this).disabled) {
                             $(this).prop("checked", !this.checked);
                         }
-                    });
-                });
-
-                // selects all visible episode checkboxes.
-                $('.seriesCheck').on('click', function () {
-                    $('.bulkCheck:visible').each(function () {
-                        $(this).prop("checked", true);
-                    });
-                    $('.showCheck:visible').each(function () {
-                        $(this).prop("checked", true);
-                    });
-                });
-
-                // clears all visible episode checkboxes and the season selectors
-                $('.clearAll').on('click', function () {
-                    $('.bulkCheck:visible').each(function () {
-                        $(this).prop("checked", false);
-                    });
-                    $('.showCheck:visible').each(function () {
-                        $(this).prop("checked", false);
                     });
                 });
 

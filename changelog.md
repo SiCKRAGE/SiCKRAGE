@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f123f6 - 2017-07-08: Added filtering by show status to mass update page 
+- * fd48081 - 2017-07-08: Cleaned up filtering for mass update page 
+- * e47d637 - 2017-07-08: Added filtering by show status to mass update page 
 - * f712802 - 2017-07-08: Updated bittorrent cache urls to use secure links 
 - * 28e9e8b - 2017-05-28: Misc improvements to show queue functions 
 - * bb55993 - 2017-05-27: Fixed theTVDB indexer cache, resolves show updating issues 
