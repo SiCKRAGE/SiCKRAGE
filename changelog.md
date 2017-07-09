@@ -1,6 +1,7 @@
 # Changelog
 
-- * fd48081 - 2017-07-08: Cleaned up filtering for mass update page 
+- * 0a6e057 - 2017-07-09: Cleaned up filtering for mass update page 
+- * 672730d - 2017-07-08: Cleaned up filtering for mass update page 
 - * e47d637 - 2017-07-08: Added filtering by show status to mass update page 
 - * f712802 - 2017-07-08: Updated bittorrent cache urls to use secure links 
 - * 28e9e8b - 2017-05-28: Misc improvements to show queue functions 

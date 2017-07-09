@@ -26,10 +26,10 @@
                     </div>
 
                     <div class="pull-right" id="checkboxControls">
-                        <label for="continuing"><span class="Continuing"><input type="checkbox" id="Continuing"
-                                                                                checked="checked"/> Continuing</span></label>
-                        <label for="ended"><span class="Ended"><input type="checkbox" id="Ended"
-                                                                      checked="checked"/> Ended</span></label>
+                        <label for="viewstatuses" class="badge" style="background-color: #333333;">View Statuses:
+                            <input type="checkbox" id="Continuing" checked="checked"/> Continuing
+                            <input type="checkbox" id="Ended" checked="checked"/> Ended
+                        </label>
                     </div>
                 </div>
             </div>
