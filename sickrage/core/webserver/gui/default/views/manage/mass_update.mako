@@ -8,6 +8,30 @@
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
+    <div class="row">
+        <!-- Labels -->
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="pull-right" id="checkboxControls">
+                        <label for="continuing"><span class="Continuing"><input type="checkbox" id="Continuing"
+                                                                        checked="checked"/> Continuing</span></label>
+                        <label for="ended"><span class="Ended"><input type="checkbox" id="Ended"
+                                                                    checked="checked"/> Ended</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="btn-group pull-right">
+                        <button class="btn seriesCheck">Select Filtered Episodes</button>
+                        <button class="btn clearAll">Clear All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <form name="massUpdateForm" method="post" action="massUpdate">
 
@@ -33,7 +57,8 @@
 
             <tfoot>
             <tr>
-                <td rowspan="1" colspan="${(12, 13)[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}" class="align-center alt">
+                <td rowspan="1" colspan="${(12, 13)[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}"
+                    class="align-center alt">
                     <input class="btn pull-left" type="button" value="Mass Edit" id="submitMassEdit"/>
                     <input class="btn pull-left" type="button" value="Mass Update" id="submitMassUpdate"/>
                     <input class="btn pull-left" type="button" value="Mass Rescan" id="submitMassRescan"/>
@@ -54,12 +79,13 @@
                 % for curShow in myShowList:
                     <% curEp = curShow.next_aired %>
 
-                    <tr>
+                    <tr class="${curShow.status}" id="${curShow.indexerid}">
                         <td align="center">
                             <input type="checkbox" class="showCheck"
-                                   id="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
+                                   id="${curShow.indexerid}" name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
                         </td>
-                        <td class="tvShow"><a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
+                        <td class="tvShow"><a
+                                href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
                         </td>
                         <td align="center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                         <td align="center"><img

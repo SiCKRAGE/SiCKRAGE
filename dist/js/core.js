@@ -68,6 +68,16 @@ jQuery(document).ready(function ($) {
             }
         },
 
+        showHideRows: function (whichClass, status) {
+            $("tr." + whichClass).each(function () {
+                if (status) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        },
+
         common: {
             init: function () {
                 SICKRAGE.srPID = SICKRAGE.getMeta('srPID');
@@ -1892,7 +1902,8 @@ jQuery(document).ready(function ($) {
                     // show/hide different types of rows when the checkboxes are changed
                     $("#checkboxControls input").change(function () {
                         var whichClass = $(this).attr('id');
-                        SICKRAGE.home.display_show.showHideRows(whichClass);
+                        var status = $('#checkboxControls > input, #' + whichClass).prop('checked');
+                        SICKRAGE.showHideRows(whichClass, status);
                     });
 
                     // initially show/hide all the rows according to the checkboxes
@@ -1906,6 +1917,23 @@ jQuery(document).ready(function ($) {
                             }
                         });
                     });
+
+                    // hide season headers with no episodes under them
+                    $('tr.seasonheader').each(function () {
+                        var numRows = 0;
+                        var seasonNo = $(this).attr('id');
+                        $('tr.' + seasonNo + ' :visible').each(function () {
+                            numRows++;
+                        });
+                        if (numRows === 0) {
+                            $(this).hide();
+                            $('#' + seasonNo + '-cols').hide();
+                        } else {
+                            $(this).show();
+                            $('#' + seasonNo + '-cols').show();
+                        }
+                    });
+
 
                     $('.sceneSeasonXEpisode').on('change', function () {
                         //	Strip non-numeric characters
@@ -1947,33 +1975,6 @@ jQuery(document).ready(function ($) {
                     });
 
                     SICKRAGE.ajax_search.init();
-                },
-
-                showHideRows: function (whichClass) {
-                    var status = $('#checkboxControls > input, #' + whichClass).prop('checked');
-                    $("tr." + whichClass).each(function () {
-                        if (status) {
-                            $(this).show();
-                        } else {
-                            $(this).hide();
-                        }
-                    });
-
-                    // hide season headers with no episodes under them
-                    $('tr.seasonheader').each(function () {
-                        var numRows = 0;
-                        var seasonNo = $(this).attr('id');
-                        $('tr.' + seasonNo + ' :visible').each(function () {
-                            numRows++;
-                        });
-                        if (numRows === 0) {
-                            $(this).hide();
-                            $('#' + seasonNo + '-cols').hide();
-                        } else {
-                            $(this).show();
-                            $('#' + seasonNo + '-cols').show();
-                        }
-                    });
                 },
 
                 setEpisodeSceneNumbering: function (forSeason, forEpisode, sceneSeason, sceneEpisode) {
@@ -5115,6 +5116,45 @@ jQuery(document).ready(function ($) {
                     $('.showCheck').each(function () {
                         if (!$(this).disabled) {
                             $(this).prop("checked", !this.checked);
+                        }
+                    });
+                });
+
+                // selects all visible episode checkboxes.
+                $('.seriesCheck').on('click', function () {
+                    $('.bulkCheck:visible').each(function () {
+                        $(this).prop("checked", true);
+                    });
+                    $('.showCheck:visible').each(function () {
+                        $(this).prop("checked", true);
+                    });
+                });
+
+                // clears all visible episode checkboxes and the season selectors
+                $('.clearAll').on('click', function () {
+                    $('.bulkCheck:visible').each(function () {
+                        $(this).prop("checked", false);
+                    });
+                    $('.showCheck:visible').each(function () {
+                        $(this).prop("checked", false);
+                    });
+                });
+
+                // show/hide different types of rows when the checkboxes are changed
+                $("#checkboxControls input").change(function () {
+                    var whichClass = $(this).attr('id');
+                    var status = $('#checkboxControls > input, #' + whichClass).prop('checked');
+                    SICKRAGE.showHideRows(whichClass, status);
+                });
+
+                // initially show/hide all the rows according to the checkboxes
+                $("#checkboxControls input").each(function () {
+                    var status = $(this).prop('checked');
+                    $("tr." + $(this).attr('id')).each(function () {
+                        if (status) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
                         }
                     });
                 });
