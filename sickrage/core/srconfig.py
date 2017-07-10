@@ -920,7 +920,7 @@ class srConfig(object):
         self.DOWNLOAD_URL = self.check_setting_str('General', 'download_url', "")
         self.CPU_PRESET = self.check_setting_str('General', 'cpu_preset', 'NORMAL')
         self.ANON_REDIRECT = self.check_setting_str('General', 'anon_redirect',
-                                                    'http://dereferer.org/?')
+                                                    'http://nullrefer.com/?')
         self.PROXY_SETTING = self.check_setting_str('General', 'proxy_setting', '')
         self.PROXY_INDEXERS = bool(self.check_setting_int('General', 'proxy_indexers', 1))
         self.TRASH_REMOVE_SHOW = bool(self.check_setting_int('General', 'trash_remove_show', 0))
