@@ -1,6 +1,7 @@
 # Changelog
 
-- * 74582bb - 2017-07-14: Updated manifest 
+- * 3eec54f - 2017-07-14: Moved location of libs folder 
+- * abac6ed - 2017-07-14: Updated manifest 
 - * 1be8b99 - 2017-07-13: Changed network timezones url 
 - * 1efad19 - 2017-07-13: Changed scene exceptions url 
 - * 6687cd7 - 2017-07-13: Download size filter now displays size of download and quality size when throwing exception to ignore 

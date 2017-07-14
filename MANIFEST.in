@@ -1,4 +1,3 @@
 include README.txt
 include COPYING.txt
-recursive-include libs *
 recursive-include sickrage *

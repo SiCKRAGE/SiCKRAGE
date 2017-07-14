@@ -47,7 +47,7 @@ daemon = None
 
 MAIN_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 PROG_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-LIBS_DIR = os.path.abspath(os.path.join(MAIN_DIR, 'libs'))
+LIBS_DIR = os.path.abspath(os.path.join(PROG_DIR, 'libs'))
 REQS_FILE = os.path.abspath(os.path.join(MAIN_DIR, 'requirements.txt'))
 
 SYS_ENCODING = None

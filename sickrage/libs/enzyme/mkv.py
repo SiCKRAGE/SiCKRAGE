@@ -25,6 +25,7 @@ from datetime import datetime
 from struct import unpack
 
 import core
+
 from .exceptions import ParseError
 
 __all__ = ['Parser']

@@ -22,6 +22,7 @@ import requests
 
 from .errors import RequestFanartError, ResponseFanartError
 
+
 def values(obj):
     return [v for k, v in obj.__dict__.iteritems() if not k.startswith('_')]
 

@@ -23,6 +23,7 @@ import string
 import struct
 
 import core
+
 from .exceptions import ParseError
 
 __all__ = ['Parser']
