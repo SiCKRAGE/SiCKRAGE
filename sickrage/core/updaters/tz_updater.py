@@ -37,7 +37,7 @@ sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 def update_network_dict():
     """Update timezone information from SR repositories"""
 
-    url = 'http://sickragetv.github.io/network_timezones/network_timezones.txt'
+    url = 'https://git.sickrage.ca/SiCKRAGE/network_timezones/raw/master/network_timezones.txt'
 
     try:
         url_data = sickrage.srCore.srWebSession.get(url).text
