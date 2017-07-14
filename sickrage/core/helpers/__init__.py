@@ -1230,14 +1230,19 @@ def get_size(start_path='.'):
         return -1
 
     total_size = 0
-    for dirpath, _, filenames in os.walk(start_path):
-        for f in filenames:
-            fp = os.path.join(dirpath, f)
-            try:
-                total_size += os.path.getsize(fp)
-            except OSError as e:
-                sickrage.srCore.srLogger.error("Unable to get size for file %s Error: %r" % (fp, e))
-                sickrage.srCore.srLogger.debug(traceback.format_exc())
+
+    try:
+        for dirpath, _, filenames in os.walk(start_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                try:
+                    total_size += os.path.getsize(fp)
+                except OSError as e:
+                    sickrage.srCore.srLogger.error("Unable to get size for file %s Error: %r" % (fp, e))
+                    sickrage.srCore.srLogger.debug(traceback.format_exc())
+    except Exception as e:
+        pass
+
     return total_size
 
 

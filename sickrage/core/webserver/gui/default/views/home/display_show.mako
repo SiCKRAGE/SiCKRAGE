@@ -262,7 +262,7 @@
                             % if os.path.isdir(showLoc):
                                 <tr>
                                     <td class="showLegend">Size:</td>
-                                    <td>${pretty_filesize(get_size(showLoc))}</td>
+                                    <td>${pretty_filesize(get_size(showLoc.encode('utf-8')))}</td>
                                 </tr>
                             % endif
                             <tr>
