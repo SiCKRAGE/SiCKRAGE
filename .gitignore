@@ -1,8 +1,3 @@
-# SR Vagrant Files #
-######################
-/.vagrant
-/Vagrantfile
-
 # SR Travis-CI Files #
 ######################
 /.travis.yml

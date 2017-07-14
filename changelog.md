@@ -1,6 +1,7 @@
 # Changelog
 
-- * d6c8745 - 2017-07-13: Changed network timezones url 
+- * 74582bb - 2017-07-14: Updated manifest 
+- * 1be8b99 - 2017-07-13: Changed network timezones url 
 - * 1efad19 - 2017-07-13: Changed scene exceptions url 
 - * 6687cd7 - 2017-07-13: Download size filter now displays size of download and quality size when throwing exception to ignore 
 - * b0c4125 - 2017-07-13: Fixed exception error for filtering sizes of download results 
