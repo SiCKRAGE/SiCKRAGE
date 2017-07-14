@@ -1,6 +1,7 @@
 # Changelog
 
-- * 61fd047 - 2017-07-10: Changed anonymous referrer to nullrefer.com 
+- * 6df71c8 - 2017-07-13: Fixed exception error for filtering sizes of download results 
+- * 8eed07c - 2017-07-10: Changed anonymous referrer to nullrefer.com 
 - * 3aafe4d - 2017-07-09: Cleaned up CSS code 
 - * 765d71f - 2017-07-09: Cleaned up filtering for mass update page 
 - * 672730d - 2017-07-08: Cleaned up filtering for mass update page 

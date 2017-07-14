@@ -251,7 +251,7 @@ def pickBestResult(results, show):
 
                 file_size = float(file_size / 1000000)
                 if file_size > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
-                    raise (
+                    raise Exception(
                         "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(
                             file_size))
         except Exception as e:
