@@ -1,6 +1,7 @@
 # Changelog
 
-- * 59bc9cb - 2017-07-13: Download size filter now displays size of download and quality size when throwing exception to ignore 
+- * 6e5e48f - 2017-07-13: Changed scene exceptions url 
+- * 6687cd7 - 2017-07-13: Download size filter now displays size of download and quality size when throwing exception to ignore 
 - * b0c4125 - 2017-07-13: Fixed exception error for filtering sizes of download results 
 - * 8eed07c - 2017-07-10: Changed anonymous referrer to nullrefer.com 
 - * 3aafe4d - 2017-07-09: Cleaned up CSS code 
