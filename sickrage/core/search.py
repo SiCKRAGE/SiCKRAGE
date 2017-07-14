@@ -245,15 +245,17 @@ def pickBestResult(results, show):
 
         # quality definition video file size constraints check
         try:
+            quality_size = sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]
             for file, file_size in cur_result.files.items():
                 if not file.endswith(tuple(video_exts)):
                     continue
 
                 file_size = float(file_size / 1000000)
-                if file_size > sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]:
+                if file_size > quality_size:
                     raise Exception(
-                        "Ignoring " + cur_result.name + " based on quality size filter: {}, ignoring it".format(
-                            file_size))
+                        "Ignoring " + cur_result.name + " with size: {} based on quality size filter: {}, ignoring it".format(
+                            file_size, quality_size)
+                    )
         except Exception as e:
             sickrage.srCore.srLogger.info(e.message)
             continue

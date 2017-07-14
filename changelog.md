@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6df71c8 - 2017-07-13: Fixed exception error for filtering sizes of download results 
+- * 59bc9cb - 2017-07-13: Download size filter now displays size of download and quality size when throwing exception to ignore 
+- * b0c4125 - 2017-07-13: Fixed exception error for filtering sizes of download results 
 - * 8eed07c - 2017-07-10: Changed anonymous referrer to nullrefer.com 
 - * 3aafe4d - 2017-07-09: Cleaned up CSS code 
 - * 765d71f - 2017-07-09: Cleaned up filtering for mass update page 
