@@ -79,17 +79,17 @@ class MoreThanTVProvider(TorrentProvider):
                             'keeplogged': '1'}
 
             try:
-                response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+                sickrage.srCore.srWebSession.get(self.urls['login'])
+                response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params).text
             except Exception:
                 sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
-            if re.search('Your username or password was incorrect.', response):
+            if re.search('logout.php', response):
+                return True
+            elif re.search('Your username or password was incorrect.', response):
                 sickrage.srCore.srLogger.warning(
                     "[{}]: Invalid username or password. Check your settings".format(self.name))
-                return False
-
-            return True
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
@@ -131,6 +131,8 @@ class MoreThanTVProvider(TorrentProvider):
                         # skip colheader
                         for result in torrent_rows[1:]:
                             cells = result.findChildren('td')
+                            if len(cells) < 2 : continue
+
                             link = cells[1].find('span', attrs={'title': 'Download'}).parent
                             title_anchor = cells[1].find('a', attrs={'dir': 'ltr'})
 
