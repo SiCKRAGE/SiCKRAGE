@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8b6246a - 2017-07-21: Fixed issues with MoreThan.tv torrent provider 
+- * a55e39d - 2017-07-21: Fixed issues with web client sessions not being persistent 
+- * 6ed6802 - 2017-07-21: Fixed issues with MoreThan.tv torrent provider 
 - * 41e2b66 - 2017-07-21: v9.0.29 
 - * fdea81f - 2017-07-21: Fixed issues with connecting Deluged clients 
 - * 761353a - 2017-07-14: Fixed unicode issue for displayshow template 
