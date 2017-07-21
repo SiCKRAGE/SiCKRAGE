@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5ea74bd - 2017-07-21: Fixed issues with connecting Deluged clients 
+- * 7b680b0 - 2017-07-21: v9.0.29 
+- * fdea81f - 2017-07-21: Fixed issues with connecting Deluged clients 
 - * 761353a - 2017-07-14: Fixed unicode issue for displayshow template 
 - * 4731b6a - 2017-07-14: Moved location of libs folder 
 - * abac6ed - 2017-07-14: Updated manifest 
