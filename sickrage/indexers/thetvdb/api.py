@@ -476,7 +476,7 @@ class Tvdb:
                 continue
 
             for cur_image in imagesEt:
-                image_id = cur_image['id']
+                image_id = int(cur_image['id'])
                 image_type = cur_image['keytype']
                 image_subtype = cur_image['subkey']
                 if image_type is None or image_subtype is None:
@@ -492,12 +492,20 @@ class Tvdb:
                     k = k.lower()
                     if k in ['filename', 'thumbnail']:
                         v = self.config['api']['imagesPrefix'].format(id=v)
-                        if 'season' in image_type:
+                        if image_type in ['season', 'seasonwide']:
+                            # season number
                             if int(image_subtype) not in images[image_type]:
                                 images[image_type][int(image_subtype)] = {}
-                            images[image_type][int(image_subtype)][k] = v
+
+                            if k not in images[image_type][int(image_subtype)]:
+                                images[image_type][int(image_subtype)][k] = []
+
+                            images[image_type][int(image_subtype)][k] += [v]
                         else:
-                            images[image_type][k] = v
+                            if k not in images[image_type]:
+                                images[image_type][k] = []
+
+                            images[image_type][k] += [v]
 
         self._setShowData(sid, '_images', images)
 

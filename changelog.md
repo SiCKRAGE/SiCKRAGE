@@ -1,6 +1,7 @@
 # Changelog
 
-- * 672bd4f - 2017-07-14: Fixed unicode issue for displayshow template 
+- * 5ea74bd - 2017-07-21: Fixed issues with connecting Deluged clients 
+- * 761353a - 2017-07-14: Fixed unicode issue for displayshow template 
 - * 4731b6a - 2017-07-14: Moved location of libs folder 
 - * abac6ed - 2017-07-14: Updated manifest 
 - * 1be8b99 - 2017-07-13: Changed network timezones url 

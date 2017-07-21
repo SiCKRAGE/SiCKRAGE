@@ -21,18 +21,13 @@ from __future__ import unicode_literals
 import sickrage
 
 
-def getShowImage(url, imgNum=None):
+def getShowImage(url):
     if url is None:
         return None
 
-    # if they provided a fanart number try to use it instead
-    tempURL = url
-    if imgNum:
-        tempURL = url.split('-')[0] + "-" + str(imgNum) + ".jpg"
-
-    sickrage.srCore.srLogger.debug("Fetching image from " + tempURL)
+    sickrage.srCore.srLogger.debug("Fetching image from " + url)
 
     try:
-        return sickrage.srCore.srWebSession.get(tempURL).content
+        return sickrage.srCore.srWebSession.get(url).content
     except Exception:
         sickrage.srCore.srLogger.warning("There was an error trying to retrieve the image, aborting")

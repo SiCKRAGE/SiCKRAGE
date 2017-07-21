@@ -322,22 +322,22 @@ class GenericMetadata(object):
                     "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
                         e.message))
 
-    def create_fanart(self, show_obj):
+    def create_fanart(self, show_obj, which=0):
         if self.fanart and show_obj and not self._has_fanart(show_obj):
             sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating fanart for " + show_obj.name)
-            return self.save_fanart(show_obj)
+            return self.save_fanart(show_obj, which)
         return False
 
-    def create_poster(self, show_obj):
+    def create_poster(self, show_obj, which=0):
         if self.poster and show_obj and not self._has_poster(show_obj):
             sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating poster for " + show_obj.name)
-            return self.save_poster(show_obj)
+            return self.save_poster(show_obj, which)
         return False
 
-    def create_banner(self, show_obj):
+    def create_banner(self, show_obj, which=0):
         if self.banner and show_obj and not self._has_banner(show_obj):
             sickrage.srCore.srLogger.debug("Metadata provider " + self.name + " creating banner for " + show_obj.name)
-            return self.save_banner(show_obj)
+            return self.save_banner(show_obj, which)
         return False
 
     def create_episode_thumb(self, ep_obj):
@@ -529,7 +529,7 @@ class GenericMetadata(object):
 
         return True
 
-    def save_fanart(self, show_obj, which=None):
+    def save_fanart(self, show_obj, which=0):
         """
         Downloads a fanart image and saves it to the filename specified by fanart_name
         inside the show's root folder.
@@ -548,7 +548,7 @@ class GenericMetadata(object):
 
         return self._write_image(fanart_data, fanart_path)
 
-    def save_poster(self, show_obj, which=None):
+    def save_poster(self, show_obj, which=0):
         """
         Downloads a poster image and saves it to the filename specified by poster_name
         inside the show's root folder.
@@ -567,7 +567,7 @@ class GenericMetadata(object):
 
         return self._write_image(poster_data, poster_path)
 
-    def save_banner(self, show_obj, which=None):
+    def save_banner(self, show_obj, which=0):
         """
         Downloads a banner image and saves it to the filename specified by banner_name
         inside the show's root folder.
@@ -586,8 +586,8 @@ class GenericMetadata(object):
 
         return self._write_image(banner_data, banner_path)
 
-    def save_season_poster(self, show_obj, season):
-        season_url = self._retrieve_season_poster_image(show_obj, season)
+    def save_season_poster(self, show_obj, season, which=0):
+        season_url = self._retrieve_season_poster_image(show_obj, season, which)
 
         season_poster_file_path = self.get_season_poster_path(show_obj, season)
         if not season_poster_file_path:
@@ -602,8 +602,8 @@ class GenericMetadata(object):
 
         return self._write_image(seasonData, season_poster_file_path)
 
-    def save_season_banner(self, show_obj, season):
-        season_url = self._retrieve_season_banner_image(show_obj, season)
+    def save_season_banner(self, show_obj, season, which=0):
+        season_url = self._retrieve_season_banner_image(show_obj, season, which)
 
         season_banner_file_path = self.get_season_banner_path(show_obj, season)
         if not season_banner_file_path:
@@ -617,7 +617,7 @@ class GenericMetadata(object):
 
         return self._write_image(seasonData, season_banner_file_path)
 
-    def save_season_all_poster(self, show_obj, which=None):
+    def save_season_all_poster(self, show_obj, which=0):
         # use the default season all poster name
         poster_path = self.get_season_all_poster_path(show_obj)
 
@@ -629,7 +629,7 @@ class GenericMetadata(object):
 
         return self._write_image(poster_data, poster_path)
 
-    def save_season_all_banner(self, show_obj, which=None):
+    def save_season_all_banner(self, show_obj, which=0):
         # use the default season all banner name
         banner_path = self.get_season_all_banner_path(show_obj)
 
@@ -679,7 +679,7 @@ class GenericMetadata(object):
 
         return True
 
-    def _retrieve_show_image(self, image_type, show_obj, which=None):
+    def _retrieve_show_image(self, image_type, show_obj, which=0):
         """
         Gets an image URL from theTVDB.com and fanart.tv, downloads it and returns the data.
 
@@ -689,7 +689,7 @@ class GenericMetadata(object):
 
         Returns: the binary image data if available, or else None
         """
-        image_url = None
+
         image_data = None
         indexer_lang = show_obj.lang
 
@@ -722,27 +722,27 @@ class GenericMetadata(object):
 
         if image_type == 'poster_thumb':
             try:
-                image_url = indexer_show_obj['_images']['poster']['thumbnail']
+                image_url = indexer_show_obj['_images']['poster'][which]['thumbnail']
             except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         elif image_type == 'series_thumb':
             try:
-                image_url = indexer_show_obj['_images']['series']['thumbnail']
+                image_url = indexer_show_obj['_images']['series'][which]['thumbnail']
             except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         else:
             try:
-                image_url = indexer_show_obj['_images'][image_type]['filename']
+                image_url = indexer_show_obj['_images'][image_type][which]['filename']
             except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
 
         if image_url:
-            image_data = getShowImage(image_url, which)
+            image_data = getShowImage(image_url)
 
         return image_data
 
     @staticmethod
-    def _retrieve_season_poster_image(show_obj, season):
+    def _retrieve_season_poster_image(show_obj, season, which=0):
         """
         Should return a dict like:
 
@@ -770,7 +770,7 @@ class GenericMetadata(object):
 
             # Give us just the normal poster-style season graphics
             try:
-                return indexer_show_obj['_images']['season'][season]['filename']
+                return indexer_show_obj['_images']['season'][season][which]['filename']
             except KeyError:
                 pass
         except (indexer_error, IOError) as e:
@@ -780,7 +780,7 @@ class GenericMetadata(object):
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
 
     @staticmethod
-    def _retrieve_season_banner_image(show_obj, season):
+    def _retrieve_season_banner_image(show_obj, season, which=0):
         """
         Should return a dict like:
 
@@ -803,7 +803,7 @@ class GenericMetadata(object):
 
             # Give us just the normal season graphics
             try:
-                return indexer_show_obj['_images']['seasonwide'][season]['filename']
+                return indexer_show_obj['_images']['seasonwide'][season][which]['filename']
             except KeyError:
                 pass
         except (indexer_error, IOError) as e:

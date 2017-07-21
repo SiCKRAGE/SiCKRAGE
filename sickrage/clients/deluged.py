@@ -157,10 +157,8 @@ class DelugeRPC(object):
         return True
 
     def add_torrent_magnet(self, torrent, options, torrent_hash):
-        torrent_id = False
         try:
             self.connect()
-            # noinspection PyUnresolvedReferences
             torrent_id = self.client.core.add_torrent_magnet(torrent, options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
@@ -176,7 +174,6 @@ class DelugeRPC(object):
         torrent_id = False
         try:
             self.connect()
-            # noinspection PyUnresolvedReferences
             torrent_id = self.client.core.add_torrent_file(filename, b64encode(torrent), options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
@@ -191,7 +188,6 @@ class DelugeRPC(object):
     def set_torrent_label(self, torrent_id, label):
         try:
             self.connect()
-            # noinspection PyUnresolvedReferences
             self.client.label.set_torrent(torrent_id, label).get()
         except Exception:
             return False
@@ -203,9 +199,7 @@ class DelugeRPC(object):
     def set_torrent_path(self, torrent_id, path):
         try:
             self.connect()
-            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_move_completed_path(torrent_id, path).get()
-            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_move_completed(torrent_id, 1).get()
         except Exception:
             return False
@@ -218,7 +212,6 @@ class DelugeRPC(object):
         try:
             self.connect()
             if priority:
-                # noinspection PyUnresolvedReferences
                 self.client.core.queue_top([torrent_ids]).get()
         except Exception, err:
             return False
@@ -230,9 +223,7 @@ class DelugeRPC(object):
     def set_torrent_ratio(self, torrent_ids, ratio):
         try:
             self.connect()
-            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_stop_at_ratio(torrent_ids, True).get()
-            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_stop_ratio(torrent_ids, ratio).get()
         except Exception, err:
             return False
@@ -244,7 +235,6 @@ class DelugeRPC(object):
     def pause_torrent(self, torrent_ids):
         try:
             self.connect()
-            # noinspection PyUnresolvedReferences
             self.client.core.pause_torrent(torrent_ids).get()
         except Exception:
             return False
@@ -257,7 +247,6 @@ class DelugeRPC(object):
         self.client.disconnect()
 
     def _check_torrent(self, torrent_hash):
-        # noinspection PyUnresolvedReferences
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
         if torrent_id['hash']:
             sickrage.srCore.srLogger.debug('DelugeD: Torrent already exists in Deluge')

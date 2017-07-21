@@ -449,6 +449,9 @@ class srConfig(object):
 
         self.CUSTOM_PROVIDERS = None
 
+        self.GIT_REMOTE = "origin"
+        self.GIT_REMOTE_URL = "https://git.sickrage.ca/SiCKRAGE/sickrage"
+
     def change_https_cert(self, https_cert):
         """
         Replace HTTPS Certificate file path

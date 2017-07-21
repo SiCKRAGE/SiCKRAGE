@@ -95,7 +95,7 @@ class DelugeClient(object):
         def func(obj, *args, **kwargs):
             return self.remote_call(fullname, *args, **kwargs)
 
-        func.__name__ = method
+        func.__name__ = str(method)
 
         return func
 
