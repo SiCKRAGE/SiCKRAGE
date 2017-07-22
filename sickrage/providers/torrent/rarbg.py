@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class RarbgProvider(TorrentProvider):
     def __init__(self):
-        super(RarbgProvider, self).__init__("Rarbg", 'torrentapi.org', False)
+        super(RarbgProvider, self).__init__("Rarbg", 'http://torrentapi.org', False)
 
         self.supports_backlog = True
 

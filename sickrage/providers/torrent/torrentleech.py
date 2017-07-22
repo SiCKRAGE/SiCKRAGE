@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'torrentleech.org', True)
+        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'http://torrentleech.org', True)
 
         self.supports_backlog = True
 

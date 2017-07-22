@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
-        super(MoreThanTVProvider, self).__init__("MoreThanTV", 'www.morethan.tv', True)
+        super(MoreThanTVProvider, self).__init__("MoreThanTV", 'http://www.morethan.tv', True)
 
         self.supports_backlog = True
 

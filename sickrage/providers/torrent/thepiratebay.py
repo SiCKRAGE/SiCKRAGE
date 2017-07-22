@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
 
-        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'pirateproxy.la', False)
+        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'http://pirateproxy.la', False)
 
         self.supports_backlog = True
 

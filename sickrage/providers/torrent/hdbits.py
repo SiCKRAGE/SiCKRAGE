@@ -27,7 +27,7 @@ from sickrage.providers import TorrentProvider
 
 class HDBitsProvider(TorrentProvider):
     def __init__(self):
-        super(HDBitsProvider, self).__init__("HDBits", 'hdbits.org', True)
+        super(HDBitsProvider, self).__init__("HDBits", 'http://hdbits.org', True)
 
         self.supports_backlog = True
 

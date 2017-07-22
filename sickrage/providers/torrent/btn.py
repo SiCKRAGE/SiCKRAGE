@@ -37,7 +37,7 @@ from sickrage.providers import TorrentProvider
 
 class BTNProvider(TorrentProvider):
     def __init__(self):
-        super(BTNProvider, self).__init__("BTN", 'api.broadcasthe.net', True)
+        super(BTNProvider, self).__init__("BTN", 'http://api.broadcasthe.net', True)
 
         self.supports_backlog = True
 

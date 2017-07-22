@@ -33,7 +33,7 @@ from sickrage.providers import TorrentProvider
 
 class HDSpaceProvider(TorrentProvider):
     def __init__(self):
-        super(HDSpaceProvider, self).__init__("HDSpace", 'hd-space.org', True)
+        super(HDSpaceProvider, self).__init__("HDSpace", 'http://hd-space.org', True)
 
         self.supports_backlog = True
 

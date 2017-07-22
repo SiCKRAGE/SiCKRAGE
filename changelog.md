@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1692a1a - 2017-07-22: Fixed torrentday url 
+- * 3038779 - 2017-07-22: Fixed issues with provider url&#x27;s Fixed issues with downloading torrents via uTorrent 
+- * 22ffaa3 - 2017-07-22: Fixed torrentday url 
 - * 32ed9c7 - 2017-07-22: Fixed torrentday url 
 - * 341a7eb - 2017-07-22: Fixes session issues with cloudflare scraper and web client session request function 
 - * 5e99b21 - 2017-07-22: Fixed issues with sessions and cookies for providers 

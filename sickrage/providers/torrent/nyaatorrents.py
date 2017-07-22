@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class NyaaProvider(TorrentProvider):
     def __init__(self):
-        super(NyaaProvider, self).__init__("NyaaTorrents", 'www.nyaa.se', False)
+        super(NyaaProvider, self).__init__("NyaaTorrents", 'http://www.nyaa.se', False)
 
         self.supports_backlog = True
 

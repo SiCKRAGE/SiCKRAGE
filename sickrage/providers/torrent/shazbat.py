@@ -27,7 +27,7 @@ from sickrage.providers import TorrentProvider
 class ShazbatProvider(TorrentProvider):
     def __init__(self):
 
-        super(ShazbatProvider, self).__init__("Shazbat.tv", 'www.shazbat.tv', True)
+        super(ShazbatProvider, self).__init__("Shazbat.tv", 'http://www.shazbat.tv', True)
 
         self.supports_backlog = False
 

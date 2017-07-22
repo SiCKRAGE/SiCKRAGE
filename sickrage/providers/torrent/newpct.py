@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class newpctProvider(TorrentProvider):
     def __init__(self):
-        super(newpctProvider, self).__init__("Newpct", 'www.newpct.com', False)
+        super(newpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self.supports_backlog = True
         self.onlyspasearch = None

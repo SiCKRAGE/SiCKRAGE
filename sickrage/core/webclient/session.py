@@ -71,8 +71,6 @@ class srSession(cfscrape.CloudflareScraper):
         if params is None: params = {}
         if proxies is None: proxies = {}
 
-        url = self.normalize_url(url)
-
         headers['Accept-Encoding'] = 'gzip, deflate'
         headers["User-Agent"] = sickrage.srCore.USER_AGENT
 
@@ -169,4 +167,4 @@ class srSession(cfscrape.CloudflareScraper):
 
         correct_segments[0] += '/'
 
-        return '/'.join(correct_segments)
+        return '/'.join(correct_segments) + '/'

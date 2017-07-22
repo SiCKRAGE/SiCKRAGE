@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class SceneTimeProvider(TorrentProvider):
     def __init__(self):
 
-        super(SceneTimeProvider, self).__init__("SceneTime", 'www.scenetime.com', True)
+        super(SceneTimeProvider, self).__init__("SceneTime", 'http://www.scenetime.com', True)
 
         self.supports_backlog = True
 

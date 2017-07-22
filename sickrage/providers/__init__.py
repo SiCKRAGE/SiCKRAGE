@@ -1198,11 +1198,11 @@ class NewznabProvider(NZBProvider):
     @classmethod
     def getDefaultProviders(cls):
         return [
-            cls('SickBeard', 'lolo.sickbeard.com', False, '', '5030,5040', 'eponly', False, False, False, True),
-            cls('NZB.Cat', 'nzb.cat', True, '', '5030,5040,5010', 'eponly', True, True, True, True),
-            cls('NZBGeek', 'api.nzbgeek.info', True, '', '5030,5040', 'eponly', False, False, False, True),
-            cls('NZBs.org', 'nzbs.org', True, '', '5030,5040', 'eponly', False, False, False, True),
-            cls('Usenet-Crawler', 'usenet-crawler.com', True, '', '5030,5040', 'eponly', False, False, False, True)
+            cls('SickBeard', 'http://lolo.sickbeard.com', False, '', '5030,5040', 'eponly', False, False, False, True),
+            cls('NZB.Cat', 'http://nzb.cat', True, '', '5030,5040,5010', 'eponly', True, True, True, True),
+            cls('NZBGeek', 'http://api.nzbgeek.info', True, '', '5030,5040', 'eponly', False, False, False, True),
+            cls('NZBs.org', 'http://nzbs.org', True, '', '5030,5040', 'eponly', False, False, False, True),
+            cls('Usenet-Crawler', 'http://usenet-crawler.com', True, '', '5030,5040', 'eponly', False, False, False, True)
         ]
 
 

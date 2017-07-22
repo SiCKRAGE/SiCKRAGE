@@ -35,7 +35,7 @@ from sickrage.providers import TorrentProvider
 
 class LibertaliaProvider(TorrentProvider):
     def __init__(self):
-        super(LibertaliaProvider, self).__init__("Libertalia", "libertalia.me", True)
+        super(LibertaliaProvider, self).__init__("Libertalia", "http://libertalia.me", True)
 
         self.supports_backlog = True
 

@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 class TransmitTheNetProvider(TorrentProvider):
     def __init__(self):
 
-        super(TransmitTheNetProvider, self).__init__("TransmitTheNet", 'transmithe.net', True)
+        super(TransmitTheNetProvider, self).__init__("TransmitTheNet", 'http://transmithe.net', True)
 
         self.supports_backlog = True
 

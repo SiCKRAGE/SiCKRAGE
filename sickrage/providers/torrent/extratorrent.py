@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class ExtraTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(ExtraTorrentProvider, self).__init__("ExtraTorrent", 'extra.to', False)
+        super(ExtraTorrentProvider, self).__init__("ExtraTorrent", 'http://extra.to', False)
 
         self.urls.update({
             'rss': '{base_url}/rss.xml'.format(base_url=self.urls['base_url'])

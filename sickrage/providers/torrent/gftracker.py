@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class GFTrackerProvider(TorrentProvider):
     def __init__(self):
-        super(GFTrackerProvider, self).__init__("GFTracker", 'www.thegft.org', True)
+        super(GFTrackerProvider, self).__init__("GFTracker", 'http://www.thegft.org', True)
 
         self.supports_backlog = True
 

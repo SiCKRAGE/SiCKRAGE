@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 class TorrentDayProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentDayProvider, self).__init__("TorrentDay", 'torrentday.com', True)
+        super(TorrentDayProvider, self).__init__("TorrentDay", 'http://torrentday.com', True)
 
         self.username = None
         self.password = None
@@ -45,7 +45,7 @@ class TorrentDayProvider(TorrentProvider):
 
         self.urls.update({
             'login': '{base_url}/t'.format(base_url=self.urls['base_url']),
-            'search': 'classic.{base_url}/V3/API/API.php'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/V3/API/API.php'.format(base_url=self.urls['base_url']),
             'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
         })
 

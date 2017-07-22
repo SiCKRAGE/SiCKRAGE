@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class BitSoupProvider(TorrentProvider):
     def __init__(self):
-        super(BitSoupProvider, self).__init__("BitSoup", 'www.bitsoup.me', True)
+        super(BitSoupProvider, self).__init__("BitSoup", 'http://www.bitsoup.me', True)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),

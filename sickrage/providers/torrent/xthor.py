@@ -34,7 +34,7 @@ from sickrage.providers import TorrentProvider
 class XthorProvider(TorrentProvider):
     def __init__(self):
 
-        super(XthorProvider, self).__init__("Xthor", "xthor.bz", True)
+        super(XthorProvider, self).__init__("Xthor", "http://xthor.bz", True)
 
         self.supports_backlog = True
 

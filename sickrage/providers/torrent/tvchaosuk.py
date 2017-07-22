@@ -26,7 +26,7 @@ from sickrage.providers import TorrentProvider
 
 class TVChaosUKProvider(TorrentProvider):
     def __init__(self):
-        super(TVChaosUKProvider, self).__init__('TvChaosUK', 'tvchaosuk.com', True)
+        super(TVChaosUKProvider, self).__init__('TvChaosUK', 'http://tvchaosuk.com', True)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),

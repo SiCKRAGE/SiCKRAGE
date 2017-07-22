@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class CpasbienProvider(TorrentProvider):
     def __init__(self):
-        super(CpasbienProvider, self).__init__("Cpasbien", "www.cpasbien.io", False)
+        super(CpasbienProvider, self).__init__("Cpasbien", "http://www.cpasbien.io", False)
 
         self.supports_backlog = True
 
