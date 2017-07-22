@@ -68,7 +68,7 @@ class HDSpaceProvider(TorrentProvider):
 
     def login(self):
 
-        if 'pass' in requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.sess.cookies):
+        if 'pass' in requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies):
             return True
 
         login_params = {'uid': self.username,

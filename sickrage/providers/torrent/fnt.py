@@ -50,7 +50,7 @@ class FNTProvider(TorrentProvider):
         })
 
     def login(self):
-        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.sess.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,

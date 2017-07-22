@@ -69,7 +69,7 @@ class SceneTimeProvider(TorrentProvider):
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
-        if not dict_from_cookiejar(sickrage.srCore.srWebSession.sess.cookies).get('uid') in response.text:
+        if not dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).get('uid') in response.text:
             sickrage.srCore.srLogger.warning("Failed to login, check your cookies")
             return False
 

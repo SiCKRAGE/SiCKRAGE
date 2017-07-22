@@ -62,10 +62,9 @@ class DBCache(object):
                 cache.clear()
 
 
-class srSession(requests.Session):
+class srSession(cfscrape.CloudflareScraper):
     def __init__(self):
         super(srSession, self).__init__()
-        self.sess = cfscrape.create_scraper(sess=self)
 
     def request(self, method, url, headers=None, params=None, proxies=None, cache=True, verify=False, *args, **kwargs):
         if headers is None: headers = {}
@@ -96,11 +95,11 @@ class srSession(requests.Session):
         # setup caching adapter
         if cache:
             adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))))
-            self.sess.mount('http://', adapter)
-            self.sess.mount('https://', adapter)
+            self.mount('http://', adapter)
+            self.mount('https://', adapter)
 
         # get web response
-        response = self.sess.request(
+        response = super(srSession, self).request(
             method,
             url,
             headers=headers,

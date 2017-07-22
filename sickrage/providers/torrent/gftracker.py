@@ -80,7 +80,7 @@ class GFTrackerProvider(TorrentProvider):
                 "[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
-        requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.sess.cookies, self.cookies)
+        requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
 
         return True
 

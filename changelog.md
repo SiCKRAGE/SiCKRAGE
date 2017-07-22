@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2f80fe7 - 2017-07-22: Fixed issues with sessions and cookies for providers 
+- * 5efd3b8 - 2017-07-22: Fixes session issues with cloudflare scraper and web client session request function 
+- * 5e99b21 - 2017-07-22: Fixed issues with sessions and cookies for providers 
 - * 7f1bc8f - 2017-07-22: Fixed issues with scene exception downloading and name cache 
 - * 28261a6 - 2017-07-22: Added html5lib to requirements 
 - * 3543398 - 2017-07-22: Cleaned up morethan.tv provider code Added LXML v3.8.0 to requirements 

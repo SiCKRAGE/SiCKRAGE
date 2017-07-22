@@ -73,7 +73,7 @@ class TorrentDayProvider(TorrentProvider):
             sickrage.srCore.srLogger.warning("Too many login access attempts")
             return False
 
-        if not dict_from_cookiejar(sickrage.srCore.srWebSession.sess.cookies).get('uid') in response.text:
+        if not dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).get('uid') in response.text:
             sickrage.srCore.srLogger.warning("Failed to login, check your cookies")
             return False
 
