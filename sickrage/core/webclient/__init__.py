@@ -15,14 +15,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
-from __future__ import unicode_literals
-
-import random
-import urllib
-import urlparse
-
-from sickrage.core.webclient.useragents import USER_AGENTS
-
-urlparse.uses_netloc.append('scgi')
-urllib.FancyURLopener.version = random.choice(USER_AGENTS)

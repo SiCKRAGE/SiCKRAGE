@@ -20,14 +20,19 @@ from __future__ import unicode_literals
 
 import datetime
 import os
+import platform
 import re
 import shutil
 import socket
 import threading
 import time
 import traceback
+import urllib
+import urlparse
+import uuid
 
 from apscheduler.schedulers.tornado import TornadoScheduler
+from fake_useragent import UserAgent
 from tornado.ioloop import IOLoop
 
 import sickrage
@@ -140,6 +145,8 @@ class Core(object):
         # show list
         self.SHOWLIST = []
 
+        self.USER_AGENT = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
+
     def start(self):
         self.started = True
 
@@ -180,6 +187,13 @@ class Core(object):
 
         # start logger
         self.srLogger.start()
+
+        # user agent
+        if self.srConfig.RANDOM_USER_AGENT:
+            self.USER_AGENT = UserAgent().random
+
+        urlparse.uses_netloc.append('scgi')
+        urllib.FancyURLopener.version = self.USER_AGENT
 
         # Check available space
         try:

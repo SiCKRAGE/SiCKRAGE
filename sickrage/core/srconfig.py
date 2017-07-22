@@ -24,7 +24,6 @@ import datetime
 import os
 import os.path
 import pickle
-import platform
 import re
 import sys
 import uuid
@@ -51,7 +50,6 @@ class srConfig(object):
 
         self.CENSORED_ITEMS = {}
 
-        self.USER_AGENT = '({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
         self.NAMING_EP_TYPE = ("%(seasonnumber)dx%(episodenumber)02d",
                                "s%(seasonnumber)02de%(episodenumber)02d",
                                "S%(seasonnumber)02dE%(episodenumber)02d",
@@ -451,6 +449,8 @@ class srConfig(object):
 
         self.GIT_REMOTE = "origin"
         self.GIT_REMOTE_URL = "https://git.sickrage.ca/SiCKRAGE/sickrage"
+
+        self.RANDOM_USER_AGENT = False
 
     def change_https_cert(self, https_cert):
         """
@@ -1367,6 +1367,8 @@ class srConfig(object):
         self.FILTER_ROW = bool(self.check_setting_int('GUI', 'filter_row', 1))
         self.DISPLAY_ALL_SEASONS = bool(self.check_setting_int('General', 'display_all_seasons', 1))
 
+        self.RANDOM_USER_AGENT = bool(self.check_setting_int('General', 'random_user_agent', self.RANDOM_USER_AGENT))
+
         self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes', Quality.qualitySizes)
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers', '')
@@ -1515,6 +1517,7 @@ class srConfig(object):
         new_config['General']['no_restart'] = int(self.NO_RESTART)
         new_config['General']['developer'] = int(sickrage.DEVELOPER)
         new_config['General']['display_all_seasons'] = int(self.DISPLAY_ALL_SEASONS)
+        new_config['General']['random_user_agent'] = int(self.RANDOM_USER_AGENT)
 
         new_config['GUI'] = {}
         new_config['GUI']['gui_name'] = self.GUI_NAME

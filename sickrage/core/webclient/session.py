@@ -20,7 +20,6 @@ from __future__ import unicode_literals
 
 import io
 import os
-import random
 import shelve
 import ssl
 import threading
@@ -34,7 +33,6 @@ from cachecontrol import CacheControlAdapter
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
-from sickrage.core.webclient.useragents import USER_AGENTS
 
 
 class DBCache(object):
@@ -76,8 +74,8 @@ class srSession(requests.Session):
 
         url = self.normalize_url(url)
 
-        headers.update({'Accept-Encoding': 'gzip, deflate'})
-        headers.update(random.choice(USER_AGENTS))
+        headers['Accept-Encoding'] = 'gzip, deflate'
+        headers["User-Agent"] = sickrage.srCore.USER_AGENT
 
         # request session ssl verify
         if sickrage.srCore.srConfig.SSL_VERIFY:

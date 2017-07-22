@@ -18,13 +18,10 @@
 
 from __future__ import unicode_literals
 
-import random
-
 import feedparser
 from feedparser import FeedParserDict
 
 import sickrage
-from sickrage.core.webclient import USER_AGENTS
 
 
 def getFeed(url, params=None, request_headers=None, handlers=None):
@@ -33,7 +30,7 @@ def getFeed(url, params=None, request_headers=None, handlers=None):
         if resp.ok:
             return feedparser.parse(
                 resp.text,
-                agent=random.choice(USER_AGENTS),
+                agent=sickrage.srCore.USER_AGENT,
                 etag=False,
                 modified=False,
                 request_headers=request_headers,

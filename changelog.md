@@ -1,6 +1,7 @@
 # Changelog
 
-- * a55e39d - 2017-07-21: Fixed issues with web client sessions not being persistent 
+- * 074402a - 2017-07-21: Fixed issues with Deluge WebUI client Fixed issues with user agents for web client 
+- * 47afef8 - 2017-07-21: Fixed issues with web client sessions not being persistent 
 - * 6ed6802 - 2017-07-21: Fixed issues with MoreThan.tv torrent provider 
 - * 41e2b66 - 2017-07-21: v9.0.29 
 - * fdea81f - 2017-07-21: Fixed issues with connecting Deluged clients 

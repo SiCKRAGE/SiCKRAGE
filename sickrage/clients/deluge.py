@@ -30,6 +30,7 @@ class DelugeAPI(GenericClient):
 
         super(DelugeAPI, self).__init__('Deluge', host, username, password)
 
+        self.headers = {'Content-type': "application/json"}
         self.url = self.host + 'json'
 
     def _get_auth(self):
@@ -41,6 +42,7 @@ class DelugeAPI(GenericClient):
         try:
             self.response = sickrage.srCore.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
+                                                              headers=self.headers,
                                                               verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
         except Exception:
             return None
@@ -54,6 +56,7 @@ class DelugeAPI(GenericClient):
         try:
             self.response = sickrage.srCore.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
+                                                              headers=self.headers,
                                                               verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
         except Exception:
@@ -68,6 +71,7 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
+                                                                  headers=self.headers,
                                                                   verify=bool(
                                                                       sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
@@ -86,6 +90,7 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
+                                                                  headers=self.headers,
                                                                   verify=bool(
                                                                       sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
@@ -99,6 +104,7 @@ class DelugeAPI(GenericClient):
             try:
                 self.response = sickrage.srCore.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
+                                                                  headers=self.headers,
                                                                   verify=bool(
                                                                       sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 

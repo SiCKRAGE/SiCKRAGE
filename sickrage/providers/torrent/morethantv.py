@@ -131,7 +131,7 @@ class MoreThanTVProvider(TorrentProvider):
                         # skip colheader
                         for result in torrent_rows[1:]:
                             cells = result.findChildren('td')
-                            if len(cells) < 2 : continue
+                            if len(cells) < 2: continue
 
                             link = cells[1].find('span', attrs={'title': 'Download'}).parent
                             title_anchor = cells[1].find('a', attrs={'dir': 'ltr'})
@@ -147,6 +147,7 @@ class MoreThanTVProvider(TorrentProvider):
                                     title = cells[1].find('a', {'title': 'View torrent'}).contents[0].strip()
                                 else:
                                     title = title_anchor.contents[0]
+
                                 download_url = self.urls['download'] % torrent_id_long
 
                                 seeders = cells[6].contents[0]
