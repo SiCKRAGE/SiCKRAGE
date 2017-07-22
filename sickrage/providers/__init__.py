@@ -486,7 +486,7 @@ class GenericProvider(object):
         if self.enable_cookies and self.cookies:
             cookie_validator = re.compile(r'^(\w+=\w+)(;\w+=\w+)*$')
             if cookie_validator.match(self.cookies):
-                add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
+                add_dict_to_cookiejar(sickrage.srCore.srWebSession.sess.cookies,
                                       dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
                 return True
 
@@ -844,7 +844,7 @@ class TorrentRssProvider(TorrentProvider):
                 return True, 'RSS feed Parsed correctly'
             else:
                 if self.cookies:
-                    requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
+                    requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.sess.cookies,
                                                          dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
 
                 try:

@@ -75,11 +75,11 @@ class MoreThanTVProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.sess.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.sess.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,

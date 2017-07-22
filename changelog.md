@@ -1,6 +1,7 @@
 # Changelog
 
-- * d8a782a - 2017-07-22: Fixed issues with scene exception downloading and name cache 
+- * 2f80fe7 - 2017-07-22: Fixed issues with sessions and cookies for providers 
+- * 7f1bc8f - 2017-07-22: Fixed issues with scene exception downloading and name cache 
 - * 28261a6 - 2017-07-22: Added html5lib to requirements 
 - * 3543398 - 2017-07-22: Cleaned up morethan.tv provider code Added LXML v3.8.0 to requirements 
 - * 8539ec9 - 2017-07-21: Fixed issues with Deluge WebUI client Fixed issues with user agents for web client 
