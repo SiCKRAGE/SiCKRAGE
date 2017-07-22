@@ -117,24 +117,18 @@ class srNameCache(object):
                 'name': name
             })
 
-    def build(self, show=None, force=False):
+    def build(self, show):
         """Build internal name cache
 
         :param show: Specify show to build name cache for, if None, just do all shows
         """
 
-        if not show:
-            retrieve_exceptions()
-            for show in sickrage.srCore.SHOWLIST:
-                self.build(show)
-        elif self.should_update(show):
+        retrieve_exceptions()
+
+        if self.should_update(show):
             self.last_update[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
-            sickrage.srCore.srLogger.debug("Building internal name cache for [{}]".format(show.name))
             self.clear(show.indexerid)
             for curSeason in [-1] + get_scene_seasons(show.indexerid):
                 for name in list(set(get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
                     self.put(name, show.indexerid)
-
-            sickrage.srCore.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
-                show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))

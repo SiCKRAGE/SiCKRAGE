@@ -50,7 +50,6 @@ from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
 from sickrage.core.queues.search import srSearchQueue
 from sickrage.core.queues.show import srShowQueue
-from sickrage.core.scene_exceptions import retrieve_exceptions
 from sickrage.core.searchers.backlog_searcher import srBacklogSearcher
 from sickrage.core.searchers.daily_searcher import srDailySearcher
 from sickrage.core.searchers.proper_searcher import srProperSearcher
@@ -225,6 +224,9 @@ class Core(object):
         if not sickrage.DEVELOPER and self.srConfig.LAST_DB_COMPACT < time.time() - 604800:  # 7 days
             self.mainDB.compact()
             self.srConfig.LAST_DB_COMPACT = int(time.time())
+
+        # load name cache
+        self.NAMECACHE.load()
 
         # load data for shows from database
         self.load_shows()
@@ -502,14 +504,12 @@ class Core(object):
         Populates the showlist with shows from the database
         """
 
-        self.NAMECACHE.load()
         for dbData in [x['doc'] for x in self.mainDB.db.all('tv_shows', with_doc=True)]:
             try:
                 self.srLogger.debug("Loading data for show: [%s]", dbData['show_name'])
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
-                if not sickrage.DEVELOPER:
-                    show.nextEpisode()
-                    self.NAMECACHE.build(show)
+                show.nextEpisode()
+                self.NAMECACHE.build(show)
                 self.SHOWLIST += [show]
             except Exception as e:
                 self.srLogger.error("Show error in [%s]: %s" % (dbData['location'], e.message))
