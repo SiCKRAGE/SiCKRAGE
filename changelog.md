@@ -1,6 +1,7 @@
 # Changelog
 
-- * 074402a - 2017-07-21: Fixed issues with Deluge WebUI client Fixed issues with user agents for web client 
+- * 47fc3c7 - 2017-07-22: Cleaned up morethan.tv provider code Added LXML v3.8.0 to requirements 
+- * 8539ec9 - 2017-07-21: Fixed issues with Deluge WebUI client Fixed issues with user agents for web client 
 - * 47afef8 - 2017-07-21: Fixed issues with web client sessions not being persistent 
 - * 6ed6802 - 2017-07-21: Fixed issues with MoreThan.tv torrent provider 
 - * 41e2b66 - 2017-07-21: v9.0.29 
