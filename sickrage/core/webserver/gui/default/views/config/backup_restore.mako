@@ -1,24 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 
-<%!
-    import datetime
-    import locale
-
-    import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
-    from sickrage.core.helpers.srdatetime import srDateTime, date_presets, time_presets
-    from sickrage.metadata import GenericMetadata
-%>
-
 <%block name="content">
-
-    <% indexer = 0 %>
-    % if sickrage.srCore.srConfig.INDEXER_DEFAULT:
-        <% indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT %>
-    % endif
-
-
     <div id="config">
         <form name="configForm" method="post" action="backuprestore">
             <ul class="nav nav-tabs">
