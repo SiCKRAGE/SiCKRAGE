@@ -26,7 +26,7 @@ import requests
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.core.helpers import bs4_parser, convert_size, tryInt
 from sickrage.providers import TorrentProvider
 
 
@@ -142,8 +142,8 @@ class MoreThanTVProvider(TorrentProvider):
                             if not all([title, download_url]):
                                 continue
 
-                            seeders = result('td', class_="number_column")[1].text
-                            leechers = result('td', class_="number_column")[2].text
+                            seeders = tryInt(result('td', class_="number_column")[1].text, 0)
+                            leechers = tryInt(result('td', class_="number_column")[2].text, 0)
 
                             size = -1
                             if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]',
@@ -160,7 +160,7 @@ class MoreThanTVProvider(TorrentProvider):
 
                             item = title, download_url, size, seeders, leechers
                             if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
+                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
                             items[mode].append(item)
                         except StandardError:
