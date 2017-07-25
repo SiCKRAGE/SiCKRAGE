@@ -1,6 +1,7 @@
 # Changelog
 
-- * a34cd10 - 2017-07-25: Fixed issue with selecting too many shows when adding existing shows Misc code cleanup&#x27;s 
+- * ce2fdc1 - 2017-07-25: Fixed FreeBSD init script 
+- * bf579c6 - 2017-07-25: Fixed issue with selecting too many shows when adding existing shows Misc code cleanup&#x27;s 
 - * b4a3314 - 2017-07-25: v9.0.30 
 - * 564f31b - 2017-07-25: Removed lxml from requirements 
 - * 891dc86 - 2017-07-24: Added code to properly convert seeder and leechers into integers 
