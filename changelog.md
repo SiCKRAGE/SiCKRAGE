@@ -1,5 +1,6 @@
 # Changelog
 
+- * af132dc - 2017-07-25: Removed lxml from requirements 
 - * 891dc86 - 2017-07-24: Added code to properly convert seeder and leechers into integers 
 - * dc71cbc - 2017-07-24: Added Nextorrent torrent provider 
 - * 45170ac - 2017-07-23: Fixed Unicode issues with general config page Misc clean up of code 
