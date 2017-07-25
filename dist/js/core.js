@@ -2122,25 +2122,33 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#submitShowDirs').on('click', function () {
-                        var dirArr = [];
+                        var selectedShows = false;
+                        var submitForm = $('#addShowForm');
+
                         $('.dirCheck').each(function () {
-                            if ($(this).prop('checked')) {
+                            if (this.checked === true) {
                                 var show = $(this).attr('id');
                                 var indexer = $(this).closest('tr').find('select').val();
-                                dirArr.push(encodeURIComponent(indexer + '|' + show));
+                                $('<input>', {
+                                    type: 'hidden',
+                                    name: 'shows_to_add',
+                                    value: indexer + '|' + show
+                                }).appendTo(submitForm);
+                                selectedShows = true;
                             }
                         });
 
-                        if (dirArr.length === 0) {
+                        if (selectedShows === false) {
                             return false;
                         }
 
-                        var url = SICKRAGE.srWebRoot + '/home/addShows/addExistingShows?promptForSettings=' + ($('#promptForSettings').prop('checked') ? 'on' : 'off') + '&shows_to_add=' + dirArr.join('&shows_to_add=');
-                        if (url.length < 2083) {
-                            window.location.href = url;
-                        } else {
-                            alert("You've selected too many shows, please uncheck some and try again. [" + url.length + "/2083 characters]");
-                        }
+                        $('<input>', {
+                            type: 'hidden',
+                            name: 'promptForSettings',
+                            value: $('#promptForSettings').prop('checked') ? 'on' : 'off'
+                        }).appendTo(submitForm);
+
+                        submitForm.submit();
                     });
 
                     var lastTxt = '';
@@ -2181,7 +2189,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" /> loading folders...');
-                    $.get(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
+                    $.post(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
                         $("#addRootDirTable").tablesorter({
                             sortList: [[1, 0]],

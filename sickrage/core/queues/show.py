@@ -123,7 +123,8 @@ class srShowQueue(srQueue):
                 lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None,
                 default_status_after=None, archive=None):
 
-        lang = sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE if lang is None else lang
+        if lang is None:
+            lang = sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         return self.put(QueueItemAdd(indexer,
                                      indexer_id,
@@ -258,8 +259,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
 
             lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
-            if self.lang:
-                lINDEXER_API_PARMS['language'] = self.lang
+            lINDEXER_API_PARMS['language'] = self.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
             sickrage.srCore.srLogger.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
 

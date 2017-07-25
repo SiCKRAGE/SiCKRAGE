@@ -2296,10 +2296,12 @@ class HomeAddShows(Home):
                 continue
 
             for cur_file in file_list:
-
                 try:
                     cur_path = os.path.normpath(os.path.join(root_dir, cur_file))
                     if not os.path.isdir(cur_path):
+                        continue
+                    # ignore Synology folders
+                    if cur_file.lower() in ['#recycle', '@eadir']:
                         continue
                 except Exception:
                     continue
@@ -2344,6 +2346,7 @@ class HomeAddShows(Home):
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
                 if showid and findCertainShow(sickrage.srCore.SHOWLIST, showid): cur_dir['added_already'] = True
+
         return self.render(
             "/home/mass_add_table.mako",
             dirList=dir_list,
@@ -2631,7 +2634,7 @@ class HomeAddShows(Home):
     def addNewShow(self, whichSeries=None, indexerLang=None, rootDir=None, defaultStatus=None,
                    quality_preset=None, anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
-                   scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None, archive=None, ):
+                   scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None, archive=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
@@ -2763,7 +2766,7 @@ class HomeAddShows(Home):
 
         return indexer, show_dir, indexer_id, show_name
 
-    def addExistingShows(self, shows_to_add=None, promptForSettings=None):
+    def addExistingShows(self, shows_to_add, promptForSettings, **kwargs):
         """
         Receives a dir list and add them. Adds the ones with given TVDB IDs first, then forwards
         along to the newShow page.

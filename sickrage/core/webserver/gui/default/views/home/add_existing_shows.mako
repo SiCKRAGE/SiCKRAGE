@@ -11,7 +11,8 @@
 
             <div id="core-tab-pane1" class="tab-pane active tab-pane">
 
-                <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addNewShow" accept-charset="utf-8">
+                <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addExistingShows"
+                      accept-charset="utf-8">
 
                     <div id="tabs">
                         <ul>

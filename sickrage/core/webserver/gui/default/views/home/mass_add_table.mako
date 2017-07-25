@@ -17,12 +17,13 @@
         % for curDir in dirList:
             % if not curDir['added_already']:
                 <%
+                    indexer = 0
                     show_id = curDir['dir']
+
                     if curDir['existing_info'][0]:
                         show_id = "{}|{}|{}".format(show_id, curDir['existing_info'][0], curDir['existing_info'][1])
                         indexer = curDir['existing_info'][2]
 
-                    indexer = 0
                     if curDir['existing_info'][0]:
                         indexer = curDir['existing_info'][2]
                     elif sickrage.srCore.srConfig.INDEXER_DEFAULT > 0:
