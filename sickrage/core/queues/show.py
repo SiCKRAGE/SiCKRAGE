@@ -83,7 +83,7 @@ class srShowQueue(srQueue):
         return self._isBeing(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
-        return [x for _, _, x in self.queue + [(0, 0, self.currentItem)] if x is not None and x.isLoading]
+        return [x for _, _, x in self.queue + [(0, 0, self.currentItem)] if x and x.isLoading]
 
     def updateShow(self, show, force=False):
 
@@ -251,7 +251,7 @@ class QueueItemAdd(ShowQueueItem):
             return True
 
     def run(self):
-        sickrage.srCore.srLogger.info("Started adding show {}".format(self.show_name))
+        sickrage.srCore.srLogger.info("Started adding show {} from show dir: {}".format(self.show_name, self.showDir))
 
         index_name = srIndexerApi(self.indexer).name
 
@@ -445,7 +445,7 @@ class QueueItemAdd(ShowQueueItem):
 
         self.finish()
 
-        sickrage.srCore.srLogger.info("Finished adding show {}".format(self.showDir))
+        sickrage.srCore.srLogger.info("Finished adding show {} from show dir: {}".format(self.show_name, self.showDir))
 
     def _finishEarly(self):
         if self.show: sickrage.srCore.SHOWQUEUE.removeShow(self.show)

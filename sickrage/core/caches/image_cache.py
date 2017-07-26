@@ -283,9 +283,6 @@ class ImageCache(object):
                 return
 
             for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-                if not cur_provider.enabled:
-                    continue
-
                 sickrage.srCore.srLogger.debug(
                     "Checking if we can use the show image from the " + cur_provider.name + " metadata")
                 if os.path.isfile(cur_provider.get_poster_path(show_obj)):

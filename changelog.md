@@ -1,6 +1,7 @@
 # Changelog
 
-- * ef01c1c - 2017-07-25: v9.0.31 
+- * 73cbd09 - 2017-07-26: Misc code improvements 
+- * de0d848 - 2017-07-25: v9.0.31 
 - * a492e7f - 2017-07-25: Fixed show image scraping issues 
 - * 195872c - 2017-07-25: Fixed FreeBSD init script 
 - * bf579c6 - 2017-07-25: Fixed issue with selecting too many shows when adding existing shows Misc code cleanup&#x27;s 

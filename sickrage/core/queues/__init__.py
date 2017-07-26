@@ -72,6 +72,8 @@ class srQueue(threading.Thread):
 
                 self.amActive = False
 
+            time.sleep(1)
+
     @property
     def queue(self):
         return self._queue.queue
