@@ -28,7 +28,7 @@ from sickrage.core.common import WANTED
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException
-from sickrage.core.helpers import scrub
+from sickrage.core.helpers import scrub, findCertainShow
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.trakt import TraktAPI
@@ -337,6 +337,7 @@ class QueueItemAdd(ShowQueueItem):
             # set up default new/missing episode status
             sickrage.srCore.srLogger.info(
                 "Setting all current episodes to the specified default status: " + str(self.default_status))
+
             self.show.default_ep_status = self.default_status
 
             if self.show.anime:
@@ -384,13 +385,6 @@ class QueueItemAdd(ShowQueueItem):
         except Exception as e:
             sickrage.srCore.srLogger.error("Error loading IMDb info: {}".format(e.message))
 
-        # Load XEM data to DB for show
-        xem_refresh(self.show.indexerid, self.show.indexer, force=True)
-
-        # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer numbering.
-        if not self.scene and get_xem_numbering_for_show(self.show.indexerid, self.show.indexer):
-            self.show.scene = 1
-
         try:
             self.show.saveToDB()
         except Exception as e:
@@ -399,7 +393,7 @@ class QueueItemAdd(ShowQueueItem):
             raise self._finishEarly()
 
         # add it to the show list
-        sickrage.srCore.SHOWLIST.append(self.show)
+        if not findCertainShow(sickrage.srCore.SHOWLIST, self.indexer_id): sickrage.srCore.SHOWLIST.append(self.show)
 
         try:
             self.show.loadEpisodesFromIndexer()
@@ -436,9 +430,13 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.srCore.srLogger.info("update watchlist")
                 sickrage.srCore.notifiersDict['trakt'].update_watchlist(show_obj=self.show)
 
-        # After initial add, set to default_status_after.
-        sickrage.srCore.srLogger.info(
-            "Setting all future episodes to the specified default status: " + str(self.default_status_after))
+        # Load XEM data to DB for show
+        xem_refresh(self.show.indexerid, self.show.indexer, force=True)
+
+        # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer numbering.
+        if not self.scene and get_xem_numbering_for_show(self.show.indexerid, self.show.indexer):
+            self.show.scene = 1
+
         self.show.default_ep_status = self.default_status_after
 
         self.show.saveToDB()

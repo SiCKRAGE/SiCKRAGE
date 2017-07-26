@@ -507,8 +507,6 @@ def xem_refresh(indexer_id, indexer, force=False):
                 for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True):
                     x['doc']['scene_season'], x['doc']['scene_episode'], x['doc']['scene_absolute_number'] = 0, 0, 0
                     sickrage.srCore.mainDB.db.update(x['doc'])
-                sickrage.srCore.srLogger.info(
-                    'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
                 return
 
             # XEM API URL

@@ -1,6 +1,7 @@
 # Changelog
 
-- * ce2fdc1 - 2017-07-25: Fixed FreeBSD init script 
+- * 3ac138a - 2017-07-25: Fixed show image scraping issues 
+- * 195872c - 2017-07-25: Fixed FreeBSD init script 
 - * bf579c6 - 2017-07-25: Fixed issue with selecting too many shows when adding existing shows Misc code cleanup&#x27;s 
 - * b4a3314 - 2017-07-25: v9.0.30 
 - * 564f31b - 2017-07-25: Removed lxml from requirements 

@@ -648,11 +648,9 @@ class TVShow(object):
             ep_file_name = os.path.splitext(ep_file_name)[0]
 
             try:
-                parse_result = None
-                np = NameParser(False, showObj=self, tryIndexers=True)
-                parse_result = np.parse(ep_file_name)
+                parse_result = NameParser(False, showObj=self, tryIndexers=True).parse(ep_file_name)
             except (InvalidNameException, InvalidShowException):
-                pass
+                parse_result = None
 
             if ' ' not in ep_file_name and parse_result and parse_result.release_group:
                 sickrage.srCore.srLogger.debug(
