@@ -27,7 +27,7 @@
                     <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <input type="checkbox" name="process_automatically"
-                                   id="process_automatically" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.PROCESS_AUTOMATICALLY)]}/>
+                                   id="process_automatically" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROCESS_AUTOMATICALLY)]}/>
                             <label for="process_automatically">
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">Enable the automatic post processor to scan and process any files in your <i>Post Processing Dir</i>?</span>
@@ -90,7 +90,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="postpone_if_sync_files"
-                                   id="postpone_if_sync_files" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.POSTPONE_IF_SYNC_FILES)]}/>
+                                   id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.POSTPONE_IF_SYNC_FILES)]}/>
                             <label for="postpone_if_sync_files">
                                 <span class="component-title">Postpone post processing</span>
                                 <span class="component-desc">Wait to process a folder if sync files are present.</span>
@@ -110,7 +110,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="rename_episodes"
-                                   id="rename_episodes" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.RENAME_EPISODES)]}/>
+                                   id="rename_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.RENAME_EPISODES)]}/>
                             <label for="rename_episodes">
                                 <span class="component-title">Rename Episodes</span>
                                 <span class="component-desc">Rename episode using the Episode Naming settings?</span>
@@ -118,7 +118,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="create_missing_show_dirs"
-                                   id="create_missing_show_dirs" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS)]}/>
+                                   id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS)]}/>
                             <label for="create_missing_show_dirs">
                                 <span class="component-title">Create missing show directories</span>
                                 <span class="component-desc">Create missing show directories when they get deleted</span>
@@ -126,7 +126,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="add_shows_wo_dir"
-                                   id="add_shows_wo_dir" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR)]}/>
+                                   id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR)]}/>
                             <label for="add_shows_wo_dir">
                                 <span class="component-title">Add shows without directory</span>
                                 <span class="component-desc">Add shows without creating a directory (not recommended)</span>
@@ -134,7 +134,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="move_associated_files"
-                                   id="move_associated_files" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES)]}/>
+                                   id="move_associated_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES)]}/>
                             <label for="move_associated_files">
                                 <span class="component-title">Move Associated Files</span>
                                 <span class="component-desc">Move srr/srt/sfv/etc files with the episode when processed?</span>
@@ -142,7 +142,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="nfo_rename"
-                                   id="nfo_rename" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NFO_RENAME)]}/>
+                                   id="nfo_rename" ${('', 'checked')[bool(sickrage.srCore.srConfig.NFO_RENAME)]}/>
                             <label for="nfo_rename">
                                 <span class="component-title">Rename .nfo file</span>
                                 <span class="component-desc">Rename the original .nfo file to .nfo-orig to avoid conflicts?</span>
@@ -150,7 +150,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="airdate_episodes"
-                                   id="airdate_episodes" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.AIRDATE_EPISODES)]}/>
+                                   id="airdate_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.AIRDATE_EPISODES)]}/>
                             <label for="airdate_episodes">
                                 <span class="component-title">Change File Date</span>
                                 <span class="component-desc">Set last modified filedate to the date that the episode aired?</span>
@@ -179,7 +179,7 @@
                         </div>
                         <div class="field-pair">
                             <input id="unpack" type="checkbox"
-                                   name="unpack" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.UNPACK)]} />
+                                   name="unpack" ${('', 'checked')[bool(sickrage.srCore.srConfig.UNPACK)]} />
                             <label for="unpack">
                                 <span class="component-title">Unpack</span>
                                 <span class="component-desc">Unpack any TV releases in your <i>TV Download Dir</i>?</span>
@@ -191,7 +191,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="del_rar_contents"
-                                   id="del_rar_contents" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DELRARCONTENTS)]}/>
+                                   id="del_rar_contents" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELRARCONTENTS)]}/>
                             <label for="del_rar_contents">
                                 <span class="component-title">Delete RAR contents</span>
                                 <span class="component-desc">Delete content of RAR files, even if Process Method not set to move?</span>
@@ -199,7 +199,7 @@
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="no_delete"
-                                   id="no_delete" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NO_DELETE)]}/>
+                                   id="no_delete" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_DELETE)]}/>
                             <label for="no_delete">
                                 <span class="component-title">Don't delete empty folders</span>
                                 <span class="component-desc">Leave empty folders when Post Processing?</span>
@@ -211,7 +211,7 @@
                         </div>
                         <div class="field-pair">
                             <input id="use_failed_downloads" type="checkbox" class="enabler"
-                                   name="use_failed_downloads" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]}/>
+                                   name="use_failed_downloads" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]}/>
                             <label for="use_failed_downloads">
                                 <span class="component-title">Use Failed Downloads</span>
                                 <span class="component-desc">Use Failed Download Handling?</span>
@@ -223,7 +223,7 @@
                         <div id="content_use_failed_downloads">
                             <div class="field-pair">
                                 <input id="delete_failed" type="checkbox"
-                                       name="delete_failed" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
+                                       name="delete_failed" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
                                 <label for="delete_failed">
                                     <span class="component-title">Delete Failed</span>
                                     <span class="component-desc">Delete files left over from a failed download?</span>
@@ -476,7 +476,7 @@
 
                         <div class="field-pair">
                             <input type="checkbox" id="naming_strip_year"
-                                   name="naming_strip_year" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_STRIP_YEAR)]}/>
+                                   name="naming_strip_year" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_STRIP_YEAR)]}/>
                             <label for="naming_strip_year">
                                 <span class="component-title">Strip Show Year</span>
                                 <span class="component-desc">Remove the TV show's year when renaming the file?</span>
@@ -489,7 +489,7 @@
 
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" id="naming_custom_abd"
-                                   name="naming_custom_abd" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ABD)]}/>
+                                   name="naming_custom_abd" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ABD)]}/>
                             <label for="naming_custom_abd">
                                 <span class="component-title">Custom Air-By-Date</span>
                                 <span class="component-desc">Name Air-By-Date shows differently than regular shows?</span>
@@ -681,7 +681,7 @@
 
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" id="naming_custom_sports"
-                                   name="naming_custom_sports" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_SPORTS)]}/>
+                                   name="naming_custom_sports" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_SPORTS)]}/>
                             <label for="naming_custom_sports">
                                 <span class="component-title">Custom Sports</span>
                                 <span class="component-desc">Name Sports shows differently than regular shows?</span>
@@ -874,7 +874,7 @@
                         <!-- naming_anime_custom -->
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" id="naming_custom_anime"
-                                   name="naming_custom_anime" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ANIME)]}/>
+                                   name="naming_custom_anime" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ANIME)]}/>
                             <label for="naming_custom_anime">
                                 <span class="component-title">Custom Anime</span>
                                 <span class="component-desc">Name Anime shows differently than regular shows?</span>
@@ -1081,7 +1081,7 @@
 
                             <div class="field-pair">
                                 <input type="radio" name="naming_anime" id="naming_anime"
-                                       value="1" ${('', 'checked="checked"')[sickrage.srCore.srConfig.NAMING_ANIME == 1]}/>
+                                       value="1" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 1]}/>
                                 <label for="naming_anime">
                                     <span class="component-title">Add Absolute Number</span>
                                     <span class="component-desc">Add the absolute number to the season/episode format?</span>
@@ -1094,7 +1094,7 @@
 
                             <div class="field-pair">
                                 <input type="radio" name="naming_anime" id="naming_anime_only"
-                                       value="2" ${('', 'checked="checked"')[sickrage.srCore.srConfig.NAMING_ANIME == 2]}/>
+                                       value="2" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 2]}/>
                                 <label for="naming_anime_only">
                                     <span class="component-title">Only Absolute Number</span>
                                     <span class="component-desc">Replace season/episode format with absolute number</span>
@@ -1107,7 +1107,7 @@
 
                             <div class="field-pair">
                                 <input type="radio" name="naming_anime" id="naming_anime_none"
-                                       value="3" ${('', 'checked="checked"')[sickrage.srCore.srConfig.NAMING_ANIME == 3]}/>
+                                       value="3" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 3]}/>
                                 <label for="naming_anime_none">
                                     <span class="component-title">No Absolute Number</span>
                                     <span class="component-desc">Dont include the absolute number</span>
@@ -1155,50 +1155,50 @@
                             <div class="metadataDiv" id="${cur_id}">
                                 <div>
                                     <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox"
-                                                                          id="${cur_id}_enabled" ${('', 'checked="checked"')[bool(cur_generator.enabled)]}/>&nbsp;Enabled</label>
+                                                                          id="${cur_id}_enabled" ${('', 'checked')[bool(cur_generator.enabled)]}/>&nbsp;Enabled</label>
                                 </div>
                                 <div class="metadata_options_wrapper">
                                     <h4>Create:</h4>
                                     <div class="metadata_options">
                                         <label for="${cur_id}_show_metadata"><input type="checkbox"
                                                                                     class="metadata_checkbox"
-                                                                                    id="${cur_id}_show_metadata" ${('', 'checked="checked"')[bool(cur_generator.show_metadata)]}/>&nbsp;Show
+                                                                                    id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>&nbsp;Show
                                             Metadata</label>
                                         <label for="${cur_id}_episode_metadata"><input type="checkbox"
                                                                                        class="metadata_checkbox"
-                                                                                       id="${cur_id}_episode_metadata" ${('', 'checked="checked"')[bool(cur_generator.episode_metadata)]}/>&nbsp;Episode
+                                                                                       id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>&nbsp;Episode
                                             Metadata</label>
                                         <label for="${cur_id}_fanart"><input type="checkbox"
                                                                              class="float-left metadata_checkbox"
-                                                                             id="${cur_id}_fanart" ${('', 'checked="checked"')[bool(cur_generator.fanart)]}/>&nbsp;Show
+                                                                             id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>&nbsp;Show
                                             Fanart</label>
                                         <label for="${cur_id}_poster"><input type="checkbox"
                                                                              class="float-left metadata_checkbox"
-                                                                             id="${cur_id}_poster" ${('', 'checked="checked"')[bool(cur_generator.poster)]}/>&nbsp;Show
+                                                                             id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>&nbsp;Show
                                             Poster</label>
                                         <label for="${cur_id}_banner"><input type="checkbox"
                                                                              class="float-left metadata_checkbox"
-                                                                             id="${cur_id}_banner" ${('', 'checked="checked"')[bool(cur_generator.banner)]}/>&nbsp;Show
+                                                                             id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>&nbsp;Show
                                             Banner</label>
                                         <label for="${cur_id}_episode_thumbnails"><input type="checkbox"
                                                                                          class="float-left metadata_checkbox"
-                                                                                         id="${cur_id}_episode_thumbnails" ${('', 'checked="checked"')[bool(cur_generator.episode_thumbnails)]}/>&nbsp;Episode
+                                                                                         id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>&nbsp;Episode
                                             Thumbnails</label>
                                         <label for="${cur_id}_season_posters"><input type="checkbox"
                                                                                      class="float-left metadata_checkbox"
-                                                                                     id="${cur_id}_season_posters" ${('', 'checked="checked"')[bool(cur_generator.season_posters)]}/>&nbsp;Season
+                                                                                     id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>&nbsp;Season
                                             Posters</label>
                                         <label for="${cur_id}_season_banners"><input type="checkbox"
                                                                                      class="float-left metadata_checkbox"
-                                                                                     id="${cur_id}_season_banners" ${('', 'checked="checked"')[bool(cur_generator.season_banners)]}/>&nbsp;Season
+                                                                                     id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>&nbsp;Season
                                             Banners</label>
                                         <label for="${cur_id}_season_all_poster"><input type="checkbox"
                                                                                         class="float-left metadata_checkbox"
-                                                                                        id="${cur_id}_season_all_poster" ${('', 'checked="checked"')[bool(cur_generator.season_all_poster)]}/>&nbsp;Season
+                                                                                        id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>&nbsp;Season
                                             All Poster</label>
                                         <label for="${cur_id}_season_all_banner"><input type="checkbox"
                                                                                         class="float-left metadata_checkbox"
-                                                                                        id="${cur_id}_season_all_banner" ${('', 'checked="checked"')[bool(cur_generator.season_all_banner)]}/>&nbsp;Season
+                                                                                        id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>&nbsp;Season
                                             All Banner</label>
                                     </div>
                                 </div>

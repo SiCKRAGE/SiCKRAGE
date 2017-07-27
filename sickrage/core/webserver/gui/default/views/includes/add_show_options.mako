@@ -4,92 +4,109 @@
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
 %>
 % if sickrage.srCore.srConfig.USE_SUBTITLES:
-    <br>
-    <div class="field-pair">
-        <label for="subtitles" class="clearfix">
-            <span class="component-desc">
-                 <input type="checkbox" name="subtitles"
-                        id="subtitles" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_DEFAULT)]} />
-            </span>
+    <div class="row field-pair">
+        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
             <span class="component-title">Subtitles</span>
-        </label>
+        </div>
+        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+            <label><input type="checkbox" name="subtitles" data-toggle="toggle"
+                          id="subtitles" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_DEFAULT)]} /></label>
+        </div>
     </div>
 % endif
-<div class="field-pair alt">
-    <label for="flatten_folders" class="clearfix">
-        <span class="component-desc">
-            <input class="cb" type="checkbox" name="flatten_folders"
-                   id="flatten_folders" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT)]}/>
-        </span>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <span class="component-title">Flatten Folders</span>
-    </label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+        <label><input class="cb" type="checkbox" name="flatten_folders" data-toggle="toggle"
+                      id="flatten_folders" ${('', 'checked')[bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT)]}/></label>
+    </div>
 </div>
 % if enable_anime_options:
-    <div class="field-pair alt">
-        <label for="anime" class="clearfix">
-            <span class="component-desc">
-                <input type="checkbox" name="anime"
-                       id="anime" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ANIME_DEFAULT)]} />
-            </span>
+    <div class="row field-pair">
+        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
             <span class="component-title">Anime</span>
-        </label>
+        </div>
+        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+            <label><input type="checkbox" name="anime" data-toggle="toggle"
+                          id="anime" ${('', 'checked')[bool(sickrage.srCore.srConfig.ANIME_DEFAULT)]} /></label>
+        </div>
     </div>
 % endif
-<div class="field-pair alt">
-    <label for="scene" class="clearfix">
-        <span class="component-desc">
-            <input type="checkbox" name="scene"
-                   id="scene" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SCENE_DEFAULT)]} />
-        </span>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <span class="component-title">Scene Numbering</span>
-    </label>
+    </div>
+
+    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+        <label><input type="checkbox" name="scene" data-toggle="toggle"
+                      id="scene" ${('', 'checked')[bool(sickrage.srCore.srConfig.SCENE_DEFAULT)]} /></label>
+    </div>
+
+
 </div>
-<div class="field-pair alt">
-    <label for="archive" class="clearfix">
-        <span class="component-desc">
-            <input type="checkbox" name="archive"
-                   id="archive" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ARCHIVE_DEFAULT)]} />
-        </span>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <span class="component-title">Archive on first match</span>
-    </label>
+    </div>
+
+    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+        <label><input type="checkbox" name="archive" data-toggle="toggle"
+                      id="archive" ${('', 'checked')[bool(sickrage.srCore.srConfig.ARCHIVE_DEFAULT)]} /></label>
+    </div>
+
+
 </div>
-<div class="field-pair">
-    <label for="statusSelect">
-        <span class="component-desc">
-            <select name="defaultStatus" id="statusSelect" class="form-control form-control-inline input-sm">
-                % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
-                % endfor
-            </select>
-        </span>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <span class="component-title">Status for previously aired episodes</span>
-    </label>
+    </div>
+
+    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+        <label><select name="defaultStatus" id="statusSelect" class="form-control form-control-inline input-sm">
+            % for curStatus in [SKIPPED, WANTED, IGNORED]:
+                <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
+            % endfor
+        </select></label>
+    </div>
+
 </div>
-<div class="field-pair">
-    <label for="statusSelectAfter">
-        <span class="component-desc">
-            <select name="defaultStatusAfter" id="statusSelectAfter"
-                    class="form-control form-control-inline input-sm">
-                % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
-                % endfor
-            </select>
-        </span>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <span class="component-title">Status for all future episodes</span>
-    </label>
+    </div>
+
+    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+        <label><select name="defaultStatusAfter" id="statusSelectAfter"
+                       class="form-control form-control-inline input-sm">
+            % for curStatus in [SKIPPED, WANTED, IGNORED]:
+                <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
+            % endfor
+        </select></label>
+    </div>
 </div>
 
-<%include file="quality_chooser.mako"/>
+<div class="field-pair row">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+        <span class="component-title">Preferred Quality</span>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+            <%include file="quality_chooser.mako"/>
+    </div>
+</div>
 
-<br/>
-<div class="field-pair alt">
-    <label for="saveDefaultsButton" class="nocheck clearfix">
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <span class="component-title">
             <input class="btn btn-inline" type="button" id="saveDefaultsButton" value="Save As Defaults"
                    disabled="disabled"/>
         </span>
-    </label>
-</div><br>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+        <label>Use current values as the defaults</label>
+    </div>
+</div>
 
 % if enable_anime_options:
     <% import sickrage.core.blackandwhitelist %>

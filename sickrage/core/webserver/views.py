@@ -1081,7 +1081,8 @@ class Home(WebHandler):
             sickrage.srCore.NEWEST_VERSION_STRING = None
             return self.restart(pid)
         else:
-            self._genericMessage("Update Failed", "Update wasn't successful, not restarting. Check your log for more information.")
+            self._genericMessage("Update Failed",
+                                 "Update wasn't successful, not restarting. Check your log for more information.")
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def branchCheckout(self, branch):
@@ -1248,8 +1249,8 @@ class Home(WebHandler):
 
     def editShow(self, show=None, location=None, anyQualities=None, bestQualities=None, exceptions_list=None,
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
-                 indexerLang=None, subtitles=None, archive_firstmatch=None, rls_ignore_words=None,
-                 rls_require_words=None, anime=None, blacklist=None, whitelist=None,
+                 indexerLang=None, subtitles=None, subtitles_sr_metadata=None, archive_firstmatch=None,
+                 rls_ignore_words=None, rls_require_words=None, anime=None, blacklist=None, whitelist=None,
                  scene=None, defaultEpStatus=None, quality_preset=None):
 
         if exceptions_list is None:
@@ -1332,6 +1333,7 @@ class Home(WebHandler):
         sports = sickrage.srCore.srConfig.checkbox_to_value(sports)
         anime = sickrage.srCore.srConfig.checkbox_to_value(anime)
         subtitles = sickrage.srCore.srConfig.checkbox_to_value(subtitles)
+        subtitles_sr_metadata = sickrage.srCore.srConfig.checkbox_to_value(subtitles_sr_metadata)
 
         if indexerLang and indexerLang in srIndexerApi(showObj.indexer).indexer().languages.keys():
             indexer_lang = indexerLang
@@ -1406,6 +1408,7 @@ class Home(WebHandler):
             showObj.anime = anime
             showObj.sports = sports
             showObj.subtitles = subtitles
+            showObj.subtitles_sr_metadata = subtitles_sr_metadata
             showObj.air_by_date = air_by_date
             showObj.default_ep_status = int(defaultEpStatus)
 
@@ -2010,20 +2013,17 @@ class Home(WebHandler):
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
         if isinstance(ep_obj, TVEpisode):
-            # try do download subtitles for that episode
-            previous_subtitles = ep_obj.subtitles
             try:
-                ep_obj.downloadSubtitles()
+                newSubtitles = ep_obj.downloadSubtitles()
             except Exception:
                 return json_encode({'result': 'failure'})
 
-            # return the correct json value
-            newSubtitles = frozenset(ep_obj.subtitles).difference(previous_subtitles)
             if newSubtitles:
                 newLangs = [sickrage.subtitles.name_from_code(newSub) for newSub in newSubtitles]
                 status = 'New subtitles downloaded: %s' % ', '.join([newLang for newLang in newLangs])
             else:
                 status = 'No subtitles downloaded'
+
             sickrage.srCore.srNotifications.message(ep_obj.show.name, status)
             return json_encode({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
 
@@ -2613,7 +2613,9 @@ class HomeAddShows(Home):
             else:
                 chmodAsParent(show_dir)
 
-            sickrage.srCore.SHOWQUEUE.addShow(1, int(indexer_id), show_dir,
+            sickrage.srCore.SHOWQUEUE.addShow(indexer=1,
+                                              indexer_id=int(indexer_id),
+                                              showDir=show_dir,
                                               default_status=sickrage.srCore.srConfig.STATUS_DEFAULT,
                                               quality=sickrage.srCore.srConfig.QUALITY_DEFAULT,
                                               flatten_folders=sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT,
@@ -2633,8 +2635,8 @@ class HomeAddShows(Home):
 
     def addNewShow(self, whichSeries=None, indexerLang=None, rootDir=None, defaultStatus=None,
                    quality_preset=None, anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
-                   fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
-                   scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None, archive=None):
+                   subtitles_sr_metadata=None, fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None,
+                   anime=None, scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None, archive=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
@@ -2722,6 +2724,7 @@ class HomeAddShows(Home):
         anime = sickrage.srCore.srConfig.checkbox_to_value(anime)
         flatten_folders = sickrage.srCore.srConfig.checkbox_to_value(flatten_folders)
         subtitles = sickrage.srCore.srConfig.checkbox_to_value(subtitles)
+        subtitles_sr_metadata = sickrage.srCore.srConfig.checkbox_to_value(subtitles_sr_metadata)
         archive = sickrage.srCore.srConfig.checkbox_to_value(archive)
 
         if whitelist:
@@ -2743,9 +2746,23 @@ class HomeAddShows(Home):
             newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
         # add the show
-        sickrage.srCore.SHOWQUEUE.addShow(indexer, indexer_id, show_dir, int(defaultStatus), newQuality,
-                                          flatten_folders, indexerLang, subtitles, anime,
-                                          scene, None, blacklist, whitelist, int(defaultStatusAfter), archive)
+        sickrage.srCore.SHOWQUEUE.addShow(indexer=indexer,
+                                          indexer_id=indexer_id,
+                                          showDir=show_dir,
+                                          default_status=int(defaultStatus),
+                                          quality=newQuality,
+                                          flatten_folders=flatten_folders,
+                                          lang=indexerLang,
+                                          subtitles=subtitles,
+                                          subtitles_sr_metadata=subtitles_sr_metadata,
+                                          anime=anime,
+                                          scene=scene,
+                                          paused=None,
+                                          blacklist=blacklist,
+                                          whitelist=whitelist,
+                                          default_status_after=int(defaultStatusAfter),
+                                          archive=archive)
+
         sickrage.srCore.srNotifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
 
         return finishAddShow()

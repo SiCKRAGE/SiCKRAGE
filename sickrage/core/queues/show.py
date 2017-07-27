@@ -120,27 +120,28 @@ class srShowQueue(srQueue):
         return self.put(QueueItemSubtitle(show))
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None,
-                default_status_after=None, archive=None):
+                lang=None, subtitles=None, subtitles_sr_metadata=None, anime=None, scene=None, paused=None,
+                blacklist=None, whitelist=None, default_status_after=None, archive=None):
 
         if lang is None:
             lang = sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
-        return self.put(QueueItemAdd(indexer,
-                                     indexer_id,
-                                     showDir,
-                                     default_status,
-                                     quality,
-                                     flatten_folders,
-                                     lang,
-                                     subtitles,
-                                     anime,
-                                     scene,
-                                     paused,
-                                     blacklist,
-                                     whitelist,
-                                     default_status_after,
-                                     archive))
+        return self.put(QueueItemAdd(indexer=indexer,
+                                     indexer_id=indexer_id,
+                                     showDir=showDir,
+                                     default_status=default_status,
+                                     quality=quality,
+                                     flatten_folders=flatten_folders,
+                                     lang=lang,
+                                     subtitles=subtitles,
+                                     subtitles_sr_metadata=subtitles_sr_metadata,
+                                     anime=anime,
+                                     scene=scene,
+                                     paused=paused,
+                                     blacklist=blacklist,
+                                     whitelist=whitelist,
+                                     default_status_after=default_status_after,
+                                     archive=archive))
 
     def removeShow(self, show, full=False):
         if self._isInQueue(show, (ShowQueueActions.REMOVE,)):
@@ -211,9 +212,10 @@ class ShowQueueItem(srQueueItem):
 
 
 class QueueItemAdd(ShowQueueItem):
-    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
-                 scene, paused, blacklist, whitelist, default_status_after, archive):
+    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles,
+                 subtitles_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after, archive):
         super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
+
         self.indexer = indexer
         self.indexer_id = indexer_id
         self.showDir = showDir
@@ -222,6 +224,7 @@ class QueueItemAdd(ShowQueueItem):
         self.flatten_folders = flatten_folders
         self.lang = lang
         self.subtitles = subtitles
+        self.subtitles_sr_metadata = subtitles_sr_metadata
         self.anime = anime
         self.scene = scene
         self.paused = paused
@@ -327,6 +330,7 @@ class QueueItemAdd(ShowQueueItem):
             # set up initial values
             self.show.location = self.showDir
             self.show.subtitles = self.subtitles or sickrage.srCore.srConfig.SUBTITLES_DEFAULT
+            self.show.subtitles_sr_metadata = self.subtitles_sr_metadata
             self.show.quality = self.quality or sickrage.srCore.srConfig.QUALITY_DEFAULT
             self.show.flatten_folders = self.flatten_folders or sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT
             self.show.anime = self.anime or sickrage.srCore.srConfig.ANIME_DEFAULT

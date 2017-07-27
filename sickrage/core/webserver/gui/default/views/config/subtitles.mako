@@ -77,7 +77,7 @@
                                 <span class="component-title">Subtitles History</span>
                                 <span class="component-desc">
                                                 <input type="checkbox" name="subtitles_history"
-                                                       id="subtitles_history" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HISTORY)]}/>
+                                                       id="subtitles_history" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_HISTORY)]}/>
                                                 <p>Log downloaded Subtitle on History page?</p>
                                             </span>
                             </label>
@@ -87,7 +87,7 @@
                                 <span class="component-title">Subtitles Multi-Language</span>
                                 <span class="component-desc">
                                                 <input type="checkbox" name="subtitles_multi"
-                                                       id="subtitles_multi" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_MULTI)]}/>
+                                                       id="subtitles_multi" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_MULTI)]}/>
                                                 <p>Append language codes to subtitle filenames?</p>
                                             </span>
                             </label>
@@ -97,7 +97,7 @@
                                 <span class="component-title">Embedded Subtitles</span>
                                 <span class="component-desc">
                                                 <input type="checkbox" name="embedded_subtitles_all"
-                                                       id="embedded_subtitles_all" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
+                                                       id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
                                                 <p>Ignore subtitles embedded inside video file?</p>
                                                 <p><b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!</p>
                                             </span>
@@ -108,7 +108,7 @@
                                 <span class="component-title">Hearing Impaired Subtitles</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="subtitles_hearing_impaired"
-                                           id="subtitles_hearing_impaired" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
+                                           id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
                                     <p>Download hearing impaired style subtitles?</p>
                                 </span>
                             </label>
@@ -159,7 +159,7 @@
                             % for curService in sickrage.subtitles.sortedServiceList():
                                 <li class="ui-state-default" id="${curService['name']}">
                                     <input type="checkbox" id="enable_${curService['name']}"
-                                           class="service_enabler" ${('', 'checked="checked"')[curService['enabled'] == True]}/>
+                                           class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
                                     <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
                                         <img src="${srWebRoot}/images/subtitles/${curService['image']}"
                                              alt="${curService['url']}" title="${curService['url']}" width="16"
