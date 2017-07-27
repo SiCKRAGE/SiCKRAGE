@@ -1289,7 +1289,7 @@ class srConfig(object):
         self.EMAIL_FROM = self.check_setting_str('Email', 'email_from', '')
         self.EMAIL_LIST = self.check_setting_str('Email', 'email_list', '')
 
-        # self.subtitleself.settings        self.USE_SUBTITLES= bool(self.check_setting_int('Subtitles', 'use_subtitles', 0))
+        self.USE_SUBTITLES = bool(self.check_setting_int('Subtitles', 'use_subtitles', 0))
         self.SUBTITLES_LANGUAGES = self.check_setting_str('Subtitles', 'subtitles_languages', '').split(
             ',')
         self.SUBTITLES_DIR = self.check_setting_str('Subtitles', 'subtitles_dir', '')

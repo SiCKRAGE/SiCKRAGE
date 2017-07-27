@@ -1,6 +1,7 @@
 # Changelog
 
-- * 73cbd09 - 2017-07-26: Misc code improvements 
+- * 8aaefad - 2017-07-27: Cleaned up HTML code for Subtitles and show editor Fixed issues with downloading subtitles and misc other related issues 
+- * 1898db7 - 2017-07-26: Misc code improvements 
 - * de0d848 - 2017-07-25: v9.0.31 
 - * a492e7f - 2017-07-25: Fixed show image scraping issues 
 - * 195872c - 2017-07-25: Fixed FreeBSD init script 

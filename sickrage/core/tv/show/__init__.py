@@ -70,6 +70,7 @@ class TVShow(object):
         self._paused = 0
         self._air_by_date = 0
         self._subtitles = int(sickrage.srCore.srConfig.SUBTITLES_DEFAULT)
+        self._subtitles_sr_metadata = 0
         self._dvdorder = 0
         self._archive_firstmatch = 0
         self._lang = lang
@@ -383,6 +384,16 @@ class TVShow(object):
         if self._default_ep_status != value:
             self.dirty = True
         self._default_ep_status = value
+
+    @property
+    def subtitles_sr_metadata(self):
+        return self._subtitles_sr_metadata
+
+    @subtitles_sr_metadata.setter
+    def subtitles_sr_metadata(self, value):
+        if self._subtitles_sr_metadata != value:
+            self.dirty = True
+        self._subtitles_sr_metadata = value
 
     @property
     def is_anime(self):
@@ -960,6 +971,7 @@ class TVShow(object):
         self._sports = tryInt(dbData[0]["sports"], self.sports)
         self._scene = tryInt(dbData[0]["scene"], self.scene)
         self._subtitles = tryInt(dbData[0]["subtitles"], self.subtitles)
+        self._subtitles_sr_metadata = dbData[0].get("subtitles_sr_metadata", self.subtitles_sr_metadata)
         self._dvdorder = tryInt(dbData[0]["dvdorder"], self.dvdorder)
         self._archive_firstmatch = tryInt(dbData[0]["archive_firstmatch"], self.archive_firstmatch)
         self._quality = tryInt(dbData[0]["quality"], self.quality)
@@ -1389,7 +1401,8 @@ class TVShow(object):
             "last_refresh": self.last_refresh,
             "rls_ignore_words": self.rls_ignore_words,
             "rls_require_words": self.rls_require_words,
-            "default_ep_status": self.default_ep_status
+            "default_ep_status": self.default_ep_status,
+            "sub_use_sr_metadata": self.subtitles_sr_metadata
         }
 
         try:

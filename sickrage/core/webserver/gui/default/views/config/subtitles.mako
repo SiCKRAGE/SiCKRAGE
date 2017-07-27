@@ -52,10 +52,12 @@
                                        name="subtitles_dir" class="form-control input-sm input350"
                                        autocapitalize="off"/>
                             </label>
+                            <br/>
                             <label>
                                 <span class="component-title">&nbsp;</span>
                                 <span class="component-desc">The directory where SickRage should store your <i>Subtitles</i> files.</span>
                             </label>
+                            <br/>
                             <label>
                                 <span class="component-title">&nbsp;</span>
                                 <span class="component-desc"><b>NOTE:</b> Leave empty if you want store subtitle in episode path.</span>
@@ -105,10 +107,10 @@
                             <label class="clearfix" for="subtitles_hearing_impaired">
                                 <span class="component-title">Hearing Impaired Subtitles</span>
                                 <span class="component-desc">
-                                                <input type="checkbox" name="subtitles_hearing_impaired"
-                                                       id="subtitles_hearing_impaired" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
-                                                <p>Download hearing impaired style subtitles?</p>
-                                            </span>
+                                    <input type="checkbox" name="subtitles_hearing_impaired"
+                                           id="subtitles_hearing_impaired" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
+                                    <p>Download hearing impaired style subtitles?</p>
+                                </span>
                             </label>
                         </div>
                         <div class="field-pair">
@@ -118,26 +120,24 @@
                                        value="<% '|'.join(sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
                                        class="form-control input-sm input350" autocapitalize="off"/>
                             </label>
-                            <label class="nocheck">
-                                <span class="component-title">&nbsp;</span>
-                                <span class="component-desc"><b>NOTE:</b></span>
-                            </label>
+                            <br/>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
                                 <span class="component-desc">
-                                                <ul>
-                                                        <li>See <a
-                                                                href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Subtitle%20Scripts"><font
-                                                                color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
-                                                        <li>Additional scripts separated by <b>|</b>.</li>
-                                                        <li>Scripts are called after each episode has searched and downloaded subtitles.</li>
-                                                        <li>For any scripted languages, include the interpreter executable before the script. See the following example:</li>
-                                                        <ul>
-                                                            <li>For Windows: <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre></li>
-                                                            <li>For Linux: <pre>python /Script/test.py</pre></li>
-                                                        </ul>
-                                                </ul>
-                                            </span>
+                                    <b>NOTE:</b>
+                                    <ul>
+                                            <li>See <a
+                                                    href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Subtitle%20Scripts"><font
+                                                    color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
+                                            <li>Additional scripts separated by <b>|</b>.</li>
+                                            <li>Scripts are called after each episode has searched and downloaded subtitles.</li>
+                                            <li>For any scripted languages, include the interpreter executable before the script. See the following example:</li>
+                                            <ul>
+                                                <li>For Windows: <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre></li>
+                                                <li>For Linux: <pre>python /Script/test.py</pre></li>
+                                            </ul>
+                                    </ul>
+                                </span>
                             </label>
                         </div>
 
