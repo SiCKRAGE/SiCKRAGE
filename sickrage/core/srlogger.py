@@ -69,7 +69,7 @@ class srLogger(logging.getLoggerClass()):
             'SHOWQUEUE': 'Show Queue',
             'SEARCHQUEUE': 'Search Queue',
             'FINDPROPERS': 'Find Propers',
-            'POSTPROCESSOR': 'Postprocesser',
+            'POSTPROCESSOR': 'Postprocessor',
             'SUBTITLESEARCHER': 'Find Subtitles',
             'TRAKTSEARCHER': 'Trakt Checker',
             'EVENT': 'Event',

@@ -1,6 +1,7 @@
 # Changelog
 
-- * ff2b80a - 2017-07-27: Fixed typo v9.0.32 
+- * 86cb607 - 2017-07-27: Fixed typo causing issue with log filtering for post-processing 
+- * 6ac10bd - 2017-07-27: Fixed typo v9.0.32 
 - * 1898db7 - 2017-07-26: Misc code improvements 
 - * de0d848 - 2017-07-25: v9.0.31 
 - * a492e7f - 2017-07-25: Fixed show image scraping issues 
