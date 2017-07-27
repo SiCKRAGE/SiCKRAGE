@@ -87,7 +87,7 @@
                                     <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]}"
                                         id="${providerID}">
                                         <input type="checkbox" id="enable_${providerID}"
-                                               class="provider_enabler" ${('', 'checked="checked"')[bool(providerObj.isEnabled)]}/>
+                                               class="provider_enabler" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
                                         <a href="${anon_url(providerObj.urls['base_url'])}" class="imgLink"
                                            rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;"><img
@@ -174,7 +174,7 @@
                                             <span class="component-title">Enable daily searches</span>
                                             <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_daily"
-                                                       id="${providerID}_enable_daily" ${('', 'checked="checked"')[bool(providerObj.enable_daily)]}/>
+                                                       id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                                 <p>enable provider to perform daily searches.</p>
                                             </span>
                                         </label>
@@ -187,7 +187,7 @@
                                             <span class="component-title">Enable backlog searches</span>
                                             <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_backlog"
-                                                       id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
+                                                       id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                                 <p>enable provider to perform backlog searches.</p>
                                             </span>
                                         </label>
@@ -200,7 +200,7 @@
                                             <span class="component-title">Search mode fallback</span>
                                             <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_search_fallback"
-                                                       id="${providerID}_search_fallback" ${('', 'checked="checked"')[bool(providerObj.search_fallback)]}/>
+                                                       id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                                 <p>when searching for a complete season depending on search mode you may
                                                     return no results, this helps by restarting the search using the
                                                     opposite search mode.</p>
@@ -224,7 +224,7 @@
                                             <span class="component-desc">
                                                 <input type="radio" name="${providerID}_search_mode"
                                                        id="${providerID}_search_mode_sponly"
-                                                       value="sponly" ${('', 'checked="checked"')[providerObj.search_mode=="sponly"]}/>season packs only.
+                                                       value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>season packs only.
                                             </span>
                                         </label>
                                         <label>
@@ -232,7 +232,7 @@
                                             <span class="component-desc">
                                                 <input type="radio" name="${providerID}_search_mode"
                                                        id="${providerID}_search_mode_eponly"
-                                                       value="eponly" ${('', 'checked="checked"')[providerObj.search_mode=="eponly"]}/>episodes only.
+                                                       value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>episodes only.
                                             </span>
                                         </label>
                                     </div>
@@ -275,7 +275,7 @@
                                             <span class="component-title">Enable daily searches</span>
                                             <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_daily"
-                                                       id="${providerID}_enable_daily" ${('', 'checked="checked"')[bool(providerObj.enable_daily)]}/>
+                                                       id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                                 <p>enable provider to perform daily searches.</p>
                                             </span>
                                         </label>
@@ -288,7 +288,7 @@
                                             <span class="component-title">Enable backlog searches</span>
                                             <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_enable_backlog"
-                                                       id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
+                                                       id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                                 <p>enable provider to perform backlog searches.</p>
                                             </span>
                                         </label>
@@ -301,7 +301,7 @@
                                             <span class="component-title">Search mode fallback</span>
                                             <span class="component-desc">
                                                 <input type="checkbox" name="${providerID}_search_fallback"
-                                                       id="${providerID}_search_fallback" ${('', 'checked="checked"')[bool(providerObj.search_fallback)]}/>
+                                                       id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                                 <p>when searching for a complete season depending on search mode you may
                                                     return no
                                                     results, this helps by restarting the search using the opposite
@@ -330,7 +330,7 @@
                                             <span class="component-desc">
                                                     <input type="radio" name="${providerID}_search_mode"
                                                            id="${providerID}_search_mode_sponly"
-                                                           value="sponly" ${('', 'checked="checked"')[providerObj.search_mode=="sponly"]}/>season packs only.
+                                                           value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>season packs only.
                                                 </span>
                                         </label>
                                         <label>
@@ -338,7 +338,7 @@
                                             <span class="component-desc">
                                                     <input type="radio" name="${providerID}_search_mode"
                                                            id="${providerID}_search_mode_eponly"
-                                                           value="eponly" ${('', 'checked="checked"')[providerObj.search_mode=="eponly"]}/>episodes only.
+                                                           value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>episodes only.
                                                 </span>
                                         </label>
                                     </div>
@@ -526,7 +526,7 @@
                                             <span class="component-title">Confirmed download</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_confirmed"
-                                                           id="${providerID}_confirmed" ${('', 'checked="checked"')[bool(providerObj.confirmed)]}/>
+                                                           id="${providerID}_confirmed" ${('', 'checked')[bool(providerObj.confirmed)]}/>
                                                     <p>only download torrents from trusted or verified uploaders ?</p>
                                                 </span>
                                         </label>
@@ -539,7 +539,7 @@
                                             <span class="component-title">Ranked torrents</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_ranked"
-                                                           id="${providerID}_ranked" ${('', 'checked="checked"')[bool(providerObj.ranked)]} />
+                                                           id="${providerID}_ranked" ${('', 'checked')[bool(providerObj.ranked)]} />
                                                     <p>only download ranked torrents (internal releases)</p>
                                                 </span>
                                         </label>
@@ -552,7 +552,7 @@
                                             <span class="component-title">English torrents</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_engrelease"
-                                                           id="${providerID}_engrelease" ${('', 'checked="checked"')[bool(providerObj.engrelease)]} />
+                                                           id="${providerID}_engrelease" ${('', 'checked')[bool(providerObj.engrelease)]} />
                                                     <p>only download english torrents ,or torrents containing english
                                                         subtitles</p>
                                                 </span>
@@ -566,7 +566,7 @@
                                             <span class="component-title">For Spanish torrents</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_onlyspasearch"
-                                                           id="${providerID}_onlyspasearch" ${('', 'checked="checked"')[bool(providerObj.onlyspasearch)]} />
+                                                           id="${providerID}_onlyspasearch" ${('', 'checked')[bool(providerObj.onlyspasearch)]} />
                                                     <p>ONLY search on this provider if show info is defined as "Spanish"
                                                         (avoid
                                                         provider's use for VOS shows)</p>
@@ -597,7 +597,7 @@
                                             <span class="component-title">Freeleech</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_freeleech"
-                                                           id="${providerID}_freeleech" ${('', 'checked="checked"')[bool(providerObj.freeleech)]}/>
+                                                           id="${providerID}_freeleech" ${('', 'checked')[bool(providerObj.freeleech)]}/>
                                                     <p>only download <b>[FreeLeech]</b> torrents.</p>
                                                 </span>
                                         </label>
@@ -610,7 +610,7 @@
                                             <span class="component-title">Enable daily searches</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_enable_daily"
-                                                           id="${providerID}_enable_daily" ${('', 'checked="checked"')[bool(providerObj.enable_daily)]}/>
+                                                           id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                                     <p>enable provider to perform daily searches.</p>
                                                 </span>
                                         </label>
@@ -623,7 +623,7 @@
                                             <span class="component-title">Reject Blu-ray M2TS releases</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_reject_m2ts"
-                                                           id="${providerID}_reject_m2ts" ${('', 'checked="checked"')[bool(providerObj.reject_m2ts)]}/>
+                                                           id="${providerID}_reject_m2ts" ${('', 'checked')[bool(providerObj.reject_m2ts)]}/>
                                                     <p>enable to ignore Blu-ray MPEG-2 Transport Stream container releases</p>
                                                 </span>
                                         </label>
@@ -636,7 +636,7 @@
                                             <span class="component-title">Enable backlog searches</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_enable_backlog"
-                                                           id="${providerID}_enable_backlog" ${('', 'checked="checked"')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
+                                                           id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                                     <p>enable provider to perform backlog searches.</p>
                                                 </span>
                                         </label>
@@ -649,7 +649,7 @@
                                             <span class="component-title">Search mode fallback</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_search_fallback"
-                                                           id="${providerID}_search_fallback" ${('', 'checked="checked"')[bool(providerObj.search_fallback)]}/>
+                                                           id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                                     <p>when searching for a complete season depending on search mode you
                                                         may return no
                                                         results, this helps by restarting the search using the opposite
@@ -676,7 +676,7 @@
                                             <span class="component-desc">
                                                     <input type="radio" name="${providerID}_search_mode"
                                                            id="${providerID}_search_mode_sponly"
-                                                           value="sponly" ${('', 'checked="checked"')[providerObj.search_mode=="sponly"]}/>season packs only.
+                                                           value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>season packs only.
                                                 </span>
                                         </label>
                                         <label>
@@ -684,7 +684,7 @@
                                             <span class="component-desc">
                                                     <input type="radio" name="${providerID}_search_mode"
                                                            id="${providerID}_search_mode_eponly"
-                                                           value="eponly" ${('', 'checked="checked"')[providerObj.search_mode=="eponly"]}/>episodes only.
+                                                           value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>episodes only.
                                                 </span>
                                         </label>
                                     </div>
@@ -712,7 +712,7 @@
                                             <span class="component-title">Subtitled</span>
                                             <span class="component-desc">
                                                     <input type="checkbox" name="${providerID}_subtitle"
-                                                           id="${providerID}_subtitle" ${('', 'checked="checked"')[bool(providerObj.subtitle)]}/>
+                                                           id="${providerID}_subtitle" ${('', 'checked')[bool(providerObj.subtitle)]}/>
                                                     <p>select torrent with Italian subtitle</p>
                                                 </span>
                                         </label>

@@ -319,6 +319,10 @@
                                 </tr>
                             % endif
                             <tr>
+                                <td class="showLegend">Subtitles SR Metadata:</td>
+                                <td><span class="displayshow-icon-${("disable", "enable")[bool(show.subtitles_sr_metadata)]}" title=${("N", "Y")[bool(show.subtitles_sr_metadata)]}></span></td>
+                            </tr>
+                            <tr>
                                 <td class="showLegend">Season Folders:</td>
                                 <td><img
                                         src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"

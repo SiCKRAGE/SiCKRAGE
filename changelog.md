@@ -1,6 +1,8 @@
 # Changelog
 
-- * 86cb607 - 2017-07-27: Fixed typo causing issue with log filtering for post-processing 
+- * 2c33300 - 2017-07-27: Added custom metadata option for subtitles 
+- * 77457f8 - 2017-07-27: Fixed typo causing issue with log filtering for post-processing 
+- * d68df71 - 2017-07-27: Cleaned up HTML code for Subtitles and show editor Fixed issues with downloading subtitles and misc other related issues 
 - * 6ac10bd - 2017-07-27: Fixed typo v9.0.32 
 - * 1898db7 - 2017-07-26: Misc code improvements 
 - * de0d848 - 2017-07-25: v9.0.31 

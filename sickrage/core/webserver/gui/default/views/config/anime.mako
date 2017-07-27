@@ -25,7 +25,7 @@
                     <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" name="use_anidb"
-                                   id="use_anidb" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_ANIDB)]} />
+                                   id="use_anidb" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_ANIDB)]} />
                             <label for="use_notifo">
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">Should SickRage use data from AniDB?</span>
@@ -62,7 +62,7 @@
                             </div>
                             <div class="field-pair">
                                 <input type="checkbox" name="anidb_use_mylist"
-                                       id="anidb_use_mylist" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ANIDB_USE_MYLIST)]}/>
+                                       id="anidb_use_mylist" ${('', 'checked')[bool(sickrage.srCore.srConfig.ANIDB_USE_MYLIST)]}/>
                                 <label>
                                     <span class="component-title">AniDB MyList</span>
                                     <span class="component-desc">Do you want to add the PostProcessed Episodes to the MyList ?</span>
@@ -82,7 +82,7 @@
                     <fieldset class="tab-pane-list">
                         <div class="field-pair">
                             <input type="checkbox" class="enabler" name="split_home"
-                                   id="split_home" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ANIME_SPLIT_HOME)]}/>
+                                   id="split_home" ${('', 'checked')[bool(sickrage.srCore.srConfig.ANIME_SPLIT_HOME)]}/>
                             <label for="use_notifo">
                                 <span class="component-title">Split show lists</span>
                                 <span class="component-desc">Separate anime and normal shows in groups</span>

@@ -26,7 +26,7 @@
                                 <span class="component-title">Randomize Providers</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="randomize_providers" id="randomize_providers"
-                                           class="enabler" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS)]}/>
+                                           class="enabler" ${('', 'checked')[bool(sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS)]}/>
                                     <p>randomize the provider search order instead of going in order of placement</p>
                                 </span>
                             </label>
@@ -36,7 +36,7 @@
                                 <span class="component-title">Download propers</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="download_propers" id="download_propers"
-                                           class="enabler" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DOWNLOAD_PROPERS)]}/>
+                                           class="enabler" ${('', 'checked')[bool(sickrage.srCore.srConfig.DOWNLOAD_PROPERS)]}/>
                                     <p>replace original download with "Proper" or "Repack" if nuked</p>
                                 </span>
                             </label>
@@ -46,7 +46,7 @@
                                 <span class="component-title">Enable provider RSS cache</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="enable_rss_cache" id="enable_rss_cache"
-                                           class="enabler" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ENABLE_RSS_CACHE)]}/>
+                                           class="enabler" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENABLE_RSS_CACHE)]}/>
                                     <p>Enables/Disables provider RSS cache</p>
                                 </span>
                             </label>
@@ -169,7 +169,7 @@
                                 <span class="component-title">Allow high priority</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="allow_high_priority"
-                                           id="allow_high_priority" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ALLOW_HIGH_PRIORITY)]}/>
+                                           id="allow_high_priority" ${('', 'checked')[bool(sickrage.srCore.srConfig.ALLOW_HIGH_PRIORITY)]}/>
                                     <p>set downloads of recently aired episodes to high priority</p>
                                 </span>
                             </label>
@@ -177,7 +177,7 @@
 
                         <div class="field-pair">
                             <input id="use_failed_downloads" type="checkbox" class="enabler"
-                                   name="use_failed_downloads" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]} />
+                                   name="use_failed_downloads" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]} />
                             <label for="use_failed_downloads">
                                 <span class="component-title">Use Failed Downloads</span>
                                 <span class="component-desc">Use Failed Download Handling?</span>
@@ -191,7 +191,7 @@
                         <div id="content_use_failed_downloads">
                             <div class="field-pair">
                                 <input id="delete_failed" type="checkbox"
-                                       name="delete_failed" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
+                                       name="delete_failed" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
                                 <label for="delete_failed">
                                     <span class="component-title">Delete Failed</span>
                                     <span class="component-desc">Delete files left over from a failed download?</span>
@@ -222,7 +222,7 @@
                                 <span class="component-title">Enable NZB searches</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="use_nzbs" class="enabler"
-                                           id="use_nzbs" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_NZBS)]}/>
+                                           id="use_nzbs" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_NZBS)]}/>
                                 </span>
                             </label>
                         </div>
@@ -530,7 +530,7 @@
                                 <span class="component-title">Enable torrent searches</span>
                                 <span class="component-desc">
                                         <input type="checkbox" name="use_torrents" class="enabler"
-                                               id="use_torrents" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.USE_TORRENTS)]}/>
+                                               id="use_torrents" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_TORRENTS)]}/>
                                     </span>
                             </label>
                         </div>
@@ -628,7 +628,7 @@
                                         <span class="component-title">Verify certificate</span>
                                         <span class="component-desc">
                                         <input type="checkbox" name="torrent_verify_cert" class="enabler"
-                                               id="torrent_verify_cert" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)]}/>
+                                               id="torrent_verify_cert" ${('', 'checked')[bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)]}/>
                                         <p id="torrent_verify_deluge">disable if you get "Deluge: Authentication Error"
                                             in your log</p>
                                         <p id="torrent_verify_rtorrent">Verify SSL certificates for HTTPS requests</p>
@@ -728,7 +728,7 @@
                                         <span class="component-title">Start torrent paused</span>
                                         <span class="component-desc">
                                         <input type="checkbox" name="torrent_paused" class="enabler"
-                                               id="torrent_paused" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.TORRENT_PAUSED)]}/>
+                                               id="torrent_paused" ${('', 'checked')[bool(sickrage.srCore.srConfig.TORRENT_PAUSED)]}/>
                                         <p>add .torrent to client but do <b style="font-weight:900">not</b> start
                                             downloading</p>
                                     </span>
@@ -740,7 +740,7 @@
                                         <span class="component-title">Allow high bandwidth</span>
                                         <span class="component-desc">
                                         <input type="checkbox" name="torrent_high_bandwidth" class="enabler"
-                                               id="torrent_high_bandwidth" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.TORRENT_HIGH_BANDWIDTH)]}/>
+                                               id="torrent_high_bandwidth" ${('', 'checked')[bool(sickrage.srCore.srConfig.TORRENT_HIGH_BANDWIDTH)]}/>
                                         <p>use high bandwidth allocation if priority is high</p>
                                     </span>
                                     </label>

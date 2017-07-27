@@ -54,7 +54,7 @@
                                         <span class="component-title">Launch browser</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="launch_browser"
-                                           id="launch_browser" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.LAUNCH_BROWSER)]}/>
+                                           id="launch_browser" ${('', 'checked')[bool(sickrage.srCore.srConfig.LAUNCH_BROWSER)]}/>
                                     <p>open the SickRage home page on startup</p>
                                 </span>
                                     </label>
@@ -99,7 +99,7 @@
                                         <span class="component-title">Daily show updates stale shows</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="showupdate_stale"
-                                                   id="showupdate_stale" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SHOWUPDATE_STALE)]}/>
+                                                   id="showupdate_stale" ${('', 'checked')[bool(sickrage.srCore.srConfig.SHOWUPDATE_STALE)]}/>
                                             <p>should ended shows last updated less then 90 days get updated and refreshed automatically ?</p>
                                         </span>
                                     </label>
@@ -110,12 +110,12 @@
                                     <span class="component-desc">
                                 <label for="trash_remove_show" class="nextline-block">
                                     <input type="checkbox" name="trash_remove_show"
-                                           id="trash_remove_show" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)]}/>
+                                           id="trash_remove_show" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)]}/>
                                     <p>when using show "Remove" and delete files</p>
                                 </label>
                                 <label for="trash_rotate_logs" class="nextline-block">
                                     <input type="checkbox" name="trash_rotate_logs"
-                                           id="trash_rotate_logs" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.TRASH_ROTATE_LOGS)]}/>
+                                           id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRASH_ROTATE_LOGS)]}/>
                                     <p>on scheduled deletes of the oldest log files</p>
                                 </label>
                                 <div class="clear-left"><p>selected actions use trash (recycle bin) instead of the default permanent delete</p></div>
@@ -199,7 +199,7 @@
                                         <span class="component-title">Check software updates</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="version_notify"
-                                           id="version_notify" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.VERSION_NOTIFY)]}/>
+                                           id="version_notify" ${('', 'checked')[bool(sickrage.srCore.srConfig.VERSION_NOTIFY)]}/>
                                     <p>and display notifications when updates are available.
                                     Checks are run on startup and at the frequency set below*</p>
                                 </span>
@@ -211,7 +211,7 @@
                                         <span class="component-title">Automatically update</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="auto_update"
-                                           id="auto_update" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.AUTO_UPDATE)]}/>
+                                           id="auto_update" ${('', 'checked')[bool(sickrage.srCore.srConfig.AUTO_UPDATE)]}/>
                                     <p>fetch and install software updates.
                                     Updates are run on startup and in the background at the frequency set below*</p>
                                 </span>
@@ -235,7 +235,7 @@
                                         <span class="component-title">Notify on software update</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="notify_on_update"
-                                           id="notify_on_update" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NOTIFY_ON_UPDATE)]}/>
+                                           id="notify_on_update" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_UPDATE)]}/>
                                     <p>send a message to all enabled notifiers when SickRage has been updated</p>
                                 </span>
                                     </label>
@@ -279,7 +279,7 @@
                                         <span class="component-title">Show all seasons</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="display_all_seasons"
-                                           id="display_all_seasons" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS)]}>
+                                           id="display_all_seasons" ${('', 'checked')[bool(sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS)]}>
                                     <p>on the show summary page</p>
                                 </span>
                                     </label>
@@ -289,7 +289,7 @@
                                         <span class="component-title">Sort with "The", "A", "An"</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="sort_article"
-                                           id="sort_article" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SORT_ARTICLE)]}/>
+                                           id="sort_article" ${('', 'checked')[bool(sickrage.srCore.srConfig.SORT_ARTICLE)]}/>
                                     <p>include articles ("The", "A", "An") when sorting show lists</p>
                                 </span>
                                     </label>
@@ -299,7 +299,7 @@
                                         <span class="component-title">Filter Row</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="filter_row"
-                                           id="filter_row" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.FILTER_ROW)]}/>
+                                           id="filter_row" ${('', 'checked')[bool(sickrage.srCore.srConfig.FILTER_ROW)]}/>
                                     <p>Add a filter row to the show display on the home page</p>
                                     <p>Supports =, >, >=, <=, <, xx to yy , xx - yy</p>
                                     <p><b>Note:</b> =, >, >=, <=, < should be first, followed by a space, then the value.</p>
@@ -324,7 +324,7 @@
                                         <span class="component-title">Display fuzzy dates</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="fuzzy_dating" id="fuzzy_dating"
-                                           class="viewIf datePresets" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}/>
+                                           class="viewIf datePresets" ${('', 'checked')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}/>
                                     <p>move absolute dates into tooltips and display e.g. "Last Thu", "On Tue"</p>
                                 </span>
                                     </label>
@@ -334,7 +334,7 @@
                                         <span class="component-title">Trim zero padding</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="trim_zero"
-                                           id="trim_zero" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.TRIM_ZERO)]}/>
+                                           id="trim_zero" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRIM_ZERO)]}/>
                                     <p>remove the leading number "0" shown on hour of day, and date of month</p>
                                 </span>
                                     </label>
@@ -384,11 +384,11 @@
                                     <span class="component-desc">
                                 <label for="local" class="space-right">
                                     <input type="radio" name="timezone_display" id="local"
-                                           value="local" ${('', 'checked="checked"')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "local"]} />Local
+                                           value="local" ${('', 'checked')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "local"]} />Local
                                 </label>
                                 <label for="network">
                                     <input type="radio" name="timezone_display" id="network"
-                                           value="network" ${('', 'checked="checked"')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "network"]} />Network
+                                           value="network" ${('', 'checked')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "network"]} />Network
                                 </label>
                                 <div class="clear-left">
                                 <p>display dates and times in either your timezone or the shows network timezone</p>
@@ -452,7 +452,7 @@
                                         <span class="component-title">HTTP logs</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="web_log"
-                                           id="web_log" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.WEB_LOG)]}/>
+                                           id="web_log" ${('', 'checked')[bool(sickrage.srCore.srConfig.WEB_LOG)]}/>
                                     <p>enable logs from the internal Tornado web server</p>
                                 </span>
                                     </label>
@@ -500,7 +500,7 @@
                                         <span class="component-title">Listen on IPv6</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="web_ipv6"
-                                                   id="web_ipv6" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.WEB_IPV6)]}/>
+                                                   id="web_ipv6" ${('', 'checked')[bool(sickrage.srCore.srConfig.WEB_IPV6)]}/>
                                             <p>attempt binding to any available IPv6 address</p>
                                         </span>
                                     </label>
@@ -511,7 +511,7 @@
                                         <span class="component-title">Enable HTTPS</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="enable_https" class="enabler"
-                                           id="enable_https" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ENABLE_HTTPS)]}/>
+                                           id="enable_https" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENABLE_HTTPS)]}/>
                                     <p>enable access to the web interface using a HTTPS address</p>
                                 </span>
                                     </label>
@@ -547,7 +547,7 @@
                                         <span class="component-title">Reverse proxy headers</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="handle_reverse_proxy"
-                                           id="handle_reverse_proxy" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY)]}/>
+                                           id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY)]}/>
                                     <p>accept the following reverse proxy headers (advanced)...<br>(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)</p>
                                 </span>
                                     </label>
@@ -602,7 +602,7 @@
                                         <span class="component-title">Enable debug</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="debug"
-                                           id="debug" ${('', 'checked="checked"')[bool(sickrage.DEBUG)]}/>
+                                           id="debug" ${('', 'checked')[bool(sickrage.DEBUG)]}/>
                                     <p>Enable debug logs<p>
                                 </span>
                                     </label>
@@ -613,7 +613,7 @@
                                         <span class="component-title">Verify SSL Certs</span>
                                         <span class="component-desc">
                                         <input type="checkbox" name="ssl_verify"
-                                               id="ssl_verify" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SSL_VERIFY)]}/>
+                                               id="ssl_verify" ${('', 'checked')[bool(sickrage.srCore.srConfig.SSL_VERIFY)]}/>
                                         <p>Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)<p>
                                     </span>
                                     </label>
@@ -624,7 +624,7 @@
                                         <span class="component-title">No Restart</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="no_restart"
-                                           id="no_restart" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.NO_RESTART)]}/>
+                                           id="no_restart" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_RESTART)]}/>
                                     <p>Only shutdown when restarting SR.
                                     Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)</p>
                                 </span>
@@ -637,7 +637,7 @@
                                         <span class="component-title">Encrypt settings</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="encryption_version"
-                                           id="encryption_version" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.ENCRYPTION_VERSION)]}/>
+                                           id="encryption_version" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENCRYPTION_VERSION)]}/>
                                     <p>in the <code>${sickrage.CONFIG_FILE}</code> file.</p>
                                 </span>
                                     </label>
@@ -648,7 +648,7 @@
                                         <span class="component-title">Unprotected calendar</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="calendar_unprotected"
-                                           id="calendar_unprotected" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.CALENDAR_UNPROTECTED)]}/>
+                                           id="calendar_unprotected" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_UNPROTECTED)]}/>
                                     <p>allow subscribing to the calendar without user and password.
                                     Some services like Google Calendar only work this way</p>
                                 </span>
@@ -661,7 +661,7 @@
                                         <span class="component-title">Google Calendar Icons</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="calendar_icons"
-                                           id="calendar_icons" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.CALENDAR_ICONS)]}/>
+                                           id="calendar_icons" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_ICONS)]}/>
                                     <p>show an icon next to exported calendar events in Google Calendar.</p>
                                 </span>
 
@@ -695,7 +695,7 @@
                                         <span class="component-title">Use proxy for indexers</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="proxy_indexers"
-                                           id="proxy_indexers" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.PROXY_INDEXERS)]}/>
+                                           id="proxy_indexers" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROXY_INDEXERS)]}/>
                                     <p>use proxy host for connecting to indexers (thetvdb)</p>
                                 </span>
                                     </label>
@@ -706,7 +706,7 @@
                                         <span class="component-title">Skip Remove Detection</span>
                                         <span class="component-desc">
                                     <input type="checkbox" name="skip_removed_files"
-                                           id="skip_removed_files" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SKIP_REMOVED_FILES)]}/>
+                                           id="skip_removed_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.SKIP_REMOVED_FILES)]}/>
                                     <p>Skip detection of removed files. If disable it will set default deleted
                                         status</p>
                                  </span>
@@ -813,7 +813,7 @@
                                             <span class="component-title">Git reset</span>
                                             <span class="component-desc">
                                     <input type="checkbox" name="git_reset"
-                                           id="git_reset" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.GIT_RESET)]}/>
+                                           id="git_reset" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_RESET)]}/>
                                     <p>removes untracked files and performs a hard reset on git branch automatically to help resolve update issues</p>
                                 </span>
                                         </label>
@@ -824,7 +824,7 @@
                                             <span class="component-title">Git auto-issues submit</span>
                                             <span class="component-desc">
                                             <input type="checkbox" name="git_autoissues"
-                                                   id="git_autoissues" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.GIT_AUTOISSUES)]}
+                                                   id="git_autoissues" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_AUTOISSUES)]}
                                                    disable/>
                                             <p>automatically submit bug/issue reports to our issue tracker when errors are logged</p>
                                         </span>

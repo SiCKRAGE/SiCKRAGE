@@ -314,6 +314,8 @@ class TVEpisode(object):
             sickrage.srCore.srLogger.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                            (self.show.indexerid, self.season or 0, self.episode or 0))
 
+        return newSubtitles
+
     def checkForMetaFiles(self):
 
         oldhasnfo = self.hasnfo

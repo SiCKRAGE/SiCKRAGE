@@ -52,10 +52,12 @@
                                        name="subtitles_dir" class="form-control input-sm input350"
                                        autocapitalize="off"/>
                             </label>
+                            <br/>
                             <label>
                                 <span class="component-title">&nbsp;</span>
                                 <span class="component-desc">The directory where SickRage should store your <i>Subtitles</i> files.</span>
                             </label>
+                            <br/>
                             <label>
                                 <span class="component-title">&nbsp;</span>
                                 <span class="component-desc"><b>NOTE:</b> Leave empty if you want store subtitle in episode path.</span>
@@ -75,7 +77,7 @@
                                 <span class="component-title">Subtitles History</span>
                                 <span class="component-desc">
                                                 <input type="checkbox" name="subtitles_history"
-                                                       id="subtitles_history" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HISTORY)]}/>
+                                                       id="subtitles_history" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_HISTORY)]}/>
                                                 <p>Log downloaded Subtitle on History page?</p>
                                             </span>
                             </label>
@@ -85,7 +87,7 @@
                                 <span class="component-title">Subtitles Multi-Language</span>
                                 <span class="component-desc">
                                                 <input type="checkbox" name="subtitles_multi"
-                                                       id="subtitles_multi" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_MULTI)]}/>
+                                                       id="subtitles_multi" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_MULTI)]}/>
                                                 <p>Append language codes to subtitle filenames?</p>
                                             </span>
                             </label>
@@ -95,7 +97,7 @@
                                 <span class="component-title">Embedded Subtitles</span>
                                 <span class="component-desc">
                                                 <input type="checkbox" name="embedded_subtitles_all"
-                                                       id="embedded_subtitles_all" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
+                                                       id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
                                                 <p>Ignore subtitles embedded inside video file?</p>
                                                 <p><b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!</p>
                                             </span>
@@ -105,10 +107,10 @@
                             <label class="clearfix" for="subtitles_hearing_impaired">
                                 <span class="component-title">Hearing Impaired Subtitles</span>
                                 <span class="component-desc">
-                                                <input type="checkbox" name="subtitles_hearing_impaired"
-                                                       id="subtitles_hearing_impaired" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
-                                                <p>Download hearing impaired style subtitles?</p>
-                                            </span>
+                                    <input type="checkbox" name="subtitles_hearing_impaired"
+                                           id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
+                                    <p>Download hearing impaired style subtitles?</p>
+                                </span>
                             </label>
                         </div>
                         <div class="field-pair">
@@ -118,26 +120,24 @@
                                        value="<% '|'.join(sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
                                        class="form-control input-sm input350" autocapitalize="off"/>
                             </label>
-                            <label class="nocheck">
-                                <span class="component-title">&nbsp;</span>
-                                <span class="component-desc"><b>NOTE:</b></span>
-                            </label>
+                            <br/>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
                                 <span class="component-desc">
-                                                <ul>
-                                                        <li>See <a
-                                                                href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Subtitle%20Scripts"><font
-                                                                color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
-                                                        <li>Additional scripts separated by <b>|</b>.</li>
-                                                        <li>Scripts are called after each episode has searched and downloaded subtitles.</li>
-                                                        <li>For any scripted languages, include the interpreter executable before the script. See the following example:</li>
-                                                        <ul>
-                                                            <li>For Windows: <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre></li>
-                                                            <li>For Linux: <pre>python /Script/test.py</pre></li>
-                                                        </ul>
-                                                </ul>
-                                            </span>
+                                    <b>NOTE:</b>
+                                    <ul>
+                                            <li>See <a
+                                                    href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Subtitle%20Scripts"><font
+                                                    color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
+                                            <li>Additional scripts separated by <b>|</b>.</li>
+                                            <li>Scripts are called after each episode has searched and downloaded subtitles.</li>
+                                            <li>For any scripted languages, include the interpreter executable before the script. See the following example:</li>
+                                            <ul>
+                                                <li>For Windows: <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre></li>
+                                                <li>For Linux: <pre>python /Script/test.py</pre></li>
+                                            </ul>
+                                    </ul>
+                                </span>
                             </label>
                         </div>
 
@@ -159,7 +159,7 @@
                             % for curService in sickrage.subtitles.sortedServiceList():
                                 <li class="ui-state-default" id="${curService['name']}">
                                     <input type="checkbox" id="enable_${curService['name']}"
-                                           class="service_enabler" ${('', 'checked="checked"')[curService['enabled'] == True]}/>
+                                           class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
                                     <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
                                         <img src="${srWebRoot}/images/subtitles/${curService['image']}"
                                              alt="${curService['url']}" title="${curService['url']}" width="16"

@@ -2189,7 +2189,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" /> loading folders...');
-                    $.post(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
+                    $.get(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
                         $("#addRootDirTable").tablesorter({
                             sortList: [[1, 0]],
@@ -2819,7 +2819,7 @@ jQuery(document).ready(function ($) {
                                 });
                             }
                         },
-                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                        datumTokenizer: Bloodhound.tokenizers.whitespace('name'),
                         queryTokenizer: Bloodhound.tokenizers.whitespace
                     });
 
@@ -2827,18 +2827,8 @@ jQuery(document).ready(function ($) {
                         typeahead: {
                             name: 'subtitles_languages',
                             source: language,
+                            display: 'name',
                             displayKey: 'name'
-                        }
-                    }).on('tokenfield:createtoken', function (event) {
-                        var available_tokens = language.index.datums;
-                        var exists = true;
-                        $.each(available_tokens, function (index, token) {
-                            if (token.value === event.attrs.value) {
-                                exists = false;
-                            }
-                        });
-                        if (exists === true) {
-                            event.preventDefault();
                         }
                     });
 
