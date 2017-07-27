@@ -1,6 +1,7 @@
 # Changelog
 
-- * 73cbd09 - 2017-07-26: Misc code improvements 
+- * ff2b80a - 2017-07-27: Fixed typo v9.0.32 
+- * 1898db7 - 2017-07-26: Misc code improvements 
 - * de0d848 - 2017-07-25: v9.0.31 
 - * a492e7f - 2017-07-25: Fixed show image scraping issues 
 - * 195872c - 2017-07-25: Fixed FreeBSD init script 

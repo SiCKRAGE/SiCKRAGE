@@ -801,7 +801,7 @@ class TVShow(object):
         sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Creating episode object from " + file)
 
         try:
-            parse_result = NameParser(showObj=self, tryIndexers=True).parse(file).parse(file)
+            parse_result = NameParser(showObj=self, tryIndexers=True).parse(file)
         except InvalidNameException:
             sickrage.srCore.srLogger.debug("Unable to parse the filename " + file + " into a valid episode")
             return None
