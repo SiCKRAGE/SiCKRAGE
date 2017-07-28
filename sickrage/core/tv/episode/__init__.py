@@ -281,6 +281,7 @@ class TVEpisode(object):
             sickrage.srCore.srLogger.debug("{}: Episode location set to {}".format(self.show.indexerid, new_location))
             self.dirty = True
         self._location = new_location
+        self.file_size = os.path.getsize(new_location)
 
     def refreshSubtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -758,19 +759,9 @@ class TVEpisode(object):
         """
 
         if not self.dirty and not forceSave:
-            sickrage.srCore.srLogger.debug(
-                "{}: Not saving episode to db - record is not dirty".format(self.show.indexerid))
             return
 
         sickrage.srCore.srLogger.debug("%i: Saving episode to database: %s" % (self.show.indexerid, self.name))
-
-        # set filesize of episode
-        if self.location and os.path.isfile(self.location):
-            self.file_size = os.path.getsize(self.location)
-
-        # don't update the subtitle language when the srt file doesn't contain the alpha2 code
-        if sickrage.srCore.srConfig.SUBTITLES_MULTI or not self.subtitles:
-            self.subtitles = ",".join(self.subtitles)
 
         tv_episode = {
             '_t': 'tv_episodes',
@@ -783,7 +774,7 @@ class TVEpisode(object):
             "indexer": self.indexer,
             "name": self.name,
             "description": self.description,
-            "subtitles": self.subtitles,
+            "subtitles": ",".join(self.subtitles),
             "subtitles_searchcount": self.subtitles_searchcount,
             "subtitles_lastsearch": self.subtitles_lastsearch,
             "airdate": self.airdate.toordinal(),
@@ -1064,8 +1055,7 @@ class TVEpisode(object):
                 return ""
 
             try:
-                np = NameParser(name, showObj=show, naming_pattern=True)
-                parse_result = np.parse(name)
+                parse_result = NameParser(name, showObj=show, naming_pattern=True).parse(name)
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.srCore.srLogger.debug("Unable to get parse release_group: {}".format(e.message))
                 return ''

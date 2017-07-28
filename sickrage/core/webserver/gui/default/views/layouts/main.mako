@@ -60,6 +60,8 @@
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.srConfig.SORT_ARTICLE}">
     <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.srConfig.TIME_PRESET}">
     <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.srConfig.TRIM_ZERO}">
+    <meta data-var="sickrage.FANART_BACKGROUND" data-content="${sickrage.srCore.srConfig.FANART_BACKGROUND}">
+    <meta data-var="sickrage.FANART_BACKGROUND_OPACITY" data-content="${sickrage.srCore.srConfig.FANART_BACKGROUND_OPACITY}">
     <%block name="metas" />
 
     <link rel="apple-touch-icon" sizes="57x57" href="${srWebRoot}/images/ico/apple-icon-57x57.png">

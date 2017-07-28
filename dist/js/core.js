@@ -1757,6 +1757,11 @@ jQuery(document).ready(function ($) {
 
             display_show: {
                 init: function () {
+                    if (SICKRAGE.metaToBool('sickrage.FANART_BACKGROUND')) {
+                        $.backstretch(srRoot + '/showPoster/?show=' + $('#showID').attr('value') + '&which=fanart');
+                        $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
+                    }
+
                     $("#showTable, #animeTable").tablesorter({
                         widgets: ['saveSort', 'columnSelector'],
                         widgetOptions: {

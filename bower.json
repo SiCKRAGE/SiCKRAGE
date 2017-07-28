@@ -37,7 +37,8 @@
     "uri.js": "~1.17.1",
     "jquery.steps": "~1.1.0",
     "jquery-validation": "~1.15.0",
-    "jquery-migrate": "~3.0.0"
+    "jquery-migrate": "~3.0.0",
+    "jquery-backstretch": "~2.1.15"
   },
   "resolutions": {
     "jquery": "~3.2.1",

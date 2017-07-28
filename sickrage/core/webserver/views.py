@@ -54,6 +54,7 @@ from sickrage.core.helpers import argToBool, backupSR, check_url, \
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
+from sickrage.core.media.util import showImage
 from sickrage.core.nameparser import validator
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
@@ -482,6 +483,8 @@ class WebRoot(WebHandler):
             action='schedule'
         )
 
+    def showPoster(self, show=None, which=None):
+        return showImage(show, which)
 
 @Route('/google(/?.*)')
 class GoogleAuth(WebHandler):

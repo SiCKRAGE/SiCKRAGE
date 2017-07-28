@@ -25,19 +25,17 @@ from sickrage.core.media.poster import Poster
 
 
 def showImage(show=None, which=None):
-    media = None
     media_format = ('normal', 'thumb')[which in ('banner_thumb', 'poster_thumb', 'small')]
 
-    try:
-        if which[0:6] == 'banner':
-            media = Banner(show, media_format)
-        elif which[0:6] == 'fanart':
-            media = FanArt(show, media_format)
-        elif which[0:6] == 'poster':
-            media = Poster(show, media_format)
-        elif which[0:7] == 'network':
-            media = Network(show, media_format)
+    if which[0:6] == 'banner':
+        media = Banner(show, media_format)
+    elif which[0:6] == 'fanart':
+        media = FanArt(show, media_format)
+    elif which[0:6] == 'poster':
+        media = Poster(show, media_format)
+    elif which[0:7] == 'network':
+        media = Network(show, media_format)
+    else:
+        return
 
-        return media.get_media_url
-    except:
-        pass
+    return media.get_media_url

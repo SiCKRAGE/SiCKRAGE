@@ -319,8 +319,10 @@
                                 </tr>
                             % endif
                             <tr>
-                                <td class="showLegend">Subtitles SR Metadata:</td>
-                                <td><span class="displayshow-icon-${("disable", "enable")[bool(show.subtitles_sr_metadata)]}" title=${("N", "Y")[bool(show.subtitles_sr_metadata)]}></span></td>
+                                <td class="showLegend">Subtitles Metadata:</td>
+                                <td><span
+                                        class="displayshow-icon-${("disable", "enable")[bool(show.subtitles_sr_metadata)]}"
+                                        title=${("N", "Y")[bool(show.subtitles_sr_metadata)]}></span></td>
                             </tr>
                             <tr>
                                 <td class="showLegend">Season Folders:</td>
