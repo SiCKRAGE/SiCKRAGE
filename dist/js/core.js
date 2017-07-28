@@ -1758,7 +1758,7 @@ jQuery(document).ready(function ($) {
             display_show: {
                 init: function () {
                     if (SICKRAGE.metaToBool('sickrage.FANART_BACKGROUND')) {
-                        $.backstretch(srRoot + '/showPoster/?show=' + $('#showID').attr('value') + '&which=fanart');
+                        $.backstretch(SICKRAGE.srWebRoot + '/images/' + $('#showID').attr('value') + '.fanart.jpg');
                         $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
                     }
 
