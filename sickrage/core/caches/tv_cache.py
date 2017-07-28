@@ -28,7 +28,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import findCertainShow, show_names
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
+from sickrage.core.nameparser import InvalidNameException, NameParser
 from sickrage.core.rssfeeds import getFeed
 
 
@@ -174,6 +174,10 @@ class TVCache(object):
         return True
 
     def addCacheEntry(self, name, url, parse_result=None, indexer_id=0):
+        # check for existing entry in cache
+        if len([x for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True) if
+                x['doc']['url'] == url]): return
+
         # check if we passed in a parsed result or should we try and create one
         if not parse_result:
             # create showObj from indexer_id if available
@@ -182,12 +186,8 @@ class TVCache(object):
                 showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
 
             try:
-                myParser = NameParser(showObj=showObj)
-                parse_result = myParser.parse(name)
-                if not parse_result:
-                    return
-            except (InvalidShowException, InvalidNameException):
-                sickrage.srCore.srLogger.debug("RSS ITEM:[{}] IGNORED!".format(name))
+                parse_result = NameParser(showObj=showObj).parse(name)
+            except InvalidNameException:
                 return
 
         if not parse_result.series_name:
@@ -213,23 +213,22 @@ class TVCache(object):
             # get version
             version = parse_result.version
 
-            if not len([x for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
-                        if x['doc']['url'] == url]):
-                sickrage.srCore.cacheDB.db.insert({
-                    '_t': 'providers',
-                    'provider': self.providerID,
-                    'name': name,
-                    'season': season,
-                    'episodes': episodeText,
-                    'indexerid': parse_result.show.indexerid,
-                    'url': url,
-                    'time': curTimestamp,
-                    'quality': quality,
-                    'release_group': release_group,
-                    'version': version
-                })
+            # add to DB
+            sickrage.srCore.cacheDB.db.insert({
+                '_t': 'providers',
+                'provider': self.providerID,
+                'name': name,
+                'season': season,
+                'episodes': episodeText,
+                'indexerid': parse_result.show.indexerid,
+                'url': url,
+                'time': curTimestamp,
+                'quality': quality,
+                'release_group': release_group,
+                'version': version
+            })
 
-                sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
+            sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
 
     def list_propers(self, date=None):
         return [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
