@@ -46,7 +46,7 @@
         <div class="col-md-12">
             <div id="showtitle" data-showname="${show.name}">
                 <h1 class="title" id="scene_exception_${show.indexerid}"
-                    data-tooltip="${all_scene_exceptions}">${show.name}</h1>
+                    title="${all_scene_exceptions}">${show.name}</h1>
             </div>
         </div>
         <div class="col-md-12">
@@ -111,7 +111,7 @@
         <div class="col-xs-12">
             <div class="panel panel-default panel-body"
                  style="background-image:linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%),
-                         url(${srWebRoot}${showImage(show.indexerid, 'banner')});
+                         url(${srWebRoot}${showImage(show.indexerid, 'banner').url});
                          background-size: 100% 100%;">
 
                 % if show.overview:
@@ -132,7 +132,7 @@
                                 <td>
                                     % if 'rating' in show.imdb_info:
                                     <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
-                                        <span class="imdbstars" data-tooltip="${rating_tip}">
+                                        <span class="imdbstars" title="${rating_tip}">
                                             ${show.imdb_info['rating']}
                                         </span>
                                     % endif
@@ -581,7 +581,7 @@
                             <%
                                 text = str(epResult['episode'])
                                 if epLoc != '' and epLoc is not None:
-                                            text = '<span title="' + epLoc + '" class="addQTip badge">' + text + "</span>"
+                                            text = '<span title="' + epLoc + '" class="badge">' + text + "</span>"
                             %>
                                 ${text}
                         </td>
@@ -621,12 +621,11 @@
                         <td class="col-name">
                             <img src="${srWebRoot}/images/info32.png" width="16" height="16" alt=""
                                  id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
+                                 title="${epResult["description"]}"
                                 % if epResult["description"]:
                                  class="plotInfo"
-                                 data-tooltip="${epResult["description"]}"
                                 % else:
                                  class="plotInfoNone"
-                                 data-tooltip=""
                                 % endif
                             />
 

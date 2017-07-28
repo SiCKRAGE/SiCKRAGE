@@ -849,8 +849,11 @@
                                             <td>RLSGROUP</td>
                                         </tr>
                                         <tr>
-                                            <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                                       title="If episode is proper/repack add 'proper' to name."></i>
+                                            <td class="align-right">
+                                                <i class="glyphicon glyphicon-info-sign"
+                                                                       title="If episode is proper/repack add 'proper' to name.">
+
+                                                </i>
                                                 <b>Release Type:</b></td>
                                             <td>%RT</td>
                                             <td>PROPER</td>

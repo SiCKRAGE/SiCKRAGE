@@ -100,7 +100,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="${srWebRoot}/home/" title="SiCKRAGE">
+                <a class="navbar-brand" href="${srWebRoot}/home/">
                     <img alt="SiCKRAGE"
                          src="${srWebRoot}/images/logo.png"
                          style="width: 200px;height: 50px;"
@@ -443,8 +443,7 @@
         | <span class="footerhighlight">${ep_downloaded}</span>
 
     % if ep_snatched:
-        <span class="footerhighlight"><a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2"
-                                         title="View overview of snatched episodes">+${ep_snatched}</a></span>
+        <span class="footerhighlight"><a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a></span>
         Snatched
     % endif
 

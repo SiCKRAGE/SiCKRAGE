@@ -87,6 +87,25 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
+                // tooltips
+                $('[title!=""]').qtip({
+                    position: {
+                        viewport: $(window),
+                        my: 'left center',
+                        adjust: {
+                            y: -10,
+                            x: 2
+                        }
+                    },
+                    style: {
+                        tip: {
+                            corner: true,
+                            method: 'polygon'
+                        },
+                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
+                    }
+                });
+
                 // init scrollUp
                 $.scrollUp({
                     animation: 'fade',
@@ -275,80 +294,6 @@ jQuery(document).ready(function ($) {
                     '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
                     confirm: function (e) {
                         location.href = e.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
-                    }
-                });
-
-                // plot tooltips
-                $('.plotInfo').qtip({
-                    content: {
-                        attr: 'data-tooltip'
-                    },
-                    position: {
-                        viewport: $(window),
-                        my: 'left center',
-                        adjust: {
-                            y: -10,
-                            x: 2
-                        }
-                    },
-                    style: {
-                        tip: {
-                            corner: true,
-                            method: 'polygon'
-                        },
-                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
-                    }
-                });
-
-                // scene exception tooltips
-                $('.title a').qtip({
-                    content: {
-                        attr: 'data-tooltip'
-                    },
-                    show: {
-                        solo: true
-                    },
-                    position: {
-                        viewport: $(window),
-                        my: 'bottom center',
-                        at: 'top center',
-                        adjust: {
-                            y: 10,
-                            x: 0
-                        }
-                    },
-                    style: {
-                        tip: {
-                            corner: true,
-                            method: 'polygon'
-                        },
-                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
-                    }
-                });
-
-                // rating tooltips
-                $('.imdbstars').qtip({
-                    content: {
-                        attr: 'data-tooltip'
-                    },
-                    show: {
-                        solo: true
-                    },
-                    position: {
-                        viewport: $(window),
-                        my: 'right center',
-                        at: 'center left',
-                        adjust: {
-                            y: 0,
-                            x: -6
-                        }
-                    },
-                    style: {
-                        tip: {
-                            corner: true,
-                            method: 'polygon'
-                        },
-                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
                     }
                 });
 
@@ -1758,7 +1703,7 @@ jQuery(document).ready(function ($) {
             display_show: {
                 init: function () {
                     if (SICKRAGE.metaToBool('sickrage.FANART_BACKGROUND')) {
-                        $.backstretch(srRoot + '/showPoster/?show=' + $('#showID').attr('value') + '&which=fanart');
+                        $.backstretch(SICKRAGE.srWebRoot + '/images/' + $('#showID').attr('value') + '.fanart.jpg');
                         $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
                     }
 
@@ -1965,18 +1910,6 @@ jQuery(document).ready(function ($) {
                             sceneAbsolute = m[1];
                         }
                         SICKRAGE.home.display_show.setAbsoluteSceneNumbering(forAbsolute, sceneAbsolute);
-                    });
-
-                    $('.addQTip').each(function () {
-                        $(this).css({'cursor': 'help', 'text-shadow': '0px 0px 0.5px #666'});
-                        $(this).qtip({
-                            show: {solo: true},
-                            position: {viewport: $(window), my: 'left center', adjust: {y: -10, x: 2}},
-                            style: {
-                                tip: {corner: true, method: 'polygon'},
-                                classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
-                            }
-                        });
                     });
 
                     SICKRAGE.ajax_search.init();
@@ -2674,6 +2607,11 @@ jQuery(document).ready(function ($) {
 
         config: {
             init: function () {
+                // toggle switches
+                $('input:checkbox').bootstrapToggle({
+                    size: 'small'
+                });
+
                 $('#configForm').ajaxForm({
                     beforeSubmit: function () {
                         $('.config_submitter .config_submitter_refresh').each(function () {

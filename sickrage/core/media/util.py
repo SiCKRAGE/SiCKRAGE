@@ -28,14 +28,10 @@ def showImage(show=None, which=None):
     media_format = ('normal', 'thumb')[which in ('banner_thumb', 'poster_thumb', 'small')]
 
     if which[0:6] == 'banner':
-        media = Banner(show, media_format)
+        return Banner(show, media_format)
     elif which[0:6] == 'fanart':
-        media = FanArt(show, media_format)
+        return FanArt(show, media_format)
     elif which[0:6] == 'poster':
-        media = Poster(show, media_format)
+        return Poster(show, media_format)
     elif which[0:7] == 'network':
-        media = Network(show, media_format)
-    else:
-        return
-
-    return media.get_media_url
+        return Network(show, media_format)

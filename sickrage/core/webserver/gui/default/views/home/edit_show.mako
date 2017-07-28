@@ -61,7 +61,7 @@
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label>
                                             <input type="checkbox" id="archive_firstmatch"
-                                                   data-toggle="toggle"
+
                                                    name="archive_firstmatch" ${('', 'checked')[show.archive_firstmatch == 1]} />
                                             archive episode after the first best match is found from your archive
                                             quality list
@@ -111,7 +111,7 @@
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label>
                                             <input type="checkbox" id="subtitles"
-                                                   data-toggle="toggle"
+
                                                    name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.srCore.srConfig.USE_SUBTITLES])]}${('disabled="disabled"', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/>
                                             search for subtitles
                                         </label>
@@ -125,7 +125,7 @@
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label>
                                             <input type="checkbox" id="subtitles_sr_metadata"
-                                                   data-toggle="toggle"
+
                                                    name="subtitles_sr_metadata" ${('', 'checked')[show.subtitles_sr_metadata == 1]} />
                                             use SiCKRAGE metadata when searching for subtitle, this will override the
                                             auto-discovered metadata
@@ -140,7 +140,7 @@
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label>
                                             <input type="checkbox" id="paused"
-                                                   data-toggle="toggle"
+
                                                    name="paused" ${('', 'checked')[show.paused == 1]} />
                                             pause this show (SiCKRAGE will not download episodes)
                                         </label>
@@ -163,7 +163,7 @@
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label><input type="checkbox" id="airbydate"
-                                                      data-toggle="toggle"
+
                                                       name="air_by_date" ${('', 'checked')[show.air_by_date == 1]} />
                                             check if the show is released as Show.03.02.2010 rather than
                                             Show.S02E03.</label>
@@ -178,7 +178,7 @@
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label><input type="checkbox" id="anime"
-                                                      data-toggle="toggle"
+
                                                       name="anime" ${('', 'checked')[show.is_anime == 1]}> check if
                                             the show is Anime and episodes are released as Show.265 rather than
                                             Show.S02E03</label>
@@ -195,7 +195,7 @@
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label><input type="checkbox" id="sports"
-                                                      data-toggle="toggle"
+
                                                       name="sports" ${('', 'checked')[show.sports == 1]}/> check if
                                             the show is a sporting or MMA event released as Show.03.02.2010 rather than
                                             Show.S02E03</label>
@@ -210,7 +210,7 @@
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label><input type="checkbox" id="season_folders"
-                                                      data-toggle="toggle"
+
                                                       name="flatten_folders" ${('checked', '')[show.flatten_folders == 1 and not sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}/>
                                             group episodes by season folder (uncheck to store in a single
                                             folder)</label>
@@ -223,7 +223,7 @@
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label><input type="checkbox" id="scene"
-                                                      data-toggle="toggle"
+
                                                       name="scene" ${('', 'checked')[show.scene == 1]} /> search by
                                             scene numbering (uncheck to search by indexer numbering)</label>
                                     </div>
@@ -235,7 +235,7 @@
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <label><input type="checkbox" id="dvdorder"
-                                                      data-toggle="toggle"
+
                                                       name="dvdorder" ${('', 'checked')[show.dvdorder == 1]} /> use
                                             the DVD order instead of the air order<br></label>
                                         <br/>

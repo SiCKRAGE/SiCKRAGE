@@ -1,6 +1,7 @@
 # Changelog
 
-- * 409ed64 - 2017-07-27: Added background fanart when displaying shows Made config general template responsive Added web view for getting poster urls 
+- * 1c3ca5e - 2017-07-28: Config -&gt; General is now responsive 
+- * 2ed40fa - 2017-07-27: Added background fanart when displaying shows Made config general template responsive Added web view for getting poster urls 
 - * 815ebae - 2017-07-27: v9.0.33 
 - * 2c33300 - 2017-07-27: Added custom metadata option for subtitles 
 - * 77457f8 - 2017-07-27: Fixed typo causing issue with log filtering for post-processing 

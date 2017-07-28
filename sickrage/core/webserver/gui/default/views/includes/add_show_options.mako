@@ -9,7 +9,7 @@
             <span class="component-title">Subtitles</span>
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-            <label><input type="checkbox" name="subtitles" data-toggle="toggle"
+            <label><input type="checkbox" name="subtitles"
                           id="subtitles" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_DEFAULT)]} /></label>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <span class="component-title">Flatten Folders</span>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <label><input class="cb" type="checkbox" name="flatten_folders" data-toggle="toggle"
+        <label><input class="cb" type="checkbox" name="flatten_folders"
                       id="flatten_folders" ${('', 'checked')[bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT)]}/></label>
     </div>
 </div>
@@ -29,7 +29,7 @@
             <span class="component-title">Anime</span>
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-            <label><input type="checkbox" name="anime" data-toggle="toggle"
+            <label><input type="checkbox" name="anime"
                           id="anime" ${('', 'checked')[bool(sickrage.srCore.srConfig.ANIME_DEFAULT)]} /></label>
         </div>
     </div>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <label><input type="checkbox" name="scene" data-toggle="toggle"
+        <label><input type="checkbox" name="scene"
                       id="scene" ${('', 'checked')[bool(sickrage.srCore.srConfig.SCENE_DEFAULT)]} /></label>
     </div>
 
@@ -52,7 +52,7 @@
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <label><input type="checkbox" name="archive" data-toggle="toggle"
+        <label><input type="checkbox" name="archive"
                       id="archive" ${('', 'checked')[bool(sickrage.srCore.srConfig.ARCHIVE_DEFAULT)]} /></label>
     </div>
 
