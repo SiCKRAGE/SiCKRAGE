@@ -278,10 +278,10 @@ class TVEpisode(object):
     @location.setter
     def location(self, new_location):
         if os.path.isfile(new_location):
+            self.file_size = os.path.getsize(new_location)
             sickrage.srCore.srLogger.debug("{}: Episode location set to {}".format(self.show.indexerid, new_location))
             self.dirty = True
         self._location = new_location
-        self.file_size = os.path.getsize(new_location)
 
     def refreshSubtitles(self):
         """Look for subtitles files and refresh the subtitles property"""

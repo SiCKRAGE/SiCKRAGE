@@ -1,6 +1,7 @@
 # Changelog
 
-- * a8bb297 - 2017-07-28: Added fanart backgrounds to display show page 
+- * f2835da - 2017-07-28: Fixed issue with Trakt API code 
+- * f86e64d - 2017-07-28: Added fanart backgrounds to display show page 
 - * 2ed40fa - 2017-07-27: Added background fanart when displaying shows Made config general template responsive Added web view for getting poster urls 
 - * 815ebae - 2017-07-27: v9.0.33 
 - * 2c33300 - 2017-07-27: Added custom metadata option for subtitles 

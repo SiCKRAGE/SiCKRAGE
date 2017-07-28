@@ -58,7 +58,7 @@ def setEpisodeToWanted(show, s, e):
 class srTraktSearcher(object):
     def __init__(self, *args, **kwargs):
         self.name = "TRAKTSEARCHER"
-        self.trakt_api = None
+
         self.todoBacklog = []
         self.todoWanted = []
         self.ShowWatchlist = {}
@@ -66,17 +66,18 @@ class srTraktSearcher(object):
         self.Collectionlist = {}
         self.amActive = False
 
+    @property
+    def trakt_api(self):
+        return TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
+
     def run(self, force=False):
-        if self.amActive or sickrage.DEVELOPER:
+        if self.amActive:
             return
 
         self.amActive = True
 
         # set thread name
         threading.currentThread().setName(self.name)
-
-        # init trakt api
-        self.trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
 
         # add shows from tv watchlist
         if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
