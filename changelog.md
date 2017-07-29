@@ -1,6 +1,7 @@
 # Changelog
 
-- * e8da99b - 2017-07-29: Fixed code for unpacking rar files 
+- * 49b1a37 - 2017-07-29: v9.0.34 
+- * 3b3085c - 2017-07-29: Fixed code for unpacking rar files 
 - * 1f744d8 - 2017-07-28: All entries from provider RSS feeds are now cached for faster lookups 
 - * 1e09553 - 2017-07-28: Fixed issue with Trakt API code 
 - * f86e64d - 2017-07-28: Added fanart backgrounds to display show page 
