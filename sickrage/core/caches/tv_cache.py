@@ -28,7 +28,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import findCertainShow, show_names
-from sickrage.core.nameparser import InvalidNameException, NameParser
+from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.rssfeeds import getFeed
 
 
@@ -187,48 +187,55 @@ class TVCache(object):
 
             try:
                 parse_result = NameParser(showObj=showObj).parse(name)
-            except InvalidNameException:
-                return
+            except (InvalidShowException, InvalidNameException):
+                sickrage.srCore.cacheDB.db.insert({
+                    '_t': 'providers',
+                    'provider': self.providerID,
+                    'name': name,
+                    'season': 0,
+                    'episodes': '',
+                    'indexerid': 0,
+                    'url': url,
+                    'time': int(time.mktime(datetime.datetime.today().timetuple())),
+                    'quality': Quality.UNKNOWN,
+                    'release_group': '',
+                    'version': 0
+                })
+                sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
 
-        if not parse_result.series_name:
-            return
+        if parse_result and parse_result.series_name:
+            season = parse_result.season_number if parse_result.season_number else 1
+            episodes = parse_result.episode_numbers
 
-        # if we made it this far then lets add the parsed result to cache for usager later on
-        season = parse_result.season_number if parse_result.season_number else 1
-        episodes = parse_result.episode_numbers
+            if season and episodes:
+                # store episodes as a seperated string
+                episodeText = "|" + "|".join(map(str, episodes)) + "|"
 
-        if season and episodes:
-            # store episodes as a seperated string
-            episodeText = "|" + "|".join(map(str, episodes)) + "|"
+                # get quality of release
+                quality = parse_result.quality
 
-            # get the current timestamp
-            curTimestamp = int(time.mktime(datetime.datetime.today().timetuple()))
+                # get release group
+                release_group = parse_result.release_group
 
-            # get quality of release
-            quality = parse_result.quality
+                # get version
+                version = parse_result.version
 
-            # get release group
-            release_group = parse_result.release_group
+                # add to DB
+                sickrage.srCore.cacheDB.db.insert({
+                    '_t': 'providers',
+                    'provider': self.providerID,
+                    'name': name,
+                    'season': season,
+                    'episodes': episodeText,
+                    'indexerid': parse_result.show.indexerid,
+                    'url': url,
+                    'time': int(time.mktime(datetime.datetime.today().timetuple())),
+                    'quality': quality,
+                    'release_group': release_group,
+                    'version': version
+                })
 
-            # get version
-            version = parse_result.version
-
-            # add to DB
-            sickrage.srCore.cacheDB.db.insert({
-                '_t': 'providers',
-                'provider': self.providerID,
-                'name': name,
-                'season': season,
-                'episodes': episodeText,
-                'indexerid': parse_result.show.indexerid,
-                'url': url,
-                'time': curTimestamp,
-                'quality': quality,
-                'release_group': release_group,
-                'version': version
-            })
-
-            sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
+                sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
 
     def list_propers(self, date=None):
         return [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
