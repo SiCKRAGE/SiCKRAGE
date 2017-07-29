@@ -39,7 +39,7 @@ from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
-from sickrage.core.classes import ErrorViewer, AllShowsListUI, AttrDict
+from sickrage.core.classes import ErrorViewer, AllShowsUI, AttrDict
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
@@ -2245,7 +2245,7 @@ class HomeAddShows(Home):
         for indexer in srIndexerApi().indexers if not int(indexer) else [int(indexer)]:
             lINDEXER_API_PARMS = srIndexerApi(indexer).api_params.copy()
             lINDEXER_API_PARMS['language'] = lang
-            lINDEXER_API_PARMS['custom_ui'] = AllShowsListUI
+            lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
             t = srIndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
             sickrage.srCore.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
