@@ -162,6 +162,8 @@ class TVCache(object):
             })
 
     def should_update(self):
+        if sickrage.DEVELOPER: return True
+
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):
             return False
@@ -186,22 +188,9 @@ class TVCache(object):
                 showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
 
             try:
-                parse_result = NameParser(showObj=showObj).parse(name)
+                parse_result = NameParser(showObj=showObj, tryIndexers=True, validate_show=False).parse(name)
             except (InvalidShowException, InvalidNameException):
-                sickrage.srCore.cacheDB.db.insert({
-                    '_t': 'providers',
-                    'provider': self.providerID,
-                    'name': name,
-                    'season': 0,
-                    'episodes': '',
-                    'indexerid': 0,
-                    'url': url,
-                    'time': int(time.mktime(datetime.datetime.today().timetuple())),
-                    'quality': Quality.UNKNOWN,
-                    'release_group': '',
-                    'version': 0
-                })
-                sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
+                pass
 
         if parse_result and parse_result.series_name:
             season = parse_result.season_number if parse_result.season_number else 1
@@ -227,7 +216,7 @@ class TVCache(object):
                     'name': name,
                     'season': season,
                     'episodes': episodeText,
-                    'indexerid': parse_result.show.indexerid,
+                    'indexerid': parse_result.show.indexerid if parse_result.show else 0,
                     'url': url,
                     'time': int(time.mktime(datetime.datetime.today().timetuple())),
                     'quality': quality,

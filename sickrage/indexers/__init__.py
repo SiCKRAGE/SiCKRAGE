@@ -75,8 +75,6 @@ class srIndexerApi(object):
         showNames = [re.sub('[. -]', ' ', regShowName)]
 
         # Query Indexers for each search term and build the list of results
-
-        # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = self.api_params.copy()
         if ui is not None:
             lINDEXER_API_PARMS['custom_ui'] = ui

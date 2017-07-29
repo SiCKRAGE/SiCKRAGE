@@ -39,7 +39,7 @@ except ImportError:
 
 import sickrage
 from sickrage.core.caches import image_cache
-from sickrage.core.classes import AllShowsListUI
+from sickrage.core.classes import AllShowsUI
 from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
@@ -1609,7 +1609,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                     lINDEXER_API_PARMS['language'] = self.lang
 
                 lINDEXER_API_PARMS['actors'] = False
-                lINDEXER_API_PARMS['custom_ui'] = AllShowsListUI
+                lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
 
                 t = srIndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
 

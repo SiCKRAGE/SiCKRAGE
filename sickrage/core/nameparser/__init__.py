@@ -25,6 +25,7 @@ import time
 from dateutil import parser
 
 import sickrage
+from sickrage.core.classes import AllShowsUI
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, get_all_episodes_from_absolute_number, \
     remove_extension
@@ -41,11 +42,12 @@ class NameParser(object):
     NORMAL_REGEX = 1
     ANIME_REGEX = 2
 
-    def __init__(self, file_name=True, showObj=None, tryIndexers=False, naming_pattern=False):
+    def __init__(self, file_name=True, showObj=None, tryIndexers=False, naming_pattern=False, validate_show=True):
         self.file_name = file_name
         self.showObj = showObj
         self.tryIndexers = tryIndexers
         self.naming_pattern = naming_pattern
+        self.validate_show = validate_show
 
         if self.showObj and not self.showObj.is_anime:
             self._compile_regexes(self.NORMAL_REGEX)
@@ -74,7 +76,8 @@ class NameParser(object):
             # try indexers
             if not showObj and tryIndexers:
                 showObj = findCertainShow(sickrage.srCore.SHOWLIST,
-                                          srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+                                          srIndexerApi().searchForShowID(full_sanitizeSceneName(name),
+                                                                         ui=AllShowsUI)[2])
 
             # try scene exceptions
             if not showObj:
@@ -486,7 +489,7 @@ class NameParser(object):
         final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if not final_result.show:
+        if not final_result.show and self.validate_show:
             raise InvalidShowException("Unable to parse {}".format(name))
 
         # if there's no useful info in it then raise an exception
