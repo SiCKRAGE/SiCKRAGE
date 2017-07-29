@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6ed83ca - 2017-07-29: Fixed issue with caching rss feed items not in tv library 
+- * f2882af - 2017-07-29: v9.0.35 
+- * 3ebc420 - 2017-07-29: Fixed issue with caching rss feed items not in tv library 
 - * 1292285 - 2017-07-29: v9.0.34 
 - * 3b3085c - 2017-07-29: Fixed code for unpacking rar files 
 - * 1f744d8 - 2017-07-28: All entries from provider RSS feeds are now cached for faster lookups 
