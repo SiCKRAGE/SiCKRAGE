@@ -1,6 +1,7 @@
 # Changelog
 
-- * c8dbf82 - 2017-07-29: v9.0.36 
+- * 6745d8e - 2017-07-29: Updated CSS 
+- * 0fe5f33 - 2017-07-29: v9.0.36 
 - * 006e1c3 - 2017-07-29: v9.0.35 
 - * 511b3f1 - 2017-07-29: v9.0.35 
 - * 3ebc420 - 2017-07-29: Fixed issue with caching rss feed items not in tv library 
