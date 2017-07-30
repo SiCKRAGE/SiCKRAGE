@@ -140,7 +140,7 @@ class AllShowsUI(object):
         self.config = config
         self.log = log
 
-    def selectSeries(self, allSeries, **kwargs):
+    def selectSeries(self, allSeries, *args, **kwargs):
         shows = []
 
         # get all available shows
@@ -173,7 +173,7 @@ class ShowListUI(object):
         self.config = config
         self.log = log
 
-    def selectSeries(self, allSeries, **kwargs):
+    def selectSeries(self, allSeries, *args, **kwargs):
         try:
             # try to pick a show that's in my show list
             showIDList = [int(x.indexerid) for x in sickrage.srCore.SHOWLIST]

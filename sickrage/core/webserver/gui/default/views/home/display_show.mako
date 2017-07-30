@@ -496,7 +496,7 @@
                 % if int(epResult["season"]) != curSeason:
                     <thead>
                     <tr>
-                        <th class="row-seasonheader displayShowTable" colspan="100%">
+                        <th class="row-seasonheader" colspan="100%">
                             <h3 class="pull-left">
                                 <a name="season-${epResult["season"]}"></a>
                                 ${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}

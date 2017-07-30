@@ -263,4 +263,11 @@ module.exports = function (grunt) {
             'jshint'
         ]
     );
+
+    grunt.registerTask(
+        'css', [
+            'sass',
+            'cssmin'
+        ]
+    );
 };

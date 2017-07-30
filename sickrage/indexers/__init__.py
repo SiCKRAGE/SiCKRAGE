@@ -23,7 +23,6 @@ import re
 
 import sickrage
 from sickrage.core.classes import ShowListUI
-from sickrage.core.helpers import findCertainShow
 from sickrage.indexers.config import indexerConfig
 
 
@@ -76,37 +75,19 @@ class srIndexerApi(object):
 
         # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = self.api_params.copy()
-        if ui is not None:
-            lINDEXER_API_PARMS['custom_ui'] = ui
+        lINDEXER_API_PARMS['custom_ui'] = ui
         t = self.indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            sickrage.srCore.srLogger.debug("Trying to find " + name + " on " + self.name)
+            sickrage.srCore.srLogger.debug("Trying to find show {} on indexer {}".format(name, self.name))
 
             try:
                 search = t[showid] if showid else t[name]
-            except Exception:
-                continue
-
-            try:
                 seriesname = search[0]['seriesname']
-            except Exception:
-                seriesname = None
-
-            try:
                 series_id = search[0]['id']
             except Exception:
-                series_id = None
-
-            if not (seriesname and series_id):
                 continue
 
-            ShowObj = findCertainShow(sickrage.srCore.SHOWLIST, int(series_id))
-
-            # Check if we can find the show in our list (if not, it's not the right show)
-            if (showid is None) and (ShowObj is not None) and (ShowObj.indexerid == int(series_id)):
-                return seriesname, self.indexerID, int(series_id)
-            elif (showid is not None) and (int(showid) == int(series_id)):
-                return seriesname, self.indexerID, int(showid)
+            return seriesname, self.indexerID, int(series_id)
 
         return None, None, None
