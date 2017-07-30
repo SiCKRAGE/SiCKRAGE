@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2fed0bb - 2017-07-30: Updated the way sickrage caches results from provider RSS feeds 
+- * b723829 - 2017-07-30: v9.0.37 
+- * d3b2836 - 2017-07-30: Updated the way sickrage caches results from provider RSS feeds 
 - * 0330e6b - 2017-07-29: Updated CSS 
 - * 0fe5f33 - 2017-07-29: v9.0.36 
 - * 006e1c3 - 2017-07-29: v9.0.35 
