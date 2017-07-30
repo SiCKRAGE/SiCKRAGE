@@ -146,7 +146,7 @@ class srProperSearcher(object):
                 "Successful match! Result " + parse_result.original_name + " matched to show " + parse_result.show.name)
 
             # set the indexerid in the db to the show's indexerid
-            curProper.indexerid = parse_result.show.indexerid
+            curProper.indexerid = parse_result.indexerid
 
             # set the indexer in the db to the show's indexer
             curProper.indexer = parse_result.show.indexer
