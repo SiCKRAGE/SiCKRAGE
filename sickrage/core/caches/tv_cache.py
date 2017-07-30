@@ -183,9 +183,7 @@ class TVCache(object):
         # check if we passed in a parsed result or should we try and create one
         if not parse_result:
             # create showObj from indexer_id if available
-            showObj = None
-            if indexer_id:
-                showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
+            showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id) if indexer_id else None
 
             try:
                 parse_result = NameParser(showObj=showObj, tryIndexers=True, validate_show=False).parse(name)
@@ -216,7 +214,7 @@ class TVCache(object):
                     'name': name,
                     'season': season,
                     'episodes': episodeText,
-                    'indexerid': parse_result.show.indexerid if parse_result.show else 0,
+                    'indexerid': parse_result.indexerid,
                     'url': url,
                     'time': int(time.mktime(datetime.datetime.today().timetuple())),
                     'quality': quality,
