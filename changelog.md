@@ -1,6 +1,7 @@
 # Changelog
 
-- * b723829 - 2017-07-30: v9.0.37 
+- * 8c12132 - 2017-07-30: Added custom rTorrent module to libs folder Fixed issues with rTorrent client 
+- * efa8992 - 2017-07-30: v9.0.37 
 - * d3b2836 - 2017-07-30: Updated the way sickrage caches results from provider RSS feeds 
 - * 0330e6b - 2017-07-29: Updated CSS 
 - * 0fe5f33 - 2017-07-29: v9.0.36 

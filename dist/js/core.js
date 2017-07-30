@@ -2949,8 +2949,8 @@ jQuery(document).ready(function ($) {
                             });
                     });
 
+                    SICKRAGE.config.search.rtorrentScgi();
                     $('#torrent_host').change(SICKRAGE.config.search.rtorrentScgi);
-
 
                     $('#nzb_dir').fileBrowser({title: 'Select .nzb blackhole/watch location'});
                     $('#torrent_dir').fileBrowser({title: 'Select .torrent blackhole/watch location'});
@@ -3063,7 +3063,7 @@ jQuery(document).ready(function ($) {
                         } else if (selectedProvider.toLowerCase() === 'rtorrent') {
                             client = 'rTorrent';
                             $('#torrent_paused_option').hide();
-                            $('#host_desc_torrent').text('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)');
+                            $('#host_desc_torrent').html('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)');
                             $('#torrent_verify_cert_option').show();
                             $('#torrent_verify_deluge').hide();
                             $('#torrent_verify_rtorrent').show();
@@ -3107,10 +3107,8 @@ jQuery(document).ready(function ($) {
                 },
 
                 rtorrentScgi: function () {
-                    var selectedProvider = $('#torrent_method :selected').val();
-
-                    if (selectedProvider.toLowerCase() === 'rtorrent') {
-                        var hostname = $('#torrent_host').prop('value');
+                    if ($('#torrent_method :selected').val().toLowerCase() === 'rtorrent') {
+                        var hostname = $('#torrent_host').val();
                         var isMatch = hostname.substr(0, 7) === "scgi://";
 
                         if (isMatch) {
