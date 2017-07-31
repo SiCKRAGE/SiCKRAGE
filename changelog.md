@@ -1,6 +1,7 @@
 # Changelog
 
-- * b62b509 - 2017-07-31: &quot;performing episodes search for showname&quot; message to only be displayed in log if there are actual episodes to be searched for 
+- * 6583ec0 - 2017-07-31: Fixed TorrentLeech provider searching 
+- * 8b294f8 - 2017-07-31: &quot;performing episodes search for showname&quot; message to only be displayed in log if there are actual episodes to be searched for 
 - * cdd0147 - 2017-07-31: v9.0.40 
 - * 512bfcc - 2017-07-31: Fixed incorrect refs in rtorrentlib module 
 - * 961db5c - 2017-07-31: added absolute import for rtorrent client 
