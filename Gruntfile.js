@@ -270,4 +270,9 @@ module.exports = function (grunt) {
             'cssmin'
         ]
     );
+
+    grunt.registerTask('release', function () {
+        version = grunt.file.read('sickrage/version.txt');
+        grunt.log.write('Current Version: ' + version);
+    });
 };
