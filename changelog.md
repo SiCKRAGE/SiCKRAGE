@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4299398 - 2017-07-31: Fixed incorrect refs in rtorrentlib module 
+- * 1aaf496 - 2017-07-31: v9.0.40 
+- * 512bfcc - 2017-07-31: Fixed incorrect refs in rtorrentlib module 
 - * 961db5c - 2017-07-31: added absolute import for rtorrent client 
 - * dfc5dbd - 2017-07-31: renamed rtorrent libs to rtorrentlib 
 - * 227ac22 - 2017-07-31: Fixed issue with nameparser get_show function 
