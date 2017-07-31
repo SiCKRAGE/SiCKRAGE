@@ -57,14 +57,11 @@ class NameParser(object):
             self._compile_regexes(self.ALL_REGEX)
 
     def get_show(self, name, tryIndexers=False):
-        if not sickrage.srCore.SHOWLIST:
-            return
-
         show = None
         show_id = 0
         fromCache = False
 
-        if not name: return show
+        if not all([name, sickrage.srCore.SHOWLIST]): return show, show_id
 
         try:
             # check cache for show
