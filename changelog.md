@@ -1,6 +1,7 @@
 # Changelog
 
-- * 428f323 - 2017-07-30: v9.0.38 
+- * 8fa122c - 2017-07-30: Added regex to match 1080p.WEB.x264, 720p.WEB.x264 and 480p.WEB.x264 qualities 
+- * c513284 - 2017-07-30: v9.0.38 
 - * e8e696e - 2017-07-30: Added custom rTorrent module to libs folder Fixed issues with rTorrent client 
 - * efa8992 - 2017-07-30: v9.0.37 
 - * d3b2836 - 2017-07-30: Updated the way sickrage caches results from provider RSS feeds 
