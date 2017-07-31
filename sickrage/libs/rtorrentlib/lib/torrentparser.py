@@ -22,8 +22,8 @@ import hashlib
 import os.path
 import re
 
-import rtorrent.lib.bencode as bencode
-from rtorrent.compat import is_py3
+import rtorrentlib.lib.bencode as bencode
+from rtorrentlib.compat import is_py3
 
 if is_py3():
     from urllib.request import urlopen  # @UnresolvedImport @UnusedImport

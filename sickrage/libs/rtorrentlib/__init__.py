@@ -22,17 +22,17 @@ import time
 import urllib
 import xmlrpclib
 
-import rtorrent.rpc  # @UnresolvedImport
-from rtorrent.common import (  # @UnresolvedImport
+import rtorrentlib.rpc  # @UnresolvedImport
+from rtorrentlib.common import (  # @UnresolvedImport
     is_valid_port,  # @UnresolvedImport
     convert_version_tuple_to_str)  # @UnresolvedImport
-from rtorrent.group import Group  # @UnresolvedImport
-from rtorrent.lib.torrentparser import TorrentParser  # @UnresolvedImport
-from rtorrent.lib.xmlrpc.http import HTTPServerProxy  # @UnresolvedImport
-from rtorrent.lib.xmlrpc.requests_transport import RequestsTransport  # @UnresolvedImport @IgnorePep8
-from rtorrent.lib.xmlrpc.scgi import SCGIServerProxy  # @UnresolvedImport
-from rtorrent.rpc import Method  # @UnresolvedImport
-from rtorrent.torrent import Torrent  # @UnresolvedImport
+from rtorrentlib.group import Group  # @UnresolvedImport
+from rtorrentlib.lib.torrentparser import TorrentParser  # @UnresolvedImport
+from rtorrentlib.lib.xmlrpc.http import HTTPServerProxy  # @UnresolvedImport
+from rtorrentlib.lib.xmlrpc.requests_transport import RequestsTransport  # @UnresolvedImport @IgnorePep8
+from rtorrentlib.lib.xmlrpc.scgi import SCGIServerProxy  # @UnresolvedImport
+from rtorrentlib.rpc import Method  # @UnresolvedImport
+from rtorrentlib.torrent import Torrent  # @UnresolvedImport
 
 __version__ = "0.2.9"
 __author__ = "Chris Lucas"
@@ -171,11 +171,11 @@ class RTorrent:
         @todo: add validity check for specified view
         """
         self.torrents = []
-        methods = rtorrent.torrent.methods
+        methods = rtorrentlib.torrent.methods
         retriever_methods = [m for m in methods
                              if m.is_retriever() and m.is_available(self)]
 
-        m = rtorrent.rpc.Multicall(self)
+        m = rtorrentlib.rpc.Multicall(self)
         m.add("d.multicall", view, "d.get_hash=",
               *[method.rpc_call + "=" for method in retriever_methods])
 
@@ -186,7 +186,7 @@ class RTorrent:
             # build results_dict
             # result[0] is the info_hash
             for m, r in zip(retriever_methods, result[1:]):
-                results_dict[m.varname] = rtorrent.rpc.process_result(m, r)
+                results_dict[m.varname] = rtorrentlib.rpc.process_result(m, r)
 
             self.torrents.append(
                 Torrent(self, info_hash=result[0], **results_dict)
@@ -198,8 +198,8 @@ class RTorrent:
     def _manage_torrent_cache(self):
         """Carry tracker/peer/file lists over to new torrent list"""
         for torrent in self._torrent_cache:
-            new_torrent = rtorrent.common.find_torrent(torrent.info_hash,
-                                                       self.torrents)
+            new_torrent = rtorrentlib.common.find_torrent(torrent.info_hash,
+                                                          self.torrents)
             if new_torrent is not None:
                 new_torrent.files = torrent.files
                 new_torrent.peers = torrent.peers
@@ -425,7 +425,7 @@ class RTorrent:
 
     def find_torrent(self, info_hash):
         """Frontend for rtorrent.common.find_torrent"""
-        return(rtorrent.common.find_torrent(info_hash, self.get_torrents()))
+        return(rtorrentlib.common.find_torrent(info_hash, self.get_torrents()))
 
     def poll(self):
         """ poll rTorrent to get latest torrent/peer/tracker/file information
@@ -448,7 +448,7 @@ class RTorrent:
 
         @return: None
         """
-        multicall = rtorrent.rpc.Multicall(self)
+        multicall = rtorrentlib.rpc.Multicall(self)
         retriever_methods = [m for m in methods
                              if m.is_retriever() and m.is_available(self)]
         for method in retriever_methods:
@@ -490,10 +490,10 @@ def __check_supported_methods(rt):
     from pprint import pprint
     supported_methods = set([m.rpc_call for m in
                              methods +
-                             rtorrent.file.methods +
-                             rtorrent.torrent.methods +
-                             rtorrent.tracker.methods +
-                             rtorrent.peer.methods])
+                             rtorrentlib.file.methods +
+                             rtorrentlib.torrent.methods +
+                             rtorrentlib.tracker.methods +
+                             rtorrentlib.peer.methods])
     all_methods = set(rt._get_rpc_methods())
 
     print("Methods NOT in supported methods")
@@ -667,19 +667,19 @@ methods = [
 ]
 
 _all_methods_list = [methods,
-                     rtorrent.file.methods,
-                     rtorrent.torrent.methods,
-                     rtorrent.tracker.methods,
-                     rtorrent.peer.methods,
+                     rtorrentlib.file.methods,
+                     rtorrentlib.torrent.methods,
+                     rtorrentlib.tracker.methods,
+                     rtorrentlib.peer.methods,
                      ]
 
 class_methods_pair = {
     RTorrent: methods,
-    rtorrent.file.File: rtorrent.file.methods,
-    rtorrent.torrent.Torrent: rtorrent.torrent.methods,
-    rtorrent.tracker.Tracker: rtorrent.tracker.methods,
-    rtorrent.peer.Peer: rtorrent.peer.methods,
+    rtorrentlib.file.File: rtorrentlib.file.methods,
+    rtorrentlib.torrent.Torrent: rtorrentlib.torrent.methods,
+    rtorrentlib.tracker.Tracker: rtorrentlib.tracker.methods,
+    rtorrentlib.peer.Peer: rtorrentlib.peer.methods,
 }
 for c in class_methods_pair.keys():
-    rtorrent.rpc._build_rpc_methods(c, class_methods_pair[c])
+    rtorrentlib.rpc._build_rpc_methods(c, class_methods_pair[c])
     _build_class_methods(c)

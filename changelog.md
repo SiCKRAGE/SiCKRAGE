@@ -1,6 +1,10 @@
 # Changelog
 
-- * 46cd13f - 2017-07-31: Fixed issue with nameparser get_show function 
+- * 1aaf496 - 2017-07-31: v9.0.40 
+- * 512bfcc - 2017-07-31: Fixed incorrect refs in rtorrentlib module 
+- * 961db5c - 2017-07-31: added absolute import for rtorrent client 
+- * dfc5dbd - 2017-07-31: renamed rtorrent libs to rtorrentlib 
+- * 227ac22 - 2017-07-31: Fixed issue with nameparser get_show function 
 - * 46f4ad5 - 2017-07-30: Added regex to match 1080p.WEB.x264, 720p.WEB.x264 and 480p.WEB.x264 qualities 
 - * c513284 - 2017-07-30: v9.0.38 
 - * e8e696e - 2017-07-30: Added custom rTorrent module to libs folder Fixed issues with rTorrent client 
