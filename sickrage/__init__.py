@@ -45,10 +45,10 @@ restart = True
 srCore = None
 daemon = None
 
-MAIN_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-PROG_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-LIBS_DIR = os.path.abspath(os.path.join(PROG_DIR, 'libs'))
-REQS_FILE = os.path.abspath(os.path.join(MAIN_DIR, 'requirements.txt'))
+MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(os.path.dirname(__file__)))))
+PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
+LIBS_DIR = os.path.join(PROG_DIR, 'libs')
+REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 
 SYS_ENCODING = None
 DEBUG = None
@@ -307,16 +307,16 @@ def main():
         DEVELOPER = args.dev
         DEBUG = args.debug
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
-        DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
-        CACHE_DIR = os.path.abspath(os.path.join(DATA_DIR, 'cache'))
+        DATA_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
+        CACHE_DIR = os.path.abspath(os.path.realpath(os.path.join(DATA_DIR, 'cache')))
         CONFIG_FILE = args.config
         PID_FILE = args.pidfile
 
         if not os.path.isabs(CONFIG_FILE):
-            CONFIG_FILE = os.path.abspath(os.path.join(DATA_DIR, CONFIG_FILE))
+            CONFIG_FILE = os.path.join(DATA_DIR, CONFIG_FILE)
 
         if not os.path.abspath(PID_FILE):
-            PID_FILE = os.path.abspath(os.path.join(DATA_DIR, PID_FILE))
+            PID_FILE = os.path.join(DATA_DIR, PID_FILE)
 
         # check lib requirements
         check_requirements()
