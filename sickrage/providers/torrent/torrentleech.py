@@ -24,7 +24,7 @@ import urllib
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, tryInt, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -119,11 +119,14 @@ class TorrentLeechProvider(TorrentProvider):
                                 link = result.find('td', attrs={'class': 'name'}).find('a')
                                 url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = link.string
-                                download_url = self.urls['download'] % url['href']
-                                seeders = int(result.find('td', attrs={'class': 'seeders'}).string)
-                                leechers = int(result.find('td', attrs={'class': 'leechers'}).string)
-                                # FIXME
+                                download_url = url['href']
+                                seeders = tryInt(result.find('td', attrs={'class': 'seeders'}).text, 0)
+                                leechers = tryInt(result.find('td', attrs={'class': 'leechers'}).text, 0)
+
                                 size = -1
+                                if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]',
+                                            result('td', class_="listcolumn")[1].text):
+                                    size = convert_size(result('td', class_="listcolumn")[1].text.strip())
                             except (AttributeError, TypeError):
                                 continue
 
