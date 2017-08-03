@@ -121,7 +121,7 @@ class HDTorrentsProvider(TorrentProvider):
                 try:
                     index = data.lower().index('<table class="mainblockcontenttt"')
                 except ValueError:
-                    sickrage.srCore.srLogger.error("Could not find table of torrents mainblockcontenttt")
+                    sickrage.srCore.srLogger.debug("Could not find table of torrents mainblockcontenttt")
                     continue
 
                 with bs4_parser(data[index:]) as html:

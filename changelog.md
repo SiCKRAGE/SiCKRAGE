@@ -1,6 +1,7 @@
 # Changelog
 
-- * ba4788d - 2017-08-03: Removed IMDB caching, not thread safe 
+- * 330daf7 - 2017-08-03: Removed IMDB caching, not thread safe 
+- * a43028f - 2017-08-03: Removed IMDB caching, not thread safe 
 - * f5ae7d4 - 2017-08-03: v9.0.42 
 - * 522d886 - 2017-08-03: Fixed issues with HD Torrents provider 
 - * 39b65eb - 2017-08-03: Fix for issue #39 
