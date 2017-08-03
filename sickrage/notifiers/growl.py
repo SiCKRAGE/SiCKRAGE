@@ -138,7 +138,7 @@ class GrowlNotifier(srNotifiers):
                 if self._send_growl(opts, message):
                     return True
                 else:
-                    if self._sendRegistration(host, password, 'Sickbeard'):
+                    if self._sendRegistration(host, password, 'SiCKRAGE'):
                         return self._send_growl(opts, message)
                     else:
                         return False

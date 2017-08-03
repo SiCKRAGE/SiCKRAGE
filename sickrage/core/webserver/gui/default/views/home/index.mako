@@ -351,7 +351,7 @@
                             % endif
 
                             % if sickrage.srCore.srConfig.HOME_LAYOUT == 'small':
-                                <td class="tvShow">
+                                <td class="tvShow" align="left">
                                     <div class="imgsmallposter ${sickrage.srCore.srConfig.HOME_LAYOUT}">
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
                                             <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"

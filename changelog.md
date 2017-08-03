@@ -1,6 +1,7 @@
 # Changelog
 
-- * c59bc07 - 2017-08-01: Fixed symlinks for synology devices when returning show image paths v9.0.41 
+- * f09cef3 - 2017-08-03: Removed toggle switches from mako pages 
+- * ba6f47b - 2017-08-01: Fixed symlinks for synology devices when returning show image paths v9.0.41 
 - * 161d8db - 2017-07-31: Fixed TorrentLeech provider searching 
 - * 8b294f8 - 2017-07-31: &quot;performing episodes search for showname&quot; message to only be displayed in log if there are actual episodes to be searched for 
 - * cdd0147 - 2017-07-31: v9.0.40 
