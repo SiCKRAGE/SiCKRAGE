@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2c182af - 2017-08-03: Fixed issues with HD Torrents provider 
+- * 83e240c - 2017-08-03: v9.0.42 
+- * 522d886 - 2017-08-03: Fixed issues with HD Torrents provider 
 - * 39b65eb - 2017-08-03: Fix for issue #39 
 - * 0c50d02 - 2017-08-03: fonts and images now use directory refs instead of url refs, resolves issues when using web_root option 
 - * bec0c7c - 2017-08-03: Removed toggle switches from mako pages 
