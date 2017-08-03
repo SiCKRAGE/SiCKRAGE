@@ -1,6 +1,7 @@
 # Changelog
 
-- * d68739f - 2017-08-03: fonts and images now use directory refs instead of url refs, resolves issues when using web_root option 
+- * 8de6b74 - 2017-08-03: Fix for issue #39 
+- * 0c50d02 - 2017-08-03: fonts and images now use directory refs instead of url refs, resolves issues when using web_root option 
 - * bec0c7c - 2017-08-03: Removed toggle switches from mako pages 
 - * ba6f47b - 2017-08-01: Fixed symlinks for synology devices when returning show image paths v9.0.41 
 - * 161d8db - 2017-07-31: Fixed TorrentLeech provider searching 
