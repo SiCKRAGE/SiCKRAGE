@@ -376,7 +376,7 @@ def refine_video(video, episode):
             if getattr(guess_ep, name) and not getattr(video, name):
                 setattr(video, name, getattr(guess_ep, name))
 
-    # Use sickbeard metadata
+    # Use sickrage metadata
     metadata_mapping = {
         'episode': 'episode',
         'release_group': 'release_group',
