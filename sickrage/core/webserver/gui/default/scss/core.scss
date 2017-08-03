@@ -41,31 +41,31 @@
 
 [class^="icon-"],
 [class*=" icon-"] {
-  background-image: url("/images/glyphicons-halflings.png"); }
+  background-image: url("../images/glyphicons-halflings.png"); }
 
 .icon-white {
-  background-image: url("/images/glyphicons-halflings-white.png"); }
+  background-image: url("../images/glyphicons-halflings-white.png"); }
 
 .dropdown-menu li > a:hover > [class^="menu-icon-"],
 .dropdown-menu li > a:hover > [class*=" menu-icon-"] {
-  background-image: url("/images/menu/menu-icons-white.png"); }
+  background-image: url("../images/menu/menu-icons-white.png"); }
 
 [class^="icon16-"],
 [class*=" icon16-"] {
-  background-image: url("/images/glyphicons-config-white.png"); }
+  background-image: url("../images/glyphicons-config-white.png"); }
 
 .ui-autocomplete-loading {
-  background: white url("/images/loading16.gif") right center no-repeat; }
+  background: white url("../images/loading16.gif") right center no-repeat; }
 
 .browserDialog.busy .ui-dialog-buttonpane {
-  background: url("/images/loading.gif") 10px 50% no-repeat !important; }
+  background: url("../images/loading.gif") 10px 50% no-repeat !important; }
 
 .ui-progressbar .ui-progressbar-overlay {
-  background: url("/images/animated-overlay.gif"); }
+  background: url("../images/animated-overlay.gif"); }
 
 .ui-dialog,
 .ui-dialog-buttonpane {
-  background: #eceadf url("/images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important; }
+  background: #eceadf url("../images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important; }
 
 .ui-accordion-content,
 .ui-tabs-panel {
@@ -100,39 +100,39 @@
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-  background: #fbf9ee url("/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
+  background: #fbf9ee url("../images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
 
 .ui-state-error,
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
-  background: #fef1ec url("/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
+  background: #fef1ec url("../images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
 
 .ui-icon,
 .ui-widget-content .ui-icon {
-  background-image: url("/images/ui-icons_222222_256x240.png"); }
+  background-image: url("../images/ui-icons_222222_256x240.png"); }
 
 .ui-widget-header .ui-icon {
-  background-image: url("/images/ui-icons_222222_256x240.png"); }
+  background-image: url("../images/ui-icons_222222_256x240.png"); }
 
 .ui-state-default .ui-icon {
-  background-image: url("/images/ui-icons_8c291d_256x240.png"); }
+  background-image: url("../images/ui-icons_8c291d_256x240.png"); }
 
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-  background-image: url("/images/ui-icons_222222_256x240.png"); }
+  background-image: url("../images/ui-icons_222222_256x240.png"); }
 
 .ui-state-active .ui-icon {
-  background-image: url("/images/ui-icons_8c291d_256x240.png"); }
+  background-image: url("../images/ui-icons_8c291d_256x240.png"); }
 
 .ui-state-highlight .ui-icon {
-  background-image: url("/images/ui-icons_2e83ff_256x240.png"); }
+  background-image: url("../images/ui-icons_2e83ff_256x240.png"); }
 
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-  background-image: url("/images/ui-icons_cd0a0a_256x240.png"); }
+  background-image: url("../images/ui-icons_cd0a0a_256x240.png"); }
 
 .ui-widget-overlay {
-  background: #aaaaaa url("/images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; }
+  background: #aaaaaa url("../images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x; }
 
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   color: #140F06;
@@ -186,7 +186,7 @@
   margin-bottom: 0; }
 
 [class^="menu-icon-"], [class*=" menu-icon-"] {
-  background: url("/images/menu/menu-icons-black.png");
+  background: url("../images/menu/menu-icons-black.png");
   height: 16px;
   width: 16px;
   display: inline-block;
@@ -195,7 +195,7 @@
   float: left; }
 
 [class^="menu-icon-"], [class*=" menu-icon-"] {
-  background: url("/images/menu/menu-icons-white.png");
+  background: url("../images/menu/menu-icons-white.png");
   height: 16px;
   width: 16px;
   display: inline-block;
@@ -264,7 +264,7 @@
   background-position: -399px 0; }
 
 [class^="submenu-icon-"], [class*=" submenu-icon-"] {
-  background: url("/images/menu/menu-icons-black.png");
+  background: url("../images/menu/menu-icons-black.png");
   height: 16px;
   width: 16px; }
 
@@ -589,22 +589,22 @@ div.buttontext p {
   font-size: 13px; }
 
 .icon-addnewshow {
-  background-image: url("/images/addshows/add-new32-black.png");
+  background-image: url("../images/addshows/add-new32-black.png");
   width: 32px;
   height: 32px; }
 
 .icon-addtrendingshow {
-  background-image: url("/images/addshows/add-trending32-black.png");
+  background-image: url("../images/addshows/add-trending32-black.png");
   width: 32px;
   height: 32px; }
 
 .icon-addrecommendedshow {
-  background-image: url("/images/addshows/add-trakt32-black.png");
+  background-image: url("../images/addshows/add-trakt32-black.png");
   width: 32px;
   height: 32px; }
 
 .icon-addexistingshow {
-  background-image: url("/images/addshows/add-existing32-black.png");
+  background-image: url("../images/addshows/add-existing32-black.png");
   width: 32px;
   height: 32px; }
 
@@ -650,7 +650,7 @@ ul#rootDirStaticList li {
   margin: 2px;
   list-style: none outside none;
   cursor: pointer;
-  /*background: url('/images/ui/ui-bg_highlight-soft_75_efefef_1x100.png') repeat-x scroll 50% 50% #EFEFEF;*/ }
+  /*background: url('../images/ui/ui-bg_highlight-soft_75_efefef_1x100.png') repeat-x scroll 50% 50% #EFEFEF;*/ }
 
 ul#rootDirStaticList li label {
   margin-top: 5px;
@@ -749,7 +749,7 @@ h1.title {
 
 .imdbstars, .imdbstars > * {
   height: 12px;
-  background: url("/images/rating.png") 0 -12px repeat-x;
+  background: url("../images/rating.png") 0 -12px repeat-x;
   width: 120px;
   display: inline-block;
   vertical-align: top; }
@@ -766,7 +766,7 @@ ul.tags li {
   margin-right: 4px;
   margin-bottom: 4px;
   padding: 3px 4px 3px 25px;
-  background: url("/images/tag.png") no-repeat scroll 5px 4px #555;
+  background: url("../images/tag.png") no-repeat scroll 5px 4px #555;
   border-radius: 3px;
   border: 1px solid #111;
   color: #FFF;
@@ -1330,7 +1330,7 @@ div.metadataDiv .disabled {
 
 .warning {
   border-color: #F89406;
-  background: url("/images/warning16.png") no-repeat right 5px center #fff; }
+  background: url("../images/warning16.png") no-repeat right 5px center #fff; }
 
 /* =======================================================================
 manage*.mako
@@ -2357,7 +2357,7 @@ span.token-input-delete-token {
   width: 100%;
   height: 100%;
   z-index: 0;
-  background-image: url("/images/poster-dark.jpg"); }
+  background-image: url("../images/poster-dark.jpg"); }
 
 /* =======================================================================
 jquery.confirm.css
@@ -2368,7 +2368,7 @@ jquery.confirm.css
   position: fixed;
   top: 0;
   left: 0;
-  background: url("/images/bg.gif");
+  background: url("../images/bg.gif");
   background: -moz-linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)) repeat-x rgba(0, 0, 0, 0.5);
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.5))) repeat-x rgba(0, 0, 0, 0.5);
   z-index: 100000; }
@@ -2545,7 +2545,7 @@ Country Flags
 .country-flag {
   width: 16px;
   height: 11px;
-  background: url("/images/country-flags.png") no-repeat; }
+  background: url("../images/country-flags.png") no-repeat; }
 
 .country-flag.flag-ad {
   background-position: -16px 0; }
@@ -3301,7 +3301,7 @@ Country Flags
   background-position: -176px -165px; }
 
 #scrollUp {
-  background-image: url("/images/top.png");
+  background-image: url("../images/top.png");
   bottom: 20px;
   right: 20px;
   width: 38px;

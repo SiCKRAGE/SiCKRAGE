@@ -90,7 +90,7 @@ module.exports = function (grunt) {
                 options: {
                     fontPath: 'sickrage/core/webserver/gui/default/fonts/',
                     cssFile: 'dist/css/fonts.css',
-                    httpPath: '/fonts/',
+                    httpPath: '../fonts/',
                     formats: {
                         eot: true,
                         ttf: true,
