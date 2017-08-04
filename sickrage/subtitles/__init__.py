@@ -361,7 +361,7 @@ def run_subs_extra_scripts(episode, found_subtitles, video, single=False):
             try:
                 p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
-                out, _ = p.communicate()  # @UnusedVariable
+                out, _ = p.communicate()
                 sickrage.srCore.srLogger.debug("Script result: %s" % out)
 
             except Exception as e:

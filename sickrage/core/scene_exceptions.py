@@ -95,7 +95,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
                 cur_line = None
                 for cur_line in sickrage.srCore.srWebSession.get(loc).text.splitlines():
-                    indexer_id, _, aliases = cur_line.partition(':')  # @UnusedVariable
+                    indexer_id, _, aliases = cur_line.partition(':')
                     if not aliases:
                         continue
 

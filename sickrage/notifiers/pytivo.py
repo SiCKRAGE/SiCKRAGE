@@ -93,7 +93,7 @@ class pyTivoNotifier(srNotifiers):
         request = Request(requestUrl)
 
         try:
-            response = urlopen(request)  # @UnusedVariable
+            response = urlopen(request)
         except HTTPError  as e:
             if hasattr(e, 'reason'):
                 sickrage.srCore.srLogger.error("pyTivo notification: Error, failed to reach a server - " + e.reason)

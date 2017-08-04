@@ -56,7 +56,7 @@ class synologyNotifier(srNotifiers):
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  cwd=sickrage.PROG_DIR)
-            out, err = p.communicate()  # @UnusedVariable
+            out, err = p.communicate()
             sickrage.srCore.srLogger.debug("Script result: " + str(out))
         except OSError as e:
             sickrage.srCore.srLogger.info("Unable to run synodsmnotify: {}".format(e.message))

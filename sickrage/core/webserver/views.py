@@ -706,7 +706,7 @@ class Home(WebHandler):
 
         connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
         if connection:
-            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)  # @UnusedVariable
+            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)
             if authed:
                 return "Success. Connected and authenticated"
             else:
@@ -2325,22 +2325,21 @@ class HomeAddShows(Home):
 
                 showid = show_name = indexer = None
                 for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-                    # if not cur_provider.enabled:
-                    #    continue
+                    if all([showid, show_name, indexer]):
+                        continue
 
-                    if not (showid and show_name):
-                        (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
+                    (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
 
-                        # default to TVDB if indexer was not detected
-                        if show_name and not (indexer or showid):
-                            (sn, idxr, i) = srIndexerApi(indexer).searchForShowID(show_name, showid)
+                    # default to TVDB if indexer was not detected
+                    if show_name and not (indexer or showid):
+                        (sn, idxr, i) = srIndexerApi(indexer).searchForShowID(show_name, showid)
 
-                            # set indexer and indexer_id from found info
-                            if not indexer and idxr:
-                                indexer = idxr
+                        # set indexer and indexer_id from found info
+                        if not indexer and idxr:
+                            indexer = idxr
 
-                            if not showid and i:
-                                showid = i
+                        if not showid and i:
+                            showid = i
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
