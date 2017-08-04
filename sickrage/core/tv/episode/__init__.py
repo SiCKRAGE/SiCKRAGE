@@ -328,9 +328,6 @@ class TVEpisode(object):
         # check for nfo and tbn
         if os.path.isfile(self.location):
             for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-                if not cur_provider.enabled:
-                    continue
-
                 if cur_provider.episode_metadata:
                     new_result = cur_provider._has_episode_metadata(self)
                 else:
@@ -1064,7 +1061,7 @@ class TVEpisode(object):
                 return ''
             return parse_result.release_group
 
-        _, epQual = Quality.splitCompositeStatus(self.status)  # @UnusedVariable
+        _, epQual = Quality.splitCompositeStatus(self.status)
 
         if sickrage.srCore.srConfig.NAMING_STRIP_YEAR:
             show_name = re.sub(r"\(\d+\)$", "", self.show.name).rstrip()
@@ -1381,11 +1378,11 @@ class TVEpisode(object):
         :param old_path_length: The length of media file path (old name) WITHOUT THE EXTENSION
         """
 
-        # new_dest_dir, new_dest_name = os.path.split(new_path)  # @UnusedVariable
+        # new_dest_dir, new_dest_name = os.path.split(new_path)
 
         if old_path_length == 0 or old_path_length > len(cur_path):
             # approach from the right
-            cur_file_name, cur_file_ext = os.path.splitext(cur_path)  # @UnusedVariable
+            cur_file_name, cur_file_ext = os.path.splitext(cur_path)
         else:
             # approach from the left
             cur_file_ext = cur_path[old_path_length:]

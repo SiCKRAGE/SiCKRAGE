@@ -706,7 +706,7 @@ class Home(WebHandler):
 
         connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
         if connection:
-            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)  # @UnusedVariable
+            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)
             if authed:
                 return "Success. Connected and authenticated"
             else:

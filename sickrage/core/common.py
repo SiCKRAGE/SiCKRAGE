@@ -242,9 +242,12 @@ class Quality(object):
         if quality != Quality.UNKNOWN:
             return quality
 
-        quality = Quality.assumeQuality(name)
+        quality = Quality.qualityFromFileMeta(name)
         if quality != Quality.UNKNOWN:
             return quality
+
+        if name.lower().endswith(".ts"):
+            return Quality.RAWHDTV
 
         return Quality.UNKNOWN
 
@@ -335,23 +338,6 @@ class Quality(object):
             ret = Quality.UHD_8K_BLURAY
 
         return ret
-
-    @staticmethod
-    def assumeQuality(name):
-        """
-        Assume a quality from file name or extension if we cannot resolve it otherwise
-
-        :param name: File name of episode to analyse
-        :return: Quality prefix
-        """
-
-        quality = Quality.qualityFromFileMeta(name)
-        if quality != Quality.UNKNOWN:
-            return quality
-        elif name.lower().endswith(".ts"):
-            return Quality.RAWHDTV
-
-        return Quality.UNKNOWN
 
     @staticmethod
     def compositeStatus(status, quality):
@@ -487,8 +473,6 @@ class Quality(object):
         :return: Composite status/quality object
         """
         quality = Quality.nameQuality(name, anime)
-        if assume and quality == Quality.UNKNOWN:
-            quality = Quality.assumeQuality(name)
         return Quality.compositeStatus(DOWNLOADED, quality)
 
     DOWNLOADED = None

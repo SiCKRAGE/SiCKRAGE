@@ -346,7 +346,7 @@ def wantedEpisodes(show, fromDate):
     """
 
     wanted = []
-    anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
+    anyQualities, bestQualities = Quality.splitQuality(show.quality)
     allQualities = list(set(anyQualities + bestQualities))
 
     sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))

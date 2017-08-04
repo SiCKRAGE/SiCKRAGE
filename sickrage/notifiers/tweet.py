@@ -65,7 +65,7 @@ class TwitterNotifier(srNotifiers):
 
     def _get_authorization(self):
 
-        signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
+        signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         oauth_client = oauth2.Client(oauth_consumer)
 
@@ -93,7 +93,7 @@ class TwitterNotifier(srNotifiers):
 
         sickrage.srCore.srLogger.debug('Generating and signing request for an access token using key ' + key)
 
-        signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
+        signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         sickrage.srCore.srLogger.debug('oauth_consumer: ' + str(oauth_consumer))
         oauth_client = oauth2.Client(oauth_consumer, token)

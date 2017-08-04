@@ -148,7 +148,7 @@ class srBacklogSearcher(object):
                 "Skipping backlog for {show_name} because the show is paused".format(show_name=show.name))
             return {}
 
-        anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
+        anyQualities, bestQualities = Quality.splitQuality(show.quality)
 
         sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
 

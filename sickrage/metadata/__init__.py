@@ -350,7 +350,7 @@ class GenericMetadata(object):
     def create_season_posters(self, show_obj):
         if self.season_posters and show_obj:
             result = []
-            for season, _ in show_obj.episodes.items():  # @UnusedVariable
+            for season, _ in show_obj.episodes.items():
                 if not self._has_season_poster(show_obj, season):
                     sickrage.srCore.srLogger.debug(
                         "Metadata provider " + self.name + " creating season posters for " + show_obj.name)
@@ -363,7 +363,7 @@ class GenericMetadata(object):
             result = []
             sickrage.srCore.srLogger.debug(
                 "Metadata provider " + self.name + " creating season banners for " + show_obj.name)
-            for season, _ in show_obj.episodes.items():  # @UnusedVariable
+            for season, _ in show_obj.episodes.items():
                 if not self._has_season_banner(show_obj, season):
                     result = result + [self.save_season_banner(show_obj, season)]
             return all(result)

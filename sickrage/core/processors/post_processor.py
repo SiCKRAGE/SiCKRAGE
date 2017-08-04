@@ -737,7 +737,7 @@ class PostProcessor(object):
 
         # if there is a quality available in the status then we don't need to bother guessing from the filename
         if ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
-            _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
+            _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                     "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
@@ -767,7 +767,7 @@ class PostProcessor(object):
 
         # Try getting quality from the episode (snatched) status
         if ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
-            _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
+            _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                     "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
@@ -775,7 +775,7 @@ class PostProcessor(object):
                 return ep_quality
 
         # Try guessing quality from the file name
-        ep_quality = Quality.assumeQuality(self.file_path)
+        ep_quality = Quality.nameQuality(self.file_path)
         self._log(
             "Guessing quality for name " + self.file_name + ", got " + Quality.qualityStrings[ep_quality],
             sickrage.srCore.srLogger.DEBUG)
@@ -807,7 +807,7 @@ class PostProcessor(object):
             try:
                 p = subprocess.Popen(script_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
-                out, _ = p.communicate()  # @UnusedVariable
+                out, _ = p.communicate()
                 self._log("Script result: " + str(out), sickrage.srCore.srLogger.DEBUG)
 
             except OSError as e:
