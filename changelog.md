@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5dd67a5 - 2017-08-04: Release v9.0.60 
+- * e23c1e0 - 2017-08-04: Release v9.0.61 
+- * 5e8e772 - 2017-08-04: Release v9.0.60 
 - * 1735eaf - 2017-08-04: grunt tasks 
 - * d5572b7 - 2017-08-04: v9.0.45 
 - * 9ee5883 - 2017-08-04: Fixed issue #41 - downloadSubtitles() got an unexpected keyword argument &#x27;force&#x27; 
