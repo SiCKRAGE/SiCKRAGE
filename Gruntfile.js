@@ -245,6 +245,90 @@ module.exports = function (grunt) {
                     dest: "changelog.md"
                 }
             }
+        },
+        exec: {
+            // Translations
+            'pypi_public': {cmd: 'python setup.py sdist bdist_wheel upload clean'},
+
+            // Publish/Releases
+            'git': {
+                cmd: function (cmd, branch) {
+                    branch = branch ? ' ' + branch : '';
+                    return 'git ' + cmd + branch;
+                }
+            },
+            'git_push': {
+                cmd: function (remote, branch, tags) {
+                    var pushCmd = 'git push ' + remote + ' ' + branch;
+                    if (tags) {
+                        pushCmd += ' --tags';
+                    }
+                    return pushCmd;
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            },
+            'git_commit': {
+                cmd: function (message) {
+                    return 'git commit -a -m ' + message;
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            },
+            'git_last_tag': {
+                cmd: 'git for-each-ref refs/tags --sort=-taggerdate --count=1 --format=\'%(refname:short)\'',
+                stdout: false,
+                callback: function(err, stdout) {
+                    stdout = stdout.trim();
+                    if (/^\d{1,2}.\d{1,2}.\d+$/.test(stdout)) {
+                        grunt.config('last_tag', stdout);
+                    } else {
+                        grunt.fatal('Could not get the last tag name. We got: ' + stdout);
+                    }
+                }
+            },
+            'git_list_changes': {
+                cmd: function() { return 'git log --oneline --pretty=format:%s ' + grunt.config('last_tag') + '..HEAD'; },
+                stdout: false,
+                callback: function(err, stdout) {
+                    var commits = stdout.trim()
+                        .replace(/`/gm, '').replace(/^\([\w\d\s,.\-+_/>]+\)\s/gm, '');  // removes ` and tag information
+                    if (commits) {
+                        grunt.config('commits', commits);
+                    } else {
+                        grunt.fatal('Getting new commit list failed!');
+                    }
+                }
+            },
+            'git_new_tag': {
+                cmd: function (sign) {
+                    sign = sign !== "true" ? '' : '-s ';
+                    return 'git tag ' + sign + grunt.config('new_version') + ' -m "' + grunt.config('commits') + '"';
+                },
+                stdout: false
+            },
+            'git_flow_start': {
+                cmd: function (version) {
+                    return 'git flow release start ' + version;
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            },
+            'git_flow_finish': {
+                cmd: function (version, message) {
+                    return 'git flow release finish ' + version + ' -m ' + message;
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            }
         }
     });
 
@@ -272,7 +356,37 @@ module.exports = function (grunt) {
     );
 
     grunt.registerTask('release', function () {
-        version = grunt.file.read('sickrage/version.txt');
-        grunt.log.write('Current Version: ' + version);
+        grunt.task.run(['exec:git:checkout:develop']);
+
+        var vFile = 'sickrage/version.txt';
+
+        var version = grunt.file.read(vFile);
+        grunt.log.write('Current Version: ' + grunt.file.read(vFile));
+
+        var versionParts = version.split('.');
+        var vArray = {
+            vMajor: versionParts[0],
+            vMinor: versionParts[1],
+            vPatch: versionParts[2]
+        };
+        vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+
+        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
+        grunt.config('new_version', newVersion);
+
+        grunt.file.write(vFile, newVersion);
+
+        grunt.log.write('New Version: ' + grunt.file.read(vFile));
+
+        var git_tasks = [
+            'exec:git_commit:Release v' + newVersion,
+            'exec:git_flow_start:' + newVersion,
+            'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
+            'exec:git_push:sickrage:develop:tags',
+            'exec:git_push:sickrage:master:tags',
+            'pypi_public'
+        ];
+
+        grunt.task.run(git_tasks);
     });
 };
