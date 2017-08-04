@@ -1,6 +1,7 @@
 # Changelog
 
-- * c3ca37c - 2017-08-03: v9.0.43 
+- * de63509 - 2017-08-04: Fixed issue with retrieving metadata for existing shows when adding them 
+- * 60ecda9 - 2017-08-03: v9.0.43 
 - * f5ba588 - 2017-08-03: set indexer searching for indexer ID is optional in nameparser 
 - * fa74b2d - 2017-08-03: Fixed &quot;Invalid or incorrect number of columns in the THEAD&quot; issue in display show template 
 - * 8d7f2e2 - 2017-08-03: Removed IMDB caching, not thread safe 

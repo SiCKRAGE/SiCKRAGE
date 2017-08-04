@@ -27,7 +27,7 @@ from xml.etree.ElementTree import ElementTree, SubElement
 import fanart
 
 import sickrage
-from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension
+from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension, tryInt
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.metadata.helpers import getShowImage
@@ -836,13 +836,26 @@ class GenericMetadata(object):
                 showXML = ElementTree(file=xmlFileObj)
 
             if showXML.findtext('title') is None or (
-                            showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
+                    showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
                 sickrage.srCore.srLogger.info(
-                    "Invalid info in tvshow.nfo (missing name or id): {0:s} {1:s} {2:s}".format(
-                        showXML.findtext('title'), showXML.findtext('tvdbid'), showXML.findtext('id')))
+                    "Invalid info in tvshow.nfo (missing name or id): {} {} {}".format(showXML.findtext('title'),
+                                                                                       showXML.findtext('tvdbid'),
+                                                                                       showXML.findtext('id')))
                 return empty_return
 
             name = showXML.findtext('title')
+
+            indexer_id_text = showXML.findtext('tvdbid') or showXML.findtext('id')
+            if indexer_id_text:
+                indexer_id = tryInt(indexer_id_text, None)
+                if indexer_id is None or indexer_id < 1:
+                    sickrage.srCore.srLogger.debug(
+                        "Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
+                    return empty_return
+            else:
+                sickrage.srCore.srLogger.debug(
+                    "Empty <id> or <tvdbid> field in NFO, unable to find a ID, not using metadata file")
+                return empty_return
 
             if showXML.findtext('tvdbid') is not None:
                 indexer_id = int(showXML.findtext('tvdbid'))
@@ -852,21 +865,14 @@ class GenericMetadata(object):
                 sickrage.srCore.srLogger.warning("Empty <id> or <tvdbid> field in NFO, unable to find a ID")
                 return empty_return
 
-            if indexer_id is None:
-                sickrage.srCore.srLogger.warning(
-                    "Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")
-                return empty_return
-
-            indexer = None
-            if showXML.find('episodeguide/url') is not None:
-                epg_url = showXML.findtext('episodeguide/url').lower()
-                if str(indexer_id) in epg_url:
-                    if 'thetvdb.com' in epg_url:
-                        indexer = 1
-                    elif 'tvrage' in epg_url:
-                        sickrage.srCore.srLogger.debug("Invalid Indexer ID (" + str(
-                            indexer_id) + "), not using metadata file because it has TVRage info")
-                        return empty_return
+            indexer = 1
+            epg_url_text = showXML.findtext('episodeguide/url')
+            if epg_url_text:
+                epg_url = epg_url_text.lower()
+                if str(indexer_id) in epg_url and 'tvrage' in epg_url:
+                    sickrage.srCore.srLogger.warning("Invalid Indexer ID (" + str(
+                        indexer_id) + "), not using metadata file because it has TVRage info")
+                    return empty_return
 
         except Exception as e:
             sickrage.srCore.srLogger.warning(
