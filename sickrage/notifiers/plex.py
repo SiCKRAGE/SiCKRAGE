@@ -201,7 +201,7 @@ class PLEXNotifier(srNotifiers):
                 req.add_header('Authorization', authheader)
                 req.add_header('X-Plex-Device-Name', 'SiCKRAGE')
                 req.add_header('X-Plex-Product', 'SiCKRAGE Notifier')
-                req.add_header('X-Plex-Client-Identifier', sickrage.srCore.srConfig.USER_AGENT)
+                req.add_header('X-Plex-Client-Identifier', sickrage.srCore.USER_AGENT)
                 req.add_header('X-Plex-Version', '1.0')
 
                 try:
