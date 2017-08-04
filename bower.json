@@ -30,7 +30,7 @@
     "isotope": "~2.2.2",
     "selectboxes": "https://raw.githubusercontent.com/SamWM/jQuery-Plugins/master/selectboxes/jquery.selectboxes.js",
     "bookmarkscroll": "http://dynamicdrive.com/dynamicindex5/bookmarkscroll.js",
-    "jquery.tablesorter": "~2.28.8",
+    "jquery.tablesorter": "~2.28.15",
     "scrollup": "~2.4.1",
     "qtip2": "git://github.com/qTip2/qTip2.git#v3.0.3",
     "uri.js": "~1.17.1",

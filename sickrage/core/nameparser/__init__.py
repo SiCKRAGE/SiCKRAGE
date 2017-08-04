@@ -71,7 +71,7 @@ class NameParser(object):
                 show_id = cache
 
             # try indexers
-            if not show_id:
+            if not show_id and tryIndexers:
                 try:
                     show_id = srIndexerApi().searchForShowID(full_sanitizeSceneName(name), ui=AllShowsUI)[2]
                 except Exception:

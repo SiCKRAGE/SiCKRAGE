@@ -1082,7 +1082,7 @@ class TVShow(object):
                      'votes': '',
                      'last_update': ''}
 
-        i = imdbpie.Imdb(cache=True)
+        i = imdbpie.Imdb()
         if not self.imdbid:
             for x in i.search_for_title(self.name):
                 try:
