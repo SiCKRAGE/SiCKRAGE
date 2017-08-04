@@ -1103,7 +1103,7 @@ class PostProcessor(object):
                 with cur_ep.lock:
                     cur_ep.location = os.path.join(dest_path, new_file_name)
                     cur_ep.refreshSubtitles()
-                    cur_ep.downloadSubtitles(force=True)
+                    cur_ep.downloadSubtitles()
 
         # put the new location in the database
         for cur_ep in [ep_obj] + ep_obj.relatedEps:

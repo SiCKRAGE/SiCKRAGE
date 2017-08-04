@@ -1,6 +1,11 @@
 # Changelog
 
-- * a1b9e7c - 2017-08-04: v9.0.44 
+- * e23c1e0 - 2017-08-04: Release v9.0.61 
+- * 5e8e772 - 2017-08-04: Release v9.0.60 
+- * 1735eaf - 2017-08-04: grunt tasks 
+- * d5572b7 - 2017-08-04: v9.0.45 
+- * 9ee5883 - 2017-08-04: Fixed issue #41 - downloadSubtitles() got an unexpected keyword argument &#x27;force&#x27; 
+- * 9983f42 - 2017-08-04: v9.0.44 
 - * a3316de - 2017-08-04: Fixed issue #33 with adding existing shows not detecting status of episode files on disk 
 - * 9d3fd0e - 2017-08-04: Fixed issue with retrieving metadata for existing shows when adding them 
 - * 60ecda9 - 2017-08-03: v9.0.43 
