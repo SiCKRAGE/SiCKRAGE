@@ -247,10 +247,10 @@ module.exports = function (grunt) {
             }
         },
         exec: {
-            // Translations
-            'pypi_public': {cmd: 'python setup.py sdist bdist_wheel upload clean'},
+            // PyPi Commands
+            'pypi_publish': {cmd: 'python setup.py sdist bdist_wheel upload clean'},
 
-            // Publish/Releases
+            // Git Commands
             'git': {
                 cmd: function (cmd, branch) {
                     branch = branch ? ' ' + branch : '';
@@ -272,7 +272,7 @@ module.exports = function (grunt) {
             },
             'git_commit': {
                 cmd: function (message) {
-                    return 'git commit -a -m ' + message;
+                    return 'git commit -am "' + message + '"';
                 },
                 stderr: false,
                 callback: function (err, stdout, stderr) {
@@ -380,11 +380,11 @@ module.exports = function (grunt) {
 
         var git_tasks = [
             'exec:git_commit:Release v' + newVersion,
-            'exec:git_flow_start:' + newVersion,
-            'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
-            'exec:git_push:sickrage:develop:tags',
-            'exec:git_push:sickrage:master:tags',
-            'pypi_public'
+            //'exec:git_flow_start:' + newVersion,
+            //'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
+            //'exec:git_push:origin:develop:tags',
+            //'exec:git_push:origin:master:tags',
+            //'exec:pypi_publish'
         ];
 
         grunt.task.run(git_tasks);
