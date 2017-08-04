@@ -1,6 +1,7 @@
 # Changelog
 
-- * e23c1e0 - 2017-08-04: Release v9.0.61 
+- * ae3fd79 - 2017-08-04: Release v9.0.62 
+- * 4effd2c - 2017-08-04: Release v9.0.61 
 - * 5e8e772 - 2017-08-04: Release v9.0.60 
 - * 1735eaf - 2017-08-04: grunt tasks 
 - * d5572b7 - 2017-08-04: v9.0.45 

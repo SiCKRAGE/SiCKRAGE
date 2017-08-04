@@ -376,17 +376,19 @@ module.exports = function (grunt) {
 
         grunt.file.write(vFile, newVersion);
 
-        grunt.log.write('New Version: ' + grunt.file.read(vFile));
-
         var git_tasks = [
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_start:' + newVersion,
             'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
             'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
+            'exec:git_push:sickrage:develop:tags',
+            'exec:git_push:sickrage:master:tags',
             'exec:pypi_publish'
         ];
 
         grunt.task.run(git_tasks);
+
+        grunt.log.write('Published New Version: ' + grunt.file.read(vFile));
     });
 };
