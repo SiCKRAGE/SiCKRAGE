@@ -1,6 +1,7 @@
 # Changelog
 
-- * ae3fd79 - 2017-08-04: Release v9.0.62 
+- * 1218d47 - 2017-08-04: Fixed issue #42 - Pushbullet Notifications Not Working 
+- * 15f720a - 2017-08-04: Release v9.0.62 
 - * 4effd2c - 2017-08-04: Release v9.0.61 
 - * 5e8e772 - 2017-08-04: Release v9.0.60 
 - * 1735eaf - 2017-08-04: grunt tasks 

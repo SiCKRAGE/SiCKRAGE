@@ -322,7 +322,7 @@ module.exports = function (grunt) {
             },
             'git_flow_finish': {
                 cmd: function (version, message) {
-                    return 'git flow release finish ' + version + ' -m ' + message;
+                    return 'git flow release finish ' + version + ' -m "' + message + '"';
                 },
                 stderr: false,
                 callback: function (err, stdout, stderr) {
@@ -361,8 +361,6 @@ module.exports = function (grunt) {
         var vFile = 'sickrage/version.txt';
 
         var version = grunt.file.read(vFile);
-        grunt.log.write('Current Version: ' + grunt.file.read(vFile));
-
         var versionParts = version.split('.');
         var vArray = {
             vMajor: versionParts[0],
@@ -388,7 +386,5 @@ module.exports = function (grunt) {
         ];
 
         grunt.task.run(git_tasks);
-
-        grunt.log.write('Published New Version: ' + grunt.file.read(vFile));
     });
 };
