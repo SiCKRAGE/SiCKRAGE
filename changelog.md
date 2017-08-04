@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2ba892c - 2017-08-04: Fixed issue #41 - downloadSubtitles() got an unexpected keyword argument &#x27;force&#x27; 
+- * 2fb97f7 - 2017-08-04: v9.0.45 
+- * 9ee5883 - 2017-08-04: Fixed issue #41 - downloadSubtitles() got an unexpected keyword argument &#x27;force&#x27; 
 - * 9983f42 - 2017-08-04: v9.0.44 
 - * a3316de - 2017-08-04: Fixed issue #33 with adding existing shows not detecting status of episode files on disk 
 - * 9d3fd0e - 2017-08-04: Fixed issue with retrieving metadata for existing shows when adding them 
