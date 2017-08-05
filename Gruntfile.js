@@ -357,6 +357,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
+        grunt.task.run(['default']);
 
         var vFile = 'sickrage/version.txt';
 

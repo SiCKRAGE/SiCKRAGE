@@ -722,6 +722,7 @@ jQuery(document).ready(function ($) {
                 url: '/browser/',
                 autocompleteURL: '/browser/complete',
                 includeFiles: 0,
+                fileTypes: [],
                 showBrowseButton: true
             },
             fileBrowserDialog: null,
@@ -732,11 +733,11 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.browser.defaults.url = SICKRAGE.srWebRoot + SICKRAGE.browser.defaults.url;
                 SICKRAGE.browser.defaults.autocomplete = SICKRAGE.srWebRoot + SICKRAGE.browser.defaults.autocompleteURL;
 
-                $.fn.nFileBrowser = SICKRAGE.browser.nFileBrowser;
                 $.fn.fileBrowser = SICKRAGE.browser.fileBrowser;
+                $.fn.nFileBrowser = SICKRAGE.browser.nFileBrowser;
             },
 
-            browse: function (path, endpoint, includeFiles) {
+            browse: function (path, endpoint, includeFiles, fileTypes) {
                 if (SICKRAGE.browser.currentBrowserPath === path) {
                     return;
                 }
@@ -750,7 +751,8 @@ jQuery(document).ready(function ($) {
 
                 SICKRAGE.browser.currentRequest = $.getJSON(endpoint, {
                     path: path,
-                    includeFiles: includeFiles
+                    includeFiles: includeFiles,
+                    fileTypes: fileTypes.join(',')
                 }, function (data) {
                     SICKRAGE.browser.fileBrowserDialog.empty();
                     var firstVal = data[0];
@@ -764,23 +766,27 @@ jQuery(document).ready(function ($) {
                         .val(firstVal.currentPath)
                         .on('keypress', function (e) {
                             if (e.which === 13) {
-                                SICKRAGE.browser.browse(e.target.value, endpoint, includeFiles);
+                                SICKRAGE.browser.browse(e.target.value, endpoint, includeFiles, fileTypes);
                             }
                         })
                         .appendTo(SICKRAGE.browser.fileBrowserDialog)
                         .fileBrowser({showBrowseButton: false})
                         .on('autocompleteselect', function (e, ui) {
-                            SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles);
+                            SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles, fileTypes);
                         });
 
                     list = $('<ul>').appendTo(SICKRAGE.browser.fileBrowserDialog);
                     $.each(data, function (i, entry) {
+                        if (entry.isFile && fileTypes &&
+                            (!entry.isAllowed || fileTypes.indexOf("images") !== -1 && !entry.isImage)) {
+                            return true;
+                        }
                         link = $('<a href="javascript:void(0)">').on('click', function () {
                             if (entry.isFile) {
                                 SICKRAGE.browser.currentBrowserPath = entry.path;
                                 $('.browserDialog .ui-button:contains("Ok")').click();
                             } else {
-                                SICKRAGE.browser.browse(entry.path, endpoint, includeFiles);
+                                SICKRAGE.browser.browse(entry.path, endpoint, includeFiles, fileTypes);
                             }
                         }).text(entry.name);
                         if (entry.isFile) {
@@ -845,7 +851,7 @@ jQuery(document).ready(function ($) {
                     initialDir = options.initialDir;
                 }
 
-                SICKRAGE.browser.browse(initialDir, options.url, options.includeFiles);
+                SICKRAGE.browser.browse(initialDir, options.url, options.includeFiles, options.fileTypes);
                 SICKRAGE.browser.fileBrowserDialog.dialog('open');
 
                 return false;

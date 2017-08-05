@@ -538,18 +538,19 @@ class WebFileBrowser(WebHandler):
     def __init__(self, *args, **kwargs):
         super(WebFileBrowser, self).__init__(*args, **kwargs)
 
-    def index(self, path='', includeFiles=False, *args, **kwargs):
+    def index(self, path='', includeFiles=False, fileTypes=''):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'application/json')
-        return json_encode(foldersAtPath(path, True, bool(int(includeFiles))))
+        return json_encode(foldersAtPath(path, True, bool(int(includeFiles)), fileTypes.split(',')))
 
-    def complete(self, term, includeFiles=0):
+    def complete(self, term, includeFiles=False, fileTypes=''):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'application/json')
-        paths = [entry['path'] for entry in
-                 foldersAtPath(os.path.dirname(term), includeFiles=bool(int(includeFiles))) if 'path' in entry]
-
-        return json_encode(paths)
+        return json_encode([entry['path'] for entry in foldersAtPath(
+            os.path.dirname(term),
+            includeFiles=bool(int(includeFiles)),
+            fileTypes=fileTypes.split(',')
+        ) if 'path' in entry])
 
 
 @Route('/home(/?.*)')
@@ -4277,6 +4278,7 @@ class ConfigPostProcessing(Config):
         if not check:
             sickrage.srCore.srLogger.warning('Looks like unrar is not installed, check failed')
         return ('not supported', 'supported')[check]
+
 
 @Route('/config/providers(/?.*)')
 class ConfigProviders(Config):
