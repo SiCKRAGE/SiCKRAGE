@@ -361,7 +361,7 @@ def run_subs_extra_scripts(episode, found_subtitles, video, single=False):
             try:
                 p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
-                out, _ = p.communicate()  # @UnusedVariable
+                out, _ = p.communicate()
                 sickrage.srCore.srLogger.debug("Script result: %s" % out)
 
             except Exception as e:
@@ -376,7 +376,7 @@ def refine_video(video, episode):
             if getattr(guess_ep, name) and not getattr(video, name):
                 setattr(video, name, getattr(guess_ep, name))
 
-    # Use sickbeard metadata
+    # Use sickrage metadata
     metadata_mapping = {
         'episode': 'episode',
         'release_group': 'release_group',

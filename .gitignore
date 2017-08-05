@@ -11,6 +11,7 @@ autoProcessTV.cfg
 /.imdbpie_cache/
 /server.crt
 /server.key
+/sickrage/unrar/
 
 #  SR Test Related   #
 ######################

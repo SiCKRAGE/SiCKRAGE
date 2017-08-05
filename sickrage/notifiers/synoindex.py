@@ -57,7 +57,7 @@ class synoIndexNotifier(srNotifiers):
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickrage.PROG_DIR)
-                out, err = p.communicate()  # @UnusedVariable
+                out, err = p.communicate()
                 sickrage.srCore.srLogger.debug("Script result: " + str(out))
             except OSError as e:
                 sickrage.srCore.srLogger.error("Unable to run synoindex: {}".format(e.message))
@@ -82,7 +82,7 @@ class synoIndexNotifier(srNotifiers):
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickrage.PROG_DIR)
-                out, err = p.communicate()  # @UnusedVariable
+                out, err = p.communicate()
                 sickrage.srCore.srLogger.debug("Script result: " + str(out))
             except OSError as e:
                 sickrage.srCore.srLogger.error("Unable to run synoindex: {}".format(e.message))

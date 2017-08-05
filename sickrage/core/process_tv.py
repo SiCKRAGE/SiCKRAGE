@@ -525,8 +525,8 @@ def already_postprocessed(dirName, videofile, force, result):
 
                 # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
                 if parse_result and (
-                                parse_result.show.indexerid and parse_result.episode_numbers and parse_result.season_number):
-                    if e['showid'] == int(parse_result.show.indexerid) and e['season'] == int(
+                                parse_result.indexerid and parse_result.episode_numbers and parse_result.season_number):
+                    if e['showid'] == int(parse_result.indexerid) and e['season'] == int(
                                     parse_result.season_number and e['episode']) == int(
                         parse_result.episode_numbers[0]):
                         return True

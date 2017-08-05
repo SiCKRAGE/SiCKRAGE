@@ -20,14 +20,13 @@
 from __future__ import unicode_literals
 
 import re
-import traceback
 import urllib
 
 import requests
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.core.helpers import bs4_parser, convert_size, tryInt
 from sickrage.providers import TorrentProvider
 
 
@@ -112,96 +111,69 @@ class HDTorrentsProvider(TorrentProvider):
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 
+                if data.find('No torrents here') != -1:
+                    sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                    continue
+
                 # Search result page contains some invalid html that prevents html parser from returning all data.
                 # We cut everything before the table that contains the data we are interested in thus eliminating
                 # the invalid html portions
                 try:
-                    index = data.lower().ind
-                    '<table class="mainblockcontenttt"'
+                    index = data.lower().index('<table class="mainblockcontenttt"')
                 except ValueError:
-                    sickrage.srCore.srLogger.error("Could not find table of torrents mainblockcontenttt")
+                    sickrage.srCore.srLogger.debug("Could not find table of torrents mainblockcontenttt")
                     continue
 
-                data = urllib.unquote(data[index:].encode('utf-8')).decode('utf-8').replace('\t', '')
-
-                with bs4_parser(data) as html:
+                with bs4_parser(data[index:]) as html:
                     if not html:
                         sickrage.srCore.srLogger.debug("No html data parsed from provider")
                         continue
 
-                    empty = html.find('No torrents here')
-                    if empty:
-                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                    torrent_rows = []
+                    torrent_table = html.find('table', class_='mainblockcontenttt')
+                    if torrent_table:
+                        torrent_rows = torrent_table('tr')
+
+                    if not torrent_rows:
+                        sickrage.srCore.srLogger.debug("Could not find results in returned data")
                         continue
 
-                    tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
-                    if not tables:
-                        sickrage.srCore.srLogger.error("Could not find table of torrents mainblockcontenttt")
-                        continue
-
-                    torrents = tables.findChildren('tr')
-                    if not torrents:
-                        continue
+                    # Cat., Active, Filename, Dl, Wl, Added, Size, Uploader, S, L, C
+                    labels = [label.a.get_text(strip=True) if label.a else label.get_text(strip=True) for label in torrent_rows[0]('td')]
 
                     # Skip column headers
-                    for result in torrents[1:]:
+                    for result in torrent_rows[1:]:
                         try:
-                            cells = result.findChildren('td', attrs={
-                                'class': re.compile(r'(green|yellow|red|mainblockcontent)')})
-                            if not cells:
+                            cells = result.findChildren('td')[:len(labels)]
+                            if len(cells) < len(labels):
                                 continue
 
-                            title = download_url = seeders = leechers = size = None
-                            for cell in cells:
-                                try:
-                                    if None is title and cell.get('title') and cell.get('title') in 'Download':
-                                        title = re.search('f=(.*).torrent', cell.a['href']).group(1).replace('+', '.')
-                                        title = title.decode('utf-8')
-                                        download_url = self.urls['home'] % cell.a['href']
-                                        continue
-                                    if None is seeders and cell.get('class')[0] and cell.get('class')[
-                                        0] in 'green' 'yellow' 'red':
-                                        seeders = int(cell.text)
-                                        if not seeders:
-                                            seeders = 1
-                                            continue
-                                    elif None is leechers and cell.get('class')[0] and cell.get('class')[
-                                        0] in 'green' 'yellow' 'red':
-                                        leechers = int(cell.text)
-                                        if not leechers:
-                                            leechers = 0
-                                            continue
+                            title = cells[labels.index('Filename')].a.get_text(strip=True)
+                            seeders = tryInt(cells[labels.index('S')].get_text(strip=True))
+                            leechers = tryInt(cells[labels.index('L')].get_text(strip=True))
+                            torrent_size = cells[labels.index('Size')].get_text()
 
-                                    # Need size for failed downloads handling
-                                    if size is None:
-                                        if re.match(r'[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cell.text):
-                                            size = convert_size(cell.text)
-                                            if not size:
-                                                size = -1
-
-                                except Exception:
-                                    sickrage.srCore.srLogger.error(
-                                        "Failed parsing provider. Traceback: %s" % traceback.format_exc())
-
-                            if not all([title, download_url]):
-                                continue
-
-                            # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
-                                continue
-
-                            item = title, download_url, size, seeders, leechers
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
-
-                            items[mode].append(item)
-
-                        except (AttributeError, TypeError, KeyError, ValueError):
+                            size = convert_size(torrent_size) or -1
+                            download_url = self.urls['base_url'] + '/' + cells[labels.index('Dl')].a['href']
+                        except (AttributeError, TypeError, KeyError, ValueError, IndexError):
                             continue
+
+                        if not all([title, download_url]):
+                            continue
+
+                        # Filter unseeded torrent
+                        if seeders < self.minseed or leechers < self.minleech:
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
+                            continue
+
+                        item = title, download_url, size, seeders, leechers
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: %s " % title)
+
+                        items[mode].append(item)
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

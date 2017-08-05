@@ -164,7 +164,7 @@ def remove_extension(name):
     """
 
     if name and "." in name:
-        base_name, sep, extension = name.rpartition('.')  # @UnusedVariable
+        base_name, sep, extension = name.rpartition('.')
         if base_name and extension.lower() in ['nzb', 'torrent'] + mediaExtensions:
             name = base_name
 

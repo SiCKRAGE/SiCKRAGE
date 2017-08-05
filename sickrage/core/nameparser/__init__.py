@@ -25,6 +25,7 @@ import time
 from dateutil import parser
 
 import sickrage
+from sickrage.core.classes import AllShowsUI
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, get_all_episodes_from_absolute_number, \
     remove_extension
@@ -41,11 +42,12 @@ class NameParser(object):
     NORMAL_REGEX = 1
     ANIME_REGEX = 2
 
-    def __init__(self, file_name=True, showObj=None, tryIndexers=False, naming_pattern=False):
+    def __init__(self, file_name=True, showObj=None, tryIndexers=False, naming_pattern=False, validate_show=True):
         self.file_name = file_name
         self.showObj = showObj
         self.tryIndexers = tryIndexers
         self.naming_pattern = naming_pattern
+        self.validate_show = validate_show
 
         if self.showObj and not self.showObj.is_anime:
             self._compile_regexes(self.NORMAL_REGEX)
@@ -55,41 +57,44 @@ class NameParser(object):
             self._compile_regexes(self.ALL_REGEX)
 
     def get_show(self, name, tryIndexers=False):
-        if not sickrage.srCore.SHOWLIST:
-            return
-
-        showObj = None
+        show = None
+        show_id = 0
         fromCache = False
 
-        if not name:
-            return showObj
+        if not all([name, sickrage.srCore.SHOWLIST]): return show, show_id
 
         try:
             # check cache for show
             cache = sickrage.srCore.NAMECACHE.get(name)
             if cache:
                 fromCache = True
-                showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(cache))
+                show_id = cache
 
             # try indexers
-            if not showObj and tryIndexers:
-                showObj = findCertainShow(sickrage.srCore.SHOWLIST,
-                                          srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+            if not show_id and tryIndexers:
+                try:
+                    show_id = srIndexerApi().searchForShowID(full_sanitizeSceneName(name), ui=AllShowsUI)[2]
+                except Exception:
+                    pass
 
             # try scene exceptions
-            if not showObj:
-                ShowID = get_scene_exception_by_name(name)[0]
-                if ShowID:
-                    showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(ShowID))
+            if not show_id:
+                try:
+                    show_id = get_scene_exception_by_name(name)[0]
+                except Exception:
+                    pass
+
+            # create show object
+            show = findCertainShow(sickrage.srCore.SHOWLIST, int(show_id)) if show_id else None
 
             # add show to cache
-            if showObj and not fromCache:
-                sickrage.srCore.NAMECACHE.put(name, showObj.indexerid)
+            if show and not fromCache:
+                sickrage.srCore.NAMECACHE.put(name, show.indexerid)
         except Exception as e:
             sickrage.srCore.srLogger.debug(
                 "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
-        return showObj
+        return show, show_id
 
     @staticmethod
     def clean_series_name(series_name):
@@ -228,18 +233,17 @@ class NameParser(object):
             # pick best match with highest score based on placement
             bestResult = max(sorted(matches, reverse=True, key=lambda x: x.which_regex), key=lambda x: x.score)
 
-            show = None
+            bestResult.show = self.showObj
+            bestResult.indexerid = self.showObj.indexerid if self.showObj else 0
+
             if not self.naming_pattern:
                 # try and create a show object for this result
-                show = self.get_show(bestResult.series_name, self.tryIndexers)
+                bestResult.show, bestResult.indexerid = self.get_show(bestResult.series_name, self.tryIndexers)
 
-            # confirm passed in show object indexer id matches result show object indexer id
-            if show:
-                if self.showObj and show.indexerid != self.showObj.indexerid:
-                    show = None
-                bestResult.show = show
-            elif not show and self.showObj:
-                bestResult.show = self.showObj
+                # confirm passed in show object indexer id matches result show object indexer id
+                if (bestResult.show and self.showObj) and bestResult.show.indexerid != self.showObj.indexerid:
+                    bestResult.show = None
+                    bestResult.indexerid = 0
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
             if not bestResult.show or self.naming_pattern:
@@ -484,9 +488,10 @@ class NameParser(object):
                 final_result.which_regex += dir_name_result.which_regex
 
         final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
+        final_result.indexerid = self._combine_results(file_name_result, dir_name_result, 'indexerid')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if not final_result.show:
+        if not final_result.show and self.validate_show:
             raise InvalidShowException("Unable to parse {}".format(name))
 
         # if there's no useful info in it then raise an exception
@@ -511,6 +516,7 @@ class ParseResult(object):
                  air_date=None,
                  ab_episode_numbers=None,
                  show=None,
+                 indexerid=None,
                  score=None,
                  quality=None,
                  version=None
@@ -542,6 +548,7 @@ class ParseResult(object):
 
         self.which_regex = []
         self.show = show
+        self.indexerid = indexerid
         self.score = score
 
         self.version = version
@@ -566,6 +573,8 @@ class ParseResult(object):
             return False
         if self.show != other.show:
             return False
+        if self.indexerid != other.indexerid:
+            return False
         if self.score != other.score:
             return False
         if self.quality != other.quality:
@@ -584,14 +593,12 @@ class ParseResult(object):
         if self.episode_numbers and len(self.episode_numbers):
             for ep_num in self.episode_numbers:
                 to_return += ' EPISODE:[{}]'.format(str(ep_num).zfill(2))
-
         if self.is_air_by_date:
             to_return += ' AIRDATE:[{}]'.format(self.air_date)
         if self.ab_episode_numbers:
             to_return += ' ABS:[{}]'.format(self.ab_episode_numbers)
         if self.version and self.is_anime is True:
             to_return += ' ANIME VER:[{}]'.format(self.version)
-
         if self.release_group:
             to_return += ' GROUP:[{}]'.format(self.release_group)
 

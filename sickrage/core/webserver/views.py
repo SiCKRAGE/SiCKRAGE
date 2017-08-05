@@ -28,7 +28,6 @@ import urllib
 import dateutil.tz
 import markdown2
 from CodernityDB.database import RecordNotFound
-from UnRAR2 import RarFile
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.escape import json_encode, recursive_unicode, json_decode
@@ -40,7 +39,7 @@ from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
-from sickrage.core.classes import ErrorViewer, AllShowsListUI, AttrDict
+from sickrage.core.classes import ErrorViewer, AllShowsUI, AttrDict
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
@@ -54,7 +53,6 @@ from sickrage.core.helpers import argToBool, backupSR, check_url, \
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
-from sickrage.core.media.util import showImage
 from sickrage.core.nameparser import validator
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
@@ -483,8 +481,6 @@ class WebRoot(WebHandler):
             action='schedule'
         )
 
-    def showPoster(self, show=None, which=None):
-        return showImage(show, which)
 
 @Route('/google(/?.*)')
 class GoogleAuth(WebHandler):
@@ -542,18 +538,19 @@ class WebFileBrowser(WebHandler):
     def __init__(self, *args, **kwargs):
         super(WebFileBrowser, self).__init__(*args, **kwargs)
 
-    def index(self, path='', includeFiles=False, *args, **kwargs):
+    def index(self, path='', includeFiles=False, fileTypes=''):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'application/json')
-        return json_encode(foldersAtPath(path, True, bool(int(includeFiles))))
+        return json_encode(foldersAtPath(path, True, bool(int(includeFiles)), fileTypes.split(',')))
 
-    def complete(self, term, includeFiles=0):
+    def complete(self, term, includeFiles=False, fileTypes=''):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'application/json')
-        paths = [entry['path'] for entry in
-                 foldersAtPath(os.path.dirname(term), includeFiles=bool(int(includeFiles))) if 'path' in entry]
-
-        return json_encode(paths)
+        return json_encode([entry['path'] for entry in foldersAtPath(
+            os.path.dirname(term),
+            includeFiles=bool(int(includeFiles)),
+            fileTypes=fileTypes.split(',')
+        ) if 'path' in entry])
 
 
 @Route('/home(/?.*)')
@@ -710,7 +707,7 @@ class Home(WebHandler):
 
         connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
         if connection:
-            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)  # @UnusedVariable
+            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)
             if authed:
                 return "Success. Connected and authenticated"
             else:
@@ -2249,7 +2246,7 @@ class HomeAddShows(Home):
         for indexer in srIndexerApi().indexers if not int(indexer) else [int(indexer)]:
             lINDEXER_API_PARMS = srIndexerApi(indexer).api_params.copy()
             lINDEXER_API_PARMS['language'] = lang
-            lINDEXER_API_PARMS['custom_ui'] = AllShowsListUI
+            lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
             t = srIndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
             sickrage.srCore.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
@@ -2329,22 +2326,21 @@ class HomeAddShows(Home):
 
                 showid = show_name = indexer = None
                 for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-                    # if not cur_provider.enabled:
-                    #    continue
+                    if all([showid, show_name, indexer]):
+                        continue
 
-                    if not (showid and show_name):
-                        (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
+                    (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
 
-                        # default to TVDB if indexer was not detected
-                        if show_name and not (indexer or showid):
-                            (sn, idxr, i) = srIndexerApi(indexer).searchForShowID(show_name, showid)
+                    # default to TVDB if indexer was not detected
+                    if show_name and not (indexer or showid):
+                        (sn, idxr, i) = srIndexerApi(indexer).searchForShowID(show_name, showid)
 
-                            # set indexer and indexer_id from found info
-                            if not indexer and idxr:
-                                indexer = idxr
+                        # set indexer and indexer_id from found info
+                        if not indexer and idxr:
+                            indexer = idxr
 
-                            if not showid and i:
-                                showid = i
+                        if not showid and i:
+                            showid = i
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
@@ -3534,7 +3530,7 @@ class Manage(Home, WebRoot):
             if check_url(webui_url + 'download/'):
                 webui_url += 'download/'
             else:
-                info_download_station = '<p>To have a better experience please set the Download Station alias as <code>download</code>, you can check this setting in the Synology DSM <b>Control Panel</b> > <b>Application Portal</b>. Make sure you allow DSM to be embedded with iFrames too in <b>Control Panel</b> > <b>DSM Settings</b> > <b>Security</b>.</p><br><p>There is more information about this available <a href="https://github.com/midgetspy/Sick-Beard/pull/338">here</a>.</p><br>'
+                info_download_station = '<p>To have a better experience please set the Download Station alias as <code>download</code>, you can check this setting in the Synology DSM <b>Control Panel</b> > <b>Application Portal</b>. Make sure you allow DSM to be embedded with iFrames too in <b>Control Panel</b> > <b>DSM Settings</b> > <b>Security</b>.<br>'
 
         if not sickrage.srCore.srConfig.TORRENT_PASSWORD == "" and not sickrage.srCore.srConfig.TORRENT_USERNAME == "":
             webui_url = re.sub('://',
@@ -4276,16 +4272,12 @@ class ConfigPostProcessing(Config):
             - Simulating in memory rar extraction on test.rar file
         """
 
-        try:
-            rar_path = os.path.join(sickrage.PROG_DIR, 'unrar2', 'test.rar')
-            testing = RarFile(rar_path).read_files('*test.txt')
-            if testing[0][1] == 'This is only a test.':
-                return 'supported'
-            sickrage.srCore.srLogger.error('Rar Not Supported: Can not read the content of test file')
-            return 'not supported'
-        except Exception as e:
-            sickrage.srCore.srLogger.error('Rar Not Supported: {}'.format(e.message))
-            return 'not supported'
+        check = sickrage.srCore.srConfig.change_unrar_tool(sickrage.srCore.srConfig.UNRAR_TOOL,
+                                                           sickrage.srCore.srConfig.UNRAR_ALT_TOOL)
+
+        if not check:
+            sickrage.srCore.srLogger.warning('Looks like unrar is not installed, check failed')
+        return ('not supported', 'supported')[check]
 
 
 @Route('/config/providers(/?.*)')

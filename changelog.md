@@ -1,6 +1,56 @@
 # Changelog
 
-- * 1c3ca5e - 2017-07-28: Config -&gt; General is now responsive 
+- * 6774207 - 2017-08-05: Release v9.0.67 
+- * 1d7b71a - 2017-08-05: Fixed issue #20 - rar not working 
+- * 859f714 - 2017-08-05: Release v9.0.66 
+- * 0c55c51 - 2017-08-04: Release v9.0.65 
+- * d96697c - 2017-08-04: Release v9.0.64 
+- * eb86080 - 2017-08-04: Fixed issues with NMA, Plex, and SabNZBD relating to SR UserAgent strings 
+- * a1277cf - 2017-08-04: Release v9.0.63 
+- * 6775391 - 2017-08-04: Fixed issue #42 - Pushbullet Notifications Not Working 
+- * 15f720a - 2017-08-04: Release v9.0.62 
+- * 4effd2c - 2017-08-04: Release v9.0.61 
+- * 5e8e772 - 2017-08-04: Release v9.0.60 
+- * 1735eaf - 2017-08-04: grunt tasks 
+- * d5572b7 - 2017-08-04: v9.0.45 
+- * 9ee5883 - 2017-08-04: Fixed issue #41 - downloadSubtitles() got an unexpected keyword argument &#x27;force&#x27; 
+- * 9983f42 - 2017-08-04: v9.0.44 
+- * a3316de - 2017-08-04: Fixed issue #33 with adding existing shows not detecting status of episode files on disk 
+- * 9d3fd0e - 2017-08-04: Fixed issue with retrieving metadata for existing shows when adding them 
+- * 60ecda9 - 2017-08-03: v9.0.43 
+- * f5ba588 - 2017-08-03: set indexer searching for indexer ID is optional in nameparser 
+- * fa74b2d - 2017-08-03: Fixed &quot;Invalid or incorrect number of columns in the THEAD&quot; issue in display show template 
+- * 8d7f2e2 - 2017-08-03: Removed IMDB caching, not thread safe 
+- * a43028f - 2017-08-03: Removed IMDB caching, not thread safe 
+- * f5ae7d4 - 2017-08-03: v9.0.42 
+- * 522d886 - 2017-08-03: Fixed issues with HD Torrents provider 
+- * 39b65eb - 2017-08-03: Fix for issue #39 
+- * 0c50d02 - 2017-08-03: fonts and images now use directory refs instead of url refs, resolves issues when using web_root option 
+- * bec0c7c - 2017-08-03: Removed toggle switches from mako pages 
+- * ba6f47b - 2017-08-01: Fixed symlinks for synology devices when returning show image paths v9.0.41 
+- * 161d8db - 2017-07-31: Fixed TorrentLeech provider searching 
+- * 8b294f8 - 2017-07-31: &quot;performing episodes search for showname&quot; message to only be displayed in log if there are actual episodes to be searched for 
+- * cdd0147 - 2017-07-31: v9.0.40 
+- * 512bfcc - 2017-07-31: Fixed incorrect refs in rtorrentlib module 
+- * 961db5c - 2017-07-31: added absolute import for rtorrent client 
+- * dfc5dbd - 2017-07-31: renamed rtorrent libs to rtorrentlib 
+- * 227ac22 - 2017-07-31: Fixed issue with nameparser get_show function 
+- * 46f4ad5 - 2017-07-30: Added regex to match 1080p.WEB.x264, 720p.WEB.x264 and 480p.WEB.x264 qualities 
+- * c513284 - 2017-07-30: v9.0.38 
+- * e8e696e - 2017-07-30: Added custom rTorrent module to libs folder Fixed issues with rTorrent client 
+- * efa8992 - 2017-07-30: v9.0.37 
+- * d3b2836 - 2017-07-30: Updated the way sickrage caches results from provider RSS feeds 
+- * 0330e6b - 2017-07-29: Updated CSS 
+- * 0fe5f33 - 2017-07-29: v9.0.36 
+- * 006e1c3 - 2017-07-29: v9.0.35 
+- * 511b3f1 - 2017-07-29: v9.0.35 
+- * 3ebc420 - 2017-07-29: Fixed issue with caching rss feed items not in tv library 
+- * 1292285 - 2017-07-29: v9.0.34 
+- * 3b3085c - 2017-07-29: Fixed code for unpacking rar files 
+- * 1f744d8 - 2017-07-28: All entries from provider RSS feeds are now cached for faster lookups 
+- * 1e09553 - 2017-07-28: Fixed issue with Trakt API code 
+- * f86e64d - 2017-07-28: Added fanart backgrounds to display show page 
+- * 3d2c071 - 2017-07-28: Config -&gt; General is now responsive 
 - * 2ed40fa - 2017-07-27: Added background fanart when displaying shows Made config general template responsive Added web view for getting poster urls 
 - * 815ebae - 2017-07-27: v9.0.33 
 - * 2c33300 - 2017-07-27: Added custom metadata option for subtitles 

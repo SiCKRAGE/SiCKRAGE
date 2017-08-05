@@ -40,7 +40,7 @@ class Media(object):
         :return: The url to the desired media file
         """
 
-        path = os.path.realpath(self.get_static_media_path()).replace(sickrage.CACHE_DIR, "")
+        path = self.get_static_media_path().replace(sickrage.CACHE_DIR, "")
         path = path.replace(sickrage.srCore.srConfig.GUI_DIR, "")
         return url_escape(path.replace('\\', '/'), False)
 

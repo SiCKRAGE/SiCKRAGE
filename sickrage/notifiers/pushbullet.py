@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 
 import json
 import traceback
+from urlparse import urljoin
 
 import sickrage
 from sickrage.core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
@@ -29,20 +30,31 @@ from sickrage.notifiers import srNotifiers
 
 
 class PushbulletNotifier(srNotifiers):
-    TEST_EVENT = 'Test'
-
     def __init__(self):
         super(PushbulletNotifier, self).__init__()
         self.name = 'pushbullet'
+        self.url = 'https://api.pushbullet.com/v2/'
+        self.TEST_EVENT = 'Test'
 
     def test_notify(self, pushbullet_api):
         sickrage.srCore.srLogger.debug("Sending a test Pushbullet notification.")
-        return self._sendPushbullet(pushbullet_api, event=self.TEST_EVENT,
-                                    message="Testing Pushbullet settings from SiCKRAGE")
+        return self._sendPushbullet(
+            pushbullet_api,
+            event=self.TEST_EVENT,
+            message="Testing Pushbullet settings from SiCKRAGE",
+            force=True
+        )
 
     def get_devices(self, pushbullet_api):
         sickrage.srCore.srLogger.debug("Testing Pushbullet authentication and retrieving the device list.")
-        return self._sendPushbullet(pushbullet_api, event=self.TEST_EVENT)
+        headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
+
+        try:
+            return sickrage.srCore.srWebSession.get(urljoin(self.url, 'devices'), headers=headers).text
+        except Exception:
+            sickrage.srCore.srLogger.debug(
+                'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
+            return False
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSNATCH:
@@ -65,9 +77,8 @@ class PushbulletNotifier(srNotifiers):
             self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_GIT_UPDATE],
                                  message=notifyStrings[NOTIFY_GIT_UPDATE_TEXT] + new_version)
 
-    def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None):
-
-        if not (sickrage.srCore.srConfig.USE_PUSHBULLET or event.lower() == 'test'):
+    def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None, force=False):
+        if not (sickrage.srCore.srConfig.USE_PUSHBULLET or force):
             return False
 
         pushbullet_api = pushbullet_api or sickrage.srCore.srConfig.PUSHBULLET_API
@@ -77,22 +88,24 @@ class PushbulletNotifier(srNotifiers):
         sickrage.srCore.srLogger.debug("Pushbullet message: %r" % message)
         sickrage.srCore.srLogger.debug("Pushbullet api: %r" % pushbullet_api)
         sickrage.srCore.srLogger.debug("Pushbullet devices: %r" % pushbullet_device)
-        sickrage.srCore.srLogger.debug("Pushbullet notification type: %r" % 'note' if event else 'None')
 
-        url = 'https://api.pushbullet.com/v2/%s' % ('devices', 'pushes')[event is not None]
-
-        data = json.dumps({
+        post_data = {
             'title': event.encode('utf-8'),
             'body': message.encode('utf-8'),
-            'device_iden': pushbullet_device.encode('utf-8'),
             'type': 'note'
-        }) if pushbullet_device else None
+        }
 
-        method = 'GET' if data is None else 'POST'
-        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer %s' % pushbullet_api}
+        if pushbullet_device:
+            post_data['device_iden'] = pushbullet_device.encode('utf8')
+
+        headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
 
         try:
-            response = sickrage.srCore.srWebSession.request(method, url, data=data, headers=headers)
+            response = sickrage.srCore.srWebSession.post(
+                urljoin(self.url, 'pushes'),
+                data=json.dumps(post_data),
+                headers=headers
+            )
         except Exception:
             sickrage.srCore.srLogger.debug(
                 'Pushbullet authorization failed with exception: %r' % traceback.format_exc())

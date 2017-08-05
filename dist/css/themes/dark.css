@@ -51,15 +51,15 @@ inc_top.mako
 
 .ui-icon,
 .ui-widget-content .ui-icon {
-    background-image: url("/images/ui-icons_ffffff_256x240.png");
+    background-image: url("../../images/ui-icons_ffffff_256x240.png");
 }
 
 .ui-state-default .ui-icon {
-    background-image: url("/images/ui-icons_056b93_256x240.png");
+    background-image: url("../../images/ui-icons_056b93_256x240.png");
 }
 
 .ui-widget-overlay {
-    background: #000000 url("/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
+    background: #000000 url("../../images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
 }
 
 .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
@@ -158,25 +158,25 @@ add_shows.mako
 ========================================================================== */
 
 .icon-addnewshow {
-    background-image: url("/images/addshows/add-new32-white.png");
+    background-image: url("../../images/addshows/add-new32-white.png");
     width: 32px;
     height: 32px;
 }
 
 .icon-addtrendingshow {
-    background-image: url("/images/addshows/add-trending32-white.png");
+    background-image: url("../../images/addshows/add-trending32-white.png");
     width: 32px;
     height: 32px;
 }
 
 .icon-addrecommendedshow {
-    background-image: url("/images/addshows/add-trakt32-white.png");
+    background-image: url("../../images/addshows/add-trakt32-white.png");
     width: 32px;
     height: 32px;
 }
 
 .icon-addexistingshow {
-    background-image: url("/images/addshows/add-existing32-white.png");
+    background-image: url("../../images/addshows/add-existing32-white.png");
     width: 32px;
     height: 32px;
 }
@@ -238,7 +238,7 @@ h1.title {
 }
 
 ul.tags li {
-    background: url(/images/tag.png) no-repeat scroll 5px 4px #15528F;
+    background: url("../../images/tag.png") no-repeat scroll 5px 4px #15528F;
     border-radius: 3px;
     border: 1px solid #111;
     color: #FFF;
@@ -282,8 +282,8 @@ ul.tags li {
 }
 
 th.row-seasonheader {
-    background-color: #222;
-    color: #fff;
+    background-color: transparent;
+    color: #FFFFFF;
 }
 
 tr.seasonheader {
@@ -737,75 +737,74 @@ tablesorter.css
 ========================================================================== */
 
 .tablesorter {
-    color: #fff;
-    background-color: #333;
+    color: #FFFFFF;
+    background-color: transparent;
 }
 
 .tablesorter th,
 .tablesorter td {
-    border-top: #222 1px solid;
-    border-left: #222 1px solid;
+    padding: 4px;
+    border-top: #222222 1px solid;
+    border-left: #222222 1px solid;
+    vertical-align: middle;
+}
+
+/* add extra border at right edge */
+.tablesorter th:last-child,
+.tablesorter td:last-child {
+    border-right: #222222 1px solid;
 }
 
 .tablesorter th {
-    color: #fff;
+    color: #FFFFFF;
+    text-align: center;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
     background-color: #15528F;
+    border-collapse: collapse;
+    font-weight: normal;
 }
 
 .tablesorter thead .tablesorter-headerDesc {
-    background-color: #297AB8;
-    background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
-    /* background-image: url(/images/tablesorter/asc.gif); */
+    background: #297AB8 url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7) no-repeat center right;
 }
 
 .tablesorter thead .tablesorter-headerAsc {
-    background-color: #297AB8;
-    background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
-    /* background-image: url(/images/tablesorter/desc.gif); */
+    background: #297AB8 url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7) no-repeat center right;
 }
 
 thead.tablesorter-stickyHeader {
-    border-top: 2px solid #222;
-    border-bottom: 2px solid #222;
+    border-top: 2px solid #222222;
+    border-bottom: 2px solid #222222;
 }
 
 /* Zebra Widget - row alternating colors */
-.tablesorter tr.odd, .sickrageTable tr.odd {
+.tablesorter tr.odd, .sickbeardTable tr.odd {
     background-color: #333333;
 }
 
-.tablesorter tr.even, .sickrageTable tr.even {
-    background-color: #2e2e2e;
+.tablesorter tr.even, .sickbeardTable tr.even {
+    background-color: #2E2E2E;
 }
 
 .tablesorter tr.tablesorter-filter-row,
 .tablesorter tr.tablesorter-filter-row td {
-    background: #333;
-    border-bottom: 1px solid #111;
+    text-align: center;
+    background: #333333;
+    border-bottom: 1px solid #111111;
 }
 
-/* hidden filter row */
-.tablesorter-filter-row.hideme td {
-    /*** *********************************************** ***/
-    /*** change this padding to modify the thickness     ***/
-    /*** of the closed filter row (height = padding x 2) ***/
-    padding: 2px;
-    /*** *********************************************** ***/
-    margin: 0;
-    line-height: 0;
-    cursor: pointer;
+/* add extra border at left edge */
+.tablesorter tr.tablesorter-filter-row td:first-child {
+    border-left: #222222 1px solid;
 }
 
-.tablesorter-filter-row.hideme * {
-    height: 1px;
-    min-height: 0;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    /* don't use visibility: hidden because it disables tabbing */
-    opacity: 0;
-    filter: alpha(opacity=0);
+/* add extra border at right edge */
+.tablesorter tr.tablesorter-filter-row td:last-child {
+    border-right: #222222 1px solid;
+}
+
+#showListTable tbody {
+    color: #000000;
 }
 
 #showListTable tbody {

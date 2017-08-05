@@ -20,8 +20,9 @@ from __future__ import unicode_literals
 
 import traceback
 
+from rtorrentlib import RTorrent
+
 import sickrage
-from rtorrent import RTorrent
 from sickrage.clients import GenericClient
 
 
@@ -38,18 +39,17 @@ class rTorrentAPI(GenericClient):
         if not self.host:
             return
 
-        sp_kwargs = {}
-        if sickrage.srCore.srConfig.TORRENT_AUTH_TYPE != 'None':
-            sp_kwargs['authtype'] = sickrage.srCore.srConfig.TORRENT_AUTH_TYPE
+        tp_kwargs = {}
+        if sickrage.srCore.srConfig.TORRENT_AUTH_TYPE.lower() != 'none':
+            tp_kwargs['authtype'] = sickrage.srCore.srConfig.TORRENT_AUTH_TYPE
 
         if not sickrage.srCore.srConfig.TORRENT_VERIFY_CERT:
-            sp_kwargs['check_ssl_cert'] = False
+            tp_kwargs['check_ssl_cert'] = False
 
         if self.username and self.password:
-            url_parts = self.host.split('//')
-            self.auth = RTorrent(url_parts[0] + "{0}:{1}@".format(self.username, self.password) + url_parts[1])
+            self.auth = RTorrent(self.host, self.username, self.password, True, tp_kwargs=tp_kwargs)
         else:
-            self.auth = RTorrent(self.host)
+            self.auth = RTorrent(self.host, None, None, True)
 
         return self.auth
 

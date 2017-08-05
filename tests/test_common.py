@@ -119,7 +119,7 @@ class QualityTests(SiCKRAGETestCase):
                          Quality.nameQuality("Test.Show.S01E02.1080p.HDDVD.x264-GROUP"))
 
     def test_UNKNOWN(self):
-        self.assertEqual(Quality.UNKNOWN, Quality.nameQuality("Test.Show.S01E02-SiCKBEARD"))
+        self.assertEqual(Quality.UNKNOWN, Quality.nameQuality("Test.Show.S01E02-SICKRAGE"))
 
 
 # def test_reverse_parsing(self):
@@ -132,7 +132,7 @@ class QualityTests(SiCKRAGETestCase):
 #        self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test Show - S01E02 - 1080p WEB-DL - GROUP"))
 #        self.assertEqual(Quality.HDBLURAY, Quality.nameQuality("Test Show - S01E02 - 720p BluRay - GROUP"))
 #        self.assertEqual(Quality.FULLHDBLURAY, Quality.nameQuality("Test Show - S01E02 - 1080p BluRay - GROUP"))
-#        self.assertEqual(Quality.UNKNOWN, Quality.nameQuality("Test Show - S01E02 - Unknown - SiCKBEARD"))
+#        self.assertEqual(Quality.UNKNOWN, Quality.nameQuality("Test Show - S01E02 - Unknown - SiCKRAGE"))
 
 if __name__ == "__main__":
     print("==================")

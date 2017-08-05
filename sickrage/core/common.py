@@ -242,9 +242,12 @@ class Quality(object):
         if quality != Quality.UNKNOWN:
             return quality
 
-        quality = Quality.assumeQuality(name)
+        quality = Quality.qualityFromFileMeta(name)
         if quality != Quality.UNKNOWN:
             return quality
+
+        if name.lower().endswith(".ts"):
+            return Quality.RAWHDTV
 
         return Quality.UNKNOWN
 
@@ -292,7 +295,7 @@ class Quality(object):
 
             return ret
 
-        if (check_name([r"480p|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
+        if (check_name([r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
                        all)
             and not check_name([r"(720|1080)[pi]"], all)
             and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
@@ -309,10 +312,10 @@ class Quality(object):
             ret = Quality.RAWHDTV
         elif check_name([r"1080p", r"hd.?tv", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDTV
-        elif (check_name([r"720p", r"web.?dl|web(rip|mux|hd)"], all)
+        elif (check_name([r"720p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"720p", r"itunes", r"[xh].?26[45]"], all)):
             ret = Quality.HDWEBDL
-        elif (check_name([r"1080p", r"web.?dl|web(rip|mux|hd)"], all)
+        elif (check_name([r"1080p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"1080p", r"itunes", r"[xh].?26[45]"], all)):
             ret = Quality.FULLHDWEBDL
         elif check_name([r"720p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
@@ -323,10 +326,10 @@ class Quality(object):
             ret = Quality.UHD_4K_TV
         elif check_name([r"4320p", r"hd.?tv", r"[xh].?26[45]"], all):
             ret = Quality.UHD_8K_TV
-        elif (check_name([r"2160p", r"web.?dl|web(rip|mux|hd)"], all)
+        elif (check_name([r"2160p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"2160p", r"itunes", r"[xh].?26[45]"], all)):
             ret = Quality.UHD_4K_WEBDL
-        elif (check_name([r"4320p", r"web.?dl|web(rip|mux|hd)"], all)
+        elif (check_name([r"4320p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"4320p", r"itunes", r"[xh].?26[45]"], all)):
             ret = Quality.UHD_8K_WEBDL
         elif check_name([r"2160p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
@@ -335,23 +338,6 @@ class Quality(object):
             ret = Quality.UHD_8K_BLURAY
 
         return ret
-
-    @staticmethod
-    def assumeQuality(name):
-        """
-        Assume a quality from file name or extension if we cannot resolve it otherwise
-
-        :param name: File name of episode to analyse
-        :return: Quality prefix
-        """
-
-        quality = Quality.qualityFromFileMeta(name)
-        if quality != Quality.UNKNOWN:
-            return quality
-        elif name.lower().endswith(".ts"):
-            return Quality.RAWHDTV
-
-        return Quality.UNKNOWN
 
     @staticmethod
     def compositeStatus(status, quality):
@@ -400,7 +386,7 @@ class Quality(object):
 
             base_filename = os.path.basename(filename)
             bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
-            webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
+            webdl = re.search(r"\bweb\b|web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
             if 3240 < data['resolution_height']:
                 ret = ((Quality.UHD_8K_TV, Quality.UHD_8K_BLURAY)[bluray], Quality.UHD_8K_WEBDL)[webdl]
@@ -487,8 +473,6 @@ class Quality(object):
         :return: Composite status/quality object
         """
         quality = Quality.nameQuality(name, anime)
-        if assume and quality == Quality.UNKNOWN:
-            quality = Quality.assumeQuality(name)
         return Quality.compositeStatus(DOWNLOADED, quality)
 
     DOWNLOADED = None

@@ -29,12 +29,13 @@ import sys
 import uuid
 from itertools import izip, cycle
 
+import rarfile
 from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_lan_ip
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_lan_ip, extractZip
 
 
 class srConfig(object):
@@ -455,10 +456,103 @@ class srConfig(object):
         self.FANART_BACKGROUND = True
         self.FANART_BACKGROUND_OPACITY = 0.4
 
+        self.UNRAR_TOOL = rarfile.UNRAR_TOOL
+        self.UNRAR_ALT_TOOL = rarfile.ALT_TOOL
+
+    def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
+        # Check for failed unrar attempt, and remove it
+        # Must be done before unrar is ever called or the self-extractor opens and locks startup
+        bad_unrar = os.path.join(sickrage.DATA_DIR, 'unrar.exe')
+        if os.path.exists(bad_unrar) and os.path.getsize(bad_unrar) == 447440:
+            try:
+                os.remove(bad_unrar)
+            except OSError as e:
+                sickrage.srCore.srLogger.warning(
+                    "Unable to delete bad unrar.exe file {}: {}. You should delete it manually".format(bad_unrar,
+                                                                                                       e.strerror))
+
+        try:
+            rarfile.custom_check(unrar_tool)
+        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+            # Let's just return right now if the defaults work
+            try:
+
+                test = rarfile._check_unrar_tool()
+                if test:
+                    # These must always be set to something before returning
+                    self.UNRAR_TOOL = rarfile.UNRAR_TOOL
+                    self.ALT_UNRAR_TOOL = rarfile.ALT_TOOL
+                    return True
+            except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+                pass
+
+            if sys.platform == 'win32':
+                # Look for WinRAR installations
+                found = False
+                winrar_path = 'WinRAR\\UnRAR.exe'
+                # Make a set of unique paths to check from existing environment variables
+                check_locations = {
+                    os.path.join(location, winrar_path) for location in (
+                    os.environ.get("ProgramW6432"), os.environ.get("ProgramFiles(x86)"),
+                    os.environ.get("ProgramFiles"), re.sub(r'\s?\(x86\)', '', os.environ["ProgramFiles"])
+                ) if location
+                }
+                check_locations.add(os.path.join(sickrage.PROG_DIR, 'unrar\\unrar.exe'))
+
+                for check in check_locations:
+                    if os.path.isfile(check):
+                        # Can use it?
+                        try:
+                            rarfile.custom_check(check)
+                            unrar_tool = check
+                            found = True
+                            break
+                        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+                            found = False
+
+                # Download
+                if not found:
+                    sickrage.srCore.srLogger.info('Trying to download unrar.exe and set the path')
+                    unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
+                    unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
+
+                    if (sickrage.srCore.srWebSession.download(
+                            "https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip,
+                    ) and extractZip(archive=unrar_zip, targetDir=unrar_dir)):
+                        try:
+                            os.remove(unrar_zip)
+                        except OSError as e:
+                            sickrage.srCore.srLogger.info(
+                                "Unable to delete downloaded file {}: {}. You may delete it manually".format(unrar_zip,
+                                                                                                             e.strerror))
+
+                        check = os.path.join(unrar_dir, "unrar.exe")
+                        try:
+                            rarfile.custom_check(check)
+                            unrar_tool = check
+                            sickrage.srCore.srLogger.info('Successfully downloaded unrar.exe and set as unrar tool')
+                        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+                            sickrage.srCore.srLogger.info(
+                                'Sorry, unrar was not set up correctly. Try installing WinRAR and make sure it is on the system PATH')
+                    else:
+                        sickrage.srCore.srLogger.info('Unable to download unrar.exe')
+
+        # These must always be set to something before returning
+        self.UNRAR_TOOL = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
+        self.UNRAR_ALT_TOOL = rarfile.ALT_TOOL = unrar_alt_tool
+
+        try:
+            rarfile._check_unrar_tool()
+            return True
+        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+            if self.UNPACK == 1:
+                sickrage.srCore.srLogger.info('Disabling UNPACK setting because no unrar is installed.')
+                self.UNPACK = 0
+
     def change_https_cert(self, https_cert):
         """
         Replace HTTPS Certificate file path
-    
+
         :param https_cert: path to the new certificate file
         :return: True on success, False on failure
         """
@@ -479,7 +573,7 @@ class srConfig(object):
     def change_https_key(self, https_key):
         """
         Replace HTTPS Key file path
-    
+
         :param https_key: path to the new key file
         :return: True on success, False on failure
         """
@@ -499,7 +593,7 @@ class srConfig(object):
     def change_nzb_dir(self, nzb_dir):
         """
         Change NZB Folder
-    
+
         :param nzb_dir: New NZB Folder location
         :return: True on success, False on failure
         """
@@ -519,7 +613,7 @@ class srConfig(object):
     def change_torrent_dir(self, torrent_dir):
         """
         Change torrent directory
-    
+
         :param torrent_dir: New torrent directory
         :return: True on success, False on failure
         """
@@ -539,7 +633,7 @@ class srConfig(object):
     def change_tv_download_dir(self, tv_download_dir):
         """
         Change TV_DOWNLOAD directory (used by postprocessor)
-    
+
         :param tv_download_dir: New tv download directory
         :return: True on success, False on failure
         """
@@ -560,7 +654,7 @@ class srConfig(object):
         """
         Change frequency of automatic postprocessing thread
         TODO: Make all thread frequency changers in config.py return True/False status
-    
+
         :param freq: New frequency
         """
         self.AUTOPOSTPROCESSOR_FREQ = self.to_int(freq, default=self.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
@@ -576,7 +670,7 @@ class srConfig(object):
     def change_daily_searcher_freq(self, freq):
         """
         Change frequency of daily search thread
-    
+
         :param freq: New frequency
         """
         self.DAILY_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_DAILY_SEARCHER_FREQ)
@@ -588,7 +682,7 @@ class srConfig(object):
     def change_backlog_searcher_freq(self, freq):
         """
         Change frequency of backlog thread
-    
+
         :param freq: New frequency
         """
         self.BACKLOG_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_BACKLOG_SEARCHER_FREQ)
@@ -601,7 +695,7 @@ class srConfig(object):
     def change_updater_freq(self, freq):
         """
         Change frequency of version updater thread
-    
+
         :param freq: New frequency
         """
         self.VERSION_UPDATER_FREQ = self.to_int(freq, default=self.DEFAULT_VERSION_UPDATE_FREQ)
@@ -613,7 +707,7 @@ class srConfig(object):
     def change_showupdate_hour(self, freq):
         """
         Change frequency of show updater thread
-    
+
         :param freq: New frequency
         """
         self.SHOWUPDATE_HOUR = self.to_int(freq, default=self.DEFAULT_SHOWUPDATE_HOUR)
@@ -629,7 +723,7 @@ class srConfig(object):
     def change_subtitle_searcher_freq(self, freq):
         """
         Change frequency of subtitle thread
-    
+
         :param freq: New frequency
         """
         self.SUBTITLE_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
@@ -641,7 +735,7 @@ class srConfig(object):
     def change_version_notify(self, version_notify):
         """
         Change frequency of versioncheck thread
-    
+
         :param version_notify: New frequency
         """
         self.VERSION_NOTIFY = self.checkbox_to_value(version_notify)
@@ -652,7 +746,7 @@ class srConfig(object):
         """
         Enable/Disable proper download thread
         TODO: Make this return True/False on success/failure
-    
+
         :param download_propers: New desired state
         """
         self.DOWNLOAD_PROPERS = self.checkbox_to_value(download_propers)
@@ -663,7 +757,7 @@ class srConfig(object):
         """
         Enable/disable trakt thread
         TODO: Make this return true/false on success/failure
-    
+
         :param use_trakt: New desired state
         """
         self.USE_TRAKT = self.checkbox_to_value(use_trakt)
@@ -674,7 +768,7 @@ class srConfig(object):
         """
         Enable/Disable subtitle searcher
         TODO: Make this return true/false on success/failure
-    
+
         :param use_subtitles: New desired state
         """
         self.USE_SUBTITLES = self.checkbox_to_value(use_subtitles)
@@ -685,7 +779,7 @@ class srConfig(object):
         """
         Enable/Disable postprocessor thread
         TODO: Make this return True/False on success/failure
-    
+
         :param process_automatically: New desired state
         """
         self.PROCESS_AUTOMATICALLY = self.checkbox_to_value(process_automatically)
@@ -740,7 +834,7 @@ class srConfig(object):
     def clean_hosts(self, hosts, default_port=None):
         """
         Returns list of cleaned hosts by Config.clean_host
-    
+
         :param hosts: list of hosts
         :param default_port: default port to use
         :return: list of cleaned hosts
@@ -1489,7 +1583,7 @@ class srConfig(object):
                 'no_restart': int(self.NO_RESTART),
                 'developer': int(sickrage.DEVELOPER),
                 'display_all_seasons': int(self.DISPLAY_ALL_SEASONS),
-                'random_user_agent': int(self.RANDOM_USER_AGENT)
+                'random_user_agent': int(self.RANDOM_USER_AGENT),
             },
             'GUI': {
                 'gui_name': self.GUI_NAME,

@@ -28,7 +28,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import findCertainShow, show_names
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
+from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.rssfeeds import getFeed
 
 
@@ -162,6 +162,8 @@ class TVCache(object):
             })
 
     def should_update(self):
+        if sickrage.DEVELOPER: return True
+
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):
             return False
@@ -174,56 +176,47 @@ class TVCache(object):
         return True
 
     def addCacheEntry(self, name, url, parse_result=None, indexer_id=0):
+        # check for existing entry in cache
+        if len([x for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True) if
+                x['doc']['url'] == url]): return
+
         # check if we passed in a parsed result or should we try and create one
         if not parse_result:
             # create showObj from indexer_id if available
-            showObj = None
-            if indexer_id:
-                showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
+            showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id) if indexer_id else None
 
             try:
-                myParser = NameParser(showObj=showObj)
-                parse_result = myParser.parse(name)
-                if not parse_result:
-                    return
+                parse_result = NameParser(showObj=showObj, tryIndexers=True, validate_show=False).parse(name)
             except (InvalidShowException, InvalidNameException):
-                sickrage.srCore.srLogger.debug("RSS ITEM:[{}] IGNORED!".format(name))
-                return
+                pass
 
-        if not parse_result.series_name:
-            return
+        if parse_result and parse_result.series_name:
+            season = parse_result.season_number if parse_result.season_number else 1
+            episodes = parse_result.episode_numbers
 
-        # if we made it this far then lets add the parsed result to cache for usager later on
-        season = parse_result.season_number if parse_result.season_number else 1
-        episodes = parse_result.episode_numbers
+            if season and episodes:
+                # store episodes as a seperated string
+                episodeText = "|" + "|".join(map(str, episodes)) + "|"
 
-        if season and episodes:
-            # store episodes as a seperated string
-            episodeText = "|" + "|".join(map(str, episodes)) + "|"
+                # get quality of release
+                quality = parse_result.quality
 
-            # get the current timestamp
-            curTimestamp = int(time.mktime(datetime.datetime.today().timetuple()))
+                # get release group
+                release_group = parse_result.release_group
 
-            # get quality of release
-            quality = parse_result.quality
+                # get version
+                version = parse_result.version
 
-            # get release group
-            release_group = parse_result.release_group
-
-            # get version
-            version = parse_result.version
-
-            if not len([x for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
-                        if x['doc']['url'] == url]):
+                # add to DB
                 sickrage.srCore.cacheDB.db.insert({
                     '_t': 'providers',
                     'provider': self.providerID,
                     'name': name,
                     'season': season,
                     'episodes': episodeText,
-                    'indexerid': parse_result.show.indexerid,
+                    'indexerid': parse_result.indexerid,
                     'url': url,
-                    'time': curTimestamp,
+                    'time': int(time.mktime(datetime.datetime.today().timetuple())),
                     'quality': quality,
                     'release_group': release_group,
                     'version': version

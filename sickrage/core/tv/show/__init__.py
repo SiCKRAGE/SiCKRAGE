@@ -857,22 +857,11 @@ class TVShow(object):
                     checkQualityAgain = True
 
                 with curEp.lock:
-                    curEp.location = file
-
                     # if the sizes are the same then it's probably the same file
                     old_size = curEp.file_size
-                    if old_size and curEp.file_size == old_size:
-                        same_file = True
-                    else:
-                        same_file = False
-
+                    curEp.location = file
+                    same_file = old_size and curEp.file_size == old_size
                     curEp.checkForMetaFiles()
-
-                    # tries to fix episodes with a UNKNOWN quality set to them
-                    oldStatus, oldQuality = Quality.splitCompositeStatus(curEp.status)
-                    if oldQuality == Quality.UNKNOWN:
-                        newQuality = Quality.nameQuality(file, self.is_anime)
-                        curEp.status = Quality.compositeStatus(oldStatus, newQuality)
 
             if rootEp is None:
                 rootEp = curEp
@@ -890,18 +879,15 @@ class TVShow(object):
             if checkQualityAgain and not same_file:
                 newQuality = Quality.nameQuality(file, self.is_anime)
                 sickrage.srCore.srLogger.debug("Since this file has been renamed")
-                if newQuality != UNKNOWN:
-                    with curEp.lock:
-                        curEp.status = Quality.compositeStatus(DOWNLOADED, newQuality)
 
+                with curEp.lock:
+                    curEp.status = Quality.compositeStatus(DOWNLOADED, newQuality)
 
             # check for status/quality changes as long as it's a new file
             elif not same_file and isMediaFile(
                     file) and curEp.status not in Quality.DOWNLOADED + Quality.ARCHIVED + [IGNORED]:
                 oldStatus, oldQuality = Quality.splitCompositeStatus(curEp.status)
                 newQuality = Quality.nameQuality(file, self.is_anime)
-                if newQuality == Quality.UNKNOWN:
-                    newQuality = Quality.assumeQuality(file)
 
                 newStatus = None
 
@@ -1082,7 +1068,7 @@ class TVShow(object):
                      'votes': '',
                      'last_update': ''}
 
-        i = imdbpie.Imdb(cache=True)
+        i = imdbpie.Imdb()
         if not self.imdbid:
             for x in i.search_for_title(self.name):
                 try:
@@ -1542,7 +1528,7 @@ class TVShow(object):
             return Overview.GOOD
         elif epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.FAILED + Quality.SNATCHED_BEST:
 
-            _, bestQualities = Quality.splitQuality(self.quality)  # @UnusedVariable
+            _, bestQualities = Quality.splitQuality(self.quality)
             if bestQualities:
                 maxBestQuality = max(bestQualities)
                 minBestQuality = min(bestQualities)

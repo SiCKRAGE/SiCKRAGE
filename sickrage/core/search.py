@@ -346,7 +346,7 @@ def wantedEpisodes(show, fromDate):
     """
 
     wanted = []
-    anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
+    anyQualities, bestQualities = Quality.splitQuality(show.quality)
     allQualities = list(set(anyQualities + bestQualities))
 
     sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
@@ -453,10 +453,11 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     # update provider RSS cache
                     if sickrage.srCore.srConfig.ENABLE_RSS_CACHE: providerObj.cache.update()
 
-                    if search_mode == 'eponly':
-                        sickrage.srCore.srLogger.info("Performing episode search for " + show.name)
-                    else:
-                        sickrage.srCore.srLogger.info("Performing season pack search for " + show.name)
+                    if len(episodes):
+                        if search_mode == 'eponly':
+                            sickrage.srCore.srLogger.info("Performing episode search for " + show.name)
+                        else:
+                            sickrage.srCore.srLogger.info("Performing season pack search for " + show.name)
 
                     # search provider for episodes
                     searchResults = providerObj.findSearchResults(show,

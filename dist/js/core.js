@@ -667,6 +667,7 @@ jQuery(document).ready(function ($) {
                 url: '/browser/',
                 autocompleteURL: '/browser/complete',
                 includeFiles: 0,
+                fileTypes: [],
                 showBrowseButton: true
             },
             fileBrowserDialog: null,
@@ -677,11 +678,11 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.browser.defaults.url = SICKRAGE.srWebRoot + SICKRAGE.browser.defaults.url;
                 SICKRAGE.browser.defaults.autocomplete = SICKRAGE.srWebRoot + SICKRAGE.browser.defaults.autocompleteURL;
 
-                $.fn.nFileBrowser = SICKRAGE.browser.nFileBrowser;
                 $.fn.fileBrowser = SICKRAGE.browser.fileBrowser;
+                $.fn.nFileBrowser = SICKRAGE.browser.nFileBrowser;
             },
 
-            browse: function (path, endpoint, includeFiles) {
+            browse: function (path, endpoint, includeFiles, fileTypes) {
                 if (SICKRAGE.browser.currentBrowserPath === path) {
                     return;
                 }
@@ -695,7 +696,8 @@ jQuery(document).ready(function ($) {
 
                 SICKRAGE.browser.currentRequest = $.getJSON(endpoint, {
                     path: path,
-                    includeFiles: includeFiles
+                    includeFiles: includeFiles,
+                    fileTypes: fileTypes.join(',')
                 }, function (data) {
                     SICKRAGE.browser.fileBrowserDialog.empty();
                     var firstVal = data[0];
@@ -709,23 +711,27 @@ jQuery(document).ready(function ($) {
                         .val(firstVal.currentPath)
                         .on('keypress', function (e) {
                             if (e.which === 13) {
-                                SICKRAGE.browser.browse(e.target.value, endpoint, includeFiles);
+                                SICKRAGE.browser.browse(e.target.value, endpoint, includeFiles, fileTypes);
                             }
                         })
                         .appendTo(SICKRAGE.browser.fileBrowserDialog)
                         .fileBrowser({showBrowseButton: false})
                         .on('autocompleteselect', function (e, ui) {
-                            SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles);
+                            SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles, fileTypes);
                         });
 
                     list = $('<ul>').appendTo(SICKRAGE.browser.fileBrowserDialog);
                     $.each(data, function (i, entry) {
+                        if (entry.isFile && fileTypes &&
+                            (!entry.isAllowed || fileTypes.indexOf("images") !== -1 && !entry.isImage)) {
+                            return true;
+                        }
                         link = $('<a href="javascript:void(0)">').on('click', function () {
                             if (entry.isFile) {
                                 SICKRAGE.browser.currentBrowserPath = entry.path;
                                 $('.browserDialog .ui-button:contains("Ok")').click();
                             } else {
-                                SICKRAGE.browser.browse(entry.path, endpoint, includeFiles);
+                                SICKRAGE.browser.browse(entry.path, endpoint, includeFiles, fileTypes);
                             }
                         }).text(entry.name);
                         if (entry.isFile) {
@@ -790,7 +796,7 @@ jQuery(document).ready(function ($) {
                     initialDir = options.initialDir;
                 }
 
-                SICKRAGE.browser.browse(initialDir, options.url, options.includeFiles);
+                SICKRAGE.browser.browse(initialDir, options.url, options.includeFiles, options.fileTypes);
                 SICKRAGE.browser.fileBrowserDialog.dialog('open');
 
                 return false;
@@ -2887,8 +2893,8 @@ jQuery(document).ready(function ($) {
                             });
                     });
 
+                    SICKRAGE.config.search.rtorrentScgi();
                     $('#torrent_host').change(SICKRAGE.config.search.rtorrentScgi);
-
 
                     $('#nzb_dir').fileBrowser({title: 'Select .nzb blackhole/watch location'});
                     $('#torrent_dir').fileBrowser({title: 'Select .torrent blackhole/watch location'});
@@ -3001,7 +3007,7 @@ jQuery(document).ready(function ($) {
                         } else if (selectedProvider.toLowerCase() === 'rtorrent') {
                             client = 'rTorrent';
                             $('#torrent_paused_option').hide();
-                            $('#host_desc_torrent').text('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)');
+                            $('#host_desc_torrent').html('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)');
                             $('#torrent_verify_cert_option').show();
                             $('#torrent_verify_deluge').hide();
                             $('#torrent_verify_rtorrent').show();
@@ -3045,10 +3051,8 @@ jQuery(document).ready(function ($) {
                 },
 
                 rtorrentScgi: function () {
-                    var selectedProvider = $('#torrent_method :selected').val();
-
-                    if (selectedProvider.toLowerCase() === 'rtorrent') {
-                        var hostname = $('#torrent_host').prop('value');
+                    if ($('#torrent_method :selected').val().toLowerCase() === 'rtorrent') {
+                        var hostname = $('#torrent_host').val();
                         var isMatch = hostname.substr(0, 7) === "scgi://";
 
                         if (isMatch) {

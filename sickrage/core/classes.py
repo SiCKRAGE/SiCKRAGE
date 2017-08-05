@@ -135,25 +135,18 @@ class TorrentSearchResult(SearchResult):
         self.resultType = "torrent"
 
 
-class AllShowsListUI(object):
-    """
-    This class is for indexer api. Instead of prompting with a UI to pick the
-    desired result out of a list of shows it tries to be smart about it
-    based on what shows are in SB.
-    """
-
+class AllShowsUI(object):
     def __init__(self, config, log=None):
         self.config = config
         self.log = log
 
-    def selectSeries(self, allSeries, series):
-        searchResults = []
-        seriesnames = []
+    def selectSeries(self, allSeries, *args, **kwargs):
+        shows = []
 
         # get all available shows
         for curShow in allSeries:
             try:
-                if not curShow['seriesname'] or curShow in searchResults:
+                if not curShow['seriesname'] or curShow in shows:
                     continue
 
                 if 'firstaired' not in curShow:
@@ -162,16 +155,16 @@ class AllShowsListUI(object):
                     fixDate = parser.parse(curShow['firstaired'], fuzzy=True).date()
                     curShow['firstaired'] = fixDate.strftime(dateFormat)
 
-                searchResults += [curShow]
+                shows += [curShow]
             except Exception as e:
                 continue
 
-        return searchResults
+        return shows
 
 
 class ShowListUI(object):
     """
-    This class is for tvdb-api. Instead of prompting with a UI to pick the
+    Instead of prompting with a UI to pick the
     desired result out of a list of shows it tries to be smart about it
     based on what shows are in SiCKRAGE.
     """
@@ -180,7 +173,7 @@ class ShowListUI(object):
         self.config = config
         self.log = log
 
-    def selectSeries(self, allSeries):
+    def selectSeries(self, allSeries, *args, **kwargs):
         try:
             # try to pick a show that's in my show list
             showIDList = [int(x.indexerid) for x in sickrage.srCore.SHOWLIST]
