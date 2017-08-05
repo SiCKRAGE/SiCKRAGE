@@ -1576,7 +1576,7 @@ class srConfig(object):
                 'no_restart': int(self.NO_RESTART),
                 'developer': int(sickrage.DEVELOPER),
                 'display_all_seasons': int(self.DISPLAY_ALL_SEASONS),
-                'random_user_agent': int(self.RANDOM_USER_AGENT)
+                'random_user_agent': int(self.RANDOM_USER_AGENT),
             },
             'GUI': {
                 'gui_name': self.GUI_NAME,
