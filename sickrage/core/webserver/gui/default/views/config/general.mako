@@ -697,7 +697,9 @@
                                             <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
                                         % endfor
                                     </select>
-                                    <label>Normal (default). High is lower and Low is higher CPU use</label>
+                                    <label for="cpu_presets">
+                                        Normal (default). High is lower and Low is higher CPU use
+                                    </label>
                                 </div>
 
                             </div>
@@ -708,11 +710,12 @@
                                     <label class="component-title">Anonymous redirect</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <input name="anon_redirect"
+                                    <input id="anon_redirect" name="anon_redirect"
                                            value="${sickrage.srCore.srConfig.ANON_REDIRECT}"
                                            class="form-control input-sm input300" autocapitalize="off"/>
-                                    <div class="clear-left"><p>backlink protection via anonymizer service, must end
-                                        in "?"</p></div>
+                                    <label for="anon_redirect">
+                                        backlink protection via anonymizer service, must end in "?"
+                                    </label>
                                 </div>
 
                             </div>
@@ -725,8 +728,9 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="debug"
                                            id="debug" ${('', 'checked')[bool(sickrage.DEBUG)]}/>
-                                    <p>Enable debug logs
-                                    <p>
+                                    <label for="debug">
+                                        Enable debug logs
+                                    </label>>
                                 </div>
 
                             </div>
@@ -739,8 +743,9 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="ssl_verify"
                                            id="ssl_verify" ${('', 'checked')[bool(sickrage.srCore.srConfig.SSL_VERIFY)]}/>
-                                    <p>Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)
-                                    <p>
+                                    <label for="ssl_verify">
+                                        Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)
+                                    </label>
                                 </div>
 
                             </div>
@@ -753,9 +758,11 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="no_restart"
                                            id="no_restart" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_RESTART)]}/>
-                                    <p>Only shutdown when restarting SR.
+                                    <label for="no_restart">
+                                        Only shutdown when restarting SR.
                                         Only select this when you have external software restarting SR automatically
-                                        when it stops (like FireDaemon)</p>
+                                        when it stops (like FireDaemon)
+                                    </label>
                                 </div>
 
 
@@ -769,7 +776,9 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="encryption_version"
                                            id="encryption_version" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENCRYPTION_VERSION)]}/>
-                                    <p>in the <code>${sickrage.CONFIG_FILE}</code> file.</p>
+                                    <label for="encryption_version">
+                                        in the <code>${sickrage.CONFIG_FILE}</code> file.
+                                    </label>
                                 </div>
 
                             </div>
@@ -782,8 +791,10 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="calendar_unprotected"
                                            id="calendar_unprotected" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_UNPROTECTED)]}/>
-                                    <p>allow subscribing to the calendar without user and password.
-                                        Some services like Google Calendar only work this way</p>
+                                    <label for="calendar_unprotected">
+                                        allow subscribing to the calendar without user and password.
+                                        Some services like Google Calendar only work this way
+                                    </label>
                                 </div>
 
 
@@ -797,7 +808,9 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="calendar_icons"
                                            id="calendar_icons" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_ICONS)]}/>
-                                    <p>show an icon next to exported calendar events in Google Calendar.</p>
+                                    <label for="calendar_icons">
+                                        show an icon next to exported calendar events in Google Calendar.
+                                    </label>
                                 </div>
 
 
@@ -810,8 +823,10 @@
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input class="btn btn-inline" type="button" id="google_link" value="Link">
-                                    <p>link your google account to SiCKRAGE for advanced feature usage such as
-                                        settings/database storage</p>
+                                    <label for="google_link">
+                                        link your google account to SiCKRAGE for advanced feature usage such as
+                                        settings/database storage
+                                    </label>
                                 </div>
 
                             </div>
@@ -822,11 +837,12 @@
                                     <label class="component-title">Proxy host</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <input name="proxy_setting"
+                                    <input id="proxy_setting" name="proxy_setting"
                                            value="${sickrage.srCore.srConfig.PROXY_SETTING}"
                                            class="form-control input-sm input300" autocapitalize="off"/>
-                                    <div class="clear-left"><p>blank to disable or proxy to use when connecting to
-                                        providers</p></div>
+                                    <label for="proxy_setting">
+                                        blank to disable or proxy to use when connecting to providers
+                                    </label>
                                 </div>
 
                             </div>
@@ -839,7 +855,9 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="proxy_indexers"
                                            id="proxy_indexers" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROXY_INDEXERS)]}/>
-                                    <p>use proxy host for connecting to indexers (thetvdb)</p>
+                                    <label for="proxy_indexers">
+                                        use proxy host for connecting to indexers (thetvdb)
+                                    </label>
                                 </div>
 
                             </div>
@@ -852,13 +870,13 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="skip_removed_files"
                                            id="skip_removed_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.SKIP_REMOVED_FILES)]}/>
-                                    <p>Skip detection of removed files. If disable it will set default deleted
-                                        status</p>
-                                </div>
-                                <div class="clear-left">
-                                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                    <label for="skip_removed_files">
+                                        <p>
+                                            Skip detection of removed files. If disable it will set default deleted
+                                            status
+                                        </p>
                                         <b>NOTE:</b> This may mean SickRage misses renames as well
-                                    </div>
+                                    </label>
                                 </div>
 
                             </div>
@@ -869,32 +887,44 @@
                                     <label class="component-title">Default deleted episode status:</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    % if not sickrage.srCore.srConfig.SKIP_REMOVED_FILES:
-                                        <select name="ep_default_deleted_status" id="ep_default_deleted_status"
-                                                class="form-control input-sm">
-                                            % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
-                                                <option value="${defStatus}" ${('', 'selected="selected"')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
-                                            % endfor
-                                        </select>
-                                    % else:
-                                        <select name="ep_default_deleted_status" id="ep_default_deleted_status"
-                                                class="form-control input-sm" disabled="disabled">
-                                            % for defStatus in [SKIPPED, IGNORED]:
-                                                <option value="${defStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
-                                            % endfor
-                                        </select>
-                                        <input type="hidden" name="ep_default_deleted_status"
-                                               value="${sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS}"/>
-                                    % endif
-                                    <label>Define the status to be set for media file that has been deleted.</label>
-                                    <div class="clear-left">
-                                        <p><b>NOTE:</b> Archived option will keep previous downloaded quality</p>
-                                        <p>Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)</p>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            % if not sickrage.srCore.srConfig.SKIP_REMOVED_FILES:
+                                                <select name="ep_default_deleted_status" id="ep_default_deleted_status"
+                                                        class="form-control input-sm">
+                                                    % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
+                                                        <option value="${defStatus}" ${('', 'selected="selected"')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
+                                                    % endfor
+                                                </select>
+                                            % else:
+                                                <select name="ep_default_deleted_status" id="ep_default_deleted_status"
+                                                        class="form-control input-sm" disabled="disabled">
+                                                    % for defStatus in [SKIPPED, IGNORED]:
+                                                        <option value="${defStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
+                                                    % endfor
+                                                </select>
+                                                <input type="hidden" name="ep_default_deleted_status"
+                                                       value="${sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS}"/>
+                                            % endif
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label for="ep_default_deleted_status">
+                                                <p>
+                                                    Define the status to be set for media file that has been deleted.
+                                                </p>
+                                                <p>
+                                                    <b>NOTE:</b> Archived option will keep previous downloaded quality
+                                                </p>
+                                                <p>
+                                                    Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)
+                                                </p>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
-
                             <input type="submit" class="btn config_submitter" value="Save Changes"/>
                         </fieldset>
                     </div>
@@ -909,15 +939,14 @@
                                 <h3>Git Settings</h3>
                             </div>
                             <fieldset class="tab-pane-list">
-
                                 <div class="row field-pair">
-
                                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                         <label class="component-title">Git Branch(s):</label>
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <select id="branchVersion"
-                                                class="form-control form-control-inline input-sm pull-left">
+                                                class="form-control form-control-inline input-sm pull-left"
+                                                title="GIT Branch Version">
                                             % if git_branch:
                                                 % for cur_branch in git_branch:
                                                     % if sickrage.DEVELOPER:
@@ -932,17 +961,12 @@
                                             <input class="btn btn-inline" style="margin-left: 6px;"
                                                    type="button"
                                                    id="branchCheckout" value="Checkout Branch" disabled>
+                                            <label for="branchCheckout">Error: No branches found.</label>>
                                         % else:
                                             <input class="btn btn-inline" style="margin-left: 6px;"
                                                    type="button"
                                                    id="branchCheckout" value="Checkout Branch">
-                                        % endif
-                                        % if not git_branch:
-                                            <div class="clear-left"
-                                                 style="color:#FF0000"><p>Error: No branches found.</p></div>
-                                        % else:
-                                            <div class="clear-left"><p>select branch to use (restart required)</p>
-                                            </div>
+                                            <label for="branchCheckout">select branch to use (restart required)</label>
                                         % endif
                                     </div>
 
@@ -954,11 +978,12 @@
                                         <label class="component-title">Git executable path</label>
                                     </div>
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                        <input name="git_path"
+                                        <input id="git_path" name="git_path"
                                                value="${sickrage.srCore.srConfig.GIT_PATH}"
                                                class="form-control input-sm input300" autocapitalize="off"/>
-                                        <div class="clear-left"><p>only needed if OS is unable to locate git from
-                                            env</p></div>
+                                        <label for="git_path">
+                                            only needed if OS is unable to locate git from env
+                                        </label>
                                     </div>
 
                                 </div>
@@ -971,8 +996,10 @@
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <input type="checkbox" name="git_reset"
                                                id="git_reset" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_RESET)]}/>
-                                        <p>removes untracked files and performs a hard reset on git branch
-                                            automatically to help resolve update issues</p>
+                                        <label for="git_reset">
+                                            removes untracked files and performs a hard reset on git branch
+                                            automatically to help resolve update issues
+                                        </label>
                                     </div>
 
                                 </div>
@@ -985,9 +1012,11 @@
                                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                         <input type="checkbox" name="git_autoissues"
                                                id="git_autoissues" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_AUTOISSUES)]}
-                                               disable/>
-                                        <p>automatically submit bug/issue reports to our issue tracker when errors
-                                            are logged</p>
+                                               disabled="disabled"/>
+                                        <label for="git_autoissues">
+                                            automatically submit bug/issue reports to our issue tracker when errors are
+                                            logged
+                                        </label>
                                     </div>
 
                                 </div>

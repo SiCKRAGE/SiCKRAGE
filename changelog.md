@@ -1,5 +1,6 @@
 # Changelog
 
+- * f6946a5 - 2017-08-05: Updated general config template to be responsive 
 - * 6774207 - 2017-08-05: Release v9.0.67 
 - * 1d7b71a - 2017-08-05: Fixed issue #20 - rar not working 
 - * 859f714 - 2017-08-05: Release v9.0.66 
