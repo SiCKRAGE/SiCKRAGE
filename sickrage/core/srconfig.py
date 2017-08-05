@@ -35,7 +35,7 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_lan_ip
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_lan_ip, extractZip
 
 
 class srConfig(object):
@@ -514,21 +514,28 @@ class srConfig(object):
                 if not found:
                     sickrage.srCore.srLogger.info('Trying to download unrar.exe and set the path')
                     unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
-                    unrar_exe = os.path.join(unrar_dir, 'unrar.exe')
+                    unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
 
-                    makeDir(unrar_dir)
+                    if (sickrage.srCore.srWebSession.download(
+                            "https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip,
+                    ) and extractZip(archive=unrar_zip, targetDir=unrar_dir)):
+                        try:
+                            os.remove(unrar_zip)
+                        except OSError as e:
+                            sickrage.srCore.srLogger.info(
+                                "Unable to delete downloaded file {}: {}. You may delete it manually".format(unrar_zip,
+                                                                                                             e.strerror))
 
-                    sickrage.srCore.srWebSession.download("https://downloads.sourceforge.net/project/menuui/UnRAR.exe?r=&ts=1501224646&use_mirror=cfhcable", filename=unrar_exe)
-
-                    try:
-                        rarfile.custom_check(unrar_exe)
-                        unrar_tool = unrar_exe
-                        sickrage.srCore.srLogger.info('Successfully downloaded unrar.exe and set as unrar tool', )
-                    except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-                        sickrage.srCore.srLogger.info(
-                            'Sorry, unrar was not set up correctly. Try installing WinRAR and make sure it is on the system PATH')
-                else:
-                    sickrage.srCore.srLogger.info('Unable to download unrar.exe')
+                        check = os.path.join(unrar_dir, "unrar.exe")
+                        try:
+                            rarfile.custom_check(check)
+                            unrar_tool = check
+                            sickrage.srCore.srLogger.info('Successfully downloaded unrar.exe and set as unrar tool')
+                        except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
+                            sickrage.srCore.srLogger.info(
+                                'Sorry, unrar was not set up correctly. Try installing WinRAR and make sure it is on the system PATH')
+                    else:
+                        sickrage.srCore.srLogger.info('Unable to download unrar.exe')
 
         # These must always be set to something before returning
         self.UNRAR_TOOL = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
