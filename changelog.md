@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9acbd5c - 2017-08-05: Fixed issue #20 - rar not working 
+- * aa50a68 - 2017-08-05: Release v9.0.67 
+- * 1d7b71a - 2017-08-05: Fixed issue #20 - rar not working 
 - * 859f714 - 2017-08-05: Release v9.0.66 
 - * 0c55c51 - 2017-08-04: Release v9.0.65 
 - * d96697c - 2017-08-04: Release v9.0.64 
