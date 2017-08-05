@@ -357,7 +357,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
-        grunt.task.run(['default']);
 
         var vFile = 'sickrage/version.txt';
 
@@ -376,6 +375,7 @@ module.exports = function (grunt) {
         grunt.file.write(vFile, newVersion);
 
         var git_tasks = [
+            'default',
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_start:' + newVersion,
             'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
