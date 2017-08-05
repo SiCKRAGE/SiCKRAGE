@@ -106,7 +106,7 @@ class SabNZBd(object):
                 cookies = cookielib.CookieJar()
                 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies),
                                               MultipartPostHandler.MultipartPostHandler)
-                req = urllib2.Request(url, multiPartParams, headers={'User-Agent': sickrage.srCore.srConfig.USER_AGENT})
+                req = urllib2.Request(url, multiPartParams, headers={'User-Agent': sickrage.srCore.USER_AGENT})
                 f = opener.open(req)
 
         except (EOFError, IOError) as e:

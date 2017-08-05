@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 from urllib import urlencode
+from urlparse import urljoin
 from xml.dom.minidom import parseString
 
 from requests import request
@@ -30,12 +31,10 @@ from sickrage.notifiers import srNotifiers
 
 
 class NMA_Notifier(srNotifiers):
-    API_SERVER = 'https://www.notifymyandroid.com'
-    ADD_PATH = '/publicapi/notify'
-
     def __init__(self):
         super(NMA_Notifier, self).__init__()
         self.name = 'nma'
+        self.url = 'https://www.notifymyandroid.com'
         self._developerkey = None
         self._apikey = None
 
@@ -99,20 +98,21 @@ class NMA_Notifier(srNotifiers):
         if not batch_mode:
             for key in self._apikey:
                 datas['apikey'] = key
-                res = self.callapi('POST', self.ADD_PATH, datas)
+                res = self.callapi('POST', datas)
                 results[key] = res
         else:
             datas['apikey'] = ",".join(self._apikey)
-            res = self.callapi('POST', self.ADD_PATH, datas)
+            res = self.callapi('POST', datas)
             results[datas['apikey']] = res
+
         return results
 
-    def callapi(self, method, path, args):
-        headers = {'User-Agent': sickrage.srCore.srConfig.USER_AGENT}
+    def callapi(self, method, args):
+        headers = {'User-Agent': sickrage.srCore.USER_AGENT}
         if method == "POST":
             headers['Content-type'] = "application/x-www-form-urlencoded"
 
-        resp = request(method, url=self.API_SERVER + path, headers=headers, data=urlencode(args))
+        resp = request(method, url=urljoin(self.url, '/publicapi/notify'), headers=headers, data=urlencode(args))
 
         try:
             res = self._parse_reponse(resp.content)
@@ -185,8 +185,14 @@ class NMA_Notifier(srNotifiers):
         sickrage.srCore.srLogger.debug(
             "NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
                 event, message, nma_priority, batch))
-        response = self.push(application=title, event=event, description=message, priority=nma_priority,
-                             batch_mode=batch)
+
+        response = self.push(
+            application=title,
+            event=event,
+            description=message,
+            priority=nma_priority,
+            batch_mode=batch
+        )
 
         if not response[nma_api]['code'] == '200':
             sickrage.srCore.srLogger.error('Could not send notification to NotifyMyAndroid')
