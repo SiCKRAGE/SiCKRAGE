@@ -322,7 +322,7 @@ module.exports = function (grunt) {
             },
             'git_flow_finish': {
                 cmd: function (version, message) {
-                    return 'git flow release finish ' + version + ' -S -m "' + message + '"';
+                    return 'git flow release finish ' + version + ' -m "' + message + '"';
                 },
                 stderr: false,
                 callback: function (err, stdout, stderr) {

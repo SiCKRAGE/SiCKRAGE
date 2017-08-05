@@ -1,6 +1,7 @@
 # Changelog
 
-- * a6442ff - 2017-08-04: Release v9.0.64 
+- * 4b3ffb3 - 2017-08-04: Release v9.0.65 
+- * d96697c - 2017-08-04: Release v9.0.64 
 - * eb86080 - 2017-08-04: Fixed issues with NMA, Plex, and SabNZBD relating to SR UserAgent strings 
 - * a1277cf - 2017-08-04: Release v9.0.63 
 - * 6775391 - 2017-08-04: Fixed issue #42 - Pushbullet Notifications Not Working 
