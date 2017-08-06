@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5a6fab8 - 2017-08-05: Added new config layout template Anime config template is responsive Backup and Restore template is responsive Cleaned up main layout template including core css styles 
+- * c554393 - 2017-08-06: Notifications config template is now responsive 
+- * f982990 - 2017-08-05: Added new config layout template Anime config template is responsive Backup and Restore template is responsive Cleaned up main layout template including core css styles 
 - * d0b1f6b - 2017-08-05: Updated general config template to be responsive 
 - * 6774207 - 2017-08-05: Release v9.0.67 
 - * 1d7b71a - 2017-08-05: Fixed issue #20 - rar not working 
