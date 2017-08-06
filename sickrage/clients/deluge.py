@@ -124,7 +124,7 @@ class DelugeAPI(GenericClient):
                                 "params": [result.url, {}],
                                 "id": 2})
 
-        self._request(method='post', data=post_data)
+        self._request(method='post', data=post_data, headers=self.headers)
 
         result.hash = self.response.json()['result']
 
@@ -136,7 +136,7 @@ class DelugeAPI(GenericClient):
                                 "params": [result.name + '.torrent', b64encode(result.content), {}],
                                 "id": 2})
 
-        self._request(method='post', data=post_data)
+        self._request(method='post', data=post_data, headers=self.headers)
 
         result.hash = self.response.json()['result']
 
@@ -157,7 +157,7 @@ class DelugeAPI(GenericClient):
                                     "params": [],
                                     "id": 3})
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', data=post_data, headers=self.headers)
             labels = self.response.json()['result']
 
             if labels is not None:
@@ -168,7 +168,7 @@ class DelugeAPI(GenericClient):
                                             "params": [label],
                                             "id": 4})
 
-                    self._request(method='post', data=post_data)
+                    self._request(method='post', data=post_data, headers=self.headers)
                     sickrage.srCore.srLogger.debug(self.name + ': ' + label + " label added to Deluge")
 
                 # add label to torrent
@@ -176,7 +176,7 @@ class DelugeAPI(GenericClient):
                                         "params": [result.hash, label],
                                         "id": 5})
 
-                self._request(method='post', data=post_data)
+                self._request(method='post', data=post_data, headers=self.headers)
                 sickrage.srCore.srLogger.debug(self.name + ': ' + label + " label added to torrent")
             else:
                 sickrage.srCore.srLogger.debug(self.name + ': ' + "label plugin not detected")
@@ -195,13 +195,13 @@ class DelugeAPI(GenericClient):
                                     "params": [result.hash, True],
                                     "id": 5})
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', data=post_data, headers=self.headers)
 
             post_data = json.dumps({"method": "core.set_torrent_stop_ratio",
                                     "params": [result.hash, float(ratio)],
                                     "id": 6})
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', data=post_data, headers=self.headers)
 
             return not self.response.json()['error']
 
@@ -214,13 +214,13 @@ class DelugeAPI(GenericClient):
                                     "params": [result.hash, True],
                                     "id": 7})
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', data=post_data, headers=self.headers)
 
             post_data = json.dumps({"method": "core.set_torrent_move_completed_path",
                                     "params": [result.hash, sickrage.srCore.srConfig.TORRENT_PATH],
                                     "id": 8})
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', data=post_data, headers=self.headers)
 
             return not self.response.json()['error']
 
@@ -233,7 +233,7 @@ class DelugeAPI(GenericClient):
                                     "params": [[result.hash]],
                                     "id": 9})
 
-            self._request(method='post', data=post_data)
+            self._request(method='post', data=post_data, headers=self.headers)
 
             return not self.response.json()['error']
 
