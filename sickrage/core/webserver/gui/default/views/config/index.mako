@@ -16,104 +16,148 @@
 
 <%block name="content">
     <div class="row">
-        <div class="col-xs-12">
-            <table class="infoTable" cellspacing="1" border="0" cellpadding="0" width="100%">
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-version"></i> SR Version:</td>
-                    <td class="infoTableCell">${sickrage.srCore.VERSIONUPDATER.updater.version}</td>
-                </tr>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-version"></i>
+                            SR Version:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.srCore.VERSIONUPDATER.updater.version}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-type"></i>
+                            SR Type:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.srCore.VERSIONUPDATER.updater.type}</div>
+                    </div>
+                    % if sr_user:
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                    class="icons-sickrage icons-sickrage-user"></i>
+                                SR User:
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sr_user}</div>
+                        </div>
+                    % endif
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-locale"></i>
+                            SR Locale:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.SYS_ENCODING}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-cfg"></i>
+                            SR Config:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.CONFIG_FILE}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-cache"></i>
+                            SR Cache Dir:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.CACHE_DIR}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-log"></i>
+                            SR Log Dir:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.srCore.srConfig.LOG_DIR}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-console"></i>
+                            SR Arguments:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sys.argv[1:]}</div>
+                    </div>
+                    % if sickrage.srCore.srConfig.WEB_ROOT:
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">SR Web Root:</div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.srCore.srConfig.WEB_ROOT}</div>
+                        </div>
+                    % endif
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-tornado"></i>
+                            Tornado Version:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${tornado.version}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-python"></i>
+                            Python Version:
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sys.version}</div>
+                    </div>
 
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-type"></i> SR Type:</td>
-                    <td class="infoTableCell">${sickrage.srCore.VERSIONUPDATER.updater.type}</td>
-                </tr>
+                    <hr/>
 
-                % if sr_user:
-                    <tr>
-                        <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-user"></i> SR User:</td>
-                        <td class="infoTableCell">${sr_user}</td>
-                    </tr>
-                % endif
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-logo"></i>
+                            Homepage
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                            <a href="${anon_url('https://www.sickrage.ca/')}"
+                               rel="noreferrer"
+                               onclick="window.open(this.href, '_blank'); return false;">https://www.sickrage.ca/</a>
+                        </div>
 
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-locale"></i> SR Locale:</td>
-                    <td class="infoTableCell">${sickrage.SYS_ENCODING}</td>
-                </tr>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-wiki"></i>
+                            WiKi
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                            <a href="${anon_url('https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home')}"
+                               rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home</a>
+                        </div>
 
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-cfg"></i> SR Config:</td>
-                    <td class="infoTableCell">${sickrage.CONFIG_FILE}</td>
-                </tr>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-forums"></i>
+                            Forums
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                            <a href="${anon_url('https://sickrage.ca/forums/')}"
+                               rel="noreferrer"
+                               onclick="window.open(this.href, '_blank'); return false;">https://www.sickrage.ca/forums/</a>
+                        </div>
 
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-cache"></i> SR Cache Dir:</td>
-                    <td class="infoTableCell">${sickrage.CACHE_DIR}</td>
-                </tr>
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-log"></i> SR Log Dir:</td>
-                    <td class="infoTableCell">${sickrage.srCore.srConfig.LOG_DIR}</td>
-                </tr>
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-console"></i> SR Arguments:</td>
-                    <td class="infoTableCell">${sys.argv[1:]}</td>
-                </tr>
-
-                % if sickrage.srCore.srConfig.WEB_ROOT:
-                    <tr>
-                        <td class="infoTableHeader">SR Web Root:</td>
-                        <td class="infoTableCell">${sickrage.srCore.srConfig.WEB_ROOT}</td>
-                    </tr>
-                % endif
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-tornado"></i> Tornado Version:</td>
-                    <td class="infoTableCell">${tornado.version}</td>
-                </tr>
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-python"></i> Python Version:</td>
-                    <td class="infoTableCell">${sys.version}</td>
-                </tr>
-
-                <tr class="infoTableSeperator">
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-logo"></i> Homepage</td>
-                    <td class="infoTableCell"><a href="${anon_url('https://www.sickrage.ca/')}" rel="noreferrer"
-                                                 onclick="window.open(this.href, '_blank'); return false;">https://www.sickrage.ca/</a>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-wiki"></i> WiKi</td>
-                    <td class="infoTableCell"><a
-                            href="${anon_url('https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home')}"
-                            rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/home</a>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-forums"></i> Forums</td>
-                    <td class="infoTableCell"><a href="${anon_url('https://sickrage.ca/forums/')}" rel="noreferrer"
-                                                 onclick="window.open(this.href, '_blank'); return false;">https://www.sickrage.ca/forums/</a>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-git"></i> Source</td>
-                    <td class="infoTableCell"><a href="${anon_url('https://git.sickrage.ca/SiCKRAGE/sickrage/')}"
-                                                 rel="noreferrer"
-                                                 onclick="window.open(this.href, '_blank'); return false;">https://git.sickrage.ca/SiCKRAGE/sickrage/</a>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="infoTableHeader"><i class="icons-sickrage icons-sickrage-irc"></i> IRChat</td>
-                    <td class="infoTableCell"><a href="irc://irc.freenode.net/#sickrage"
-                                                 rel="noreferrer"><i>#sickrage</i>
-                        on <i>irc.freenode.net</i></a></td>
-                </tr>
-            </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-git"></i>
+                            Source
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                            <a href="${anon_url('https://git.sickrage.ca/SiCKRAGE/sickrage/')}"
+                               rel="noreferrer"
+                               onclick="window.open(this.href, '_blank'); return false;">https://git.sickrage.ca/SiCKRAGE/sickrage/</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
+                                class="icons-sickrage icons-sickrage-irc"></i>
+                            IRChat
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                            <a href="irc://irc.freenode.net/#sickrage" rel="noreferrer"><i>#sickrage</i>
+                                on <i>irc.freenode.net</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </%block>

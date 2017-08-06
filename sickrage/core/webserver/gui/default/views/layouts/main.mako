@@ -393,26 +393,26 @@
             <div id="sub-menu" class="hidden-print">
                 <% first = True %>
                 % for menuItem in reversed(submenu):
-                    % if menuItem.get('requires', 1):
-                        % if isinstance(menuItem['path'], dict):
-                        ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
-                        <%
-                            first = False
-                            inner_first = True
-                        %>
-                        % for cur_link in menuItem['path']:
-                        ${("&middot;", "")[bool(inner_first)]}<a href="${srWebRoot}${menuItem['path'][cur_link]}"
-                                                                 class="inner ${menuItem.get('class', '')}">${cur_link}</a>
-                        <% inner_first = False %>
-                        % endfor
-                        % else:
-                            <a href="${srWebRoot}${menuItem['path']}"
-                               class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
-                                <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
-                            </a>
-                        <% first = False %>
+                        % if menuItem.get('requires', 1):
+                            % if isinstance(menuItem['path'], dict):
+                            ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                            <%
+                                first = False
+                                inner_first = True
+                            %>
+                            % for cur_link in menuItem['path']:
+                            ${("&middot;", "")[bool(inner_first)]}<a href="${srWebRoot}${menuItem['path'][cur_link]}"
+                                                                     class="inner ${menuItem.get('class', '')}">${cur_link}</a>
+                            <% inner_first = False %>
+                            % endfor
+                            % else:
+                                <a href="${srWebRoot}${menuItem['path']}"
+                                   class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
+                                    <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
+                                </a>
+                            <% first = False %>
+                            % endif
                         % endif
-                    % endif
                 % endfor
             </div>
         % endif

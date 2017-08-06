@@ -162,12 +162,12 @@
 #sub-menu {
   clear: both;
   font-size: 12px;
-  align-content: flex-end; }
+  align-content: flex-end;
+  text-align: center !important; }
 
 #sub-menu a {
   clear-after: top;
-  margin: 2px;
-  float: right; }
+  margin: 2px; }
 
 .upgrade-notification {
   width: 90%;

@@ -1,6 +1,7 @@
 # Changelog
 
-- * baa6776 - 2017-08-06: Misc responsive code cleanup Root directories template is now responsive 
+- * 6a14c00 - 2017-08-06: Centered submenu buttons to top of page 
+- * c6b39cc - 2017-08-06: Misc responsive code cleanup Root directories template is now responsive 
 - * 0cea9ef - 2017-08-06: Release v9.0.68 
 - * 39a0025 - 2017-08-06: Fixed issues with sending torrents to uTorrent and Deluge 
 - * 93f109e - 2017-08-06: Notifications config template is now responsive 
