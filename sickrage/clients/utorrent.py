@@ -60,13 +60,13 @@ class uTorrentAPI(GenericClient):
     def _add_torrent_uri(self, result):
 
         params = {'action': 'add-url', 's': result.url}
-        return self._request(params=params)
+        return self._request(params=params, cookies=self.cookies)
 
     def _add_torrent_file(self, result):
 
         params = {'action': 'add-file'}
         files = {'torrent_file': (result.name + '.torrent', result.content)}
-        return self._request(method='post', params=params, files=files)
+        return self._request(method='post', params=params, files=files, cookies=self.cookies)
 
     def _set_torrent_label(self, result):
 
@@ -79,7 +79,7 @@ class uTorrentAPI(GenericClient):
                   's': 'label',
                   'v': label}
 
-        return self._request(params=params)
+        return self._request(params=params, cookies=self.cookies)
 
     def _set_torrent_ratio(self, result):
 
@@ -93,13 +93,13 @@ class uTorrentAPI(GenericClient):
                       's': 'seed_override',
                       'v': '1'}
 
-            if self._request(params=params):
+            if self._request(params=params, cookies=self.cookies):
                 params = {'action': 'setprops',
                           'hash': result.hash,
                           's': 'seed_ratio',
                           'v': float(ratio) * 10}
 
-                return self._request(params=params)
+                return self._request(params=params, cookies=self.cookies)
             else:
                 return False
 
@@ -114,13 +114,13 @@ class uTorrentAPI(GenericClient):
                       's': 'seed_override',
                       'v': '1'}
 
-            if self._request(params=params):
+            if self._request(params=params, cookies=self.cookies):
                 params = {'action': 'setprops',
                           'hash': result.hash,
                           's': 'seed_time',
                           'v': time}
 
-                return self._request(params=params)
+                return self._request(params=params, cookies=self.cookies)
             else:
                 return False
         else:
@@ -130,7 +130,7 @@ class uTorrentAPI(GenericClient):
 
         if result.priority == 1:
             params = {'action': 'queuetop', 'hash': result.hash}
-            return self._request(params=params)
+            return self._request(params=params, cookies=self.cookies)
         else:
             return True
 
@@ -141,7 +141,7 @@ class uTorrentAPI(GenericClient):
         else:
             params = {'action': 'start', 'hash': result.hash}
 
-        return self._request(params=params)
+        return self._request(params=params, cookies=self.cookies)
 
 
 api = uTorrentAPI()

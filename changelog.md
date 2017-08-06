@@ -1,6 +1,8 @@
 # Changelog
 
-- * c554393 - 2017-08-06: Notifications config template is now responsive 
+- * 0cea9ef - 2017-08-06: Release v9.0.68 
+- * 39a0025 - 2017-08-06: Fixed issues with sending torrents to uTorrent and Deluge 
+- * 93f109e - 2017-08-06: Notifications config template is now responsive 
 - * f982990 - 2017-08-05: Added new config layout template Anime config template is responsive Backup and Restore template is responsive Cleaned up main layout template including core css styles 
 - * d0b1f6b - 2017-08-05: Updated general config template to be responsive 
 - * 6774207 - 2017-08-05: Release v9.0.67 

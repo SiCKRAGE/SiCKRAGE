@@ -22,6 +22,7 @@ import re
 import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
+from urllib import urlencode
 
 from bencode import BTFailure, bdecode, bencode
 
@@ -165,7 +166,6 @@ class GenericClient(object):
         self.url = None
         self.response = None
         self.auth = None
-        self.cookies = None
         self.last_time = time.time()
 
     def _request(self, method='get', params=None, data=None, *args, **kwargs):
@@ -174,12 +174,16 @@ class GenericClient(object):
             self.last_time = time.time()
             self._get_auth()
 
-        sickrage.srCore.srLogger.debug('{}: Requested a {} connection to url {} with Params: {} Data: {}'.format(
-            self.name,
-            method.upper(),
-            self.url,
-            str(params),
-            str(data if data else 'None')[0:99] + ('...' if len(data if data else 'None') > 200 else '')))
+        log_string = '{}: Requested a {} connection to url {}'.format(self.name, method.upper(), self.url)
+
+        if params:
+            log_string += '?{}'.format(urlencode(params))
+
+        if data:
+            log_string += ' and data: {}{}'.format(
+                str(data)[0:99], '...' if len(str(data)) > 100 else '')
+
+        sickrage.srCore.srLogger.debug(log_string)
 
         if not self.auth:
             sickrage.srCore.srLogger.warning(self.name + ': Authentication Failed')
@@ -195,11 +199,11 @@ class GenericClient(object):
                                                                  verify=False,
                                                                  *args,
                                                                  **kwargs)
-
-            sickrage.srCore.srLogger.debug(
-                self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
         except Exception as e:
             return False
+
+        sickrage.srCore.srLogger.debug(
+            self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
 
         return True
 
