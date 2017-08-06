@@ -32,7 +32,7 @@
                                 with a 10-foot user interface designed for the living-room TV.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label class="clearfix" for="use_kodi">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -44,7 +44,7 @@
                             </div>
 
                             <div id="content_use_kodi">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_always_on">
                                         <span class="component-title">Always on</span>
                                         <span class="component-desc">
@@ -54,7 +54,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -64,7 +64,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -74,7 +74,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -84,7 +84,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_update_library">
                                         <span class="component-title">Update library</span>
                                         <span class="component-desc">
@@ -94,7 +94,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_update_full">
                                         <span class="component-title">Full library update</span>
                                         <span class="component-desc">
@@ -104,7 +104,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_update_onlyfirst">
                                         <span class="component-title">Only update first host</span>
                                         <span class="component-desc">
@@ -114,7 +114,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_host">
                                         <span class="component-title">KODI IP:Port</span>
                                         <input type="text" name="kodi_host" id="kodi_host"
@@ -130,7 +130,7 @@
                                         <span class="component-desc">(multiple host strings must be separated by commas)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_username">
                                         <span class="component-title">KODI username</span>
                                         <input type="text" name="kodi_username" id="kodi_username"
@@ -143,7 +143,7 @@
                                         <span class="component-desc">username for your KODI server (blank for none)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="kodi_password">
                                         <span class="component-title">KODI password</span>
                                         <input type="password" name="kodi_password" id="kodi_password"
@@ -180,7 +180,7 @@
                                 KODI notifier with port <b>3005</b>.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_plex">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -192,7 +192,7 @@
                             </div>
 
                             <div id="content_use_plex">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="plex_server_token">
                                         <span class="component-title">Plex Media Server Auth Token</span>
                                         <input type="text" name="plex_server_token" id="plex_server_token"
@@ -213,7 +213,7 @@
                                     </label>
                                 </div>
                                 <div class="tab-pane" style="padding: 0; min-height: 130px">
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="plex_username">
                                             <span class="component-title">Server Username</span>
                                             <span class="component-desc">
@@ -224,7 +224,7 @@
                                         </span>
                                         </label>
                                     </div>
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="plex_password">
                                             <span class="component-title">Server/client password</span>
                                             <span class="component-desc">
@@ -238,7 +238,7 @@
                                 </div>
 
                                 <div class="tab-pane" style="padding: 0; min-height: 50px">
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="plex_update_library">
                                             <span class="component-title">Update server library</span>
                                             <span class="component-desc">
@@ -249,7 +249,7 @@
                                         </label>
                                     </div>
                                     <div id="content_plex_update_library">
-                                        <div class="field-pair">
+                                        <div class="row field-pair">
                                             <label for="plex_server_host">
                                                 <span class="component-title">Plex Media Server IP:Port</span>
                                                 <span class="component-desc">
@@ -263,7 +263,7 @@
                                             </label>
                                         </div>
 
-                                        <div class="field-pair">
+                                        <div class="row field-pair">
                                             <div class="testNotification" id="testPMS-result">Click below to test Plex
                                                 server(s)
                                             </div>
@@ -285,7 +285,7 @@
                                    onclick="window.open(this.href, '_blank'); return false;">Plex Media Client</a></h3>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_plex_client">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -297,7 +297,7 @@
                             </div>
 
                             <div id="content_use_plex_client">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="plex_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -307,7 +307,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="plex_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -317,7 +317,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="plex_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -327,7 +327,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="plex_host">
                                         <span class="component-title">Plex Client IP:Port</span>
                                         <span class="component-desc">
@@ -341,7 +341,7 @@
                                     </label>
                                 </div>
                                 <div class="tab-pane" style="padding: 0; min-height: 130px">
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="plex_username">
                                             <span class="component-title">Server Username</span>
                                             <span class="component-desc">
@@ -352,7 +352,7 @@
                                         </span>
                                         </label>
                                     </div>
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="plex_client_password">
                                             <span class="component-title">Client Password</span>
                                             <span class="component-desc">
@@ -365,7 +365,7 @@
                                     </div>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <div class="testNotification" id="testPMC-result">Click below to test Plex client(s)
                                     </div>
                                     <input class="btn" type="button" value="Test Plex Client" id="testPMC"/>
@@ -388,7 +388,7 @@
                             <p>A home media server built using other popular open source technologies.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_emby">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -399,7 +399,7 @@
                                 </label>
                             </div>
                             <div id="content_use_emby">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="emby_host">
                                         <span class="component-title">Emby IP:Port</span>
                                         <input type="text" name="emby_host" id="emby_host"
@@ -411,7 +411,7 @@
                                         <span class="component-desc">host running Emby (eg. 192.168.1.100:8096)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="emby_apikey">
                                         <span class="component-title">Emby API Key</span>
                                         <input type="text" name="emby_apikey" id="emby_apikey"
@@ -440,7 +440,7 @@
                                 for the Popcorn Hour 200-series.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_nmj">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -452,7 +452,7 @@
                             </div>
 
                             <div id="content_use_nmj">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nmj_host">
                                         <span class="component-title">Popcorn IP address</span>
                                         <input type="text" name="nmj_host" id="nmj_host"
@@ -464,7 +464,7 @@
                                         <span class="component-desc">IP address of Popcorn 200-series (eg. 192.168.1.100)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Get settings</span>
                                         <input class="btn btn-inline" type="button" value="Get Settings"
@@ -475,7 +475,7 @@
                                         <span class="component-desc">the Popcorn Hour device must be powered on and NMJ running.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nmj_database">
                                         <span class="component-title">NMJ database</span>
                                         <input type="text" name="nmj_database" id="nmj_database"
@@ -488,7 +488,7 @@
                                         <span class="component-desc">automatically filled via the 'Get Settings' button.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nmj_mount">
                                         <span class="component-title">NMJ mount url</span>
                                         <input type="text" name="nmj_mount" id="nmj_mount"
@@ -520,7 +520,7 @@
                                 for the Popcorn Hour 300 & 400-series.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_nmjv2">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -532,7 +532,7 @@
                             </div>
 
                             <div id="content_use_nmjv2">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nmjv2_host">
                                         <span class="component-title">Popcorn IP address</span>
                                         <input type="text" name="nmjv2_host" id="nmjv2_host"
@@ -544,7 +544,7 @@
                                         <span class="component-desc">IP address of Popcorn 300/400-series (eg. 192.168.1.100)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <span class="component-title">Database location</span>
                                     <span class="component-desc">
                                     <label for="NMJV2_DBLOC_A" class="space-right">
@@ -559,7 +559,7 @@
                                     </label>
                                 </span>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="NMJv2db_instance">
                                         <span class="component-title">Database instance</span>
                                         <span class="component-desc">
@@ -579,7 +579,7 @@
                                         <span class="component-desc">adjust this value if the wrong database is selected.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="settingsNMJv2">
                                         <span class="component-title">Find database</span>
                                         <input type="button" class="btn btn-inline" value="Find Database"
@@ -590,7 +590,7 @@
                                         <span class="component-desc">the Popcorn Hour device must be powered on.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nmjv2_database">
                                         <span class="component-title">NMJv2 database</span>
                                         <input type="text" name="nmjv2_database" id="nmjv2_database"
@@ -624,7 +624,7 @@
                         </div>
 
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_synoindex">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -657,7 +657,7 @@
                         </div>
 
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_synologynotifier">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -672,7 +672,7 @@
                                 </label>
                             </div>
                             <div id="content_use_synologynotifier">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="synologynotifier_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -682,7 +682,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="synologynotifier_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -692,7 +692,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="synologynotifier_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -720,7 +720,7 @@
                                 your Tivo.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_pytivo">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -736,7 +736,7 @@
                             </div>
 
                             <div id="content_use_pytivo">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pytivo_host">
                                         <span class="component-title">pyTivo IP:Port</span>
                                         <input type="text" name="pytivo_host" id="pytivo_host"
@@ -749,7 +749,7 @@
                                         <span class="component-desc">host running pyTivo (eg. 192.168.1.1:9032)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pytivo_share_name">
                                         <span class="component-title">pyTivo share name</span>
                                         <input type="text" name="pytivo_share_name" id="pytivo_share_name"
@@ -762,7 +762,7 @@
                                         <span class="component-desc">value used in pyTivo Web Configuration to name the share.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pytivo_tivo_name">
                                         <span class="component-title">Tivo name</span>
                                         <input type="text" name="pytivo_tivo_name" id="pytivo_tivo_name"
@@ -794,7 +794,7 @@
                             <p>A cross-platform unobtrusive global notification system.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_growl">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -806,7 +806,7 @@
                             </div>
 
                             <div id="content_use_growl">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="growl_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -816,7 +816,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="growl_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -826,7 +826,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="growl_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -836,7 +836,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="growl_host">
                                         <span class="component-title">Growl IP:Port</span>
                                         <input type="text" name="growl_host" id="growl_host"
@@ -848,7 +848,7 @@
                                         <span class="component-desc">host running Growl (eg. 192.168.1.100:23053)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="growl_password">
                                         <span class="component-title">Growl password</span>
                                         <input type="password" name="growl_password" id="growl_password"
@@ -886,7 +886,7 @@
                             <p>A Growl client for iOS.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_prowl">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -898,7 +898,7 @@
                             </div>
 
                             <div id="content_use_prowl">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="prowl_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -908,7 +908,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="prowl_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -918,7 +918,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="prowl_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -928,7 +928,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="prowl_api">
                                         <span class="component-title">Prowl API key:</span>
                                         <input type="text" name="prowl_api" id="prowl_api"
@@ -943,7 +943,7 @@
                                                 onclick="window.open(this.href, '_blank'); return false;">https://www.prowlapp.com/api_settings.php</a></span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="prowl_priority">
                                         <span class="component-title">Prowl priority:</span>
                                         <select id="prowl_priority" name="prowl_priority" class="form-control input-sm">
@@ -989,7 +989,7 @@
                                         href="apt:python-notify">python-notify</a>).</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_libnotify">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1001,7 +1001,7 @@
                             </div>
 
                             <div id="content_use_libnotify">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="libnotify_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1011,7 +1011,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="libnotify_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1021,7 +1021,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="libnotify_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1050,7 +1050,7 @@
                                 devices.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_pushover">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1062,7 +1062,7 @@
                             </div>
 
                             <div id="content_use_pushover">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushover_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1072,7 +1072,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushover_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1082,7 +1082,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushover_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1092,7 +1092,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushover_userkey">
                                         <span class="component-title">Pushover key</span>
                                         <input type="text" name="pushover_userkey" id="pushover_userkey"
@@ -1105,7 +1105,7 @@
                                         <span class="component-desc">user key of your Pushover account</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushover_apikey">
                                         <span class="component-title">Pushover API key</span>
                                         <input type="text" name="pushover_apikey" id="pushover_apikey"
@@ -1121,7 +1121,7 @@
                                                 onclick="window.open(this.href, '_blank'); return false;"><b>Click here</b></a> to create a Pushover API key</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushover_device">
                                         <span class="component-title">Pushover devices</span>
                                         <input type="text" name="pushover_device" id="pushover_device"
@@ -1134,7 +1134,7 @@
                                         <span class="component-desc">comma separated list of pushover devices you want to send notifications to</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushover_sound">
                                         <span class="component-title">Pushover notification sound</span>
                                         <select id="pushover_sound" name="pushover_sound" class="form-control input-sm">
@@ -1232,7 +1232,7 @@
                                 subscription will be sent if needed.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_boxcar">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1244,7 +1244,7 @@
                             </div>
 
                             <div id="content_use_boxcar">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1254,7 +1254,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1264,7 +1264,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1274,7 +1274,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar_username">
                                         <span class="component-title">Boxcar username</span>
                                         <input type="text" name="boxcar_username" id="boxcar_username"
@@ -1304,7 +1304,7 @@
                             <p>Read your messages where and when you want them!</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_boxcar2">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1316,7 +1316,7 @@
                             </div>
 
                             <div id="content_use_boxcar2">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar2_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1326,7 +1326,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar2_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1336,7 +1336,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar2_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1346,7 +1346,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="boxcar2_accesstoken">
                                         <span class="component-title">Boxcar2 access token</span>
                                         <input type="text" name="boxcar2_accesstoken" id="boxcar2_accesstoken"
@@ -1375,7 +1375,7 @@
                                 notifications from your application directly to your Android device.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_nma">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1387,7 +1387,7 @@
                             </div>
 
                             <div id="content_use_nma">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nma_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1397,7 +1397,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nma_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1407,7 +1407,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nma_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1417,7 +1417,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nma_api">
                                         <span class="component-title">NMA API key:</span>
                                         <input type="text" name="nma_api" id="nma_api"
@@ -1429,7 +1429,7 @@
                                         <span class="component-desc">(multiple keys must be seperated by commas, up to a maximum of 5)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nma_priority">
                                         <span class="component-title">NMA priority:</span>
                                         <select id="nma_priority" name="nma_priority" class="form-control input-sm">
@@ -1474,7 +1474,7 @@
                                 Windows Phone or Windows 8.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_pushalot">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1486,7 +1486,7 @@
                             </div>
 
                             <div id="content_use_pushalot">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushalot_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1496,7 +1496,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushalot_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1506,7 +1506,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushalot_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1516,7 +1516,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushalot_authorizationtoken">
                                         <span class="component-title">Pushalot authorization token</span>
                                         <input type="text" name="pushalot_authorizationtoken"
@@ -1548,7 +1548,7 @@
                                 Android and desktop Chrome browsers.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_pushbullet">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1560,7 +1560,7 @@
                             </div>
 
                             <div id="content_use_pushbullet">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushbullet_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1570,7 +1570,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushbullet_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1580,7 +1580,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushbullet_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1590,7 +1590,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushbullet_api">
                                         <span class="component-title">Pushbullet API key</span>
                                         <input type="text" name="pushbullet_api" id="pushbullet_api"
@@ -1603,7 +1603,7 @@
                                         <span class="component-desc">API key of your Pushbullet account</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="pushbullet_device_list">
                                         <span class="component-title">Pushbullet devices</span>
                                         <select name="pushbullet_device_list" id="pushbullet_device_list"
@@ -1636,7 +1636,7 @@
                                 free SMS API.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_freemobile">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1648,7 +1648,7 @@
                             </div>
 
                             <div id="content_use_freemobile">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="freemobile_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1658,7 +1658,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="freemobile_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1668,7 +1668,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="freemobile_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1678,7 +1678,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="freemobile_id">
                                         <span class="component-title">Free Mobile customer ID</span>
                                         <input type="text" name="freemobile_id" id="freemobile_id"
@@ -1691,7 +1691,7 @@
                                         <span class="component-desc">It's your Free Mobile customer ID (8 digits)</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="freemobile_password">
                                         <span class="component-title">Free Mobile API Key</span>
                                         <input type="text" name="freemobile_apikey" id="freemobile_apikey"
@@ -1727,7 +1727,7 @@
                                 users' messages called tweets.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_twitter">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1743,7 +1743,7 @@
                             </div>
 
                             <div id="content_use_twitter">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="twitter_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -1753,7 +1753,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="twitter_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -1763,7 +1763,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="twitter_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -1773,7 +1773,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="twitter_usedm">
                                         <span class="component-title">Send direct message</span>
                                         <span class="component-desc">
@@ -1783,7 +1783,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="twitter_dmto">
                                         <span class="component-title">Send DM to</span>
                                         <input type="text" name="twitter_dmto" id="twitter_dmto"
@@ -1795,7 +1795,7 @@
                                         <span class="component-desc">Twitter account to send Direct Messages to (must follow you)</span>
                                     </p>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Step One</span>
                                     </label>
@@ -1805,7 +1805,7 @@
                                                id="twitterStep1"/>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Step Two</span>
                                     </label>
@@ -1819,7 +1819,7 @@
                                     </label>
                                 </div>
                                 <!--
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Step Three</span>
                                     </label>
@@ -1844,7 +1844,7 @@
                                 favorites, trakt recommends additional shows and movies you'll enjoy!</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_trakt">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -1856,7 +1856,7 @@
                             </div>
 
                             <div id="content_use_trakt">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="trakt_username">
                                         <span class="component-title">Trakt username</span>
                                         <input type="text" name="trakt_username" id="trakt_username"
@@ -1873,7 +1873,7 @@
                                 <input type="button"
                                        class="btn ${('', 'hide')[bool(sickrage.srCore.srConfig.TRAKT_ACCESS_TOKEN)]}"
                                        value="Get Trakt PIN" id="TraktGetPin"/>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="trakt_pin">
                                         <span class="component-title">Trakt PIN</span>
                                         <input type="text" name="trakt_pin" id="trakt_pin" value=""
@@ -1884,7 +1884,7 @@
                                     </p>
                                 </div>
                                 <input type="button" class="btn hide" value="Authorize SiCKRAGE" id="authTrakt"/>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="trakt_timeout">
                                         <span class="component-title">API Timeout</span>
                                         <input type="text" name="trakt_timeout" id="trakt_timeout"
@@ -1897,7 +1897,7 @@
                                     </span>
                                     </p>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="trakt_default_indexer">
                                         <span class="component-title">Default indexer</span>
                                         <span class="component-desc">
@@ -1910,7 +1910,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="trakt_sync">
                                         <span class="component-title">Sync libraries</span>
                                         <span class="component-desc">
@@ -1921,7 +1921,7 @@
                                     </label>
                                 </div>
                                 <div id="content_trakt_sync">
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="trakt_sync_remove">
                                             <span class="component-title">Remove Episodes From Collection</span>
                                             <span class="component-desc">
@@ -1932,7 +1932,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="trakt_sync_watchlist">
                                         <span class="component-title">Sync watchlist</span>
                                         <span class="component-desc">
@@ -1944,7 +1944,7 @@
                                     </label>
                                 </div>
                                 <div id="content_trakt_sync_watchlist">
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="trakt_method_add">
                                             <span class="component-title">Watchlist add method</span>
                                             <select id="trakt_method_add" name="trakt_method_add"
@@ -1965,7 +1965,7 @@
                                             <span class="component-desc">method in which to download episodes for new show's.</span>
                                         </label>
                                     </div>
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="trakt_remove_watchlist">
                                             <span class="component-title">Remove episode</span>
                                             <span class="component-desc">
@@ -1975,7 +1975,7 @@
                                         </span>
                                         </label>
                                     </div>
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="trakt_remove_serieslist">
                                             <span class="component-title">Remove series</span>
                                             <span class="component-desc">
@@ -1985,7 +1985,7 @@
                                         </span>
                                         </label>
                                     </div>
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="trakt_remove_show_from_sickrage">
                                             <span class="component-title">Remove watched show:</span>
                                             <span class="component-desc">
@@ -1995,7 +1995,7 @@
                                         </span>
                                         </label>
                                     </div>
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="trakt_start_paused">
                                             <span class="component-title">Start paused</span>
                                             <span class="component-desc">
@@ -2006,7 +2006,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="trakt_blacklist_name">
                                         <span class="component-title">Trakt blackList name</span>
                                         <input type="text" name="trakt_blacklist_name" id="trakt_blacklist_name"
@@ -2035,7 +2035,7 @@
                             <p>Allows configuration of email notifications on a per show basis.</p>
                         </div>
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="use_email">
                                     <span class="component-title">Enable</span>
                                     <span class="component-desc">
@@ -2047,7 +2047,7 @@
                             </div>
 
                             <div id="content_use_email">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_notify_onsnatch">
                                         <span class="component-title">Notify on snatch</span>
                                         <span class="component-desc">
@@ -2057,7 +2057,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_notify_ondownload">
                                         <span class="component-title">Notify on download</span>
                                         <span class="component-desc">
@@ -2067,7 +2067,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_notify_onsubtitledownload">
                                         <span class="component-title">Notify on subtitle download</span>
                                         <span class="component-desc">
@@ -2077,7 +2077,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_host">
                                         <span class="component-title">SMTP host</span>
                                         <input type="text" name="email_host" id="email_host"
@@ -2089,7 +2089,7 @@
                                         <span class="component-desc">hostname of your SMTP email server.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_port">
                                         <span class="component-title">SMTP port</span>
                                         <input type="text" name="email_port" id="email_port"
@@ -2101,7 +2101,7 @@
                                         <span class="component-desc">port number used to connect to your SMTP host.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_from">
                                         <span class="component-title">SMTP from</span>
                                         <input type="text" name="email_from" id="email_from"
@@ -2113,7 +2113,7 @@
                                         <span class="component-desc">sender email address, some hosts require a real address.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_tls">
                                         <span class="component-title">Use TLS</span>
                                         <span class="component-desc">
@@ -2123,7 +2123,7 @@
                                     </span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_user">
                                         <span class="component-title">SMTP user</span>
                                         <input type="text" name="email_user" id="email_user"
@@ -2135,7 +2135,7 @@
                                         <span class="component-desc">(optional) your SMTP server username.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_password">
                                         <span class="component-title">SMTP password</span>
                                         <input type="password" name="email_password" id="email_password"
@@ -2148,7 +2148,7 @@
                                         <span class="component-desc">(optional) your SMTP server password.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_list">
                                         <span class="component-title">Global email list</span>
                                         <input type="text" name="email_list" id="email_list"
@@ -2160,7 +2160,7 @@
                                         <span class="component-desc">all emails here receive notifications for <b>all</b> shows.</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="email_show">
                                         <span class="component-title">Show notification list</span>
                                         <select name="email_show" id="email_show" class="form-control input-sm">

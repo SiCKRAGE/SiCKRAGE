@@ -21,7 +21,7 @@
                     </div>
 
                     <fieldset class="tab-pane-list">
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="randomize_providers">
                                 <span class="component-title">Randomize Providers</span>
                                 <span class="component-desc">
@@ -31,7 +31,7 @@
                                 </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="download_propers">
                                 <span class="component-title">Download propers</span>
                                 <span class="component-desc">
@@ -41,7 +41,7 @@
                                 </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="enable_rss_cache">
                                 <span class="component-title">Enable provider RSS cache</span>
                                 <span class="component-desc">
@@ -52,7 +52,7 @@
                             </label>
                         </div>
                         <div id="content_download_propers">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="check_propers_interval">
                                     <span class="component-title">Check propers every:</span>
                                     <span class="component-desc">
@@ -68,7 +68,7 @@
                             </div>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Backlog search frequency</span>
                                 <span class="component-desc">
@@ -82,7 +82,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Daily search frequency</span>
                                 <span class="component-desc">
@@ -95,7 +95,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Usenet retention</span>
                                 <span class="component-desc">
@@ -107,7 +107,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Torrent Trackers</span>
                                 <span class="component-desc">
@@ -121,7 +121,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Ignore words</span>
                                 <span class="component-desc">
@@ -135,7 +135,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Require words</span>
                                 <span class="component-desc">
@@ -149,7 +149,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Ignore language names in subbed results</span>
                                 <span class="component-desc">
@@ -164,7 +164,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="allow_high_priority">
                                 <span class="component-title">Allow high priority</span>
                                 <span class="component-desc">
@@ -175,7 +175,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <input id="use_failed_downloads" type="checkbox" class="enabler"
                                    name="use_failed_downloads" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]} />
                             <label for="use_failed_downloads">
@@ -189,7 +189,7 @@
                         </div>
 
                         <div id="content_use_failed_downloads">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <input id="delete_failed" type="checkbox"
                                        name="delete_failed" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
                                 <label for="delete_failed">
@@ -217,7 +217,7 @@
 
                     <fieldset class="tab-pane-list">
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="use_nzbs">
                                 <span class="component-title">Enable NZB searches</span>
                                 <span class="component-desc">
@@ -228,7 +228,7 @@
                         </div>
 
                         <div id="content_use_nzbs">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="nzb_method">
                                     <span class="component-title">Send .nzb files to:</span>
                                     <span class="component-desc">
@@ -243,7 +243,7 @@
                             </div>
 
                             <div id="blackhole_settings">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Black hole folder location</span>
                                         <span class="component-desc">
@@ -258,7 +258,7 @@
                             </div>
 
                             <div id="sabnzbd_settings">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">SABnzbd server URL</span>
                                         <span class="component-desc">
@@ -271,7 +271,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">SABnzbd username</span>
                                         <span class="component-desc">
@@ -284,7 +284,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">SABnzbd password</span>
                                         <span class="component-desc">
@@ -297,7 +297,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">SABnzbd API key</span>
                                         <span class="component-desc">
@@ -311,7 +311,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use SABnzbd category</span>
                                         <span class="component-desc">
@@ -323,7 +323,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use SABnzbd category (backlog episodes)</span>
                                         <span class="component-desc">
@@ -335,7 +335,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use SABnzbd category for anime</span>
                                         <span class="component-desc">
@@ -348,7 +348,7 @@
                                 </div>
 
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use SABnzbd category for anime (backlog episodes)</span>
                                         <span class="component-desc">
@@ -362,7 +362,7 @@
                                 </div>
 
                                 % if sickrage.srCore.srConfig.ALLOW_HIGH_PRIORITY == True:
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="sab_forced">
                                             <span class="component-title">Use forced priority</span>
                                             <span class="component-desc">
@@ -375,7 +375,7 @@
                             </div>
 
                             <div id="nzbget_settings">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="nzbget_use_https">
                                         <span class="component-title">Connect using HTTPS</span>
                                         <span class="component-desc">
@@ -388,7 +388,7 @@
 
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">NZBget host:port</span>
                                         <span class="component-desc">
@@ -403,7 +403,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">NZBget username</span>
                                         <span class="component-desc">
@@ -415,7 +415,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">NZBget password</span>
                                         <span class="component-desc">
@@ -427,7 +427,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use NZBget category</span>
                                         <span class="component-desc">
@@ -439,7 +439,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use NZBget category (backlog episodes)</span>
                                         <span class="component-desc">
@@ -451,7 +451,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use NZBget category for anime</span>
                                         <span class="component-desc">
@@ -463,7 +463,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">Use NZBget category for anime (backlog episodes)</span>
                                         <span class="component-desc">
@@ -476,7 +476,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title">NZBget priority</span>
                                         <span class="component-desc">
@@ -525,7 +525,7 @@
 
                     <fieldset class="tab-pane-list">
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="use_torrents">
                                 <span class="component-title">Enable torrent searches</span>
                                 <span class="component-desc">
@@ -536,7 +536,7 @@
                         </div>
 
                         <div id="content_use_torrents">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="torrent_method">
                                     <span class="component-title">Send .torrent files to:</span>
                                     <span class="component-desc">
@@ -550,7 +550,7 @@
                                 </label>
 
                                 <div id="options_torrent_blackhole">
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label>
                                             <span class="component-title">Black hole folder location</span>
                                             <span class="component-desc">
@@ -574,7 +574,7 @@
                             </div>
 
                             <div id="options_torrent_clients">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label>
                                         <span class="component-title" id="host_title">Torrent host:port</span>
                                         <span class="component-desc">
@@ -590,7 +590,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_rpcurl_option">
+                                <div class="row field-pair" id="torrent_rpcurl_option">
                                     <label>
                                         <span class="component-title" id="rpcurl_title">Torrent RPC URL</span>
                                         <span class="component-desc">
@@ -606,7 +606,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_auth_type_option">
+                                <div class="row field-pair" id="torrent_auth_type_option">
                                     <label>
                                         <span class="component-title">Http Authentication</span>
                                         <span class="component-desc">
@@ -623,7 +623,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_verify_cert_option">
+                                <div class="row field-pair" id="torrent_verify_cert_option">
                                     <label for="torrent_verify_cert">
                                         <span class="component-title">Verify certificate</span>
                                         <span class="component-desc">
@@ -636,7 +636,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_username_option">
+                                <div class="row field-pair" id="torrent_username_option">
                                     <label>
                                         <span class="component-title" id="username_title">Client username</span>
                                         <span class="component-desc">
@@ -648,7 +648,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_password_option">
+                                <div class="row field-pair" id="torrent_password_option">
                                     <label>
                                         <span class="component-title" id="password_title">Client password</span>
                                         <span class="component-desc">
@@ -660,7 +660,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_label_option">
+                                <div class="row field-pair" id="torrent_label_option">
                                     <label>
                                         <span class="component-title">Add label to torrent</span>
                                         <span class="component-desc">
@@ -676,7 +676,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_label_anime_option">
+                                <div class="row field-pair" id="torrent_label_anime_option">
                                     <label>
                                         <span class="component-title">Add label to torrent for anime</span>
                                         <span class="component-desc">
@@ -692,7 +692,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_path_option">
+                                <div class="row field-pair" id="torrent_path_option">
                                     <label>
                                             <span class="component-title"
                                                   id="directory_title">Downloaded files location</span>
@@ -711,7 +711,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_seed_time_option">
+                                <div class="row field-pair" id="torrent_seed_time_option">
                                     <label>
                                         <span class="component-title" id="torrent_seed_time_label">Minimum seeding time is</span>
                                         <span class="component-desc"><input type="number" step="1"
@@ -723,7 +723,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_paused_option">
+                                <div class="row field-pair" id="torrent_paused_option">
                                     <label>
                                         <span class="component-title">Start torrent paused</span>
                                         <span class="component-desc">
@@ -735,7 +735,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="torrent_high_bandwidth_option">
+                                <div class="row field-pair" id="torrent_high_bandwidth_option">
                                     <label>
                                         <span class="component-title">Allow high bandwidth</span>
                                         <span class="component-desc">

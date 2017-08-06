@@ -875,7 +875,7 @@ jQuery(document).ready(function ($) {
                 if (options.showBrowseButton) {
                     // append the browse button and give it a click behaviour
                     options.field.after(
-                        $('<input type="button" value="Browse&hellip;" class="btn btn-inline fileBrowser">').on('click', function () {
+                        $('<div class="input-group-addon"><a href="#" class="glyphicon glyphicon-search fileBrowser"></a></div>').on('click', function () {
                             var initialDir = options.field.val() || (options.key && path) || '';
                             var optionsWithInitialDir = $.extend({}, options, {initialDir: initialDir});
                             $(this).nFileBrowser(callback, optionsWithInitialDir);
@@ -2613,11 +2613,6 @@ jQuery(document).ready(function ($) {
 
         config: {
             init: function () {
-                // toggle switches
-                $('input:checkbox').bootstrapToggle({
-                    size: 'small'
-                });
-
                 $('#configForm').ajaxForm({
                     beforeSubmit: function () {
                         $('.config_submitter .config_submitter_refresh').each(function () {

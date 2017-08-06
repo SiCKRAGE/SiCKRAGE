@@ -22,7 +22,7 @@
                     </div>
 
                     <fieldset class="tab-pane-list">
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="use_subtitles" class="clearfix">
                                 <span class="component-title">Search Subtitles</span>
                                 <span class="component-desc">
@@ -32,7 +32,7 @@
                                     </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Subtitle Languages</span>
                                 <span class="component-desc">
@@ -44,7 +44,7 @@
                                 </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Subtitle Directory</span>
                                 <input type="text" value="${sickrage.srCore.srConfig.SUBTITLES_DIR}"
@@ -63,7 +63,7 @@
                                 <span class="component-desc"><b>NOTE:</b> Leave empty if you want store subtitle in episode path.</span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label>
                                 <span class="component-title">Subtitle Find Frequency</span>
                                 <input type="number" name="subtitles_finder_frequency"
@@ -72,7 +72,7 @@
                                 <span class="component-desc">time in hours between scans (default: 1)</span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label class="clearfix" for="subtitles_history">
                                 <span class="component-title">Subtitles History</span>
                                 <span class="component-desc">
@@ -82,7 +82,7 @@
                                             </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label class="clearfix" for="subtitles_multi">
                                 <span class="component-title">Subtitles Multi-Language</span>
                                 <span class="component-desc">
@@ -92,7 +92,7 @@
                                             </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label class="clearfix" for="embedded_subtitles_all">
                                 <span class="component-title">Embedded Subtitles</span>
                                 <span class="component-desc">
@@ -103,7 +103,7 @@
                                             </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label class="clearfix" for="subtitles_hearing_impaired">
                                 <span class="component-title">Hearing Impaired Subtitles</span>
                                 <span class="component-desc">
@@ -113,7 +113,7 @@
                                 </span>
                             </label>
                         </div>
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Extra Scripts</span>
                                 <input type="text" name="subtitles_extra_scripts"
@@ -195,7 +195,7 @@
                             % if curService['name'] in providerLoginDict.keys():
                             ##<div class="field-pair${(' hidden', '')[curService['enabled']}"> ## Need js to show/hide on save
 
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label class="nocheck" for="${curService['name']}_user">
                                         <span class="component-title">${curService['name'].capitalize()}
                                             User Name</span>

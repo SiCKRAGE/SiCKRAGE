@@ -119,7 +119,7 @@
                     </div>
 
                     <fieldset class="tab-pane-list">
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="editAProvider" id="provider-list">
                                 <span class="component-title">Configure provider:</span>
                                 <span class="component-desc">
@@ -137,7 +137,7 @@
                         % for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
                             <div class="providerDiv" id="${providerID}Div">
                                 % if not providerObj.default:
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_url">
                                             <span class="component-title">URL:</span>
                                             <span class="component-desc">
@@ -152,7 +152,7 @@
                                 % endif
 
                                 % if providerObj.private:
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_key">
                                             <span class="component-title">API key:</span>
                                             <span class="component-desc">
@@ -169,7 +169,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'enable_daily'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_enable_daily">
                                             <span class="component-title">Enable daily searches</span>
                                             <span class="component-desc">
@@ -195,7 +195,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'search_fallback'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_search_fallback">
                                             <span class="component-title">Search mode fallback</span>
                                             <span class="component-desc">
@@ -210,7 +210,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'search_mode'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label>
                                             <span class="component-title">Season search mode</span>
                                             <span class="component-desc">
@@ -243,7 +243,7 @@
                         % for providerID, providerObj in sickrage.srCore.providersDict.nzb().items():
                             <div class="providerDiv" id="${providerID}Div">
                                 % if hasattr(providerObj, 'username'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_username">
                                             <span class="component-title">Username:</span>
                                             <span class="component-desc">
@@ -256,7 +256,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'api_key'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_api_key">
                                             <span class="component-title">API key:</span>
                                             <span class="component-desc">
@@ -270,7 +270,7 @@
 
 
                                 % if hasattr(providerObj, 'enable_daily'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_enable_daily">
                                             <span class="component-title">Enable daily searches</span>
                                             <span class="component-desc">
@@ -296,7 +296,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'search_fallback'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_search_fallback">
                                             <span class="component-title">Search mode fallback</span>
                                             <span class="component-desc">
@@ -312,7 +312,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'search_mode'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label>
                                             <span class="component-title">Season search mode</span>
                                             <span class="component-desc">
@@ -349,7 +349,7 @@
                         % for providerID, providerObj in sickrage.srCore.providersDict.all_torrent().items():
                             <div class="providerDiv" id="${providerID}Div">
                                 % if hasattr(providerObj, 'api_key'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_api_key">
                                             <span class="component-title">Api key:</span>
                                             <span class="component-desc">
@@ -364,7 +364,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'digest'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_digest">
                                             <span class="component-title">Digest:</span>
                                             <span class="component-desc">
@@ -378,7 +378,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'hash'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_hash">
                                             <span class="component-title">Hash:</span>
                                             <span class="component-desc">
@@ -392,7 +392,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'username'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_username">
                                             <span class="component-title">Username:</span>
                                             <span class="component-desc">
@@ -407,7 +407,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'password'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_password">
                                             <span class="component-title">Password:</span>
                                             <span class="component-desc">
@@ -420,7 +420,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'passkey'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_passkey">
                                             <span class="component-title">Passkey:</span>
                                             <span class="component-desc">
@@ -435,7 +435,7 @@
                                 % endif
 
                                 % if getattr(providerObj, 'enable_cookies', False):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_cookies">
                                             <span class="component-title">Cookies:</span>
                                             <span class="component-desc">
@@ -455,7 +455,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'pin'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_pin">
                                             <span class="component-title">Pin:</span>
                                             <span class="component-desc">
@@ -470,7 +470,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'ratio'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_ratio">
                                             <span class="component-title"
                                                   id="${providerID}_ratio_desc">Seed ratio:</span>
@@ -493,7 +493,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'minseed'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_minseed">
                                             <span class="component-title" id="${providerID}_minseed_desc">Minimum seeders:</span>
                                             <span class="component-desc">
@@ -507,7 +507,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'minleech'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_minleech">
                                             <span class="component-title" id="${providerID}_minleech_desc">Minimum leechers:</span>
                                             <span class="component-desc">
@@ -521,7 +521,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'confirmed'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_confirmed">
                                             <span class="component-title">Confirmed download</span>
                                             <span class="component-desc">
@@ -534,7 +534,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'ranked'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_ranked">
                                             <span class="component-title">Ranked torrents</span>
                                             <span class="component-desc">
@@ -547,7 +547,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'engrelease'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_engrelease">
                                             <span class="component-title">English torrents</span>
                                             <span class="component-desc">
@@ -561,7 +561,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'onlyspasearch'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_onlyspasearch">
                                             <span class="component-title">For Spanish torrents</span>
                                             <span class="component-desc">
@@ -576,7 +576,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'sorting'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_sorting">
                                             <span class="component-title">Sorting results by</span>
                                             <span class="component-desc">
@@ -592,7 +592,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'freeleech'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_freeleech">
                                             <span class="component-title">Freeleech</span>
                                             <span class="component-desc">
@@ -605,7 +605,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'enable_daily'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_enable_daily">
                                             <span class="component-title">Enable daily searches</span>
                                             <span class="component-desc">
@@ -618,7 +618,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'reject_m2ts'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_reject_m2ts">
                                             <span class="component-title">Reject Blu-ray M2TS releases</span>
                                             <span class="component-desc">
@@ -644,7 +644,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'search_fallback'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_search_fallback">
                                             <span class="component-title">Search mode fallback</span>
                                             <span class="component-desc">
@@ -660,7 +660,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'search_mode'):
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label>
                                             <span class="component-title">Season search mode</span>
                                             <span class="component-desc">
@@ -691,7 +691,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_cat">
                                             <span class="component-title">Category:</span>
                                             <span class="component-desc">
@@ -707,7 +707,7 @@
                                 % endif
 
                                 % if hasattr(providerObj, 'subtitle') and providerID == 'tntvillage':
-                                    <div class="field-pair">
+                                    <div class="row field-pair">
                                         <label for="${providerID}_subtitle">
                                             <span class="component-title">Subtitled</span>
                                             <span class="component-desc">
@@ -734,7 +734,7 @@
                         </div>
 
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="newznab_string">
                                     <span class="component-title">Select provider:</span>
                                     <span class="component-desc">
@@ -746,21 +746,21 @@
                             </div>
 
                             <div class="newznabProviderDiv" id="addNewznab">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="newznab_name">
                                         <span class="component-title">Provider name:</span>
                                         <input type="text" id="newznab_name"
                                                class="form-control input-sm input200"/>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="newznab_url">
                                         <span class="component-title">Site URL:</span>
                                         <input type="text" id="newznab_url" class="form-control input-sm input350"
                                                autocapitalize="off"/>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="newznab_key">
                                         <span class="component-title">API key:</span>
                                         <input type="text" id="newznab_key" class="form-control input-sm input350"
@@ -768,7 +768,7 @@
                                     </label>
                                 </div>
 
-                                <div class="field-pair" id="newznabcapdiv">
+                                <div class="row field-pair" id="newznabcapdiv">
                                     <label>
                                         <span class="component-title">Newznab search categories:</span>
                                         <select id="newznab_cap" multiple="multiple"
@@ -816,7 +816,7 @@
                         </div>
 
                         <fieldset class="tab-pane-list">
-                            <div class="field-pair">
+                            <div class="row field-pair">
                                 <label for="torrentrss_string">
                                     <span class="component-title">Select provider:</span>
                                     <span class="component-desc">
@@ -828,21 +828,21 @@
                             </div>
 
                             <div class="torrentRssProviderDiv" id="addTorrentRss">
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="torrentrss_name">
                                         <span class="component-title">Provider name:</span>
                                         <input type="text" id="torrentrss_name"
                                                class="form-control input-sm input200"/>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="torrentrss_url">
                                         <span class="component-title">RSS URL:</span>
                                         <input type="text" id="torrentrss_url"
                                                class="form-control input-sm input350" autocapitalize="off"/>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="torrentrss_cookies">
                                         <span class="component-title">Cookies:</span>
                                         <input type="text" id="torrentrss_cookies"
@@ -853,7 +853,7 @@
                                         <span class="component-desc">eg. uid=xx;pass=yy</span>
                                     </label>
                                 </div>
-                                <div class="field-pair">
+                                <div class="row field-pair">
                                     <label for="torrentrss_titleTAG">
                                         <span class="component-title">Search element:</span>
                                         <input type="text" id="torrentrss_titleTAG"

@@ -3771,7 +3771,7 @@ class ConfigGeneral(Config):
             topmenu='config',
             submenu=self.ConfigMenu(),
             controller='config',
-            action='general'
+            action='general',
         )
 
     @staticmethod
