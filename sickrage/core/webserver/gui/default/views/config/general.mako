@@ -188,17 +188,19 @@
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Show root directories</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <%include file="../includes/root_dirs.mako"/>
+                        <%include file="../includes/root_dirs.mako"/>
                     </div>
-
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    </div>
                 </div>
 
-                <input type="submit" class="btn config_submitter" value="Save Changes"/>
             </fieldset>
         </div>
 
@@ -265,7 +267,12 @@
 
                 </div>
 
-                <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    </div>
+                </div>
+
             </fieldset>
 
         </div>
@@ -496,7 +503,12 @@
                     </div>
                 </div>
 
-                <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    </div>
+                </div>
+
 
             </fieldset>
 
@@ -700,7 +712,12 @@
 
                 </div>
 
-                <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    </div>
+                </div>
+
 
             </fieldset>
 
@@ -971,7 +988,12 @@
                         </div>
                     </div>
                 </div>
-                <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    </div>
+                </div>
+
             </fieldset>
         </div>
 
@@ -1075,7 +1097,12 @@
 
                     </div>
 
-                    <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        </div>
+                    </div>
+
                 </fieldset>
 
             </div>

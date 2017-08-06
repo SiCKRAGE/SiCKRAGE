@@ -24,9 +24,12 @@
                     </div>
                 </div>
             </div>
-            <div class="Backup" id="Backup-result"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="Backup" id="Backup-result"></div>
+                </div>
+            </div>
         </fieldset>
-
     </div><!-- /tab-pane1 //-->
 
     <div id="core-tab-pane2" class="tab-pane fade clearfix">
@@ -47,7 +50,11 @@
                     </div>
                 </div>
             </div>
-            <div class="Restore" id="Restore-result"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="Restore" id="Restore-result"></div>
+                </div>
+            </div>
         </fieldset>
     </div><!-- /tab-pane2 //-->
 </%block>

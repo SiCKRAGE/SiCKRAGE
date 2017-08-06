@@ -92,7 +92,12 @@
                         </div>
                     </div>
                 </div>
-                <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    </div>
+                </div>
+
             </fieldset>
         </div>
     </div>
@@ -115,7 +120,11 @@
                         </label>
                     </div>
                 </div>
-                <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                    </div>
+                </div>
             </fieldset>
         </div>
     </div>

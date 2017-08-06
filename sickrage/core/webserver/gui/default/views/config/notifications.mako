@@ -278,7 +278,7 @@
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="plex_password" id="plex_password"
-                                           value="<% '*' * len(sickrage.srCore.srConfig.PLEX_PASSWORD) %>"
+                                           value="${sickrage.srCore.srConfig.PLEX_PASSWORD}"
                                            placeholder="blank = no authentication"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
@@ -437,7 +437,7 @@
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="plex_client_password" id="plex_client_password"
-                                           value="<% '*' * len(sickrage.srCore.srConfig.PLEX_CLIENT_PASSWORD) %>"
+                                           value="${sickrage.srCore.srConfig.PLEX_CLIENT_PASSWORD}"
                                            placeholder="blank = no authentication"
                                            class="form-control" autocapitalize="off"/>
                                 </div>

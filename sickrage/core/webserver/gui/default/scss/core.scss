@@ -292,7 +292,7 @@
 .rootdir-selectbox,
 .rootdir-selectbox #rootDirs,
 .rootdir-controls {
-  width: 430px; }
+  width: 100%; }
 
 .rootdir-selectbox {
   padding: 0 0 5px; }
@@ -633,21 +633,22 @@ div.buttontext p {
 ul#rootDirStaticList {
   margin-right: auto;
   margin-left: auto;
-  text-align: left; }
+  text-align: left;
+  padding-left: 0; }
 
 ul#rootDirStaticList li {
   padding: 4px 5px 4px 5px;
   margin: 2px;
   list-style: none outside none;
-  cursor: pointer;
-  /*background: url('../images/ui/ui-bg_highlight-soft_75_efefef_1x100.png') repeat-x scroll 50% 50% #EFEFEF;*/ }
+  background: url("../images/ui-bg_highlight-soft_75_ffe45c_1x100.png") repeat-x scroll 50% 50% #EFEFEF; }
 
 ul#rootDirStaticList li label {
   margin-top: 5px;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  cursor: pointer; }
 
 ul#rootDirStaticList li input[type="checkbox"] {
-  vertical-align: -2px; }
+  vertical-align: -3px; }
 
 /* =======================================================================
     trending_shows.mako

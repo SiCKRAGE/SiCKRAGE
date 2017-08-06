@@ -9,15 +9,11 @@
                 </div>
                 <div class="modal-body">
                     <p>Do you want to mark this episode as failed?</p>
-                    <p class="text-warning">
-                        <small>The episode release name will be added to the failed history, preventing it to be
-                            downloaded again.
-                        </small>
-                    </p>
+                    <p class="text-warning"><small>The episode release name will be added to the failed history, preventing it to be downloaded again.</small></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Failed</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
                 </div>
             </div>
         </div>
@@ -32,11 +28,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Do you want to include the current episode quality in the search?</p>
-                    <p class="text-warning">
-                        <small>Choosing No will ignore any releases with the same episode quality as the one currently
-                            downloaded/snatched.
-                        </small>
-                    </p>
+                    <p class="text-warning"><small>Choosing No will ignore any releases with the same episode quality as the one currently downloaded/snatched.</small></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
