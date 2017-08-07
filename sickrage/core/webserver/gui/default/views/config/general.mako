@@ -38,10 +38,10 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <select name="indexerDefaultLang" id="indexerDefaultLang"
-                                class="form-control form-control-inline input-sm bfh-languages"
+                                class="form-control form-control-inline bfh-languages"
+                                title="for adding shows and metadata providers"
                                 data-language=${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(srIndexerApi().indexer().languages.keys())}">
                         </select>
-                        <label for="indexerDefaultLang">for adding shows and metadata providers</label>
                     </div>
                 </div>
                 <div class="row field-pair">
@@ -59,7 +59,8 @@
                         <label class="component-title">Initial page</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="default_page" name="default_page" class="form-control input-sm">
+                        <select id="default_page" name="default_page" class="form-control"
+                                title="when launching SickRage interface">
                             <option value="home" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'home']}>
                                 Shows
                             </option>
@@ -73,7 +74,6 @@
                                 IRC
                             </option>
                         </select>
-                        <label for="default_page">when launching SickRage interface</label>
                     </div>
                 </div>
 
@@ -83,9 +83,14 @@
                         <label class="component-title">Daily show updates start time</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input name="showupdate_hour" id="showupdate_hour"
-                               value="${sickrage.srCore.srConfig.SHOWUPDATE_HOUR}"
-                               class="form-control input-sm input75"/>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </div>
+                            <input name="showupdate_hour" id="showupdate_hour"
+                                   value="${sickrage.srCore.srConfig.SHOWUPDATE_HOUR}"
+                                   class="form-control"/>
+                        </div>
                         <label for="showupdate_hour">with information such as next air dates, show ended,
                             etc. Use 15 for 3pm, 4
                             for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)</label>
@@ -128,12 +133,16 @@
                         <label class="component-title">Number of Log files saved</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input name="log_nr" id="log_nr"
-                               value="${sickrage.srCore.srConfig.LOG_NR}"
-                               class="form-control input-sm input75"/>
-                        <label for="log_nr">number of log
-                            files saved when rotating logs (default: 5) (REQUIRES</label>
-                        RESTART)
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-file"></span>
+                            </div>
+                            <input name="log_nr" id="log_nr"
+                                   value="${sickrage.srCore.srConfig.LOG_NR}"
+                                   placeholder="default = 5"
+                                   title="number of log files saved when rotating logs (REQUIRES RESTART)"
+                                   class="form-control"/>
+                        </div>
                     </div>
 
                 </div>
@@ -144,11 +153,16 @@
                         <label class="component-title">Size of Log files saved</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input name="log_size" id="log_size"
-                               value="${sickrage.srCore.srConfig.LOG_SIZE}"
-                               class="form-control input-sm input75"/><label for="log_size">maximum size of
-                        a log file saved (default: 1048576 (1MB)) (REQUIRES</label>
-                        RESTART)
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-file"></span>
+                            </div>
+                            <input name="log_size" id="log_size"
+                                   value="${sickrage.srCore.srConfig.LOG_SIZE}"
+                                   placeholder="default = 1048576 (1MB)"
+                                   title="maximum size of a log file saved (REQUIRES RESTART)"
+                                   class="form-control"/>
+                        </div>
                     </div>
 
                 </div>
@@ -156,11 +170,12 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Use initial indexer set to</label>
+                        <label class="component-title">Default indexer for adding shows</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <select id="indexer_default" name="indexer_default"
-                                class="form-control input-sm">
+                                title="default indexer selection when adding new shows"
+                                class="form-control">
                             <option value="0" ${('', 'selected="selected"')[indexer == 0]}>All
                                 Indexers
                             </option>
@@ -168,7 +183,6 @@
                                 <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
                             % endfor
                         </select>
-                        <label for="indexer_default">as the default selection when adding new shows</label>
                     </div>
 
                 </div>
@@ -176,13 +190,19 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Timeout show indexer at</label>
+                        <label class="component-title">Show indexer timeout</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input name="indexer_timeout" id="indexer_timeout"
-                               value="${sickrage.srCore.srConfig.INDEXER_TIMEOUT}"
-                               class="form-control input-sm input75"/><label for="indexer_timeout">seconds
-                        of inactivity when finding new shows (default:10)</label>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </div>
+                            <input name="indexer_timeout" id="indexer_timeout"
+                                   value="${sickrage.srCore.srConfig.INDEXER_TIMEOUT}"
+                                   placeholder="default = 10"
+                                   title="seconds of inactivity when finding new shows"
+                                   class="form-control"/>
+                        </div>
                     </div>
 
                 </div>
@@ -192,7 +212,7 @@
                         <label class="component-title">Show root directories</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <%include file="../includes/root_dirs.mako"/>
+                            <%include file="../includes/root_dirs.mako"/>
                     </div>
                 </div>
                 <div class="row">
@@ -246,10 +266,16 @@
                         <label class="component-title">Check the server every*</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input name="update_frequency" id="update_frequency"
-                               value="${sickrage.srCore.srConfig.VERSION_UPDATER_FREQ}"
-                               class="form-control input-sm input75"/>
-                        <label for="update_frequency">hours for software updates (default:12)</label>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </div>
+                            <input name="update_frequency" id="update_frequency"
+                                   value="${sickrage.srCore.srConfig.VERSION_UPDATER_FREQ}"
+                                   placeholder="default = 12 (hours)"
+                                   title="hours between software updates"
+                                   class="form-control"/>
+                        </div>
                     </div>
                 </div>
 
@@ -293,7 +319,8 @@
                         <label class="component-title">Display theme:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="theme_name" name="theme_name" class="form-control input-sm">
+                        <select id="theme_name" name="theme_name" class="form-control"
+                                title="for appearance to take effect, save then refresh your browser">
                             <option value="dark" ${('', 'selected="selected"')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}>
                                 Dark
                             </option>
@@ -301,9 +328,6 @@
                                 Light
                             </option>
                         </select>
-                        <label for="theme_name" class="red-text">for appearance to take effect, save then
-                            refresh your
-                            browser</label>
                     </div>
 
                 </div>
@@ -353,13 +377,17 @@
                         <label class="component-title">Missed episodes range</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="number" step="1" min="7" name="coming_eps_missed_range"
-                               id="coming_eps_missed_range"
-                               value="${sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE}"
-                               class="form-control input-sm input75"/>
-                        <label for="coming_eps_missed_range">
-                            Set the range in days of the missed episodes in the Schedule page
-                        </label>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                            <input type="number" step="1" min="7" name="coming_eps_missed_range"
+                                   id="coming_eps_missed_range"
+                                   value="${sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE}"
+                                   placeholder="# of days"
+                                   title="Set the range in days of the missed episodes in the Schedule page"
+                                   class="form-control"/>
+                        </div>
                     </div>
                 </div>
                 <div class="row field-pair">
@@ -395,14 +423,14 @@
                         <label class="component-title">Date style:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select class="form-control input-sm ${(' metadataDiv', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
+                        <select class="form-control ${(' metadataDiv', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                 id="date_presets${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                 name="date_preset${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
                             % for cur_preset in date_presets:
                                 <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srCore.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.SYS_ENCODING)}</option>
                             % endfor
                         </select>
-                        <select class="form-control input-sm ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
+                        <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                 id="date_presets${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                 name="date_preset${('_na', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
                             <option value="%x" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == '%x']}>
@@ -420,12 +448,12 @@
                         <label class="component-title">Time style:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="time_presets" name="time_preset" class="form-control input-sm">
+                        <select id="time_presets" name="time_preset" class="form-control"
+                                title="seconds are only shown on the History page">
                             % for cur_preset in time_presets:
                                 <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
                             % endfor
                         </select>
-                        <label for="time_presets">seconds are only shown on the History page</label>
                     </div>
                 </div>
 
@@ -441,34 +469,30 @@
                         <input type="radio" name="timezone_display" id="network"
                                value="network" ${('', 'checked')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "network"]} />
                         <label for="network">Network</label>
-                        <div class="clear-left">
-                            <p>display dates and times in either your timezone or the shows network
-                                timezone</p>
-                        </div>
-                        <div class="clear-left">
-                            <p><b>Note:</b> Use local timezone to start searching for episodes minutes after
-                                show ends (depends on your dailysearch frequency)</p>
+                        <div class="row">
+                            <div class="col-md-12">
+                                display dates and times in either your timezone or the shows network
+                                timezone<br/>
+                                <b>Note:</b> Use local timezone to start searching for episodes minutes after
+                                show ends (depends on your dailysearch frequency)
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Download url</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input name="download_url" id="download_url"
-                                       value="${sickrage.srCore.srConfig.DOWNLOAD_URL}" size="35"
-                                       autocapitalize="off"/>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-globe"></span>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="download_url">URL where the shows can be downloaded.</label>
-                            </div>
+                            <input name="download_url" id="download_url" class="form-control"
+                                   value="${sickrage.srCore.srConfig.DOWNLOAD_URL}"
+                                   title="URL where the shows can be downloaded."
+                                   autocapitalize="off"/>
                         </div>
                     </div>
                 </div>
@@ -492,30 +516,27 @@
                         <label class="component-title">Fanart transparency</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-
-                        <input type="number" step="0.1" min="0.1" max="1.0"
-                               name="fanart_background_opacity" id="fanart_background_opacity"
-                               value="${sickrage.srCore.srConfig.FANART_BACKGROUND_OPACITY}"
-                               class="form-control input-sm input75"/>
-                        <label for="fanart_background_opacity">
-                            transparency of the fanart in the background
-                        </label>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-transfer"></span>
+                            </div>
+                            <input type="number" step="0.1" min="0.1" max="1.0"
+                                   name="fanart_background_opacity" id="fanart_background_opacity"
+                                   value="${sickrage.srCore.srConfig.FANART_BACKGROUND_OPACITY}"
+                                   title="transparency of the fanart in the background"
+                                   class="form-control"/>
+                        </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <input type="submit" class="btn config_submitter" value="Save Changes"/>
                     </div>
                 </div>
-
-
             </fieldset>
-
         </div><!-- /User interface tab-pane -->
 
         <div class="tab-pane">
-
             <div class="tab-pane-desc">
                 <h3>Web Interface</h3>
                 <p>It is recommended that you enable a username and password to secure SickRage from
@@ -524,28 +545,32 @@
             </div>
 
             <fieldset class="tab-pane-list">
-
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">API key</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
                             <div class="col-md-12">
-                                <input name="api_key" id="api_key"
-                                       value="${sickrage.srCore.srConfig.API_KEY}"
-                                       class="form-control input-sm input300"/>
-                                <input class="btn btn-inline" type="button" id="generate_new_apikey"
-                                       value="Generate">
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-cloud"></span>
+                                    </div>
+                                    <input name="api_key" id="api_key"
+                                           value="${sickrage.srCore.srConfig.API_KEY}"
+                                           class="form-control"/>
+                                    <div class="input-group-addon">
+                                        <input class="button" type="button" id="generate_new_apikey"
+                                               value="Generate">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="api_key">
-                                    used to give 3rd party programs limited access to SickRage
-                                    you can try all the features of the API <a
-                                        href="${srWebRoot}/apibuilder/">here</a>
+                                    used to give 3rd party programs limited access to SiCKRAGE you can try all the
+                                    features of the API <a href="${srWebRoot}/apibuilder/">here</a>
                                 </label>
                             </div>
                         </div>
@@ -570,41 +595,35 @@
                         <label class="component-title">HTTP username</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input name="web_username" id="web_username"
-                                       value="${sickrage.srCore.srConfig.WEB_USERNAME}"
-                                       class="form-control input-sm input300"
-                                       autocapitalize="off"/>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-user"></span>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="web_username">set blank for no login</label>
-                            </div>
+                            <input name="web_username" id="web_username"
+                                   value="${sickrage.srCore.srConfig.WEB_USERNAME}"
+                                   title="WebUI username"
+                                   placeholder="blank = no authentication"
+                                   class="form-control"
+                                   autocapitalize="off"/>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">HTTP password</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input type="password" name="web_password" id="web_password"
-                                       value="${sickrage.srCore.srConfig.WEB_PASSWORD}"
-                                       class="form-control input-sm input300"
-                                       autocapitalize="off"/>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-lock"></span>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="web_password">blank = no authentication</label>
-                            </div>
+                            <input type="password" name="web_password" id="web_password"
+                                   value="${sickrage.srCore.srConfig.WEB_PASSWORD}"
+                                   title="WebUI password"
+                                   placeholder="blank = no authentication"
+                                   class="form-control"
+                                   autocapitalize="off"/>
                         </div>
                     </div>
                 </div>
@@ -614,10 +633,16 @@
                         <label class="component-title">HTTP port</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input name="web_port" id="web_port"
-                               value="${sickrage.srCore.srConfig.WEB_PORT}"
-                               class="form-control input-sm input100"/>
-                        <label for="web_port">web port to browse and access SickRage (default:8081)</label>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-globe"></span>
+                            </div>
+                            <input name="web_port" id="web_port"
+                                   value="${sickrage.srCore.srConfig.WEB_PORT}"
+                                   placeholder="8081"
+                                   title="web port to browse and access WebUI"
+                                   class="form-control"/>
+                        </div>
                     </div>
                 </div>
 
@@ -659,7 +684,7 @@
                                 <div class="col-md-12">
                                     <input name="https_cert" id="https_cert"
                                            value="${sickrage.srCore.srConfig.HTTPS_CERT}"
-                                           class="form-control input-sm input300"
+                                           class="form-control"
                                            autocapitalize="off"/>
                                 </div>
                             </div>
@@ -683,7 +708,7 @@
                                 <div class="col-md-12">
                                     <input name="https_key" id="https_key"
                                            value="${sickrage.srCore.srConfig.HTTPS_KEY}"
-                                           class="form-control input-sm input300" autocapitalize="off"/>
+                                           class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -732,51 +757,39 @@
             </div>
 
             <fieldset class="tab-pane-list">
-
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">CPU throttling:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="cpu_presets" name="cpu_preset" class="form-control input-sm">
+                        <select id="cpu_presets" name="cpu_preset" class="form-control"
+                                title="Normal (default). High is lower and Low is higher CPU use">
                             % for cur_preset in cpu_presets:
                                 <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
                             % endfor
                         </select>
-                        <label for="cpu_presets">
-                            Normal (default). High is lower and Low is higher CPU use
-                        </label>
                     </div>
-
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Anonymous redirect</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input id="anon_redirect" name="anon_redirect"
-                                       value="${sickrage.srCore.srConfig.ANON_REDIRECT}"
-                                       class="form-control input-sm input300" autocapitalize="off"/>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-globe"></span>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="anon_redirect">
-                                    backlink protection via anonymizer service, must end in "?"
-                                </label>
-                            </div>
+                            <input id="anon_redirect" name="anon_redirect"
+                                   value="${sickrage.srCore.srConfig.ANON_REDIRECT}"
+                                   title="backlink protection via anonymizer service, must end in ?"
+                                   class="form-control" autocapitalize="off"/>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable debug</label>
                     </div>
@@ -785,13 +798,11 @@
                                id="debug" ${('', 'checked')[bool(sickrage.DEBUG)]}/>
                         <label for="debug">
                             Enable debug logs
-                        </label>>
+                        </label>
                     </div>
-
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Verify SSL Certs</label>
                     </div>
@@ -812,11 +823,10 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="no_restart"
+                               title="Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)"
                                id="no_restart" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_RESTART)]}/>
                         <label for="no_restart">
-                            Only shutdown when restarting SR.
-                            Only select this when you have external software restarting SR automatically
-                            when it stops (like FireDaemon)
+                            Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own).
                         </label>
                     </div>
 
@@ -872,7 +882,6 @@
                 </div>
 
                 <div class="row field-pair" style="display: none">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Link Google Account</label>
                     </div>
@@ -887,31 +896,23 @@
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Proxy host</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input id="proxy_setting" name="proxy_setting"
-                                       value="${sickrage.srCore.srConfig.PROXY_SETTING}"
-                                       class="form-control input-sm input300" autocapitalize="off"/>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-globe"></span>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="proxy_setting">
-                                    blank to disable or proxy to use when connecting to providers
-                                </label>
-                            </div>
+                            <input id="proxy_setting" name="proxy_setting"
+                                   value="${sickrage.srCore.srConfig.PROXY_SETTING}"
+                                   title="Proxy SiCKRAGE connections"
+                                   class="form-control" autocapitalize="off"/>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Use proxy for indexers</label>
                     </div>
@@ -922,7 +923,6 @@
                             use proxy host for connecting to indexers (thetvdb)
                         </label>
                     </div>
-
                 </div>
 
                 <div class="row field-pair">
@@ -934,10 +934,7 @@
                         <input type="checkbox" name="skip_removed_files"
                                id="skip_removed_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.SKIP_REMOVED_FILES)]}/>
                         <label for="skip_removed_files">
-                            <p>
-                                Skip detection of removed files. If disable it will set default deleted
-                                status
-                            </p>
+                            Skip detection of removed files. If disable it will set default deleted status<br/>
                             <b>NOTE:</b> This may mean SickRage misses renames as well
                         </label>
                     </div>
@@ -954,14 +951,14 @@
                             <div class="col-md-12">
                                 % if not sickrage.srCore.srConfig.SKIP_REMOVED_FILES:
                                     <select name="ep_default_deleted_status" id="ep_default_deleted_status"
-                                            class="form-control input-sm">
+                                            class="form-control">
                                         % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
                                             <option value="${defStatus}" ${('', 'selected="selected"')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
                                         % endfor
                                     </select>
                                 % else:
                                     <select name="ep_default_deleted_status" id="ep_default_deleted_status"
-                                            class="form-control input-sm" disabled="disabled">
+                                            class="form-control" disabled="disabled">
                                         % for defStatus in [SKIPPED, IGNORED]:
                                             <option value="${defStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
                                         % endfor
@@ -974,15 +971,9 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="ep_default_deleted_status">
-                                    <p>
-                                        Define the status to be set for media file that has been deleted.
-                                    </p>
-                                    <p>
-                                        <b>NOTE:</b> Archived option will keep previous downloaded quality
-                                    </p>
-                                    <p>
-                                        Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)
-                                    </p>
+                                    Define the status to be set for media file that has been deleted.<br/>
+                                    <b>NOTE:</b> Archived option will keep previous downloaded quality<br/>
+                                    Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)
                                 </label>
                             </div>
                         </div>
@@ -1013,7 +1004,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <select id="branchVersion"
-                                    class="form-control form-control-inline input-sm pull-left"
+                                    class="form-control form-control-inline pull-left"
                                     title="GIT Branch Version">
                                 % if git_branch:
                                     % for cur_branch in git_branch:
@@ -1046,19 +1037,14 @@
                             <label class="component-title">Git executable path</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input id="git_path" name="git_path"
-                                           value="${sickrage.srCore.srConfig.GIT_PATH}"
-                                           class="form-control input-sm input300" autocapitalize="off"/>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-file"></span>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="git_path">
-                                        only needed if OS is unable to locate git from env
-                                    </label>
-                                </div>
+                                <input id="git_path" name="git_path"
+                                       value="${sickrage.srCore.srConfig.GIT_PATH}"
+                                       title="only needed if OS is unable to locate git from env"
+                                       class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
 

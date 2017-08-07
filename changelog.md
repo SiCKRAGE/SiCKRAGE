@@ -1,6 +1,7 @@
 # Changelog
 
-- * 19a5ebc - 2017-08-07: Added glyphicon&#x27;s to Anime config template 
+- * 8ffd39f - 2017-08-07: Added glyphicon&#x27;s to General config template 
+- * 4a1a8ab - 2017-08-07: Added glyphicon&#x27;s to Anime config template 
 - * 3de15cf - 2017-08-07: JS code checks first if pushbullet is enabled before retrieving device list on page refreshes 
 - * 24e488c - 2017-08-07: Release v9.0.69 
 - * 244646a - 2017-08-07: Fixed issues with sending torrents to Synology DownloadStation and added better error handling Improved error handling for web server when same port number is in use 
