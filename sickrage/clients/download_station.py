@@ -18,6 +18,8 @@
 
 from __future__ import unicode_literals
 
+from urlparse import urljoin
+
 import sickrage
 from sickrage.clients import GenericClient
 
@@ -27,55 +29,120 @@ class DownloadStationAPI(GenericClient):
 
         super(DownloadStationAPI, self).__init__('DownloadStation', host, username, password)
 
-        self.url = self.host + 'webapi/DownloadStation/task.cgi'
+        self.urls = {
+            'auth': urljoin(self.host, 'webapi/auth.cgi'),
+            'task': urljoin(self.host, 'webapi/DownloadStation/task.cgi'),
+        }
+
+        self.url = self.urls['task']
+
+        self.post_task = {
+            'method': 'create',
+            'version': '1',
+            'api': 'SYNO.DownloadStation.Task',
+            'session': 'DownloadStation',
+        }
+
+        self.error_map = {
+            'generic': {
+                100: 'Unknown error',
+                101: 'Invalid parameter',
+                102: 'The requested API does not exist',
+                103: 'The requested method does not exist',
+                104: 'The requested version does not support the functionality',
+                105: 'The logged in session does not have permission',
+                106: 'Session timeout',
+                107: 'Session interrupted by duplicate login',
+            },
+            'create': {
+                400: 'File upload failed',
+                401: 'Max number of tasks reached',
+                402: 'Destination denied',
+                403: 'Destination does not exist',
+                404: 'Invalid task id',
+                405: 'Invalid task action',
+                406: 'No default destination',
+                407: 'Set destination failed',
+                408: 'File does not exist'
+            },
+            'login': {
+                400: 'No such account or incorrect password',
+                401: 'Account disabled',
+                402: 'Permission denied',
+                403: '2-step verification code required',
+                404: 'Failed to authenticate 2-step verification code'
+            }
+        }
+
+    @property
+    def response(self):
+        try:
+            resp = self._response.json()
+        except (ValueError, AttributeError):
+            sickrage.srCore.srLogger.info(
+                'Could not convert response to json, check the host:port: {!r}'.format(self.response))
+            return False
+
+        if not resp.get('success'):
+            error_code = resp.get('error', {}).get('code')
+            api_method = resp.get('method', 'generic')
+            log_string = self.error_map.get(api_method)[error_code]
+            sickrage.srCore.srLogger.info('{}: {}'.format(self.name, log_string))
+        elif resp.get('data', {}).get('sid'):
+            self.post_task['_sid'] = resp['data']['sid']
+
+        return resp.get('success')
+
+    @response.setter
+    def response(self, value):
+        self._response = value
 
     def _get_auth(self):
-        auth_url = self.host + 'webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=' + self.username + '&passwd=' + self.password + '&session=DownloadStation&format=sid'
+        if self.auth:
+            return self.auth
+
+        params = {
+            'api': 'SYNO.API.Auth',
+            'version': 2,
+            'method': 'login',
+            'account': self.username,
+            'passwd': self.password,
+            'session': 'DownloadStation',
+            'format': 'cookie'
+        }
 
         try:
-            self.response = sickrage.srCore.srWebSession.get(auth_url,
+            # login to API
+            self.response = sickrage.srCore.srWebSession.get(self.urls['auth'],
+                                                             params=params,
                                                              verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
-            self.auth = self.response.json()['data']['sid']
+            # get sid
+            self.auth = self.response
         except Exception:
-            return None
+            self.auth = None
 
         return self.auth
 
     def _add_torrent_uri(self, result):
+        data = self.post_task
+        data['uri'] = result.url
 
-        data = {
-            'api': 'SYNO.DownloadStation.Task',
-            'version': '1',
-            'method': 'create',
-            'session': 'DownloadStation',
-            '_sid': self.auth,
-            'uri': result.url
-        }
-
-        if sickrage.srCore.srConfig.TORRENT_PATH:
-            data['destination'] = sickrage.srCore.srConfig.TORRENT_PATH
-
-        self._request(method='post', data=data)
-        return self.response.json()['success']
+        return self._send_dsm_request(method='get', data=data)
 
     def _add_torrent_file(self, result):
+        data = self.post_task
+        files = {'file': ('{}.torrent'.format(result.name), result.content)}
 
-        data = {
-            'api': 'SYNO.DownloadStation.Task',
-            'version': '1',
-            'method': 'create',
-            'session': 'DownloadStation',
-            '_sid': self.auth
-        }
+        return self._send_dsm_request(method='post', data=data, files=files)
+
+    def _send_dsm_request(self, method, data, **kwargs):
 
         if sickrage.srCore.srConfig.TORRENT_PATH:
             data['destination'] = sickrage.srCore.srConfig.TORRENT_PATH
 
-        files = {'file': (result.name + '.torrent', result.content)}
-        self._request(method='post', data=data, files=files)
-
-        return self.response.json()['success']
+        self._request(method=method, data=data, **kwargs)
+        return self.response
 
 
 api = DownloadStationAPI()

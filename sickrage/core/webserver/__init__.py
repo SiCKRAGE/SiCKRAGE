@@ -160,8 +160,8 @@ class srWebServer(object):
         try:
             self.server.listen(sickrage.srCore.srConfig.WEB_PORT, None)
         except socket.error as e:
-            print(e.message)
-            raise
+            sickrage.srCore.srLogger.warning(e.strerror)
+            raise SystemExit
 
     def shutdown(self):
         if self.started:

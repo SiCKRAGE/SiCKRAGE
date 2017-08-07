@@ -164,9 +164,18 @@ class GenericClient(object):
         self.rpcurl = sickrage.srCore.srConfig.TORRENT_RPCURL
 
         self.url = None
-        self.response = None
         self.auth = None
         self.last_time = time.time()
+
+        self._response = None
+
+    @property
+    def response(self):
+        return self._response
+
+    @response.setter
+    def response(self, value):
+        self._response = value
 
     def _request(self, method='get', params=None, data=None, *args, **kwargs):
 
@@ -197,13 +206,14 @@ class GenericClient(object):
                                                                  auth=(self.username, self.password),
                                                                  timeout=120,
                                                                  verify=False,
+                                                                 cache=False,
                                                                  *args,
                                                                  **kwargs)
         except Exception as e:
             return False
 
         sickrage.srCore.srLogger.debug(
-            self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
+            self.name + ': Response to ' + method.upper() + ' request is ' + self._response.text)
 
         return True
 
@@ -319,7 +329,7 @@ class GenericClient(object):
                 r_code = self._add_torrent_file(result)
 
             if not r_code:
-                sickrage.srCore.srLogger.error(self.name + ': Unable to send Torrent: Return code undefined')
+                sickrage.srCore.srLogger.error(self.name + ': Unable to send Torrent')
                 return False
 
             if not self._set_torrent_pause(result):
