@@ -1,6 +1,8 @@
 # Changelog
 
-- * 93dd1b1 - 2017-08-06: Release v9.0.68 
+- * e78975a - 2017-08-07: Release v9.0.69 
+- * 244646a - 2017-08-07: Fixed issues with sending torrents to Synology DownloadStation and added better error handling Improved error handling for web server when same port number is in use 
+- * 0cea9ef - 2017-08-06: Release v9.0.68 
 - * 39a0025 - 2017-08-06: Fixed issues with sending torrents to uTorrent and Deluge 
 - * 6774207 - 2017-08-05: Release v9.0.67 
 - * 1d7b71a - 2017-08-05: Fixed issue #20 - rar not working 
