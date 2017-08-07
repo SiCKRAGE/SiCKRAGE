@@ -24,13 +24,13 @@
             <fieldset class="tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable AniDB</label>
+                        <label class="component-title">Enabled</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_anidb"
                                id="use_anidb" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_ANIDB)]} />
                         <label for="use_anidb">
-                            Should SickRage use data from AniDB?
+                            Enable AniDB
                         </label>
                     </div>
                 </div>
@@ -41,20 +41,15 @@
                             <label class="component-title">AniDB Username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input type="text" name="anidb_username" id="anidb_username"
-                                           value="${sickrage.srCore.srConfig.ANIDB_USERNAME}"
-                                           class="form-control input-sm input350"
-                                           autocapitalize="off"/>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-user"></span>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="anidb_username">
-                                        Username of your AniDB account
-                                    </label>
-                                </div>
+                                <input type="text" name="anidb_username" id="anidb_username"
+                                       value="${sickrage.srCore.srConfig.ANIDB_USERNAME}"
+                                       title="AniDB username"
+                                       class="form-control"
+                                       autocapitalize="off"/>
                             </div>
                         </div>
                     </div>
@@ -64,18 +59,15 @@
                             <label class="component-title">AniDB Password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input type="password" name="anidb_password" id="anidb_password"
-                                           value="${sickrage.srCore.srConfig.ANIDB_PASSWORD}"
-                                           class="form-control input-sm input350"
-                                           autocapitalize="off"/>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-lock"></span>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="anidb_password">Password of your AniDB account</label>
-                                </div>
+                                <input type="password" name="anidb_password" id="anidb_password"
+                                       value="${sickrage.srCore.srConfig.ANIDB_PASSWORD}"
+                                       title="AniDB password"
+                                       class="form-control"
+                                       autocapitalize="off"/>
                             </div>
                         </div>
                     </div>
@@ -97,7 +89,6 @@
                         <input type="submit" class="btn config_submitter" value="Save Changes"/>
                     </div>
                 </div>
-
             </fieldset>
         </div>
     </div>
