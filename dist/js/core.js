@@ -4128,7 +4128,9 @@ jQuery(document).ready(function ($) {
                     });
 
                     // we have to call this function on dom ready to create the devices select
-                    SICKRAGE.config.notifications.get_pushbullet_devices();
+                    if ($('#use_pushbullet').prop('checked')) {
+                        SICKRAGE.config.notifications.get_pushbullet_devices();
+                    }
 
                     $('#email_show').on('change', function () {
                         var key = parseInt($('#email_show').val(), 10);
