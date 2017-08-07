@@ -205,6 +205,7 @@
 #sub-menu a {
     clear-after: top;
     margin: 2px;
+
 }
 
 .upgrade-notification {
@@ -1683,8 +1684,7 @@ span.quality {
 }
 
 span.any-hd {
-    background-color: #2672b6;
-    background: repeating-linear-gradient(
+    background: #2672b6 repeating-linear-gradient(
             -45deg,
             #2672b6,
             #2672b6 10px,
@@ -2358,9 +2358,14 @@ pre {
     border: 1px solid;
 }
 
-.alert {
-    padding: 10px;
-    text-align: center;
+.alert .glyphicon{
+    display:table-cell;
+}
+
+.alert div,
+.alert span{
+    padding-left: 5px;
+    display:table-cell;
 }
 
 /* =======================================================================

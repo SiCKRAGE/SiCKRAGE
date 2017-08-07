@@ -1,6 +1,7 @@
 # Changelog
 
-- * f283e48 - 2017-08-06: Search client config template is now responsive 
+- * 56bc552 - 2017-08-07: Added in font awesome icons Search config template is now responsive 
+- * 0f4649c - 2017-08-06: Search client config template is now responsive 
 - * 9db243e - 2017-08-06: Config info page is now responsive 
 - * 08a6479 - 2017-08-06: Centered submenu buttons to top of page 
 - * c6b39cc - 2017-08-06: Misc responsive code cleanup Root directories template is now responsive 

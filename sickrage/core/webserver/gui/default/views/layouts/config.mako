@@ -12,7 +12,7 @@
         <div class="col-md-12">
             <div id="config-components">
                 <form id="configForm" action="${self.formaction()}" method="post">
-                    <ul class="nav nav-tabs">
+                    <ul class="nav nav-tabs" id="config-tabs">
                             <%block name="tabs"/>
                     </ul>
                     <div id="config">

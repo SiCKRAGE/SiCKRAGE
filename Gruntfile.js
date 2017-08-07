@@ -128,6 +128,15 @@ module.exports = function (grunt) {
                     src: ['**/*.{eot,svg,ttf,woff,woff2}'],
                     dest: 'sickrage/core/webserver/gui/default/fonts/'
                 }]
+            },
+            fontawesome: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    cwd: 'bower_components/components-font-awesome/fonts/',
+                    src: ['**/*.{eot,svg,ttf,woff,woff2}'],
+                    dest: 'sickrage/core/webserver/gui/default/fonts/'
+                }]
             }
         },
         imagemin: {
