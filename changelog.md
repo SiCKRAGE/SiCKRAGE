@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3a2f137 - 2017-08-07: Subtitles config template is now responsive 
+- * c38e4ac - 2017-08-08: Quality sizes config template is now responsive 
+- * ad43486 - 2017-08-07: Subtitles config template is now responsive 
 - * adb6543 - 2017-08-07: Release v9.0.71 
 - * c8dbc4b - 2017-08-07: Fixed issues with retrieving show and episode images from indexer when show is not english 
 - * 062834a - 2017-08-07: Release v9.0.70 
