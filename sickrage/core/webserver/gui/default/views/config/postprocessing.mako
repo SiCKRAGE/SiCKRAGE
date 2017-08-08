@@ -43,314 +43,279 @@
                     <label class="component-title">Post Processing Dir</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-folder-open"></span>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-folder-open"></span>
+                                </div>
+                                <input name="tv_download_dir" id="tv_download_dir"
+                                       value="${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}"
+                                       class="form-control"
+                                       autocapitalize="off"/>
+                            </div>
                         </div>
-                        <input name="tv_download_dir" id="tv_download_dir"
-                               value="${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}"
-                               class="form-control"
-                               autocapitalize="off"/>
                     </div>
-                    <label for="tv_download_dir">
-                        The folder where your download client puts the completed TV downloads.<br/>
-                        <b>NOTE:</b> Please use seperate downloading and completed folders in your download client if
-                        possible.
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="tv_download_dir">
+                                The folder where your download client puts the completed TV downloads.<br/>
+                                <b>NOTE:</b> Please use seperate downloading and completed folders in your download
+                                client if
+                                possible.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row field-pair">
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Processing Method:</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select name="process_method" id="process_method" class="form-control"
+                                    title="Processing method">
+                                <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
+                                % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
+                                    <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="process_method">
+                                What method should be used to put files into the library?<br/>
+                                <b>NOTE:</b> If you keep seeding torrents after they finish, please avoid the 'move'
+                                processing method to prevent errors.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row field-pair">
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Auto Post-Processing Frequency</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-time"></span>
+                        </div>
+                        <input type="number" min="10" name="autopostprocessor_frequency"
+                               id="autopostprocessor_frequency"
+                               value="${sickrage.srCore.srConfig.AUTOPOSTPROCESSOR_FREQ}"
+                               title="Time in minutes to check for new files to auto post-process (min 10)"
+                               class="form-control"/>
+                        <div class="input-group-addon">
+                            mins
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row field-pair">
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Postpone post processing</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" name="postpone_if_sync_files"
+                           id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.POSTPONE_IF_SYNC_FILES)]}/>
+                    <label for="postpone_if_sync_files">
+                        Wait to process a folder if sync files are present.
                     </label>
                 </div>
             </div>
             <div class="row field-pair">
-                <label class="nocheck" for="process_method">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Processing Method:</label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Sync File Extensions to Ignore</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-file"></span>
+                        </div>
+                        <input name="sync_files" id="sync_files"
+                               value="${sickrage.srCore.srConfig.SYNC_FILES}"
+                               placeholder="ext1,ext2"
+                               title="comma separated list of extensions SiCKRAGE ignores when Post Processing"
+                               class="form-control" autocapitalize="off"/>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select name="process_method" id="process_method" class="form-control">
-                            <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
-                            % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
-                                <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">What method should be used to put
-                        files into the library?
-                    </div>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc"><b>NOTE:</b> If you keep seeding
-                        torrents after they finish, please avoid the 'move' processing method to prevent errors.
-                    </div>
-                </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Auto Post-Processing Frequency</label>
-                    </div>
-                    <input type="number" min="10" name="autopostprocessor_frequency"
-                           id="autopostprocessor_frequency"
-                           value="${sickrage.srCore.srConfig.AUTOPOSTPROCESSOR_FREQ}"
-                           class="form-control"/>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Time in minutes to check for new
-                        files to auto post-process (min 10)
-                    </div>
-                </label>
-            </div>
-            <div class="row field-pair">
-                <input type="checkbox" name="postpone_if_sync_files"
-                       id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.POSTPONE_IF_SYNC_FILES)]}/>
-                <label for="postpone_if_sync_files">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Postpone post processing</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Wait to process a folder if sync
-                        files are present.
-                    </div>
-                </label>
-            </div>
-            <div class="row field-pair">
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Sync File Extensions</label>
-                    </div>
-                    <input name="sync_files" id="sync_files"
-                           value="${sickrage.srCore.srConfig.SYNC_FILES}"
-                           class="form-control" autocapitalize="off"/>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">comma seperated list of extensions
-                        SickRage ignores when Post Processing
-                    </div>
-                </label>
-            </div>
-            <div class="row field-pair">
-                <input type="checkbox" name="rename_episodes"
-                       id="rename_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.RENAME_EPISODES)]}/>
-                <label for="rename_episodes">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Rename Episodes</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename episode using the Episode
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Rename Episodes</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename episode using the Episode
+                    <input type="checkbox" name="rename_episodes"
+                           id="rename_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.RENAME_EPISODES)]}/>
+                    <label for="rename_episodes">
                         Naming settings?
-                    </div>
-                </label>
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input type="checkbox" name="create_missing_show_dirs"
-                       id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS)]}/>
-                <label for="create_missing_show_dirs">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Create missing show directories</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Create missing show directories
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Create missing show directories</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Create missing show directories
+                    <input type="checkbox" name="create_missing_show_dirs"
+                           id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS)]}/>
+                    <label for="create_missing_show_dirs">
                         when they get deleted
-                    </div>
-                </label>
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input type="checkbox" name="add_shows_wo_dir"
-                       id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR)]}/>
-                <label for="add_shows_wo_dir">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Add shows without directory</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Add shows without creating a
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Add shows without directory</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Add shows without creating a
+                    <input type="checkbox" name="add_shows_wo_dir"
+                           id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR)]}/>
+                    <label for="add_shows_wo_dir">
                         directory (not recommended)
-                    </div>
-                </label>
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input type="checkbox" name="move_associated_files"
-                       id="move_associated_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES)]}/>
-                <label for="move_associated_files">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Move Associated Files</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Move srr/srt/sfv/etc files with the
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Move Associated Files</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Move srr/srt/sfv/etc files with the
+                    <input type="checkbox" name="move_associated_files"
+                           id="move_associated_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES)]}/>
+                    <label for="move_associated_files">
                         episode when processed?
-                    </div>
-                </label>
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input type="checkbox" name="nfo_rename"
-                       id="nfo_rename" ${('', 'checked')[bool(sickrage.srCore.srConfig.NFO_RENAME)]}/>
-                <label for="nfo_rename">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Rename .nfo file</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename the original .nfo file to
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Rename .nfo file</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename the original .nfo file to
+                    <input type="checkbox" name="nfo_rename"
+                           id="nfo_rename" ${('', 'checked')[bool(sickrage.srCore.srConfig.NFO_RENAME)]}/>
+                    <label for="nfo_rename">
                         .nfo-orig to avoid conflicts?
-                    </div>
-                </label>
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input type="checkbox" name="airdate_episodes"
-                       id="airdate_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.AIRDATE_EPISODES)]}/>
-                <label for="airdate_episodes">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Change File Date</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Set last modified filedate to the
-                        date that the episode aired?
-                    </div>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc"><b>NOTE:</b> Some systems may
-                        ignore this feature.
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Change File Date</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" name="airdate_episodes"
+                           id="airdate_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.AIRDATE_EPISODES)]}/>
+                    <label for="airdate_episodes">
+                        Set last modified filedate to the date that the episode aired?<br/>
+                        <b>NOTE:</b> Some systems may ignore this feature.
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <label class="nocheck" for="file_timestamp_timezone">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Timezone for File Date:</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select name="file_timestamp_timezone" id="file_timestamp_timezone"
-                                class="form-control">
-                            % for curTimezone in ('local','network'):
-                                <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">What timezone should be used to
-                        change File Date?
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Timezone for File Date:</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <select name="file_timestamp_timezone" id="file_timestamp_timezone"
+                            title="What timezone should be used to change File Date?"
+                            class="form-control">
+                        % for curTimezone in ('local','network'):
+                            <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
+                        % endfor
+                    </select>
+                </div>
             </div>
             <div class="row field-pair">
-                <input id="unpack" type="checkbox"
-                       name="unpack" ${('', 'checked')[bool(sickrage.srCore.srConfig.UNPACK)]} />
-                <label for="unpack">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Unpack</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Unpack any TV releases in your <i>TV
-                        Download Dir</i>?
-                    </div>
-                </label>
-                <label class="nocheck" for="unpack">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc"><b>NOTE:</b> Only working with RAR
-                        archive
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Unpack</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input id="unpack" type="checkbox"
+                           name="unpack" ${('', 'checked')[bool(sickrage.srCore.srConfig.UNPACK)]} />
+                    <label for="unpack">
+                        Unpack any TV releases in your <i>TV Download Dir</i>?<br/>
+                        <b>NOTE:</b> Only working with RAR archive
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input type="checkbox" name="del_rar_contents"
-                       id="del_rar_contents" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELRARCONTENTS)]}/>
-                <label for="del_rar_contents">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Delete RAR contents</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Delete content of RAR files, even
-                        if Process Method not set to move?
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Delete RAR contents</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" name="del_rar_contents"
+                           id="del_rar_contents" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELRARCONTENTS)]}/>
+                    <label for="del_rar_contents">
+                        Delete content of RAR files, even if Process Method not set to move?
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input type="checkbox" name="no_delete"
-                       id="no_delete" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_DELETE)]}/>
-                <label for="no_delete">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Don't delete empty folders</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Leave empty folders when Post
-                        Processing?
-                    </div>
-                </label>
-                <label class="nocheck" for="no_delete">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc"><b>NOTE:</b> Can be overridden
-                        using manual Post Processing
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Don't delete empty folders</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" name="no_delete"
+                           id="no_delete" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_DELETE)]}/>
+                    <label for="no_delete">
+                        Leave empty folders when Post Processing?<br/>
+                        <b>NOTE:</b> Can be overridden using manual Post Processing
+                    </label>
+                </div>
             </div>
             <div class="row field-pair">
-                <input id="use_failed_downloads" type="checkbox" class="enabler"
-                       name="use_failed_downloads" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]}/>
-                <label for="use_failed_downloads">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Use Failed Downloads</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Use Failed Download Handling?</div>
-                </label>
-                <label class="nocheck" for="use_failed_downloads">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Use Failed Downloads</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input id="use_failed_downloads" type="checkbox" class="enabler"
+                           name="use_failed_downloads" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]}/>
+                    <label for="use_failed_downloads">Use Failed Download Handling?</label>
+                </div>
             </div>
             <div id="content_use_failed_downloads">
                 <div class="row field-pair">
-                    <input id="delete_failed" type="checkbox"
-                           name="delete_failed" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
-                    <label for="delete_failed">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Delete Failed</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Delete files left over from a
-                            failed download?
-                        </div>
-                    </label>
-                    <label class="nocheck" for="delete_failed">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">&nbsp;</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc"><b>NOTE:</b> This only works if
-                            Use Failed Downloads is enabled.
-                        </div>
-                    </label>
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Delete Failed</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input id="delete_failed" type="checkbox"
+                               name="delete_failed" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
+                        <label for="delete_failed">
+                            Delete files left over from a failed download?<br/>
+                            <b>NOTE:</b> This only works if Use Failed Downloads is enabled.
+                        </label>
+                    </div>
                 </div>
             </div>
             <div class="row field-pair">
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Extra Scripts</label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Extra Scripts</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-file"></span>
+                        </div>
+                        <input name="extra_scripts" id="extra_scripts"
+                               value="${'|'.join(sickrage.srCore.srConfig.EXTRA_SCRIPTS)}"
+                               class="form-control" autocapitalize="off"/>
                     </div>
-                    <input name="extra_scripts"
-                           value="${'|'.join(sickrage.srCore.srConfig.EXTRA_SCRIPTS)}"
-                           class="form-control" autocapitalize="off"/>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">See <a
-                            href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts"><font
-                            color='red'><b>Wiki</b></font></a> for script arguments description and usage.
-                    </div>
-                </label>
+                    <label for="extra_scripts">See <a href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts">
+                    <span style="color: red; "><b>Wiki</b></span> </a> for script arguments description and usage.</label>
+                </div>
             </div>
-            <input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                </div>
+            </div>
         </fieldset>
     </div><!-- /tab-pane1 //-->
     <div id="core-tab-pane2" class="tab-pane fade">
