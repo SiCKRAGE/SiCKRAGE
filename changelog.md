@@ -1,6 +1,8 @@
 # Changelog
 
-- * f5fcd75 - 2017-08-07: Release v9.0.71 
+- * 4f853bf - 2017-08-08: Release v9.0.72 
+- * 11ae327 - 2017-08-08: Fixed issue with magnet links and download station for Synology 
+- * adb6543 - 2017-08-07: Release v9.0.71 
 - * c8dbc4b - 2017-08-07: Fixed issues with retrieving show and episode images from indexer when show is not english 
 - * 062834a - 2017-08-07: Release v9.0.70 
 - * 833f977 - 2017-08-07: Indexer language for API uses default indexer language from settings when show has no language set 
