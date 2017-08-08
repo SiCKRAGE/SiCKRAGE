@@ -287,10 +287,10 @@ jQuery(document).ready(function ($) {
                 $("a.removeshow").confirm({
                     title: "Remove Show",
                     text: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
-                        '</span> from the database?<br><br>' +
-                        '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
-                        '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
-                    confirm: function(e) {
+                    '</span> from the database?<br><br>' +
+                    '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
+                    '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
+                    confirm: function (e) {
                         location.href = e.context.href + ($('#deleteFiles')[0].checked ? '&full=1' : '');
                     }
                 });
@@ -705,7 +705,7 @@ jQuery(document).ready(function ($) {
                         return i++ !== 0;
                     });
 
-                    $('<input type="text" class="form-control input-sm">')
+                    $('<input class="form-control input-sm">')
                         .val(firstVal.currentPath)
                         .on('keypress', function (e) {
                             if (e.which === 13) {
@@ -732,7 +732,9 @@ jQuery(document).ready(function ($) {
                                 SICKRAGE.browser.browse(entry.path, endpoint, includeFiles, fileTypes);
                             }
                         }).text(entry.name);
-                        if (entry.isFile) {
+                        if (entry.isImage) {
+                            link.prepend('<span class="ui-icon ui-icon-image"></span>');
+                        } else if (entry.isFile) {
                             link.prepend('<span class="ui-icon ui-icon-blank"></span>');
                         } else {
                             link.prepend('<span class="ui-icon ui-icon-folder-collapsed"></span>')
@@ -767,6 +769,9 @@ jQuery(document).ready(function ($) {
                         modal: true,
                         autoOpen: false
                     });
+                } else {
+                    // The title may change, even if fileBrowserDialog already exists
+                    SICKRAGE.browser.fileBrowserDialog.dialog('option', 'title', options.title);
                 }
 
                 SICKRAGE.browser.fileBrowserDialog.dialog('option', 'buttons', [
@@ -2640,15 +2645,15 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $('#config-tabs a').click(function(e) {
-                  e.preventDefault();
-                  $(this).tab('show');
+                $('#config-tabs a').click(function (e) {
+                    e.preventDefault();
+                    $(this).tab('show');
                 });
 
                 // store the currently selected tab in the hash value
-                $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
-                  var id = $(e.target).attr("href").substr(1);
-                  window.location.hash = id;
+                $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+                    var id = $(e.target).attr("href").substr(1);
+                    window.location.hash = id;
                 });
 
                 // on load of the page: switch to the currently selected tab
