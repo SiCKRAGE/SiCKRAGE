@@ -2602,7 +2602,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
                                 <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-list"></span>
+                                    <span class="glyphicon glyphicon-envelope"></span>
                                 </div>
                                 <input name="email_list" id="email_list"
                                        value="${sickrage.srCore.srConfig.EMAIL_LIST}"
@@ -2627,6 +2627,22 @@
                                 </div>
                             </div>
                             <br/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-envelope"></span>
+                                        </div>
+                                        <input name="email_show_list" id="email_show_list" class="form-control"
+                                               autocapitalize="off"/>
+                                    </div>
+                                    <label for="email_show_list">
+                                        configure per-show notifications here by entering email address(es), separated by commas,
+                                        after selecting a show in the drop-down box.  Be sure to activate the Save for this show
+                                        button below after each entry.
+                                    </label>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <input id="email_show_save" class="btn" type="button" value="Save for this show"/>

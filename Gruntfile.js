@@ -114,6 +114,12 @@ module.exports = function (grunt) {
                             styles: [
                                 400, 700
                             ]
+                        },
+                        {
+                            family: 'Roboto',
+                            styles: [
+                                400, 700
+                            ]
                         }
                     ]
                 }
@@ -291,7 +297,7 @@ module.exports = function (grunt) {
             'git_last_tag': {
                 cmd: 'git for-each-ref refs/tags --sort=-taggerdate --count=1 --format=\'%(refname:short)\'',
                 stdout: false,
-                callback: function(err, stdout) {
+                callback: function (err, stdout) {
                     stdout = stdout.trim();
                     if (/^\d{1,2}.\d{1,2}.\d+$/.test(stdout)) {
                         grunt.config('last_tag', stdout);
@@ -301,9 +307,11 @@ module.exports = function (grunt) {
                 }
             },
             'git_list_changes': {
-                cmd: function() { return 'git log --oneline --pretty=format:%s ' + grunt.config('last_tag') + '..HEAD'; },
+                cmd: function () {
+                    return 'git log --oneline --pretty=format:%s ' + grunt.config('last_tag') + '..HEAD';
+                },
                 stdout: false,
-                callback: function(err, stdout) {
+                callback: function (err, stdout) {
                     var commits = stdout.trim()
                         .replace(/`/gm, '').replace(/^\([\w\d\s,.\-+_/>]+\)\s/gm, '');  // removes ` and tag information
                     if (commits) {

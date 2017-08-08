@@ -82,3 +82,17 @@
 	src: url(../fonts/droid-sans-700-normal.eot);
 	src: local('Droid Sans Bold'), local('DroidSans-Bold'), url(../fonts/droid-sans-700-normal.woff2) format('woff'), url(../fonts/droid-sans-700-normal.woff) format('woff'), url(../fonts/droid-sans-700-normal.ttf) format('truetype'), url(../fonts/droid-sans-700-normal.svg#DroidSans) format('svg');
 }
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 400;
+	src: url(../fonts/roboto-400-normal.eot);
+	src: local('Roboto'), local('Roboto-Regular'), url(../fonts/roboto-400-normal.woff2) format('woff'), url(../fonts/roboto-400-normal.woff) format('woff'), url(../fonts/roboto-400-normal.ttf) format('truetype'), url(../fonts/roboto-400-normal.svg#Roboto) format('svg');
+}
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 700;
+	src: url(../fonts/roboto-700-normal.eot);
+	src: local('Roboto Bold'), local('Roboto-Bold'), url(../fonts/roboto-700-normal.woff2) format('woff'), url(../fonts/roboto-700-normal.woff) format('woff'), url(../fonts/roboto-700-normal.ttf) format('truetype'), url(../fonts/roboto-700-normal.svg#Roboto) format('svg');
+}

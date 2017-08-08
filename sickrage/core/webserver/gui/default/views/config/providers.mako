@@ -913,9 +913,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <select id="newznab_cap" multiple="multiple"
+                                    <select id="newznab_cap" multiple="multiple" title="Newznab caps"
                                             style="min-width:10em;"></select>
-                                    <select id="newznab_cat" multiple="multiple"
+                                    <select id="newznab_cat" multiple="multiple" title="Newznab categories"
                                             style="min-width:10em;"></select>
                                     <p>
                                         (select your Newznab categories on the left, and click the "update categories"
@@ -927,9 +927,8 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn"
+                                    <input class="btn newznab_cat_update"
                                            type="button"
-                                           class="newznab_cat_update"
                                            id="newznab_cat_update"
                                            value="Update Categories"/>
                                 </div>
@@ -940,7 +939,7 @@
                     <div id="newznab_add_div">
                         <div class="row">
                             <div class="col-md-12">
-                                <input class="btn" type="button" class="newznab_save" id="newznab_add"
+                                <input class="btn newznab_save" type="button" id="newznab_add"
                                        value="Add"/>
                             </div>
                         </div>
@@ -949,7 +948,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <input class="btn btn-danger newznab_delete" type="button"
-                                       class="newznab_delete" id="newznab_delete" value="Delete"/>
+                                       id="newznab_delete" value="Delete"/>
                             </div>
                         </div>
                     </div>

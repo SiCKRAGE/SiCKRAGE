@@ -910,7 +910,7 @@ ul.tags li {
     border-radius: 3px;
     border: 1px solid #111;
     color: #FFF;
-    font: 14px/18px "Open Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+    font: 14px/18px roboto, "Open Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
     text-shadow: 0 1px rgba(0, 0, 0, 0.8);
     float: left;
 }
@@ -1827,7 +1827,7 @@ bootstrap Overrides
 body {
     padding-top: 4%;
     overflow-y: scroll;
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: roboto, "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #000;
 }
 

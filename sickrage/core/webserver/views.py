@@ -952,16 +952,14 @@ class Home(WebHandler):
 
     @staticmethod
     def loadShowNotifyLists():
-        data = {}
-        size = 0
+        data = {'_size':0}
 
         tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)],
                           key=lambda d: d['show_name'])
 
         for s in tv_shows:
-            data[s['show_id']] = {'id': s['show_id'], 'name': s['show_name'], 'list': s['notify_list']}
-            size += 1
-        data['_size'] = size
+            data[s['indexer_id']] = {'id': s['indexer_id'], 'name': s['show_name'], 'list': s.get('notify_list', '')}
+            data['_size'] += 1
 
         return json_encode(data)
 
