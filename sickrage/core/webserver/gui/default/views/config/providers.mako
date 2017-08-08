@@ -125,11 +125,16 @@
                     <label class="component-title">Configure provider:</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <select id="editAProvider" class="form-control" title="Choose a search provider">
-                        % for providerID, providerObj in sickrage.srCore.providersDict.enabled().items():
-                            <option value="${providerID}">${providerObj.name}</option>
-                        % endfor
-                    </select>
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </div>
+                        <select id="editAProvider" class="form-control" title="Choose a search provider">
+                            % for providerID, providerObj in sickrage.srCore.providersDict.enabled().items():
+                                <option value="${providerID}">${providerObj.name}</option>
+                            % endfor
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -680,13 +685,18 @@
                                 <label class="component-title">Sort results by</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <select name="${providerID}_sorting" id="${providerID}_sorting"
-                                        title="Sort search results"
-                                        class="form-control">
-                                    % for curAction in ('last', 'seeders', 'leechers'):
-                                        <option value="${curAction}" ${('', 'selected="selected"')[curAction == providerObj.sorting]}>${curAction}</option>
-                                    % endfor
-                                </select>
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-sort-by-order"></span>
+                                    </div>
+                                    <select name="${providerID}_sorting" id="${providerID}_sorting"
+                                            title="Sort search results"
+                                            class="form-control">
+                                        % for curAction in ('last', 'seeders', 'leechers'):
+                                            <option value="${curAction}" ${('', 'selected="selected"')[curAction == providerObj.sorting]}>${curAction}</option>
+                                        % endfor
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     % endif
@@ -807,13 +817,18 @@
                                 <label class="component-title">Category:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <select name="${providerID}_cat" id="${providerID}_cat"
-                                        title="Provider category"
-                                        class="form-control">
-                                    % for i in providerObj.category_dict.keys():
-                                        <option value="${providerObj.category_dict[i]}" ${('', 'selected="selected"')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
-                                    % endfor
-                                </select>
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-list"></span>
+                                    </div>
+                                    <select name="${providerID}_cat" id="${providerID}_cat"
+                                            title="Provider category"
+                                            class="form-control">
+                                        % for i in providerObj.category_dict.keys():
+                                            <option value="${providerObj.category_dict[i]}" ${('', 'selected="selected"')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
+                                        % endfor
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     % endif
@@ -857,9 +872,14 @@
                         <label class="component-title">Select provider:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="editANewznabProvider" class="form-control" title="Choose provider">
-                            <option value="addNewznab">-- add new provider --</option>
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </div>
+                            <select id="editANewznabProvider" class="form-control" title="Choose provider">
+                                <option value="addNewznab">-- add new provider --</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -972,9 +992,14 @@
                         <label class="component-title">Select provider:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="editATorrentRssProvider" class="form-control" title="Choose provider">
-                            <option value="addTorrentRss">-- add new provider --</option>
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </div>
+                            <select id="editATorrentRssProvider" class="form-control" title="Choose provider">
+                                <option value="addTorrentRss">-- add new provider --</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 

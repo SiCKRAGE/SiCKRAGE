@@ -593,7 +593,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
                                 <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-cd"></span>
+                                    <span class="fa fa-database"></span>
                                 </div>
                                 <input name="nmj_database" id="nmj_database"
                                        value="${sickrage.srCore.srConfig.NMJ_DATABASE}"
@@ -610,7 +610,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
                                 <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-cd"></span>
+                                    <span class="fa fa-database"></span>
                                 </div>
                                 <input name="nmj_mount" id="nmj_mount"
                                        value="${sickrage.srCore.srConfig.NMJ_MOUNT}"
@@ -708,15 +708,20 @@
                             <label class="component-title">Database instance</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="NMJv2db_instance" class="form-control ">
-                                <option value="0">#1</option>
-                                <option value="1">#2</option>
-                                <option value="2">#3</option>
-                                <option value="3">#4</option>
-                                <option value="4">#5</option>
-                                <option value="5">#6</option>
-                                <option value="6">#7</option>
-                            </select>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-database"></span>
+                                </div>
+                                <select id="NMJv2db_instance" class="form-control ">
+                                    <option value="0">#1</option>
+                                    <option value="1">#2</option>
+                                    <option value="2">#3</option>
+                                    <option value="3">#4</option>
+                                    <option value="4">#5</option>
+                                    <option value="5">#6</option>
+                                    <option value="6">#7</option>
+                                </select>
+                            </div>
                             <label for="NMJv2db_instance">
                                 adjust this value if the wrong database is selected.
                             </label>
@@ -741,7 +746,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
                                 <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-cd"></span>
+                                    <span class="fa fa-database"></span>
                                 </div>
                                 <input name="nmjv2_database" id="nmjv2_database"
                                        value="${sickrage.srCore.srConfig.NMJv2_DATABASE}"
@@ -1150,23 +1155,28 @@
                             <label class="component-title">Prowl priority:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="prowl_priority" name="prowl_priority" class="form-control ">
-                                <option value="-2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-2']}>
-                                    Very Low
-                                </option>
-                                <option value="-1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-1']}>
-                                    Moderate
-                                </option>
-                                <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '0']}>
-                                    Normal
-                                </option>
-                                <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '1']}>
-                                    High
-                                </option>
-                                <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '2']}>
-                                    Emergency
-                                </option>
-                            </select>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-exclamation"></span>
+                                </div>
+                                <select id="prowl_priority" name="prowl_priority" class="form-control ">
+                                    <option value="-2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-2']}>
+                                        Very Low
+                                    </option>
+                                    <option value="-1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-1']}>
+                                        Moderate
+                                    </option>
+                                    <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '0']}>
+                                        Normal
+                                    </option>
+                                    <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '1']}>
+                                        High
+                                    </option>
+                                    <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '2']}>
+                                        Emergency
+                                    </option>
+                                </select>
+                            </div>
                             <label for="prowl_priority">priority of Prowl messages from SickRage.</label>
                         </div>
                     </div>
@@ -1378,77 +1388,82 @@
                             <label class="component-title">Pushover notification sound</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="pushover_sound" name="pushover_sound" class="form-control ">
-                                <option value="pushover" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pushover']}>
-                                    Pushover
-                                </option>
-                                <option value="bike" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bike']}>
-                                    Bike
-                                </option>
-                                <option value="bugle" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bugle']}>
-                                    Bugle
-                                </option>
-                                <option value="cashregister" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cashregister']}>
-                                    Cash Rex.ster
-                                </option>
-                                <option value="classical" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'classical']}>
-                                    Classical
-                                </option>
-                                <option value="cosmic" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cosmic']}>
-                                    Cosmic
-                                </option>
-                                <option value="falling" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'falling']}>
-                                    Falling
-                                </option>
-                                <option value="gamelan" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'gamelan']}>
-                                    Gamelan
-                                </option>
-                                <option value="incoming" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'incoming']}>
-                                    Incoming
-                                </option>
-                                <option value="intermission" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'intermission']}>
-                                    Intermission
-                                </option>
-                                <option value="magic" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'magic']}>
-                                    Magic
-                                </option>
-                                <option value="mechanical" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'mechanical']}>
-                                    Mechanical
-                                </option>
-                                <option value="pianobar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pianobar']}>
-                                    Piano Bar
-                                </option>
-                                <option value="siren" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'siren']}>
-                                    Siren
-                                </option>
-                                <option value="spacealarm" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'spacealarm']}>
-                                    Space Alarm
-                                </option>
-                                <option value="tugboat" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'tugboat']}>
-                                    Tug Boat
-                                </option>
-                                <option value="alien" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'alien']}>
-                                    Alien Alarm (long)
-                                </option>
-                                <option value="climb" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'climb']}>
-                                    Climb (long)
-                                </option>
-                                <option value="persistent" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'persistent']}>
-                                    Persistent (long)
-                                </option>
-                                <option value="echo" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'echo']}>
-                                    Pushover Echo (long)
-                                </option>
-                                <option value="updown" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'updown']}>
-                                    Up Down (long)
-                                </option>
-                                <option value="none" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'none']}>
-                                    None (silent)
-                                </option>
-                                <option value="default" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'default']}>
-                                    Device specific
-                                </option>
-                            </select>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-music"></span>
+                                </div>
+                                <select id="pushover_sound" name="pushover_sound" class="form-control ">
+                                    <option value="pushover" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pushover']}>
+                                        Pushover
+                                    </option>
+                                    <option value="bike" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bike']}>
+                                        Bike
+                                    </option>
+                                    <option value="bugle" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bugle']}>
+                                        Bugle
+                                    </option>
+                                    <option value="cashregister" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cashregister']}>
+                                        Cash Rex.ster
+                                    </option>
+                                    <option value="classical" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'classical']}>
+                                        Classical
+                                    </option>
+                                    <option value="cosmic" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cosmic']}>
+                                        Cosmic
+                                    </option>
+                                    <option value="falling" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'falling']}>
+                                        Falling
+                                    </option>
+                                    <option value="gamelan" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'gamelan']}>
+                                        Gamelan
+                                    </option>
+                                    <option value="incoming" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'incoming']}>
+                                        Incoming
+                                    </option>
+                                    <option value="intermission" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'intermission']}>
+                                        Intermission
+                                    </option>
+                                    <option value="magic" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'magic']}>
+                                        Magic
+                                    </option>
+                                    <option value="mechanical" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'mechanical']}>
+                                        Mechanical
+                                    </option>
+                                    <option value="pianobar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pianobar']}>
+                                        Piano Bar
+                                    </option>
+                                    <option value="siren" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'siren']}>
+                                        Siren
+                                    </option>
+                                    <option value="spacealarm" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'spacealarm']}>
+                                        Space Alarm
+                                    </option>
+                                    <option value="tugboat" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'tugboat']}>
+                                        Tug Boat
+                                    </option>
+                                    <option value="alien" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'alien']}>
+                                        Alien Alarm (long)
+                                    </option>
+                                    <option value="climb" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'climb']}>
+                                        Climb (long)
+                                    </option>
+                                    <option value="persistent" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'persistent']}>
+                                        Persistent (long)
+                                    </option>
+                                    <option value="echo" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'echo']}>
+                                        Pushover Echo (long)
+                                    </option>
+                                    <option value="updown" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'updown']}>
+                                        Up Down (long)
+                                    </option>
+                                    <option value="none" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'none']}>
+                                        None (silent)
+                                    </option>
+                                    <option value="default" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'default']}>
+                                        Device specific
+                                    </option>
+                                </select>
+                            </div>
                             <label for="pushover_sound">
                                 Choose notification sound to use
                             </label>
@@ -1714,23 +1729,28 @@
                             <label class="component-title">NMA priority:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="nma_priority" name="nma_priority" class="form-control ">
-                                <option value="-2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '-2']}>
-                                    Very Low
-                                </option>
-                                <option value="-1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '-1']}>
-                                    Moderate
-                                </option>
-                                <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '0']}>
-                                    Normal
-                                </option>
-                                <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '1']}>
-                                    High
-                                </option>
-                                <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '2']}>
-                                    Emergency
-                                </option>
-                            </select>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                </div>
+                                <select id="nma_priority" name="nma_priority" class="form-control ">
+                                    <option value="-2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '-2']}>
+                                        Very Low
+                                    </option>
+                                    <option value="-1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '-1']}>
+                                        Moderate
+                                    </option>
+                                    <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '0']}>
+                                        Normal
+                                    </option>
+                                    <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '1']}>
+                                        High
+                                    </option>
+                                    <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '2']}>
+                                        Emergency
+                                    </option>
+                                </select>
+                            </div>
                             <label for="nma_priority">
                                 priority of NMA messages from SickRage.
                             </label>
@@ -1925,8 +1945,13 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <select name="pushbullet_device_list" id="pushbullet_device_list"
-                                            class="form-control "></select>
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-list"></span>
+                                        </div>
+                                        <select name="pushbullet_device_list" id="pushbullet_device_list"
+                                                class="form-control "></select>
+                                    </div>
                                     <label for="pushbullet_device_list">select device you wish to push to.</label>
                                 </div>
                             </div>
@@ -2297,8 +2322,13 @@
                             <label class="component-title">Default indexer</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="trakt_default_indexer" name="trakt_default_indexer"
-                                    class="form-control " title="Default Indexer">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-linode"></span>
+                                </div>
+                                <select id="trakt_default_indexer" name="trakt_default_indexer"
+                                        class="form-control " title="Default Indexer">
+                            </div>
                                 % for indexer in srIndexerApi().indexers:
                                     <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
                                 % endfor
@@ -2351,18 +2381,23 @@
                                 <label class="component-title">Watchlist add method</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <select id="trakt_method_add" name="trakt_method_add"
-                                        class="form-control ">
-                                    <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 0]}>
-                                        Skip All
-                                    </option>
-                                    <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 1]}>
-                                        Download Pilot Only
-                                    </option>
-                                    <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 2]}>
-                                        Get whole show
-                                    </option>
-                                </select>
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="fa fa-binoculars"></span>
+                                    </div>
+                                    <select id="trakt_method_add" name="trakt_method_add"
+                                            class="form-control ">
+                                        <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 0]}>
+                                            Skip All
+                                        </option>
+                                        <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 1]}>
+                                            Download Pilot Only
+                                        </option>
+                                        <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 2]}>
+                                            Get whole show
+                                        </option>
+                                    </select>
+                                </div>
                                 <label for="trakt_method_add">
                                     method in which to download episodes for new show's.
                                 </label>
@@ -2620,9 +2655,14 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <select name="email_show" id="email_show" class="form-control ">
-                                        <option value="-1">-- Select a Show --</option>
-                                    </select>
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-list"></span>
+                                        </div>
+                                        <select name="email_show" id="email_show" class="form-control ">
+                                            <option value="-1">-- Select a Show --</option>
+                                        </select>
+                                    </div>
                                     <label for="email_show">configure per show notifications here.</label>
                                 </div>
                             </div>

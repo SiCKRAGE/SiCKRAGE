@@ -75,13 +75,18 @@
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     <div class="row">
                         <div class="col-md-12">
-                            <select name="process_method" id="process_method" class="form-control"
-                                    title="Processing method">
-                                <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
-                                % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
-                                    <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
-                                % endfor
-                            </select>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                </div>
+                                <select name="process_method" id="process_method" class="form-control"
+                                        title="Processing method">
+                                    <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
+                                    % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
+                                        <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                                    % endfor
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -222,13 +227,18 @@
                     <label class="component-title">Timezone for File Date:</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <select name="file_timestamp_timezone" id="file_timestamp_timezone"
-                            title="What timezone should be used to change File Date?"
-                            class="form-control">
-                        % for curTimezone in ('local','network'):
-                            <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
-                        % endfor
-                    </select>
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-time"></span>
+                        </div>
+                        <select name="file_timestamp_timezone" id="file_timestamp_timezone"
+                                title="What timezone should be used to change File Date?"
+                                class="form-control">
+                            % for curTimezone in ('local','network'):
+                                <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
+                            % endfor
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="row field-pair">
@@ -332,19 +342,24 @@
                         <label class="component-title">Name Pattern:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="name_presets" class="form-control">
-                            <% is_custom = True %>
-                            % for cur_preset in validator.name_presets:
-                            <% tmp = validator.test_name(cur_preset, anime_type=3) %>
-                            % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
-                                <% is_custom = False %>
-                            % endif
-                                <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
-                            % endfor
-                            <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
-                                Custom...
-                            </option>
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-list"></span>
+                            </div>
+                            <select id="name_presets" class="form-control">
+                                <% is_custom = True %>
+                                % for cur_preset in validator.name_presets:
+                                <% tmp = validator.test_name(cur_preset, anime_type=3) %>
+                                % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
+                                    <% is_custom = False %>
+                                % endif
+                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                % endfor
+                                <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
+                                    Custom...
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </label>
             </div>

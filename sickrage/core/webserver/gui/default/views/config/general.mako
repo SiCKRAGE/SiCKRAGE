@@ -37,11 +37,16 @@
                         <label class="component-title">Default Indexer Language</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select name="indexerDefaultLang" id="indexerDefaultLang"
-                                class="form-control form-control-inline bfh-languages"
-                                title="for adding shows and metadata providers"
-                                data-language=${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(srIndexerApi().indexer().languages.keys())}">
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-flag"></span>
+                            </div>
+                            <select name="indexerDefaultLang" id="indexerDefaultLang"
+                                    class="form-control form-control-inline bfh-languages"
+                                    title="for adding shows and metadata providers"
+                                    data-language=${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(srIndexerApi().indexer().languages.keys())}">
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="row field-pair">
@@ -59,21 +64,26 @@
                         <label class="component-title">Initial page</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="default_page" name="default_page" class="form-control"
-                                title="when launching SickRage interface">
-                            <option value="home" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'home']}>
-                                Shows
-                            </option>
-                            <option value="schedule" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'schedule']}>
-                                Schedule
-                            </option>
-                            <option value="history" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'history']}>
-                                History
-                            </option>
-                            <option value="IRC" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'IRC']}>
-                                IRC
-                            </option>
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="fa fa-book"></span>
+                            </div>
+                            <select id="default_page" name="default_page" class="form-control"
+                                    title="when launching SickRage interface">
+                                <option value="home" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'home']}>
+                                    Shows
+                                </option>
+                                <option value="schedule" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'schedule']}>
+                                    Schedule
+                                </option>
+                                <option value="history" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'history']}>
+                                    History
+                                </option>
+                                <option value="IRC" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'IRC']}>
+                                    IRC
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -177,16 +187,21 @@
                         <label class="component-title">Default indexer for adding shows</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="indexer_default" name="indexer_default"
-                                title="default indexer selection when adding new shows"
-                                class="form-control">
-                            <option value="0" ${('', 'selected="selected"')[indexer == 0]}>All
-                                Indexers
-                            </option>
-                            % for indexer in srIndexerApi().indexers:
-                                <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
-                            % endfor
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="fa fa-linode"></span>
+                            </div>
+                            <select id="indexer_default" name="indexer_default"
+                                    title="default indexer selection when adding new shows"
+                                    class="form-control">
+                                <option value="0" ${('', 'selected="selected"')[indexer == 0]}>All
+                                    Indexers
+                                </option>
+                                % for indexer in srIndexerApi().indexers:
+                                    <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                                % endfor
+                            </select>
+                        </div>
                     </div>
 
                 </div>
@@ -329,15 +344,20 @@
                         <label class="component-title">Display theme:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="theme_name" name="theme_name" class="form-control"
-                                title="for appearance to take effect, save then refresh your browser">
-                            <option value="dark" ${('', 'selected="selected"')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}>
-                                Dark
-                            </option>
-                            <option value="light" ${('', 'selected="selected"')[sickrage.srCore.srConfig.THEME_NAME == 'light']}>
-                                Light
-                            </option>
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="fa fa-themeisle"></span>
+                            </div>
+                            <select id="theme_name" name="theme_name" class="form-control"
+                                    title="for appearance to take effect, save then refresh your browser">
+                                <option value="dark" ${('', 'selected="selected"')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}>
+                                    Dark
+                                </option>
+                                <option value="light" ${('', 'selected="selected"')[sickrage.srCore.srConfig.THEME_NAME == 'light']}>
+                                    Light
+                                </option>
+                            </select>
+                        </div>
                     </div>
 
                 </div>
@@ -440,16 +460,21 @@
                                 <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srCore.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.SYS_ENCODING)}</option>
                             % endfor
                         </select>
-                        <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
-                                id="date_presets${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
-                                name="date_preset${('_na', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
-                            <option value="%x" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == '%x']}>
-                                Use System Default
-                            </option>
-                            % for cur_preset in date_presets:
-                                <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.SYS_ENCODING)}</option>
-                            % endfor
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                            <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
+                                    id="date_presets${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
+                                    name="date_preset${('_na', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
+                                <option value="%x" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == '%x']}>
+                                    Use System Default
+                                </option>
+                                % for cur_preset in date_presets:
+                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.SYS_ENCODING)}</option>
+                                % endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -458,12 +483,17 @@
                         <label class="component-title">Time style:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="time_presets" name="time_preset" class="form-control"
-                                title="seconds are only shown on the History page">
-                            % for cur_preset in time_presets:
-                                <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
-                            % endfor
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </div>
+                            <select id="time_presets" name="time_preset" class="form-control"
+                                    title="seconds are only shown on the History page">
+                                % for cur_preset in time_presets:
+                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
+                                % endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -772,12 +802,17 @@
                         <label class="component-title">CPU throttling:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="cpu_presets" name="cpu_preset" class="form-control"
-                                title="Normal (default). High is lower and Low is higher CPU use">
-                            % for cur_preset in cpu_presets:
-                                <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
-                            % endfor
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="fa fa-microchip"></span>
+                            </div>
+                            <select id="cpu_presets" name="cpu_preset" class="form-control"
+                                    title="Normal (default). High is lower and Low is higher CPU use">
+                                % for cur_preset in cpu_presets:
+                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
+                                % endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -959,23 +994,28 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
                             <div class="col-md-12">
-                                % if not sickrage.srCore.srConfig.SKIP_REMOVED_FILES:
-                                    <select name="ep_default_deleted_status" id="ep_default_deleted_status"
-                                            class="form-control">
-                                        % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
-                                            <option value="${defStatus}" ${('', 'selected="selected"')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
-                                        % endfor
-                                    </select>
-                                % else:
-                                    <select name="ep_default_deleted_status" id="ep_default_deleted_status"
-                                            class="form-control" disabled="disabled">
-                                        % for defStatus in [SKIPPED, IGNORED]:
-                                            <option value="${defStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
-                                        % endfor
-                                    </select>
-                                    <input type="hidden" name="ep_default_deleted_status"
-                                           value="${sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS}"/>
-                                % endif
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-erase"></span>
+                                    </div>
+                                    % if not sickrage.srCore.srConfig.SKIP_REMOVED_FILES:
+                                        <select name="ep_default_deleted_status" id="ep_default_deleted_status"
+                                                class="form-control">
+                                            % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
+                                                <option value="${defStatus}" ${('', 'selected="selected"')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
+                                            % endfor
+                                        </select>
+                                    % else:
+                                        <select name="ep_default_deleted_status" id="ep_default_deleted_status"
+                                                class="form-control" disabled="disabled">
+                                            % for defStatus in [SKIPPED, IGNORED]:
+                                                <option value="${defStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
+                                            % endfor
+                                        </select>
+                                        <input type="hidden" name="ep_default_deleted_status"
+                                               value="${sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS}"/>
+                                    % endif
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -1013,30 +1053,41 @@
                             <label class="component-title">Git Branch(s):</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="branchVersion"
-                                    class="form-control form-control-inline pull-left"
-                                    title="GIT Branch Version">
-                                % if git_branch:
-                                    % for cur_branch in git_branch:
-                                        % if sickrage.DEVELOPER:
-                                            <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
-                                        % elif cur_branch in ['master', 'develop']:
-                                            <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
-                                        % endif
-                                    % endfor
-                                % endif
-                            </select>
-                            % if not git_branch:
-                                <input class="btn btn-inline" style="margin-left: 6px;"
-                                       type="button"
-                                       id="branchCheckout" value="Checkout Branch" disabled>
-                                <label for="branchCheckout">Error: No branches found.</label>>
-                            % else:
-                                <input class="btn btn-inline" style="margin-left: 6px;"
-                                       type="button"
-                                       id="branchCheckout" value="Checkout Branch">
-                                <label for="branchCheckout">select branch to use (restart required)</label>
-                            % endif
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-git"></span>
+                                </div>
+                                <select id="branchVersion"
+                                        class="form-control form-control-inline pull-left"
+                                        title="GIT Branch Version">
+                                    % if git_branch:
+                                        % for cur_branch in git_branch:
+                                            % if sickrage.DEVELOPER:
+                                                <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                            % elif cur_branch in ['master', 'develop']:
+                                                <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                            % endif
+                                        % endfor
+                                    % endif
+                                </select>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    % if not git_branch:
+                                        <input class="btn btn-inline" style="margin-left: 6px;"
+                                               type="button"
+                                               id="branchCheckout" value="Checkout Branch" disabled>
+                                        <label for="branchCheckout">Error: No branches found.</label>>
+                                    % else:
+                                        <input class="btn btn-inline" style="margin-left: 6px;"
+                                               type="button"
+                                               id="branchCheckout" value="Checkout Branch">
+                                        <label for="branchCheckout">select branch to use (restart required)</label>
+                                    % endif
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>

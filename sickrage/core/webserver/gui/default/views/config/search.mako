@@ -54,13 +54,18 @@
                         <label class="component-title">Check propers every:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="check_propers_interval" name="check_propers_interval"
-                                class="form-control" title="Interval to check for propers">
-                            <% check_propers_interval_text = {'daily': "24 hours", '4h': "4 hours", '90m': "90 mins", '45m': "45 mins", '15m': "15 mins"} %>
-                            % for curInterval in ('daily', '4h', '90m', '45m', '15m'):
-                                <option value="${curInterval}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROPER_SEARCHER_INTERVAL == curInterval]}>${check_propers_interval_text[curInterval]}</option>
-                            % endfor
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </div>
+                            <select id="check_propers_interval" name="check_propers_interval"
+                                    class="form-control" title="Interval to check for propers">
+                                <% check_propers_interval_text = {'daily': "24 hours", '4h': "4 hours", '90m': "90 mins", '45m': "45 mins", '15m': "15 mins"} %>
+                                % for curInterval in ('daily', '4h', '90m', '45m', '15m'):
+                                    <option value="${curInterval}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROPER_SEARCHER_INTERVAL == curInterval]}>${check_propers_interval_text[curInterval]}</option>
+                                % endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -270,12 +275,17 @@
                         <label class="component-title">Send .nzb files to:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select name="nzb_method" id="nzb_method" class="form-control" title="NZB Clients">
-                            <% nzb_method_text = {'blackhole': "Black hole", 'sabnzbd': "SABnzbd", 'nzbget': "NZBget"} %>
-                            % for curAction in ('sabnzbd', 'blackhole', 'nzbget'):
-                                <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZB_METHOD == curAction]}>${nzb_method_text[curAction]}</option>
-                            % endfor
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-send"></span>
+                            </div>
+                            <select name="nzb_method" id="nzb_method" class="form-control" title="NZB Clients">
+                                <% nzb_method_text = {'blackhole': "Black hole", 'sabnzbd': "SABnzbd", 'nzbget': "NZBget"} %>
+                                % for curAction in ('sabnzbd', 'blackhole', 'nzbget'):
+                                    <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZB_METHOD == curAction]}>${nzb_method_text[curAction]}</option>
+                                % endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -601,28 +611,33 @@
                             <label class="component-title">NZBget priority</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select name="nzbget_priority" id="nzbget_priority"
-                                    title="priority for daily snatches (no backlog)"
-                                    class="form-control">
-                                <option value="-100" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == -100]}>
-                                    Very low
-                                </option>
-                                <option value="-50" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == -50]}>
-                                    Low
-                                </option>
-                                <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 0]}>
-                                    Normal
-                                </option>
-                                <option value="50" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 50]}>
-                                    High
-                                </option>
-                                <option value="100" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 100]}>
-                                    Very high
-                                </option>
-                                <option value="900" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 900]}>
-                                    Force
-                                </option>
-                            </select>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                </div>
+                                <select name="nzbget_priority" id="nzbget_priority"
+                                        title="priority for daily snatches (no backlog)"
+                                        class="form-control">
+                                    <option value="-100" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == -100]}>
+                                        Very low
+                                    </option>
+                                    <option value="-50" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == -50]}>
+                                        Low
+                                    </option>
+                                    <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 0]}>
+                                        Normal
+                                    </option>
+                                    <option value="50" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 50]}>
+                                        High
+                                    </option>
+                                    <option value="100" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 100]}>
+                                        Very high
+                                    </option>
+                                    <option value="900" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NZBGET_PRIORITY == 900]}>
+                                        Force
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -671,12 +686,18 @@
                         <label class="component-title">Send .torrent files to:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select name="torrent_method" id="torrent_method" class="form-control" title="Torrent Clients">
-                            <% torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge (via WebUI)", 'deluged': "Deluge (via Daemon)", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'mlnet': "MLDonkey", 'putio': "Putio"} %>
-                            % for curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent', 'mlnet', 'putio'):
-                                <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TORRENT_METHOD == curAction]}>${torrent_method_text[curAction]}</option>
-                            % endfor
-                        </select>
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-send"></span>
+                            </div>
+                            <select name="torrent_method" id="torrent_method" class="form-control"
+                                    title="Torrent Clients">
+                                <% torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge (via WebUI)", 'deluged': "Deluge (via Daemon)", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'mlnet': "MLDonkey", 'putio': "Putio"} %>
+                                % for curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent', 'mlnet', 'putio'):
+                                    <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TORRENT_METHOD == curAction]}>${torrent_method_text[curAction]}</option>
+                                % endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -749,14 +770,19 @@
                             <label class="component-title">HTTP Authentication</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select name="torrent_auth_type" id="torrent_auth_type" title="Client AUTH type"
-                                    class="form-control">
-                                <% http_authtype = {'none': "None", 'basic': "Basic", 'digest': "Digest"} %>
-                                % for authvalue, authname in http_authtype.items():
-                                    <option id="torrent_auth_type_value"
-                                            value="${authvalue}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TORRENT_AUTH_TYPE == authvalue]}>${authname}</option>
-                                % endfor
-                            </select>
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                </div>
+                                <select name="torrent_auth_type" id="torrent_auth_type" title="Client AUTH type"
+                                        class="form-control">
+                                    <% http_authtype = {'none': "None", 'basic': "Basic", 'digest': "Digest"} %>
+                                    % for authvalue, authname in http_authtype.items():
+                                        <option id="torrent_auth_type_value"
+                                                value="${authvalue}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TORRENT_AUTH_TYPE == authvalue]}>${authname}</option>
+                                    % endfor
+                                </select>
+                            </div>
                         </div>
                     </div>
 
