@@ -1,6 +1,8 @@
 # Changelog
 
-- * 5c449bb - 2017-08-07: Release v9.0.70 
+- * f5fcd75 - 2017-08-07: Release v9.0.71 
+- * c8dbc4b - 2017-08-07: Fixed issues with retrieving show and episode images from indexer when show is not english 
+- * 062834a - 2017-08-07: Release v9.0.70 
 - * 833f977 - 2017-08-07: Indexer language for API uses default indexer language from settings when show has no language set 
 - * 24e488c - 2017-08-07: Release v9.0.69 
 - * 244646a - 2017-08-07: Fixed issues with sending torrents to Synology DownloadStation and added better error handling Improved error handling for web server when same port number is in use 
