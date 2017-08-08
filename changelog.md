@@ -1,6 +1,8 @@
 # Changelog
 
-- * 35bde60 - 2017-08-08: Providers config template is now responsive 
+- * e679b10 - 2017-08-08: Release v9.0.72 
+- * 11ae327 - 2017-08-08: Fixed issue with magnet links and download station for Synology 
+- * b681895 - 2017-08-08: Providers config template is now responsive 
 - * 92b7582 - 2017-08-08: Misc template tweaks 
 - * 80bda17 - 2017-08-08: Quality sizes config template is now responsive 
 - * ad43486 - 2017-08-07: Subtitles config template is now responsive 

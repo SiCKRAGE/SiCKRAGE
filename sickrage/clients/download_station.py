@@ -128,7 +128,7 @@ class DownloadStationAPI(GenericClient):
         data = self.post_task
         data['uri'] = result.url
 
-        return self._send_dsm_request(method='get', data=data)
+        return self._send_dsm_request(method='post', data=data)
 
     def _add_torrent_file(self, result):
         data = self.post_task
