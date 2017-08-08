@@ -98,6 +98,9 @@
                                placeholder="time in minutes"
                                title="minimum allowed time ${sickrage.srCore.srConfig.MIN_DAILY_SEARCHER_FREQ} minutes"
                                class="form-control"/>
+                        <div class="input-group-addon">
+                            min
+                        </div>
                     </div>
                 </div>
             </div>
@@ -115,6 +118,9 @@
                                value="${sickrage.srCore.srConfig.USENET_RETENTION}"
                                title="age limit in days (ex. 500)"
                                class="form-control"/>
+                        <div class="input-group-addon">
+                            days
+                        </div>
                     </div>
                 </div>
             </div>

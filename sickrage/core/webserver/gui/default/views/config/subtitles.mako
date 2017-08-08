@@ -81,6 +81,9 @@
                                placeholder="1"
                                title="time in hours between scans"
                                class="form-control"/>
+                        <div class="input-group-addon">
+                            hours
+                        </div>
                     </div>
                 </div>
             </div>
@@ -237,36 +240,36 @@
                 ##<div class="field-pair${(' hidden', '')[curService['enabled']}"> ## Need js to show/hide on save
 
                     <div class="row field-pair">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${curService['name'].capitalize()} User Name</label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-user"></span>
-                                    </div>
-                                    <input name="${curService['name']}_user"
-                                           id="${curService['name']}_user"
-                                           value="${providerLoginDict[curService['name']]['user']}"
-                                           title="${curService['name'].capitalize()} User Name"
-                                           class="form-control" autocapitalize="off"/>
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${curService['name'].capitalize()} User Name</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-user"></span>
                                 </div>
+                                <input name="${curService['name']}_user"
+                                       id="${curService['name']}_user"
+                                       value="${providerLoginDict[curService['name']]['user']}"
+                                       title="${curService['name'].capitalize()} User Name"
+                                       class="form-control" autocapitalize="off"/>
                             </div>
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${curService['name'].capitalize()} Password</label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-lock"></span>
-                                    </div>
-                                    <input type="password" name="${curService['name']}_pass"
-                                           id="${curService['name']}_pass"
-                                           value="${providerLoginDict[curService['name']]['pass']}"
-                                           title="${curService['name'].capitalize()} Password"
-                                           class="form-control" autocapitalize="off"/>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${curService['name'].capitalize()} Password</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-lock"></span>
                                 </div>
+                                <input type="password" name="${curService['name']}_pass"
+                                       id="${curService['name']}_pass"
+                                       value="${providerLoginDict[curService['name']]['pass']}"
+                                       title="${curService['name'].capitalize()} Password"
+                                       class="form-control" autocapitalize="off"/>
                             </div>
+                        </div>
                     </div>
                 % endif
             % endfor

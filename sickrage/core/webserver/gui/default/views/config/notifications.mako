@@ -2283,6 +2283,9 @@
                                 <input name="trakt_timeout" id="trakt_timeout"
                                        value="${sickrage.srCore.srConfig.TRAKT_TIMEOUT}"
                                        class="form-control"/>
+                                <div class="input-group-addon">
+                                    secs
+                                </div>
                             </div>
                             <label for="trakt_timeout">
                                 Seconds to wait for Trakt API to respond. (Use 0 to wait forever)

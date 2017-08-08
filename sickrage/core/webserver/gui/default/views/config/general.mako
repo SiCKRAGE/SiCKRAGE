@@ -90,10 +90,14 @@
                             <input name="showupdate_hour" id="showupdate_hour"
                                    value="${sickrage.srCore.srConfig.SHOWUPDATE_HOUR}"
                                    class="form-control"/>
+                            <div class="input-group-addon">
+                                24hr
+                            </div>
                         </div>
-                        <label for="showupdate_hour">with information such as next air dates, show ended,
-                            etc. Use 15 for 3pm, 4
-                            for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)</label>
+                        <label for="showupdate_hour">
+                            with information such as next air dates, show ended, etc.<br/>
+                            Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)
+                        </label>
                     </div>
                 </div>
 
@@ -202,6 +206,9 @@
                                    placeholder="default = 10"
                                    title="seconds of inactivity when finding new shows"
                                    class="form-control"/>
+                            <div class="input-group-addon">
+                                secs
+                            </div>
                         </div>
                     </div>
 
@@ -275,6 +282,9 @@
                                    placeholder="default = 12 (hours)"
                                    title="hours between software updates"
                                    class="form-control"/>
+                            <div class="input-group-addon">
+                                hours
+                            </div>
                         </div>
                     </div>
                 </div>
