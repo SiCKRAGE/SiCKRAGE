@@ -487,7 +487,7 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#297AB8', endColorstr='#15528F');
     background: -webkit-gradient(linear, left top, left bottom, from(#297AB8), to(#15528F));
     background: -moz-linear-gradient(top, #297AB8, #15528F);
-    border-color: #3e3f3a;
+    border-color: #3E3F3A;
 }
 
 .navbar-default .navbar-nav > li > a:hover,
@@ -498,7 +498,7 @@ body {
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
-    color: #ffffff;
+    color: #FFFFFF;
     background-color: #124477;
 }
 
@@ -515,29 +515,31 @@ body {
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
     background-color: #124477;
-    color: #ffffff;
+    color: #FFFFFF;
 }
 
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #ffffff;
-    background-color: #124477;
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #FFFFFF;
+        background-color: #124477;
+    }
 }
 
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
-    color: #fff;
+    color: #FFFFFF;
     text-decoration: none;
     background-color: #15528F;
 }
 
 .dropdown-menu > li > a {
     padding: 4px 36px 4px 20px;
-    color: #fff;
+    color: #FFFFFF;
 }
 
 .dropdown-menu {
-    background-color: #333;
+    background-color: #333333;
     border: 1px solid rgba(0, 0, 0, 0.15);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
 }

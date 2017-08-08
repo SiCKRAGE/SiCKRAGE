@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3ddeaa5 - 2017-08-08: Misc template cleanup 
+- * 50ad9a4 - 2017-08-08: Cleaned up navbar CSS code 
+- * 668a726 - 2017-08-08: Misc template cleanup 
 - * e679b10 - 2017-08-08: Release v9.0.72 
 - * 11ae327 - 2017-08-08: Fixed issue with magnet links and download station for Synology 
 - * b681895 - 2017-08-08: Providers config template is now responsive 
