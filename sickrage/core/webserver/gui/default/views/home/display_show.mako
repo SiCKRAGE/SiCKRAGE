@@ -76,7 +76,7 @@
     % if show_message:
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-info">
+                <div class="alert alert-info text-center">
                     ${show_message}
                 </div>
             </div>

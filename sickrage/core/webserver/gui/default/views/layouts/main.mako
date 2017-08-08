@@ -421,7 +421,7 @@
     % if sickrage.srCore.NEWEST_VERSION_STRING and current_user:
         <div class="row">
             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <div class="alert alert-success upgrade-notification">
+                <div class="alert alert-success upgrade-notification text-center">
                     <span>${sickrage.srCore.NEWEST_VERSION_STRING}</span>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8ffd39f - 2017-08-07: Added glyphicon&#x27;s to General config template 
+- * 3f71803 - 2017-08-07: Misc template code cleanup 
+- * 8738534 - 2017-08-07: Added glyphicon&#x27;s to General config template 
 - * 4a1a8ab - 2017-08-07: Added glyphicon&#x27;s to Anime config template 
 - * 3de15cf - 2017-08-07: JS code checks first if pushbullet is enabled before retrieving device list on page refreshes 
 - * 24e488c - 2017-08-07: Release v9.0.69 

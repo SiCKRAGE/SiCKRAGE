@@ -13,7 +13,6 @@
 
             <div class="tab-content">
                 <div id="core-tab-pane1" class="tab-pane fade in active">
-
                     <div class="tab-pane-desc">
                         <h3>Quality Sizes</h3>
                         <p>Use default qualitiy sizes or specify custom ones per quality definition.</p>
@@ -22,7 +21,6 @@
                             <p class="note"> Settings repersent maximum size allowed per episode video file.</p>
                         </div>
                     </div>
-
                     <fieldset class="tab-pane-list">
                         <table>
                             % for qtype, qsize in sickrage.srCore.srConfig.QUALITY_SIZES.items():
