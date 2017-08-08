@@ -727,18 +727,7 @@ div.buttontext p {
     new_show.mako
     ========================================================================== */
 #addShowForm, #recommendedShowsForm {
-    width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 10px 0;
     font-size: 13px;
-}
-
-#newShowPortal {
-    width: 960px;
-    padding: 10px 0;
-    margin-right: auto;
-    margin-left: auto;
 }
 
 #displayText {
