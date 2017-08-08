@@ -1,6 +1,10 @@
 # Changelog
 
-- * 3f71803 - 2017-08-07: Misc template code cleanup 
+- * adb6543 - 2017-08-07: Release v9.0.71 
+- * c8dbc4b - 2017-08-07: Fixed issues with retrieving show and episode images from indexer when show is not english 
+- * 062834a - 2017-08-07: Release v9.0.70 
+- * 833f977 - 2017-08-07: Indexer language for API uses default indexer language from settings when show has no language set 
+- * bd9752f - 2017-08-07: Misc template code cleanup 
 - * 8738534 - 2017-08-07: Added glyphicon&#x27;s to General config template 
 - * 4a1a8ab - 2017-08-07: Added glyphicon&#x27;s to Anime config template 
 - * 3de15cf - 2017-08-07: JS code checks first if pushbullet is enabled before retrieving device list on page refreshes 
