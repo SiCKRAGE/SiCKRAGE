@@ -1,6 +1,7 @@
 # Changelog
 
-- * 09ca5bb - 2017-08-08: Post-processing template is now responsive 
+- * 683aa93 - 2017-08-08: Web File Browser dialog box is now centered to screen correctly 
+- * 869ff4e - 2017-08-08: Post-processing template is now responsive 
 - * d20f497 - 2017-08-08: Misc template code cleanups 
 - * a5a8a34 - 2017-08-08: Added glyphicon to rootdirs template 
 - * 738d613 - 2017-08-08: Updating post-processing template responsive code 

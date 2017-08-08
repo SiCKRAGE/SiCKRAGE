@@ -761,7 +761,6 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.browser.fileBrowserDialog = $('<div id="fileBrowserDialog" style="display:hidden"></div>').appendTo('body').dialog({
                         dialogClass: 'browserDialog',
                         title: options.title,
-                        position: ['center', 40],
                         minWidth: Math.min($(document).width() - 80, 650),
                         height: Math.min($(document).height() - 80, $(window).height() - 80),
                         maxHeight: Math.min($(document).height() - 80, $(window).height() - 80),
