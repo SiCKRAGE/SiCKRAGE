@@ -1,6 +1,7 @@
 # Changelog
 
-- * 586c46d - 2017-08-08: Schedules template is now responsive 
+- * 03b1c4c - 2017-08-08: Backlog Overview template is now responsive Fixed issues with subtitles missed template code 
+- * eb2f860 - 2017-08-08: Schedules template is now responsive 
 - * 735d13c - 2017-08-08: Add existing shows template is now responsive 
 - * fabbf63 - 2017-08-08: Web File Browser dialog box is now centered to screen correctly 
 - * 869ff4e - 2017-08-08: Post-processing template is now responsive 

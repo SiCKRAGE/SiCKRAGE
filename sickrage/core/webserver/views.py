@@ -2982,51 +2982,42 @@ class Manage(Home, WebRoot):
         return json_encode(result)
 
     def subtitleMissed(self, whichSubs=None):
-        if not whichSubs:
-            return self.render(
-                "/manage/subtitles_missed.mako",
-                whichSubs=whichSubs,
-                title='Episode Overview',
-                header='Episode Overview',
-                topmenu='manage',
-                controller='manage',
-                action='subtitles_missed'
-            )
-
-        status_results = []
-        for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            if not s['subtitles'] == 1: continue
-            for e in [x['doc'] for x in
-                      sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
-                if e['status'].endswith('4') and e['season'] != 0:
-                    status_results += [{
-                        'show_name': s['show_name'],
-                        'indexer_id': s['indexer_id'],
-                        'subtitles': e['subtitles']
-                    }]
-
-        status_results = sorted(status_results, key=lambda d: d['show_name'])
-
         ep_counts = {}
         show_names = {}
         sorted_show_ids = []
-        for cur_status_result in status_results:
-            if whichSubs == 'all':
-                if not frozenset(sickrage.subtitles.wanted_languages()).difference(
-                        cur_status_result["subtitles"].split(',')):
+        status_results = []
+
+        if whichSubs:
+            for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+                if not s['subtitles'] == 1: continue
+                for e in [x['doc'] for x in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                    if (str(e['status']).endswith('4') or str(e['status']).endswith('6')) and e['season'] != 0:
+                        status_results += [{
+                            'show_name': s['show_name'],
+                            'indexer_id': s['indexer_id'],
+                            'subtitles': e['subtitles']
+                        }]
+
+            status_results = sorted(status_results, key=lambda d: d['show_name'])
+
+            for cur_status_result in status_results:
+                if whichSubs == 'all':
+                    if not frozenset(sickrage.subtitles.wanted_languages()).difference(
+                            cur_status_result["subtitles"].split(',')):
+                        continue
+                elif whichSubs in cur_status_result["subtitles"]:
                     continue
-            elif whichSubs in cur_status_result["subtitles"]:
-                continue
 
-            cur_indexer_id = int(cur_status_result["indexer_id"])
-            if cur_indexer_id not in ep_counts:
-                ep_counts[cur_indexer_id] = 1
-            else:
-                ep_counts[cur_indexer_id] += 1
+                cur_indexer_id = int(cur_status_result["indexer_id"])
+                if cur_indexer_id not in ep_counts:
+                    ep_counts[cur_indexer_id] = 1
+                else:
+                    ep_counts[cur_indexer_id] += 1
 
-            show_names[cur_indexer_id] = cur_status_result["show_name"]
-            if cur_indexer_id not in sorted_show_ids:
-                sorted_show_ids.append(cur_indexer_id)
+                show_names[cur_indexer_id] = cur_status_result["show_name"]
+                if cur_indexer_id not in sorted_show_ids:
+                    sorted_show_ids.append(cur_indexer_id)
 
         return self.render(
             "/manage/subtitles_missed.mako",

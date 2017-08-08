@@ -17,11 +17,15 @@
 
         <form action="${srWebRoot}/manage/subtitleMissed" method="get">
             Manage episodes without <select name="whichSubs" class="form-control form-control-inline input-sm">
-            <option value="all">All</option>
-            <% sub_langs = [sickrage.subtitles.name_from_code(x) for x in sickrage.subtitles.wanted_languages()] %>
-            % for sub_lang in sub_langs:
-                <option value="${sub_lang.opensubtitles}">${sub_lang}</option>
-            % endfor
+            % if not sickrage.subtitles.wanted_languages():
+                <option value="all">All</option>
+            % else:
+                % for index, sub_code in enumerate(sickrage.subtitles.wanted_languages()):
+                    % if index == 0:
+                        <option value="und">${sickrage.subtitles.name_from_code(sub_code)}</option>
+                    % endif
+                % endfor
+            % endif
         </select>
             subtitles
             <input class="btn" type="submit" value="Manage"/>
