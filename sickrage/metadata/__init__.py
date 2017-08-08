@@ -691,15 +691,14 @@ class GenericMetadata(object):
         """
 
         image_data = None
-        indexer_lang = show_obj.lang
+        indexer_lang = show_obj.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
             lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
@@ -752,15 +751,15 @@ class GenericMetadata(object):
 
         result = None
 
-        indexer_lang = show_obj.lang
+        indexer_lang = show_obj.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
+
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
             lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
@@ -788,15 +787,14 @@ class GenericMetadata(object):
                     {1: '<url 1>', 2: <url 2>, ...},}
         """
 
-        indexer_lang = show_obj.lang
+        indexer_lang = show_obj.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
             lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
@@ -918,13 +916,12 @@ class GenericMetadata(object):
 
     @staticmethod
     def validateShow(show, season=None, episode=None):
-        indexer_lang = show.lang
+        indexer_lang = show.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         try:
             lINDEXER_API_PARMS = srIndexerApi(show.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
