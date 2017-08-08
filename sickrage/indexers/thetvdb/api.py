@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals
 
 import datetime
 import functools
+import io
 import os
 import pickle
 import time
@@ -340,13 +341,13 @@ class Tvdb:
         except Exception as e:
             self.logout()
 
-    def _request(self, method, url, **kwargs):
+    def _request(self, method, url, lang=None, **kwargs):
         self.config['headers'].update({'Content-type': 'application/json'})
 
         if self.config['apitoken']:
             self.config['headers']['authorization'] = 'Bearer {}'.format(self.config['apitoken'])
-        if self.config['language']:
-            self.config['headers'].update({'Accept-Language': self.config['language']})
+
+        self.config['headers'].update({'Accept-Language': lang or self.config['language']})
 
         # get response from theTVDB
         try:
@@ -402,7 +403,7 @@ class Tvdb:
 
         self.shows[sid].data[key] = value
 
-        with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
+        with io.open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
             pickle.dump(self.shows, fp)
 
     def _cleanData(self, data):
@@ -471,7 +472,9 @@ class Tvdb:
         images = {}
         for type in [x['keytype'] for x in params]:
             try:
-                imagesEt = self._request('get', self.config['api']['images'].format(id=sid, type=type))['data']
+                imagesEt = self._request('get',
+                                         self.config['api']['images'].format(id=sid, type=type),
+                                         lang='en')['data']
             except tvdb_error:
                 continue
 
