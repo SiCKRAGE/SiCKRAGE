@@ -1,7 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 <%block name="content">
-
-<div class="align-center">
-File or Directory not found
-</div>
+    <span>
+        You have reached this page by accident, please check the url.
+    </span>
 </%block>

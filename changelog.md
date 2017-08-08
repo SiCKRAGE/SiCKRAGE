@@ -1,6 +1,7 @@
 # Changelog
 
-- * 16d6cda - 2017-08-08: Added glyphicon to rootdirs template 
+- * 3d72447 - 2017-08-08: Misc template code cleanups 
+- * a5a8a34 - 2017-08-08: Added glyphicon to rootdirs template 
 - * 738d613 - 2017-08-08: Updating post-processing template responsive code 
 - * a18a8e8 - 2017-08-08: Added icons to selectboxes 
 - * ea63857 - 2017-08-08: Post-processing config template is now responsive 
