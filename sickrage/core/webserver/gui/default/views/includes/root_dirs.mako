@@ -15,12 +15,17 @@
         <span id="sampleRootDir"></span>
         <input type="hidden" id="whichDefaultRootDir" value="${backend_default}"/>
         <div class="rootdir-selectbox">
-            <select name="rootDir" id="rootDirs" size="6"
-                    title="Root Directories">
-                % for cur_dir in backend_dirs:
-                    <option value="${cur_dir}">${cur_dir}</option>
-                % endfor
-            </select>
+            <div class="input-group input350">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </div>
+                <select name="rootDir" id="rootDirs" size="6" class="form-control"
+                        title="Root Directories">
+                    % for cur_dir in backend_dirs:
+                        <option value="${cur_dir}">${cur_dir}</option>
+                    % endfor
+                </select>
+            </div>
         </div>
     </div>
 </div>

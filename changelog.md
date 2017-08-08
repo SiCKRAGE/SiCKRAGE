@@ -1,6 +1,7 @@
 # Changelog
 
-- * da0fc26 - 2017-08-08: Updating post-processing template responsive code 
+- * 16d6cda - 2017-08-08: Added glyphicon to rootdirs template 
+- * 738d613 - 2017-08-08: Updating post-processing template responsive code 
 - * a18a8e8 - 2017-08-08: Added icons to selectboxes 
 - * ea63857 - 2017-08-08: Post-processing config template is now responsive 
 - * d8b5d7a - 2017-08-08: Cleaned up navbar CSS code 
