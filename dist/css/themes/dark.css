@@ -314,18 +314,7 @@ h2.day, h2.network {
 }
 
 .tvshowDiv {
-    display: block;
-    clear: both;
-    border: 1px solid #ccc;
-    margin: auto;
-    padding: 0;
-    text-align: left;
-    width: 750px;
-    border-radius: 5px;
-    background: #fff;
-    cursor: default;
-    overflow: hidden;
-    color: #000;
+    color: #000000;
 }
 
 .tvshowDiv a:hover {

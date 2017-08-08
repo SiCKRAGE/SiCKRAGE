@@ -1235,13 +1235,13 @@ h2.day, h2.network {
 .tvshowDiv {
     display: block;
     clear: both;
-    border: 1px solid #ccc;
+    border: 1px solid #CCCCCC;
     margin: auto;
     padding: 0;
     text-align: left;
-    width: 750px;
+    width: 100%;
     border-radius: 5px;
-    background: #fff;
+    background: #FFFFFF;
     cursor: default;
     overflow: hidden;
 }
@@ -1283,7 +1283,7 @@ h2.day, h2.network {
 .bannerThumb {
     vertical-align: top;
     height: auto;
-    width: 748px;
+    width: 100%;
     border-bottom: 1px solid #ccc;
 }
 
