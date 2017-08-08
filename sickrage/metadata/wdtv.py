@@ -181,13 +181,12 @@ class WDTVMetadata(GenericMetadata):
 
         eps_to_write = [ep_obj] + ep_obj.relatedEps
 
-        indexer_lang = ep_obj.show.lang
+        indexer_lang = ep_obj.show.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         try:
             lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True

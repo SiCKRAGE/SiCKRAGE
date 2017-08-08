@@ -445,7 +445,7 @@ class TVEpisode(object):
             self.show.indexerid, indexer_name, season or 0, episode or 0)
         )
 
-        indexer_lang = self.show.lang
+        indexer_lang = self.show.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         try:
             if cachedSeason is None:
@@ -454,8 +454,7 @@ class TVEpisode(object):
                     lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
                     lINDEXER_API_PARMS['cache'] = cache
 
-                    if indexer_lang:
-                        lINDEXER_API_PARMS['language'] = indexer_lang
+                    lINDEXER_API_PARMS['language'] = indexer_lang
 
                     if self.show.dvdorder != 0:
                         lINDEXER_API_PARMS['dvdorder'] = True

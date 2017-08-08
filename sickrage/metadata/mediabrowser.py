@@ -231,13 +231,12 @@ class MediaBrowserMetadata(GenericMetadata):
         show_obj: a TVShow instance to create the NFO for
         """
 
-        indexer_lang = show_obj.lang
+        indexer_lang = show_obj.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
         # There's gotta be a better way of doing this but we don't wanna
         # change the language value elsewhere
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
-        if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-            lINDEXER_API_PARMS['language'] = indexer_lang
+        lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
@@ -404,13 +403,12 @@ class MediaBrowserMetadata(GenericMetadata):
             'Writer': []
         }
 
-        indexer_lang = ep_obj.show.lang
+        indexer_lang = ep_obj.show.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         try:
             lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
