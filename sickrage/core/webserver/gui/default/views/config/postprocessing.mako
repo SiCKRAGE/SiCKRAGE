@@ -317,8 +317,10 @@
                                value="${'|'.join(sickrage.srCore.srConfig.EXTRA_SCRIPTS)}"
                                class="form-control" autocapitalize="off"/>
                     </div>
-                    <label for="extra_scripts">See <a href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts">
-                    <span style="color: red; "><b>Wiki</b></span> </a> for script arguments description and usage.</label>
+                    <label for="extra_scripts">See <a
+                            href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts">
+                        <span style="color: red; "><b>Wiki</b></span> </a> for script arguments description and
+                        usage.</label>
                 </div>
             </div>
             <div class="row">
@@ -337,58 +339,52 @@
 
         <fieldset class="tab-pane-list">
             <div class="row field-pair">
-                <label class="nocheck" for="name_presets">
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Name Pattern:</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-list"></span>
+                        </div>
+                        <select id="name_presets" class="form-control" title="Choose a naming pattern">
+                            <% is_custom = True %>
+                            % for cur_preset in validator.name_presets:
+                            <% tmp = validator.test_name(cur_preset, anime_type=3) %>
+                            % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
+                                <% is_custom = False %>
+                            % endif
+                                <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                            % endfor
+                            <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
+                                Custom...
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="naming_custom">
+                <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Name Pattern:</label>
+                        <label class="component-title"></label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
                             <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-list"></span>
+                                <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                     alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend"
+                                     class="legend" class="legend"/>
                             </div>
-                            <select id="name_presets" class="form-control">
-                                <% is_custom = True %>
-                                % for cur_preset in validator.name_presets:
-                                <% tmp = validator.test_name(cur_preset, anime_type=3) %>
-                                % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
-                                    <% is_custom = False %>
-                                % endif
-                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
-                                % endfor
-                                <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
-                                    Custom...
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </label>
-            </div>
-
-            <div id="naming_custom">
-                <div class="row field-pair" style="padding-top: 0;">
-                    <label class="nocheck">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">
-                                &nbsp;
-                            </label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input name="naming_pattern" id="naming_pattern"
                                    value="${sickrage.srCore.srConfig.NAMING_PATTERN}"
                                    class="form-control"/>
-                            <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                 alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend"
-                                 class="legend" class="legend"/>
                         </div>
-                    </label>
-                    <label class="nocheck">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">&nbsp;</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc"><b>NOTE:</b> Don't forget to
-                            add quality pattern. Otherwise after post-processing the episode will have UNKNOWN quality
-                        </div>
-                    </label>
+                        <label for="naming_pattern">
+                            <b>NOTE:</b> Don't forget to add quality pattern. Otherwise after post-processing the
+                            episode will have UNKNOWN quality
+                        </label>
+                    </div>
                 </div>
 
                 <div id="naming_key" class="nocheck" style="display: none;">
@@ -536,78 +532,84 @@
             </div>
 
             <div class="row field-pair">
-                <label class="nocheck" for="naming_multi_ep">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Multi-Episode Style:</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select id="naming_multi_ep" name="naming_multi_ep" class="form-control">
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Multi-Episode Style:</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-sunglasses"></span>
+                        </div>
+                        <select id="naming_multi_ep" name="naming_multi_ep" class="form-control"
+                                title="Choose a Multi-Episode Style">
                             % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
                                 <option value="${cur_multi_ep[0]}" ${('', 'selected="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
                             % endfor
                         </select>
                     </div>
-                </label>
+                </div>
             </div>
 
             <div id="naming_example_div">
-                <h3>Single-EP Sample:</h3>
-                <div class="example">
-                    <span class="jumbo" id="naming_example">&nbsp;</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>Single-EP Sample:</h3>
+                        <div class="example">
+                            <span class="jumbo" id="naming_example">&nbsp;</span>
+                        </div>
+                    </div>
                 </div>
-                <br>
             </div>
 
             <div id="naming_example_multi_div">
-                <h3>Multi-EP sample:</h3>
-                <div class="example">
-                    <span class="jumbo" id="naming_example_multi">&nbsp;</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>Multi-EP sample:</h3>
+                        <div class="example">
+                            <span class="jumbo" id="naming_example_multi">&nbsp;</span>
+                        </div>
+                    </div>
                 </div>
-                <br>
             </div>
 
             <div class="row field-pair">
-                <input type="checkbox" id="naming_strip_year"
-                       name="naming_strip_year" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_STRIP_YEAR)]}/>
-                <label for="naming_strip_year">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Strip Show Year</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Remove the TV show's year when
-                        renaming the file?
-                    </div>
-                </label>
-                <label class="nocheck">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">&nbsp;</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Only applies to shows that have
-                        year inside parentheses
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Strip Show Year</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" id="naming_strip_year"
+                           name="naming_strip_year" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_STRIP_YEAR)]}/>
+                    <label for="naming_strip_year">
+                        Remove the TV show's year when renaming the file?<br/>
+                        <b>NOTE:</b> Only applies to shows that have year inside parentheses
+                    </label>
+                </div>
             </div>
 
             <div class="row field-pair">
-                <input type="checkbox" class="enabler" id="naming_custom_abd"
-                       name="naming_custom_abd" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ABD)]}/>
-                <label for="naming_custom_abd">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Custom Air-By-Date</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Name Air-By-Date shows differently
-                        than regular shows?
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Custom Air-By-Date</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" class="enabler" id="naming_custom_abd"
+                           name="naming_custom_abd" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ABD)]}/>
+                    <label for="naming_custom_abd">
+                        Name Air-By-Date shows differently than regular shows?
+                    </label>
+                </div>
             </div>
 
             <div id="content_naming_custom_abd">
                 <div class="row field-pair">
-                    <label class="nocheck" for="name_abd_presets">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Name Pattern:</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="name_abd_presets" class="form-control">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Air-by-date Name Pattern:</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-list"></span>
+                            </div>
+                            <select id="name_abd_presets" class="form-control" title="Choose a naming pattern">
                                 <% is_abd_custom = True %>
                                 % for cur_preset in validator.name_abd_presets:
                                 <% tmp = validator.test_name(cur_preset) %>
@@ -621,26 +623,27 @@
                                 </option>
                             </select>
                         </div>
-                    </label>
+                    </div>
                 </div>
 
                 <div id="naming_abd_custom">
                     <div class="row field-pair">
-                        <label class="nocheck">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">
-                                    &nbsp;
-                                </label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title"></label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                         alt="[Toggle Key]" id="show_naming_abd_key"
+                                         title="Toggle ABD Naming Legend" class="legend"/>
+                                </div>
                                 <input name="naming_abd_pattern" id="naming_abd_pattern"
                                        value="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}"
+                                       title="Air-by-date naming pattern"
                                        class="form-control"/>
-                                <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                     alt="[Toggle Key]" id="show_naming_abd_key"
-                                     title="Toggle ABD Naming Legend" class="legend"/>
                             </div>
-                        </label>
+                        </div>
                     </div>
 
                     <div id="naming_abd_key" class="nocheck" style="display: none;">
@@ -778,36 +781,41 @@
                 </div><!-- /naming_abd_custom -->
 
                 <div id="naming_abd_example_div">
-                    <h3>Air-by-date Sample:</h3>
-                    <div class="example">
-                        <span class="jumbo" id="naming_abd_example">&nbsp;</span>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>Air-by-date Sample:</h3>
+                            <div class="example">
+                                <span class="jumbo" id="naming_abd_example">&nbsp;</span>
+                            </div>
+                        </div>
                     </div>
-                    <br>
                 </div>
-
             </div><!-- /naming_abd_different -->
 
             <div class="row field-pair">
-                <input type="checkbox" class="enabler" id="naming_custom_sports"
-                       name="naming_custom_sports" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_SPORTS)]}/>
-                <label for="naming_custom_sports">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Custom Sports</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Name Sports shows differently than
-                        regular shows?
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Custom Sports</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" class="enabler" id="naming_custom_sports"
+                           name="naming_custom_sports" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_SPORTS)]}/>
+                    <label for="naming_custom_sports">
+                        Name Sports shows differently than regular shows?
+                    </label>
+                </div>
             </div>
 
             <div id="content_naming_custom_sports">
                 <div class="row field-pair">
-                    <label class="nocheck" for="name_sports_presets">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Name Pattern:</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="name_sports_presets" class="form-control">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Sports Name Pattern:</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-list"></span>
+                            </div>
+                            <select id="name_sports_presets" class="form-control" title="Choose a naming pattern">
                                 <% is_sports_custom = True %>
                                 % for cur_preset in validator.name_sports_presets:
                                 <% tmp = validator.test_name(cur_preset) %>
@@ -821,26 +829,27 @@
                                 </option>
                             </select>
                         </div>
-                    </label>
+                    </div>
                 </div>
 
                 <div id="naming_sports_custom">
-                    <div class="row field-pair" style="padding-top: 0;">
-                        <label class="nocheck">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">
-                                    &nbsp;
-                                </label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title"></label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                         alt="[Toggle Key]" id="show_naming_sports_key"
+                                         title="Toggle Sports Naming Legend" class="legend"/>
+                                </div>
                                 <input name="naming_sports_pattern" id="naming_sports_pattern"
                                        value="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}"
+                                       title="Sports naming pattern"
                                        class="form-control"/>
-                                <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                     alt="[Toggle Key]" id="show_naming_sports_key"
-                                     title="Toggle Sports Naming Legend" class="legend"/>
                             </div>
-                        </label>
+                        </div>
                     </div>
 
                     <div id="naming_sports_key" class="nocheck" style="display: none;">
@@ -981,37 +990,42 @@
                 </div><!-- /naming_sports_custom -->
 
                 <div id="naming_sports_example_div">
-                    <h3>Sports Sample:</h3>
-                    <div class="example">
-                        <span class="jumbo" id="naming_sports_example">&nbsp;</span>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>Sports Sample:</h3>
+                            <div class="example">
+                                <span class="jumbo" id="naming_sports_example">&nbsp;</span>
+                            </div>
+                        </div>
                     </div>
-                    <br>
                 </div>
-
             </div><!-- /naming_sports_different -->
 
             <!-- naming_anime_custom -->
             <div class="row field-pair">
-                <input type="checkbox" class="enabler" id="naming_custom_anime"
-                       name="naming_custom_anime" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ANIME)]}/>
-                <label for="naming_custom_anime">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Custom Anime</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Name Anime shows differently than
-                        regular shows?
-                    </div>
-                </label>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Custom Anime</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <input type="checkbox" class="enabler" id="naming_custom_anime"
+                           name="naming_custom_anime" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ANIME)]}/>
+                    <label for="naming_custom_anime">
+                        Name Anime shows differently than regular shows?
+                    </label>
+                </div>
             </div>
 
             <div id="content_naming_custom_anime">
                 <div class="row field-pair">
-                    <label class="nocheck" for="name_anime_presets">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Name Pattern:</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="name_anime_presets" class="form-control">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Anime Name Pattern:</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-list"></span>
+                            </div>
+                            <select id="name_anime_presets" class="form-control" title="Choose a naming pattern">
                                 <% is_anime_custom = True %>
                                 % for cur_preset in validator.name_anime_presets:
                                 <% tmp = validator.test_name(cur_preset) %>
@@ -1025,26 +1039,29 @@
                                 </option>
                             </select>
                         </div>
-                    </label>
+                    </div>
                 </div>
 
                 <div id="naming_anime_custom">
-                    <div class="row field-pair" style="padding-top: 0;">
-                        <label class="nocheck">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">
-                                    &nbsp;
-                                </label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">
+                                &nbsp;
+                            </label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
+                                         alt="[Toggle Key]" id="show_naming_anime_key"
+                                         title="Toggle Anime Naming Legend" class="legend"/>
+                                </div>
                                 <input name="naming_anime_pattern" id="naming_anime_pattern"
                                        value="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}"
+                                       title="Anime naming pattern"
                                        class="form-control"/>
-                                <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                     alt="[Toggle Key]" id="show_naming_anime_key"
-                                     title="Toggle Anime Naming Legend" class="legend"/>
                             </div>
-                        </label>
+                        </div>
                     </div>
 
                     <div id="naming_anime_key" class="nocheck" style="display: none;">
@@ -1177,100 +1194,95 @@
                 </div><!-- /naming_anime_custom -->
 
                 <div class="row field-pair">
-                    <label class="nocheck" for="naming_anime_multi_ep">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Multi-Episode Style:</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <select id="naming_anime_multi_ep" name="naming_anime_multi_ep"
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Multi-Episode Style:</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-sunglasses"></span>
+                            </div>
+                            <select id="naming_anime_multi_ep" name="naming_anime_multi_ep" title="Multi-Episode Style"
                                     class="form-control">
                                 % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
                                     <option value="${cur_multi_ep[0]}" ${('', 'selected="selected" class="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_ANIME_MULTI_EP]}>${cur_multi_ep[1]}</option>
                                 % endfor
                             </select>
                         </div>
-                    </label>
+                    </div>
                 </div>
 
                 <div id="naming_example_anime_div">
-                    <h3>Single-EP Anime Sample:</h3>
-                    <div class="example">
-                        <span class="jumbo" id="naming_example_anime">&nbsp;</span>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>Single-EP Anime Sample:</h3>
+                            <div class="example">
+                                <span class="jumbo" id="naming_example_anime">&nbsp;</span>
+                            </div>
+                        </div>
                     </div>
-                    <br>
                 </div>
 
                 <div id="naming_example_multi_anime_div">
-                    <h3>Multi-EP Anime sample:</h3>
-                    <div class="example">
-                        <span class="jumbo" id="naming_example_multi_anime">&nbsp;</span>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>Multi-EP Anime sample:</h3>
+                            <div class="example">
+                                <span class="jumbo" id="naming_example_multi_anime">&nbsp;</span>
+                            </div>
+                        </div>
                     </div>
-                    <br>
                 </div>
 
                 <div class="row field-pair">
-                    <input type="radio" name="naming_anime" id="naming_anime"
-                           value="1" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 1]}/>
-                    <label for="naming_anime">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Add Absolute Number</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Add the absolute number to the
-                            season/episode format?
-                        </div>
-                    </label>
-                    <label class="nocheck">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">&nbsp;</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Only applies to animes. (eg.
-                            S15E45 - 310 vs S15E45)
-                        </div>
-                    </label>
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Add Absolute Number</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="radio" name="naming_anime" id="naming_anime"
+                               value="1" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 1]}/>
+                        <label for="naming_anime">
+                            Add the absolute number to the season/episode format?<br/>
+                            <b>NOTE:</b> Only applies to animes. (eg. S15E45 - 310 vs S15E45)
+                        </label>
+                    </div>
                 </div>
 
                 <div class="row field-pair">
-                    <input type="radio" name="naming_anime" id="naming_anime_only"
-                           value="2" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 2]}/>
-                    <label for="naming_anime_only">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Only Absolute Number</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Replace season/episode format
-                            with absolute number
-                        </div>
-                    </label>
-                    <label class="nocheck">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">&nbsp;</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Only applies to animes.</div>
-                    </label>
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Only Absolute Number</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="radio" name="naming_anime" id="naming_anime_only"
+                               value="2" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 2]}/>
+                        <label for="naming_anime_only">
+                            Replace season/episode format with absolute number<br/>
+                            <b>NOTE:</b> Only applies to animes.
+                        </label>
+                    </div>
                 </div>
 
                 <div class="row field-pair">
-                    <input type="radio" name="naming_anime" id="naming_anime_none"
-                           value="3" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 3]}/>
-                    <label for="naming_anime_none">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">No Absolute Number</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Dont include the absolute
-                            number
-                        </div>
-                    </label>
-                    <label class="nocheck">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">&nbsp;</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Only applies to animes.</div>
-                    </label>
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">No Absolute Number</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="radio" name="naming_anime" id="naming_anime_none"
+                               value="3" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 3]}/>
+                        <label for="naming_anime_none">
+                            Dont include the absolute number<br/>
+                            <b>NOTE:</b> Only applies to animes.
+                        </label>
+                    </div>
                 </div>
 
             </div><!-- /naming_anime_different -->
 
-            <div></div>
-            <input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                </div>
+            </div>
 
         </fieldset>
     </div><!-- /tab-pane2 //-->
@@ -1285,108 +1297,122 @@
         </div>
 
         <fieldset class="tab-pane-list">
+            <% m_dict = sickrage.srCore.metadataProvidersDict %>
             <div class="row field-pair">
-                <label>
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Metadata Type:</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <% m_dict = sickrage.srCore.metadataProvidersDict %>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Metadata Type:</label>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="fa fa-tv"></span>
+                        </div>
                         <select id="metadataType" class="form-control">
                             % for (cur_id, cur_generator) in sorted(m_dict.items()):
                                 <option value="${cur_id}">${cur_generator.name}</option>
                             % endfor
                         </select>
                     </div>
-                </label>
-                <span>Toggle the metadata options that you wish to be created. <b>Multiple targets may be used.</b></span>
+                    <label for="metadataType">
+                        Toggle the metadata options that you wish to be created.<br/>
+                        <b>Multiple targets may be used.</b>
+                    </label>
+                </div>
             </div>
 
-            % for (cur_id, cur_generator) in m_dict.items():
-                <div class="metadataDiv" id="${cur_id}">
-                    <div>
-                        <label for="${cur_id}_enabled"><input type="checkbox" class="metadata_checkbox"
-                                                              id="${cur_id}_enabled" ${('', 'checked')[bool(cur_generator.enabled)]}/>&nbsp;Enabled</label>
-                    </div>
-                    <div class="metadata_options_wrapper">
-                        <h4>Create:</h4>
-                        <div class="metadata_options">
-                            <label for="${cur_id}_show_metadata"><input type="checkbox"
-                                                                        class="metadata_checkbox"
-                                                                        id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>&nbsp;Show
-                                Metadata</label>
-                            <label for="${cur_id}_episode_metadata"><input type="checkbox"
-                                                                           class="metadata_checkbox"
-                                                                           id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>&nbsp;Episode
-                                Metadata</label>
-                            <label for="${cur_id}_fanart"><input type="checkbox"
-                                                                 class="float-left metadata_checkbox"
-                                                                 id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>&nbsp;Show
-                                Fanart</label>
-                            <label for="${cur_id}_poster"><input type="checkbox"
-                                                                 class="float-left metadata_checkbox"
-                                                                 id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>&nbsp;Show
-                                Poster</label>
-                            <label for="${cur_id}_banner"><input type="checkbox"
-                                                                 class="float-left metadata_checkbox"
-                                                                 id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>&nbsp;Show
-                                Banner</label>
-                            <label for="${cur_id}_episode_thumbnails"><input type="checkbox"
-                                                                             class="float-left metadata_checkbox"
-                                                                             id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>&nbsp;Episode
-                                Thumbnails</label>
-                            <label for="${cur_id}_season_posters"><input type="checkbox"
-                                                                         class="float-left metadata_checkbox"
-                                                                         id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>&nbsp;Season
-                                Posters</label>
-                            <label for="${cur_id}_season_banners"><input type="checkbox"
-                                                                         class="float-left metadata_checkbox"
-                                                                         id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>&nbsp;Season
-                                Banners</label>
-                            <label for="${cur_id}_season_all_poster"><input type="checkbox"
-                                                                            class="float-left metadata_checkbox"
-                                                                            id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>&nbsp;Season
-                                All Poster</label>
-                            <label for="${cur_id}_season_all_banner"><input type="checkbox"
-                                                                            class="float-left metadata_checkbox"
-                                                                            id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>&nbsp;Season
-                                All Banner</label>
-                        </div>
-                    </div>
-                    <div class="metadata_example_wrapper">
-                        <h4>Results:</h4>
-                        <div class="metadata_example panel panel-default">
-                            <label for="${cur_id}_show_metadata"><span
-                                    id="${cur_id}_eg_show_metadata">${cur_generator.eg_show_metadata}</span></label>
-                            <label for="${cur_id}_episode_metadata"><span
-                                    id="${cur_id}_eg_episode_metadata">${cur_generator.eg_episode_metadata}</span></label>
-                            <label for="${cur_id}_fanart"><span
-                                    id="${cur_id}_eg_fanart">${cur_generator.eg_fanart}</span></label>
-                            <label for="${cur_id}_poster"><span
-                                    id="${cur_id}_eg_poster">${cur_generator.eg_poster}</span></label>
-                            <label for="${cur_id}_banner"><span
-                                    id="${cur_id}_eg_banner">${cur_generator.eg_banner}</span></label>
-                            <label for="${cur_id}_episode_thumbnails"><span
-                                    id="${cur_id}_eg_episode_thumbnails">${cur_generator.eg_episode_thumbnails}</span></label>
-                            <label for="${cur_id}_season_posters"><span
-                                    id="${cur_id}_eg_season_posters">${cur_generator.eg_season_posters}</span></label>
-                            <label for="${cur_id}_season_banners"><span
-                                    id="${cur_id}_eg_season_banners">${cur_generator.eg_season_banners}</span></label>
-                            <label for="${cur_id}_season_all_poster"><span
-                                    id="${cur_id}_eg_season_all_poster">${cur_generator.eg_season_all_poster}</span></label>
-                            <label for="${cur_id}_season_all_banner"><span
-                                    id="${cur_id}_eg_season_all_banner">${cur_generator.eg_season_all_banner}</span></label>
-                        </div>
-                    </div>
-                    <input type="hidden" name="${cur_id}_data" id="${cur_id}_data"
-                           value="${cur_generator.get_config()}"/>
+            <div class="field-pair row">
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <label class="component-title">Select Metadata</label>
                 </div>
-            % endfor
-
-            <div class="clearfix"></div>
-            <br>
-
-            <input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    % for (cur_id, cur_generator) in m_dict.items():
+                        <div class="metadataDiv" id="${cur_id}">
+                            <div class="metadata_options_wrapper input350">
+                                <div class="metadata_options">
+                                    <label for="${cur_id}_show_metadata">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>
+                                        &nbsp;Show Metadata
+                                        <br/>
+                                        &nbsp;<span
+                                            id="${cur_id}_eg_show_metadata">${cur_generator.eg_show_metadata}</span>
+                                    </label>
+                                    <label for="${cur_id}_episode_metadata">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>
+                                        &nbsp;Episode Metadata
+                                        <br/>
+                                        &nbsp;<span
+                                            id="${cur_id}_eg_episode_metadata">${cur_generator.eg_episode_metadata}</span>
+                                    </label>
+                                    <label for="${cur_id}_fanart">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>
+                                        &nbsp;Show Fanart
+                                        <br/>
+                                        &nbsp;<span id="${cur_id}_eg_fanart">${cur_generator.eg_fanart}</span>
+                                    </label>
+                                    <label for="${cur_id}_poster">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>
+                                        &nbsp;Show Poster
+                                        <br/>
+                                        &nbsp;<span id="${cur_id}_eg_poster">${cur_generator.eg_poster}</span>
+                                    </label>
+                                    <label for="${cur_id}_banner">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>
+                                        &nbsp;Show Banner
+                                        <br/>
+                                        &nbsp;<span id="${cur_id}_eg_banner">${cur_generator.eg_banner}</span>
+                                    </label>
+                                    <label for="${cur_id}_episode_thumbnails">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>
+                                        &nbsp;Episode Thumbnails
+                                        <br/>
+                                        &nbsp;<span
+                                            id="${cur_id}_eg_episode_thumbnails">${cur_generator.eg_episode_thumbnails}</span>
+                                    </label>
+                                    <label for="${cur_id}_season_posters">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>
+                                        &nbsp;Season Posters
+                                        <br/>
+                                        &nbsp;<span
+                                            id="${cur_id}_eg_season_posters">${cur_generator.eg_season_posters}</span>
+                                    </label>
+                                    <label for="${cur_id}_season_banners">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>
+                                        &nbsp;Season Banners
+                                        <br/>
+                                        &nbsp;<span
+                                            id="${cur_id}_eg_season_banners">${cur_generator.eg_season_banners}</span>
+                                    </label>
+                                    <label for="${cur_id}_season_all_poster">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>
+                                        &nbsp;Season All Poster
+                                        <br/>
+                                        &nbsp;<span
+                                            id="${cur_id}_eg_season_all_poster">${cur_generator.eg_season_all_poster}</span>
+                                    </label>
+                                    <label for="${cur_id}_season_all_banner">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>
+                                        &nbsp;Season All Banner
+                                        <br/>
+                                        &nbsp;<span
+                                            id="${cur_id}_eg_season_all_banner">${cur_generator.eg_season_all_banner}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="${cur_id}_data" id="${cur_id}_data" value="${cur_generator.get_config()}"/>
+                        </div>
+                    % endfor
+                </div>
+            </div>
         </fieldset>
     </div><!-- /tab-pane3 //-->
 </%block>

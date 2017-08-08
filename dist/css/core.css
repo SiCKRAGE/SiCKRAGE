@@ -1386,7 +1386,7 @@ h2.day, h2.network {
     float: left;
 }
 
-#config .nocheck, #config div #customQuality, .metadataDiv {
+#config .nocheck, #config div #customQuality {
     padding-left: 20px;
 }
 
@@ -1534,26 +1534,16 @@ postprocessing.mako
 /* =======================================================================
 notifications.mako
 ========================================================================== */
-div.metadata_options_wrapper {
-    float: left;
-    width: 190px;
-}
-
-div.metadata_example_wrapper {
-    float: right;
-    width: 325px;
-}
-
 div.metadata_options {
     padding: 7px;
     overflow: auto;
-    background: #f5f1e4;
-    border: 1px solid #ccc;
+    background: #F5F1E4;
+    border: 1px solid #CCCCCC;
 }
 
 div.metadata_options label:hover {
-    color: #fff;
-    background-color: #57442b;
+    color: #FFFFFF;
+    background-color: #57442B;
     cursor: pointer;
 }
 
@@ -1561,7 +1551,7 @@ div.metadata_options label {
     display: block;
     padding-left: 7px;
     line-height: 20px;
-    color: #036;
+    color: #003366;
 }
 
 div.metadata_example {
@@ -1571,12 +1561,12 @@ div.metadata_example {
 div.metadata_example label {
     display: block;
     line-height: 21px;
-    color: #000;
+    color: #000000;
     cursor: pointer;
 }
 
 div.metadataDiv .disabled {
-    color: #ccc;
+    color: #CCCCCC;
 }
 
 .notifier-icon {

@@ -423,31 +423,22 @@ notifications.mako
 ========================================================================== */
 
 div.metadata_options {
-    padding: 7px;
-    overflow: auto;
-    background: #333;
-    color: #fff;
-    border: 1px solid #111;
+    background: #333333;
+    color: #FFFFFF;
+    border: 1px solid #111111;
 }
 
 div.metadata_options label:hover {
-    color: #fff;
+    color: #FFFFFF;
     background-color: #15528F;
-    cursor: pointer;
 }
 
 div.metadata_options label {
-    display: block;
-    padding-left: 7px;
-    line-height: 20px;
-    color: #fff;
+    color: #FFFFFF;
 }
 
 div.metadata_example label {
-    display: block;
-    line-height: 21px;
-    color: #fff;
-    cursor: pointer;
+    color: #FFFFFF;
 }
 
 /* =======================================================================
