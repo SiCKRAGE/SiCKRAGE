@@ -1,6 +1,7 @@
 # Changelog
 
-- * 882fed1 - 2017-08-07: Indexer language for API uses default indexer language from settings when show has no language set 
+- * 5c449bb - 2017-08-07: Release v9.0.70 
+- * 833f977 - 2017-08-07: Indexer language for API uses default indexer language from settings when show has no language set 
 - * 24e488c - 2017-08-07: Release v9.0.69 
 - * 244646a - 2017-08-07: Fixed issues with sending torrents to Synology DownloadStation and added better error handling Improved error handling for web server when same port number is in use 
 - * 0cea9ef - 2017-08-06: Release v9.0.68 
