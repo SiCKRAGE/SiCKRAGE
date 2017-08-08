@@ -1,6 +1,7 @@
 # Changelog
 
-- * bb92599 - 2017-08-08: Misc template tweaks 
+- * 35bde60 - 2017-08-08: Providers config template is now responsive 
+- * 92b7582 - 2017-08-08: Misc template tweaks 
 - * 80bda17 - 2017-08-08: Quality sizes config template is now responsive 
 - * ad43486 - 2017-08-07: Subtitles config template is now responsive 
 - * adb6543 - 2017-08-07: Release v9.0.71 
