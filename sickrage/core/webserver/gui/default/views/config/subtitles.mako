@@ -39,7 +39,7 @@
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-flag"></span>
                         </div>
-                        <input type="text" class="form-control "
+                        <input class="form-control "
                                id="subtitles_languages"
                                name="subtitles_languages"
                                title="Select subtitle languages"
@@ -51,34 +51,37 @@
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                     <label class="component-title">Subtitle Directory</label>
                 </div>
-                <input type="text" value="${sickrage.srCore.srConfig.SUBTITLES_DIR}"
-                       id="subtitles_dir"
-                       name="subtitles_dir" class="form-control"
-                       autocapitalize="off"/>
-                <br/>
-                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                    <label class="component-title">&nbsp;</label>
-                </div>
-                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">The directory where SickRage should
-                    store your <i>Subtitles</i> files.
-                </div>
-                <br/>
-                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                    <label class="component-title">&nbsp;</label>
-                </div>
-                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc"><b>NOTE:</b> Leave empty if you
-                    want store subtitle in episode path.
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-folder-open"></span>
+                        </div>
+                        <input value="${sickrage.srCore.srConfig.SUBTITLES_DIR}"
+                               id="subtitles_dir"
+                               name="subtitles_dir" class="form-control"
+                               autocapitalize="off"/>
+                    </div>
+                    <label for="subtitles_dir">
+                        The directory where SickRage should store your <i>Subtitles</i> files.<br/>
+                        <b>NOTE:</b> Leave empty if you want store subtitle in episode path.
+                    </label>
                 </div>
             </div>
             <div class="row field-pair">
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                     <label class="component-title">Subtitle Find Frequency</label>
                 </div>
-                <input type="number" name="subtitles_finder_frequency"
-                       value="${sickrage.srCore.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
-                       class="form-control"/>
-                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">time in hours between scans
-                    (default: 1)
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-time"></span>
+                        </div>
+                        <input type="number" name="subtitles_finder_frequency"
+                               value="${sickrage.srCore.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
+                               placeholder="1"
+                               title="time in hours between scans"
+                               class="form-control"/>
+                    </div>
                 </div>
             </div>
             <div class="row field-pair">
@@ -88,7 +91,7 @@
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     <input type="checkbox" name="subtitles_history"
                            id="subtitles_history" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_HISTORY)]}/>
-                    <p>Log downloaded Subtitle on History page?</p>
+                    <label for="subtitles_history"><p>Log downloaded Subtitle on History page?</p></label>
                 </div>
             </div>
             <div class="row field-pair">
@@ -98,7 +101,7 @@
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     <input type="checkbox" name="subtitles_multi"
                            id="subtitles_multi" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_MULTI)]}/>
-                    <p>Append language codes to subtitle filenames?</p>
+                    <label for="subtitles_multi"><p>Append language codes to subtitle filenames?</p></label>
                 </div>
             </div>
             <div class="row field-pair">
@@ -108,8 +111,10 @@
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     <input type="checkbox" name="embedded_subtitles_all"
                            id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL)]}/>
-                    <p>Ignore subtitles embedded inside video file?</p>
-                    <p><b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!</p>
+                    <label for="embedded_subtitles_all">
+                        Ignore subtitles embedded inside video file?<br/>
+                        <b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!
+                    </label>
                 </div>
             </div>
             <div class="row field-pair">
@@ -119,45 +124,54 @@
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     <input type="checkbox" name="subtitles_hearing_impaired"
                            id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
-                    <p>Download hearing impaired style subtitles?</p>
+                    <label for="subtitles_hearing_impaired"><p>Download hearing impaired style subtitles?</p></label>
                 </div>
             </div>
             <div class="row field-pair">
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                     <label class="component-title">Extra Scripts</label>
                 </div>
-                <input type="text" name="subtitles_extra_scripts"
-                       value="<% '|'.join(sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
-                       class="form-control" autocapitalize="off"/>
-                <br/>
-                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                    <label class="component-title">&nbsp;</label>
-                </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <b>NOTE:</b>
-                    <ul>
-                        <li>See <a
-                                href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Subtitle%20Scripts"><font
-                                color='red'><b>Wiki</b></font></a> for a script arguments description.
-                        </li>
-                        <li>Additional scripts separated by <b>|</b>.</li>
-                        <li>Scripts are called after each episode has searched and downloaded subtitles.</li>
-                        <li>For any scripted languages, include the interpreter executable before the script. See
-                            the following example:
-                        </li>
+                    <div class="input-group input350">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-file"></span>
+                        </div>
+                        <input name="subtitles_extra_scripts" id="subtitles_extra_scripts"
+                               value="<% '|'.join(sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS) %>"
+                               class="form-control" autocapitalize="off"/>
+                    </div>
+                    <label for="subtitles_extra_scripts"><b>NOTE:</b>
                         <ul>
-                            <li>For Windows:
-                                <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre>
+                            <li>
+                                See <a href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Subtitle%20Scripts">
+                                <span style="color: red; "><b>Wiki</b></span></a> for a script arguments description.
                             </li>
-                            <li>For Linux:
-                                <pre>python /Script/test.py</pre>
+                            <li>Additional scripts separated by <b>|</b>.</li>
+                            <li>Scripts are called after each episode has searched and downloaded subtitles.</li>
+                            <li>For any scripted languages, include the interpreter executable before the script. See
+                                the following example:
                             </li>
+                            <ul>
+                                <li>
+                                    For Windows:
+                                    <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre>
+                                </li>
+                                <li>
+                                    For Linux:
+                                    <pre>python /Script/test.py</pre>
+                                </li>
+                            </ul>
                         </ul>
-                    </ul>
+                    </label>
                 </div>
             </div>
 
-            <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                </div>
+            </div>
+
         </fieldset>
     </div><!-- /tab-pane1 //-->
 
@@ -170,27 +184,38 @@
             <p class="note"><span style="font-size: 16px;">*</span> Web-scraping plugin</p>
         </div>
 
-        <fieldset class="tab-pane-list" style="margin-left: 50px; margin-top:36px">
-            <ul id="service_order_list">
-                % for curService in sickrage.subtitles.sortedServiceList():
-                    <li class="ui-state-default" id="${curService['name']}">
-                        <input type="checkbox" id="enable_${curService['name']}"
-                               class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
-                        <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
-                            <img src="${srWebRoot}/images/subtitles/${curService['image']}"
-                                 alt="${curService['url']}" title="${curService['url']}" width="16"
-                                 height="16" style="vertical-align:middle;"/>
-                        </a>
-                        <span style="vertical-align:middle;">${curService['name'].capitalize()}</span>
-                        <span class="ui-icon ui-icon-arrowthick-2-n-s pull-right"
-                              style="vertical-align:middle;"></span>
-                    </li>
-                % endfor
-            </ul>
+        <fieldset class="tab-pane-list">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul id="service_order_list">
+                        % for curService in sickrage.subtitles.sortedServiceList():
+                            <li class="ui-state-default" id="${curService['name']}">
+                                <input type="checkbox" id="enable_${curService['name']}"
+                                       class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
+                                <label for="enable_${curService['name']}">
+                                    <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
+                                        <img src="${srWebRoot}/images/subtitles/${curService['image']}"
+                                             alt="${curService['url']}" title="${curService['url']}" width="16"
+                                             height="16" style="vertical-align:middle;"/>
+                                    </a>
+                                    <span style="vertical-align:middle;">${curService['name'].capitalize()}</span>
+                                    <span class="ui-icon ui-icon-arrowthick-2-n-s pull-right"
+                                          style="vertical-align:middle;"></span>
+                                </label>
+                            </li>
+                        % endfor
+                    </ul>
+                </div>
+            </div>
+
             <input type="hidden" name="service_order" id="service_order"
                    value="<% ''.join(['%s:%d' % (x['name'], x['enabled']) for x in sickrage.subtitles.sortedServiceList()])%>"/>
 
-            <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                </div>
+            </div>
         </fieldset>
     </div><!-- /tab-pane2 //-->
     <div id="core-tab-pane3" class="tab-pane fade">
@@ -212,33 +237,44 @@
                 ##<div class="field-pair${(' hidden', '')[curService['enabled']}"> ## Need js to show/hide on save
 
                     <div class="row field-pair">
-                        <label class="nocheck" for="${curService['name']}_user">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${curService['name'].capitalize()}
-                                    User Name</label>
+                                <label class="component-title">${curService['name'].capitalize()} User Name</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <input type="text" name="${curService['name']}_user"
-                                       id="${curService['name']}_user"
-                                       value="${providerLoginDict[curService['name']]['user']}"
-                                       class="form-control" autocapitalize="off"/>
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-user"></span>
+                                    </div>
+                                    <input name="${curService['name']}_user"
+                                           id="${curService['name']}_user"
+                                           value="${providerLoginDict[curService['name']]['user']}"
+                                           title="${curService['name'].capitalize()} User Name"
+                                           class="form-control" autocapitalize="off"/>
+                                </div>
                             </div>
-                        </label>
-                        <label class="nocheck" for="${curService['name']}_pass">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${curService['name'].capitalize()} Password</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <input type="password" name="${curService['name']}_pass"
-                                       id="${curService['name']}_pass"
-                                       value="${providerLoginDict[curService['name']]['pass']}"
-                                       class="form-control" autocapitalize="off"/>
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-lock"></span>
+                                    </div>
+                                    <input type="password" name="${curService['name']}_pass"
+                                           id="${curService['name']}_pass"
+                                           value="${providerLoginDict[curService['name']]['pass']}"
+                                           title="${curService['name'].capitalize()} Password"
+                                           class="form-control" autocapitalize="off"/>
+                                </div>
                             </div>
-                        </label>
                     </div>
                 % endif
             % endfor
-            <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                </div>
+            </div>
         </fieldset>
     </div><!-- /tab-pane3 //-->
 </%block>
