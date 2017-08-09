@@ -1,6 +1,8 @@
 # Changelog
 
-- * 03b1c4c - 2017-08-08: Backlog Overview template is now responsive Fixed issues with subtitles missed template code 
+- * 277d303 - 2017-08-08: Release v9.0.73 
+- * 7c585ae - 2017-08-08: theTVDB API now automatically translates retrieved show/episode info if translation is available else defaults to english language 
+- * 7c23adc - 2017-08-08: Backlog Overview template is now responsive Fixed issues with subtitles missed template code 
 - * eb2f860 - 2017-08-08: Schedules template is now responsive 
 - * 735d13c - 2017-08-08: Add existing shows template is now responsive 
 - * fabbf63 - 2017-08-08: Web File Browser dialog box is now centered to screen correctly 

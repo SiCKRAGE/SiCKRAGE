@@ -264,6 +264,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
 
             lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
+            lINDEXER_API_PARMS['cache'] = False
             lINDEXER_API_PARMS['language'] = self.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
             sickrage.srCore.srLogger.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
