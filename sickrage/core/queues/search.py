@@ -85,7 +85,7 @@ class srSearchQueue(srQueue):
 
     def is_backlog_paused(self):
         # backlog priorities are NORMAL, this should be done properly somewhere
-        return self.min_priority >= srQueuePriorities.NORMAL
+        return not sickrage.srCore.srScheduler.get_job('BACKLOG').next_run_time
 
     def is_manualsearch_in_progress(self):
         # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!

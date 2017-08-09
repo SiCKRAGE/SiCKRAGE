@@ -1,5 +1,6 @@
 # Changelog
 
+- * 014f649 - 2017-08-09: Status template is now responsive 
 - * 277d303 - 2017-08-08: Release v9.0.73 
 - * 7c585ae - 2017-08-08: theTVDB API now automatically translates retrieved show/episode info if translation is available else defaults to english language 
 - * 7c23adc - 2017-08-08: Backlog Overview template is now responsive Fixed issues with subtitles missed template code 
