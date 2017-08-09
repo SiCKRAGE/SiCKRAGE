@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f853bf - 2017-08-08: Release v9.0.72 
+- * ec635dd - 2017-08-08: theTVDB API now automatically translates retrieved show/episode info if translation is available else defaults to english language 
+- * e679b10 - 2017-08-08: Release v9.0.72 
 - * 11ae327 - 2017-08-08: Fixed issue with magnet links and download station for Synology 
 - * adb6543 - 2017-08-07: Release v9.0.71 
 - * c8dbc4b - 2017-08-07: Fixed issues with retrieving show and episode images from indexer when show is not english 
