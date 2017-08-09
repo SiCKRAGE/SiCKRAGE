@@ -22,7 +22,6 @@ import ast
 import base64
 import ctypes
 import datetime
-import errno
 import hashlib
 import httplib
 import io
@@ -1200,20 +1199,9 @@ def touchFile(fname, atime=None):
     :return: True on success, False on failure
     """
 
-    if atime is not None:
-        try:
-            with io.open(fname, 'a'):
-                os.utime(fname, (atime, atime))
-                return True
-        except OSError as e:
-            if e.errno == errno.ENOSYS:
-                sickrage.srCore.srLogger.debug(
-                    "File air date stamping not available on your OS. Please disable setting")
-            elif e.errno == errno.EACCES:
-                sickrage.srCore.srLogger.error(
-                    "File air date stamping failed(Permission denied). Check permissions for file: %s" % fname)
-            else:
-                sickrage.srCore.srLogger.error("File air date stamping failed. The error is: %r" % e)
+    if atime and fname and os.path.isfile(fname):
+        os.utime(fname, (atime, atime))
+        return True
 
     return False
 

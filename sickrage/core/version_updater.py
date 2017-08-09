@@ -49,7 +49,7 @@ class srVersionUpdater(object):
         return self.find_install_type()
 
     def run(self, force=False):
-        if self.amActive or sickrage.DEVELOPER:
+        if self.amActive:
             return
 
         self.amActive = True
@@ -58,18 +58,16 @@ class srVersionUpdater(object):
         threading.currentThread().setName(self.name)
 
         try:
-            if self.updater:
-                if self.check_for_new_version(force):
-                    if sickrage.srCore.srConfig.AUTO_UPDATE:
-                        sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
-                        sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
-                        if self.update():
-                            sickrage.srCore.srLogger.info("Update was successful!")
-                            sickrage.srCore.srNotifications.message('Update was successful')
-                            sickrage.srCore.io_loop.stop()
-                        else:
-                            sickrage.srCore.srLogger.info("Update failed!")
-                            sickrage.srCore.srNotifications.message('Update failed!')
+            if self.check_for_new_version(force) and sickrage.srCore.srConfig.AUTO_UPDATE:
+                sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
+                sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
+                if self.update():
+                    sickrage.srCore.srLogger.info("Update was successful!")
+                    sickrage.srCore.srNotifications.message('Update was successful')
+                    sickrage.srCore.io_loop.stop()
+                else:
+                    sickrage.srCore.srLogger.info("Update failed!")
+                    sickrage.srCore.srNotifications.message('Update failed!')
         finally:
             self.amActive = False
 
@@ -121,33 +119,13 @@ class srVersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
-        def postprocessor_safe():
-            if not sickrage.srCore.started:
-                return True
-
-            if not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
-                sickrage.srCore.srLogger.debug("We can proceed with the update. Post-Processor is not running")
-                return True
-            else:
-                sickrage.srCore.srLogger.debug("We can't proceed with the update. Post-Processor is running")
-                return False
-
-        def showupdate_safe():
-            if not sickrage.srCore.started:
-                return True
-
-            if not sickrage.srCore.SHOWUPDATER.amActive:
-                sickrage.srCore.srLogger.debug("We can proceed with the update. Shows are not being updated")
-                return True
-            else:
-                sickrage.srCore.srLogger.debug("We can't proceed with the update. Shows are being updated")
-                return False
-
-        if postprocessor_safe() and showupdate_safe():
-            sickrage.srCore.srLogger.debug("Safely proceeding with auto update")
+        if not sickrage.srCore.started:
             return True
 
-        sickrage.srCore.srLogger.debug("Unsafe to auto update currently, aborted")
+        if not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
+            return True
+
+        sickrage.srCore.srLogger.debug("We can't proceed with the update. Post-Processor is running")
 
     @staticmethod
     def find_install_type():
@@ -186,7 +164,7 @@ class srVersionUpdater(object):
             return True
 
     def update(self):
-        if self.backup() and self.updater:
+        if self.updater and self.backup():
             # check for updates
             if self.updater.need_update():
                 if self.updater.update():
@@ -395,7 +373,8 @@ class GitUpdateManager(UpdateManager):
             # self.clean() # This is removing user data and backups
             self.reset()
 
-        _, _, exit_status = self._run_git(self._git_path, 'pull -f {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE, self.current_branch))
+        _, _, exit_status = self._run_git(self._git_path, 'pull -f {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
+                                                                                 self.current_branch))
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from GIT servers")
             if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
@@ -451,12 +430,14 @@ class GitUpdateManager(UpdateManager):
         return False
 
     def get_remote_url(self):
-        url, _, exit_status = self._run_git(self._git_path, 'remote get-url {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
+        url, _, exit_status = self._run_git(self._git_path,
+                                            'remote get-url {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         return ("", url)[exit_status == 0 and url is not None]
 
     def set_remote_url(self):
         if not sickrage.DEVELOPER:
-            self._run_git(self._git_path, 'remote set-url {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE, sickrage.srCore.srConfig.GIT_REMOTE_URL))
+            self._run_git(self._git_path, 'remote set-url {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
+                                                                        sickrage.srCore.srConfig.GIT_REMOTE_URL))
 
     @staticmethod
     def install_requirements():
@@ -470,11 +451,13 @@ class GitUpdateManager(UpdateManager):
 
     @property
     def remote_branches(self):
-        branches, _, exit_status = self._run_git(self._git_path, 'ls-remote --heads {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
+        branches, _, exit_status = self._run_git(self._git_path,
+                                                 'ls-remote --heads {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
 
         return []
+
 
 class SourceUpdateManager(UpdateManager):
     def __init__(self):

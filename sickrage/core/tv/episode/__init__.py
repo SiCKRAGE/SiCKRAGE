@@ -978,12 +978,12 @@ class TVEpisode(object):
                         str(self.show.indexerid) + ": Changed modify date of " + os.path.basename(self.location)
                         + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
                 else:
-                    sickrage.srCore.srLogger.error(
+                    sickrage.srCore.srLogger.warning(
                         str(self.show.indexerid) + ": Unable to modify date of " + os.path.basename(
                             self.location)
                         + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
             except Exception:
-                sickrage.srCore.srLogger.error(
+                sickrage.srCore.srLogger.warning(
                     str(self.show.indexerid) + ": Failed to modify date of '" + os.path.basename(self.location)
                     + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
 

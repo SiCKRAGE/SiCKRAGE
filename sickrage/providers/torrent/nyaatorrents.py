@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class NyaaProvider(TorrentProvider):
     def __init__(self):
-        super(NyaaProvider, self).__init__("NyaaTorrents", 'http://www.nyaa.se', False)
+        super(NyaaProvider, self).__init__("NyaaTorrents", 'http://nyaa.si', False)
 
         self.supports_backlog = True
 
@@ -85,7 +85,7 @@ class NyaaProvider(TorrentProvider):
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode != 'RSS':
                             sickrage.srCore.srLogger.debug(
-                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
                                     title, seeders, leechers))
                         continue
 

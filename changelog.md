@@ -1,6 +1,11 @@
 # Changelog
 
-- * 23f1b80 - 2017-08-08: Release v9.0.73 
+- * 1985580 - 2017-08-09: Release v9.0.74 
+- * 69b26f4 - 2017-08-09: Misc version updater code cleanup 
+- * 478d953 - 2017-08-09: Fixed issue #45 - Update fails when SHOWUPDATER is running 
+- * 580ccdb - 2017-08-09: Fixed issue #47 - File air date stamping failed 
+- * 194d14e - 2017-08-09: #46 - Updated Nyatorrent provider url to nyaa.si 
+- * 277d303 - 2017-08-08: Release v9.0.73 
 - * 7c585ae - 2017-08-08: theTVDB API now automatically translates retrieved show/episode info if translation is available else defaults to english language 
 - * e679b10 - 2017-08-08: Release v9.0.72 
 - * 11ae327 - 2017-08-08: Fixed issue with magnet links and download station for Synology 
