@@ -1,6 +1,7 @@
 # Changelog
 
-- * 87bc934 - 2017-08-09: Episode Statues template is now responsive 
+- * 9ff6acb - 2017-08-09: Add shows template is now responsive 
+- * db01cbe - 2017-08-09: Episode Statues template is now responsive 
 - * 1717a0a - 2017-08-09: Manage searches template is now responisve 
 - * 194d14e - 2017-08-09: #46 - Updated Nyatorrent provider url to nyaa.si 
 - * 357e456 - 2017-08-09: Status template is now responsive 
