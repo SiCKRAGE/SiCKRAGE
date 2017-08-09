@@ -1605,8 +1605,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                    lINDEXER_API_PARMS['language'] = self.lang
+                lINDEXER_API_PARMS['language'] = self.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
                 lINDEXER_API_PARMS['actors'] = False
                 lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
@@ -1631,8 +1630,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                    lINDEXER_API_PARMS['language'] = self.lang
+                lINDEXER_API_PARMS['language'] = self.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
                 lINDEXER_API_PARMS['actors'] = False
 

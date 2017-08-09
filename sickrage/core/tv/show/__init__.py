@@ -685,8 +685,7 @@ class TVShow(object):
 
         lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
 
-        if self.lang:
-            lINDEXER_API_PARMS['language'] = self.lang
+        lINDEXER_API_PARMS['language'] = self.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         if self.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
@@ -735,8 +734,7 @@ class TVShow(object):
         lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
         lINDEXER_API_PARMS['cache'] = cache
 
-        if self.lang:
-            lINDEXER_API_PARMS['language'] = self.lang
+        lINDEXER_API_PARMS['language'] = self.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         if self.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
@@ -1009,8 +1007,7 @@ class TVShow(object):
                 lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
                 lINDEXER_API_PARMS['cache'] = cache
 
-                if self.lang:
-                    lINDEXER_API_PARMS['language'] = self.lang
+                lINDEXER_API_PARMS['language'] = self.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
 
                 if self.dvdorder != 0:
                     lINDEXER_API_PARMS['dvdorder'] = True

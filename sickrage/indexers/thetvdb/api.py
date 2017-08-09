@@ -319,6 +319,10 @@ class Tvdb:
         self.config['api']['imagesParams'] = "/series/{id}/images/query/params"
         self.config['api']['imagesPrefix'] = "http://thetvdb.com/banners/{id}"
 
+        # api-v2 language
+        self.config['api']['lang'] = 'en'
+
+        # language to translate into
         self.config['language'] = language
         if language not in self.languages:
             self.config['language'] = None
@@ -474,7 +478,7 @@ class Tvdb:
             try:
                 imagesEt = self._request('get',
                                          self.config['api']['images'].format(id=sid, type=type),
-                                         lang='en')['data']
+                                         self.config['api']['lang'])['data']
             except tvdb_error:
                 continue
 
@@ -550,13 +554,23 @@ class Tvdb:
         sickrage.srCore.srLogger.debug('Getting all series data for {}'.format(sid))
 
         try:
-            seriesInfoEt = self._request('get', self.config['api']['series'].format(id=sid))['data']
+            # get series info in english
+            series_info = self._request('get',
+                                        self.config['api']['series'].format(id=sid),
+                                        lang=self.config['api']['lang']
+                                        )['data']
+
+            # translate if required to provided language
+            if not self.config['language'] == self.config['api']['lang']:
+                series_info.update((k, v) for k, v in self._request('get',
+                                                                    self.config['api']['series'].format(id=sid)
+                                                                    )['data'].iteritems() if v)
         except Exception:
             sickrage.srCore.srLogger.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
 
         # get series data
-        for k, v in seriesInfoEt.items():
+        for k, v in series_info.items():
             if v is not None:
                 if k in ['banner', 'fanart', 'poster']:
                     v = self.config['api']['imagesPrefix'].format(id=v)
@@ -580,8 +594,22 @@ class Tvdb:
         episodes = []
         while True:
             try:
-                episodes += self._request('get', self.config['api']['episodes'].format(id=sid), params={'page': p})[
-                    'data']
+                episode_info = self._request('get',
+                                             self.config['api']['episodes'].format(id=sid),
+                                             lang=self.config['api']['lang'],
+                                             params={'page': p}
+                                             )['data']
+
+                # translate if required to provided language
+                if not self.config['language'] == self.config['api']['lang']:
+                    for i, x in enumerate(episode_info):
+                        x.update((k, v) for k, v in self._request('get',
+                                                                  self.config['api']['episodes'].format(id=sid),
+                                                                  )['data'][i].iteritems() if v)
+                        episode_info[i] = x
+
+                episodes += episode_info
+
                 p += 1
             except tvdb_error:
                 break
