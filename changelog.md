@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7161852 - 2017-08-09: Fixed issue #45 - Update fails when SHOWUPDATER is running 
+- * 6fd976c - 2017-08-09: Misc version updater code cleanup 
+- * 478d953 - 2017-08-09: Fixed issue #45 - Update fails when SHOWUPDATER is running 
 - * 580ccdb - 2017-08-09: Fixed issue #47 - File air date stamping failed 
 - * 194d14e - 2017-08-09: #46 - Updated Nyatorrent provider url to nyaa.si 
 - * 277d303 - 2017-08-08: Release v9.0.73 
