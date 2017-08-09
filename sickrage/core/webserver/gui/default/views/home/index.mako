@@ -4,7 +4,7 @@
     import calendar
 
     import sickrage
-    from sickrage.core.helpers import srdatetime
+    from sickrage.core.helpers import srdatetime, pretty_filesize, get_size
     from sickrage.core.updaters import tz_updater
     from sickrage.core.media.util import showImage
 %>
@@ -234,6 +234,7 @@
                         <th>Network</th>
                         <th>Quality</th>
                         <th>Downloads</th>
+                        <th>Size</th>
                         <th>Active</th>
                         <th>Status</th>
                     </tr>
@@ -242,6 +243,7 @@
                 <tfoot>
                     <tr>
                         <th rowspan="1" colspan="1" align="center"><a href="${srWebRoot}/home/addShows/">Add ${('Show', 'Anime')[curListType == 'Anime']}</a></th>
+                        <th>&nbsp;</th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
@@ -270,6 +272,7 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
                                 </tr>
                             % endif
                         % endfor
@@ -285,6 +288,7 @@
                             cur_snatched = 0
                             cur_downloaded = 0
                             cur_total = 0
+                            show_size = 0
                             download_stat_tip = ''
 
                             if curShow.indexerid in show_stat:
@@ -302,6 +306,8 @@
                                 cur_total = show_stat[curShow.indexerid]['ep_total']
                                 if not cur_total:
                                     cur_total = 0
+
+                                show_size = get_size(curShow.location.encode('utf-8'))
 
                             if cur_total != 0:
                                 download_stat = str(cur_downloaded)
@@ -397,6 +403,8 @@
                                 <div class="progressbar" style="position:relative" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}" data-progress-text="${download_stat}" data-progress-tip="${download_stat_tip}"></div>
                                 ## <span class="visible-print-inline">${download_stat}</span>
                             </td>
+
+                            <td align="center" data-show-size="${show_size}">${pretty_filesize(show_size)}</td>
 
                             <td align="center">
                                 <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>

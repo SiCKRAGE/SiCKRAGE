@@ -1,6 +1,7 @@
 # Changelog
 
-- * d6d5264 - 2017-08-09: Add new shows template is responsive 
+- * 33e926a - 2017-08-09: Added sortable show size column to show list template 
+- * 0d5a641 - 2017-08-09: Add new shows template is responsive 
 - * 7a7bae2 - 2017-08-09: Add shows template is now responsive 
 - * db01cbe - 2017-08-09: Episode Statues template is now responsive 
 - * 1717a0a - 2017-08-09: Manage searches template is now responisve 

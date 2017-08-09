@@ -1515,7 +1515,7 @@ jQuery(document).ready(function ($) {
                 });
 
                 $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
-                    sortList: [[6, 1], [2, 0]],
+                    sortList: [[7, 1], [2, 0]],
                     textExtraction: {
                         0: function (node) {
                             return $(node).find('time').attr('datetime');
@@ -1533,10 +1533,13 @@ jQuery(document).ready(function ($) {
                             return $(node).find("span:first").text();
                         },
                         6: function (node) {
+                            return $(node).data('show-size');
+                        },
+                        7: function (node) {
                             return $(node).find("img").attr("alt");
                         }
                     },
-                    widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector', 'reflow'],
+                    widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector'],
                     headers: (function () {
                         if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
                             return {
@@ -1545,7 +1548,8 @@ jQuery(document).ready(function ($) {
                                 2: {sorter: 'loadingNames'},
                                 4: {sorter: 'quality'},
                                 5: {sorter: 'eps'},
-                                6: {filter: 'parsed'}
+                                6: {sorter: 'digit'},
+                                7: {filter: 'parsed'}
                             };
                         } else {
                             return {
@@ -1553,7 +1557,8 @@ jQuery(document).ready(function ($) {
                                 1: {sorter: 'realISODate'},
                                 2: {sorter: 'loadingNames'},
                                 4: {sorter: 'quality'},
-                                5: {sorter: 'eps'}
+                                5: {sorter: 'eps'},
+                                6: {sorter: 'digit'}
                             };
                         }
                     }()),
