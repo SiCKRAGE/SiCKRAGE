@@ -1,5 +1,6 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
+    import datetime
     import sickrage
     from sickrage.core.queues.show import ShowQueueActions
     from sickrage.core.common import dateTimeFormat
@@ -33,8 +34,8 @@
                         <th>Scheduler</th>
                         <th>Enabled</th>
                         <th>Active</th>
-                        <th>Start Time</th>
                         <th>Cycle Time</th>
+                        <th>Next Run</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,14 +71,19 @@
                                 % endtry
                                 % endif
                                 % if job:
-                                % if job.trigger.start_date:
-                                    <td align="center">${job.trigger.start_date}</td>
-                                % else:
-                                    <td align="center"></td>
-                                % endif
                                 <% cycleTime = (job.trigger.interval.microseconds + (job.trigger.interval.seconds + job.trigger.interval.days * 24 * 3600) * 10**6) / 10**6 %>
                                     <td align="right"
                                         data-seconds="${cycleTime}">${pretty_time_delta(cycleTime)}</td>
+                                % if job.next_run_time:
+                                <%
+                                    x = job.next_run_time - datetime.datetime.now(job.next_run_time.tzinfo)
+                                    timeLeft = (x.microseconds + (x.seconds + x.days * 24 * 3600) * 10**6) / 10**6
+                                %>
+                                    <td align="right"
+                                        data-seconds="${timeLeft}">${pretty_time_delta(timeLeft)}</td>
+                                % else:
+                                    <td align="center"></td>
+                                % endif
                                 % endif
                             </tr>
                             <% del job %>
