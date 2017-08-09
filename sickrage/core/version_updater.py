@@ -121,33 +121,13 @@ class srVersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
-        def postprocessor_safe():
-            if not sickrage.srCore.started:
-                return True
-
-            if not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
-                sickrage.srCore.srLogger.debug("We can proceed with the update. Post-Processor is not running")
-                return True
-            else:
-                sickrage.srCore.srLogger.debug("We can't proceed with the update. Post-Processor is running")
-                return False
-
-        def showupdate_safe():
-            if not sickrage.srCore.started:
-                return True
-
-            if not sickrage.srCore.SHOWUPDATER.amActive:
-                sickrage.srCore.srLogger.debug("We can proceed with the update. Shows are not being updated")
-                return True
-            else:
-                sickrage.srCore.srLogger.debug("We can't proceed with the update. Shows are being updated")
-                return False
-
-        if postprocessor_safe() and showupdate_safe():
-            sickrage.srCore.srLogger.debug("Safely proceeding with auto update")
+        if not sickrage.srCore.started:
             return True
 
-        sickrage.srCore.srLogger.debug("Unsafe to auto update currently, aborted")
+        if not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
+            return True
+
+        sickrage.srCore.srLogger.debug("We can't proceed with the update. Post-Processor is running")
 
     @staticmethod
     def find_install_type():
