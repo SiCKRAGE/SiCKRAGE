@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1985580 - 2017-08-09: Release v9.0.74 
+- * 0d999d9 - 2017-08-09: Misc changes 
+- * 25ba84f - 2017-08-09: Release v9.0.74 
 - * 69b26f4 - 2017-08-09: Misc version updater code cleanup 
 - * 478d953 - 2017-08-09: Fixed issue #45 - Update fails when SHOWUPDATER is running 
 - * 580ccdb - 2017-08-09: Fixed issue #47 - File air date stamping failed 

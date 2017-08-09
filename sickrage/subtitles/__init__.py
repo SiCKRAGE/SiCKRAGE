@@ -135,12 +135,8 @@ def download_subtitles(episode):
             run_subs_extra_scripts(episode, found_subtitles, video,
                                    single=not sickrage.srCore.srConfig.SUBTITLES_MULTI)
 
-        new_subtitles = sorted(
-            {subtitle.language.opensubtitles for subtitle in found_subtitles}
-        )
-
+        new_subtitles = sorted({subtitle.language.opensubtitles for subtitle in found_subtitles})
         current_subtitles = sorted({subtitle for subtitle in new_subtitles + existing_subtitles if subtitle})
-
         if not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(found_subtitles) == 1:
             new_code = found_subtitles[0].language.opensubtitles
             if new_code not in existing_subtitles:

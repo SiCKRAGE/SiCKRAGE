@@ -30,7 +30,7 @@ import markdown2
 from CodernityDB.database import RecordNotFound
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
-from tornado.escape import json_encode, recursive_unicode, json_decode
+from tornado.escape import json_encode, json_decode
 from tornado.web import RequestHandler, authenticated
 
 import sickrage
@@ -186,11 +186,15 @@ class BaseHandler(RequestHandler):
         return self.render_string(template_name, **kwargs)
 
     def route(self, function, **kwargs):
-        # threading.currentThread().setName('WEB')
-        return recursive_unicode(function(
-            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
-                    recursive_unicode(kwargs.items())])
-        ))
+        for arg, value in kwargs.items():
+            if len(value) == 1:
+                kwargs[arg] = value[0]
+
+        return function(**kwargs)
+        #return recursive_unicode(function(
+        #    **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
+        #            recursive_unicode(kwargs.items())])
+        #))
 
 
 class WebHandler(BaseHandler):
@@ -205,8 +209,7 @@ class WebHandler(BaseHandler):
             getattr(self, 'index', None)
         )
 
-        if method:
-            self.finish(self.route(method, **self.request.arguments))
+        if method: self.finish(self.route(method, **self.request.arguments))
 
 
 class LoginHandler(BaseHandler):
