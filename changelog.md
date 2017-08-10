@@ -1,22 +1,70 @@
 # Changelog
 
-- * 1985580 - 2017-08-09: Release v9.0.74 
+- * 26a3956 - 2017-08-10: Release v9.0.75 
+- * 0543be7 - 2017-08-10: Edit show template is now responsive 
+- * d32f7e7 - 2017-08-10: Edit show template is now responsive 
+- * c41008e - 2017-08-10: Fixed issue displaying show banner 
+- * d5fd372 - 2017-08-10: Speedup app startup 
+- * b7cbeba - 2017-08-10: Misc code changes 
+- * e0d1e84 - 2017-08-10: Misc code changes 
+- * 2409d7a - 2017-08-10: Misc code changes 
+- * fdd5acd - 2017-08-10: Misc code changes 
+- * 9078909 - 2017-08-10: Misc code changes 
+- * 3a9ae65 - 2017-08-10: Misc code changes 
+- * 0f42df7 - 2017-08-10: Web views are async now 
+- * bdcebe1 - 2017-08-09: Core config code changes 
+- * ff3dca8 - 2017-08-09: Misc changes 
+- * 25ba84f - 2017-08-09: Release v9.0.74 
 - * 69b26f4 - 2017-08-09: Misc version updater code cleanup 
 - * 478d953 - 2017-08-09: Fixed issue #45 - Update fails when SHOWUPDATER is running 
 - * 580ccdb - 2017-08-09: Fixed issue #47 - File air date stamping failed 
+- * 73e6130 - 2017-08-09: Added sortable show size column to show list template 
+- * 0d5a641 - 2017-08-09: Add new shows template is responsive 
+- * 7a7bae2 - 2017-08-09: Add shows template is now responsive 
+- * db01cbe - 2017-08-09: Episode Statues template is now responsive 
+- * 1717a0a - 2017-08-09: Manage searches template is now responisve 
 - * 194d14e - 2017-08-09: #46 - Updated Nyatorrent provider url to nyaa.si 
+- * 357e456 - 2017-08-09: Status template is now responsive 
 - * 277d303 - 2017-08-08: Release v9.0.73 
 - * 7c585ae - 2017-08-08: theTVDB API now automatically translates retrieved show/episode info if translation is available else defaults to english language 
+- * 7c23adc - 2017-08-08: Backlog Overview template is now responsive Fixed issues with subtitles missed template code 
+- * eb2f860 - 2017-08-08: Schedules template is now responsive 
+- * 735d13c - 2017-08-08: Add existing shows template is now responsive 
+- * fabbf63 - 2017-08-08: Web File Browser dialog box is now centered to screen correctly 
+- * 869ff4e - 2017-08-08: Post-processing template is now responsive 
+- * d20f497 - 2017-08-08: Misc template code cleanups 
+- * a5a8a34 - 2017-08-08: Added glyphicon to rootdirs template 
+- * 738d613 - 2017-08-08: Updating post-processing template responsive code 
+- * a18a8e8 - 2017-08-08: Added icons to selectboxes 
+- * ea63857 - 2017-08-08: Post-processing config template is now responsive 
+- * d8b5d7a - 2017-08-08: Cleaned up navbar CSS code 
+- * 668a726 - 2017-08-08: Misc template cleanup 
 - * e679b10 - 2017-08-08: Release v9.0.72 
 - * 11ae327 - 2017-08-08: Fixed issue with magnet links and download station for Synology 
+- * b681895 - 2017-08-08: Providers config template is now responsive 
+- * 92b7582 - 2017-08-08: Misc template tweaks 
+- * 80bda17 - 2017-08-08: Quality sizes config template is now responsive 
+- * ad43486 - 2017-08-07: Subtitles config template is now responsive 
 - * adb6543 - 2017-08-07: Release v9.0.71 
 - * c8dbc4b - 2017-08-07: Fixed issues with retrieving show and episode images from indexer when show is not english 
 - * 062834a - 2017-08-07: Release v9.0.70 
 - * 833f977 - 2017-08-07: Indexer language for API uses default indexer language from settings when show has no language set 
+- * bd9752f - 2017-08-07: Misc template code cleanup 
+- * 8738534 - 2017-08-07: Added glyphicon&#x27;s to General config template 
+- * 4a1a8ab - 2017-08-07: Added glyphicon&#x27;s to Anime config template 
+- * 3de15cf - 2017-08-07: JS code checks first if pushbullet is enabled before retrieving device list on page refreshes 
 - * 24e488c - 2017-08-07: Release v9.0.69 
 - * 244646a - 2017-08-07: Fixed issues with sending torrents to Synology DownloadStation and added better error handling Improved error handling for web server when same port number is in use 
+- * a292f7e - 2017-08-07: Added in font awesome icons Search config template is now responsive 
+- * 0f4649c - 2017-08-06: Search client config template is now responsive 
+- * 9db243e - 2017-08-06: Config info page is now responsive 
+- * 08a6479 - 2017-08-06: Centered submenu buttons to top of page 
+- * c6b39cc - 2017-08-06: Misc responsive code cleanup Root directories template is now responsive 
 - * 0cea9ef - 2017-08-06: Release v9.0.68 
 - * 39a0025 - 2017-08-06: Fixed issues with sending torrents to uTorrent and Deluge 
+- * 93f109e - 2017-08-06: Notifications config template is now responsive 
+- * f982990 - 2017-08-05: Added new config layout template Anime config template is responsive Backup and Restore template is responsive Cleaned up main layout template including core css styles 
+- * d0b1f6b - 2017-08-05: Updated general config template to be responsive 
 - * 6774207 - 2017-08-05: Release v9.0.67 
 - * 1d7b71a - 2017-08-05: Fixed issue #20 - rar not working 
 - * 859f714 - 2017-08-05: Release v9.0.66 
@@ -67,6 +115,7 @@
 - * 1f744d8 - 2017-07-28: All entries from provider RSS feeds are now cached for faster lookups 
 - * 1e09553 - 2017-07-28: Fixed issue with Trakt API code 
 - * f86e64d - 2017-07-28: Added fanart backgrounds to display show page 
+- * 3d2c071 - 2017-07-28: Config -&gt; General is now responsive 
 - * 2ed40fa - 2017-07-27: Added background fanart when displaying shows Made config general template responsive Added web view for getting poster urls 
 - * 815ebae - 2017-07-27: v9.0.33 
 - * 2c33300 - 2017-07-27: Added custom metadata option for subtitles 

@@ -1,7 +1,10 @@
 <%inherit file="../layouts/main.mako"/>
-
 <%block name="content">
-    <p>A mako error has occured.</p>
+    <p>
+        A mako error has occured.<br>
+        If this happened during an update a simple page refresh may be the solution.<br>
+        Mako errors that happen during updates may be a one time error if there were significant ui changes.
+    </p>
     <hr>
     <a href="#mako-error" class="btn btn-default" data-toggle="collapse">Show/Hide Error</a>
     <div id="mako-error" class="collapse">

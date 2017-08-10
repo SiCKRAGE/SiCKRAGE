@@ -155,8 +155,8 @@ class ApiHandler(RequestHandler):
         ))
 
     def _out_as_image(self, _dict):
-        self.set_header('Content-Type', _dict['image'].get_media_type())
-        return _dict['image'].get_media_bytes
+        self.set_header('Content-Type', _dict['image'].type)
+        return _dict['image'].content
 
     def _out_as_json(self, _dict):
         self.set_header("Content-Type", "application/json;charset=UTF-8")

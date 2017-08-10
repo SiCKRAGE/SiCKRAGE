@@ -4,7 +4,7 @@
     import calendar
 
     import sickrage
-    from sickrage.core.helpers import srdatetime
+    from sickrage.core.helpers import srdatetime, pretty_filesize, get_size
     from sickrage.core.updaters import tz_updater
     from sickrage.core.media.util import showImage
 %>
@@ -164,7 +164,7 @@
                     %>
                     <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
                         <div class="show-image">
-                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
+                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}" /></a>
                         </div>
 
                         <div class="progressbar" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
@@ -207,7 +207,7 @@
                                 <td class="show-table">
                                     % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
                                         % if curShow.network:
-                                            <span title="${curShow.network}"><img class="show-network-image" src="${srWebRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
+                                            <span title="${curShow.network}"><img class="show-network-image" src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}" alt="${curShow.network}" title="${curShow.network}" /></span>
                                         % else:
                                             <span title="No Network"><img class="show-network-image" src="${srWebRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
                                         % endif
@@ -234,6 +234,7 @@
                         <th>Network</th>
                         <th>Quality</th>
                         <th>Downloads</th>
+                        <th>Size</th>
                         <th>Active</th>
                         <th>Status</th>
                     </tr>
@@ -242,6 +243,7 @@
                 <tfoot>
                     <tr>
                         <th rowspan="1" colspan="1" align="center"><a href="${srWebRoot}/home/addShows/">Add ${('Show', 'Anime')[curListType == 'Anime']}</a></th>
+                        <th>&nbsp;</th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
@@ -270,6 +272,7 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
                                 </tr>
                             % endif
                         % endfor
@@ -285,6 +288,7 @@
                             cur_snatched = 0
                             cur_downloaded = 0
                             cur_total = 0
+                            show_size = 0
                             download_stat_tip = ''
 
                             if curShow.indexerid in show_stat:
@@ -302,6 +306,8 @@
                                 cur_total = show_stat[curShow.indexerid]['ep_total']
                                 if not cur_total:
                                     cur_total = 0
+
+                                show_size = get_size(curShow.location.encode('utf-8'))
 
                             if cur_total != 0:
                                 download_stat = str(cur_downloaded)
@@ -354,7 +360,7 @@
                                 <td class="tvShow" align="left">
                                     <div class="imgsmallposter ${sickrage.srCore.srConfig.HOME_LAYOUT}">
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
-                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
+                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
                                                  alt="${curShow.indexerid}"/>
                                         </a>
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
@@ -365,7 +371,7 @@
                                     <span style="display: none;">${curShow.name}</span>
                                     <div class="imgbanner ${sickrage.srCore.srConfig.HOME_LAYOUT}">
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
-                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner')}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
+                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}" class="${sickrage.srCore.srConfig.HOME_LAYOUT}"
                                                  alt="${curShow.indexerid}" title="${curShow.name}"/>
                                         </a>
                                     </div>
@@ -377,7 +383,7 @@
                             % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
                                 <td align="center">
                                     % if curShow.network:
-                                        <span title="${curShow.network}"><img id="network" width="54" height="27" src="${srWebRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
+                                        <span title="${curShow.network}"><img id="network" width="54" height="27" src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}" alt="${curShow.network}" title="${curShow.network}" /></span>
                                         <span class="visible-print-inline">${curShow.network}</span>
                                     % else:
                                         <span title="No Network"><img id="network" width="54" height="27" src="${srWebRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
@@ -397,6 +403,8 @@
                                 <div class="progressbar" style="position:relative" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}" data-progress-text="${download_stat}" data-progress-tip="${download_stat_tip}"></div>
                                 ## <span class="visible-print-inline">${download_stat}</span>
                             </td>
+
+                            <td align="center" data-show-size="${show_size}">${pretty_filesize(show_size)}</td>
 
                             <td align="center">
                                 <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>

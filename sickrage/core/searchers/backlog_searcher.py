@@ -39,7 +39,7 @@ class srBacklogSearcher(object):
         self._resetPI()
 
     def run(self, force=False):
-        if self.amActive or sickrage.DEVELOPER and not force:
+        if self.amActive or sickrage.srCore.srConfig.DEVELOPER and not force:
             return
 
         # set thread name

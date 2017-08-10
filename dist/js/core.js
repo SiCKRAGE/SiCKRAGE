@@ -87,6 +87,25 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
+                // tooltips
+                $('[title!=""]').qtip({
+                    position: {
+                        viewport: $(window),
+                        my: 'left center',
+                        adjust: {
+                            y: -10,
+                            x: 2
+                        }
+                    },
+                    style: {
+                        tip: {
+                            corner: true,
+                            method: 'polygon'
+                        },
+                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
+                    }
+                });
+
                 // init scrollUp
                 $.scrollUp({
                     animation: 'fade',
@@ -265,90 +284,14 @@ jQuery(document).ready(function ($) {
                     text: 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>'
                 });
 
-                $('a.removeshow').confirm({
-                    title: 'Remove Show',
-                    text: 'Are you sure you want to remove ' +
-                    '<span class="footerhighlight">' +
-                    $('#showtitle').data('showname') +
+                $("a.removeshow").confirm({
+                    title: "Remove Show",
+                    text: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
                     '</span> from the database?<br><br>' +
                     '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
                     '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
                     confirm: function (e) {
-                        location.href = e.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
-                    }
-                });
-
-                // plot tooltips
-                $('.plotInfo').qtip({
-                    content: {
-                        attr: 'data-tooltip'
-                    },
-                    position: {
-                        viewport: $(window),
-                        my: 'left center',
-                        adjust: {
-                            y: -10,
-                            x: 2
-                        }
-                    },
-                    style: {
-                        tip: {
-                            corner: true,
-                            method: 'polygon'
-                        },
-                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
-                    }
-                });
-
-                // scene exception tooltips
-                $('.title a').qtip({
-                    content: {
-                        attr: 'data-tooltip'
-                    },
-                    show: {
-                        solo: true
-                    },
-                    position: {
-                        viewport: $(window),
-                        my: 'bottom center',
-                        at: 'top center',
-                        adjust: {
-                            y: 10,
-                            x: 0
-                        }
-                    },
-                    style: {
-                        tip: {
-                            corner: true,
-                            method: 'polygon'
-                        },
-                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
-                    }
-                });
-
-                // rating tooltips
-                $('.imdbstars').qtip({
-                    content: {
-                        attr: 'data-tooltip'
-                    },
-                    show: {
-                        solo: true
-                    },
-                    position: {
-                        viewport: $(window),
-                        my: 'right center',
-                        at: 'center left',
-                        adjust: {
-                            y: 0,
-                            x: -6
-                        }
-                    },
-                    style: {
-                        tip: {
-                            corner: true,
-                            method: 'polygon'
-                        },
-                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
+                        location.href = e.context.href + ($('#deleteFiles')[0].checked ? '&full=1' : '');
                     }
                 });
 
@@ -762,7 +705,7 @@ jQuery(document).ready(function ($) {
                         return i++ !== 0;
                     });
 
-                    $('<input type="text" class="form-control input-sm">')
+                    $('<input class="form-control input-sm">')
                         .val(firstVal.currentPath)
                         .on('keypress', function (e) {
                             if (e.which === 13) {
@@ -789,7 +732,9 @@ jQuery(document).ready(function ($) {
                                 SICKRAGE.browser.browse(entry.path, endpoint, includeFiles, fileTypes);
                             }
                         }).text(entry.name);
-                        if (entry.isFile) {
+                        if (entry.isImage) {
+                            link.prepend('<span class="ui-icon ui-icon-image"></span>');
+                        } else if (entry.isFile) {
                             link.prepend('<span class="ui-icon ui-icon-blank"></span>');
                         } else {
                             link.prepend('<span class="ui-icon ui-icon-folder-collapsed"></span>')
@@ -816,7 +761,6 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.browser.fileBrowserDialog = $('<div id="fileBrowserDialog" style="display:hidden"></div>').appendTo('body').dialog({
                         dialogClass: 'browserDialog',
                         title: options.title,
-                        position: ['center', 40],
                         minWidth: Math.min($(document).width() - 80, 650),
                         height: Math.min($(document).height() - 80, $(window).height() - 80),
                         maxHeight: Math.min($(document).height() - 80, $(window).height() - 80),
@@ -824,6 +768,9 @@ jQuery(document).ready(function ($) {
                         modal: true,
                         autoOpen: false
                     });
+                } else {
+                    // The title may change, even if fileBrowserDialog already exists
+                    SICKRAGE.browser.fileBrowserDialog.dialog('option', 'title', options.title);
                 }
 
                 SICKRAGE.browser.fileBrowserDialog.dialog('option', 'buttons', [
@@ -930,7 +877,7 @@ jQuery(document).ready(function ($) {
                 if (options.showBrowseButton) {
                     // append the browse button and give it a click behaviour
                     options.field.after(
-                        $('<input type="button" value="Browse&hellip;" class="btn btn-inline fileBrowser">').on('click', function () {
+                        $('<div class="input-group-addon"><input class="button fileBrowser" type="button" value="Browse"/></div>').on('click', function () {
                             var initialDir = options.field.val() || (options.key && path) || '';
                             var optionsWithInitialDir = $.extend({}, options, {initialDir: initialDir});
                             $(this).nFileBrowser(callback, optionsWithInitialDir);
@@ -1568,7 +1515,7 @@ jQuery(document).ready(function ($) {
                 });
 
                 $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
-                    sortList: [[6, 1], [2, 0]],
+                    sortList: [[7, 1], [2, 0]],
                     textExtraction: {
                         0: function (node) {
                             return $(node).find('time').attr('datetime');
@@ -1586,10 +1533,13 @@ jQuery(document).ready(function ($) {
                             return $(node).find("span:first").text();
                         },
                         6: function (node) {
+                            return $(node).data('show-size');
+                        },
+                        7: function (node) {
                             return $(node).find("img").attr("alt");
                         }
                     },
-                    widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector', 'reflow'],
+                    widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector'],
                     headers: (function () {
                         if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
                             return {
@@ -1598,7 +1548,8 @@ jQuery(document).ready(function ($) {
                                 2: {sorter: 'loadingNames'},
                                 4: {sorter: 'quality'},
                                 5: {sorter: 'eps'},
-                                6: {filter: 'parsed'}
+                                6: {sorter: 'digit'},
+                                7: {filter: 'parsed'}
                             };
                         } else {
                             return {
@@ -1606,7 +1557,8 @@ jQuery(document).ready(function ($) {
                                 1: {sorter: 'realISODate'},
                                 2: {sorter: 'loadingNames'},
                                 4: {sorter: 'quality'},
-                                5: {sorter: 'eps'}
+                                5: {sorter: 'eps'},
+                                6: {sorter: 'digit'}
                             };
                         }
                     }()),
@@ -1971,18 +1923,6 @@ jQuery(document).ready(function ($) {
                             sceneAbsolute = m[1];
                         }
                         SICKRAGE.home.display_show.setAbsoluteSceneNumbering(forAbsolute, sceneAbsolute);
-                    });
-
-                    $('.addQTip').each(function () {
-                        $(this).css({'cursor': 'help', 'text-shadow': '0px 0px 0.5px #666'});
-                        $(this).qtip({
-                            show: {solo: true},
-                            position: {viewport: $(window), my: 'left center', adjust: {y: -10, x: 2}},
-                            style: {
-                                tip: {corner: true, method: 'polygon'},
-                                classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
-                            }
-                        });
                     });
 
                     SICKRAGE.ajax_search.init();
@@ -2708,6 +2648,21 @@ jQuery(document).ready(function ($) {
                         }, 2000);
                     }
                 });
+
+                $('#config-tabs a').click(function (e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                });
+
+                // store the currently selected tab in the hash value
+                $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+                    var id = $(e.target).attr("href").substr(1);
+                    window.location.hash = id;
+                });
+
+                // on load of the page: switch to the currently selected tab
+                var hash = window.location.hash;
+                $('#config-tabs a[href="' + hash + '"]').tab('show');
             },
 
             general: function () {
@@ -4182,7 +4137,9 @@ jQuery(document).ready(function ($) {
                     });
 
                     // we have to call this function on dom ready to create the devices select
-                    SICKRAGE.config.notifications.get_pushbullet_devices();
+                    if ($('#use_pushbullet').prop('checked')) {
+                        SICKRAGE.config.notifications.get_pushbullet_devices();
+                    }
 
                     $('#email_show').on('change', function () {
                         var key = parseInt($('#email_show').val(), 10);

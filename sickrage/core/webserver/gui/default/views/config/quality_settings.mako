@@ -1,50 +1,58 @@
-<%inherit file="../layouts/main.mako"/>
+<%inherit file="../layouts/config.mako"/>
+<%def name='formaction()'><% return 'saveQualities' %></%def>
 <%!
     import sickrage
-    from sickrage.core.common import Quality
-    from sickrage.core.helpers import anon_url
 %>
-<%block name="content">
-    <div id="config">
-        <form id="configForm" action="saveQualities" method="post">
-            <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Quality Sizes</a></li>
-            </ul>
 
-            <div class="tab-content">
-                <div id="core-tab-pane1" class="tab-pane fade in active">
+<%block name="tabs">
+    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Quality Sizes</a></li>
+</%block>
 
-                    <div class="tab-pane-desc">
-                        <h3>Quality Sizes</h3>
-                        <p>Use default qualitiy sizes or specify custom ones per quality definition.</p>
+<%block name="pages">
+    <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
+    <div id="core-tab-pane1" class="tab-pane fade in active">
+        <div class="tab-pane-desc">
+            <h3>Quality Sizes</h3>
+            <p>Use default qualitiy sizes or specify custom ones per quality definition.</p>
+            <div>
+                <p class="note"> Settings represent maximum size allowed per episode video file.</p>
+            </div>
+        </div>
+        <fieldset class="tab-pane-list">
 
-                        <div>
-                            <p class="note"> Settings repersent maximum size allowed per episode video file.</p>
+            % for qtype, qsize in sickrage.srCore.srConfig.QUALITY_SIZES.items():
+                % if qsize:
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${renderQualityPill(qtype)}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-file"></span>
+                                </div>
+                                <input class="form-control"
+                                       type="number"
+                                       value="${qsize}"
+                                       name="${qtype}"
+                                       id="${qtype}"
+                                       min="1"
+                                       title="Specify minimum quality size allowed in MB">
+                                <div class="input-group-addon">
+                                    MB
+                                </div>
+                            </div>
                         </div>
                     </div>
+                % endif
+            % endfor
 
-                    <fieldset class="tab-pane-list">
-                        <table>
-                            % for qtype, qsize in sickrage.srCore.srConfig.QUALITY_SIZES.items():
-                                % if not qsize == 0:
-                                    <tr>
-                                        <td>
-                                            <label for="${qtype}"
-                                                   style="vertical-align:middle;">${Quality.qualityStrings[qtype]}</label>
-                                        </td>
-                                        <td>
-                                            <input type="number" value="${qsize}" name="${qtype}" id="${qtype}"
-                                                   min="1"> MB
-                                        </td>
-                                    </tr>
-                                % endif
-                            % endfor
-                        </table>
-                        <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
-                    </fieldset>
-                </div><!-- /tab-pane1 //-->
-            </div><!-- /ui-components //-->
-            <br><input type="submit" class="btn config_submitter_refresh" value="Save Changes"/><br>
-        </form>
-    </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                </div>
+            </div>
+
+        </fieldset>
+    </div><!-- /tab-pane1 //-->
 </%block>

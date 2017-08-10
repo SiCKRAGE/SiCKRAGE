@@ -435,7 +435,7 @@ class GitUpdateManager(UpdateManager):
         return ("", url)[exit_status == 0 and url is not None]
 
     def set_remote_url(self):
-        if not sickrage.DEVELOPER:
+        if not sickrage.srCore.srConfig.DEVELOPER:
             self._run_git(self._git_path, 'remote set-url {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
                                                                         sickrage.srCore.srConfig.GIT_REMOTE_URL))
 

@@ -47,6 +47,7 @@ class StaticImageHandler(StaticFileHandler):
 
 class srWebServer(object):
     def __init__(self):
+        super(srWebServer, self).__init__()
         self.started = False
         self.video_root = None
         self.api_root = None
@@ -143,7 +144,7 @@ class srWebServer(object):
                 (r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
                  {"path": self.video_root}),
             ] + Route.get_routes(sickrage.srCore.srConfig.WEB_ROOT),
-            debug=sickrage.DEBUG,
+            debug=sickrage.srCore.srConfig.DEBUG,
             autoreload=False,
             gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
             xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
@@ -158,7 +159,7 @@ class srWebServer(object):
         }
 
         try:
-            self.server.listen(sickrage.srCore.srConfig.WEB_PORT, None)
+            self.server.listen(sickrage.WEB_PORT or sickrage.srCore.srConfig.WEB_PORT, None)
         except socket.error as e:
             sickrage.srCore.srLogger.warning(e.strerror)
             raise SystemExit

@@ -38,7 +38,7 @@ class srPostProcessor(object):
         :return: Returns when done without a return state/code
         """
 
-        if self.amActive or sickrage.DEVELOPER:
+        if self.amActive or sickrage.srCore.srConfig.DEVELOPER:
             return
 
         self.amActive = True

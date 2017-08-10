@@ -46,7 +46,7 @@ class PushbulletNotifier(srNotifiers):
         )
 
     def get_devices(self, pushbullet_api):
-        sickrage.srCore.srLogger.debug("Testing Pushbullet authentication and retrieving the device list.")
+        sickrage.srCore.srLogger.debug("Retrieving Pushbullet device list.")
         headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
 
         try:

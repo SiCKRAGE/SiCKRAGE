@@ -35,9 +35,9 @@ class Media(object):
         return ''
 
     @property
-    def get_media_url(self):
+    def url(self):
         """
-        :return: The content of the desired media file
+        :return: The url to the desired media file
         """
 
         path = self.get_static_media_path().replace(sickrage.CACHE_DIR, "")
@@ -45,13 +45,26 @@ class Media(object):
         return url_escape(path.replace('\\', '/'), False)
 
     @property
-    def get_media_bytes(self):
+    def content(self):
         """
         :return: The content of the desired media file
         """
 
         with io.open(os.path.abspath(self.get_static_media_path()).replace('\\', '/'), 'rb') as media:
             return media.read()
+
+    @property
+    def type(self):
+        """
+        :return: The mime type of the current media
+        """
+
+        static_media_path = self.get_static_media_path()
+
+        if os.path.isfile(static_media_path):
+            return guess_type(static_media_path)[0]
+
+        return ''
 
     def get_media_path(self):
         """
@@ -67,18 +80,6 @@ class Media(object):
         """
 
         return os.path.join(sickrage.srCore.srConfig.GUI_DIR)
-
-    def get_media_type(self):
-        """
-        :return: The mime type of the current media
-        """
-
-        static_media_path = self.get_static_media_path()
-
-        if os.path.isfile(static_media_path):
-            return guess_type(static_media_path)[0]
-
-        return ''
 
     def get_show(self):
         """

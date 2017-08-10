@@ -6,9 +6,16 @@
   margin: 0 auto;
   border: none; }
 
-.nav-tabs > li > a {
-  background-color: #333;
-  color: #ddd; }
+.nav-tabs > li > a,
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus {
+  background: #333333;
+  color: #ddd;
+  border-radius: 4px 4px 0 0;
+  border: 1px solid transparent;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 20px; }
 
 .tab-content {
   display: block;
@@ -142,32 +149,6 @@
   color: #222;
   text-decoration: none; }
 
-.ui-tabs {
-  padding: 0;
-  background: none;
-  border-width: 0; }
-
-.ui-tabs .ui-tabs-nav {
-  padding-left: 0;
-  background: transparent;
-  border-width: 0 0 0 0;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  border-radius: 0; }
-
-.ui-tabs .ui-tabs-panel {
-  background-color: #F7F7F7 !important;
-  border: 1px solid #CCCCCC !important;
-  padding: 1em; }
-
-.ui-tabs .ui-tabs-nav li.ui-tabs-active {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px; }
-
-.ui-tabs-nav > :not(.ui-tabs-active) {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px; }
-
 #content {
   width: 100%;
   margin: 10px;
@@ -175,8 +156,18 @@
   margin-right: auto;
   clear: both; }
 
-#SubMenu {
-  font-size: 12px; }
+#sub-menu-container {
+  margin: 0; }
+
+#sub-menu {
+  clear: both;
+  font-size: 12px;
+  align-content: flex-end;
+  text-align: center !important; }
+
+#sub-menu a {
+  clear-after: top;
+  margin: 2px; }
 
 .upgrade-notification {
   width: 90%;
@@ -287,12 +278,11 @@
   background-position: -378px 0; }
 
 .footer {
-  width: 100%;
   color: #4e4e4e;
   text-align: center;
   font-size: 12px; }
 
-.footerhighlight {
+.footer-highlight {
   color: #111;
   display: inline; }
 
@@ -302,7 +292,7 @@
 .rootdir-selectbox,
 .rootdir-selectbox #rootDirs,
 .rootdir-controls {
-  width: 430px; }
+  width: 100%; }
 
 .rootdir-selectbox {
   padding: 0 0 5px; }
@@ -612,17 +602,7 @@ div.buttontext p {
     new_show.mako
     ========================================================================== */
 #addShowForm, #recommendedShowsForm {
-  width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 10px 0;
   font-size: 13px; }
-
-#newShowPortal {
-  width: 960px;
-  padding: 10px 0;
-  margin-right: auto;
-  margin-left: auto; }
 
 #displayText {
   padding: 8px;
@@ -643,21 +623,22 @@ div.buttontext p {
 ul#rootDirStaticList {
   margin-right: auto;
   margin-left: auto;
-  text-align: left; }
+  text-align: left;
+  padding-left: 0; }
 
 ul#rootDirStaticList li {
   padding: 4px 5px 4px 5px;
   margin: 2px;
   list-style: none outside none;
-  cursor: pointer;
-  /*background: url('../images/ui/ui-bg_highlight-soft_75_efefef_1x100.png') repeat-x scroll 50% 50% #EFEFEF;*/ }
+  background: url("../images/ui-bg_highlight-soft_75_ffe45c_1x100.png") repeat-x scroll 50% 50% #EFEFEF; }
 
 ul#rootDirStaticList li label {
   margin-top: 5px;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  cursor: pointer; }
 
 ul#rootDirStaticList li input[type="checkbox"] {
-  vertical-align: -2px; }
+  vertical-align: -3px; }
 
 /* =======================================================================
     trending_shows.mako
@@ -770,7 +751,7 @@ ul.tags li {
   border-radius: 3px;
   border: 1px solid #111;
   color: #FFF;
-  font: 14px/18px "Open Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+  font: 14px/18px roboto, "Open Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
   text-shadow: 0 1px rgba(0, 0, 0, 0.8);
   float: left; }
 
@@ -1049,13 +1030,13 @@ h2.day, h2.network {
 .tvshowDiv {
   display: block;
   clear: both;
-  border: 1px solid #ccc;
+  border: 1px solid #CCCCCC;
   margin: auto;
   padding: 0;
   text-align: left;
-  width: 750px;
+  width: 100%;
   border-radius: 5px;
-  background: #fff;
+  background: #FFFFFF;
   cursor: default;
   overflow: hidden; }
 
@@ -1090,7 +1071,7 @@ h2.day, h2.network {
 .bannerThumb {
   vertical-align: top;
   height: auto;
-  width: 748px;
+  width: 100%;
   border-bottom: 1px solid #ccc; }
 
 .posterThumb {
@@ -1165,7 +1146,7 @@ h2.day, h2.network {
 #config div.field-pair input {
   float: left; }
 
-#config .nocheck, #config div #customQuality, .metadataDiv {
+#config .nocheck, #config div #customQuality {
   padding-left: 20px; }
 
 #config span.component-title {
@@ -1287,30 +1268,22 @@ postprocessing.mako
 /* =======================================================================
 notifications.mako
 ========================================================================== */
-div.metadata_options_wrapper {
-  float: left;
-  width: 190px; }
-
-div.metadata_example_wrapper {
-  float: right;
-  width: 325px; }
-
 div.metadata_options {
   padding: 7px;
   overflow: auto;
-  background: #f5f1e4;
-  border: 1px solid #ccc; }
+  background: #F5F1E4;
+  border: 1px solid #CCCCCC; }
 
 div.metadata_options label:hover {
-  color: #fff;
-  background-color: #57442b;
+  color: #FFFFFF;
+  background-color: #57442B;
   cursor: pointer; }
 
 div.metadata_options label {
   display: block;
   padding-left: 7px;
   line-height: 20px;
-  color: #036; }
+  color: #003366; }
 
 div.metadata_example {
   padding: 8px; }
@@ -1318,11 +1291,11 @@ div.metadata_example {
 div.metadata_example label {
   display: block;
   line-height: 21px;
-  color: #000;
+  color: #000000;
   cursor: pointer; }
 
 div.metadataDiv .disabled {
-  color: #ccc; }
+  color: #CCCCCC; }
 
 .notifier-icon {
   float: left;
@@ -1413,8 +1386,7 @@ span.quality {
   white-space: nowrap; }
 
 span.any-hd {
-  background-color: #2672b6;
-  background: repeating-linear-gradient(-45deg, #2672b6, #2672b6 10px, #5b990d 10px, #5b990d 20px); }
+  background: #2672b6 repeating-linear-gradient(-45deg, #2672b6, #2672b6 10px, #5b990d 10px, #5b990d 20px); }
 
 span.Custom {
   background-color: #621993; }
@@ -1522,15 +1494,11 @@ bootstrap Overrides
 body {
   padding-top: 4%;
   overflow-y: scroll;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: roboto, "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #000; }
 
 html * {
   outline: 0 !important; }
-
-input[type="checkbox"] {
-  margin: 2px 0 0;
-  line-height: normal; }
 
 input[type="radio"] {
   margin: 2px 0 0;
@@ -1545,41 +1513,60 @@ input, textarea, select, .uneditable-input {
   margin-right: 10px; }
 
 .navbar-brand {
-  padding: 5px; }
+  padding: 0; }
 
-/* navbar styling */
-.navbar-default .navbar-brand {
-  color: #ffffff; }
+.navbar-default {
+  background-color: #333333;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#555555', endColorstr='#333333');
+  background: -webkit-gradient(linear, left top, left bottom, from(#555555), to(#333333));
+  background: -moz-linear-gradient(top, #555555, #333333);
+  border-color: #3E3F3A; }
 
-.navbar-default .navbar-brand:hover,
-.navbar-default .navbar-brand:focus {
-  color: #ffffff;
-  background-color: transparent; }
-
-.navbar-default .navbar-text {
-  color: #dddddd; }
-
-.navbar-default .navbar-nav > li > a {
-  color: #dddddd; }
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+  border-color: #3E3F3A; }
 
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-  color: #ffffff; }
+  background-color: #333333; }
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+  color: #FFFFFF;
+  text-decoration: none;
+  background-color: #333333; }
+
+.navbar-default .navbar-brand {
+  color: #FFFFFF; }
+
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  color: #FFFFFF;
+  background-color: transparent; }
+
+.navbar-default .navbar-text {
+  color: #DDDDDD; }
+
+.navbar-default .navbar-nav > li > a {
+  color: #DDDDDD; }
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #FFFFFF; }
 
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
-  color: #ffffff;
+  color: #FFFFFF;
   background-color: #333333; }
 
 .navbar-default .navbar-nav > .disabled > a,
 .navbar-default .navbar-nav > .disabled > a:hover,
 .navbar-default .navbar-nav > .disabled > a:focus {
-  color: #cccccc;
+  color: #CCCCCC;
   background-color: transparent; }
 
 .navbar-default .navbar-toggle {
-  border-color: #cccccc; }
+  border-color: #CCCCCC; }
 
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
@@ -1588,11 +1575,15 @@ input, textarea, select, .uneditable-input {
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #333333; }
 
+.navbar-default .navbar-toggle:hover .icon-bar,
+.navbar-default .navbar-toggle:focus .icon-bar {
+  background-color: #15528F; }
+
 .navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
   background-color: #333333;
-  color: #ffffff; }
+  color: #FFFFFF; }
 
 .navbar-default .navbar-nav > li.navbar-split > a {
   display: inline-block;
@@ -1604,44 +1595,42 @@ input, textarea, select, .uneditable-input {
 .navbar-default .navbar-nav > li.navbar-split > a:nth-child(2) {
   padding-left: 8px; }
 
-.navbar-default .navbar-nav .open .dropdown-menu > li > a {
-  color: #dddddd; }
-
-.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-  color: #ffffff;
-  background-color: transparent; }
-
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-  color: #ffffff;
-  background-color: #333333; }
-
-.navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
-.navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
-.navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
-  color: #cccccc;
-  background-color: transparent; }
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #DDDDDD; }
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #FFFFFF;
+    background-color: transparent; }
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #FFFFFF;
+    background-color: #333333; }
+  .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
+  .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+    color: #CCCCCC;
+    background-color: transparent; } }
 
 .navbar-default .navbar-link {
-  color: #dddddd; }
+  color: #DDDDDD; }
 
 .navbar-default .navbar-link:hover {
-  color: #ffffff; }
+  color: #FFFFFF; }
 
 .navbar-default .btn-link {
-  color: #98978b; }
+  color: #98978B; }
 
 .navbar-default .btn-link:hover,
 .navbar-default .btn-link:focus {
-  color: #dddddd; }
+  color: #DDDDDD; }
 
 .navbar-default .btn-link[disabled]:hover,
 fieldset[disabled] .navbar-default .btn-link:hover,
 .navbar-default .btn-link[disabled]:focus,
 fieldset[disabled] .navbar-default .btn-link:focus {
-  color: #cccccc; }
+  color: #CCCCCC; }
 
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
   color: #262626;
@@ -1986,19 +1975,17 @@ label {
 pre {
   border: 1px solid; }
 
-.alert {
-  padding: 10px;
-  text-align: center; }
+.alert .glyphicon {
+  display: table-cell; }
+
+.alert div,
+.alert span {
+  padding-left: 5px;
+  display: table-cell; }
 
 /* =======================================================================
 input sizing (for config pages)
 ========================================================================== */
-#config select {
-  min-width: 0;
-  width: auto;
-  display: inline;
-  margin-top: -4px; }
-
 .btn-inline {
   margin-top: -3px; }
 
@@ -2509,7 +2496,7 @@ File Browser
   padding: 4px 0; }
 
 #fileBrowserDialog ul li a:hover {
-  color: #09A2FF;
+  color: #00f;
   background: none; }
 
 #fileBrowserDialog ul li a span.ui-icon {

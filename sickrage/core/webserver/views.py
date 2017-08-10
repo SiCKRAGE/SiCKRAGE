@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import datetime
 import os
 import re
+import threading
 import time
 import traceback
 import urllib
@@ -28,9 +29,14 @@ import urllib
 import dateutil.tz
 import markdown2
 from CodernityDB.database import RecordNotFound
+from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
-from tornado.escape import json_encode, recursive_unicode, json_decode
+from tornado.concurrent import run_on_executor
+from tornado.escape import json_encode, json_decode
+from tornado.gen import coroutine
+from tornado.ioloop import IOLoop
+from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
 import sickrage
@@ -76,21 +82,21 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
+        self.io_loop = IOLoop.current()
+        self.executor = ThreadPoolExecutor(cpu_count())
+        self.startTime = time.time()
 
         # template settings
         self.mako_lookup = TemplateLookup(
             directories=[os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'views')],
             module_directory=os.path.join(sickrage.CACHE_DIR, 'mako'),
-            format_exceptions=False,
+            filesystem_checks=True,
             strict_undefined=True,
             input_encoding='utf-8',
             output_encoding='utf-8',
             encoding_errors='replace',
             future_imports=['unicode_literals']
         )
-
-        # start time
-        self.startTime = time.time()
 
     def prepare(self):
         if not self.request.full_url().startswith(sickrage.srCore.srConfig.WEB_ROOT):
@@ -185,18 +191,25 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
+    @run_on_executor
     def route(self, function, **kwargs):
-        # threading.currentThread().setName('WEB')
-        return recursive_unicode(function(
-            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
-                    recursive_unicode(kwargs.items())])
-        ))
+        threading.currentThread().setName("TORNADO")
+        for arg, value in kwargs.items():
+            if len(value) == 1:
+                kwargs[arg] = value[0]
+
+        return function(**kwargs)
+        #return recursive_unicode(function(
+        #    **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
+        #            recursive_unicode(kwargs.items())])
+        #))
 
 
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
 
+    @coroutine
     @authenticated
     def prepare(self, *args, **kwargs):
         # route -> method obj
@@ -206,15 +219,18 @@ class WebHandler(BaseHandler):
         )
 
         if method:
-            self.finish(self.route(method, **self.request.arguments))
+            result = yield self.route(method, **self.request.arguments)
+            self.finish(result)
 
 
 class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
+    @coroutine
     def prepare(self, *args, **kwargs):
-        self.finish(self.route(self.auth))
+        result = yield self.route(self.auth)
+        self.finish(result)
 
     def auth(self):
         try:
@@ -952,16 +968,14 @@ class Home(WebHandler):
 
     @staticmethod
     def loadShowNotifyLists():
-        data = {}
-        size = 0
+        data = {'_size':0}
 
         tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)],
                           key=lambda d: d['show_name'])
 
         for s in tv_shows:
-            data[s['show_id']] = {'id': s['show_id'], 'name': s['show_name'], 'list': s['notify_list']}
-            size += 1
-        data['_size'] = size
+            data[s['indexer_id']] = {'id': s['indexer_id'], 'name': s['show_name'], 'list': s.get('notify_list', '')}
+            data['_size'] += 1
 
         return json_encode(data)
 
@@ -2984,51 +2998,42 @@ class Manage(Home, WebRoot):
         return json_encode(result)
 
     def subtitleMissed(self, whichSubs=None):
-        if not whichSubs:
-            return self.render(
-                "/manage/subtitles_missed.mako",
-                whichSubs=whichSubs,
-                title='Episode Overview',
-                header='Episode Overview',
-                topmenu='manage',
-                controller='manage',
-                action='subtitles_missed'
-            )
-
-        status_results = []
-        for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            if not s['subtitles'] == 1: continue
-            for e in [x['doc'] for x in
-                      sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
-                if e['status'].endswith('4') and e['season'] != 0:
-                    status_results += [{
-                        'show_name': s['show_name'],
-                        'indexer_id': s['indexer_id'],
-                        'subtitles': e['subtitles']
-                    }]
-
-        status_results = sorted(status_results, key=lambda d: d['show_name'])
-
         ep_counts = {}
         show_names = {}
         sorted_show_ids = []
-        for cur_status_result in status_results:
-            if whichSubs == 'all':
-                if not frozenset(sickrage.subtitles.wanted_languages()).difference(
-                        cur_status_result["subtitles"].split(',')):
+        status_results = []
+
+        if whichSubs:
+            for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+                if not s['subtitles'] == 1: continue
+                for e in [x['doc'] for x in
+                          sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                    if (str(e['status']).endswith('4') or str(e['status']).endswith('6')) and e['season'] != 0:
+                        status_results += [{
+                            'show_name': s['show_name'],
+                            'indexer_id': s['indexer_id'],
+                            'subtitles': e['subtitles']
+                        }]
+
+            status_results = sorted(status_results, key=lambda d: d['show_name'])
+
+            for cur_status_result in status_results:
+                if whichSubs == 'all':
+                    if not frozenset(sickrage.subtitles.wanted_languages()).difference(
+                            cur_status_result["subtitles"].split(',')):
+                        continue
+                elif whichSubs in cur_status_result["subtitles"]:
                     continue
-            elif whichSubs in cur_status_result["subtitles"]:
-                continue
 
-            cur_indexer_id = int(cur_status_result["indexer_id"])
-            if cur_indexer_id not in ep_counts:
-                ep_counts[cur_indexer_id] = 1
-            else:
-                ep_counts[cur_indexer_id] += 1
+                cur_indexer_id = int(cur_status_result["indexer_id"])
+                if cur_indexer_id not in ep_counts:
+                    ep_counts[cur_indexer_id] = 1
+                else:
+                    ep_counts[cur_indexer_id] += 1
 
-            show_names[cur_indexer_id] = cur_status_result["show_name"]
-            if cur_indexer_id not in sorted_show_ids:
-                sorted_show_ids.append(cur_indexer_id)
+                show_names[cur_indexer_id] = cur_status_result["show_name"]
+                if cur_indexer_id not in sorted_show_ids:
+                    sorted_show_ids.append(cur_indexer_id)
 
         return self.render(
             "/manage/subtitles_missed.mako",
@@ -3771,7 +3776,7 @@ class ConfigGeneral(Config):
             topmenu='config',
             submenu=self.ConfigMenu(),
             controller='config',
-            action='general'
+            action='general',
         )
 
     @staticmethod
@@ -3859,7 +3864,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.CALENDAR_UNPROTECTED = sickrage.srCore.srConfig.checkbox_to_value(calendar_unprotected)
         sickrage.srCore.srConfig.CALENDAR_ICONS = sickrage.srCore.srConfig.checkbox_to_value(calendar_icons)
         sickrage.srCore.srConfig.NO_RESTART = sickrage.srCore.srConfig.checkbox_to_value(no_restart)
-        sickrage.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
+        sickrage.srCore.srConfig.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
         sickrage.srCore.srConfig.SSL_VERIFY = sickrage.srCore.srConfig.checkbox_to_value(ssl_verify)
         sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srCore.srConfig.to_int(coming_eps_missed_range,
                                                                                            default=7)

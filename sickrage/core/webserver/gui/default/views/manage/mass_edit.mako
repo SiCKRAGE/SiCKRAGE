@@ -36,7 +36,7 @@
 
                         <fieldset class="tab-pane-list">
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="shows">
                                 <span class="component-title">Selected Shows</span>
                                 <span class="component-desc">
@@ -47,7 +47,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_root_dir_0">
                                 <span class="component-title">Root Directories (<span class="separator">*</span>)</span>
                                 <span class="component-desc">
@@ -79,7 +79,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="qualityPreset">
                                 <span class="component-title">Preferred Quality</span>
                                 <span class="component-desc">
@@ -127,7 +127,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_archive_firstmatch">
                                 <span class="component-title">Archive on first match</span>
                                 <span class="component-desc">
@@ -141,7 +141,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_flatten_folders">
                                 <span class="component-title">Season folders (<span class="separator">*</span>)</span>
                                 <span class="component-desc">
@@ -155,7 +155,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_paused">
                                 <span class="component-title">Paused</span>
                                 <span class="component-desc">
@@ -169,7 +169,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_default_ep_status">
                                 <span class="component-title">Default Episode Status</span>
                                 <span class="component-desc">
@@ -184,7 +184,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_scene">
                                 <span class="component-title">Scene Numbering</span>
                                 <span class="component-desc">
@@ -198,7 +198,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_anime">
                                 <span class="component-title">Anime</span>
                                 <span class="component-desc">
@@ -212,7 +212,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_sports">
                                 <span class="component-title">Sports</span>
                                 <span class="component-desc">
@@ -227,7 +227,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_air_by_date">
                                 <span class="component-title">Air by date</span>
                                 <span class="component-desc">
@@ -242,7 +242,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="row field-pair">
                             <label for="edit_subtitles">
                                 <span class="component-title">Subtitles</span>
                                 <span class="component-desc">
