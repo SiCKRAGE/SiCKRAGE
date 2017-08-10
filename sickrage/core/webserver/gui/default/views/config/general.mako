@@ -840,7 +840,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="debug"
-                               id="debug" ${('', 'checked')[bool(sickrage.DEBUG)]}/>
+                               id="debug" ${('', 'checked')[bool(sickrage.srCore.srConfig.DEBUG)]}/>
                         <label for="debug">
                             Enable debug logs
                         </label>

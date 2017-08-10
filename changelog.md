@@ -1,5 +1,6 @@
 # Changelog
 
+- * 487f268 - 2017-08-10: Misc code changes 
 - * 3a9ae65 - 2017-08-10: Misc code changes 
 - * 0f42df7 - 2017-08-10: Web views are async now 
 - * bdcebe1 - 2017-08-09: Core config code changes 
