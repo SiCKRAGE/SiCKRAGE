@@ -31,14 +31,18 @@
 
     <div class="row">
         <div class="col-md-12">
-            <label for="pickShow">Jump to Show</label>
-            <select id="pickShow" class="form-control form-control-inline input-sm">
-                % for curShow in sorted(sickrage.srCore.SHOWLIST, key=lambda x: x.name):
-                    % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] != 0:
-                        <option value="${curShow.indexerid}">${curShow.name}</option>
-                    % endif
-                % endfor
-            </select>
+            <div class="input-group input350">
+                <div class="input-group-addon">
+                    <span class="fa fa-binoculars"></span>
+                </div>
+                <select id="pickShow" class="form-control form-control-inline input-sm">
+                    % for curShow in sorted(sickrage.srCore.SHOWLIST, key=lambda x: x.name):
+                        % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] != 0:
+                            <option value="${curShow.indexerid}">${curShow.name}</option>
+                        % endif
+                    % endfor
+                </select>
+            </div>
         </div>
     </div>
 
