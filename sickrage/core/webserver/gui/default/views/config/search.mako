@@ -9,12 +9,12 @@
     <li><a data-toggle="tab" href="#core-tab-pane3">Torrent Clients</a></li>
 </%block>
 <%block name="pages">
-    <div id="core-tab-pane1" class="tab-pane fade in active clearfix">
-        <div class="tab-pane-desc">
+    <div id="core-tab-pane1" class="row tab-pane fade in active clearfix">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Search Settings</h3>
             <p>How to manage searching with <a href="${srWebRoot}/config/providers">providers</a>.</p>
         </div>
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row field-pair">
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                     <label class="component-title">Randomize Providers</label>
@@ -54,7 +54,7 @@
                         <label class="component-title">Check propers every:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
@@ -75,7 +75,7 @@
                     <label class="component-title">Backlog search frequency</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
@@ -94,7 +94,7 @@
                     <label class="component-title">Daily search frequency</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
@@ -115,7 +115,7 @@
                     <label class="component-title">Usenet retention</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
@@ -135,7 +135,7 @@
                     <label class="component-title">Torrent Trackers</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-list"></span>
                         </div>
@@ -153,7 +153,7 @@
                     <label class="component-title">Ignore words</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-font"></span>
                         </div>
@@ -171,7 +171,7 @@
                     <label class="component-title">Require words</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-font"></span>
                         </div>
@@ -189,7 +189,7 @@
                     <label class="component-title">Ignore language names in subbed results</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-font"></span>
                         </div>
@@ -249,14 +249,14 @@
         </fieldset>
     </div><!-- /tab-pane1 //-->
 
-    <div id="core-tab-pane2" class="tab-pane fade">
+    <div id="core-tab-pane2" class="row tab-pane fade">
 
-        <div class="tab-pane-desc">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>NZB Clients</h3>
             <p>How to handle NZB search results for clients.</p>
         </div>
 
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
             <div class="row field-pair">
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -275,7 +275,7 @@
                         <label class="component-title">Send .nzb files to:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-send"></span>
                             </div>
@@ -295,7 +295,7 @@
                             <label class="component-title">Black hole folder location</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <input name="nzb_dir" id="nzb_dir"
                                        value="${sickrage.srCore.srConfig.NZB_DIR}"
                                        class="form-control" autocapitalize="off"/>
@@ -312,7 +312,7 @@
                             <label class="component-title">SABnzbd server URL</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -329,7 +329,7 @@
                             <label class="component-title">SABnzbd username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -347,7 +347,7 @@
                             <label class="component-title">SABnzbd password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -365,7 +365,7 @@
                             <label class="component-title">SABnzbd API key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -383,7 +383,7 @@
                             <label class="component-title">Use SABnzbd category</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -401,7 +401,7 @@
                             <label class="component-title">Use SABnzbd category (backlog episodes)</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -419,7 +419,7 @@
                             <label class="component-title">Use SABnzbd category for anime</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -438,7 +438,7 @@
                             <label class="component-title">Use SABnzbd category for anime (backlog episodes)</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -483,7 +483,7 @@
                             <label class="component-title">NZBget host:port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -502,7 +502,7 @@
                             <label class="component-title">NZBget username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -520,7 +520,7 @@
                             <label class="component-title">NZBget password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -538,7 +538,7 @@
                             <label class="component-title">Use NZBget category</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -556,7 +556,7 @@
                             <label class="component-title">Use NZBget category (backlog episodes)</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -574,7 +574,7 @@
                             <label class="component-title">Use NZBget category for anime</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -592,7 +592,7 @@
                             <label class="component-title">Use NZBget category for anime (backlog episodes)</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -611,7 +611,7 @@
                             <label class="component-title">NZBget priority</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                                 </div>
@@ -660,14 +660,14 @@
         </fieldset>
     </div><!-- /tab-pane2 //-->
 
-    <div id="core-tab-pane3" class="tab-pane fade">
+    <div id="core-tab-pane3" class="row tab-pane fade">
 
-        <div class="tab-pane-desc">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Torrent Clients</h3>
             <p>How to handle Torrent search results for clients.</p>
         </div>
 
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
             <div class="row field-pair">
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -686,7 +686,7 @@
                         <label class="component-title">Send .torrent files to:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-send"></span>
                             </div>
@@ -707,7 +707,7 @@
                             <label class="component-title">Black hole folder location</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <input name="torrent_dir" id="torrent_dir"
                                        value="${sickrage.srCore.srConfig.TORRENT_DIR}"
                                        class="form-control"
@@ -732,7 +732,7 @@
                             <label class="component-title" id="host_title">Torrent host:port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -751,7 +751,7 @@
                             <label class="component-title" id="rpcurl_title">Torrent RPC URL</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -770,7 +770,7 @@
                             <label class="component-title">HTTP Authentication</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -809,7 +809,7 @@
                             <label class="component-title" id="username_title">Client username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -826,7 +826,7 @@
                             <label class="component-title" id="password_title">Client password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -843,7 +843,7 @@
                             <label class="component-title">Add label to torrent</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-tag"></span>
                                 </div>
@@ -861,7 +861,7 @@
                             <label class="component-title">Add label to torrent</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-tag"></span>
                                 </div>
@@ -879,7 +879,7 @@
                             <label class="component-title">Downloaded files location</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <input name="torrent_path" id="torrent_path"
                                        value="${sickrage.srCore.srConfig.TORRENT_PATH}"
                                        class="form-control"
@@ -897,7 +897,7 @@
                             <label class="component-title" id="torrent_seed_time_label">Minimum seeding time is</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-upload"></span>
                                 </div>

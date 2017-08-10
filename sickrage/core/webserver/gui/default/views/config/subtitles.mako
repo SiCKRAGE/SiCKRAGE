@@ -11,14 +11,14 @@
     <li><a data-toggle="tab" href="#core-tab-pane3">Plugin Settings</a></li>
 </%block>
 <%block name="pages">
-    <div id="core-tab-pane1" class="tab-pane fade in active">
+    <div id="core-tab-pane1" class="row tab-pane fade in active">
 
-        <div class="tab-pane-desc">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Subtitles Search</h3>
             <p>Settings that dictate how SickRage handles subtitles search results.</p>
         </div>
 
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row field-pair">
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                     <label class="component-title">Enabled</label>
@@ -35,7 +35,7 @@
                     <label class="component-title">Subtitle Languages</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-flag"></span>
                         </div>
@@ -52,7 +52,7 @@
                     <label class="component-title">Subtitle Directory</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-folder-open"></span>
                         </div>
@@ -72,7 +72,7 @@
                     <label class="component-title">Subtitle Find Frequency</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
@@ -135,7 +135,7 @@
                     <label class="component-title">Extra Scripts</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-file"></span>
                         </div>
@@ -178,16 +178,16 @@
         </fieldset>
     </div><!-- /tab-pane1 //-->
 
-    <div id="core-tab-pane2" class="tab-pane fade">
+    <div id="core-tab-pane2" class="row tab-pane fade">
 
-        <div class="tab-pane-desc">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Subtitle Plugins</h3>
             <p>Check off and drag the plugins into the order you want them to be used.</p>
             <p class="note">At least one plugin is required.</p>
             <p class="note"><span style="font-size: 16px;">*</span> Web-scraping plugin</p>
         </div>
 
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row">
                 <div class="col-md-12">
                     <ul id="service_order_list">
@@ -221,13 +221,13 @@
             </div>
         </fieldset>
     </div><!-- /tab-pane2 //-->
-    <div id="core-tab-pane3" class="tab-pane fade">
-        <div class="tab-pane-desc">
+    <div id="core-tab-pane3" class="row tab-pane fade">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Subtitle Settings</h3>
             <p>Set user and password for each provider</p>
         </div><!-- /tab-pane-desc //-->
 
-        <fieldset class="tab-pane-list" style="margin-left: 50px; margin-top:36px">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <%
                 providerLoginDict = {
                                     'legendastv': {'user': sickrage.srCore.srConfig.LEGENDASTV_USER, 'pass': sickrage.srCore.srConfig.LEGENDASTV_PASS},
@@ -244,7 +244,7 @@
                             <label class="component-title">${curService['name'].capitalize()} User Name</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -259,7 +259,7 @@
                             <label class="component-title">${curService['name'].capitalize()} Password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>

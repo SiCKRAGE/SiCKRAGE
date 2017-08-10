@@ -15,10 +15,10 @@
     <li><a data-toggle="tab" href="#tabs-3">Social</a></li>
 </%block>
 <%block name="pages">
-    <div id="tabs-1" class="tab-pane fade in active">
+    <div id="tabs-1" class="row tab-pane fade in active">
         <div class="tab-pane">
 
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/kodi.png" alt=""
                      title="KODI"/>
                 <h3><a href="${anon_url('http://kodi.tv/')}" rel="noreferrer"
@@ -26,7 +26,7 @@
                 <p>A free and open source cross-platform media center and home entertainment system software
                     with a 10-foot user interface designed for the living-room TV.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -128,7 +128,7 @@
                             <label class="component-title">KODI IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -145,7 +145,7 @@
                             <label class="component-title">KODI username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -162,7 +162,7 @@
                             <label class="component-title">KODI password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -195,7 +195,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
                      title="Plex Media Server"/>
                 <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
@@ -207,7 +207,7 @@
                     the
                     KODI notifier with port <b>3005</b>.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -227,7 +227,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
+                                    <div class="input-group input200">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-cloud"></span>
                                         </div>
@@ -257,7 +257,7 @@
                                 <label class="component-title">Server Username</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
@@ -273,7 +273,7 @@
                                 <label class="component-title">Server/client password</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -305,7 +305,7 @@
                                     <label class="component-title">Plex Media Server IP:Port</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
+                                    <div class="input-group input200">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
@@ -340,13 +340,13 @@
         </div><!-- /plex media server tab-pane -->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
                      title="Plex Media Client"/>
                 <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Plex Media Client</a></h3>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -398,7 +398,7 @@
                             <label class="component-title">Plex Client IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -416,7 +416,7 @@
                                 <label class="component-title">Server Username</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
@@ -432,7 +432,7 @@
                                 <label class="component-title">Client Password</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -462,14 +462,14 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/emby.png" alt=""
                      title="Emby"/>
                 <h3><a href="${anon_url('http://emby.media/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Emby</a></h3>
                 <p>A home media server built using other popular open source technologies.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -488,7 +488,7 @@
                             <label class="component-title">Emby IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -504,7 +504,7 @@
                             <label class="component-title">Emby API Key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -535,7 +535,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
                      title="Networked Media Jukebox"/>
                 <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
@@ -544,7 +544,7 @@
                     available
                     for the Popcorn Hour 200-series.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -563,7 +563,7 @@
                             <label class="component-title">Popcorn IP address</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -591,7 +591,7 @@
                             <label class="component-title">NMJ database</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -608,7 +608,7 @@
                             <label class="component-title">NMJ mount url</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -639,7 +639,7 @@
         </div><!-- /nmj tab-pane //-->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
                      title="Networked Media Jukebox v2"/>
                 <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
@@ -648,7 +648,7 @@
                     available
                     for the Popcorn Hour 300 & 400-series.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -667,7 +667,7 @@
                             <label class="component-title">Popcorn IP address</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -708,7 +708,7 @@
                             <label class="component-title">Database instance</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -744,7 +744,7 @@
                             <label class="component-title">NMJv2 database</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -773,7 +773,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synoindex.png" alt=""
                      title="Synology"/>
                 <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer"
@@ -783,7 +783,7 @@
                     database.</p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -810,7 +810,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synologynotifier.png" alt=""
                      title="Synology Indexer"/>
                 <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer"
@@ -818,7 +818,7 @@
                 <p>Synology Notifier is the notification system of Synology DSM</p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -877,7 +877,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pytivo.png" alt=""
                      title="pyTivo"/>
                 <h3><a href="${anon_url('http://pytivo.sourceforge.net/wiki/index.php/PyTivo')}"
@@ -887,7 +887,7 @@
                     to
                     your Tivo.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -909,7 +909,7 @@
                             <label class="component-title">pyTivo IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -926,7 +926,7 @@
                             <label class="component-title">pyTivo share name</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -944,7 +944,7 @@
                             <label class="component-title">Tivo name</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -967,16 +967,16 @@
         </div><!-- /tab-pane //-->
     </div>
 
-    <div id="tabs-2" class="tab-pane fade">
+    <div id="tabs-2" class="row tab-pane fade">
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/growl.png" alt=""
                      title="Growl"/>
                 <h3><a href="${anon_url('http://growl.info/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Growl</a></h3>
                 <p>A cross-platform unobtrusive global notification system.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1027,7 +1027,7 @@
                             <label class="component-title">Growl IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -1043,7 +1043,7 @@
                             <label class="component-title">Growl password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -1078,14 +1078,14 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/prowl.png" alt="Prowl"
                      title="Prowl"/>
                 <h3><a href="${anon_url('http://www.prowlapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Prowl</a></h3>
                 <p>A Growl client for iOS.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1136,7 +1136,7 @@
                             <label class="component-title">Prowl API key:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1155,7 +1155,7 @@
                             <label class="component-title">Prowl priority:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-exclamation"></span>
                                 </div>
@@ -1200,7 +1200,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/libnotify.png" alt=""
                      title="Libnotify"/>
                 <h3><a href="${anon_url('http://library.gnome.org/devel/libnotify/')}" rel="noreferrer"
@@ -1209,7 +1209,7 @@
                     function if the pynotify module is installed (Ubuntu/Debian package <a
                             href="apt:python-notify">python-notify</a>).</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1272,7 +1272,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushover.png" alt=""
                      title="Pushover"/>
                 <h3><a href="${anon_url('https://pushover.net/apps/clone/sickrage')}" rel="noreferrer"
@@ -1280,7 +1280,7 @@
                 <p>Pushover makes it easy to send real-time notifications to your Android and iOS
                     devices.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1332,7 +1332,7 @@
                             <label class="component-title">Pushover key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -1349,7 +1349,7 @@
                             <label class="component-title">Pushover API key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1371,7 +1371,7 @@
                             <label class="component-title">Pushover devices</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-list-alt"></span>
                                 </div>
@@ -1388,7 +1388,7 @@
                             <label class="component-title">Pushover notification sound</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-music"></span>
                                 </div>
@@ -1478,7 +1478,7 @@
         </div><!-- /pushover tab-pane //-->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar.png" alt=""
                      title="Boxcar"/>
                 <h3><a href="${anon_url('http://boxcar.io/')}" rel="noreferrer"
@@ -1486,7 +1486,7 @@
                 <p>Universal push notification for iOS. Read your messages where and when you want them! A
                     subscription will be sent if needed.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1537,7 +1537,7 @@
                             <label class="component-title">Boxcar username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -1568,14 +1568,14 @@
         </div><!-- /boxcar tab-pane //-->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar2.png" alt=""
                      title="Boxcar2"/>
                 <h3><a href="${anon_url('https://new.boxcar.io/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Boxcar2</a></h3>
                 <p>Read your messages where and when you want them!</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1626,7 +1626,7 @@
                             <label class="component-title">Boxcar2 access token</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1656,14 +1656,14 @@
         </div><!-- /boxcar2 tab-pane //-->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nma.png" alt="" title="NMA"/>
                 <h3><a href="${anon_url('http://nma.usk.bz')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Notify My Android</a></h3>
                 <p>Notify My Android is a Prowl-like Android App and API that offers an easy way to send
                     notifications from your application directly to your Android device.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1713,7 +1713,7 @@
                             <label class="component-title">NMA API key:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1729,7 +1729,7 @@
                             <label class="component-title">NMA priority:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                                 </div>
@@ -1775,7 +1775,7 @@
         </div><!-- /nma tab-pane //-->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushalot.png" alt=""
                      title="Pushalot"/>
                 <h3><a href="${anon_url('https://pushalot.com')}" rel="noreferrer"
@@ -1784,7 +1784,7 @@
                     running
                     Windows Phone or Windows 8.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1835,7 +1835,7 @@
                             <label class="component-title">Pushalot authorization token</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1866,7 +1866,7 @@
         </div><!-- /pushalot tab-pane //-->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushbullet.png" alt=""
                      title="Pushbullet"/>
                 <h3><a href="${anon_url('https://www.pushbullet.com')}" rel="noreferrer"
@@ -1875,7 +1875,7 @@
                     running
                     Android and desktop Chrome browsers.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -1926,7 +1926,7 @@
                             <label class="component-title">Pushbullet API key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1945,7 +1945,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
+                                    <div class="input-group input200">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-list"></span>
                                         </div>
@@ -1984,7 +1984,7 @@
             </fieldset>
         </div><!-- /pushbullet tab-pane //-->
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/freemobile.png" alt=""
                      title="Free Mobile"/>
                 <h3><a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer"
@@ -1993,7 +1993,7 @@
                     customer a
                     free SMS API.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -2043,7 +2043,7 @@
                             <label class="component-title">Free Mobile customer ID</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2060,7 +2060,7 @@
                             <label class="component-title">Free Mobile API Key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -2092,9 +2092,9 @@
 
     </div>
 
-    <div id="tabs-3" class="tab-pane fade">
+    <div id="tabs-3" class="row tab-pane fade">
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/twitter.png" alt=""
                      title="Twitter"/>
                 <h3><a href="${anon_url('http://www.twitter.com/')}" rel="noreferrer"
@@ -2102,7 +2102,7 @@
                 <p>A social networking and microblogging service, enabling its users to send and read other
                     users' messages called tweets.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -2167,7 +2167,7 @@
                             <label class="component-title">Send DM to</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2203,7 +2203,7 @@
                             <label class="component-title">Step Two</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -2237,7 +2237,7 @@
 
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/trakt.png" alt=""
                      title="Trakt"/>
                 <h3><a href="${anon_url('http://trakt.tv/')}" rel="noreferrer"
@@ -2245,7 +2245,7 @@
                 <p>trakt helps keep a record of what TV shows and movies you are watching. Based on your
                     favorites, trakt recommends additional shows and movies you'll enjoy!</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -2263,7 +2263,7 @@
                             <label class="component-title">Trakt username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2285,7 +2285,7 @@
                             <label class="component-title">Trakt PIN</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -2301,7 +2301,7 @@
                             <label class="component-title">API Timeout</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-time"></span>
                                 </div>
@@ -2322,7 +2322,7 @@
                             <label class="component-title">Default indexer</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-linode"></span>
                                 </div>
@@ -2381,7 +2381,7 @@
                                 <label class="component-title">Watchlist add method</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="fa fa-binoculars"></span>
                                     </div>
@@ -2453,7 +2453,7 @@
                             <label class="component-title">Trakt blackList name</label>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-list"></span>
                                 </div>
@@ -2485,7 +2485,7 @@
         </div><!-- /trakt tab-pane //-->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/email.png" alt=""
                      title="Email"/>
                 <h3><a href="${anon_url('http://en.wikipedia.org/wiki/Comparison_of_webmail_providers')}"
@@ -2493,7 +2493,7 @@
                 </h3>
                 <p>Allows configuration of email notifications on a per show basis.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
@@ -2544,7 +2544,7 @@
                             <label class="component-title">SMTP host</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -2560,7 +2560,7 @@
                             <label class="component-title">SMTP port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -2576,7 +2576,7 @@
                             <label class="component-title">SMTP from</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                 </div>
@@ -2602,7 +2602,7 @@
                             <label class="component-title">SMTP user</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2618,7 +2618,7 @@
                             <label class="component-title">SMTP password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -2635,7 +2635,7 @@
                             <label class="component-title">Global email list</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                 </div>
@@ -2655,7 +2655,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
+                                    <div class="input-group input200">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-list"></span>
                                         </div>
@@ -2669,7 +2669,7 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
+                                    <div class="input-group input200">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-envelope"></span>
                                         </div>

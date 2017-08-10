@@ -31,7 +31,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="input-group input350">
+            <div class="input-group input200">
                 <div class="input-group-addon">
                     <span class="fa fa-binoculars"></span>
                 </div>

@@ -10,15 +10,15 @@
 
 <%block name="pages">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <div id="core-tab-pane1" class="tab-pane fade in active">
-        <div class="tab-pane-desc">
+    <div id="core-tab-pane1" class="row tab-pane fade in active">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Quality Sizes</h3>
             <p>Use default qualitiy sizes or specify custom ones per quality definition.</p>
             <div>
                 <p class="note"> Settings represent maximum size allowed per episode video file.</p>
             </div>
         </div>
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
             % for qtype, qsize in sickrage.srCore.srConfig.QUALITY_SIZES.items():
                 % if qsize:
@@ -27,7 +27,7 @@
                             <label class="component-title">${renderQualityPill(qtype)}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-file"></span>
                                 </div>

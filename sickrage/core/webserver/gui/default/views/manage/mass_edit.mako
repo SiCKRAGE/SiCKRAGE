@@ -34,7 +34,7 @@
                         ==> <span style="text-decoration: underline;">Changing any settings marked with (<span class="separator">*</span>) will force a refresh of the selected shows.</span><br>
                         <br>
 
-                        <fieldset class="tab-pane-list">
+                        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
                         <div class="row field-pair">
                             <label for="shows">

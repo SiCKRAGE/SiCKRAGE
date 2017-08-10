@@ -18,7 +18,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="input-group input350">
+        <div class="input-group input200">
             <div class="input-group-addon">
                 <span class="glyphicon glyphicon-sunglasses"></span>
             </div>
@@ -42,7 +42,7 @@
 
             <div style="padding-right: 40px; text-align: left; float: left;">
                 <h5>Allowed</h5>
-                <div class="input-group input350">
+                <div class="input-group input200">
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-sunglasses"></span>
                     </div>
@@ -58,7 +58,7 @@
 
             <div style="text-align: left; float: left;">
                 <h5>Preferred</h5>
-                <div class="input-group input350">
+                <div class="input-group input200">
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-sunglasses"></span>
                     </div>
