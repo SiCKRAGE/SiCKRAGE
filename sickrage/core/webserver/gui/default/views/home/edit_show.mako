@@ -317,9 +317,6 @@
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
-                                                <div class="input-group-addon">
-                                                    <span class="glyphicon"></span>
-                                                </div>
                                                 <input type="text" id="SceneName"
                                                        title="Scene exception name for show"
                                                        class="form-control "/>
