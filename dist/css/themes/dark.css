@@ -812,36 +812,6 @@ div.token-input-dropdown {
 }
 
 /* =======================================================================
-jquery.confirm.css
-========================================================================== */
-
-#confirmBox {
-    background: #222;
-    width: 460px;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    margin: -130px 0 0 -230px;
-    border: 1px solid #111;
-    box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.175);
-}
-
-#confirmBox h1 {
-    background-color: #15528F;
-    border-bottom: 1px solid #111;
-    color: #fff;
-    margin: 0;
-    font-size: 22px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
-}
-
-#confirmBox p {
-    padding-top: 20px;
-    color: #fff;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
-}
-
-/* =======================================================================
 bootstrap modal
 ========================================================================== */
 

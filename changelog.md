@@ -1,6 +1,7 @@
 # Changelog
 
-- * f414ff6 - 2017-08-10: Fixed slow show adding to database issues 
+- * b6e6eb6 - 2017-08-10: Updated jquery-confirm bower package 
+- * 677399e - 2017-08-10: Fixed slow show adding to database issues 
 - * 35e0ad2 - 2017-08-10: Updated responsive code in templates 
 - * ecabf80 - 2017-08-10: Updated requirements 
 - * 9445b55 - 2017-08-10: Cleaned up add show options and backlog templates 
