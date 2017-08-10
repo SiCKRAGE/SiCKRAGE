@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import os
 import shutil
 import socket
-import threading
 
 from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
@@ -46,9 +45,9 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 
-class srWebServer(threading.Thread):
+class srWebServer(object):
     def __init__(self):
-        super(srWebServer, self).__init__(name="TORNADO")
+        super(srWebServer, self).__init__()
         self.started = False
         self.video_root = None
         self.api_root = None
