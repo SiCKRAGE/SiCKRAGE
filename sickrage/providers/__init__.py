@@ -148,7 +148,7 @@ class GenericProvider(object):
     def make_filename(self, name):
         return ""
 
-    def downloadResult(self, result):
+    def download_result(self, result):
         """
         Save the result to disk.
         """

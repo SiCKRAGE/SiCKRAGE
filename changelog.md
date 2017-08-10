@@ -1,6 +1,7 @@
 # Changelog
 
-- * ad00d14 - 2017-08-10: Updated responsive code in templates 
+- * f414ff6 - 2017-08-10: Fixed slow show adding to database issues 
+- * 35e0ad2 - 2017-08-10: Updated responsive code in templates 
 - * ecabf80 - 2017-08-10: Updated requirements 
 - * 9445b55 - 2017-08-10: Cleaned up add show options and backlog templates 
 - * 9d2ba37 - 2017-08-10: Release v9.0.75 

@@ -39,7 +39,7 @@ from sickrage.notifiers import srNotifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
 
-def _downloadResult(result):
+def _download_result(result):
     """
     Downloads a result to the appropriate black hole folder.
 
@@ -54,7 +54,7 @@ def _downloadResult(result):
 
     # nzbs with an URL can just be downloaded from the provider
     if result.resultType == "nzb":
-        newResult = resProvider.downloadResult(result)
+        newResult = resProvider.download_result(result)
     # if it's an nzb data result
     elif result.resultType == "nzbdata":
 
@@ -76,7 +76,7 @@ def _downloadResult(result):
             sickrage.srCore.srLogger.error("Error trying to save NZB to black hole: {}".format(e.message))
             newResult = False
     elif resProvider.type == "torrent":
-        newResult = resProvider.downloadResult(result)
+        newResult = resProvider.download_result(result)
     else:
         sickrage.srCore.srLogger.error("Invalid provider type - this is a coding error, report it please")
         newResult = False
@@ -113,7 +113,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     dlResult = False
     if result.resultType in ("nzb", "nzbdata"):
         if sickrage.srCore.srConfig.NZB_METHOD == "blackhole":
-            dlResult = _downloadResult(result)
+            dlResult = _download_result(result)
         elif sickrage.srCore.srConfig.NZB_METHOD == "sabnzbd":
             dlResult = SabNZBd.sendNZB(result)
         elif sickrage.srCore.srConfig.NZB_METHOD == "nzbget":
@@ -124,7 +124,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
                 "Unknown NZB action specified in config: " + sickrage.srCore.srConfig.NZB_METHOD)
     elif result.resultType == "torrent":
         if sickrage.srCore.srConfig.TORRENT_METHOD == "blackhole":
-            dlResult = _downloadResult(result)
+            dlResult = _download_result(result)
         else:
             if all([not result.content, not result.url.startswith('magnet:')]):
                 result.content = sickrage.srCore.srWebSession.get(result.url).content

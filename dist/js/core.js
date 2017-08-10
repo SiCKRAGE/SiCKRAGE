@@ -291,6 +291,7 @@ jQuery(document).ready(function ($) {
                     '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
                     '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
                     confirm: function (e) {
+                        console.log(e.context);
                         location.href = e.context.href + ($('#deleteFiles')[0].checked ? '&full=1' : '');
                     }
                 });

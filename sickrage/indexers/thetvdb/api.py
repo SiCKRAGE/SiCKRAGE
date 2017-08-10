@@ -291,14 +291,14 @@ class Tvdb:
 
         self.shows = ShowCache()
         if os.path.isfile(os.path.join(sickrage.DATA_DIR, 'thetvdb.db')):
-            with open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'rb') as fp:
+            with io.open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'rb') as fp:
                 try:
                     self.shows = pickle.load(fp)
                 except:
                     pass
 
-        self.config = {'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'cache_enabled': cache,
-                       'dvdorder': dvdorder, 'proxy': proxy, 'apitoken': None, 'api': {}, 'headers': headers}
+        self.config = dict(apikey=apikey, debug_enabled=debug, custom_ui=custom_ui, cache_enabled=cache,
+                           dvdorder=dvdorder, proxy=proxy, apitoken=None, api={}, headers=headers)
 
         # api base url
         self.config['api']['base'] = "https://api.thetvdb.com"
