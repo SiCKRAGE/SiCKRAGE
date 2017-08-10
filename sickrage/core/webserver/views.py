@@ -86,7 +86,7 @@ class BaseHandler(RequestHandler):
         self.mako_lookup = TemplateLookup(
             directories=[os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'views')],
             module_directory=os.path.join(sickrage.CACHE_DIR, 'mako'),
-            format_exceptions=False,
+            filesystem_checks=True,
             strict_undefined=True,
             input_encoding='utf-8',
             output_encoding='utf-8',

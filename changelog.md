@@ -1,6 +1,7 @@
 # Changelog
 
-- * b87f0f3 - 2017-08-10: Web views are async now 
+- * eb79648 - 2017-08-10: Misc code changes 
+- * 0f42df7 - 2017-08-10: Web views are async now 
 - * bdcebe1 - 2017-08-09: Core config code changes 
 - * ff3dca8 - 2017-08-09: Misc changes 
 - * 25ba84f - 2017-08-09: Release v9.0.74 
