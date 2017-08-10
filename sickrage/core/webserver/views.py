@@ -84,6 +84,7 @@ class BaseHandler(RequestHandler):
         super(BaseHandler, self).__init__(application, request, **kwargs)
         self.io_loop = IOLoop.current()
         self.executor = ThreadPoolExecutor(cpu_count())
+        self.startTime = time.time()
 
         # template settings
         self.mako_lookup = TemplateLookup(
@@ -96,9 +97,6 @@ class BaseHandler(RequestHandler):
             encoding_errors='replace',
             future_imports=['unicode_literals']
         )
-
-        # start time
-        self.startTime = time.time()
 
     def prepare(self):
         if not self.request.full_url().startswith(sickrage.srCore.srConfig.WEB_ROOT):
