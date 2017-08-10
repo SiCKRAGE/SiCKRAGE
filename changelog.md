@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0d999d9 - 2017-08-09: Misc changes 
+- * e34ba28 - 2017-08-09: Core config code changes 
+- * ff3dca8 - 2017-08-09: Misc changes 
 - * 25ba84f - 2017-08-09: Release v9.0.74 
 - * 69b26f4 - 2017-08-09: Misc version updater code cleanup 
 - * 478d953 - 2017-08-09: Fixed issue #45 - Update fails when SHOWUPDATER is running 

@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import os
 import shutil
 import socket
-import threading
 
 from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
@@ -46,7 +45,7 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 
-class srWebServer(threading.Thread):
+class srWebServer(object):
     def __init__(self):
         super(srWebServer, self).__init__()
         self.name = "TORNADO"
@@ -57,7 +56,7 @@ class srWebServer(threading.Thread):
         self.app = None
         self.server = None
 
-    def run(self):
+    def start(self):
         self.started = True
 
         # clear mako cache folder
@@ -147,7 +146,7 @@ class srWebServer(threading.Thread):
                 (r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
                  {"path": self.video_root}),
             ] + Route.get_routes(sickrage.srCore.srConfig.WEB_ROOT),
-            debug=sickrage.DEBUG,
+            debug=sickrage.srCore.srConfig.DEBUG,
             autoreload=False,
             gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
             xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
@@ -162,7 +161,7 @@ class srWebServer(threading.Thread):
         }
 
         try:
-            self.server.listen(sickrage.srCore.srConfig.WEB_PORT, None)
+            self.server.listen(sickrage.WEB_PORT or sickrage.srCore.srConfig.WEB_PORT, None)
         except socket.error as e:
             sickrage.srCore.srLogger.warning(e.strerror)
             raise SystemExit

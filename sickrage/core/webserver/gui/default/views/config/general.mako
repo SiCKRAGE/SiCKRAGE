@@ -690,7 +690,7 @@
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="debug"
-                                           id="debug" ${('', 'checked')[bool(sickrage.DEBUG)]}/>
+                                           id="debug" ${('', 'checked')[bool(sickrage.srCore.srConfig.DEBUG)]}/>
                                     <p>Enable debug logs
                                     <p>
                                 </div>
@@ -886,7 +886,7 @@
                                                 class="form-control form-control-inline input-sm pull-left">
                                             % if git_branch:
                                                 % for cur_branch in git_branch:
-                                                    % if sickrage.DEVELOPER:
+                                                    % if sickrage.srCore.srConfig.DEVELOPER:
                                                         <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                                     % elif cur_branch in ['master', 'develop']:
                                                         <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>

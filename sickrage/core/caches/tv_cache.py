@@ -162,7 +162,7 @@ class TVCache(object):
             })
 
     def should_update(self):
-        if sickrage.DEVELOPER: return True
+        if sickrage.srCore.srConfig.DEVELOPER: return True
 
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):
