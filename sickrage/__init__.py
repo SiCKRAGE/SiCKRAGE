@@ -277,7 +277,7 @@ def main():
                             action='store_true',
                             help='Disables logging to CONSOLE')
         parser.add_argument('-p', '--port',
-                            default=8081,
+                            default=0,
                             type=int,
                             help='Override default/configured port to listen on')
         parser.add_argument('--dev',

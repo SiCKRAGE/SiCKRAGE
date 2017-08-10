@@ -73,7 +73,7 @@ from sickrage.providers import providersDict
 class Core(object):
     def __init__(self):
         self.started = False
-        self.io_loop = IOLoop.current()
+        self.io_loop = IOLoop()
 
         # process id
         self.PID = os.getpid()
@@ -181,7 +181,7 @@ class Core(object):
         self.srLogger.logSize = self.srConfig.LOG_SIZE
         self.srLogger.logNr = self.srConfig.LOG_NR
         self.srLogger.logFile = self.srConfig.LOG_FILE
-        self.srLogger.debugLogging = sickrage.DEBUG
+        self.srLogger.debugLogging = self.srConfig.DEBUG
         self.srLogger.consoleLogging = not sickrage.QUITE
 
         # start logger
@@ -221,7 +221,7 @@ class Core(object):
             db.cleanup()
 
         # compact main database
-        if not sickrage.DEVELOPER and self.srConfig.LAST_DB_COMPACT < time.time() - 604800:  # 7 days
+        if not self.srConfig.DEVELOPER and self.srConfig.LAST_DB_COMPACT < time.time() - 604800:  # 7 days
             self.mainDB.compact()
             self.srConfig.LAST_DB_COMPACT = int(time.time())
 

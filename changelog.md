@@ -1,6 +1,14 @@
 # Changelog
 
-- * 33e926a - 2017-08-09: Added sortable show size column to show list template 
+- * 3a9ae65 - 2017-08-10: Misc code changes 
+- * 0f42df7 - 2017-08-10: Web views are async now 
+- * bdcebe1 - 2017-08-09: Core config code changes 
+- * ff3dca8 - 2017-08-09: Misc changes 
+- * 25ba84f - 2017-08-09: Release v9.0.74 
+- * 69b26f4 - 2017-08-09: Misc version updater code cleanup 
+- * 478d953 - 2017-08-09: Fixed issue #45 - Update fails when SHOWUPDATER is running 
+- * 580ccdb - 2017-08-09: Fixed issue #47 - File air date stamping failed 
+- * 73e6130 - 2017-08-09: Added sortable show size column to show list template 
 - * 0d5a641 - 2017-08-09: Add new shows template is responsive 
 - * 7a7bae2 - 2017-08-09: Add shows template is now responsive 
 - * db01cbe - 2017-08-09: Episode Statues template is now responsive 
