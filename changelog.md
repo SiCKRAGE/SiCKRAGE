@@ -1,6 +1,7 @@
 # Changelog
 
-- * 197a949 - 2017-08-10: Misc code changes 
+- * b90476a - 2017-08-10: Speedup app startup 
+- * b7cbeba - 2017-08-10: Misc code changes 
 - * e0d1e84 - 2017-08-10: Misc code changes 
 - * 3a9ae65 - 2017-08-10: Misc code changes 
 - * 0f42df7 - 2017-08-10: Web views are async now 
