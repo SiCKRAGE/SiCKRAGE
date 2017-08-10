@@ -119,9 +119,12 @@ class srVersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
+        if sickrage.srCore.srConfig.DEVELOPER:
+            return False
+
         if not sickrage.srCore.started:
             return True
-        if not sickrage.srCore.srConfig.DEVELOPER and not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
+        if not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
             return True
 
         sickrage.srCore.srLogger.debug("We can't proceed with the update. Post-Processor is running")
