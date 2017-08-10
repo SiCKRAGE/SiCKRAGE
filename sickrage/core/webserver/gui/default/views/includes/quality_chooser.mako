@@ -18,12 +18,17 @@
 
 <div class="row">
     <div class="col-md-12">
-        <select id="qualityPreset" name="quality_preset" class="form-control form-control-inline input-sm" title="Quality Presets">
-            <option value="0">Custom</option>
-            % for curPreset in sorted(qualityPresets):
-                <option value="${curPreset}" ${('', 'selected="selected"')[curPreset == overall_quality]} ${('', 'style="padding-left: 15px;"')[qualityPresetStrings[curPreset].endswith("0p")]}>${qualityPresetStrings[curPreset]}</option>
-            % endfor
-        </select>
+        <div class="input-group input350">
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-sunglasses"></span>
+            </div>
+            <select id="qualityPreset" name="quality_preset" class="form-control" title="Quality Presets">
+                <option value="0">Custom</option>
+                % for curPreset in sorted(qualityPresets):
+                    <option value="${curPreset}" ${('', 'selected="selected"')[curPreset == overall_quality]} ${('', 'style="padding-left: 15px;"')[qualityPresetStrings[curPreset].endswith("0p")]}>${qualityPresetStrings[curPreset]}</option>
+                % endfor
+            </select>
+        </div>
     </div>
 </div>
 
@@ -37,26 +42,34 @@
 
             <div style="padding-right: 40px; text-align: left; float: left;">
                 <h5>Allowed</h5>
-                <label for="anyQualities">
+                <div class="input-group input350">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-sunglasses"></span>
+                    </div>
                     <select id="anyQualities" name="anyQualities" multiple="multiple" size="${len(anyQualityList)}"
-                            class="form-control form-control-inline">
+                            title="Allowed Qualities"
+                            class="form-control">
                         % for curQuality in sorted(anyQualityList):
                             <option value="${curQuality}" ${('', 'selected="selected"')[curQuality in anyQualities]}>${Quality.qualityStrings[curQuality]}</option>
                         % endfor
                     </select>
-                </label>
+                </div>
             </div>
 
             <div style="text-align: left; float: left;">
                 <h5>Preferred</h5>
-                <label for="bestQualities">
-                    <select id="bestQualities" name="bestQualities" multiple="multiple" size="${len(bestQualityList)}"
-                            class="form-control form-control-inline">
+                <div class="input-group input350">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-sunglasses"></span>
+                    </div>
+                    <select id="bestQualities" name="bestQualities" multiple="multiple"
+                            size="${len(bestQualityList)}" title="Preferred Qualities"
+                            class="form-control">
                         % for curQuality in sorted(bestQualityList):
                             <option value="${curQuality}" ${('', 'selected="selected"')[curQuality in bestQualities]}>${Quality.qualityStrings[curQuality]}</option>
                         % endfor
                     </select>
-                </label>
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 # Changelog
 
-- * c3babaf - 2017-08-10: Fixed issue displaying show banner 
+- * 48cd909 - 2017-08-10: Edit show template is now responsive 
+- * c41008e - 2017-08-10: Fixed issue displaying show banner 
 - * d5fd372 - 2017-08-10: Speedup app startup 
 - * b7cbeba - 2017-08-10: Misc code changes 
 - * e0d1e84 - 2017-08-10: Misc code changes 
