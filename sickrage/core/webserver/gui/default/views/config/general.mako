@@ -1062,7 +1062,7 @@
                                         title="GIT Branch Version">
                                     % if git_branch:
                                         % for cur_branch in git_branch:
-                                            % if sickrage.DEVELOPER:
+                                            % if sickrage.srCore.srConfig.DEVELOPER:
                                                 <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                             % elif cur_branch in ['master', 'develop']:
                                                 <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
