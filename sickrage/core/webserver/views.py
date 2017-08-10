@@ -3873,7 +3873,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.CALENDAR_UNPROTECTED = sickrage.srCore.srConfig.checkbox_to_value(calendar_unprotected)
         sickrage.srCore.srConfig.CALENDAR_ICONS = sickrage.srCore.srConfig.checkbox_to_value(calendar_icons)
         sickrage.srCore.srConfig.NO_RESTART = sickrage.srCore.srConfig.checkbox_to_value(no_restart)
-        sickrage.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
+        sickrage.srCore.srConfig.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
         sickrage.srCore.srConfig.SSL_VERIFY = sickrage.srCore.srConfig.checkbox_to_value(ssl_verify)
         sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srCore.srConfig.to_int(coming_eps_missed_range,
                                                                                            default=7)
