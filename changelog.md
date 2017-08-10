@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3b22725 - 2017-08-10: Cleaned up add show options and backlog templates 
+- * d107e31 - 2017-08-10: Updated requirements 
+- * 9445b55 - 2017-08-10: Cleaned up add show options and backlog templates 
 - * 9d2ba37 - 2017-08-10: Release v9.0.75 
 - * 0543be7 - 2017-08-10: Edit show template is now responsive 
 - * d32f7e7 - 2017-08-10: Edit show template is now responsive 
