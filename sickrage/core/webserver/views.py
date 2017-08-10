@@ -28,9 +28,13 @@ import urllib
 import dateutil.tz
 import markdown2
 from CodernityDB.database import RecordNotFound
+from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
+from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode
+from tornado.gen import coroutine
+from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
 import sickrage
@@ -76,6 +80,7 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
+        self.executor = ThreadPoolExecutor(cpu_count())
 
         # template settings
         self.mako_lookup = TemplateLookup(
@@ -185,6 +190,7 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
+    @run_on_executor
     def route(self, function, **kwargs):
         for arg, value in kwargs.items():
             if len(value) == 1:
@@ -201,6 +207,7 @@ class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
 
+    @coroutine
     @authenticated
     def prepare(self, *args, **kwargs):
         # route -> method obj
@@ -209,15 +216,19 @@ class WebHandler(BaseHandler):
             getattr(self, 'index', None)
         )
 
-        if method: self.finish(self.route(method, **self.request.arguments))
+        if method:
+            result = yield self.route(method, **self.request.arguments)
+            self.finish(result)
 
 
 class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
+    @coroutine
     def prepare(self, *args, **kwargs):
-        self.finish(self.route(self.auth))
+        result = yield self.route(self.auth)
+        self.finish(result)
 
     def auth(self):
         try:

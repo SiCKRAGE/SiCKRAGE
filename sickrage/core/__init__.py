@@ -73,7 +73,7 @@ from sickrage.providers import providersDict
 class Core(object):
     def __init__(self):
         self.started = False
-        self.io_loop = IOLoop.current()
+        self.io_loop = IOLoop()
 
         # process id
         self.PID = os.getpid()
