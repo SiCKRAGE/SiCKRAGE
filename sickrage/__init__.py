@@ -373,7 +373,8 @@ def main():
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
-            print("Failed to import required libs, please run 'pip install --user -U -r {}' from console".format(REQS_FILE))
+            print("Failed to import required libs, please run 'pip install --user -U -r {}' from console".format(
+                REQS_FILE))
     except:
         traceback.print_exc()
 

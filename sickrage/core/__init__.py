@@ -73,7 +73,7 @@ from sickrage.providers import providersDict
 class Core(object):
     def __init__(self):
         self.started = False
-        self.io_loop = IOLoop()
+        self.io_loop = IOLoop.current()
 
         # process id
         self.PID = os.getpid()
@@ -483,6 +483,9 @@ class Core(object):
 
             # shutdown logging
             self.srLogger.close()
+
+            # close ioloop events
+            self.io_loop.close(all_fds=True)
 
         # stop daemon process
         if not sickrage.restart and sickrage.daemon: sickrage.daemon.stop()

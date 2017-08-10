@@ -19,11 +19,15 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import threading
 
 import sickrage
+from sickrage.core import findCertainShow
+from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
 from sickrage.core.queues.search import DailySearchQueueItem
 from sickrage.core.tv.show.history import FailedHistory
+from sickrage.core.updaters import tz_updater
 
 
 class srDailySearcher(object):
@@ -48,6 +52,58 @@ class srDailySearcher(object):
         # trim failed download history
         if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
+
+        sickrage.srCore.srLogger.info("{}: Searching for new released episodes".format(self.name))
+
+        curDate = datetime.date.today()
+        curDate += datetime.timedelta(days=2)
+        if tz_updater.load_network_dict():
+            curDate += datetime.timedelta(days=1)
+
+        curTime = datetime.datetime.now(tz_updater.sr_timezone)
+
+        show = None
+
+        episodes = [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)
+                    if x['doc']['status'] == UNAIRED
+                    and x['doc']['season'] > 0
+                    and curDate.toordinal() >= x['doc']['airdate'] > 1]
+
+        for episode in episodes:
+            if not show or int(episode["showid"]) != show.indexerid:
+                show = findCertainShow(sickrage.srCore.showList, int(episode["showid"]))
+
+            # for when there is orphaned series in the database but not loaded into our showlist
+            if not show or show.paused:
+                continue
+
+            if show.airs and show.network:
+                # This is how you assure it is always converted to local time
+                air_time = tz_updater.parse_date_time(
+                    episode['airdate'], show.airs, show.network, dateOnly=True
+                ).astimezone(tz_updater.sr_timezone)
+
+                # filter out any episodes that haven't started airing yet,
+                # but set them to the default status while they are airing
+                # so they are snatched faster
+                if air_time > curTime: continue
+
+            ep = show.getEpisode(int(episode['season']), int(episode['episode']))
+            with ep.lock:
+                if ep.season == 0:
+                    sickrage.srCore.srLogger.info(
+                        "New episode {} airs today, setting status to SKIPPED because is a special season".format(
+                            ep.prettyName()))
+                    ep.status = SKIPPED
+                else:
+                    sickrage.srCore.srLogger.info(
+                        "New episode {} airs today, setting to default episode status for this show: {}".format(
+                            ep.prettyName(), statusStrings[ep.show.default_ep_status]))
+                    ep.status = ep.show.default_ep_status
+
+                ep.saveToDB()
+        else:
+            sickrage.srCore.srLogger.info("{}: No new released episodes found".format(self.name))
 
         # queue episode for daily search
         sickrage.srCore.SEARCHQUEUE.put(DailySearchQueueItem())

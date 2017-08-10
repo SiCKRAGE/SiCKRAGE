@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import datetime
 import os
 import re
+import threading
 import time
 import traceback
 import urllib
@@ -34,6 +35,7 @@ from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode
 from tornado.gen import coroutine
+from tornado.ioloop import IOLoop
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
@@ -80,6 +82,7 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
+        self.io_loop = IOLoop.current()
         self.executor = ThreadPoolExecutor(cpu_count())
 
         # template settings
@@ -192,6 +195,7 @@ class BaseHandler(RequestHandler):
 
     @run_on_executor
     def route(self, function, **kwargs):
+        threading.currentThread().setName("TORNADO")
         for arg, value in kwargs.items():
             if len(value) == 1:
                 kwargs[arg] = value[0]
@@ -3862,7 +3866,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.CALENDAR_UNPROTECTED = sickrage.srCore.srConfig.checkbox_to_value(calendar_unprotected)
         sickrage.srCore.srConfig.CALENDAR_ICONS = sickrage.srCore.srConfig.checkbox_to_value(calendar_icons)
         sickrage.srCore.srConfig.NO_RESTART = sickrage.srCore.srConfig.checkbox_to_value(no_restart)
-        sickrage.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
+        sickrage.srCore.srConfig.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
         sickrage.srCore.srConfig.SSL_VERIFY = sickrage.srCore.srConfig.checkbox_to_value(ssl_verify)
         sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srCore.srConfig.to_int(coming_eps_missed_range,
                                                                                            default=7)
