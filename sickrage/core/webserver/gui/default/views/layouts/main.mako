@@ -85,10 +85,6 @@
     <link rel="stylesheet" type="text/css"
           href="${srWebRoot}/css/themes/${sickrage.srCore.srConfig.THEME_NAME}.min.css"/>
     <%block name="css" />
-
-    <script src="${srWebRoot}/js/bower.min.js"></script>
-    <script src="${srWebRoot}/js/core.min.js"></script>
-    <%block name="scripts" />
 </head>
 <body data-controller="${controller}" data-action="${action}">
 
@@ -393,26 +389,26 @@
             <div id="sub-menu" class="hidden-print">
                 <% first = True %>
                 % for menuItem in reversed(submenu):
-                        % if menuItem.get('requires', 1):
-                            % if isinstance(menuItem['path'], dict):
-                            ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
-                            <%
-                                first = False
-                                inner_first = True
-                            %>
-                            % for cur_link in menuItem['path']:
-                            ${("&middot;", "")[bool(inner_first)]}<a href="${srWebRoot}${menuItem['path'][cur_link]}"
-                                                                     class="inner ${menuItem.get('class', '')}">${cur_link}</a>
-                            <% inner_first = False %>
-                            % endfor
-                            % else:
-                                <a href="${srWebRoot}${menuItem['path']}"
-                                   class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
-                                    <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
-                                </a>
-                            <% first = False %>
-                            % endif
+                    % if menuItem.get('requires', 1):
+                        % if isinstance(menuItem['path'], dict):
+                        ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                        <%
+                            first = False
+                            inner_first = True
+                        %>
+                        % for cur_link in menuItem['path']:
+                        ${("&middot;", "")[bool(inner_first)]}<a href="${srWebRoot}${menuItem['path'][cur_link]}"
+                                                                 class="inner ${menuItem.get('class', '')}">${cur_link}</a>
+                        <% inner_first = False %>
+                        % endfor
+                        % else:
+                            <a href="${srWebRoot}${menuItem['path']}"
+                               class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
+                                <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
+                            </a>
+                        <% first = False %>
                         % endif
+                    % endif
                 % endfor
             </div>
         % endif
@@ -477,6 +473,10 @@
             </div>
         </div>
     % endif
+
+    <script src="${srWebRoot}/js/bower.min.js"></script>
+    <script src="${srWebRoot}/js/core.min.js"></script>
+    <%block name="scripts" />
 </div>
 </body>
 </html>
