@@ -253,6 +253,10 @@ ul.tags li {
     cursor: default;
 }
 
+.displayShowTable th.row-seasonheader {
+    background-color: transparent;
+}
+
 .sickrageTable {
     table-layout: auto;
     width: 100%;

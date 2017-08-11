@@ -45,7 +45,7 @@
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="input-group">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-folder-open"></span>
                                 </div>
@@ -75,7 +75,7 @@
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-refresh"></span>
                                 </div>
@@ -105,7 +105,7 @@
                     <label class="component-title">Auto Post-Processing Frequency</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
@@ -137,7 +137,7 @@
                     <label class="component-title">Sync File Extensions to Ignore</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-file"></span>
                         </div>
@@ -227,7 +227,7 @@
                     <label class="component-title">Timezone for File Date:</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
@@ -309,7 +309,7 @@
                     <label class="component-title">Extra Scripts</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-file"></span>
                         </div>
@@ -343,7 +343,7 @@
                     <label class="component-title">Name Pattern:</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-list"></span>
                         </div>
@@ -370,7 +370,7 @@
                         <label class="component-title"></label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input200">
+                        <div class="input-group input350">
                             <div class="input-group-addon">
                                 <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                      alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend"
@@ -536,7 +536,7 @@
                     <label class="component-title">Multi-Episode Style:</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-sunglasses"></span>
                         </div>
@@ -605,7 +605,7 @@
                         <label class="component-title">Air-by-date Name Pattern:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input200">
+                        <div class="input-group input350">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-list"></span>
                             </div>
@@ -632,7 +632,7 @@
                             <label class="component-title"></label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                          alt="[Toggle Key]" id="show_naming_abd_key"
@@ -811,7 +811,7 @@
                         <label class="component-title">Sports Name Pattern:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input200">
+                        <div class="input-group input350">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-list"></span>
                             </div>
@@ -838,7 +838,7 @@
                             <label class="component-title"></label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                          alt="[Toggle Key]" id="show_naming_sports_key"
@@ -1021,7 +1021,7 @@
                         <label class="component-title">Anime Name Pattern:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input200">
+                        <div class="input-group input350">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-list"></span>
                             </div>
@@ -1050,7 +1050,7 @@
                             </label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                          alt="[Toggle Key]" id="show_naming_anime_key"
@@ -1198,7 +1198,7 @@
                         <label class="component-title">Multi-Episode Style:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input200">
+                        <div class="input-group input350">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-sunglasses"></span>
                             </div>
@@ -1303,7 +1303,7 @@
                     <label class="component-title">Metadata Type:</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="fa fa-tv"></span>
                         </div>

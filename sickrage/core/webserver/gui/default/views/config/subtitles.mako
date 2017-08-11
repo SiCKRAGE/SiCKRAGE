@@ -35,7 +35,7 @@
                     <label class="component-title">Subtitle Languages</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-flag"></span>
                         </div>
@@ -52,7 +52,7 @@
                     <label class="component-title">Subtitle Directory</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-folder-open"></span>
                         </div>
@@ -72,7 +72,7 @@
                     <label class="component-title">Subtitle Find Frequency</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
@@ -135,7 +135,7 @@
                     <label class="component-title">Extra Scripts</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input200">
+                    <div class="input-group input350">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-file"></span>
                         </div>
@@ -244,7 +244,7 @@
                             <label class="component-title">${curService['name'].capitalize()} User Name</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -259,7 +259,7 @@
                             <label class="component-title">${curService['name'].capitalize()} Password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>

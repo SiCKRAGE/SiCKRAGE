@@ -847,7 +847,7 @@ span.snatched b {
 
 .displayShowTable {
   table-layout: auto;
-  width: auto;
+  width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
   text-align: center;
@@ -861,7 +861,7 @@ span.snatched b {
 
 .displayShowTable th.row-seasonheader {
   border: none !important;
-  background-color: transparent;
+  background-color: #FFFFFF;
   color: #fff !important;
   padding-top: 15px !important;
   text-align: left !important; }
@@ -3245,6 +3245,9 @@ Country Flags
 
 .tt-suggestion p {
   margin: 0; }
+
+.horizontal-scroll {
+  overflow-x: auto; }
 
 @media (min-width: 320px) {
   .pull-xs-left {
