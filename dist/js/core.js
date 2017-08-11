@@ -249,13 +249,12 @@ jQuery(document).ready(function ($) {
                     }
                 );
 
-                $.confirm.options = {
-                    confirmButton: "Yes",
-                    cancelButton: "Cancel",
-                    dialogClass: "modal-dialog",
-                    post: false,
-                    confirm: function (e) {
-                        location.href = e.attr('href');
+                jconfirm.defaults = {
+                    theme: 'dark',
+                    type: 'blue',
+                    typeAnimated: true,
+                    confirm: function () {
+                        location.href = this.$target.attr('href');
                     }
                 };
 
@@ -286,12 +285,12 @@ jQuery(document).ready(function ($) {
 
                 $("a.removeshow").confirm({
                     title: "Remove Show",
-                    text: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
+                    content: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
                     '</span> from the database?<br><br>' +
                     '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
                     '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
-                    confirm: function (e) {
-                        location.href = e.context.href + ($('#deleteFiles')[0].checked ? '&full=1' : '');
+                    confirm: function () {
+                        location.href = this.$target.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
                     }
                 });
 

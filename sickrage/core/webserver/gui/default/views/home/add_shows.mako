@@ -25,6 +25,7 @@
                 </a>
             </div>
         </div>
+        <br/>
         % if sickrage.srCore.srConfig.USE_TRAKT == True:
             <div class="row">
                 <div class="col-md-12">
@@ -42,6 +43,7 @@
                     </a>
                 </div>
             </div>
+            <br/>
             <div class="row">
                 <div class="col-md-12">
                     <a href="${srWebRoot}/home/addShows/recommendedShows/" id="btnNewShow" class="btn btn-large">
@@ -57,6 +59,7 @@
                     </a>
                 </div>
             </div>
+            <br/>
         % endif
         <div class="row">
             <div class="col-md-12">
@@ -73,6 +76,7 @@
                 </a>
             </div>
         </div>
+        <br/>
         <div class="row">
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/existingShows/" id="btnExistingShow" class="btn btn-large">

@@ -100,6 +100,10 @@ class srWebServer(object):
                 # api
                 (r'%s(/?.*)' % self.api_root, ApiHandler),
 
+                # redirect to web root
+                (r"(?!%s)(.*)" % sickrage.srCore.srConfig.WEB_ROOT, RedirectHandler,
+                 {"url": "%s/{0}" % sickrage.srCore.srConfig.WEB_ROOT}),
+
                 # api key
                 (r'%s/getkey(/?.*)' % sickrage.srCore.srConfig.WEB_ROOT, KeyHandler),
 
@@ -144,7 +148,7 @@ class srWebServer(object):
                 (r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
                  {"path": self.video_root}),
             ] + Route.get_routes(sickrage.srCore.srConfig.WEB_ROOT),
-            debug=sickrage.srCore.srConfig.DEBUG,
+            debug=True,
             autoreload=False,
             gzip=sickrage.srCore.srConfig.WEB_USE_GZIP,
             xheaders=sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,

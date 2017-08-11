@@ -199,11 +199,6 @@ class BaseHandler(RequestHandler):
                 kwargs[arg] = value[0]
 
         return function(**kwargs)
-        #return recursive_unicode(function(
-        #    **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
-        #            recursive_unicode(kwargs.items())])
-        #))
-
 
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):

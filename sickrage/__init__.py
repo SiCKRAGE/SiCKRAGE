@@ -20,9 +20,7 @@ from __future__ import print_function, unicode_literals, with_statement
 
 import argparse
 import atexit
-import codecs
 import io
-import locale
 import os
 import site
 import sys
@@ -50,7 +48,6 @@ PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(_
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 
-SYS_ENCODING = None
 DEBUG = None
 WEB_PORT = None
 DEVELOPER = None
@@ -191,29 +188,6 @@ class Daemon(object):
                 sys.exit(1)
 
 
-def encodingInit():
-    # map the following codecs to utf-8
-    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
-
-    # get locale encoding
-    try:
-        locale.setlocale(locale.LC_ALL, "")
-        encoding = locale.getpreferredencoding()
-    except (locale.Error, IOError):
-        encoding = None
-
-    # enforce UTF-8
-    if not encoding or codecs.lookup(encoding).name == 'ascii':
-        encoding = 'UTF-8'
-
-    # wrap i/o in unicode
-    sys.stdout = codecs.getwriter(encoding)(sys.stdout)
-    sys.stdin = codecs.getreader(encoding)(sys.stdin)
-
-    return encoding
-
-
 def isElevatedUser():
     try:
         return os.getuid() == 0
@@ -259,7 +233,7 @@ def version():
 
 
 def main():
-    global srCore, daemon, SYS_ENCODING, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
+    global srCore, daemon, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
         DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
@@ -326,9 +300,6 @@ def main():
             sys.path, remainder = sys.path[:1], sys.path[1:]
             site.addsitedir(PROG_DIR)
             sys.path.extend(remainder)
-
-        # set locale encoding
-        SYS_ENCODING = encodingInit()
 
         # Make sure that we can create the data dir
         if not os.access(DATA_DIR, os.F_OK):

@@ -84,7 +84,7 @@ class NextorrentProvider(TorrentProvider):
                             for link in torrent.find_all('a'):
                                 fileType = ''.join(link.find_previous('i')["class"])
                                 fileType = unicodedata.normalize('NFKD', fileType). \
-                                    encode(sickrage.SYS_ENCODING, 'ignore')
+                                    encode(sickrage.srCore.SYS_ENCODING, 'ignore')
 
                                 if fileType == "Series":
                                     title = link.get_text(strip=True)

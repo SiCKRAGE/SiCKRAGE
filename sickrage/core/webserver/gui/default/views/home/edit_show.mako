@@ -28,20 +28,20 @@
                     </ul>
 
                     <div class="tab-content">
-                        <div id="core-tab-pane1" class="tab-pane fade in active">
+                        <div id="core-tab-pane1" class="row tab-pane fade in active">
                             <div class="tab-pane">
-                                <div class="tab-pane-desc">
+                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                                     <h3>Main Settings</h3>
                                 </div>
 
-                                <fieldset class="tab-pane-list">
+                                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                             <label class="component-title">Show Location</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="hidden" name="show" value="${show.indexerid}"/>
-                                            <div class="input-group input350">
+                                            <div class="input-group input200">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-folder-open"></span>
                                                 </div>
@@ -72,7 +72,7 @@
                                             <label class="component-title">Default Episode Status</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
+                                            <div class="input-group input200">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-list"></span>
                                                 </div>
@@ -95,7 +95,7 @@
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <% languages = srIndexerApi().indexer().languages.keys() %>
-                                            <div class="input-group input350">
+                                            <div class="input-group input200">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-flag"></span>
                                                 </div>
@@ -164,13 +164,13 @@
                                 </fieldset>
                             </div>
                         </div>
-                        <div id="core-tab-pane2" class="tab-pane fade">
+                        <div id="core-tab-pane2" class="row tab-pane fade">
                             <div class="tab-pane">
-                                <div class="tab-pane-desc">
+                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                                     <h3>Format Settings</h3>
                                 </div>
 
-                                <fieldset class="tab-pane-list">
+                                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                             <label class="component-title">Air by date</label>
@@ -261,19 +261,19 @@
                             </div>
                         </div>
 
-                        <div id="core-tab-pane3" class="tab-pane fade">
+                        <div id="core-tab-pane3" class="row tab-pane fade">
                             <div class="tab-pane">
-                                <div class="tab-pane-desc">
+                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                                     <h3>Advanced Settings</h3>
                                 </div>
-                                <fieldset class="tab-pane-list">
+                                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                             <label class="component-title">Ignored Words</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
+                                            <div class="input-group input200">
                                                 <div class="input-group-addon">
                                                     <span class="fa fa-file-word-o"></span>
                                                 </div>
@@ -296,7 +296,7 @@
                                             <label class="component-title">Required Words</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
+                                            <div class="input-group input200">
                                                 <div class="input-group-addon">
                                                     <span class="fa fa-file-word-o"></span>
                                                 </div>
@@ -316,7 +316,7 @@
                                             <label class="component-title">Scene Exception</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
+                                            <div class="input-group input200">
                                                 <input type="text" id="SceneName"
                                                        title="Scene exception name for show"
                                                        class="form-control "/>
@@ -328,7 +328,7 @@
                                             <br/>
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <div class="input-group input350">
+                                                    <div class="input-group input200">
                                                         <select id="exceptions_list" name="exceptions_list"
                                                                 class="form-control"
                                                                 multiple="multiple"

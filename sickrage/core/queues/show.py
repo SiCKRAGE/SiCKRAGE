@@ -328,7 +328,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
             self.show = TVShow(self.indexer, self.indexer_id, self.lang)
 
-            self.show.loadFromIndexer(cache=False)
+            self.show.loadFromIndexer()
 
             # set up initial values
             self.show.location = self.showDir

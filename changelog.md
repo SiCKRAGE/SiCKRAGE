@@ -1,6 +1,15 @@
 # Changelog
 
-- * 26a3956 - 2017-08-10: Release v9.0.75 
+- * 858c994 - 2017-08-11: Release v9.0.77 
+- * 39ac5e8 - 2017-08-11: Added in encoding kludge to help with unicode conversion on filesystems 
+- * f159260 - 2017-08-10: Fixed unicode decode issue 
+- * 82414e6 - 2017-08-10: Added web root redirecting code 
+- * 523b62a - 2017-08-10: Updated jquery-confirm bower package 
+- * 677399e - 2017-08-10: Fixed slow show adding to database issues 
+- * 35e0ad2 - 2017-08-10: Updated responsive code in templates 
+- * ecabf80 - 2017-08-10: Updated requirements 
+- * 9445b55 - 2017-08-10: Cleaned up add show options and backlog templates 
+- * 9d2ba37 - 2017-08-10: Release v9.0.75 
 - * 0543be7 - 2017-08-10: Edit show template is now responsive 
 - * d32f7e7 - 2017-08-10: Edit show template is now responsive 
 - * c41008e - 2017-08-10: Fixed issue displaying show banner 

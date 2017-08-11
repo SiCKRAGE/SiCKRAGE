@@ -119,9 +119,11 @@ class srVersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
+        if sickrage.srCore.srConfig.DEVELOPER:
+            return False
+
         if not sickrage.srCore.started:
             return True
-
         if not sickrage.srCore.AUTOPOSTPROCESSOR.amActive:
             return True
 

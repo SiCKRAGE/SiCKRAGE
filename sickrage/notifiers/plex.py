@@ -81,7 +81,7 @@ class PLEXNotifier(srNotifiers):
 
             response = urllib2.urlopen(req)
 
-            result = response.read().decode(sickrage.SYS_ENCODING)
+            result = response.read().decode(sickrage.srCore.SYS_ENCODING)
             response.close()
 
             sickrage.srCore.srLogger.debug('PLEX: HTTP response: ' + result.replace('\n', ''))

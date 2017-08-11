@@ -23,21 +23,21 @@
     % if sickrage.srCore.srConfig.INDEXER_DEFAULT:
         <% indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT %>
     % endif
-    <div id="core-tab-pane1" class="tab-pane fade in active">
+    <div id="core-tab-pane1" class="row tab-pane fade in active">
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Misc</h3>
                 <p>Startup options. Indexer options. Log and show file locations.</p>
                 <p><b>Some options may require a manual restart to take effect.</b></p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Default Indexer Language</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-flag"></span>
                             </div>
@@ -64,7 +64,7 @@
                         <label class="component-title">Initial page</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="fa fa-book"></span>
                             </div>
@@ -93,7 +93,7 @@
                         <label class="component-title">Daily show updates start time</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
@@ -135,9 +135,12 @@
                         <br/>
                         <input type="checkbox" name="trash_rotate_logs"
                                id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRASH_ROTATE_LOGS)]}/>
-                        <label
-                                for="trash_rotate_logs">on scheduled deletes of the oldest log files</label>
-                        <pre>selected actions use trash (recycle bin) instead of the default permanent delete</pre>
+                        <label for="trash_rotate_logs">
+                            on scheduled deletes of the oldest log files
+                        </label>
+                        <label>
+                            <pre>selected actions use trash (recycle bin) instead of the default permanent delete</pre>
+                        </label>
                     </div>
                 </div>
 
@@ -147,7 +150,7 @@
                         <label class="component-title">Number of Log files saved</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-file"></span>
                             </div>
@@ -167,7 +170,7 @@
                         <label class="component-title">Size of Log files saved</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-file"></span>
                             </div>
@@ -187,7 +190,7 @@
                         <label class="component-title">Default indexer for adding shows</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="fa fa-linode"></span>
                             </div>
@@ -212,7 +215,7 @@
                         <label class="component-title">Show indexer timeout</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
@@ -247,11 +250,11 @@
         </div>
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Updates</h3>
                 <p>Options for software updates.</p>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
                 <div class="row field-pair">
 
@@ -288,7 +291,7 @@
                         <label class="component-title">Check the server every*</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
@@ -328,15 +331,15 @@
 
         </div>
     </div><!-- /tab-pane1 //-->
-    <div id="core-tab-pane2" class="tab-pane fade">
+    <div id="core-tab-pane2" class="row tab-pane fade">
         <div class="tab-pane">
 
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>User Interface</h3>
                 <p>Options for visual appearance.</p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
                 <div class="row field-pair">
 
@@ -344,7 +347,7 @@
                         <label class="component-title">Display theme:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="fa fa-themeisle"></span>
                             </div>
@@ -407,7 +410,7 @@
                         <label class="component-title">Missed episodes range</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </div>
@@ -457,10 +460,10 @@
                                 id="date_presets${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                 name="date_preset${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
                             % for cur_preset in date_presets:
-                                <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srCore.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.SYS_ENCODING)}</option>
+                                <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srCore.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
                             % endfor
                         </select>
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </div>
@@ -471,7 +474,7 @@
                                     Use System Default
                                 </option>
                                 % for cur_preset in date_presets:
-                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.SYS_ENCODING)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -483,7 +486,7 @@
                         <label class="component-title">Time style:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
@@ -525,7 +528,7 @@
                         <label class="component-title">Download url</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
@@ -556,7 +559,7 @@
                         <label class="component-title">Fanart transparency</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-transfer"></span>
                             </div>
@@ -577,14 +580,14 @@
         </div><!-- /User interface tab-pane -->
 
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Web Interface</h3>
                 <p>It is recommended that you enable a username and password to secure SickRage from
                     being tampered with remotely.</p>
                 <p><b>These options require a manual restart to take effect.</b></p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">API key</label>
@@ -592,7 +595,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
@@ -635,7 +638,7 @@
                         <label class="component-title">HTTP username</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-user"></span>
                             </div>
@@ -654,7 +657,7 @@
                         <label class="component-title">HTTP password</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-lock"></span>
                             </div>
@@ -673,7 +676,7 @@
                         <label class="component-title">HTTP port</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
@@ -788,21 +791,21 @@
 
         </div><!-- /tab-pane2 //-->
     </div><!-- /tab-pane2 //-->
-    <div id="core-tab-pane3" class="tab-pane fade">
+    <div id="core-tab-pane3" class="row tab-pane fade">
 
         <div class="tab-pane">
 
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Advanced Settings</h3>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">CPU throttling:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="fa fa-microchip"></span>
                             </div>
@@ -821,7 +824,7 @@
                         <label class="component-title">Anonymous redirect</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
@@ -945,7 +948,7 @@
                         <label class="component-title">Proxy host</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
@@ -994,7 +997,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-erase"></span>
                                     </div>
@@ -1044,16 +1047,16 @@
         %>
 
             <div class="tab-pane">
-                <div class="tab-pane-desc">
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                     <h3>Git Settings</h3>
                 </div>
-                <fieldset class="tab-pane-list">
+                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">Git Branch(s):</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-git"></span>
                                 </div>
@@ -1098,7 +1101,7 @@
                             <label class="component-title">Git executable path</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-file"></span>
                                 </div>

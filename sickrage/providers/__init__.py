@@ -148,7 +148,7 @@ class GenericProvider(object):
     def make_filename(self, name):
         return ""
 
-    def downloadResult(self, result):
+    def download_result(self, result):
         """
         Save the result to disk.
         """
@@ -532,8 +532,7 @@ class GenericProvider(object):
                 importlib.import_module('.{}.{}'.format(type, name), 'sickrage.providers'),
                 lambda x: hasattr(x, 'type') and x not in [NZBProvider, TorrentProvider])
         )
-        return [v for v in members.values() if hasattr(v, 'type') and v.type == type][0](
-            *args, **kwargs)
+        return [v for v in members.values() if hasattr(v, 'type') and v.type == type][0](*args, **kwargs)
 
 
 class TorrentProvider(GenericProvider):

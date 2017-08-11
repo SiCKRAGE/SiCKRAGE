@@ -26,7 +26,7 @@
     "cookiejar": "*",
     "jquery-json": "~2.5.1",
     "jqueryui-touch-punch": "*",
-    "jquery-confirm": "~2.5.2",
+    "jquery-confirm": "https://github.com/craftpip/jquery-confirm.git#v3.3.1",
     "isotope": "~2.2.2",
     "selectboxes": "https://raw.githubusercontent.com/SamWM/jQuery-Plugins/master/selectboxes/jquery.selectboxes.js",
     "bookmarkscroll": "http://dynamicdrive.com/dynamicindex5/bookmarkscroll.js",
@@ -36,7 +36,6 @@
     "uri.js": "~1.17.1",
     "jquery.steps": "~1.1.0",
     "jquery-validation": "~1.15.0",
-    "jquery-migrate": "~3.0.0",
     "jquery-backstretch": "~2.1.15",
     "components-font-awesome": "^4.7.0"
   },

@@ -57,9 +57,9 @@
 </%block>
 
 <%block name="pages">
-    <div id="core-tab-pane1" class="tab-pane fade in active">
+    <div id="core-tab-pane1" class="row tab-pane fade in active">
 
-        <div class="tab-pane-desc">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Provider Priorities</h3>
             <p>Check off and drag the providers into the order you want them to be used.</p>
             <p>At least one provider is required but two are recommended.</p>
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <ul id="provider_order_list">
                 % for providerID, providerObj in sickrage.srCore.providersDict.sort().items():
                     % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srCore.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.srCore.srConfig.USE_TORRENTS):
@@ -112,20 +112,20 @@
         </fieldset>
     </div><!-- /tab-pane1 //-->
 
-    <div id="core-tab-pane2" class="tab-pane fade">
-        <div class="tab-pane-desc">
+    <div id="core-tab-pane2" class="row tab-pane fade">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Provider Options</h3>
             <p>Configure individual provider settings here.</p>
             <p>Check with provider's website on how to obtain an API key if needed.</p>
         </div>
 
-        <fieldset class="tab-pane-list">
+        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row field-pair">
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                     <label class="component-title">Configure provider:</label>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                    <div class="input-group input350">
+                    <div class="input-group input200">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-search"></span>
                         </div>
@@ -148,7 +148,7 @@
                                 <label class="component-title">URL:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
@@ -168,7 +168,7 @@
                                 <label class="component-title">API key:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
@@ -275,7 +275,7 @@
                                 <label class="component-title">Username:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
@@ -294,7 +294,7 @@
                                 <label class="component-title">API key:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
@@ -400,7 +400,7 @@
                                 <label class="component-title">Api key:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
@@ -421,7 +421,7 @@
                                 <label class="component-title">Digest:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -441,7 +441,7 @@
                                 <label class="component-title">Hash:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="fa fa-hashtag"></span>
                                     </div>
@@ -461,7 +461,7 @@
                                 <label class="component-title">Username:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
@@ -482,7 +482,7 @@
                                 <label class="component-title">Password:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -501,7 +501,7 @@
                                 <label class="component-title">Passkey:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -522,7 +522,7 @@
                                 <label class="component-title">Cookies:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-certificate"></span>
                                     </div>
@@ -543,7 +543,7 @@
                                 <label class="component-title">Pin:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -564,7 +564,7 @@
                                 <label class="component-title">Seed ratio:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="fa fa-percent"></span>
                                     </div>
@@ -584,7 +584,7 @@
                                 <label class="component-title">Minimum seeders:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="fa fa-hashtag"></span>
                                     </div>
@@ -604,7 +604,7 @@
                                 <label class="component-title">Minimum leechers:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="fa fa-hashtag"></span>
                                     </div>
@@ -685,7 +685,7 @@
                                 <label class="component-title">Sort results by</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-sort-by-order"></span>
                                     </div>
@@ -817,7 +817,7 @@
                                 <label class="component-title">Category:</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group input200">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-list"></span>
                                     </div>
@@ -859,20 +859,20 @@
     </div><!-- /tab-pane2 //-->
 
     % if sickrage.srCore.srConfig.USE_NZBS:
-        <div id="core-tab-pane3" class="tab-pane fade">
+        <div id="core-tab-pane3" class="row tab-pane fade">
 
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Configure Custom<br>Newznab Providers</h3>
                 <p>Add and setup or remove custom Newznab providers.</p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Select provider:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-search"></span>
                             </div>
@@ -889,7 +889,7 @@
                             <label class="component-title">Provider name:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-id-card"></span>
                                 </div>
@@ -902,7 +902,7 @@
                             <label class="component-title">Site URL:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -916,7 +916,7 @@
                             <label class="component-title">API key:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -979,20 +979,20 @@
 
     % if sickrage.srCore.srConfig.USE_TORRENTS:
 
-        <div id="core-tab-pane4" class="tab-pane fade">
+        <div id="core-tab-pane4" class="row tab-pane fade">
 
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Configure Custom Torrent Providers</h3>
                 <p>Add and setup or remove custom RSS providers.</p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Select provider:</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
+                        <div class="input-group input200">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-search"></span>
                             </div>
@@ -1009,7 +1009,7 @@
                             <label class="component-title">Provider name:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="fa fa-id-card"></span>
                                 </div>
@@ -1024,7 +1024,7 @@
                             <label class="component-title">RSS URL:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -1038,7 +1038,7 @@
                             <label class="component-title">Cookies:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-certificate"></span>
                                 </div>
@@ -1052,7 +1052,7 @@
                             <label class="component-title">Search element:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-search"></span>
                                 </div>

@@ -11,9 +11,9 @@
 </%block>
 
 <%block name="pages">
-    <div id="core-tab-pane1" class="tab-pane fade in active">
+    <div id="core-tab-pane1" class="row tab-pane fade in active">
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/anidb24.png" alt="AniDB" title="AniDB"
                      width="24" height="24"/>
                 <h3><a href="${anon_url('http://anidb.info')}"
@@ -21,7 +21,7 @@
                 <p>AniDB is non-profit database of anime information that is freely open to the public</p>
             </div>
 
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enabled</label>
@@ -41,7 +41,7 @@
                             <label class="component-title">AniDB Username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -59,7 +59,7 @@
                             <label class="component-title">AniDB Password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
+                            <div class="input-group input200">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -93,12 +93,12 @@
         </div>
     </div>
 
-    <div id="core-tab-pane2" class="tab-pane fade">
+    <div id="core-tab-pane2" class="row tab-pane fade">
         <div class="tab-pane">
-            <div class="tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Look and Feel</h3>
             </div>
-            <fieldset class="tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Split show lists</label>

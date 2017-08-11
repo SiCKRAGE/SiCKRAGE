@@ -28,6 +28,7 @@
     "mocha": true,
     "_": true,
     "window": true,
-    "Bloodhound": true
+    "Bloodhound": true,
+    "jconfirm": true
   }
 }
