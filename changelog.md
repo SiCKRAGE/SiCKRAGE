@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5131cbd - 2017-08-11: Release v9.0.81 
+- * 4ab19fb - 2017-08-11: Updated selectboxes in display show page template with class input350 
+- * 4bc0209 - 2017-08-11: Release v9.0.81 
 - * 6ffa3ba - 2017-08-11: Removed size restrictions on selectboxes to make them more responsive. Added horizontal scrollbar to tables. 
 - * 4a2fa3a - 2017-08-11: Release v9.0.80 
 - * b2b56f4 - 2017-08-11: arguements passed from web views are now unicode encoded to resolve unicode decode issues within app 
