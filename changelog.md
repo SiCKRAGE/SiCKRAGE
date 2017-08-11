@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0cd5e0d - 2017-08-11: Added more modules to the encoding kludge patch list Switched all open calls to io.open Added reverse symlink post-processing method Fixed unicode errors during post-processing 
+- * 0e78e89 - 2017-08-11: Release v9.0.82 
+- * 8fd6364 - 2017-08-11: Added more modules to the encoding kludge patch list Switched all open calls to io.open Added reverse symlink post-processing method Fixed unicode errors during post-processing 
 - * b009b72 - 2017-08-11: Updated selectboxes in display show page template with class input350 
 - * 4bc0209 - 2017-08-11: Release v9.0.81 
 - * 6ffa3ba - 2017-08-11: Removed size restrictions on selectboxes to make them more responsive. Added horizontal scrollbar to tables. 
