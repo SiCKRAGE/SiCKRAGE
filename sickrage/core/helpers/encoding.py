@@ -74,8 +74,9 @@ def ek(f):
 
         if isinstance(result, (list, tuple)):
             return _fix_list_encoding(result)
-        if isinstance(result, str) and not sickrage.srCore.srConfig.DEVELOPER:
+        if isinstance(result, str):
             return _to_unicode(result)
+
         return result
 
     return wrapper
@@ -150,7 +151,8 @@ def _to_unicode(var):
 
 
 def patch_modules():
-    _modules = ['os.access',
+    _modules = ['io.open',
+                'os.access',
                 'os.makedirs',
                 'os.remove',
                 'os.chdir',
@@ -172,17 +174,25 @@ def patch_modules():
                 'os.path.exists',
                 'os.path.abspath',
                 'os.path.isfile',
+                'os.path.isdir',
+                'os.path.islink',
                 'os.path.isabs',
                 'os.path.realpath',
                 'os.path.normcase',
-                'os.path.dirname']
+                'os.path.dirname',
+                'shutil.rmtree',
+                'shutil.copymode',
+                'shutil.move',
+                'shutil.copyfileobj',
+                'shutil.copy',
+                'shutil.copyfile']
 
     def decorate_modules(modules, decorator):
         for module in modules:
             module_name, method_name = module.rsplit('.', 1)
             pkg = importlib.import_module(module_name)
             method = getattr(pkg, method_name, None)
-            if isinstance(method, types.FunctionType):
+            if isinstance(method, (types.FunctionType, types.BuiltinFunctionType)):
                 setattr(pkg, method_name, decorator(method))
 
     decorate_modules(_modules, ek)

@@ -33,8 +33,8 @@
                             </div>
                             <select name="process_method" id="process_method" title="Choose post-processing method"
                                     class="form-control form-control-inline input-sm">
-                                <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
-                                % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
+                                <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link",'symlink_reversed' : "Symbolic Link Reversed"} %>
+                                % for curAction in process_method_text:
                                     <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
                                 % endfor
                             </select>

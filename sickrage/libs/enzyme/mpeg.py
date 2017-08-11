@@ -23,6 +23,7 @@ __all__ = ['Parser']
 
 import logging
 import os
+import io
 import stat
 import struct
 
@@ -830,7 +831,7 @@ class MPEG(core.AVContainer):
         if length < self.__sample_size__:
             return
 
-        file = open(self.filename)
+        file = io.open(self.filename)
         file.seek(length - self.__sample_size__)
         buffer = file.read(self.__sample_size__)
 
@@ -866,7 +867,7 @@ class MPEG(core.AVContainer):
         if not hasattr(self, 'filename') or not hasattr(self, 'start'):
             return 0
 
-        file = open(self.filename)
+        file = io.open(self.filename)
         seek_to = 0
 
         while 1:
@@ -895,7 +896,7 @@ class MPEG(core.AVContainer):
         if not hasattr(self, 'filename') or not hasattr(self, 'start'):
             return 0
 
-        file = open(self.filename)
+        file = io.open(self.filename)
         log.debug('scanning file...')
         while 1:
             file.seek(self.__seek_size__ * 10, 1)

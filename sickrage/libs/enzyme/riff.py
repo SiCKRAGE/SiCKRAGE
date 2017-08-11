@@ -26,6 +26,7 @@ import os
 import string
 import struct
 import time
+import io
 
 import core
 from .exceptions import ParseError
@@ -107,7 +108,7 @@ class Riff(core.AVContainer):
         base = os.path.splitext(filename)[0]
         if os.path.isfile(base + '.idx') and \
                (os.path.isfile(base + '.sub') or os.path.isfile(base + '.rar')):
-            file = open(base + '.idx')
+            file = io.open(base + '.idx')
             if file.readline().find('VobSub index file') > 0:
                 for line in file.readlines():
                     if line.find('id') == 0:
