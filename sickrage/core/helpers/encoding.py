@@ -77,6 +77,7 @@ def ek(f):
         if isinstance(result, str) and not sickrage.srCore.srConfig.DEVELOPER:
             return _to_unicode(result)
         return result
+
     return wrapper
 
 
@@ -150,31 +151,31 @@ def _to_unicode(var):
 
 def patch_modules():
     _modules = ['os.access',
-               'os.makedirs',
-               'os.remove',
-               'os.chdir',
-               'os.listdir',
-               'os.unlink',
-               'os.symlink',
-               'os.rmdir',
-               'os.stat',
-               'os.mkdir',
-               'os.chmod',
-               'os.chown',
-               'os.utime',
-               'os.walk',
-               'os.statvfs',
-               'os.renames',
-               'os.path.join',
-               'os.path.normpath',
-               'os.path.basename',
-               'os.path.exists',
-               'os.path.abspath',
-               'os.path.isfile',
-               'os.path.isabs',
-               'os.path.realpath',
-               'os.path.normcase',
-               'os.path.dirname']
+                'os.makedirs',
+                'os.remove',
+                'os.chdir',
+                'os.listdir',
+                'os.unlink',
+                'os.symlink',
+                'os.rmdir',
+                'os.stat',
+                'os.mkdir',
+                'os.chmod',
+                'os.chown',
+                'os.utime',
+                'os.walk',
+                'os.statvfs',
+                'os.renames',
+                'os.path.join',
+                'os.path.normpath',
+                'os.path.basename',
+                'os.path.exists',
+                'os.path.abspath',
+                'os.path.isfile',
+                'os.path.isabs',
+                'os.path.realpath',
+                'os.path.normcase',
+                'os.path.dirname']
 
     def decorate_modules(modules, decorator):
         for module in modules:

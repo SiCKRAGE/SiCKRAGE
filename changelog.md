@@ -1,6 +1,7 @@
 # Changelog
 
-- * 500aea2 - 2017-08-11: Fix #53 - unicode issue during post-processing 
+- * 6402728 - 2017-08-11: arguements passed from web views are now unicode encoded to resolve unicode decode issues within app 
+- * 057301d - 2017-08-11: Fix #53 - unicode issue during post-processing 
 - * 352fe0b - 2017-08-11: Release v9.0.78 
 - * a888753 - 2017-08-11: Changed layout for display show page and made it more responsive 
 - * 15a7a0d - 2017-08-11: Release v9.0.77 

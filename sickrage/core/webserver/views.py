@@ -33,7 +33,7 @@ from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, json_decode
+from tornado.escape import json_encode, json_decode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.process import cpu_count
@@ -77,7 +77,6 @@ from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.providers import NewznabProvider, TorrentRssProvider
-
 
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
@@ -194,6 +193,7 @@ class BaseHandler(RequestHandler):
     @run_on_executor
     def route(self, function, **kwargs):
         threading.currentThread().setName("TORNADO")
+        kwargs = recursive_unicode(kwargs)
         for arg, value in kwargs.items():
             if len(value) == 1:
                 kwargs[arg] = value[0]
