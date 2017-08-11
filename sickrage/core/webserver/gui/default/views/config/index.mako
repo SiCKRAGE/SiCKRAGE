@@ -53,7 +53,7 @@
                                 class="icons-sickrage icons-sickrage-locale"></i>
                             SR Locale:
                         </div>
-                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.SYS_ENCODING}</div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.srCore.SYS_ENCODING}</div>
                     </div>
                     <br/>
                     <div class="row">

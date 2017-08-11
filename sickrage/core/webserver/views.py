@@ -33,7 +33,7 @@ from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, json_decode, recursive_unicode
+from tornado.escape import json_encode, json_decode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.process import cpu_count
@@ -194,11 +194,11 @@ class BaseHandler(RequestHandler):
     @run_on_executor
     def route(self, function, **kwargs):
         threading.currentThread().setName("TORNADO")
-        return recursive_unicode(function(
-            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
-                    recursive_unicode(kwargs.items())])
-        ))
+        for arg, value in kwargs.items():
+            if len(value) == 1:
+                kwargs[arg] = value[0]
 
+        return function(**kwargs)
 
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -963,7 +963,7 @@ class Home(WebHandler):
 
     @staticmethod
     def loadShowNotifyLists():
-        data = {'_size': 0}
+        data = {'_size':0}
 
         tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)],
                           key=lambda d: d['show_name'])

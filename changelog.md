@@ -1,6 +1,7 @@
 # Changelog
 
-- * f063eb5 - 2017-08-10: Fixed unicode decode issue 
+- * e1d3e2d - 2017-08-11: Added in encoding kludge to help with unicode conversion on filesystems 
+- * f159260 - 2017-08-10: Fixed unicode decode issue 
 - * 82414e6 - 2017-08-10: Added web root redirecting code 
 - * 523b62a - 2017-08-10: Updated jquery-confirm bower package 
 - * 677399e - 2017-08-10: Fixed slow show adding to database issues 

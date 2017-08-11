@@ -45,6 +45,7 @@ from sickrage.core.databases.main import MainDB
 from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser
+from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
 from sickrage.core.nameparser.validator import check_force_season_folders  # memory intensive
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
@@ -145,6 +146,11 @@ class Core(object):
         self.SHOWLIST = []
 
         self.USER_AGENT = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
+
+        self.SYS_ENCODING = get_sys_encoding()
+
+        # patch modules with encoding kludge
+        patch_modules()
 
     def start(self):
         self.started = True

@@ -39,7 +39,7 @@ from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, 
     UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
 from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, \
+from sickrage.core.helpers import list_media_files, isMediaFile, update_anime_support, findCertainShow, tryInt, \
     safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import srIndexerApi
@@ -633,7 +633,7 @@ class TVShow(object):
             str(self.indexerid) + ": Loading all episodes from the show directory " + self.location)
 
         # get file list
-        mediaFiles = listMediaFiles(self.location)
+        mediaFiles = list_media_files(self.location)
         sickrage.srCore.srLogger.debug("%s: Found files: %s" %
                                        (self.indexerid, mediaFiles))
 

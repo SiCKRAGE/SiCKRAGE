@@ -18,24 +18,46 @@
 
 from __future__ import unicode_literals
 
-import collections
+import codecs
 import functools
-from itertools import imap
-from os import name
+import importlib
+import locale
+import os
+import sys
+import types
 
 import six
-import types
+from chardet import detect
 
 import sickrage
 
 
-def getEncoding():
-    return sickrage.SYS_ENCODING or "UTF-8"
+def get_sys_encoding():
+    # map the following codecs to utf-8
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
+
+    # get locale encoding
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+        encoding = locale.getpreferredencoding()
+    except (locale.Error, IOError):
+        encoding = None
+
+    # enforce UTF-8
+    if not encoding or codecs.lookup(encoding).name == 'ascii':
+        encoding = 'UTF-8'
+
+    # wrap i/o in unicode
+    sys.stdout = codecs.getwriter(encoding)(sys.stdout)
+    sys.stdin = codecs.getreader(encoding)(sys.stdin)
+
+    return encoding
 
 
-def f(*args, **kwargs):
+def ek(f):
     """
-    Encoding Kludge: Call function with arguments and unicode-encode output
+    Encoding Kludge: Call function with arguments and six.text_type-encode output
 
     :param function:  Function to call
     :param args:  Arguments for function
@@ -45,86 +67,121 @@ def f(*args, **kwargs):
 
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        if name == 'nt':
+        if os.name == 'nt':
             result = f(*args, **kwargs)
         else:
-            result = f(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in args], **kwargs)
+            result = f(*[ss(x) if isinstance(x, six.string_types) else x for x in args], **kwargs)
 
-        def _wrapper(result, *args, **kwargs):
-            try:
-                if isinstance(result, six.string_types):
-                    return uu(result)
-                elif isinstance(result, collections.Mapping):
-                    return dict(imap(_wrapper, result.items()))
-                elif isinstance(result, collections.Iterable) and isinstance(result, types.GeneratorType):
-                    return filter(lambda x: x is not None, imap(_wrapper, result))
-                elif isinstance(result, collections.Iterable) and isinstance(result, (types.TupleType, types.ListType)):
-                    return type(result)(filter(lambda x: x is not None, imap(_wrapper, result)))
-            except Exception as e:
-                print(e)
-
-            return result
-
-        return _wrapper(result, *args, **kwargs)
-
-    return f(*args, **kwargs)
+        if isinstance(result, (list, tuple)):
+            return _fix_list_encoding(result)
+        if isinstance(result, str) and not sickrage.srCore.srConfig.DEVELOPER:
+            return _to_unicode(result)
+        return result
+    return wrapper
 
 
-#    return wrapper(*args, **kwargs)
+def ss(var):
+    """
+    Converts six.string_types to SYS_ENCODING, fallback encoding is forced UTF-8
 
-
-def uu(s, encoding=None, errors="strict"):
-    """ Convert, at all consts, 'text' to a `unicode` object.
+    :param var: String to convert
+    :return: Converted string
     """
 
-    encoding = encoding or getEncoding()
-
-    if isinstance(s, six.text_type):
-        return s
+    var = _to_unicode(var)
 
     try:
-        if not isinstance(s, six.string_types):
-            if six.PY3:
-                if isinstance(s, six.binary_type):
-                    s = six.text_type(s, encoding, errors)
-                else:
-                    s = six.text_type(s)
-            elif hasattr(s, '__unicode__'):
-                s = six.text_type(s)
-            else:
-                s = six.text_type(six.binary_type(s), encoding, errors)
-        else:
-            s = s.decode(encoding, errors)
-    except UnicodeDecodeError as e:
-        print(e)
+        var = var.encode(sickrage.srCore.SYS_ENCODING)
+    except Exception:
+        try:
+            var = var.encode('utf-8')
+        except Exception:
+            try:
+                var = var.encode(sickrage.srCore.SYS_ENCODING, 'replace')
+            except Exception:
+                var = var.encode('utf-8', 'ignore')
 
-    return s
+    return var
 
 
-def ss(s, encoding=None, errors="strict"):
-    """ Convert 'text' to a `str` object.
+def _fix_list_encoding(var):
+    """
+    Converts each item in a list to Unicode
+
+    :param var: List or tuple to convert to Unicode
+    :return: Unicode converted input
     """
 
-    encoding = encoding or getEncoding()
+    if isinstance(var, (list, tuple)):
+        return filter(lambda x: x is not None, map(_to_unicode, var))
 
-    try:
-        if isinstance(s, six.binary_type):
-            if encoding == "utf-8":
-                return s
-            else:
-                return s.decode('utf-8', errors).encode(encoding, errors)
+    return var
 
-        if not isinstance(s, six.string_types):
+
+def _to_unicode(var):
+    """
+    Converts string to Unicode, using in order: UTF-8, Latin-1, System encoding or finally what chardet wants
+
+    :param var: String to convert
+    :return: Converted string as six.text_type, fallback is System encoding
+    """
+
+    if isinstance(var, str):
+        try:
+            var = six.text_type(var)
+        except Exception:
             try:
-                if six.PY3:
-                    return six.text_type(s).encode(encoding)
-                else:
-                    return six.binary_type(s)
-            except UnicodeEncodeError:
-                return six.text_type(s).encode(encoding, errors)
-        else:
-            return s.encode(encoding, errors)
-    except UnicodeEncodeError as e:
-        print(e)
+                var = six.text_type(var, 'utf-8')
+            except Exception:
+                try:
+                    var = six.text_type(var, 'latin-1')
+                except Exception:
+                    try:
+                        var = six.text_type(var, sickrage.srCore.SYS_ENCODING)
+                    except Exception:
+                        try:
+                            # Chardet can be wrong, so try it last
+                            var = six.text_type(var, detect(var).get('encoding'))
+                        except Exception:
+                            var = six.text_type(var, sickrage.srCore.SYS_ENCODING, 'replace')
 
-    return s
+    return var
+
+
+def patch_modules():
+    _modules = ['os.access',
+               'os.makedirs',
+               'os.remove',
+               'os.chdir',
+               'os.listdir',
+               'os.unlink',
+               'os.symlink',
+               'os.rmdir',
+               'os.stat',
+               'os.mkdir',
+               'os.chmod',
+               'os.chown',
+               'os.utime',
+               'os.walk',
+               'os.statvfs',
+               'os.renames',
+               'os.path.join',
+               'os.path.normpath',
+               'os.path.basename',
+               'os.path.exists',
+               'os.path.abspath',
+               'os.path.isfile',
+               'os.path.isabs',
+               'os.path.realpath',
+               'os.path.normcase',
+               'os.path.dirname']
+
+    def decorate_modules(modules, decorator):
+        for module in modules:
+            module_name, method_name = module.rsplit('.', 1)
+            pkg = importlib.import_module(module_name)
+            method = getattr(pkg, method_name, None)
+            if isinstance(method, types.FunctionType):
+                setattr(pkg, method_name, decorator(method))
+
+    decorate_modules(_modules, ek)

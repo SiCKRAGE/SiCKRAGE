@@ -417,7 +417,7 @@ def makeDir(path):
     return True
 
 
-def listMediaFiles(path):
+def list_media_files(path):
     """
     Get a list of files possibly containing media in a path
 
@@ -434,7 +434,7 @@ def listMediaFiles(path):
 
         # if it's a folder do it recursively
         if os.path.isdir(fullCurFile) and not curFile.startswith('.') and not curFile == 'Extras':
-            files += listMediaFiles(fullCurFile)
+            files += list_media_files(fullCurFile)
 
         elif isMediaFile(curFile):
             files.append(fullCurFile)
