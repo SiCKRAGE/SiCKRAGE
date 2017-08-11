@@ -81,8 +81,8 @@
                                 </div>
                                 <select name="process_method" id="process_method" class="form-control"
                                         title="Processing method">
-                                    <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"} %>
-                                    % for curAction in ('copy', 'move', 'hardlink', 'symlink'):
+                                    <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link", 'symlink_reversed' : _('Symbolic Link Reversed')} %>
+                                    % for curAction in process_method_text:
                                         <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
                                     % endfor
                                 </select>

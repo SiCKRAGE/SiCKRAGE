@@ -23,7 +23,7 @@
                 <div class="col-md-12">
                     <div id="showtitle" data-showname="${show.name}">
                         <h1 class="title" id="scene_exception_${show.indexerid}" data-tooltip="${all_scene_exceptions}">
-                            <div class="input-group input-group-sm">
+                            <div class="input-group input350 input-group-sm">
                                 <div class="input-group-addon">
                                     <a href="#" id="prevShow" class="glyphicon glyphicon-arrow-left"></a>
                                 </div>
@@ -386,7 +386,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div style="padding-bottom: 5px;">
-                        <div class="input-group input-group-sm">
+                        <div class="input-group input350 input-group-sm">
                             <select id="statusSelect" title="Change selected episode statuses" class="form-control">
                                 <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
                                 % if not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:

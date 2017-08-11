@@ -1,6 +1,9 @@
 # Changelog
 
-- * 5131cbd - 2017-08-11: Release v9.0.81 
+- * 0e78e89 - 2017-08-11: Release v9.0.82 
+- * 8fd6364 - 2017-08-11: Added more modules to the encoding kludge patch list Switched all open calls to io.open Added reverse symlink post-processing method Fixed unicode errors during post-processing 
+- * b009b72 - 2017-08-11: Updated selectboxes in display show page template with class input350 
+- * 4bc0209 - 2017-08-11: Release v9.0.81 
 - * 6ffa3ba - 2017-08-11: Removed size restrictions on selectboxes to make them more responsive. Added horizontal scrollbar to tables. 
 - * 4a2fa3a - 2017-08-11: Release v9.0.80 
 - * b2b56f4 - 2017-08-11: arguements passed from web views are now unicode encoded to resolve unicode decode issues within app 

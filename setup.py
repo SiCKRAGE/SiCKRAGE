@@ -11,7 +11,7 @@ with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage',
 
 
 def requires():
-    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))) as f:
+    with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))) as f:
         return f.read().splitlines()
 
 
