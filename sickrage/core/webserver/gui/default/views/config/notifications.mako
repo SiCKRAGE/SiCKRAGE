@@ -128,7 +128,7 @@
                             <label class="component-title">KODI IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -145,7 +145,7 @@
                             <label class="component-title">KODI username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -162,7 +162,7 @@
                             <label class="component-title">KODI password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -227,7 +227,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input200">
+                                    <div class="input-group input350">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-cloud"></span>
                                         </div>
@@ -257,7 +257,7 @@
                                 <label class="component-title">Server Username</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input200">
+                                <div class="input-group input350">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
@@ -273,7 +273,7 @@
                                 <label class="component-title">Server/client password</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input200">
+                                <div class="input-group input350">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -305,7 +305,7 @@
                                     <label class="component-title">Plex Media Server IP:Port</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input200">
+                                    <div class="input-group input350">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
@@ -398,7 +398,7 @@
                             <label class="component-title">Plex Client IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -416,7 +416,7 @@
                                 <label class="component-title">Server Username</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input200">
+                                <div class="input-group input350">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
@@ -432,7 +432,7 @@
                                 <label class="component-title">Client Password</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input200">
+                                <div class="input-group input350">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
@@ -488,7 +488,7 @@
                             <label class="component-title">Emby IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -504,7 +504,7 @@
                             <label class="component-title">Emby API Key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -563,7 +563,7 @@
                             <label class="component-title">Popcorn IP address</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -591,7 +591,7 @@
                             <label class="component-title">NMJ database</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -608,7 +608,7 @@
                             <label class="component-title">NMJ mount url</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -667,7 +667,7 @@
                             <label class="component-title">Popcorn IP address</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -708,7 +708,7 @@
                             <label class="component-title">Database instance</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -744,7 +744,7 @@
                             <label class="component-title">NMJv2 database</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="fa fa-database"></span>
                                 </div>
@@ -909,7 +909,7 @@
                             <label class="component-title">pyTivo IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -926,7 +926,7 @@
                             <label class="component-title">pyTivo share name</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -944,7 +944,7 @@
                             <label class="component-title">Tivo name</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
@@ -1027,7 +1027,7 @@
                             <label class="component-title">Growl IP:Port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -1043,7 +1043,7 @@
                             <label class="component-title">Growl password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -1136,7 +1136,7 @@
                             <label class="component-title">Prowl API key:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1155,7 +1155,7 @@
                             <label class="component-title">Prowl priority:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="fa fa-exclamation"></span>
                                 </div>
@@ -1332,7 +1332,7 @@
                             <label class="component-title">Pushover key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -1349,7 +1349,7 @@
                             <label class="component-title">Pushover API key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1371,7 +1371,7 @@
                             <label class="component-title">Pushover devices</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-list-alt"></span>
                                 </div>
@@ -1388,7 +1388,7 @@
                             <label class="component-title">Pushover notification sound</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-music"></span>
                                 </div>
@@ -1537,7 +1537,7 @@
                             <label class="component-title">Boxcar username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -1626,7 +1626,7 @@
                             <label class="component-title">Boxcar2 access token</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1713,7 +1713,7 @@
                             <label class="component-title">NMA API key:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1729,7 +1729,7 @@
                             <label class="component-title">NMA priority:</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                                 </div>
@@ -1835,7 +1835,7 @@
                             <label class="component-title">Pushalot authorization token</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1926,7 +1926,7 @@
                             <label class="component-title">Pushbullet API key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -1945,7 +1945,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input200">
+                                    <div class="input-group input350">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-list"></span>
                                         </div>
@@ -2043,7 +2043,7 @@
                             <label class="component-title">Free Mobile customer ID</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2060,7 +2060,7 @@
                             <label class="component-title">Free Mobile API Key</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
@@ -2167,7 +2167,7 @@
                             <label class="component-title">Send DM to</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2203,7 +2203,7 @@
                             <label class="component-title">Step Two</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -2263,7 +2263,7 @@
                             <label class="component-title">Trakt username</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2285,7 +2285,7 @@
                             <label class="component-title">Trakt PIN</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -2301,7 +2301,7 @@
                             <label class="component-title">API Timeout</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-time"></span>
                                 </div>
@@ -2322,7 +2322,7 @@
                             <label class="component-title">Default indexer</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="fa fa-linode"></span>
                                 </div>
@@ -2381,7 +2381,7 @@
                                 <label class="component-title">Watchlist add method</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input200">
+                                <div class="input-group input350">
                                     <div class="input-group-addon">
                                         <span class="fa fa-binoculars"></span>
                                     </div>
@@ -2453,7 +2453,7 @@
                             <label class="component-title">Trakt blackList name</label>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-list"></span>
                                 </div>
@@ -2544,7 +2544,7 @@
                             <label class="component-title">SMTP host</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -2560,7 +2560,7 @@
                             <label class="component-title">SMTP port</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
@@ -2576,7 +2576,7 @@
                             <label class="component-title">SMTP from</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                 </div>
@@ -2602,7 +2602,7 @@
                             <label class="component-title">SMTP user</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
@@ -2618,7 +2618,7 @@
                             <label class="component-title">SMTP password</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
@@ -2635,7 +2635,7 @@
                             <label class="component-title">Global email list</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input200">
+                            <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                 </div>
@@ -2655,7 +2655,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input200">
+                                    <div class="input-group input350">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-list"></span>
                                         </div>
@@ -2669,7 +2669,7 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="input-group input200">
+                                    <div class="input-group input350">
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-envelope"></span>
                                         </div>

@@ -1677,6 +1677,7 @@ def overall_stats():
 
     return stats
 
+
 def launch_browser(protocol=None, host=None, startport=None):
     browserurl = '{}://{}:{}/home/'.format(protocol or 'http', host, startport or 8081)
 

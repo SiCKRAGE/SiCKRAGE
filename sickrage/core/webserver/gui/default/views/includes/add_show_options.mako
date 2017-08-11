@@ -68,7 +68,7 @@
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <div class="input-group input200">
+        <div class="input-group input350">
             <div class="input-group-addon">
                 <span class="glyphicon glyphicon-arrow-left"></span>
             </div>
@@ -88,7 +88,7 @@
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <div class="input-group input200">
+        <div class="input-group input350">
             <div class="input-group-addon">
                 <span class="glyphicon glyphicon-arrow-right"></span>
             </div>

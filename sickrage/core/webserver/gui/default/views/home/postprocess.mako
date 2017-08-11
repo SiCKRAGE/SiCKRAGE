@@ -13,7 +13,7 @@
                         <b>Enter the folder containing the episode</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="input-group input200">
+                        <div class="input-group input350">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-folder-open"></span>
                             </div>
@@ -27,7 +27,7 @@
                         <b>Process Method to be used:</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="input-group input200">
+                        <div class="input-group input350">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-refresh"></span>
                             </div>

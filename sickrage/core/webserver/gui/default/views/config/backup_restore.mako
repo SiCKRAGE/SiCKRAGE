@@ -14,7 +14,7 @@
         <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row field-pair">
                 <div class="col-md-12 component-desc">
-                    <div class="input-group">
+                    <div class="input-group input350">
                         <input name="backupDir" id="backupDir" class="form-control"
                                placeholder="Select the folder you wish to save your backup file to"
                                autocapitalize="off"/>
@@ -40,7 +40,7 @@
         <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row field-pair">
                 <div class="col-md-12 component-desc">
-                    <div class="input-group">
+                    <div class="input-group input350">
                         <input name="backupFile" id="backupFile"
                                placeholder="Select the backup file you wish to restore"
                                class="form-control" autocapitalize="off"/>

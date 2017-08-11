@@ -41,7 +41,7 @@
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="hidden" name="show" value="${show.indexerid}"/>
-                                            <div class="input-group input200">
+                                            <div class="input-group input350">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-folder-open"></span>
                                                 </div>
@@ -72,7 +72,7 @@
                                             <label class="component-title">Default Episode Status</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input200">
+                                            <div class="input-group input350">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-list"></span>
                                                 </div>
@@ -95,7 +95,7 @@
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <% languages = srIndexerApi().indexer().languages.keys() %>
-                                            <div class="input-group input200">
+                                            <div class="input-group input350">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-flag"></span>
                                                 </div>
@@ -273,7 +273,7 @@
                                             <label class="component-title">Ignored Words</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input200">
+                                            <div class="input-group input350">
                                                 <div class="input-group-addon">
                                                     <span class="fa fa-file-word-o"></span>
                                                 </div>
@@ -296,7 +296,7 @@
                                             <label class="component-title">Required Words</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input200">
+                                            <div class="input-group input350">
                                                 <div class="input-group-addon">
                                                     <span class="fa fa-file-word-o"></span>
                                                 </div>
@@ -316,7 +316,7 @@
                                             <label class="component-title">Scene Exception</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input200">
+                                            <div class="input-group input350">
                                                 <input type="text" id="SceneName"
                                                        title="Scene exception name for show"
                                                        class="form-control "/>
@@ -328,7 +328,7 @@
                                             <br/>
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <div class="input-group input200">
+                                                    <div class="input-group input350">
                                                         <select id="exceptions_list" name="exceptions_list"
                                                                 class="form-control"
                                                                 multiple="multiple"

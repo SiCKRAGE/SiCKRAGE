@@ -15,7 +15,7 @@
         <span id="sampleRootDir"></span>
         <input type="hidden" id="whichDefaultRootDir" value="${backend_default}"/>
         <div class="rootdir-selectbox">
-            <div class="input-group">
+            <div class="input-group input350">
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-folder-open"></span>
                 </div>

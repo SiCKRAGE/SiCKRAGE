@@ -876,7 +876,7 @@ jQuery(document).ready(function ($) {
                 if (options.showBrowseButton) {
                     // append the browse button and give it a click behaviour
                     options.field.after(
-                        $('<div class="input-group-addon"><input class="button fileBrowser" type="button" value="Browse"/></div>').on('click', function () {
+                        $('<div class="input-group-addon"><a href="#" class="fileBrowser glyphicon glyphicon-search""></a></div>').on('click', function () {
                             var initialDir = options.field.val() || (options.key && path) || '';
                             var optionsWithInitialDir = $.extend({}, options, {initialDir: initialDir});
                             $(this).nFileBrowser(callback, optionsWithInitialDir);

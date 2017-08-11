@@ -1,6 +1,11 @@
 # Changelog
 
-- * 9a4b7de - 2017-08-11: Release v9.0.78 
+- * 5131cbd - 2017-08-11: Release v9.0.81 
+- * 6ffa3ba - 2017-08-11: Removed size restrictions on selectboxes to make them more responsive. Added horizontal scrollbar to tables. 
+- * 4a2fa3a - 2017-08-11: Release v9.0.80 
+- * b2b56f4 - 2017-08-11: arguements passed from web views are now unicode encoded to resolve unicode decode issues within app 
+- * 057301d - 2017-08-11: Fix #53 - unicode issue during post-processing 
+- * 352fe0b - 2017-08-11: Release v9.0.78 
 - * a888753 - 2017-08-11: Changed layout for display show page and made it more responsive 
 - * 15a7a0d - 2017-08-11: Release v9.0.77 
 - * 39ac5e8 - 2017-08-11: Added in encoding kludge to help with unicode conversion on filesystems 
