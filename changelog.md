@@ -1,6 +1,8 @@
 # Changelog
 
-- * 858c994 - 2017-08-11: Release v9.0.77 
+- * 9a4b7de - 2017-08-11: Release v9.0.78 
+- * a888753 - 2017-08-11: Changed layout for display show page and made it more responsive 
+- * 15a7a0d - 2017-08-11: Release v9.0.77 
 - * 39ac5e8 - 2017-08-11: Added in encoding kludge to help with unicode conversion on filesystems 
 - * f159260 - 2017-08-10: Fixed unicode decode issue 
 - * 82414e6 - 2017-08-10: Added web root redirecting code 
