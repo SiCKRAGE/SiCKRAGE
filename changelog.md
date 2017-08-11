@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9a4b7de - 2017-08-11: Release v9.0.78 
+- * 500aea2 - 2017-08-11: Fix #53 - unicode issue during post-processing 
+- * 352fe0b - 2017-08-11: Release v9.0.78 
 - * a888753 - 2017-08-11: Changed layout for display show page and made it more responsive 
 - * 15a7a0d - 2017-08-11: Release v9.0.77 
 - * 39ac5e8 - 2017-08-11: Added in encoding kludge to help with unicode conversion on filesystems 
