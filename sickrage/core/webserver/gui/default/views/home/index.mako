@@ -455,7 +455,7 @@
                                     % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):
                                         Ended
                                     % else:
-                                        curShow.status
+                                        ${curShow.status}
                                     % endif
                                 </td>
                             </tr>
