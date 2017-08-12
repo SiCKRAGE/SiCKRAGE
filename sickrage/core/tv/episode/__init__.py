@@ -75,11 +75,11 @@ class TVEpisode(object):
         self.scene_episode = 0
         self.scene_absolute_number = 0
 
+        self.populateEpisode(self.season, self.episode)
+
         self.relatedEps = []
         self.checkForMetaFiles()
         self.wantedQuality = []
-
-        self.populateEpisode(self.season, self.episode)
 
     @property
     def name(self):
@@ -333,16 +333,12 @@ class TVEpisode(object):
                 else:
                     new_result = False
                 cur_nfo = new_result or cur_nfo
-                sickrage.srCore.srLogger.debug("{}: [{}] has metadata files: [{}]"
-                                               .format(cur_provider.name, os.path.split(self.location)[1], cur_nfo))
 
                 if cur_provider.episode_thumbnails:
                     new_result = cur_provider._has_episode_thumb(self)
                 else:
                     new_result = False
                 cur_tbn = new_result or cur_tbn
-                sickrage.srCore.srLogger.debug("{}: [{}] has thumbnail files: [{}]"
-                                               .format(cur_provider.name, os.path.split(self.location)[1], cur_tbn))
 
         self.hasnfo = cur_nfo
         self.hastbn = cur_tbn
@@ -696,9 +692,6 @@ class TVEpisode(object):
         result = False
 
         for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-            if not cur_provider.enabled:
-                continue
-
             result = cur_provider.create_episode_metadata(self) or result
 
         return result
@@ -708,9 +701,6 @@ class TVEpisode(object):
         result = False
 
         for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-            if not cur_provider.enabled:
-                continue
-
             result = cur_provider.create_episode_thumb(self) or result
 
         return result

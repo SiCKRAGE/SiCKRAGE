@@ -1,6 +1,15 @@
 # Changelog
 
-- * 0e78e89 - 2017-08-11: Release v9.0.82 
+- * af1ecf5 - 2017-08-12: Release v9.0.83 
+- * 1105065 - 2017-08-12: Updated regexes for nameparser Updated caching code for nameparser 
+- * 736cbfc - 2017-08-12: Fixed restarting issue 
+- * 1663a10 - 2017-08-12: Added in instant debug logging 
+- * 6f7c227 - 2017-08-12: Changed shutdown sequence 
+- * 43ede21 - 2017-08-12: Revert &quot;testing ioloop threaded&quot; 
+- * e7cdb57 - 2017-08-12: fixed typo 
+- * cf2c0b3 - 2017-08-12: testing ioloop threaded 
+- * e7fdcba - 2017-08-11: Misc fixes 
+- * 6ffa4d0 - 2017-08-11: Release v9.0.82 
 - * 8fd6364 - 2017-08-11: Added more modules to the encoding kludge patch list Switched all open calls to io.open Added reverse symlink post-processing method Fixed unicode errors during post-processing 
 - * b009b72 - 2017-08-11: Updated selectboxes in display show page template with class input350 
 - * 4bc0209 - 2017-08-11: Release v9.0.81 

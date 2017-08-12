@@ -560,9 +560,6 @@ class TVShow(object):
 
         sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Writing NFOs for show")
         for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-            if not cur_provider.enabled:
-                continue
-
             result = cur_provider.create_show_metadata(self) or result
 
         return result
@@ -615,9 +612,6 @@ class TVShow(object):
 
         sickrage.srCore.srLogger.info(str(self.indexerid) + ": Updating NFOs for show with new indexer info")
         for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-            if not cur_provider.enabled:
-                continue
-
             result = cur_provider.update_show_indexer_metadata(self) or result
 
         return result
@@ -634,8 +628,6 @@ class TVShow(object):
 
         # get file list
         mediaFiles = list_media_files(self.location)
-        sickrage.srCore.srLogger.debug("%s: Found files: %s" %
-                                       (self.indexerid, mediaFiles))
 
         # create TVEpisodes from each media file (if possible)
         for mediaFile in mediaFiles:
@@ -668,7 +660,7 @@ class TVShow(object):
                 curEpisode.release_name = ep_file_name
 
             # store the reference in the show
-            if self.subtitles:
+            if self.subtitles and sickrage.srCore.srConfig.USE_SUBTITLES:
                 try:
                     curEpisode.refreshSubtitles()
                 except Exception:
@@ -785,9 +777,6 @@ class TVShow(object):
         season_posters_result = season_banners_result = season_all_poster_result = season_all_banner_result = False
 
         for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-            if not cur_provider.enabled:
-                continue
-
             fanart_result = cur_provider.create_fanart(self) or fanart_result
             poster_result = cur_provider.create_poster(self) or poster_result
             banner_result = cur_provider.create_banner(self) or banner_result
@@ -801,7 +790,6 @@ class TVShow(object):
 
     # make a TVEpisode object from a media file
     def makeEpFromFile(self, file):
-
         if not os.path.isfile(file):
             sickrage.srCore.srLogger.info(str(self.indexerid) + ": That isn't even a real file dude... " + file)
             return None
@@ -809,7 +797,7 @@ class TVShow(object):
         sickrage.srCore.srLogger.debug(str(self.indexerid) + ": Creating episode object from " + file)
 
         try:
-            parse_result = NameParser(showObj=self, tryIndexers=True).parse(file)
+            parse_result = NameParser(showObj=self, tryIndexers=True).parse(file, skip_scene_detection=True)
         except InvalidNameException:
             sickrage.srCore.srLogger.debug("Unable to parse the filename " + file + " into a valid episode")
             return None

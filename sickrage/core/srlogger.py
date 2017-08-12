@@ -158,6 +158,15 @@ class srLogger(logging.getLoggerClass()):
 
             return record
 
+    def set_level(self):
+        self.debugLogging = sickrage.srCore.srConfig.DEBUG
+        level = DEBUG if self.debugLogging else INFO
+        for name in self.allowedLoggers:
+            logger = logging.getLogger(name)
+            logger.setLevel(level)
+            for handler in logger.handlers:
+                handler.setLevel(level)
+
     def log(self, level, msg, *args, **kwargs):
         super(srLogger, self).log(level, msg, *args, **kwargs)
 

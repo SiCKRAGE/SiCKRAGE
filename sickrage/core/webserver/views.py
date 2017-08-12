@@ -78,6 +78,7 @@ from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
+
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
@@ -1053,7 +1054,6 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
-        sickrage.restart = False
         sickrage.srCore.io_loop.stop()
 
     def restart(self, pid=None):
@@ -1061,6 +1061,8 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
+
+        sickrage.restart = True
         sickrage.srCore.io_loop.add_timeout(datetime.timedelta(seconds=10), sickrage.srCore.io_loop.stop)
 
         return self.render(
@@ -3828,6 +3830,10 @@ class ConfigGeneral(Config):
 
         results = []
 
+        # Debug
+        sickrage.srCore.srConfig.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
+        sickrage.srCore.srLogger.set_level()
+
         # Misc
         sickrage.srCore.srConfig.DOWNLOAD_URL = download_url
         sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE = indexerDefaultLang
@@ -3859,7 +3865,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.CALENDAR_UNPROTECTED = sickrage.srCore.srConfig.checkbox_to_value(calendar_unprotected)
         sickrage.srCore.srConfig.CALENDAR_ICONS = sickrage.srCore.srConfig.checkbox_to_value(calendar_icons)
         sickrage.srCore.srConfig.NO_RESTART = sickrage.srCore.srConfig.checkbox_to_value(no_restart)
-        sickrage.srCore.srConfig.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)
+
         sickrage.srCore.srConfig.SSL_VERIFY = sickrage.srCore.srConfig.checkbox_to_value(ssl_verify)
         sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srCore.srConfig.to_int(coming_eps_missed_range,
                                                                                            default=7)

@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 
 import datetime
 import os
+import time
 import traceback
 
 import sickrage
@@ -197,6 +198,7 @@ class ShowQueueItem(srQueueItem):
     def __init__(self, show, action_id):
         super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
         self.show = show
+        self.startTime = time.time()
 
     def finish(self):
         self.show.flushEpisodes()
@@ -452,7 +454,10 @@ class QueueItemAdd(ShowQueueItem):
 
         self.finish()
 
-        sickrage.srCore.srLogger.info("Finished adding show {} from show dir: {}".format(self.show_name, self.showDir))
+        sickrage.srCore.srLogger.info(
+            "Finished adding show {} in {}s from show dir: {}".format(self.show_name,
+                                                                      round(time.time() - self.startTime, 2),
+                                                                      self.showDir))
 
     def _finishEarly(self):
         if self.show: sickrage.srCore.SHOWQUEUE.removeShow(self.show)
@@ -484,7 +489,8 @@ class QueueItemRefresh(ShowQueueItem):
 
         self.finish()
 
-        sickrage.srCore.srLogger.info("Finished refresh for show: {}".format(self.show.name))
+        sickrage.srCore.srLogger.info(
+            "Finished refresh in {}s for show: {}".format(round(time.time() - self.startTime, 2), self.show.name))
 
 
 class QueueItemRename(ShowQueueItem):
@@ -605,7 +611,8 @@ class QueueItemUpdate(ShowQueueItem):
         scrub(DBEpList)
         scrub(IndexerEpList)
 
-        sickrage.srCore.srLogger.info("Finished updates for show: {}".format(self.show.name))
+        sickrage.srCore.srLogger.info(
+            "Finished updates in {}s for show: {}".format(round(time.time() - self.startTime, 2), self.show.name))
 
         # refresh show
         sickrage.srCore.SHOWQUEUE.refreshShow(self.show, self.force)
