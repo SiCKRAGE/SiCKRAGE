@@ -1567,7 +1567,7 @@ class CMD_SiCKRAGERestart(ApiCall):
 
     def run(self):
         """ Restart SiCKRAGE """
-        sickrage.srCore.shutdown()
+        sickrage.srCore.io_loop.stop()
         return _responds(RESULT_SUCCESS, msg="SiCKRAGE is restarting...")
 
 
@@ -1791,7 +1791,7 @@ class CMD_SiCKRAGEShutdown(ApiCall):
         """ Shutdown SiCKRAGE """
         if sickrage.srCore.srWebServer:
             sickrage.restart = False
-            sickrage.srCore.shutdown()
+            sickrage.srCore.io_loop.stop()
             return _responds(RESULT_SUCCESS, msg="SiCKRAGE is shutting down...")
         return _responds(RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
 

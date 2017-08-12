@@ -174,7 +174,7 @@ def setUp_test_web_server():
 
 def tearDown_test_web_server():
     if sickrage.srCore:
-        sickrage.srCore.shutdown()
+        sickrage.srCore.io_loop.stop()
 
 
 def load_tests(loader, tests):

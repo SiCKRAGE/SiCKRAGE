@@ -35,6 +35,7 @@ from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode, recursive_unicode
 from tornado.gen import coroutine
+from tornado.ioloop import IOLoop
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
@@ -81,6 +82,7 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
+        self.io_loop = IOLoop.current()
         self.executor = ThreadPoolExecutor(cpu_count())
         self.startTime = time.time()
 
@@ -1053,14 +1055,14 @@ class Home(WebHandler):
 
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
         sickrage.restart = False
-        sickrage.srCore.shutdown()
+        sickrage.srCore.io_loop.stop()
 
     def restart(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
-        sickrage.srCore.shutdown()
+        sickrage.srCore.io_loop.add_timeout(datetime.timedelta(seconds=10), sickrage.srCore.io_loop.stop)
 
         return self.render(
             "/home/restart.mako",

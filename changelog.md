@@ -1,6 +1,7 @@
 # Changelog
 
-- * 930fb24 - 2017-08-12: fixed typo 
+- * 13d3bc3 - 2017-08-12: Revert &quot;testing ioloop threaded&quot; 
+- * e7cdb57 - 2017-08-12: fixed typo 
 - * cf2c0b3 - 2017-08-12: testing ioloop threaded 
 - * e7fdcba - 2017-08-11: Misc fixes 
 - * 6ffa4d0 - 2017-08-11: Release v9.0.82 

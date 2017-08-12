@@ -31,8 +31,9 @@ import urllib
 import urlparse
 import uuid
 
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.tornado import TornadoScheduler
 from fake_useragent import UserAgent
+from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
@@ -73,7 +74,7 @@ from sickrage.providers import providersDict
 class Core(object):
     def __init__(self):
         self.started = False
-        self.lock = threading.Lock()
+        self.io_loop = IOLoop.current()
 
         # process id
         self.PID = os.getpid()
@@ -102,7 +103,7 @@ class Core(object):
         self.failedDB = FailedDB()
 
         # init scheduler service
-        self.srScheduler = BackgroundScheduler()
+        self.srScheduler = TornadoScheduler()
 
         # init web server
         self.srWebServer = srWebServer()
@@ -452,44 +453,48 @@ class Core(object):
                                  sickrage.srCore.srConfig.WEB_PORT
                              )).start()
 
+        # start ioloop event handler
+        self.io_loop.start()
+
     def shutdown(self):
-        with self.lock:
-            if self.started:
-                self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
+        if self.started:
+            self.started = False
 
-                # shutdown/restart webserver
-                self.srWebServer.shutdown()
+            self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
-                # shutdown show queue
-                if self.SHOWQUEUE:
-                    self.srLogger.debug("Shutting down show queue")
-                    self.SHOWQUEUE.shutdown()
+            # shutdown/restart webserver
+            self.srWebServer.shutdown()
 
-                # shutdown search queue
-                if self.SEARCHQUEUE:
-                    self.srLogger.debug("Shutting down search queue")
-                    self.SEARCHQUEUE.shutdown()
+            # shutdown show queue
+            if self.SHOWQUEUE:
+                self.srLogger.debug("Shutting down show queue")
+                self.SHOWQUEUE.shutdown()
 
-                # log out of ADBA
-                if sickrage.srCore.ADBA_CONNECTION:
-                    self.srLogger.debug("Logging out ANIDB connection")
-                    sickrage.srCore.ADBA_CONNECTION.logout()
+            # shutdown search queue
+            if self.SEARCHQUEUE:
+                self.srLogger.debug("Shutting down search queue")
+                self.SEARCHQUEUE.shutdown()
 
-                # save all show and config settings
-                self.save_all()
+            # log out of ADBA
+            if sickrage.srCore.ADBA_CONNECTION:
+                self.srLogger.debug("Logging out ANIDB connection")
+                sickrage.srCore.ADBA_CONNECTION.logout()
 
-                # close databases
-                for db in [self.mainDB, self.cacheDB, self.failedDB]:
-                    db.close()
+            # save all show and config settings
+            self.save_all()
 
-                # shutdown logging
-                self.srLogger.close()
+            # close databases
+            for db in [self.mainDB, self.cacheDB, self.failedDB]:
+                db.close()
 
-                # done
-                self.started = False
+            # shutdown logging
+            self.srLogger.close()
 
-            # stop daemon process
-            if not sickrage.restart and sickrage.daemon: sickrage.daemon.stop()
+            # close ioloop events
+            self.io_loop.close(all_fds=True)
+
+        # stop daemon process
+        if not sickrage.restart and sickrage.daemon: sickrage.daemon.stop()
 
     def save_all(self):
         # write all shows

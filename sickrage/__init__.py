@@ -330,14 +330,17 @@ def main():
             daemon = Daemon(PID_FILE, DATA_DIR)
             daemon.daemonize()
 
-        # start app
+        # main app
         srCore = core.Core()
         srCore.start()
+        srCore.shutdown()
 
-        while srCore.started: time.sleep(1)
         if restart: os.execl(sys.executable, sys.executable, *sys.argv)
     except (SystemExit, KeyboardInterrupt):
-        if srCore:srCore.shutdown()
+        try:
+            srCore.shutdown()
+        except:
+            pass
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
