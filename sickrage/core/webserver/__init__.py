@@ -21,8 +21,10 @@ from __future__ import unicode_literals
 import os
 import shutil
 import socket
+import threading
 
 from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
@@ -45,16 +47,17 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 
-class srWebServer(object):
+class srWebServer(threading.Thread):
     def __init__(self):
-        super(srWebServer, self).__init__()
+        super(srWebServer, self).__init__(name='TORNADO')
         self.started = False
         self.video_root = None
         self.api_root = None
         self.app = None
         self.server = None
+        self.io_loop = IOLoop().instance()
 
-    def start(self):
+    def run(self):
         self.started = True
 
         # clear mako cache folder
@@ -164,6 +167,7 @@ class srWebServer(object):
 
         try:
             self.server.listen(sickrage.WEB_PORT or sickrage.srCore.srConfig.WEB_PORT, None)
+            self.io_loop.start()
         except socket.error as e:
             sickrage.srCore.srLogger.warning(e.strerror)
             raise SystemExit
@@ -173,3 +177,5 @@ class srWebServer(object):
             self.server.close_all_connections()
             self.server.stop()
             self.started = False
+            self.io_loop.stop()
+            #self.io_loop.close(all_fds=True)

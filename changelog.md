@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7b12826 - 2017-08-11: Misc fixes 
+- * de8cbe7 - 2017-08-12: testing ioloop threaded 
+- * e7fdcba - 2017-08-11: Misc fixes 
 - * 6ffa4d0 - 2017-08-11: Release v9.0.82 
 - * 8fd6364 - 2017-08-11: Added more modules to the encoding kludge patch list Switched all open calls to io.open Added reverse symlink post-processing method Fixed unicode errors during post-processing 
 - * b009b72 - 2017-08-11: Updated selectboxes in display show page template with class input350 

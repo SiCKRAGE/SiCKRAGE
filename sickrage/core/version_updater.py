@@ -64,7 +64,7 @@ class srVersionUpdater(object):
                 if self.update():
                     sickrage.srCore.srLogger.info("Update was successful!")
                     sickrage.srCore.srNotifications.message('Update was successful')
-                    sickrage.srCore.io_loop.stop()
+                    sickrage.srCore.shutdown()
                 else:
                     sickrage.srCore.srLogger.info("Update failed!")
                     sickrage.srCore.srNotifications.message('Update failed!')
