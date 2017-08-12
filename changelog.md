@@ -1,6 +1,7 @@
 # Changelog
 
-- * da4db8b - 2017-08-12: Fixed restarting issue 
+- * dd35fa5 - 2017-08-12: Updated regexes for nameparser Updated caching code for nameparser 
+- * 736cbfc - 2017-08-12: Fixed restarting issue 
 - * 1663a10 - 2017-08-12: Added in instant debug logging 
 - * 6f7c227 - 2017-08-12: Changed shutdown sequence 
 - * 43ede21 - 2017-08-12: Revert &quot;testing ioloop threaded&quot; 

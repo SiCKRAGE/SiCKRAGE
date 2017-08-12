@@ -628,8 +628,6 @@ class TVShow(object):
 
         # get file list
         mediaFiles = list_media_files(self.location)
-        sickrage.srCore.srLogger.debug("%s: Found files: %s" %
-                                       (self.indexerid, mediaFiles))
 
         # create TVEpisodes from each media file (if possible)
         for mediaFile in mediaFiles:
@@ -662,7 +660,7 @@ class TVShow(object):
                 curEpisode.release_name = ep_file_name
 
             # store the reference in the show
-            if self.subtitles:
+            if self.subtitles and sickrage.srCore.srConfig.USE_SUBTITLES:
                 try:
                     curEpisode.refreshSubtitles()
                 except Exception:

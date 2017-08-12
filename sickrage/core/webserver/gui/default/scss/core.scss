@@ -1975,13 +1975,9 @@ label {
 pre {
   border: 1px solid; }
 
-.alert .glyphicon {
-  display: table-cell; }
-
-.alert div,
-.alert span {
-  padding-left: 5px;
-  display: table-cell; }
+.alert {
+  padding: 10px;
+  text-align: center; }
 
 /* =======================================================================
 input sizing (for config pages)
