@@ -207,7 +207,6 @@ class Core(object):
                 self.srLogger.error(
                     'Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left',
                     available_space)
-                sickrage.restart = False
                 return
         except:
             self.srLogger.error('Failed getting diskspace: %s', traceback.format_exc())

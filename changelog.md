@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8f2c4dc - 2017-08-12: Added in instant debug logging 
+- * da4db8b - 2017-08-12: Fixed restarting issue 
+- * 1663a10 - 2017-08-12: Added in instant debug logging 
 - * 6f7c227 - 2017-08-12: Changed shutdown sequence 
 - * 43ede21 - 2017-08-12: Revert &quot;testing ioloop threaded&quot; 
 - * e7cdb57 - 2017-08-12: fixed typo 

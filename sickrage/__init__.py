@@ -39,7 +39,7 @@ __all__ = [
     'PID_FILE'
 ]
 
-restart = True
+restart = False
 srCore = None
 daemon = None
 

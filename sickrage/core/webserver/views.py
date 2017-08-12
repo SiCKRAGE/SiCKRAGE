@@ -1054,7 +1054,6 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
-        sickrage.restart = False
         sickrage.srCore.io_loop.stop()
 
     def restart(self, pid=None):
@@ -1062,6 +1061,8 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
+
+        sickrage.restart = True
         sickrage.srCore.io_loop.add_timeout(datetime.timedelta(seconds=10), sickrage.srCore.io_loop.stop)
 
         return self.render(
