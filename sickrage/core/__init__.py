@@ -455,6 +455,7 @@ class Core(object):
 
         # start ioloop event handler
         self.io_loop.start()
+        raise SystemExit
 
     def shutdown(self):
         if self.started:

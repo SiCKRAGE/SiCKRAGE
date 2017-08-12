@@ -333,14 +333,9 @@ def main():
         # main app
         srCore = core.Core()
         srCore.start()
-        srCore.shutdown()
-
-        if restart: os.execl(sys.executable, sys.executable, *sys.argv)
     except (SystemExit, KeyboardInterrupt):
-        try:
-            srCore.shutdown()
-        except:
-            pass
+        if srCore:srCore.shutdown()
+        if restart: os.execl(sys.executable, sys.executable, *sys.argv)
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
