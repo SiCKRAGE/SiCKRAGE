@@ -21,12 +21,14 @@ from __future__ import unicode_literals
 import os
 import shutil
 import socket
+import threading
 
 from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, generateApiKey
+from sickrage.core.helpers import create_https_certificates, generateApiKey, launch_browser
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
@@ -45,16 +47,18 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 
-class srWebServer(object):
+class srWebServer(threading.Thread):
     def __init__(self):
-        super(srWebServer, self).__init__()
+        super(srWebServer, self).__init__(name="TORNADO")
+        self.daemon = True
         self.started = False
         self.video_root = None
         self.api_root = None
         self.app = None
         self.server = None
+        self.io_loop = IOLoop().instance()
 
-    def start(self):
+    def run(self):
         self.started = True
 
         # clear mako cache folder
@@ -164,12 +168,35 @@ class srWebServer(object):
 
         try:
             self.server.listen(sickrage.WEB_PORT or sickrage.srCore.srConfig.WEB_PORT, None)
+
+            sickrage.srCore.srLogger.info(
+                "SiCKRAGE :: STARTED")
+            sickrage.srCore.srLogger.info(
+                "SiCKRAGE :: VERSION:[{}]".format(sickrage.srCore.VERSIONUPDATER.version))
+            sickrage.srCore.srLogger.info(
+                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.CONFIG_FILE, sickrage.srCore.srConfig.CONFIG_VERSION))
+            sickrage.srCore.srLogger.info(
+                "SiCKRAGE :: URL:[{}://{}:{}/]".format(
+                    ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
+                    sickrage.srCore.srConfig.WEB_HOST, sickrage.srCore.srConfig.WEB_PORT))
+
+            # launch browser window
+            if all([not sickrage.NOLAUNCH, sickrage.srCore.srConfig.LAUNCH_BROWSER]):
+                threading.Thread(None,
+                                 lambda: launch_browser(
+                                     ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
+                                     sickrage.srCore.srConfig.WEB_HOST,
+                                     sickrage.srCore.srConfig.WEB_PORT
+                                 ), name="LAUNCH-BROWSER").start()
+
+            self.io_loop.start()
         except socket.error as e:
             sickrage.srCore.srLogger.warning(e.strerror)
             raise SystemExit
 
     def shutdown(self):
         if self.started:
+            self.started = False
             self.server.close_all_connections()
             self.server.stop()
-            self.started = False
+            self.io_loop.stop()

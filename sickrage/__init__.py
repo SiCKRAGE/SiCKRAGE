@@ -39,7 +39,6 @@ __all__ = [
     'PID_FILE'
 ]
 
-restart = False
 srCore = None
 daemon = None
 
@@ -233,10 +232,10 @@ def version():
 
 
 def main():
-    global srCore, daemon, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, \
-        DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+    global srCore, daemon, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
+        from tornado.ioloop import IOLoop
         from sickrage import core
 
         # sickrage startup options
@@ -333,9 +332,11 @@ def main():
         # main app
         srCore = core.Core()
         srCore.start()
+
+        # main thread loop
+        while srCore.started: time.sleep(1)
     except (SystemExit, KeyboardInterrupt):
-        if srCore:srCore.shutdown()
-        if restart: os.execl(sys.executable, sys.executable, *sys.argv)
+        if srCore: srCore.shutdown()
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):

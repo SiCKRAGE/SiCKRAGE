@@ -24,6 +24,7 @@ import platform
 import re
 import shutil
 import socket
+import sys
 import threading
 import time
 import traceback
@@ -31,9 +32,8 @@ import urllib
 import urlparse
 import uuid
 
-from apscheduler.schedulers.tornado import TornadoScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from fake_useragent import UserAgent
-from tornado.ioloop import IOLoop
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
@@ -46,7 +46,7 @@ from sickrage.core.google import googleAuth
 from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
-from sickrage.core.nameparser.validator import check_force_season_folders  # memory intensive
+from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
 from sickrage.core.queues.search import srSearchQueue
@@ -74,7 +74,6 @@ from sickrage.providers import providersDict
 class Core(object):
     def __init__(self):
         self.started = False
-        self.io_loop = IOLoop.current()
 
         # process id
         self.PID = os.getpid()
@@ -103,7 +102,7 @@ class Core(object):
         self.failedDB = FailedDB()
 
         # init scheduler service
-        self.srScheduler = TornadoScheduler()
+        self.srScheduler = BackgroundScheduler()
 
         # init web server
         self.srWebServer = srWebServer()
@@ -435,31 +434,8 @@ class Core(object):
         # start webserver
         self.srWebServer.start()
 
-        self.srLogger.info("SiCKRAGE :: STARTED")
-        self.srLogger.info("SiCKRAGE :: VERSION:[{}]".format(self.VERSIONUPDATER.version))
-        self.srLogger.info("SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.CONFIG_FILE, self.srConfig.CONFIG_VERSION))
-        self.srLogger.info("SiCKRAGE :: URL:[{}://{}:{}/]".format(
-            ('http', 'https')[self.srConfig.ENABLE_HTTPS],
-            self.srConfig.WEB_HOST, self.srConfig.WEB_PORT)
-        )
-
-        # launch browser window
-        if all([not sickrage.NOLAUNCH, sickrage.srCore.srConfig.LAUNCH_BROWSER]):
-            threading.Thread(None,
-                             lambda: launch_browser(
-                                 ('http', 'https')[sickrage.srCore.srConfig.ENABLE_HTTPS],
-                                 self.srConfig.WEB_HOST,
-                                 sickrage.srCore.srConfig.WEB_PORT
-                             )).start()
-
-        # start ioloop event handler
-        self.io_loop.start()
-        raise SystemExit
-
-    def shutdown(self):
+    def shutdown(self, restart=False):
         if self.started:
-            self.started = False
-
             self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
             # shutdown/restart webserver
@@ -480,21 +456,21 @@ class Core(object):
                 self.srLogger.debug("Logging out ANIDB connection")
                 sickrage.srCore.ADBA_CONNECTION.logout()
 
+
             # save all show and config settings
             self.save_all()
 
             # close databases
             for db in [self.mainDB, self.cacheDB, self.failedDB]:
-                db.close()
+                if db.opened: db.close()
 
             # shutdown logging
             self.srLogger.close()
 
-            # close ioloop events
-            self.io_loop.close(all_fds=True)
+        if not restart and sickrage.daemon: sickrage.daemon.stop()
+        if restart: os.execl(sys.executable, sys.executable, *sys.argv)
 
-        # stop daemon process
-        if not sickrage.restart and sickrage.daemon: sickrage.daemon.stop()
+        self.started = False
 
     def save_all(self):
         # write all shows

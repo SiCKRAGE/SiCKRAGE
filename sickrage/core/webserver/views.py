@@ -35,7 +35,6 @@ from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode, recursive_unicode
 from tornado.gen import coroutine
-from tornado.ioloop import IOLoop
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
@@ -82,7 +81,6 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.io_loop = IOLoop.current()
         self.executor = ThreadPoolExecutor(cpu_count())
         self.startTime = time.time()
 
@@ -200,6 +198,7 @@ class BaseHandler(RequestHandler):
                 kwargs[arg] = value[0]
 
         return function(**kwargs)
+
 
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -964,7 +963,7 @@ class Home(WebHandler):
 
     @staticmethod
     def loadShowNotifyLists():
-        data = {'_size':0}
+        data = {'_size': 0}
 
         tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)],
                           key=lambda d: d['show_name'])
@@ -1054,16 +1053,16 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
-        sickrage.srCore.io_loop.stop()
+        sickrage.srCore.shutdown()
 
     def restart(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
-
-        sickrage.restart = True
-        sickrage.srCore.io_loop.add_timeout(datetime.timedelta(seconds=10), sickrage.srCore.io_loop.stop)
+        sickrage.srCore.srWebServer.io_loop.add_timeout(datetime.timedelta(seconds=5),
+                                                        sickrage.srCore.shutdown,
+                                                        restart=True)
 
         return self.render(
             "/home/restart.mako",
