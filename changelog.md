@@ -1,6 +1,7 @@
 # Changelog
 
-- * a3b4ee9 - 2017-08-13: Fixed formatting of season and episode numbers to be 2 digits 
+- * cd6f00f - 2017-08-13: Fixes issue #47 - File air date stamping failed 
+- * e355b98 - 2017-08-13: Fixed formatting of season and episode numbers to be 2 digits 
 - * 9389c56 - 2017-08-13: Updated non-release group names Fixed issue with copyfile permissions 
 - * 4901a6e - 2017-08-12: Release v9.0.87 
 - * d0b4ab5 - 2017-08-12: Fixed issue #54 - manual post processing error - object of type &#x27;NoneType&#x27; has no len() 
