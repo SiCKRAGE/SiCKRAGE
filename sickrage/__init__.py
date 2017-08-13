@@ -41,6 +41,7 @@ __all__ = [
 
 srCore = None
 daemon = None
+io_loop = None
 
 MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(os.path.dirname(__file__)))))
 PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
@@ -232,7 +233,7 @@ def version():
 
 
 def main():
-    global srCore, daemon, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+    global srCore, daemon, io_loop, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
         from tornado.ioloop import IOLoop
@@ -328,6 +329,9 @@ def main():
             QUITE = True
             daemon = Daemon(PID_FILE, DATA_DIR)
             daemon.daemonize()
+
+        # io loop
+        io_loop = IOLoop().instance()
 
         # main app
         srCore = core.Core()

@@ -1060,9 +1060,7 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage("Restarting", "SiCKRAGE is restarting")
-        sickrage.srCore.srWebServer.io_loop.add_timeout(datetime.timedelta(seconds=5),
-                                                        sickrage.srCore.shutdown,
-                                                        restart=True)
+        sickrage.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.srCore.shutdown, restart=True)
 
         return self.render(
             "/home/restart.mako",

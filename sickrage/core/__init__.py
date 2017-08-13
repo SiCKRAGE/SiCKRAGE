@@ -456,7 +456,6 @@ class Core(object):
                 self.srLogger.debug("Logging out ANIDB connection")
                 sickrage.srCore.ADBA_CONNECTION.logout()
 
-
             # save all show and config settings
             self.save_all()
 
@@ -467,8 +466,10 @@ class Core(object):
             # shutdown logging
             self.srLogger.close()
 
-        if sickrage.daemon: sickrage.daemon.stop()
-        if restart: os.execl(sys.executable, sys.executable, *sys.argv)
+        if restart:
+            os.execl(sys.executable, sys.executable, *sys.argv)
+        elif sickrage.daemon:
+            sickrage.daemon.stop()
 
         self.started = False
 

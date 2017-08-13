@@ -24,7 +24,6 @@ import socket
 import threading
 
 from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
@@ -56,7 +55,6 @@ class srWebServer(threading.Thread):
         self.api_root = None
         self.app = None
         self.server = None
-        self.io_loop = IOLoop().instance()
 
     def run(self):
         self.started = True
@@ -189,7 +187,7 @@ class srWebServer(threading.Thread):
                                      sickrage.srCore.srConfig.WEB_PORT
                                  ), name="LAUNCH-BROWSER").start()
 
-            self.io_loop.start()
+            sickrage.io_loop.start()
         except socket.error as e:
             sickrage.srCore.srLogger.warning(e.strerror)
             raise SystemExit
@@ -199,4 +197,4 @@ class srWebServer(threading.Thread):
             self.started = False
             self.server.close_all_connections()
             self.server.stop()
-            self.io_loop.stop()
+            sickrage.io_loop.stop()
