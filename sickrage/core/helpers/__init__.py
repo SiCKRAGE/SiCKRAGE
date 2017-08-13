@@ -45,6 +45,7 @@ import webbrowser
 import zipfile
 from contextlib import contextmanager
 
+import rarfile
 import six
 from bs4 import BeautifulSoup
 
@@ -184,23 +185,45 @@ def remove_non_release_groups(name):
     removeWordsList = {
         r'\[rartv\]$': 'searchre',
         r'\[rarbg\]$': 'searchre',
+        r'\.\[eztv\]$': 'searchre',
         r'\[eztv\]$': 'searchre',
         r'\[ettv\]$': 'searchre',
         r'\[cttv\]$': 'searchre',
+        r'\.\[vtv\]$': 'searchre',
         r'\[vtv\]$': 'searchre',
         r'\[EtHD\]$': 'searchre',
         r'\[GloDLS\]$': 'searchre',
         r'\[silv4\]$': 'searchre',
         r'\[Seedbox\]$': 'searchre',
         r'\[PublicHD\]$': 'searchre',
+        r'\.\[PublicHD\]$': 'searchre',
+        r'\.\[NO.RAR\]$': 'searchre',
+        r'\[NO.RAR\]$': 'searchre',
+        r'-\=\{SPARROW\}\=-$': 'searchre',
+        r'\=\{SPARR$': 'searchre',
+        r'\.\[720P\]\[HEVC\]$': 'searchre',
         r'\[AndroidTwoU\]$': 'searchre',
+        r'\[brassetv\]$': 'searchre',
+        r'\[Talamasca32\]$': 'searchre',
+        r'\(musicbolt\.com\)$': 'searchre',
+        r'\.\(NLsub\)$': 'searchre',
+        r'\(NLsub\)$': 'searchre',
         r'\.\[BT\]$': 'searchre',
         r' \[1044\]$': 'searchre',
         r'\.RiPSaLoT$': 'searchre',
         r'\.GiuseppeTnT$': 'searchre',
         r'\.Renc$': 'searchre',
+        r'\.gz$': 'searchre',
+        r'\.English$': 'searchre',
+        r'\.German$': 'searchre',
+        r'\.\.Italian$': 'searchre',
+        r'\.Italian$': 'searchre',
+        r'(?<![57])\.1$': 'searchre',
         r'-NZBGEEK$': 'searchre',
         r'-Siklopentan$': 'searchre',
+        r'-Chamele0n$': 'searchre',
+        r'-Obfuscated$': 'searchre',
+        r'-BUYMORE$': 'searchre',
         r'-\[SpastikusTV\]$': 'searchre',
         r'-RP$': 'searchre',
         r'-20-40$': 'searchre',
@@ -218,6 +241,8 @@ def remove_non_release_groups(name):
         r'- \[ www\.torrentday\.com \]$': 'searchre',
         r'^\[ www\.TorrentDay\.com \] - ': 'searchre',
         r'\[NO-RAR\] - \[ www\.torrentday\.com \]$': 'searchre',
+        r'^www\.Torrenting\.com\.-\.': 'searchre',
+        r'-Scrambled$': 'searchre'
     }
 
     _name = name
@@ -318,11 +343,14 @@ def isRarFile(filename):
     """
 
     archive_regex = r'(?P<file>^(?P<base>(?:(?!\.part\d+\.rar$).)*)\.(?:(?:part0*1\.)?rar)$)'
+    ret = re.search(archive_regex, filename) is not None
+    try:
+        if ret and os.path.exists(filename) and os.path.isfile(filename):
+            ret = rarfile.is_rarfile(filename)
+    except (IOError, OSError):
+        pass
 
-    if re.search(archive_regex, filename):
-        return True
-
-    return False
+    return ret
 
 
 def isBeingWritten(filepath):
@@ -452,9 +480,13 @@ def copyFile(srcFile, destFile):
 
     try:
         shutil.copyfile(srcFile, destFile)
-        shutil.copymode(srcFile, destFile)
-    except OSError as e:
-        raise
+    except Exception as e:
+        sickrage.srCore.srLogger.warning(e.message)
+    else:
+        try:
+            shutil.copymode(srcFile, destFile)
+        except OSError:
+            pass
 
 
 def moveFile(srcFile, destFile):
@@ -469,11 +501,8 @@ def moveFile(srcFile, destFile):
         shutil.move(srcFile, destFile)
         fixSetGroupID(destFile)
     except OSError as e:
-        try:
-            copyFile(srcFile, destFile)
-            os.unlink(srcFile)
-        except Exception as e:
-            raise
+        copyFile(srcFile, destFile)
+        os.unlink(srcFile)
 
 
 def link(src, dst):
@@ -486,7 +515,7 @@ def link(src, dst):
     """
 
     if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateHardLinkW(dst, src, 0) == 0:
+        if ctypes.windll.kernel32.CreateHardLinkW(ctypes.c_wchar_p(dst), ctypes.c_wchar_p(src), None) == 0:
             raise ctypes.WinError()
     else:
         os.link(src, dst)
@@ -518,7 +547,7 @@ def symlink(src, dst):
     """
 
     if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(dst, src,
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(ctypes.c_wchar_p(dst), ctypes.c_wchar_p(src),
                                                       1 if os.path.isdir(src) else 0) in [0, 1280]:
             raise ctypes.WinError()
     else:

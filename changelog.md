@@ -1,6 +1,7 @@
 # Changelog
 
-- * 00cec12 - 2017-08-12: Release v9.0.87 
+- * 621c1ee - 2017-08-13: Updated non-release group names Fixed issue with copyfile permissions 
+- * 4901a6e - 2017-08-12: Release v9.0.87 
 - * d0b4ab5 - 2017-08-12: Fixed issue #54 - manual post processing error - object of type &#x27;NoneType&#x27; has no len() 
 - * 720826d - 2017-08-12: Release v9.0.85 
 - * baa2a29 - 2017-08-12: Fixed typo in dailysearcher code 
