@@ -1,6 +1,7 @@
 # Changelog
 
-- * adb3eca - 2017-08-12: Fixed typo in dailysearcher code 
+- * bcc76b2 - 2017-08-12: Release v9.0.85 
+- * baa2a29 - 2017-08-12: Fixed typo in dailysearcher code 
 - * c803d2d - 2017-08-12: Release v9.0.84 
 - * 32eabe0 - 2017-08-12: Moved io loop to main thread 
 - * 51f52da - 2017-08-12: Kill daemon even on restarts 
