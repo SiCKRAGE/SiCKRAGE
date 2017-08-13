@@ -706,7 +706,7 @@ class TVShow(object):
 
             try:
                 sickrage.srCore.srLogger.debug(
-                    "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
+                    "{}: Loading episode S{:02d}E{:02d} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
                 curEp = self.getEpisode(curSeason, curEpisode)
                 if deleteEp: curEp.deleteEpisode()

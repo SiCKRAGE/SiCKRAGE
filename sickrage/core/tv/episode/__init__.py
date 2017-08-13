@@ -437,7 +437,7 @@ class TVEpisode(object):
         season = (self.season, season)[season is not None]
         episode = (self.episode, episode)[episode is not None]
 
-        sickrage.srCore.srLogger.debug("{}: Loading episode details from {} for episode S{}E{}".format(
+        sickrage.srCore.srLogger.debug("{}: Loading episode details from {} for episode S{:02d}E{:02d}".format(
             self.show.indexerid, indexer_name, season or 0, episode or 0)
         )
 
@@ -483,14 +483,14 @@ class TVEpisode(object):
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
         if not myEp.get('episodename'):
-            sickrage.srCore.srLogger.info("This episode {} - S{}E{} has no name on {}. Setting to an empty string"
+            sickrage.srCore.srLogger.info("This episode {} - S{:02d}E{:02d} has no name on {}. Setting to an empty string"
                                           .format(self.show.name, season or 0, episode or 0, indexer_name))
 
         if not myEp.get('absolutenumber'):
-            sickrage.srCore.srLogger.debug("This episode {} - S{}E{} has no absolute number on {}".format(
+            sickrage.srCore.srLogger.debug("This episode {} - S{:02d}E{:02d} has no absolute number on {}".format(
                 self.show.name, season or 0, episode or 0, indexer_name))
         else:
-            sickrage.srCore.srLogger.debug("{}: The absolute_number for S{}E{} is: {}".format(
+            sickrage.srCore.srLogger.debug("{}: The absolute_number for S{:02d}E{:02d} is: {}".format(
                 self.show.indexerid, season or 0, episode or 0, myEp["absolutenumber"]))
             self.absolute_number = tryInt(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
 
@@ -518,7 +518,7 @@ class TVEpisode(object):
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
-            sickrage.srCore.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
+            sickrage.srCore.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{:02d}E{:02d})".format(
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             if self.indexerid != -1:

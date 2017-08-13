@@ -147,7 +147,7 @@
                                     </td>
 
                                     <td nowrap="nowrap" align="center">
-                                        ${'S{}E{}'.format(int(cur_result['season']), int(cur_result['episode']))}
+                                        ${'S{:02d}E{:02d}'.format(int(cur_result['season']), int(cur_result['episode']))}
                                     </td>
 
                                     <td>
@@ -374,7 +374,7 @@
                                         </div>
 
                                         <span class="title">Next Episode:</span>
-                                        <span>${'S{}E{}'.format(int(cur_result['season']), int(cur_result['episode']))}
+                                        <span>${'S{:02d}E{:02d}'.format(int(cur_result['season']), int(cur_result['episode']))}
                                             - ${cur_result['name']}</span>
 
                                         <div class="clearfix">
@@ -466,7 +466,7 @@
                                                     ${airtime} on ${cur_result["network"]}
                                                 </span>
                                                         <span class="episode-title" title="${cur_result['name']}">
-                                                    ${'S{}E{}'.format(int(cur_result['season']), int(cur_result['episode']))}
+                                                    ${'S{:02d}E{:02d}'.format(int(cur_result['season']), int(cur_result['episode']))}
                                                             - ${cur_result['name']}
                                                 </span>
                                                     </div>
