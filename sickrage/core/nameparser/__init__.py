@@ -625,7 +625,7 @@ class ParseResult(object):
 
     @property
     def is_anime(self):
-        if len(self.ab_episode_numbers):
+        if self.ab_episode_numbers:
             return True
         return False
 
