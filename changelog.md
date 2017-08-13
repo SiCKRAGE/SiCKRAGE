@@ -1,6 +1,7 @@
 # Changelog
 
-- * cd6f00f - 2017-08-13: Fixes issue #47 - File air date stamping failed 
+- * adfcc71 - 2017-08-13: Changed placement arrow icons Added lock/unlock icons 
+- * f0735a3 - 2017-08-13: Fixes issue #47 - File air date stamping failed 
 - * e355b98 - 2017-08-13: Fixed formatting of season and episode numbers to be 2 digits 
 - * 9389c56 - 2017-08-13: Updated non-release group names Fixed issue with copyfile permissions 
 - * 4901a6e - 2017-08-12: Release v9.0.87 

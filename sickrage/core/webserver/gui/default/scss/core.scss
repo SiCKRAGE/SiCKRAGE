@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* =======================================================================
     DEFAULTS
 ========================================================================== */
@@ -2326,8 +2327,26 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 span.token-input-delete-token {
   margin: 0 1px; }
 
+.white-txt {
+  color: #fff; }
+
+.blue-text {
+  color: #3498db; }
+
 .red-text {
-  color: #d33; }
+  color:   #e74c3c; }
+
+.green-text {
+  color:   #2ecc71; }
+
+.yellow-text {
+  color:   #f1c40f; }
+
+.orange-text {
+  color:   #e67e22; }
+
+.purple-text {
+  color:   #9b59b6; }
 
 .clear-left {
   clear: left; }

@@ -11,6 +11,12 @@
     <li><a data-toggle="tab" href="#core-tab-pane3">Plugin Settings</a></li>
 </%block>
 <%block name="pages">
+    <%
+        providerLoginDict = {'legendastv': {'user': sickrage.srCore.srConfig.LEGENDASTV_USER, 'pass': sickrage.srCore.srConfig.LEGENDASTV_PASS},
+                            'itasa': {'user': sickrage.srCore.srConfig.ITASA_USER, 'pass': sickrage.srCore.srConfig.ITASA_PASS},
+                            'addic7ed': {'user': sickrage.srCore.srConfig.ADDIC7ED_USER, 'pass': sickrage.srCore.srConfig.ADDIC7ED_PASS},
+                            'opensubtitles': {'user': sickrage.srCore.srConfig.OPENSUBTITLES_USER, 'pass': sickrage.srCore.srConfig.OPENSUBTITLES_PASS}}
+    %>
     <div id="core-tab-pane1" class="row tab-pane fade in active">
 
         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
@@ -202,8 +208,10 @@
                                              height="16" style="vertical-align:middle;"/>
                                     </a>
                                     <span style="vertical-align:middle;">${curService['name'].capitalize()}</span>
-                                    <span class="ui-icon ui-icon-arrowthick-2-n-s pull-right"
-                                          style="vertical-align:middle;"></span>
+                                    <i class="fa fa-arrows-v blue-text pull-right"
+                                          style="vertical-align:middle;"></i>
+                                    <i class="fa ${('fa-unlock green-text','fa-lock red-text')[curService['name'] in providerLoginDict]} pull-right"
+                                          style="vertical-align:middle;"></i>
                                 </label>
                             </li>
                         % endfor
@@ -228,13 +236,6 @@
         </div><!-- /tab-pane-desc //-->
 
         <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-            <%
-                providerLoginDict = {
-                                    'legendastv': {'user': sickrage.srCore.srConfig.LEGENDASTV_USER, 'pass': sickrage.srCore.srConfig.LEGENDASTV_PASS},
-                                    'itasa': {'user': sickrage.srCore.srConfig.ITASA_USER, 'pass': sickrage.srCore.srConfig.ITASA_PASS},
-                                    'addic7ed': {'user': sickrage.srCore.srConfig.ADDIC7ED_USER, 'pass': sickrage.srCore.srConfig.ADDIC7ED_PASS},
-                                    'opensubtitles': {'user': sickrage.srCore.srConfig.OPENSUBTITLES_USER, 'pass': sickrage.srCore.srConfig.OPENSUBTITLES_PASS}}
-            %>
             % for curService in sickrage.subtitles.sortedServiceList():
                 % if curService['name'] in providerLoginDict.keys():
                 ##<div class="field-pair${(' hidden', '')[curService['enabled']}"> ## Need js to show/hide on save
@@ -255,6 +256,8 @@
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
+                    </div>
+                    <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${curService['name'].capitalize()} Password</label>
                         </div>
