@@ -232,52 +232,52 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="${srWebRoot}/config/">
-                                    <i class="menu-icon-help"></i>&nbsp;Help &amp; Info
+                                    <i class="fa fa-info"></i>&nbsp;Help &amp; Info
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/general/">
-                                    <i class="menu-icon-config"></i>&nbsp;General
+                                    <i class="fa fa-cogs"></i>&nbsp;General
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/backuprestore/">
-                                    <i class="menu-icon-config"></i>&nbsp;Backup &amp; Restore
+                                    <i class="fa fa-upload"></i>&nbsp;Backup &amp; Restore
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/search/">
-                                    <i class="menu-icon-config"></i>&nbsp;Search Clients
+                                    <i class="fa fa-binoculars"></i>&nbsp;Search Clients
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/providers/">
-                                    <i class="menu-icon-config"></i>&nbsp;Search Providers
+                                    <i class="fa fa-share-alt"></i>&nbsp;Search Providers
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/subtitles/">
-                                    <i class="menu-icon-config"></i>&nbsp;Subtitles Settings
+                                    <i class="fa fa-cc"></i>&nbsp;Subtitles Settings
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/qualitySettings/">
-                                    <i class="menu-icon-config"></i>&nbsp;Quality Settings
+                                    <i class="fa fa-wrench"></i>&nbsp;Quality Settings
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/postProcessing/">
-                                    <i class="menu-icon-config"></i>&nbsp;Post Processing
+                                    <i class="fa fa-refresh"></i>&nbsp;Post Processing
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/notifications/">
-                                    <i class="menu-icon-config"></i>&nbsp;Notifications
+                                    <i class="fa fa-bell"></i>&nbsp;Notifications
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/config/anime/">
-                                    <i class="menu-icon-config"></i>&nbsp;Anime
+                                    <i class="fa fa-eye"></i>&nbsp;Anime
                                 </a>
                             </li>
                         </ul>
@@ -309,25 +309,25 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="${srWebRoot}/IRC/">
-                                    <i class="menu-icon-help"></i>&nbsp;IRC
+                                    <i class="fa fa-hashtag"></i>&nbsp;IRC
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/changes/">
-                                    <i class="menu-icon-help"></i>&nbsp;Changelog
+                                    <i class="fa fa-globe"></i>&nbsp;Changelog
                                 </a>
                             </li>
                             <li>
                                 <a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
                                    onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;">
-                                    <i class="menu-icon-help"></i>&nbsp;Support SickRage
+                                    <i class="fa fa-money"></i>&nbsp;Donate
                                 </a>
                             </li>
                             <li class="divider"></li>
                             %if numErrors:
                                 <li>
                                     <a href="${srWebRoot}/logs/">
-                                        <i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors
+                                        <i class="fa fa-exclamation-circle"></i>&nbsp;View Errors
                                         <span class="badge btn-danger">${numErrors}</span>
                                     </a>
                                 </li>
@@ -335,43 +335,43 @@
                             %if numWarnings:
                                 <li>
                                     <a href="${srWebRoot}/logs/?level=${sickrage.srCore.srLogger.WARNING}">
-                                        <i class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings
+                                        <i class="fa fa-exclamation-triangle"></i>&nbsp;View Warnings
                                         <span class="badge btn-warning">${numWarnings}</span>
                                     </a>
                                 </li>
                             %endif
                             <li>
                                 <a href="${srWebRoot}/logs/viewlog/">
-                                    <i class="menu-icon-viewlog"></i>&nbsp;View Log
+                                    <i class="fa fa-file-text-o"></i>&nbsp;View Log
                                 </a>
                             </li>
                             <li class="divider"></li>
                             <li>
                                 <a href="${srWebRoot}/home/updateCheck?pid=${srPID}">
-                                    <i class="menu-icon-update"></i>&nbsp;Check For Updates
+                                    <i class="fa fa-check-square"></i>&nbsp;Check For Updates
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/home/restart/?pid=${srPID}" class="confirm restart">
-                                    <i class="menu-icon-restart"></i>&nbsp;Restart
+                                    <i class="fa fa-repeat"></i>&nbsp;Restart
                                 </a>
                             </li>
                             <li>
                                 <a href="${srWebRoot}/home/shutdown/?pid=${srPID}" class="confirm shutdown">
-                                    <i class="menu-icon-shutdown"></i>&nbsp;Shutdown
+                                    <i class="fa fa-power-off"></i>&nbsp;Shutdown
                                 </a>
                             </li>
                             % if current_user != True:
                                 <li>
                                     <a href="${srWebRoot}/logout" class="confirm logout">
-                                        <i class="menu-icon-shutdown"></i>&nbsp;Logout
+                                        <i class="fa fa-sign-out"></i>&nbsp;Logout
                                     </a>
                                 </li>
                             % endif
                             <li class="divider"></li>
                             <li>
                                 <a href="${srWebRoot}/home/status/">
-                                    <i class="menu-icon-help"></i>&nbsp;Server Status
+                                    <i class="fa fa-server"></i>&nbsp;Server Status
                                 </a>
                             </li>
                         </ul>
