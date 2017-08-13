@@ -71,7 +71,7 @@ class srDailySearcher(object):
 
         for episode in episodes:
             if not show or int(episode["showid"]) != show.indexerid:
-                show = findCertainShow(sickrage.srCore.showList, int(episode["showid"]))
+                show = findCertainShow(sickrage.srCore.SHOWLIST, int(episode["showid"]))
 
             # for when there is orphaned series in the database but not loaded into our showlist
             if not show or show.paused:
