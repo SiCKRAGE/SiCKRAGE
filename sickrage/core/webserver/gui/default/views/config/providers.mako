@@ -75,7 +75,7 @@
 
             <div>
                 <p class="note">
-                    <span class="red-text fa fa-exclamation-circle"></span> Provider does not support backlog searches
+                    <span class="yellow-text fa fa-exclamation-circle"></span> Provider does not support backlog searches
                     at this time.
                 </p>
             </div>
@@ -97,11 +97,11 @@
                                     height="16" style="vertical-align:middle;"/></a>
                             <label for="enable_${providerID}"
                                    style="vertical-align:middle;">${providerObj.name}</label>
-                            <span class="fa fa-arrows-v pull-right"
+                            <span class="fa fa-arrows-v blue-text pull-right"
                                   style="vertical-align:middle;"></span>
-                            <span class="fa ${('fa-unlock','fa-lock')[bool(providerObj.private)]} pull-right"
+                            <span class="fa ${('fa-unlock green-text','fa-lock red-text')[bool(providerObj.private)]} pull-right"
                                   style="vertical-align:middle;"></span>
-                            ${('<span class="red-text fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
+                            ${('<span class="yellow-text fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
                         </li>
                     % endif
                 % endfor

@@ -437,7 +437,7 @@ class TVEpisode(object):
         season = (self.season, season)[season is not None]
         episode = (self.episode, episode)[episode is not None]
 
-        sickrage.srCore.srLogger.debug("{}: Loading episode details from {} for episode S{}E{}".format(
+        sickrage.srCore.srLogger.debug("{}: Loading episode details from {} for episode S{:02d}E{:02d}".format(
             self.show.indexerid, indexer_name, season or 0, episode or 0)
         )
 
@@ -483,14 +483,15 @@ class TVEpisode(object):
 
         self.name = safe_getattr(myEp, 'episodename', self.name)
         if not myEp.get('episodename'):
-            sickrage.srCore.srLogger.info("This episode {} - S{}E{} has no name on {}. Setting to an empty string"
-                                          .format(self.show.name, season or 0, episode or 0, indexer_name))
+            sickrage.srCore.srLogger.info(
+                "This episode {} - S{:02d}E{:02d} has no name on {}. Setting to an empty string"
+                    .format(self.show.name, season or 0, episode or 0, indexer_name))
 
         if not myEp.get('absolutenumber'):
-            sickrage.srCore.srLogger.debug("This episode {} - S{}E{} has no absolute number on {}".format(
+            sickrage.srCore.srLogger.debug("This episode {} - S{:02d}E{:02d} has no absolute number on {}".format(
                 self.show.name, season or 0, episode or 0, indexer_name))
         else:
-            sickrage.srCore.srLogger.debug("{}: The absolute_number for S{}E{} is: {}".format(
+            sickrage.srCore.srLogger.debug("{}: The absolute_number for S{:02d}E{:02d} is: {}".format(
                 self.show.indexerid, season or 0, episode or 0, myEp["absolutenumber"]))
             self.absolute_number = tryInt(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
 
@@ -518,8 +519,9 @@ class TVEpisode(object):
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
-            sickrage.srCore.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
-                firstaired, indexer_name, self.show.name, season or 0, episode or 0))
+            sickrage.srCore.srLogger.warning(
+                "Malformed air date of {} retrieved from {} for ({} - S{:02d}E{:02d})".format(
+                    firstaired, indexer_name, self.show.name, season or 0, episode or 0))
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             if self.indexerid != -1:
                 self.deleteEpisode()
@@ -779,8 +781,8 @@ class TVEpisode(object):
 
         try:
             dbData = \
-            [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
-             if x['doc']['indexerid'] == self.indexerid][0]
+                [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+                 if x['doc']['indexerid'] == self.indexerid][0]
 
             dbData.update(tv_episode)
             sickrage.srCore.mainDB.db.update(dbData)
@@ -941,41 +943,46 @@ class TVEpisode(object):
 
         """
 
-        if not self.show.airs and self.show.network:
-            return
+        if not all([sickrage.srCore.srConfig.AIRDATE_EPISODES, self.airdate, self.location, self.show, self.show.airs,
+                    self.show.network]): return
 
-        airdate_ordinal = self.airdate.toordinal()
-        if airdate_ordinal < 1:
-            return
+        try:
+            airdate_ordinal = self.airdate.toordinal()
+            if airdate_ordinal < 1:
+                return
 
-        airdatetime = tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
+            airdatetime = tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
 
-        if sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == 'local':
-            airdatetime = airdatetime.astimezone(tz_updater.sr_timezone)
+            if sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == 'local':
+                airdatetime = airdatetime.astimezone(tz_updater.sr_timezone)
 
-        filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
-            tzinfo=tz_updater.sr_timezone)
+            filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
+                tzinfo=tz_updater.sr_timezone)
 
-        if filemtime != airdatetime:
-            import time
+            if filemtime != airdatetime:
+                import time
 
-            airdatetime = airdatetime.timetuple()
-            sickrage.srCore.srLogger.debug(str(self.show.indexerid) + ": About to modify date of '" + self.location +
-                                           "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
-            try:
-                if touchFile(self.location, time.mktime(airdatetime)):
-                    sickrage.srCore.srLogger.info(
-                        str(self.show.indexerid) + ": Changed modify date of " + os.path.basename(self.location)
-                        + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
-                else:
+                airdatetime = airdatetime.timetuple()
+                sickrage.srCore.srLogger.debug(
+                    str(self.show.indexerid) + ": About to modify date of '" + self.location +
+                    "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                try:
+                    if touchFile(self.location, time.mktime(airdatetime)):
+                        sickrage.srCore.srLogger.info(
+                            str(self.show.indexerid) + ": Changed modify date of " + os.path.basename(self.location)
+                            + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                    else:
+                        sickrage.srCore.srLogger.warning(
+                            str(self.show.indexerid) + ": Unable to modify date of " + os.path.basename(
+                                self.location)
+                            + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                except Exception:
                     sickrage.srCore.srLogger.warning(
-                        str(self.show.indexerid) + ": Unable to modify date of " + os.path.basename(
-                            self.location)
-                        + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
-            except Exception:
-                sickrage.srCore.srLogger.warning(
-                    str(self.show.indexerid) + ": Failed to modify date of '" + os.path.basename(self.location)
-                    + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                        str(self.show.indexerid) + ": Failed to modify date of '" + os.path.basename(self.location)
+                        + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+        except Exception:
+            sickrage.srCore.srLogger.warning(
+                "{}: Failed to modify date of '{}'".format(self.show.indexerid, os.path.basename(self.location)))
 
     def _ep_name(self):
         """

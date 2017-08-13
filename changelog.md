@@ -1,6 +1,12 @@
 # Changelog
 
-- * 00cec12 - 2017-08-12: Release v9.0.87 
+- * d07e147 - 2017-08-13: Release v9.0.88 
+- * 6c71133 - 2017-08-13: Updated main navbar icons 
+- * 8fcbf4a - 2017-08-13: Changed placement arrow icons Added lock/unlock icons 
+- * f0735a3 - 2017-08-13: Fixes issue #47 - File air date stamping failed 
+- * e355b98 - 2017-08-13: Fixed formatting of season and episode numbers to be 2 digits 
+- * 9389c56 - 2017-08-13: Updated non-release group names Fixed issue with copyfile permissions 
+- * 4901a6e - 2017-08-12: Release v9.0.87 
 - * d0b4ab5 - 2017-08-12: Fixed issue #54 - manual post processing error - object of type &#x27;NoneType&#x27; has no len() 
 - * 720826d - 2017-08-12: Release v9.0.85 
 - * baa2a29 - 2017-08-12: Fixed typo in dailysearcher code 
