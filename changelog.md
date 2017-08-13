@@ -1,6 +1,7 @@
 # Changelog
 
-- * 58164a0 - 2017-08-13: Updated main navbar icons 
+- * d07e147 - 2017-08-13: Release v9.0.88 
+- * 6c71133 - 2017-08-13: Updated main navbar icons 
 - * 8fcbf4a - 2017-08-13: Changed placement arrow icons Added lock/unlock icons 
 - * f0735a3 - 2017-08-13: Fixes issue #47 - File air date stamping failed 
 - * e355b98 - 2017-08-13: Fixed formatting of season and episode numbers to be 2 digits 
