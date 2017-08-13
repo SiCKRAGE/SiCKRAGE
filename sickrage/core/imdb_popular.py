@@ -47,7 +47,8 @@ class imdbPopular(object):
         popular_shows = []
 
         try:
-            data = sickrage.srCore.srWebSession.get(self.url, headers={'Referer': 'http://akas.imdb.com/'},
+            data = sickrage.srCore.srWebSession.get(self.url,
+                                                    headers={'Referer': 'http://akas.imdb.com/'},
                                                     params=self.params).text
         except Exception:
             return None
@@ -72,8 +73,8 @@ class imdbPopular(object):
                         if a_tag:
                             show['name'] = a_tag.get_text(strip=True)
                             show['imdb_url'] = "http://www.imdb.com" + a_tag["href"]
-                            show['year'] = header.find("span", {"class": "lister-item-year"}).contents[0].split(" ")[0][
-                                           1:].strip("-")
+                            show['year'] = header.find("span",
+                                                       {"class": "lister-item-year"}).contents[0].split(" ")[0][1:5]
 
                     imdb_rating = row.find("div", {"class": "ratings-imdb-rating"})
                     show['rating'] = imdb_rating['data-value'] if imdb_rating else None

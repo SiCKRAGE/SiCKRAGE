@@ -24,7 +24,7 @@
                     <tr>
                         <td class="popularShow">
                             <div class="left">
-                                <img class="coverImage" src="${srWebRoot}/cache/${cur_result['image_path']}"/>
+                                <img class="coverImage" src="${srWebRoot}/${cur_result['image_path']}"/>
                             </div>
                             <div class="right">
                                 <h3>${cur_result['name']}</h3>
