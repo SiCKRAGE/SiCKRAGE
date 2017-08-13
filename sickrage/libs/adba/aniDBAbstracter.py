@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #
 # This file is part of aDBa.
 #
@@ -14,17 +15,21 @@
 # You should have received a copy of the GNU General Public License
 # along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals, with_statement
+from __future__ import with_statement
 
 import re
 import string
 
-import sickrage
-from aniDBfileInfo import read_anidb_xml, get_file_size, get_file_hash
+import aniDBfileInfo as fileInfo
+from aniDBerrors import *
+from aniDBfileInfo import read_anidb_xml
 from aniDBmaper import AniDBMaper
 from aniDBtvDBmaper import TvDBMap
-from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError
 
+try:
+    import xml.etree.cElementTree as etree
+except ImportError:
+    import xml.etree.ElementTree as etree
 
 class aniDBabstractObject(object):
     def __init__(self, aniDB, load=False):
@@ -38,7 +43,7 @@ class aniDBabstractObject(object):
         if self.aniDB:
             self.log = self.aniDB.log
         else:
-            self.log = self._fake_log
+            self.log = self._fake_log()
 
     def _fake_log(self, x=None):
         pass
@@ -87,6 +92,7 @@ class aniDBabstractObject(object):
                 initialList.append(item)
 
         return initialList
+
 
     def load_data(self):
         return False
@@ -168,7 +174,7 @@ class Anime(aniDBabstractObject):
             self.release_groups.append({"name": unicode(line["name"], "utf-8"),
                                         "rating": line["rating"],
                                         "range": line["episode_range"]
-                                        })
+            })
         return self.release_groups
 
     # TODO: refactor and use the new functions in anidbFileinfo
@@ -178,10 +184,10 @@ class Anime(aniDBabstractObject):
 
         regex = re.compile(
             '( \(\d{4}\))|[%s]' % re.escape(string.punctuation))  # remove any punctuation and e.g. ' (2011)'
-        # regex = re.compile('[%s]'  % re.escape(string.punctuation)) # remove any punctuation and e.g. ' (2011)'
+        #regex = re.compile('[%s]'  % re.escape(string.punctuation)) # remove any punctuation and e.g. ' (2011)'
         name = regex.sub('', name.lower())
         lastAid = 0
-        for element in self.allAnimeXML.getiterator():
+        for element in self.allAnimeXML.iter():
             if element.get("aid", False):
                 lastAid = int(element.get("aid"))
             if element.text:
@@ -191,14 +197,14 @@ class Anime(aniDBabstractObject):
                     return lastAid
         return 0
 
-    # TODO: refactor and use the new functions in anidbFileinfo
+    #TODO: refactor and use the new functions in anidbFileinfo
     def _get_name_from_xml(self, aid, onlyMain=True):
         if not self.allAnimeXML:
             self.allAnimeXML = read_anidb_xml()
 
         for anime in self.allAnimeXML.findall("anime"):
             if int(anime.get("aid", False)) == aid:
-                for title in anime.getiterator():
+                for title in anime.iter():
                     currentLang = title.get("{http://www.w3.org/XML/1998/namespace}lang", False)
                     currentType = title.get("type", False)
                     if (currentLang == "en" and not onlyMain) or currentType == "main":
@@ -273,15 +279,16 @@ class Episode(aniDBabstractObject):
         try:
             self.aniDB.mylistadd(size=self.size, ed2k=self.ed2k, state=status)
         except Exception, e:
-            self.log("exception msg: " + str(e))
+            self.log(u"exception msg: " + str(e))
         else:
             # TODO: add the name or something
-            self.log("Added the episode to anidb")
+            self.log(u"Added the episode to anidb")
+
 
     def _calculate_file_stuff(self, filePath):
         if not filePath:
             return (None, None)
-        sickrage.srCore.srLogger.info("Calculating the ed2k. Please wait...")
-        ed2k = get_file_hash(filePath)
-        size = get_file_size(filePath)
-        return ed2k, size
+        self.log("Calculating the ed2k. Please wait...")
+        ed2k = fileInfo.get_file_hash(filePath)
+        size = fileInfo.get_file_size(filePath)
+        return (ed2k, size)

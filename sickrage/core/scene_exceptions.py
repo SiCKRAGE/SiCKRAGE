@@ -25,11 +25,11 @@ import threading
 import time
 
 from CodernityDB.database import RecordNotFound
+from adba.aniDBAbstracter import Anime
 
 import sickrage
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
 from sickrage.indexers import srIndexerApi
-from sickrage.indexers.adba.aniDBAbstracter import Anime
 
 exception_dict = {}
 anidb_exception_dict = {}

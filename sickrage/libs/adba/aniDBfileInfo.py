@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #
 # This file is part of aDBa.
 #
@@ -14,15 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals, with_statement
+from __future__ import with_statement
 
 import hashlib
-import io
 import os
 import time
-from xml.etree.ElementTree import ElementTree
 
-import sickrage
+try:
+    import xml.etree.cElementTree as etree
+except ImportError:
+    import xml.etree.ElementTree as etree
+
+# http://www.radicand.org/blog/orz/2010/2/21/edonkey2000-hash-in-python/
+import requests
 
 
 def get_file_hash(filePath):
@@ -44,7 +49,7 @@ def get_file_hash(filePath):
         m.update(data)
         return m
 
-    with io.open(filePath, 'rb') as f:
+    with open(filePath, 'rb') as f:
         a = gen(f)
         hashes = [md4_hash(data).digest() for data in a]
         if len(hashes) == 1:
@@ -57,23 +62,35 @@ def get_file_size(path):
     size = os.path.getsize(path)
     return size
 
-
 def _remove_file_failed(file):
     try:
         os.remove(file)
     except:
         pass
 
+def download_file(url, filename):
+    try:
+        r = requests.get(url, stream=True, verify=False)
+        r.raise_for_status()
+        with open(filename, 'wb') as fp:
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk:
+                    fp.write(chunk)
+                    fp.flush()
+
+    except (requests.HTTPError, requests.exceptions.RequestException):
+        _remove_file_failed(filename)
+        return False
+    except (requests.ConnectionError, requests.Timeout):
+        return False
+
+    return True
 
 def get_anime_titles_xml(path):
-    return sickrage.srCore.srWebSession.download(
-        "https://raw.githubusercontent.com/ScudLee/anime-lists/master/animetitles.xml", path)
-
+    return download_file("https://raw.githubusercontent.com/ScudLee/anime-lists/master/animetitles.xml", path)
 
 def get_anime_list_xml(path):
-    return sickrage.srCore.srWebSession.download(
-        "https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml", path)
-
+    return download_file("https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml", path)
 
 def read_anidb_xml(filePath=None):
     if not filePath:
@@ -111,5 +128,5 @@ def read_xml_into_etree(filePath):
     if not filePath:
         return None
 
-    with io.open(filePath, "r") as f:
-        return ElementTree(file=f)
+    with open(filePath, "r") as f:
+        return etree.ElementTree(file=f)

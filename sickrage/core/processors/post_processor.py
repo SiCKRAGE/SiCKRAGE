@@ -25,6 +25,8 @@ import re
 import stat
 import subprocess
 
+from adba import aniDBAbstracter
+
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException
@@ -34,7 +36,6 @@ from sickrage.core.helpers import findCertainShow, show_names, fixGlob, replaceE
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
-from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.notifiers import srNotifiers
 from sickrage.subtitles import subtitle_extensions, wanted_languages
 

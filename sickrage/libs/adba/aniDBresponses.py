@@ -1,27 +1,24 @@
-# Author: echel0n <echel0n@sickrage.ca>
-# URL: https://sickrage.ca
+#!/usr/bin/env python
 #
-# This file is part of SickRage.
+# This file is part of aDBa.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# aDBa is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# aDBa is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
-from __future__ import unicode_literals
+# along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
 
 from aniDBmaper import AniDBMaper
 
 
-class ResponseResolver(object):
+class ResponseResolver:
     def __init__(self, data):
         restag, rescode, resstr, datalines = self.parse(data)
 
@@ -59,23 +56,20 @@ class Response:
         self.resstr = resstr
         self.rawlines = rawlines
         self.maper = AniDBMaper()
-        self.codehead = ()
-        self.codetail = ()
-        self.coderep = ()
 
     def __repr__(self):
         tmp = "%s(%s,%s,%s) %s\n" % (
-            self.__class__.__name__, repr(self.restag), repr(self.rescode), repr(self.resstr), repr(self.attrs))
+        self.__class__.__name__, repr(self.restag), repr(self.rescode), repr(self.resstr), repr(self.attrs))
 
         m = 0
         for line in self.datalines:
-            for k, v in line.items():
+            for k, v in line.iteritems():
                 if len(k) > m:
                     m = len(k)
 
         for line in self.datalines:
             tmp += "  Line:\n"
-            for k, v in line.items():
+            for k, v in line.iteritems():
                 tmp += "    %s:%s %s\n" % (k, (m - len(k)) * ' ', v)
         return tmp
 
@@ -118,7 +112,7 @@ class LoginAcceptedResponse(Response):
         self.coderep = ()
 
         nat = cmd.parameters['nat']
-        nat = int(nat is None and nat or '0')
+        nat = int(nat == None and nat or '0')
         if nat:
             self.codehead = ('sesskey', 'address')
         else:
@@ -141,7 +135,7 @@ class LoginAcceptedNewVerResponse(Response):
         self.coderep = ()
 
         nat = cmd.parameters['nat']
-        nat = int(nat is None and nat or '0')
+        nat = int(nat == None and nat or '0')
         if nat:
             self.codehead = ('sesskey', 'address')
         else:
@@ -377,7 +371,7 @@ class FileResponse(Response):
         codeListF = self.maper.getFileCodesF(fmask)
         codeListA = self.maper.getFileCodesA(amask)
         # print "File - codelistF: "+str(codeListF)
-        # print "File - codelistA: "+str(codeListA)
+        #print "File - codelistA: "+str(codeListA)
 
 
         self.codetail = tuple(['fid'] + codeListF + codeListA)
@@ -436,8 +430,8 @@ class MylistStatsResponse(Response):
         self.codestr = 'MYLIST_STATS'
         self.codehead = ()
         self.codetail = (
-            'animes', 'eps', 'files', 'filesizes', 'animesadded', 'epsadded', 'filesadded', 'groupsadded', 'leechperc',
-            'lameperc', 'viewedofdb', 'mylistofdb', 'viewedofmylist', 'viewedeps', 'votes', 'reviews')
+        'animes', 'eps', 'files', 'filesizes', 'animesadded', 'epsadded', 'filesadded', 'groupsadded', 'leechperc',
+        'lameperc', 'viewedofdb', 'mylistofdb', 'viewedofmylist', 'viewedeps', 'votes', 'reviews')
         self.coderep = ()
 
 
@@ -573,7 +567,7 @@ class GroupResponse(Response):
         self.codestr = 'GROUP'
         self.codehead = ()
         self.codetail = (
-            'gid', 'rating', 'votes', 'animes', 'files', 'name', 'shortname', 'ircchannel', 'ircserver', 'url')
+        'gid', 'rating', 'votes', 'animes', 'files', 'name', 'shortname', 'ircchannel', 'ircserver', 'url')
         self.coderep = ()
 
 
@@ -785,7 +779,6 @@ class NotificationAddedResponse(Response):
         self.codetail = ('nid')
         self.coderep = ()
 
-
 class NotificationDeletedResponse(Response):
     def __init__(self, cmd, restag, rescode, resstr, datalines):
         """
@@ -991,7 +984,7 @@ class NotificationStateResponse(Response):
         self.coderep = ()
 
         buddy = cmd.parameters['buddy']
-        buddy = int(buddy is not None and buddy or '0')
+        buddy = int(buddy != None and buddy or '0')
         if buddy:
             self.codetail = ('notifies', 'msgs', 'buddys')
         else:
@@ -1247,6 +1240,20 @@ class StreamnoidUsedResponse(Response):
         self.codetail = ()
         self.coderep = ()
 
+
+class NoSuchMylistResponse(Response):
+    def __init__(self, cmd, restag, rescode, resstr, datalines):
+        """
+        attributes:
+
+        data:
+
+        """
+        Response.__init__(self, cmd, restag, rescode, resstr, datalines)
+        self.codestr = 'NO_SUCH_MYLIST'
+        self.codehead = ()
+        self.codetail = ()
+        self.coderep = ()
 
 class NoSuchFileResponse(Response):
     def __init__(self, cmd, restag, rescode, resstr, datalines):
@@ -2036,3 +2043,4 @@ responses = {
     '666': ApiViolationResponse,
     '998': VersionResponse
 }
+

@@ -1,6 +1,7 @@
 # Changelog
 
-- * d07e147 - 2017-08-13: Release v9.0.88 
+- * 12f2d21 - 2017-08-13: Updated AniDB libs and connection code 
+- * 07d2ef9 - 2017-08-13: Release v9.0.88 
 - * 6c71133 - 2017-08-13: Updated main navbar icons 
 - * 8fcbf4a - 2017-08-13: Changed placement arrow icons Added lock/unlock icons 
 - * f0735a3 - 2017-08-13: Fixes issue #47 - File air date stamping failed 
