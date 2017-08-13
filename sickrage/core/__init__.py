@@ -467,7 +467,7 @@ class Core(object):
             # shutdown logging
             self.srLogger.close()
 
-        if not restart and sickrage.daemon: sickrage.daemon.stop()
+        if sickrage.daemon: sickrage.daemon.stop()
         if restart: os.execl(sys.executable, sys.executable, *sys.argv)
 
         self.started = False
