@@ -1,6 +1,10 @@
 # Changelog
 
-- * af1ecf5 - 2017-08-12: Release v9.0.83 
+- * 05952b0 - 2017-08-12: Release v9.0.84 
+- * 32eabe0 - 2017-08-12: Moved io loop to main thread 
+- * 51f52da - 2017-08-12: Kill daemon even on restarts 
+- * 70902cd - 2017-08-12: Misc code changes to startup and shutdown of app 
+- * 318669b - 2017-08-12: Release v9.0.83 
 - * 1105065 - 2017-08-12: Updated regexes for nameparser Updated caching code for nameparser 
 - * 736cbfc - 2017-08-12: Fixed restarting issue 
 - * 1663a10 - 2017-08-12: Added in instant debug logging 
