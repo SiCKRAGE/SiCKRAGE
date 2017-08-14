@@ -1,6 +1,7 @@
 # Changelog
 
-- * 764cfd6 - 2017-08-14: Fixed issue with display show title row 
+- * 050ceb7 - 2017-08-14: Release v9.0.90 
+- * fc35b2d - 2017-08-14: Fixed issue with display show title row 
 - * 201c6eb - 2017-08-14: Fixed tooltip issues for episode descriptions 
 - * 399f86c - 2017-08-14: Fixed tooltip issues and invalid number of columns issue with display show page 
 - * 12bbf4b - 2017-08-13: Release v9.0.89 
