@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div id="showtitle" data-showname="${show.name}">
-                        <h1 class="title" id="scene_exception_${show.indexerid}" data-tooltip="${all_scene_exceptions}">
+                        <h1 class="title" id="scene_exception_${show.indexerid}" title="${all_scene_exceptions}">
                             <div class="input-group input350 input-group-sm">
                                 <div class="input-group-addon">
                                     <a href="#" id="prevShow" class="glyphicon glyphicon-arrow-left"></a>
@@ -133,7 +133,7 @@
                                         <td>
                                             % if 'rating' in show.imdb_info:
                                             <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
-                                                <span class="imdbstars" data-tooltip="${rating_tip}">
+                                                <span class="imdbstars" title="${rating_tip}">
                                                     ${show.imdb_info['rating']}
                                                 </span>
                                             % endif
@@ -637,13 +637,12 @@
                              id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
                             % if epResult["description"]:
                              class="plotInfo"
-                             data-tooltip="${epResult["description"]}"
+                             title="${epResult["description"]}"
                             % else:
                              class="plotInfoNone"
-                             data-tooltip=""
+                             title=""
                             % endif
                         />
-
                         ${epResult["name"]}
                     </td>
 

@@ -154,9 +154,11 @@
                                         % if cur_result['description']:
                                             <img alt="" src="${srWebRoot}/images/info32.png" height="16" width="16"
                                                  class="plotInfo"
+                                                 title="${cur_result["description"]}"
                                                  id="plot_info_${'{}_{}_{}'.format(cur_result['showid'], cur_result['season'], cur_result['episode'])}"/>
                                         % else:
                                             <img alt="" src="${srWebRoot}/images/info32.png" width="16" height="16"
+                                                 title=""
                                                  class="plotInfoNone"/>
                                         % endif
                                         ${cur_result['name']}
