@@ -774,8 +774,8 @@ ul#rootDirStaticList li input[type="checkbox"] {
 }
 
 /* =======================================================================
-    trending_shows.mako
-    ========================================================================== */
+home_trendingShows.mako
+========================================================================== */
 .traktShowTitleIcons {
     float: right;
     padding-right: 4px;
@@ -795,7 +795,6 @@ ul#rootDirStaticList li input[type="checkbox"] {
     white-space: nowrap;
     font-size: 12px;
     overflow: hidden;
-    /*	text-shadow: 1px 1px 0px #000;*/
     padding-left: 4px;
     margin: 0;
 }
@@ -804,17 +803,20 @@ ul#rootDirStaticList li input[type="checkbox"] {
     margin: 12px;
     width: 188px;
     background-color: #DFDACF;
-    border: 1px solid #111;
+    border: 1px solid #111111;
     border-radius: 6px;
 }
 
-.trakt-image {
-    overflow: hidden;
+.trakt-image, .trakt-image img {
     height: 273px;
     width: 186px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid #111111;
+}
+
+.trakt-image img {
+    background-image: url(../images/trakt-placeholder.png);
 }
 
 /* =======================================================================

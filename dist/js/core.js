@@ -2149,6 +2149,59 @@ jQuery(document).ready(function ($) {
                             }
                         });
                     });
+                },
+
+                showGrid: function () {
+                    // Set defaults on page load
+                    $('#showsort').val('original');
+                    $('#showsortdirection').val('asc');
+
+                    $('#showsort').on('change', function () {
+                        var sortCriteria;
+                        switch (this.value) {
+                            case 'original':
+                                sortCriteria = 'original-order';
+                                break;
+                            case 'rating':
+                                /* randomise, else the rating_votes can already
+                                 * have sorted leaving this with nothing to do.
+                                 */
+                                $('#container').isotope({sortBy: 'random'});
+                                sortCriteria = 'rating';
+                                break;
+                            case 'rating_votes':
+                                sortCriteria = ['rating', 'votes'];
+                                break;
+                            case 'votes':
+                                sortCriteria = 'votes';
+                                break;
+                            default:
+                                sortCriteria = 'name';
+                                break;
+                        }
+                        $('#container').isotope({
+                            sortBy: sortCriteria
+                        });
+                    });
+
+                    $('#showsortdirection').on('change', function () {
+                        $('#container').isotope({
+                            sortAscending: ('asc' === this.value)
+                        });
+                    });
+
+                    $('#container').isotope({
+                        sortBy: 'original-order',
+                        layoutMode: 'fitRows',
+                        getSortData: {
+                            name: function (itemElem) {
+                                var name = $(itemElem).attr('data-name') || '';
+                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
+                            },
+                            rating: '[data-rating] parseInt',
+                            votes: '[data-votes] parseInt',
+                        }
+                    });
                 }
             },
 
@@ -2307,9 +2360,7 @@ jQuery(document).ready(function ($) {
             },
 
             popular_shows: function () {
-                $("#popularShows:has(tbody tr)").tablesorter({
-                    sortList: [[2, 1]]
-                });
+                SICKRAGE.home.add_existing_shows.showGrid();
             },
 
             test_renaming: function () {
