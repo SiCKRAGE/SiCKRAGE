@@ -1,6 +1,7 @@
 # Changelog
 
-- * b230557 - 2017-08-13: Fixed change size function for popular shows 
+- * 4801cec - 2017-08-13: Release v9.0.89 
+- * aa835da - 2017-08-13: Fixed change size function for popular shows 
 - * 34d0e15 - 2017-08-13: Updated IMDB popular shows template 
 - * c92a212 - 2017-08-13: Fixed issues with displaying show images on IMDB popular template 
 - * 4dfb8f3 - 2017-08-13: Updated AniDB libs and connection code 
