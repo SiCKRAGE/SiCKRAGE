@@ -1,6 +1,10 @@
 # Changelog
 
-- * 4801cec - 2017-08-13: Release v9.0.89 
+- * 050ceb7 - 2017-08-14: Release v9.0.90 
+- * fc35b2d - 2017-08-14: Fixed issue with display show title row 
+- * 201c6eb - 2017-08-14: Fixed tooltip issues for episode descriptions 
+- * 399f86c - 2017-08-14: Fixed tooltip issues and invalid number of columns issue with display show page 
+- * 12bbf4b - 2017-08-13: Release v9.0.89 
 - * aa835da - 2017-08-13: Fixed change size function for popular shows 
 - * 34d0e15 - 2017-08-13: Updated IMDB popular shows template 
 - * c92a212 - 2017-08-13: Fixed issues with displaying show images on IMDB popular template 
