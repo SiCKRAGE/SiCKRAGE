@@ -20,9 +20,9 @@
 from __future__ import unicode_literals
 
 from CodernityDB.database import RecordNotFound
+from adba.aniDBerrors import AniDBCommandTimeoutError
 
 import sickrage
-from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 
 class BlackAndWhiteList(object):

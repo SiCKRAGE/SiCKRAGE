@@ -47,7 +47,8 @@ class imdbPopular(object):
         popular_shows = []
 
         try:
-            data = sickrage.srCore.srWebSession.get(self.url, headers={'Referer': 'http://akas.imdb.com/'},
+            data = sickrage.srCore.srWebSession.get(self.url,
+                                                    headers={'Referer': 'http://akas.imdb.com/'},
                                                     params=self.params).text
         except Exception:
             return None
@@ -72,8 +73,8 @@ class imdbPopular(object):
                         if a_tag:
                             show['name'] = a_tag.get_text(strip=True)
                             show['imdb_url'] = "http://www.imdb.com" + a_tag["href"]
-                            show['year'] = header.find("span", {"class": "lister-item-year"}).contents[0].split(" ")[0][
-                                           1:].strip("-")
+                            show['year'] = header.find("span",
+                                                       {"class": "lister-item-year"}).contents[0].split(" ")[0][1:5]
 
                     imdb_rating = row.find("div", {"class": "ratings-imdb-rating"})
                     show['rating'] = imdb_rating['data-value'] if imdb_rating else None
@@ -93,7 +94,7 @@ class imdbPopular(object):
 
     @staticmethod
     def change_size(image_url, factor=3):
-        match = re.search("^(.*)V1._(.{2})(.*?)_(.{2})(.*?),(.*?),(.*?),(.*?)_.jpg$", image_url)
+        match = re.search("^(.*)V1_(.{2})(.*?)_(.{2})(.*?),(.*?),(.*?),(.\d?)_(.*?)_.jpg$", image_url)
 
         if match:
             matches = match.groups()
@@ -105,8 +106,8 @@ class imdbPopular(object):
             matches[6] = int(matches[6]) * factor
             matches[7] = int(matches[7]) * factor
 
-            return "%sV1._%s%s_%s%s,%s,%s,%s_.jpg" % (matches[0], matches[1], matches[2], matches[3], matches[4],
-                                                      matches[5], matches[6], matches[7])
+            return "{}V1._{}{}_{}{},{},{},{}_.jpg".format(matches[0], matches[1], matches[2], matches[3], matches[4],
+                                                          matches[5], matches[6], matches[7])
         else:
             return image_url
 

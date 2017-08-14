@@ -29,6 +29,7 @@ import urllib
 import dateutil.tz
 import markdown2
 from CodernityDB.database import RecordNotFound
+from adba import aniDBAbstracter
 from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
@@ -74,7 +75,6 @@ from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
-from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 

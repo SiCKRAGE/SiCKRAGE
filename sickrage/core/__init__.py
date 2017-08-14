@@ -32,6 +32,7 @@ import urllib
 import urlparse
 import uuid
 
+import adba
 from apscheduler.schedulers.background import BackgroundScheduler
 from fake_useragent import UserAgent
 
@@ -65,7 +66,6 @@ from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import srVersionUpdater
 from sickrage.core.webclient.session import srSession
 from sickrage.core.webserver import srWebServer
-from sickrage.indexers import adba
 from sickrage.metadata import metadataProvidersDict
 from sickrage.notifiers import notifiersDict
 from sickrage.providers import providersDict
@@ -247,9 +247,12 @@ class Core(object):
 
         # init anidb connection
         if self.srConfig.USE_ANIDB:
+            def anidb_logger(msg):
+                return self.srLogger.debug("AniDB: {} ".format(msg))
+
             try:
-                self.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=lambda msg: self.srLogger.debug(
-                    "AniDB: %s " % msg)).auth(self.srConfig.ANIDB_USERNAME, self.srConfig.ANIDB_PASSWORD)
+                self.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=anidb_logger)
+                self.ADBA_CONNECTION.auth(self.srConfig.ANIDB_USERNAME, self.srConfig.ANIDB_PASSWORD)
             except Exception as e:
                 self.srLogger.warning("AniDB exception msg: %r " % repr(e))
 
@@ -452,9 +455,9 @@ class Core(object):
                 self.SEARCHQUEUE.shutdown()
 
             # log out of ADBA
-            if sickrage.srCore.ADBA_CONNECTION:
+            if self.ADBA_CONNECTION:
                 self.srLogger.debug("Logging out ANIDB connection")
-                sickrage.srCore.ADBA_CONNECTION.logout()
+                self.ADBA_CONNECTION.logout()
 
             # save all show and config settings
             self.save_all()

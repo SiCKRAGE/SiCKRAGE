@@ -14,14 +14,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
-from __future__ import unicode_literals
 
 from threading import Lock
 
-from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError, \
-    AniDBInternalError
-from sickrage.indexers.adba.aniDBresponses import MylistResponse, \
-    NoSuchFileResponse, NoSuchMylistEntryResponse, ProducerResponse
+from aniDBerrors import *
+from aniDBresponses import *
 
 
 class Command:
@@ -61,8 +58,8 @@ class Command:
 
     def flatten(self, command, parameters):
         tmp = []
-        for key, value in parameters.items():
-            if value is None:
+        for key, value in parameters.iteritems():
+            if value == None:
                 continue
             tmp.append("%s=%s" % (self.escape(key), self.escape(value)))
         return ' '.join([command, '&'.join(tmp)])
@@ -315,7 +312,7 @@ class MyListCommand(Command):
         elif fid or size or ed2k:
             resp = intr.file(fid=fid, size=size, ed2k=ed2k)
             if resp.rescode != '220':
-                resp = NoSuchMylistEntryResponse(self, None, '321', 'NO SUCH ENTRY (FILE NOT FOUND)', [])
+                resp = NoSuchMylistResponse(self, None, '321', 'NO SUCH ENTRY (FILE NOT FOUND)', [])
                 resp.parse()
                 return resp
             fid = resp.datalines[0]['fid']
@@ -350,6 +347,7 @@ class MyListCommand(Command):
         rows = db.select('ltb', names, ruleholder + " AND status&8", *rulevalues)
 
         if len(rows) > 1:
+            # resp=MultipleFilesFoundResponse(self,None,'322','CACHED MULTIPLE FILES FOUND',/*get fids from rows, not gonna do this as you haven't got a real cache out of these..*/)
             return None
         elif not len(rows):
             return None
@@ -395,10 +393,9 @@ class MyListAddCommand(Command):
 class MyListDelCommand(Command):
     def __init__(self, lid=None, fid=None, aid=None, aname=None, gid=None, gname=None, epno=None):
         if not (lid or fid or ((aid or aname) and (gid or gname) and epno)) or (
-                    lid and (fid or aid or aname or gid or gname or epno)) or (
-                    fid and (lid or aid or aname or gid or gname or epno)) or (
-                    ((aid or aname) and (gid or gname) and epno) and (lid or fid)) or (aid and aname) or (
-            gid and gname):
+            lid and (fid or aid or aname or gid or gname or epno)) or (
+            fid and (lid or aid or aname or gid or gname or epno)) or (
+            ((aid or aname) and (gid or gname) and epno) and (lid or fid)) or (aid and aname) or (gid and gname):
             raise AniDBIncorrectParameterError, "You must provide <lid+edit=1 XOR fid XOR a(id|name)+g(id|name)+epno> for MYLISTDEL command"
         parameters = {'lid': lid, 'fid': fid, 'aid': aid, 'aname': aname, 'gid': gid, 'gname': gname, 'epno': epno}
         Command.__init__(self, 'MYLISTDEL', **parameters)
