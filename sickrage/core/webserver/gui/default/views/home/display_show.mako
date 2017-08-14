@@ -21,33 +21,31 @@
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
-                    <div id="showtitle" data-showname="${show.name}">
-                        <h1 class="title" id="scene_exception_${show.indexerid}" title="${all_scene_exceptions}">
-                            <div class="input-group input350 input-group-sm">
-                                <div class="input-group-addon">
-                                    <a href="#" id="prevShow" class="glyphicon glyphicon-arrow-left"></a>
-                                </div>
-                                <select id="pickShow" class="form-control form-control-inline" title="Change Show">
-                                    % for curShowList in sortedShowLists:
-                                        % if len(sortedShowLists) > 1:
-                                            <optgroup label="${curShowList[0]}">
-                                        % endif
-                                        % for curShow in curShowList[1]:
-                                            <option value="${curShow.indexerid}" ${('', 'selected')[curShow == show]}>${curShow.name}</option>
-                                        % endfor
-                                        % if len(sortedShowLists) > 1:
-                                            </optgroup>
-                                        % endif
-                                    % endfor
-                                </select>
-                                <div class="input-group-addon">
-                                    <a href="#" id="nextShow" class="glyphicon glyphicon-arrow-right"></a>
-                                </div>
+                    <h1 class="title" id="showtitle" data-showname="${show.name}">
+                        <div class="input-group input350 input-group-sm">
+                            <div class="input-group-addon">
+                                <a href="#" id="prevShow" class="glyphicon glyphicon-arrow-left"></a>
                             </div>
-                            <br/>
-                            ${show.name}
-                        </h1>
-                    </div>
+                            <select id="pickShow" class="form-control form-control-inline" title="Change Show">
+                                % for curShowList in sortedShowLists:
+                                    % if len(sortedShowLists) > 1:
+                                        <optgroup label="${curShowList[0]}">
+                                    % endif
+                                    % for curShow in curShowList[1]:
+                                        <option value="${curShow.indexerid}" ${('', 'selected')[curShow == show]}>${curShow.name}</option>
+                                    % endfor
+                                    % if len(sortedShowLists) > 1:
+                                        </optgroup>
+                                    % endif
+                                % endfor
+                            </select>
+                            <div class="input-group-addon">
+                                <a href="#" id="nextShow" class="glyphicon glyphicon-arrow-right"></a>
+                            </div>
+                        </div>
+                        <br/>
+                        ${show.name}
+                    </h1>
                 </div>
             </div>
 

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7083330 - 2017-08-14: Fixed tooltip issues for episode descriptions 
+- * 764cfd6 - 2017-08-14: Fixed issue with display show title row 
+- * 201c6eb - 2017-08-14: Fixed tooltip issues for episode descriptions 
 - * 399f86c - 2017-08-14: Fixed tooltip issues and invalid number of columns issue with display show page 
 - * 12bbf4b - 2017-08-13: Release v9.0.89 
 - * aa835da - 2017-08-13: Fixed change size function for popular shows 
