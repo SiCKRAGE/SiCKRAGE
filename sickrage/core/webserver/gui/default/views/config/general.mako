@@ -23,8 +23,8 @@
     % if sickrage.srCore.srConfig.INDEXER_DEFAULT:
         <% indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT %>
     % endif
-    <div id="core-tab-pane1" class="row tab-pane fade in active">
-        <div class="tab-pane">
+    <div id="core-tab-pane1" class="tab-pane fade in active">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Misc</h3>
                 <p>Startup options. Indexer options. Log and show file locations.</p>
@@ -249,7 +249,7 @@
             </fieldset>
         </div>
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Updates</h3>
                 <p>Options for software updates.</p>
@@ -331,8 +331,8 @@
 
         </div>
     </div><!-- /tab-pane1 //-->
-    <div id="core-tab-pane2" class="row tab-pane fade">
-        <div class="tab-pane">
+    <div id="core-tab-pane2" class="tab-pane fade">
+        <div class="row tab-pane">
 
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>User Interface</h3>
@@ -579,7 +579,7 @@
             </fieldset>
         </div><!-- /User interface tab-pane -->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Web Interface</h3>
                 <p>It is recommended that you enable a username and password to secure SickRage from
@@ -791,9 +791,9 @@
 
         </div><!-- /tab-pane2 //-->
     </div><!-- /tab-pane2 //-->
-    <div id="core-tab-pane3" class="row tab-pane fade">
+    <div id="core-tab-pane3" class="tab-pane fade">
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
 
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Advanced Settings</h3>
@@ -1046,7 +1046,7 @@
             git_branch = sickrage.srCore.VERSIONUPDATER.updater.remote_branches
         %>
 
-            <div class="tab-pane">
+            <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                     <h3>Git Settings</h3>
                 </div>

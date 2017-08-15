@@ -683,9 +683,10 @@
                         % for flag in (epResult["subtitles"] or '').split(','):
                             % if flag.strip() != 'und':
                                 <img src="${srWebRoot}/images/subtitles/flags/${flag}.png"
-                                     data-image-url="${srWebRoot}/images/subtitles/flags/${flag}.png" width="16"
-                                     height="11"
+                                     data-image-url="${srWebRoot}/images/subtitles/flags/${flag}.png"
+                                     width="16" height="11"
                                      alt="${sickrage.subtitles.name_from_code(flag)}"
+                                     title="${sickrage.subtitles.name_from_code(flag)}"
                                      onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
                             % else:
                                 <img src="${srWebRoot}/images/subtitles/flags/${flag}.png" width="16" height="11"

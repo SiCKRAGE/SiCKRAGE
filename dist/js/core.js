@@ -336,6 +336,20 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
+                $(".enabler").each(function () {
+                    if (!$(this).prop('checked')) {
+                        $('#content_' + $(this).attr('id')).hide();
+                    }
+                });
+
+                $(".enabler").on('click', function () {
+                    if ($(this).prop('checked')) {
+                        $('#content_' + $(this).attr('id')).fadeIn("fast", "linear");
+                    } else {
+                        $('#content_' + $(this).attr('id')).fadeOut("fast", "linear");
+                    }
+                });
+
                 SICKRAGE.browser.init();
                 SICKRAGE.root_dirs.init();
                 SICKRAGE.quality_chooser.init();
@@ -2730,20 +2744,6 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $(".enabler").each(function () {
-                    if (!$(this).prop('checked')) {
-                        $('#content_' + $(this).attr('id')).hide();
-                    }
-                });
-
-                $(".enabler").on('click', function () {
-                    if ($(this).prop('checked')) {
-                        $('#content_' + $(this).attr('id')).fadeIn("fast", "linear");
-                    } else {
-                        $('#content_' + $(this).attr('id')).fadeOut("fast", "linear");
-                    }
-                });
-
                 $(".viewIf").on('click', function () {
                     if ($(this).prop('checked')) {
                         $('.hide_if_' + $(this).attr('id')).css('display', 'none');
@@ -4515,26 +4515,6 @@ jQuery(document).ready(function ($) {
                             }
                         });
                         $('div .providerDiv ' + "[name=" + $(this).attr('name') + "]").empty().replaceWith($(this).clone());
-                    });
-
-                    $(document).on('change', '.enabler', function () {
-                        if ($(this).is(':checked')) {
-                            $('.content_' + $(this).attr('id')).each(function () {
-                                $(this).show();
-                            });
-                        } else {
-                            $('.content_' + $(this).attr('id')).each(function () {
-                                $(this).hide();
-                            });
-                        }
-                    });
-
-                    $(".enabler").each(function () {
-                        if (!$(this).is(':checked')) {
-                            $('.content_' + $(this).attr('id')).hide();
-                        } else {
-                            $('.content_' + $(this).attr('id')).show();
-                        }
                     });
 
                     $(document).on('change', '.seed_option', function () {

@@ -15,9 +15,8 @@
     <li><a data-toggle="tab" href="#tabs-3">Social</a></li>
 </%block>
 <%block name="pages">
-    <div id="tabs-1" class="row tab-pane fade in active">
-        <div class="tab-pane">
-
+    <div id="tabs-1" class="tab-pane fade in active">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/kodi.png" alt=""
                      title="KODI"/>
@@ -188,13 +187,11 @@
                     </div>
 
                 </div><!-- /content_use_kodi //-->
-
             </fieldset>
-
         </div><!-- /kodi tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
                      title="Plex Media Server"/>
@@ -251,7 +248,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" style="padding: 0; min-height: 130px">
+                    <div class="row tab-pane">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">Server Username</label>
@@ -286,7 +283,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" style="padding: 0; min-height: 50px">
+                    <div class="row tab-pane">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">Update server library</label>
@@ -339,7 +336,7 @@
             </fieldset>
         </div><!-- /plex media server tab-pane -->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
                      title="Plex Media Client"/>
@@ -409,7 +406,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" style="padding: 0; min-height: 130px">
+                    <div class="row tab-pane">
                         <div class="row field-pair">
 
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -461,7 +458,7 @@
         </div><!-- /plex client tab-pane -->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/emby.png" alt=""
                      title="Emby"/>
@@ -528,25 +525,22 @@
                         </div>
                     </div>
 
-                </div>
-                <!-- /content_use_emby //-->
+                </div><!-- /content_use_emby //-->
             </fieldset>
         </div><!-- /emby tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
                      title="Networked Media Jukebox"/>
                 <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">NMJ</a></h3>
-                <p>The Networked Media Jukebox, or NMJ, is the official media jukebox interface made
-                    available
+                <p>The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available
                     for the Popcorn Hour 200-series.</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Enable</label>
                     </div>
@@ -632,13 +626,11 @@
                             <input type="submit" class="config_submitter btn" value="Save Changes"/>
                         </div>
                     </div>
-
                 </div><!-- /content_use_nmj //-->
-
             </fieldset>
         </div><!-- /nmj tab-pane //-->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
                      title="Networked Media Jukebox v2"/>
@@ -772,7 +764,7 @@
         </div><!-- /nmjv2 tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synoindex.png" alt=""
                      title="Synology"/>
@@ -809,7 +801,7 @@
         </div><!-- /synoindex tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synologynotifier.png" alt=""
                      title="Synology Indexer"/>
@@ -876,7 +868,7 @@
         </div><!-- /synology notifier tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pytivo.png" alt=""
                      title="pyTivo"/>
@@ -967,8 +959,8 @@
         </div><!-- /tab-pane //-->
     </div>
 
-    <div id="tabs-2" class="row tab-pane fade">
-        <div class="tab-pane">
+    <div id="tabs-2" class="tab-pane fade">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/growl.png" alt=""
                      title="Growl"/>
@@ -1077,7 +1069,7 @@
         </div><!-- /growl tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/prowl.png" alt="Prowl"
                      title="Prowl"/>
@@ -1199,7 +1191,7 @@
         </div><!-- /prowl tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/libnotify.png" alt=""
                      title="Libnotify"/>
@@ -1271,7 +1263,7 @@
         </div><!-- /libnotify tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushover.png" alt=""
                      title="Pushover"/>
@@ -1477,7 +1469,7 @@
             </fieldset>
         </div><!-- /pushover tab-pane //-->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar.png" alt=""
                      title="Boxcar"/>
@@ -1567,7 +1559,7 @@
             </fieldset>
         </div><!-- /boxcar tab-pane //-->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar2.png" alt=""
                      title="Boxcar2"/>
@@ -1655,7 +1647,7 @@
             </fieldset>
         </div><!-- /boxcar2 tab-pane //-->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nma.png" alt="" title="NMA"/>
                 <h3><a href="${anon_url('http://nma.usk.bz')}" rel="noreferrer"
@@ -1774,7 +1766,7 @@
             </fieldset>
         </div><!-- /nma tab-pane //-->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushalot.png" alt=""
                      title="Pushalot"/>
@@ -1865,7 +1857,7 @@
             </fieldset>
         </div><!-- /pushalot tab-pane //-->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushbullet.png" alt=""
                      title="Pushbullet"/>
@@ -1983,7 +1975,7 @@
 
             </fieldset>
         </div><!-- /pushbullet tab-pane //-->
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/freemobile.png" alt=""
                      title="Free Mobile"/>
@@ -2092,8 +2084,8 @@
 
     </div>
 
-    <div id="tabs-3" class="row tab-pane fade">
-        <div class="tab-pane">
+    <div id="tabs-3" class="tab-pane fade">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/twitter.png" alt=""
                      title="Twitter"/>
@@ -2236,7 +2228,7 @@
         </div><!-- /twitter tab-pane //-->
 
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/trakt.png" alt=""
                      title="Trakt"/>
@@ -2329,9 +2321,9 @@
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
                                         class="form-control " title="Default Indexer">
                             </div>
-                                % for indexer in srIndexerApi().indexers:
-                                    <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
-                                % endfor
+                            % for indexer in srIndexerApi().indexers:
+                                <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                            % endfor
                             </select>
                         </div>
                     </div>
@@ -2484,7 +2476,7 @@
             </fieldset>
         </div><!-- /trakt tab-pane //-->
 
-        <div class="tab-pane">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/email.png" alt=""
                      title="Email"/>
@@ -2677,8 +2669,10 @@
                                                autocapitalize="off"/>
                                     </div>
                                     <label for="email_show_list">
-                                        configure per-show notifications here by entering email address(es), separated by commas,
-                                        after selecting a show in the drop-down box.  Be sure to activate the Save for this show
+                                        configure per-show notifications here by entering email address(es), separated
+                                        by commas,
+                                        after selecting a show in the drop-down box. Be sure to activate the Save for
+                                        this show
                                         button below after each entry.
                                     </label>
                                 </div>

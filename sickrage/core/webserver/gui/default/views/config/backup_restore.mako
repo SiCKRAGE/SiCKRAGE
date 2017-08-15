@@ -5,7 +5,7 @@
     <li><a data-toggle="tab" href="#core-tab-pane2">Restore</a></li>
 </%block>
 <%block name="pages">
-    <div id="core-tab-pane1" class="row tab-pane fade in active clearfix">
+    <div id="core-tab-pane1" class="tab-pane fade in active clearfix">
         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Backup</h3>
             <p><b>Backup your main database file and config</b></p>
@@ -19,7 +19,7 @@
                                placeholder="Select the folder you wish to save your backup file to"
                                autocapitalize="off"/>
                         <div class="input-group-addon">
-                            <input class="button" type="button" value="Backup" id="Backup"/>
+                            <a href="#" class="fa fa-download" title="Backup" id="Backup"></a>
                         </div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
         </fieldset>
     </div><!-- /tab-pane1 //-->
 
-    <div id="core-tab-pane2" class="row tab-pane fade clearfix">
+    <div id="core-tab-pane2" class="tab-pane fade clearfix">
         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
             <h3>Restore</h3>
             <p><b>Restore your main database file and config</b></p>
@@ -45,7 +45,7 @@
                                placeholder="Select the backup file you wish to restore"
                                class="form-control" autocapitalize="off"/>
                         <div class="input-group-addon">
-                            <input class="button" type="button" value="Restore" id="Restore"/>
+                            <a href="#" class="fa fa-upload" title="Restore" id="Restore"></a>
                         </div>
                     </div>
                 </div>

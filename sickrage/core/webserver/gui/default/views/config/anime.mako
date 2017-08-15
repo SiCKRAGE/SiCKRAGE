@@ -11,8 +11,8 @@
 </%block>
 
 <%block name="pages">
-    <div id="core-tab-pane1" class="row tab-pane fade in active">
-        <div class="tab-pane">
+    <div id="core-tab-pane1" class="tab-pane fade in active">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/anidb24.png" alt="AniDB" title="AniDB"
                      width="24" height="24"/>
@@ -92,8 +92,8 @@
         </div>
     </div>
 
-    <div id="core-tab-pane2" class="row tab-pane fade">
-        <div class="tab-pane">
+    <div id="core-tab-pane2" class="tab-pane fade">
+        <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Look and Feel</h3>
             </div>

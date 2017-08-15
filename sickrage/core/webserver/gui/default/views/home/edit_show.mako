@@ -29,8 +29,8 @@
                     </ul>
 
                     <div class="tab-content">
-                        <div id="core-tab-pane1" class="row tab-pane fade in active">
-                            <div class="tab-pane">
+                        <div id="core-tab-pane1" class="tab-pane fade in active">
+                            <div class="row tab-pane">
                                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                                     <h3>Main Settings</h3>
                                 </div>
@@ -165,8 +165,8 @@
                                 </fieldset>
                             </div>
                         </div>
-                        <div id="core-tab-pane2" class="row tab-pane fade">
-                            <div class="tab-pane">
+                        <div id="core-tab-pane2" class="tab-pane fade">
+                            <div class="row tab-pane">
                                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                                     <h3>Format Settings</h3>
                                 </div>
@@ -262,8 +262,8 @@
                             </div>
                         </div>
 
-                        <div id="core-tab-pane3" class="row tab-pane fade">
-                            <div class="tab-pane">
+                        <div id="core-tab-pane3" class="tab-pane fade">
+                            <div class="row tab-pane">
                                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                                     <h3>Advanced Settings</h3>
                                 </div>

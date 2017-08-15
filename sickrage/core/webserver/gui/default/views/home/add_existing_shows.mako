@@ -15,8 +15,8 @@
                     <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Add Existing Show</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div id="core-tab-pane1" class="row tab-pane fade in active">
-                        <div class="tab-pane">
+                    <div id="core-tab-pane1" class="tab-pane fade in active">
+                        <div class="row tab-pane">
                             <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addExistingShows"
                                   accept-charset="utf-8">
 
