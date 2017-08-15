@@ -40,14 +40,6 @@ jQuery(document).ready(function ($) {
             });
         },
 
-        anon_url: function (url) {
-            if (new URI(url).scheme === null) {
-                url = 'http://' + url;
-            }
-
-            return SICKRAGE.anonURL + url;
-        },
-
         isMeta: function (pyVar, result) {
             var reg = new RegExp(result.length > 1 ? result.join('|') : result);
             return (reg).test($('meta[data-var="' + pyVar + '"]').data('content'));
@@ -1503,12 +1495,63 @@ jQuery(document).ready(function ($) {
             },
 
             index: function () {
-                var qsRegex;
-
                 // Resets the tables sorting, needed as we only use a single call for both tables in tablesorter
                 $('.resetsorting').on('click', function () {
                     $('table').trigger('filterReset');
                 });
+
+                // Handle filtering in the poster layout
+                $('#filterShowName').on('input', _.debounce(function() {
+                    $('.show-grid').isotope({
+                        filter: function () {
+                          var name = $(this).find('.show-title').html().trim().toLowerCase();
+                          return name.indexOf($('#filterShowName').val().toLowerCase()) > -1;
+                        }
+                    });
+                }, 500));
+
+                function resizePosters(newSize) {
+                    var fontSize, logoWidth, borderRadius;
+                    if (newSize < 125) { // small
+                        borderRadius = 3;
+                    } else if (newSize < 175) { // medium
+                        fontSize = 9;
+                        logoWidth = 40;
+                        borderRadius = 4;
+                    } else { // large
+                        fontSize = 11;
+                        logoWidth = 50;
+                        borderRadius = 6;
+                    }
+
+                    if (fontSize === undefined) {
+                        $('.show-details').hide();
+                    } else {
+                        $('.show-details').show();
+                        $('.show-dlstats, .show-quality').css('fontSize', fontSize);
+                        $('.show-network-image').css('width', logoWidth);
+                    }
+
+                    $('.show-container').css({
+                        width: newSize,
+                        borderRadius: borderRadius
+                    });
+                }
+
+                $('#posterSizeSlider').slider({
+                    min: 75,
+                    max: 250,
+                    value: localStorage.posterSize || 188,
+                    change: function (e, ui) {
+                        if (window.localStorage) {
+                            localStorage.setItem('posterSize', ui.value);
+                        }
+                        resizePosters(ui.value);
+                        $('.show-grid').isotope('layout');
+                    }
+                });
+
+                resizePosters(parseInt(localStorage.posterSize || 188));
 
                 // This needs to be refined to work a little faster.
                 $('.progressbar').each(function () {
@@ -1648,6 +1691,31 @@ jQuery(document).ready(function ($) {
                     sortAppend: [[2, 0]]
                 });
 
+                $('.show-grid').show().isotope({
+                    itemSelector: '.show-container',
+                    sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
+                    sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
+                    layoutMode: 'masonry',
+                    masonry: {
+                        isFitWidth: true
+                    },
+                    getSortData: {
+                        name: function (itemElem) {
+                            var name = $(itemElem).attr('data-name');
+                            return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? (name || '') : (name || '').replace(/^(The|A|An)\s/i, ''));
+                        },
+                        network: '[data-network]',
+                        date: function (itemElem) {
+                            var date = $(itemElem).attr('data-date');
+                            return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
+                        },
+                        progress: function (itemElem) {
+                            var progress = $(itemElem).attr('data-progress');
+                            return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
+                        }
+                    }
+                });
+
                 if ($("#showListTableShows").find("tbody").find("tr").length > 0) {
                     $.tablesorter.filter.bindSearch("#showListTableShows", $('.search'));
                 }
@@ -1658,50 +1726,15 @@ jQuery(document).ready(function ($) {
                     }
                 }
 
-                $.each([$('#container'), $('#container-anime')], function () {
-                    $(this).isotope({
-                        itemSelector: '.show-container',
-                        sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
-                        sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
-                        layoutMode: 'masonry',
-                        masonry: {
-                            columnWidth: 13,
-                            isFitWidth: true
-                        },
-                        getSortData: {
-                            name: function (itemElem) {
-                                var name = $(itemElem).attr('data-name');
-                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? (name || '') : (name || '').replace(/^(The|A|An)\s/i, ''));
-                            },
-                            network: '[data-network]',
-                            date: function (itemElem) {
-                                var date = $(itemElem).attr('data-date');
-                                return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
-                            },
-                            progress: function (itemElem) {
-                                var progress = $(itemElem).attr('data-progress');
-                                return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
-                            }
-                        },
-                        filter: function () {
-                            return qsRegex ? $(this).text().match(qsRegex) : true;
-                        }
-                    });
-                });
-
                 $('#postersort').on('change', function () {
                     var sortValue = $(this).val();
-                    $.each([$('#container'), $('#container-anime')], function () {
-                        $(this).isotope({sortBy: sortValue});
-                    });
+                    $('.show-grid').isotope({sortBy: sortValue});
                     $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
                 });
 
                 $('#postersortdirection').on('change', function () {
                     var sortDirection = $(this).val() === 'true';
-                    $.each([$('#container'), $('#container-anime')], function () {
-                        $(this).isotope({sortAscending: sortDirection});
-                    });
+                    $('.show-grid').isotope({sortAscending: sortDirection});
                     $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
                 });
 
@@ -1715,14 +1748,6 @@ jQuery(document).ready(function ($) {
                     if (SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
                         $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
                     }
-                });
-
-                $('#posterfilter').keyup(function () {
-                    var filterValue = $(this).val();
-                    $.each([$('#container'), $('#container-anime')], function () {
-                        qsRegex = new RegExp(filterValue, 'gi');
-                        $(this).isotope();
-                    });
                 });
             },
 
@@ -2578,7 +2603,7 @@ jQuery(document).ready(function ($) {
                                     var whichSeries = obj.join('|');
 
                                     resultStr += '<input type="radio" class="pull-left" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "") + '"' + checked + ' /> ';
-                                    resultStr += '<a href="' + SICKRAGE.anon_url(obj[2] + obj[3] + '&lid=' + data.langid || 7) + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
+                                    resultStr += '<a href="' + SICKRAGE.anonURL + obj[2] + obj[3] + '&lid=' + data.langid || 7 + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
 
                                     if (obj[5] !== null) {
                                         var startDate = new Date(obj[5]);
@@ -2890,7 +2915,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     if ($('#service_order_list > #' + id).length === 0 && showService !== false) {
-                        var toAdd = '<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="service_enabler" CHECKED> <a href="' + SICKRAGE.anon_url(url) + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/newznab.gif" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>';
+                        var toAdd = '<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="service_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/newznab.gif" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>';
 
                         $('#service_order_list').append(toAdd);
                         $('#service_order_list').sortable("refresh");
@@ -4621,7 +4646,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anon_url(url) + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/nzb.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
+                        $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/nzb.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
@@ -4762,7 +4787,7 @@ jQuery(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anon_url(url) + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/torrent.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
+                        $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/torrent.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
