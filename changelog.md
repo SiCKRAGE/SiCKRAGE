@@ -1,6 +1,7 @@
 # Changelog
 
-- * f8badb7 - 2017-08-14: Added overall downloaded size to main layout 
+- * c394870 - 2017-08-14: Added argument to main layout template to enable/disable footer in case of restarts 
+- * f7770ca - 2017-08-14: Added overall downloaded size to main layout 
 - * 0178d4b - 2017-08-14: Release v9.0.90 
 - * fc35b2d - 2017-08-14: Fixed issue with display show title row 
 - * 201c6eb - 2017-08-14: Fixed tooltip issues for episode descriptions 

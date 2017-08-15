@@ -430,7 +430,7 @@
         </div>
     </div>
 
-    % if current_user:
+    % if current_user and srFooter:
         <div class="row">
             <div class="footer text-center clearfix col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
                 <%

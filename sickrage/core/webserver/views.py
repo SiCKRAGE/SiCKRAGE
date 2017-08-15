@@ -166,6 +166,7 @@ class BaseHandler(RequestHandler):
             'srThemeName': sickrage.srCore.srConfig.THEME_NAME,
             'srDefaultPage': sickrage.srCore.srConfig.DEFAULT_PAGE,
             'srWebRoot': sickrage.srCore.srConfig.WEB_ROOT,
+            'srFooter': True,
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
@@ -1068,7 +1069,8 @@ class Home(WebHandler):
             header="Restarting SiCKRAGE",
             topmenu="system",
             controller='home',
-            action="restart"
+            action="restart",
+            srFooter=False
         )
 
     def updateCheck(self, pid=None):
