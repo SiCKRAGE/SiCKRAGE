@@ -1,6 +1,7 @@
 # Changelog
 
-- * c569695 - 2017-08-15: Fixed show/hide of content based on enabling a feature Fixed layout issues for templates 
+- * 1522392 - 2017-08-15: Release v9.1.1 
+- * c071aec - 2017-08-15: Fixed show/hide of content based on enabling a feature Fixed layout issues for templates 
 - * 5cb1039 - 2017-08-14: Fixed &quot;TypeError:&#x27;frozenset&#x27; object does not support indexing&quot; issue in display show template 
 - * 6501a74 - 2017-08-14: Updated logo Updated login template 
 - * ca287dd - 2017-08-14: Added argument to main layout template to enable/disable footer in case of restarts 
