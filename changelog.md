@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9b1c506 - 2017-08-15: Release v9.1.3 
+- * a36e6ea - 2017-08-15: Misc template code cleanup 
+- * 4794c94 - 2017-08-15: Release v9.1.3 
 - * a162a88 - 2017-08-15: Cleaned up bower installs Added poster resizing to home shows template 
 - * ea1a3e5 - 2017-08-15: Release v9.1.1 
 - * c071aec - 2017-08-15: Fixed show/hide of content based on enabling a feature Fixed layout issues for templates 
