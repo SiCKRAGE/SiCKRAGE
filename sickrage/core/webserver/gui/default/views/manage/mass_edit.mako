@@ -28,7 +28,7 @@
                 </ul>
 
                 <div id="core-tab-pane1">
-                    <div class="tab-pane">
+                    <div class="row tab-pane">
                         <h3>Main Settings</h3>
 
                         ==> <span style="text-decoration: underline;">Changing any settings marked with (<span class="separator">*</span>) will force a refresh of the selected shows.</span><br>
@@ -261,7 +261,6 @@
                 </div>
 
             </div>
-
             <input id="submit" type="submit" value="Save Changes" class="btn pull-left config_submitter button">
         </form>
     </div>

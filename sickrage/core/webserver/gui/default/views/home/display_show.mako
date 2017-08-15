@@ -680,14 +680,19 @@
                     </td>
 
                     <td class="col-subtitles" align="center">
-                        % for sub_lang in [sickrage.subtitles.from_code(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
-                        <% flag = sub_lang.opensubtitles %>
-                        % if (not sickrage.srCore.srConfig.SUBTITLES_MULTI and len(sickrage.subtitles.wanted_languages()) is 1) and sickrage.subtitles.wanted_languages()[0] in sub_lang.opensubtitles:
-                            <% flag = 'checkbox' %>
-                        % endif
-                            <img src="${srWebRoot}/images/subtitles/flags/${flag}.png" width="16" height="11"
-                                 alt="${sub_lang.name}"
-                                 onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
+                        % for flag in (epResult["subtitles"] or '').split(','):
+                            % if flag.strip() != 'und':
+                                <img src="${srWebRoot}/images/subtitles/flags/${flag}.png"
+                                     data-image-url="${srWebRoot}/images/subtitles/flags/${flag}.png"
+                                     width="16" height="11"
+                                     alt="${sickrage.subtitles.name_from_code(flag)}"
+                                     title="${sickrage.subtitles.name_from_code(flag)}"
+                                     onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
+                            % else:
+                                <img src="${srWebRoot}/images/subtitles/flags/${flag}.png" width="16" height="11"
+                                     alt="${sickrage.subtitles.name_from_code(flag)}"
+                                     onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
+                            % endif
                         % endfor
                     </td>
 

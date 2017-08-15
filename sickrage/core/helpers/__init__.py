@@ -1689,6 +1689,7 @@ def overall_stats():
             'active': len([show for show in shows if show.paused == 0 and show.status.lower() == 'continuing']),
             'total': len(shows),
         },
+        'total_size': 0
     }
 
     for result in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)]:
@@ -1703,6 +1704,8 @@ def overall_stats():
             stats['episodes']['total'] += 1
         elif result['airdate'] <= today and result['status'] in total_status:
             stats['episodes']['total'] += 1
+
+        stats['total_size'] += result['file_size']
 
     return stats
 
