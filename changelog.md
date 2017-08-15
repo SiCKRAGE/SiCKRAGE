@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0138491 - 2017-08-14: Updated logo Updated login template 
+- * 8227019 - 2017-08-14: Fixed &quot;TypeError:&#x27;frozenset&#x27; object does not support indexing&quot; issue in display show template 
+- * 6501a74 - 2017-08-14: Updated logo Updated login template 
 - * ca287dd - 2017-08-14: Added argument to main layout template to enable/disable footer in case of restarts 
 - * f7770ca - 2017-08-14: Added overall downloaded size to main layout 
 - * 0178d4b - 2017-08-14: Release v9.0.90 
