@@ -435,6 +435,7 @@
             <div class="footer text-center clearfix col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
                 <%
                     stats = overall_stats()
+                    total_size = pretty_filesize(stats['total_size'])
                     ep_downloaded = stats['episodes']['downloaded']
                     ep_snatched = stats['episodes']['snatched']
                     ep_total = stats['episodes']['total']
@@ -452,6 +453,7 @@
                     % endif
 
                     &nbsp;/&nbsp;<span class="footer-highlight">${ep_total}</span> Episodes Downloaded ${ep_percentage}
+                    &nbsp;/&nbsp;<span class="footer-highlight">${total_size}</span> Overall Downloaded
                     | Daily Search: <span
                         class="footer-highlight">${str(sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
                     | Backlog Search: <span
