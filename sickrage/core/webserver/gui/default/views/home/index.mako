@@ -23,9 +23,9 @@
             % endif
 
             % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
-                <label for="posterfilter" class="badge">Filter By:
-                    <input id="posterfilter" class="form-control form-control-inline input-sm" type="search"
-                           placeholder="Search Show Name">
+                <label for="filterShowName" class="badge">Filter By:
+                    <input id="filterShowName" class="form-control form-control-inline input-sm" type="search"
+                           placeholder="Filter Show Name">
                 </label>
 
                 <label for="postersort" class="badge">Sort By:
@@ -80,6 +80,12 @@
                     </option>
                 </select>
             </label>
+
+            % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
+                <label for="posterSizeSlider" class="badge">Poster Size:
+                    <div style="width: 100px; display: inline-block; margin-left: 7px;" id="posterSizeSlider"></div>
+                </label>
+            % endif
         </div>
     </div>
 
@@ -91,37 +97,38 @@
         % endif
         % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}"
-                 class="clearfix">
-                % for curLoadingShow in sickrage.srCore.SHOWQUEUE.loadingShowList:
-                    % if not curLoadingShow.show:
-                        <div class="show-container" data-name="0" data-date="010101" data-network="0"
-                             data-progress="101">
-                            <img alt="" title="${curLoadingShow.show_name}" class="show-image"
-                                 style="border-bottom: 1px solid #111;" src="${srWebRoot}/images/poster.png"/>
-                            <div class="show-details">
-                                <div class="show-add">Loading... (${curLoadingShow.show_name})</div>
+                 class="show-grid clearfix">
+                <div class="posterview">
+                    % for curLoadingShow in sickrage.srCore.SHOWQUEUE.loadingShowList:
+                        % if not curLoadingShow.show:
+                            <div class="show-container" data-name="0" data-date="010101" data-network="0"
+                                 data-progress="101">
+                                <img alt="" title="${curLoadingShow.show_name}" class="show-image"
+                                     style="border-bottom: 1px solid #111;" src="${srWebRoot}/images/poster.png"/>
+                                <div class="show-details">
+                                    <div class="show-add">Loading... (${curLoadingShow.show_name})</div>
+                                </div>
                             </div>
-                        </div>
-                    % endif
-                % endfor
+                        % endif
+                    % endfor
 
-                <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
-                % for curShow in myShowList:
-                <%
-                    cur_airs_next = ''
-                    cur_snatched = 0
-                    cur_downloaded = 0
-                    cur_total = 0
-                    download_stat_tip = ''
-                    display_status = curShow.status
+                    <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
+                    % for curShow in myShowList:
+                    <%
+                        cur_airs_next = ''
+                        cur_snatched = 0
+                        cur_downloaded = 0
+                        cur_total = 0
+                        download_stat_tip = ''
+                        display_status = curShow.status
 
-                    if display_status:
+                        if display_status:
                             if re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
                                 display_status = 'Continuing'
                             elif re.search(r'(?i)(?:nded)', curShow.status):
                                 display_status = 'Ended'
 
-                    if curShow.indexerid in show_stat:
+                        if curShow.indexerid in show_stat:
                             cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
 
                             cur_snatched = show_stat[curShow.indexerid]['ep_snatched']
@@ -136,7 +143,7 @@
                             if not cur_total:
                                 cur_total = 0
 
-                    if cur_total != 0:
+                        if cur_total != 0:
                             download_stat = str(cur_downloaded)
                             download_stat_tip = "Downloaded: " + str(cur_downloaded)
                             if cur_snatched > 0:
@@ -145,99 +152,109 @@
 
                             download_stat = download_stat + " / " + str(cur_total)
                             download_stat_tip = download_stat_tip + "&#013;" + "Total: " + str(cur_total)
-                    else:
+                        else:
                             download_stat = '?'
                             download_stat_tip = "no data"
 
-                    nom = cur_downloaded
-                    den = cur_total
-                    if den == 0:
+                        nom = cur_downloaded
+                        den = cur_total
+                        if den == 0:
                             den = 1
 
-                    progressbar_percent = nom * 100 / den
+                        progressbar_percent = nom * 100 / den
 
-                    data_date = '6000000000.0'
-                    if cur_airs_next:
+                        data_date = '6000000000.0'
+                        if cur_airs_next:
                             data_date = calendar.timegm(srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)).timetuple())
-                    elif display_status:
+                        elif display_status:
                             if 'nded' not in display_status and 1 == int(curShow.paused):
                                 data_date = '5000000500.0'
                             elif 'ontinu' in display_status:
                                 data_date = '5000000000.0'
                             elif 'nded' in display_status:
                                 data_date = '5000000100.0'
-                %>
-                    <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}"
-                         data-date="${data_date}" data-network="${curShow.network}"
-                         data-progress="${progressbar_percent}">
-                        <div class="show-image">
-                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"><img alt=""
-                                                                                                   class="show-image"
-                                                                                                   src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"/></a>
-                        </div>
+                    %>
+                        <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}"
+                             data-date="${data_date}" data-network="${curShow.network}"
+                             data-progress="${progressbar_percent}">
+                            <div class="show-image">
+                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                    <img alt="" class="show-image"
+                                         src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"/>
+                                </a>
+                            </div>
 
-                        <div class="progressbar" style="position:relative;" data-show-id="${curShow.indexerid}"
-                             data-progress-percentage="${progressbar_percent}"></div>
+                            <div class="progressbar" style="position:relative;" data-show-id="${curShow.indexerid}"
+                                 data-progress-percentage="${progressbar_percent}"></div>
 
-                        <div class="show-title">
-                            ${curShow.name}
-                        </div>
+                            <div class="show-title">
+                                ${curShow.name}
+                            </div>
 
-                        <div class="show-date">
-                            % if cur_airs_next:
+                            <div class="show-date">
+                                % if cur_airs_next:
                             <% ldatetime = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
-                            <%
-                                try:
-                                    out = srdatetime.srDateTime.srfdate(ldatetime)
-                                except ValueError:
-                                    out = 'Invalid date'
+                                <%
+                                    try:
+                                        out = srdatetime.srDateTime.srfdate(ldatetime)
+                                    except ValueError:
+                                        out = 'Invalid date'
                                     pass
-                            %>
-                            ${out}
-                            % else:
+                                %>
+                                ${out}
+                                % else:
                             <% output_html = '?' %>
-                            <% display_status = curShow.status %>
-                            <%
-                                if display_status:
-                                    if 'nded' not in display_status and 1 == int(curShow.paused):
-                                        output_html = 'Paused'
-                                    elif display_status:
-                                        output_html = display_status
-                            %>
-                            ${output_html}
-                            % endif
+                                <% display_status = curShow.status %>
+                                <%
+                                    if display_status:
+                                        if 'nded' not in display_status and 1 == int(curShow.paused):
+                                            output_html = 'Paused'
+                                        elif display_status:
+                                            output_html = display_status
+                                %>
+                                ${output_html}
+                                % endif
+                            </div>
+
+                            <div class="show-details">
+                                <table class="show-details" width="100%" cellspacing="1" border="0" cellpadding="0">
+                                    <tr>
+                                        <td class="show-table">
+                                            <span class="show-dlstats"
+                                                  title="${download_stat_tip}">${download_stat}</span>
+                                        </td>
+
+                                        <td class="show-table">
+                                            % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
+                                                % if curShow.network:
+                                                    <span title="${curShow.network}">
+                                                    <img class="show-network-image"
+                                                         src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
+                                                         alt="${curShow.network}"
+                                                         title="${curShow.network}"/>
+                                                </span>
+                                                % else:
+                                                    <span title="No Network">
+                                                    <img class="show-network-image"
+                                                         src="${srWebRoot}/images/network/nonetwork.png"
+                                                         alt="No Network"
+                                                         title="No Network"/>
+                                                </span>
+                                                % endif
+                                            % else:
+                                                <span title="${curShow.network}">${curShow.network}</span>
+                                            % endif
+                                        </td>
+
+                                        <td class="show-table">
+                                            ${renderQualityPill(curShow.quality, showTitle=True, overrideClass="show-quality")}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-
-                        <table width="100%" cellspacing="1" border="0" cellpadding="0">
-                            <tr>
-                                <td class="show-table">
-                                    <span class="show-dlstats" title="${download_stat_tip}">${download_stat}</span>
-                                </td>
-
-                                <td class="show-table">
-                                    % if sickrage.srCore.srConfig.HOME_LAYOUT != 'simple':
-                                        % if curShow.network:
-                                            <span title="${curShow.network}"><img class="show-network-image"
-                                                                                  src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
-                                                                                  alt="${curShow.network}"
-                                                                                  title="${curShow.network}"/></span>
-                                        % else:
-                                            <span title="No Network"><img class="show-network-image"
-                                                                          src="${srWebRoot}/images/network/nonetwork.png"
-                                                                          alt="No Network" title="No Network"/></span>
-                                        % endif
-                                    % else:
-                                        <span title="${curShow.network}">${curShow.network}</span>
-                                    % endif
-                                </td>
-
-                                <td class="show-table">
-                                    ${renderQualityPill(curShow.quality, showTitle=True, overrideClass="show-quality")}
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                % endfor
+                    % endfor
+                </div>
             </div>
         % else:
             <div class="horizontal-scroll">
