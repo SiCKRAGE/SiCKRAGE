@@ -1538,12 +1538,10 @@ jQuery(document).ready(function ($) {
                     });
                 }
 
-                resizePosters(parseInt(localStorage['posterSize'] || 188));
-
                 $('#posterSizeSlider').slider({
                     min: 75,
                     max: 250,
-                    value: localStorage['posterSize'] || 188,
+                    value: localStorage.posterSize || 188,
                     change: function (e, ui) {
                         if (window.localStorage) {
                             localStorage.setItem('posterSize', ui.value);
@@ -1552,6 +1550,8 @@ jQuery(document).ready(function ($) {
                         $('.show-grid').isotope('layout');
                     }
                 });
+
+                resizePosters(parseInt(localStorage.posterSize || 188));
 
                 // This needs to be refined to work a little faster.
                 $('.progressbar').each(function () {
