@@ -2603,7 +2603,7 @@ jQuery(document).ready(function ($) {
                                     var whichSeries = obj.join('|');
 
                                     resultStr += '<input type="radio" class="pull-left" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "") + '"' + checked + ' /> ';
-                                    resultStr += '<a href="' + SICKRAGE.anonURL + obj[2] + obj[3] + '&lid=' + data.langid || 7 + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
+                                    resultStr += '<a href="' + SICKRAGE.anonURL + obj[2] + obj[3] + '&lid=' + data.langid + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
 
                                     if (obj[5] !== null) {
                                         var startDate = new Date(obj[5]);

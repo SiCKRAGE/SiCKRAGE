@@ -1,6 +1,7 @@
 # Changelog
 
-- * a36e6ea - 2017-08-15: Misc template code cleanup 
+- * 27c3c0e - 2017-08-17: Fixed issues with adding a new show 
+- * eca5647 - 2017-08-15: Misc template code cleanup 
 - * 4794c94 - 2017-08-15: Release v9.1.3 
 - * a162a88 - 2017-08-15: Cleaned up bower installs Added poster resizing to home shows template 
 - * ea1a3e5 - 2017-08-15: Release v9.1.1 

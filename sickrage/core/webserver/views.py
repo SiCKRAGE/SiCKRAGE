@@ -2273,7 +2273,7 @@ class HomeAddShows(Home):
                 [[srIndexerApi(i).name, i, srIndexerApi(i).config["show_url"],
                   int(show['id']), show['seriesname'], show['firstaired']] for show in shows])
 
-        lang_id = srIndexerApi().indexer().languages[lang]
+        lang_id = srIndexerApi().indexer().languages[lang] or 7
         return json_encode({'results': final_results, 'langid': lang_id})
 
     def massAddTable(self, rootDir=None):
