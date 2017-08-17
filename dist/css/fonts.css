@@ -73,7 +73,7 @@
 	font-style: normal;
 	font-weight: 400;
 	src: url(../fonts/droid-sans-400-normal.eot);
-	src: local('Droid Sans'), local('DroidSans'), url(../fonts/droid-sans-400-normal.woff2) format('woff'), url(../fonts/droid-sans-400-normal.woff) format('woff'), url(../fonts/droid-sans-400-normal.ttf) format('truetype'), url(../fonts/droid-sans-400-normal.svg#DroidSans) format('svg');
+	src: local('Droid Sans Regular'), local('DroidSans-Regular'), url(../fonts/droid-sans-400-normal.woff2) format('woff'), url(../fonts/droid-sans-400-normal.woff) format('woff'), url(../fonts/droid-sans-400-normal.ttf) format('truetype'), url(../fonts/droid-sans-400-normal.svg#DroidSans) format('svg');
 }
 @font-face {
 	font-family: 'Droid Sans';
