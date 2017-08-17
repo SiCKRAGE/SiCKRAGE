@@ -59,6 +59,10 @@ class srVersionUpdater(object):
 
         try:
             if self.check_for_new_version(force) and sickrage.srCore.srConfig.AUTO_UPDATE:
+                if sickrage.srCore.SHOWUPDATER.amActive:
+                    sickrage.srCore.srLogger.debug("We can't proceed with auto-updating. Shows are being updated")
+                    return
+
                 sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
                 sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
                 if self.update():

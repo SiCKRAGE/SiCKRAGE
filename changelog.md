@@ -1,6 +1,7 @@
 # Changelog
 
-- * b4031be - 2017-08-17: Release v9.1.4 
+- * cdbcfc5 - 2017-08-17: Auto-updates disabled during show updating 
+- * c055429 - 2017-08-17: Release v9.1.4 
 - * 306d6b0 - 2017-08-17: Fixed issues with adding a new show 
 - * eca5647 - 2017-08-15: Misc template code cleanup 
 - * 4794c94 - 2017-08-15: Release v9.1.3 
