@@ -63,7 +63,7 @@ class rTorrentAPI(GenericClient):
 
         try:
             # Send magnet to rTorrent
-            torrent = self.auth.load_torrent(result.url)
+            torrent = self.auth.load_magnet(result.url, result.hash)
 
             if not torrent:
                 return False
@@ -94,10 +94,6 @@ class rTorrentAPI(GenericClient):
 
         if not result:
             return False
-
-            # group_name = 'sb_test'.lower() ##### Use provider instead of _test
-            # if not self._set_torrent_ratio(group_name):
-            # return False
 
         # Send request to rTorrent
         try:
