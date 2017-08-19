@@ -1,6 +1,7 @@
 # Changelog
 
-- * d7c492c - 2017-08-19: Fixed issues with magnetic links for rTorrent client 
+- * ef65ed0 - 2017-08-19: Added shutdown code for scheduler 
+- * 16b247f - 2017-08-19: Fixed issues with magnetic links for rTorrent client 
 - * 13231a1 - 2017-08-17: Release v9.1.5 
 - * 1b413dd - 2017-08-17: Auto-updates disabled during show updating 
 - * c055429 - 2017-08-17: Release v9.1.4 
