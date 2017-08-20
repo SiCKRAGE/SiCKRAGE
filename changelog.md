@@ -1,6 +1,7 @@
 # Changelog
 
-- * ef65ed0 - 2017-08-19: Added shutdown code for scheduler 
+- * d1b0bd9 - 2017-08-20: Downloading from torrent cache urls is now retried twice to make sure its a invalid download 
+- * 1bcada3 - 2017-08-19: Added shutdown code for scheduler 
 - * 16b247f - 2017-08-19: Fixed issues with magnetic links for rTorrent client 
 - * 13231a1 - 2017-08-17: Release v9.1.5 
 - * 1b413dd - 2017-08-17: Auto-updates disabled during show updating 

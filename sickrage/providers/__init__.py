@@ -170,16 +170,20 @@ class GenericProvider(object):
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            if sickrage.srCore.srWebSession.download(url,
-                                                     filename,
-                                                     headers=(None, {
-                                                         'Referer': '/'.join(url.split('/')[:3]) + '/'
-                                                     })[url.startswith('http')]):
+            retries = 2
+            while retries:
+                if sickrage.srCore.srWebSession.download(url,
+                                                         filename,
+                                                         headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'}
+                                                                  )[url.startswith('http')]
+                                                         ):
 
-                if self._verify_download(filename):
-                    sickrage.srCore.srLogger.info("Saved result to " + filename)
-                    return True
-                else:
+                    if self._verify_download(filename):
+                        sickrage.srCore.srLogger.info("Saved result to " + filename)
+                        return True
+
+                retries -= 1
+                if not retries:
                     sickrage.srCore.srLogger.warning("Could not download %s" % url)
                     remove_file_failed(filename)
 
@@ -1201,7 +1205,8 @@ class NewznabProvider(NZBProvider):
             cls('NZB.Cat', 'http://nzb.cat', True, '', '5030,5040,5010', 'eponly', True, True, True, True),
             cls('NZBGeek', 'http://api.nzbgeek.info', True, '', '5030,5040', 'eponly', False, False, False, True),
             cls('NZBs.org', 'http://nzbs.org', True, '', '5030,5040', 'eponly', False, False, False, True),
-            cls('Usenet-Crawler', 'http://usenet-crawler.com', True, '', '5030,5040', 'eponly', False, False, False, True)
+            cls('Usenet-Crawler', 'http://usenet-crawler.com', True, '', '5030,5040', 'eponly', False, False, False,
+                True)
         ]
 
 

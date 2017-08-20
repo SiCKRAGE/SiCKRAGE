@@ -126,14 +126,6 @@ class srSession(cfscrape.CloudflareScraper):
         return response
 
     def download(self, url, filename, **kwargs):
-        """
-        Downloads a file specified
-
-        :param url: Source URL
-        :param filename: Target file on filesystem
-        :return: True on success, False on failure
-        """
-
         try:
             r = self.get(url, timeout=10, stream=True, **kwargs)
             if r.status_code >= 400:
