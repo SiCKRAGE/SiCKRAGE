@@ -174,6 +174,8 @@ class GenericProvider(object):
             while retries:
                 if sickrage.srCore.srWebSession.download(url,
                                                          filename,
+                                                         verify=False,
+                                                         cache=False,
                                                          headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'}
                                                                   )[url.startswith('http')]
                                                          ):

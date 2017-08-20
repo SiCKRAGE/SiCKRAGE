@@ -1,6 +1,7 @@
 # Changelog
 
-- * d1b0bd9 - 2017-08-20: Downloading from torrent cache urls is now retried twice to make sure its a invalid download 
+- * 8123949 - 2017-08-20: Disabled verifying ssl certs and cache for downloading torrent files from torrent cache sites 
+- * f518e6a - 2017-08-20: Downloading from torrent cache urls is now retried twice to make sure its a invalid download 
 - * 1bcada3 - 2017-08-19: Added shutdown code for scheduler 
 - * 16b247f - 2017-08-19: Fixed issues with magnetic links for rTorrent client 
 - * 13231a1 - 2017-08-17: Release v9.1.5 
