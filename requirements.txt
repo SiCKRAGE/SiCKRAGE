@@ -3,7 +3,7 @@ babelfish == 0.5.5
 bencode == 1.0
 CacheControl == 0.12.2
 certifi == 2017.1.23
-cfscrape == 1.8.0
+cfscrape == 1.7.1
 configobj == 5.0.6
 feedparser == 5.2.1
 guessit == 2.1.4
