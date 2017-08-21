@@ -1,6 +1,7 @@
 # Changelog
 
-- * ef9d2df - 2017-08-21: Release v9.1.7 
+- * 45731e5 - 2017-08-21: Downgraded cfscrape to v1.7.1 
+- * a3012f9 - 2017-08-21: Release v9.1.7 
 - * 4cd24c6 - 2017-08-21: Fixed issues with getting actors from theTVDB API 
 - * 73b264c - 2017-08-21: Updated theTVDB API to sort show and season images by ratings top to bottom, highest rated used by default 
 - * 2cf9098 - 2017-08-20: Release v9.1.6 
