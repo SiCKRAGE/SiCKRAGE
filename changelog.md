@@ -1,6 +1,7 @@
 # Changelog
 
-- * b78df0a - 2017-08-20: Manual re-scan of files will force populate show images and overwrite existing image files 
+- * dd5efdb - 2017-08-20: Release v9.1.6 
+- * 22a13d3 - 2017-08-20: Manual re-scan of files will force populate show images and overwrite existing image files 
 - * 12fd7b5 - 2017-08-20: Removed allow_redirects 
 - * 9ed78dd - 2017-08-20: Added debug logging for downloading files 
 - * 95242dd - 2017-08-20: Added debug logging for downloading files 
