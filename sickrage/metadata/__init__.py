@@ -641,7 +641,7 @@ class GenericMetadata(object):
 
         return self._write_image(banner_data, banner_path)
 
-    def _write_image(self, image_data, image_path, obj=None):
+    def _write_image(self, image_data, image_path, force=False):
         """
         Saves the data in image_data to the location image_path. Returns True/False
         to represent success or failure.
@@ -651,7 +651,7 @@ class GenericMetadata(object):
         """
 
         # don't bother overwriting it
-        if os.path.isfile(image_path):
+        if os.path.isfile(image_path) and not force:
             sickrage.srCore.srLogger.debug("Image already exists, not downloading")
             return False
 

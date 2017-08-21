@@ -1,6 +1,16 @@
 # Changelog
 
-- * 66d41fa - 2017-08-17: Release v9.1.5 
+- * dd5efdb - 2017-08-20: Release v9.1.6 
+- * 22a13d3 - 2017-08-20: Manual re-scan of files will force populate show images and overwrite existing image files 
+- * 12fd7b5 - 2017-08-20: Removed allow_redirects 
+- * 9ed78dd - 2017-08-20: Added debug logging for downloading files 
+- * 95242dd - 2017-08-20: Added debug logging for downloading files 
+- * a8e992a - 2017-08-20: Added allow_redirects option for requests 
+- * 385b6f1 - 2017-08-20: Disabled verifying ssl certs and cache for downloading torrent files from torrent cache sites 
+- * f518e6a - 2017-08-20: Downloading from torrent cache urls is now retried twice to make sure its a invalid download 
+- * 1bcada3 - 2017-08-19: Added shutdown code for scheduler 
+- * 16b247f - 2017-08-19: Fixed issues with magnetic links for rTorrent client 
+- * 13231a1 - 2017-08-17: Release v9.1.5 
 - * 1b413dd - 2017-08-17: Auto-updates disabled during show updating 
 - * c055429 - 2017-08-17: Release v9.1.4 
 - * 306d6b0 - 2017-08-17: Fixed issues with adding a new show 

@@ -124,7 +124,7 @@ class ItaSAProvider(Provider):
                 'apikey': self.apikey
             }
 
-            r = self.session.get(self.server_url + 'users/login', params=params, allow_redirects=False, timeout=10)
+            r = self.session.get(self.server_url + 'users/login', params=params, timeout=10)
             root = etree.fromstring(r.content)
 
             if root.find('status').text == 'fail':
@@ -140,7 +140,7 @@ class ItaSAProvider(Provider):
                 'task': 'login',
                 'silent': 'true'
             }
-            r = self.session.post('http://www.italiansubs.net/index.php', data=data, allow_redirects=False, timeout=30)
+            r = self.session.post('http://www.italiansubs.net/index.php', data=data, timeout=30)
             r.raise_for_status()
 
             self.logged_in = True

@@ -126,14 +126,6 @@ class srSession(cfscrape.CloudflareScraper):
         return response
 
     def download(self, url, filename, **kwargs):
-        """
-        Downloads a file specified
-
-        :param url: Source URL
-        :param filename: Target file on filesystem
-        :return: True on success, False on failure
-        """
-
         try:
             r = self.get(url, timeout=10, stream=True, **kwargs)
             if r.status_code >= 400:
@@ -145,7 +137,8 @@ class srSession(cfscrape.CloudflareScraper):
                         f.write(chunk)
 
             chmodAsParent(filename)
-        except Exception:
+        except Exception as e:
+            sickrage.srCore.srLogger.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
             remove_file_failed(filename)
             return False
 

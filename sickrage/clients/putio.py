@@ -48,11 +48,9 @@ class PutioAPI(GenericClient):
 
         try:
             response = sickrage.srCore.srWebSession.post(self.url, data=post_data,
-                                                         allow_redirects=False,
                                                          verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             response = sickrage.srCore.srWebSession.get(response.headers['location'],
-                                                        allow_redirects=False,
                                                         verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
 
             resulting_uri = '{redirect_uri}#access_token=(.*)'.format(
