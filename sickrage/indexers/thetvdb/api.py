@@ -421,7 +421,7 @@ class Tvdb:
             self.shows[sid] = Show()
         if seas not in self.shows[sid]:
             self.shows[sid][seas] = Season()
-            self.shows[sid][seas].data['_images'] = self._parseImages(sid, seas)
+            self.shows[sid][seas].data['_images'] = self._get_images(sid, seas)
         if ep not in self.shows[sid][seas]:
             self.shows[sid][seas][ep] = Episode()
         self.shows[sid][seas][ep][attrib] = value
@@ -432,8 +432,8 @@ class Tvdb:
 
         if sid not in self.shows:
             self.shows[sid] = Show()
-            self.shows[sid].data['_images'] = self._parseImages(sid)
-            self.shows[sid].data['_actors'] = self._parseActors(sid)
+            self.shows[sid].data['_images'] = self._get_images(sid)
+            self.shows[sid].data['_actors'] = self._get_actors(sid)
 
         self.shows[sid].data[key] = value
 
@@ -495,7 +495,7 @@ class Tvdb:
         return ui.selectSeries(allSeries, series)
 
     @login_required
-    def _parseImages(self, sid, season=None):
+    def _get_images(self, sid, season=None):
         images = {}
 
         for keyType in ['fanart', 'banner', 'poster', 'series', 'season', 'seasonwide']:
@@ -528,7 +528,7 @@ class Tvdb:
         return images
 
     @login_required
-    def _parseActors(self, sid):
+    def _get_actors(self, sid):
         sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
 
         cur_actors = Actors()
@@ -537,15 +537,8 @@ class Tvdb:
             for cur_actor in self._request('get', self.config['api']['actors'].format(id=sid))['data']:
                 curActor = Actor()
                 for k, v in cur_actor.items():
-                    if k is None or v is None:
-                        continue
-
-                    k = k.lower()
-                    if k == "image":
-                        v = self.config['api']['imagesPrefix'].format(id=v)
-                    else:
-                        v = self._cleanData(v)
-
+                    if not all([k, v]): continue
+                    v = (v, self.config['api']['images']['prefix'].format(id=v))[k == 'images']
                     curActor[k] = v
 
                 cur_actors.append(curActor)
