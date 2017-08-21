@@ -1166,32 +1166,28 @@ class TVShow(object):
         # remove entire show folder
         if full:
             try:
-                if not os.path.isdir(self.location):
-                    sickrage.srCore.srLogger.warning(
-                        "Show folder does not exist, no need to %s %s" % (action, self.location))
-                    return
+                if os.path.isdir(self.location):
+                    sickrage.srCore.srLogger.info('Attempt to %s show folder %s' % (action, self.location))
 
-                sickrage.srCore.srLogger.info('Attempt to %s show folder %s' % (action, self.location))
+                    # check first the read-only attribute
+                    file_attribute = os.stat(self.location)[0]
+                    if not file_attribute & stat.S_IWRITE:
+                        # File is read-only, so make it writeable
+                        sickrage.srCore.srLogger.debug(
+                            'Attempting to make writeable the read only folder %s' % self.location)
+                        try:
+                            os.chmod(self.location, stat.S_IWRITE)
+                        except Exception:
+                            sickrage.srCore.srLogger.warning('Unable to change permissions of %s' % self.location)
 
-                # check first the read-only attribute
-                file_attribute = os.stat(self.location)[0]
-                if not file_attribute & stat.S_IWRITE:
-                    # File is read-only, so make it writeable
-                    sickrage.srCore.srLogger.debug(
-                        'Attempting to make writeable the read only folder %s' % self.location)
-                    try:
-                        os.chmod(self.location, stat.S_IWRITE)
-                    except Exception:
-                        sickrage.srCore.srLogger.warning('Unable to change permissions of %s' % self.location)
+                    if sickrage.srCore.srConfig.TRASH_REMOVE_SHOW:
+                        send2trash.send2trash(self.location)
+                    else:
+                        shutil.rmtree(self.location)
 
-                if sickrage.srCore.srConfig.TRASH_REMOVE_SHOW:
-                    send2trash.send2trash(self.location)
-                else:
-                    shutil.rmtree(self.location)
-
-                sickrage.srCore.srLogger.info('%s show folder %s' %
-                                              (('Deleted', 'Trashed')[sickrage.srCore.srConfig.TRASH_REMOVE_SHOW],
-                                               self.location))
+                    sickrage.srCore.srLogger.info('%s show folder %s' %
+                                                  (('Deleted', 'Trashed')[sickrage.srCore.srConfig.TRASH_REMOVE_SHOW],
+                                                   self.location))
             except OSError as e:
                 sickrage.srCore.srLogger.warning('Unable to %s %s: %s / %s' % (action, self.location, repr(e), str(e)))
 
@@ -1200,9 +1196,9 @@ class TVShow(object):
                 "Removing show: {}, {} from watchlist".format(self.indexerid, self.name))
             sickrage.srCore.notifiersDict['trakt'].update_watchlist(self, update="remove")
 
-    def populateCache(self):
+    def populateCache(self, force=False):
         sickrage.srCore.srLogger.debug("Checking & filling cache for show " + self.name)
-        image_cache.ImageCache().fill_cache(self)
+        image_cache.ImageCache().fill_cache(self, force)
 
     def refreshDir(self):
         # make sure the show dir is where we think it is unless dirs are created on the fly

@@ -480,7 +480,7 @@ class QueueItemRefresh(ShowQueueItem):
         if self.force:
             self.show.updateMetadata()
 
-        self.show.populateCache()
+        self.show.populateCache(self.force)
 
         # Load XEM data to DB for show
         xem_refresh(self.show.indexerid, self.show.indexer)

@@ -184,7 +184,8 @@
                                 </a>
                             </div>
 
-                            <div class="progressbar" style="position:relative;" data-show-id="${curShow.indexerid}"
+                            <div class="progressbar hidden-print" style="position:relative;"
+                                 data-show-id="${curShow.indexerid}"
                                  data-progress-percentage="${progressbar_percent}"></div>
 
                             <div class="show-title">

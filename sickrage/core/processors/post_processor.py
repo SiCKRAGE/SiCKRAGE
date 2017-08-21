@@ -1027,6 +1027,7 @@ class PostProcessor(object):
         # if the show directory doesn't exist then make it if allowed
         if not os.path.isdir(ep_obj.show.location) and sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS:
             self._log("Show directory doesn't exist, creating it", sickrage.srCore.srLogger.DEBUG)
+
             try:
                 os.mkdir(ep_obj.show.location)
                 chmodAsParent(ep_obj.show.location)
