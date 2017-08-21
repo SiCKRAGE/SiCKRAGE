@@ -721,17 +721,17 @@ class GenericMetadata(object):
 
         if image_type == 'poster_thumb':
             try:
-                image_url = indexer_show_obj['_images']['poster']['thumbnail'][which]
+                image_url = indexer_show_obj['_images']['poster'][which]['thumbnail']
             except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         elif image_type == 'series_thumb':
             try:
-                image_url = indexer_show_obj['_images']['series']['thumbnail'][which]
+                image_url = indexer_show_obj['_images']['series'][which]['thumbnail']
             except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         else:
             try:
-                image_url = indexer_show_obj['_images'][image_type]['filename'][which]
+                image_url = indexer_show_obj['_images'][image_type][which]['filename']
             except KeyError:
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
 
@@ -769,7 +769,7 @@ class GenericMetadata(object):
 
             # Give us just the normal poster-style season graphics
             try:
-                return indexer_show_obj['_images']['season'][season]['filename'][which]
+                return indexer_show_obj[season]['_images']['season'][which]['filename']
             except KeyError:
                 pass
         except (indexer_error, IOError) as e:
@@ -801,7 +801,7 @@ class GenericMetadata(object):
 
             # Give us just the normal season graphics
             try:
-                return indexer_show_obj['_images']['seasonwide'][season]['filename'][which]
+                return indexer_show_obj[season]['_images']['seasonwide'][which]['filename']
             except KeyError:
                 pass
         except (indexer_error, IOError) as e:
