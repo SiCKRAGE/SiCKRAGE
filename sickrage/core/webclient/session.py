@@ -139,7 +139,7 @@ class srSession(cfscrape.CloudflareScraper):
 
             chmodAsParent(filename)
         except Exception as e:
-            sickrage.srCore.srLogger.debug("ERROR: {}, Could not download {}".format(e.message, url))
+            sickrage.srCore.srLogger.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
             remove_file_failed(filename)
             return False
 
