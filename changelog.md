@@ -1,6 +1,7 @@
 # Changelog
 
-- * a9f6741 - 2017-08-21: Fixed issues with getting actors from theTVDB API 
+- * ef9d2df - 2017-08-21: Release v9.1.7 
+- * 4cd24c6 - 2017-08-21: Fixed issues with getting actors from theTVDB API 
 - * 73b264c - 2017-08-21: Updated theTVDB API to sort show and season images by ratings top to bottom, highest rated used by default 
 - * 2cf9098 - 2017-08-20: Release v9.1.6 
 - * 22a13d3 - 2017-08-20: Manual re-scan of files will force populate show images and overwrite existing image files 
