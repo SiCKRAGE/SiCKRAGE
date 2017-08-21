@@ -1,6 +1,7 @@
 # Changelog
 
-- * 43201a0 - 2017-08-20: Added debug logging for downloading files 
+- * 015aa7d - 2017-08-20: Removed allow_redirects 
+- * 9ed78dd - 2017-08-20: Added debug logging for downloading files 
 - * 95242dd - 2017-08-20: Added debug logging for downloading files 
 - * a8e992a - 2017-08-20: Added allow_redirects option for requests 
 - * 385b6f1 - 2017-08-20: Disabled verifying ssl certs and cache for downloading torrent files from torrent cache sites 

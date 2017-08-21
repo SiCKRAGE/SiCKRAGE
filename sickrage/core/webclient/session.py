@@ -100,7 +100,6 @@ class srSession(cfscrape.CloudflareScraper):
         response = super(srSession, self).request(
             method,
             url,
-            allow_redirects=True,
             headers=headers,
             params=params,
             verify=verify,
