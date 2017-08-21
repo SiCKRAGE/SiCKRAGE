@@ -25,6 +25,7 @@ import os
 import pickle
 import time
 import urlparse
+from operator import itemgetter
 
 import imdbpie
 
@@ -115,7 +116,7 @@ class Show(dict):
 
     def __getattr__(self, key):
         if key in self:
-            # Key is an episode, return it
+            # Key is an season, return it
             return self[key]
 
         if key in self.data:
@@ -174,22 +175,42 @@ class Show(dict):
 class Season(dict):
     def __init__(self):
         super(Season, self).__init__()
+        self.data = {}
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
 
     def __repr__(self):
         return "<Season instance (containing {} episodes)>".format(
             len(self.keys())
         )
 
-    def __getattr__(self, episode_number):
-        if episode_number in self:
-            return self[episode_number]
+    def __getattr__(self, key):
+        if key in self:
+            return self[key]
+
+        if key in self.data:
+            # Non-numeric request is for season-data
+            return self.data[key]
+
         raise AttributeError
 
-    def __getitem__(self, episode_number):
-        if episode_number not in self:
-            raise tvdb_episodenotfound("Could not find episode {}".format(repr(episode_number)))
+    def __getitem__(self, key):
+        if key in self:
+            # Key is an episode, return it
+            return dict.__getitem__(self, key)
+
+        if key in self.data:
+            # Non-numeric request is for season-data
+            return dict.__getitem__(self.data, key)
+
+        if isinstance(key, int) or key.isdigit():
+            raise tvdb_episodenotfound("Could not find episode {}".format(repr(key)))
         else:
-            return dict.__getitem__(self, episode_number)
+            raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(key)))
 
     def search(self, term=None, key=None):
         """Search all episodes in season, returns a list of matching Episode
@@ -315,9 +336,15 @@ class Tvdb:
         self.config['api']['episode_info'] = "/episodes/{id}"
         self.config['api']['actors'] = "/series/{id}/actors"
         self.config['api']['updated'] = "/updated/query?fromTime={time}"
-        self.config['api']['images'] = "/series/{id}/images/query?keyType={type}"
-        self.config['api']['imagesParams'] = "/series/{id}/images/query/params"
-        self.config['api']['imagesPrefix'] = "http://thetvdb.com/banners/{id}"
+
+        self.config['api']['images'] = {}
+        self.config['api']['images']['fanart'] = "/series/{id}/images/query?keyType=fanart&subKey=graphical"
+        self.config['api']['images']['banner'] = "/series/{id}/images/query?keyType=fanart&subKey=text"
+        self.config['api']['images']['poster'] = "/series/{id}/images/query?keyType=poster"
+        self.config['api']['images']['series'] = "/series/{id}/images/query?keyType=series"
+        self.config['api']['images']['season'] = "/series/{id}/images/query?keyType=season&subKey={season}"
+        self.config['api']['images']['seasonwide'] = "/series/{id}/images/query?keyType=seasonwide&subKey={season}"
+        self.config['api']['images']['prefix'] = "http://thetvdb.com/banners/{id}"
 
         # api-v2 language
         self.config['api']['lang'] = 'en'
@@ -394,6 +421,7 @@ class Tvdb:
             self.shows[sid] = Show()
         if seas not in self.shows[sid]:
             self.shows[sid][seas] = Season()
+            self.shows[sid][seas].data['_images'] = self._parseImages(sid, seas)
         if ep not in self.shows[sid][seas]:
             self.shows[sid][seas][ep] = Episode()
         self.shows[sid][seas][ep][attrib] = value
@@ -404,6 +432,8 @@ class Tvdb:
 
         if sid not in self.shows:
             self.shows[sid] = Show()
+            self.shows[sid].data['_images'] = self._parseImages(sid)
+            self.shows[sid].data['_actors'] = self._parseActors(sid)
 
         self.shows[sid].data[key] = value
 
@@ -465,56 +495,37 @@ class Tvdb:
         return ui.selectSeries(allSeries, series)
 
     @login_required
-    def _parseImages(self, sid):
-        sickrage.srCore.srLogger.debug('Getting season images for {}'.format(sid))
-
-        try:
-            params = self._request('get', self.config['api']['imagesParams'].format(id=sid))['data']
-        except tvdb_error:
-            return
-
+    def _parseImages(self, sid, season=None):
         images = {}
-        for type in [x['keytype'] for x in params]:
+
+        for keyType in ['fanart', 'banner', 'poster', 'series', 'season', 'seasonwide']:
+            if season and not keyType.startswith('season') or not season and keyType.startswith('season'): continue
+
+            sickrage.srCore.srLogger.debug('Getting {} images for {}'.format(keyType, sid))
+
             try:
-                imagesEt = self._request('get',
-                                         self.config['api']['images'].format(id=sid, type=type),
-                                         self.config['api']['lang'])['data']
+                if not season:
+                    images[keyType] = \
+                        self._request('get', self.config['api']['images'][keyType].format(id=sid),
+                                      self.config['api']['lang'])['data']
+                else:
+                    images[keyType] = \
+                        self._request('get', self.config['api']['images'][keyType].format(id=sid, season=season),
+                                      self.config['api']['lang'])['data']
             except tvdb_error:
                 continue
 
-            for cur_image in imagesEt:
-                image_id = int(cur_image['id'])
-                image_type = cur_image['keytype']
-                image_subtype = cur_image['subkey']
-                if image_type is None or image_subtype is None:
-                    continue
+            for i, image in enumerate(images[keyType]):
+                if season and int(image['subkey']) != season: continue
+                image["score"] = image["ratingsinfo"]["average"] * image["ratingsinfo"]["count"]
+                for k, v in image.items():
+                    if not all([k, v]): continue
+                    v = (v, self.config['api']['images']['prefix'].format(id=v))[k in ['filename', 'thumbnail']]
+                    images[keyType][i][k] = v
 
-                if image_type not in images:
-                    images[image_type] = {}
+            images[keyType] = [item for item in sorted(images[keyType], key=itemgetter("score"), reverse=True)]
 
-                for k, v in cur_image.items():
-                    if k is None or v is None:
-                        continue
-
-                    k = k.lower()
-                    if k in ['filename', 'thumbnail']:
-                        v = self.config['api']['imagesPrefix'].format(id=v)
-                        if image_type in ['season', 'seasonwide']:
-                            # season number
-                            if int(image_subtype) not in images[image_type]:
-                                images[image_type][int(image_subtype)] = {}
-
-                            if k not in images[image_type][int(image_subtype)]:
-                                images[image_type][int(image_subtype)][k] = []
-
-                            images[image_type][int(image_subtype)][k] += [v]
-                        else:
-                            if k not in images[image_type]:
-                                images[image_type][k] = []
-
-                            images[image_type][k] += [v]
-
-        self._setShowData(sid, '_images', images)
+        return images
 
     @login_required
     def _parseActors(self, sid):
@@ -538,10 +549,10 @@ class Tvdb:
                     curActor[k] = v
 
                 cur_actors.append(curActor)
-
-            self._setShowData(sid, '_actors', cur_actors)
         except Exception:
             sickrage.srCore.srLogger.debug('Actors result returned zero')
+
+        return cur_actors
 
     @login_required
     def _getShowData(self, sid):
@@ -573,19 +584,13 @@ class Tvdb:
         for k, v in series_info.items():
             if v is not None:
                 if k in ['banner', 'fanart', 'poster']:
-                    v = self.config['api']['imagesPrefix'].format(id=v)
+                    v = self.config['api']['images']['prefix'].format(id=v)
                 elif isinstance(v, list):
                     v = '|'.join(v)
                 else:
                     v = self._cleanData(v)
 
             self._setShowData(sid, k, v)
-
-        # Parse images
-        self._parseImages(sid)
-
-        # Parse actors
-        self._parseActors(sid)
 
         # Parse episode data
         sickrage.srCore.srLogger.debug('Getting all episode data for {}'.format(sid))
@@ -643,7 +648,7 @@ class Tvdb:
 
                 if v is not None:
                     if k == 'filename':
-                        v = self.config['api']['imagesPrefix'].format(id=v)
+                        v = self.config['api']['images']['prefix'].format(id=v)
                     elif isinstance(v, list):
                         v = '|'.join(v)
                     else:
@@ -670,7 +675,12 @@ class Tvdb:
 
     def __getitem__(self, key):
         if isinstance(key, (int, long)):
-            if key in self.shows and self.config['cache_enabled']: return self.shows[key]
+            if key in self.shows:
+                if self.config['cache_enabled']:
+                    return self.shows[key]
+                else:
+                    del self.shows[key]
+
             return self._getShowData(key)
 
         selected_series = self._getSeries(key)

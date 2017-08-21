@@ -1,6 +1,7 @@
 # Changelog
 
-- * dd5efdb - 2017-08-20: Release v9.1.6 
+- * d4f5ad0 - 2017-08-21: Updated theTVDB API to sort show and season images by ratings top to bottom, highest rated used by default 
+- * 2cf9098 - 2017-08-20: Release v9.1.6 
 - * 22a13d3 - 2017-08-20: Manual re-scan of files will force populate show images and overwrite existing image files 
 - * 12fd7b5 - 2017-08-20: Removed allow_redirects 
 - * 9ed78dd - 2017-08-20: Added debug logging for downloading files 
