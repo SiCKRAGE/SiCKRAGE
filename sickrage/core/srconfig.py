@@ -447,7 +447,7 @@ class srConfig(object):
         self.DEFAULT_SHOWUPDATE_HOUR = 3
         self.SHOWUPDATE_HOUR = None
 
-        self.QUALITY_SIZES = {}
+        self.QUALITY_SIZES = Quality.qualitySizes
 
         self.CUSTOM_PROVIDERS = None
 
@@ -1431,7 +1431,7 @@ class srConfig(object):
         self.ANIDB_USE_MYLIST = bool(self.check_setting_int('ANIDB', 'anidb_use_mylist', 0))
         self.ANIME_SPLIT_HOME = bool(self.check_setting_int('ANIME', 'anime_split_home', 0))
 
-        self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes', Quality.qualitySizes)
+        self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes', self.QUALITY_SIZES)
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers', '')
 
