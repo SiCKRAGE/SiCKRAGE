@@ -87,10 +87,8 @@ class ShowCache(dict):
 
     def __setitem__(self, key, value):
         self._stack.append(key)
-        if len(self._stack) >= self.maxsize:
-            for o in self._stack[:-self.maxsize]:
-                del self[o]
-            self._stack = self._stack[-self.maxsize:]
+        while len(self._stack) > self.maxsize:
+            del self[self._stack.pop()]
         super(ShowCache, self).__setitem__(key, value)
 
 
