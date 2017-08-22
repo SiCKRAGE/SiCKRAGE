@@ -20,7 +20,6 @@
                 </div>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-
                 % for qtype, qsize in sickrage.srCore.srConfig.QUALITY_SIZES.items():
                     % if qsize:
                         <div class="row field-pair">
@@ -38,7 +37,7 @@
                                            name="${qtype}"
                                            id="${qtype}"
                                            min="1"
-                                           title="Specify minimum quality size allowed in MB">
+                                           title="Specify max quality size allowed in MB">
                                     <div class="input-group-addon">
                                         MB
                                     </div>

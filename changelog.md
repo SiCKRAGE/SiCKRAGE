@@ -1,6 +1,9 @@
 # Changelog
 
-- * 3bac0a6 - 2017-08-21: Release v9.1.8 
+- * f5abefe - 2017-08-22: Release v9.1.9 
+- * 36c64f2 - 2017-08-22: Removed shutting down scheduler 
+- * 2a8af06 - 2017-08-22: Fixed theTVDB API Show cache key error&#x27;s Changed queue to use Lock instead of RLock 
+- * 730db3d - 2017-08-21: Release v9.1.8 
 - * ad759ad - 2017-08-21: Downgraded cfscrape to v1.7.1 
 - * a3012f9 - 2017-08-21: Release v9.1.7 
 - * 4cd24c6 - 2017-08-21: Fixed issues with getting actors from theTVDB API 
