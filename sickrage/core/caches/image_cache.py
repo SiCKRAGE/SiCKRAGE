@@ -81,6 +81,17 @@ class ImageCache(object):
         fanart_file_name = str(indexer_id) + '.fanart.jpg'
         return os.path.join(self._cache_dir(), fanart_file_name)
 
+
+    def fanart_thumb_path(self, indexer_id):
+        """
+        Builds up the path to a poster thumb cache for a given Indexer ID
+
+        :param indexer_id: ID of the show to use in the file name
+        :return: a full path to the cached poster thumb file for the given Indexer ID
+        """
+        fanartthumb_file_name = str(indexer_id) + '.fanart.jpg'
+        return os.path.join(self._thumbnails_dir(), fanartthumb_file_name)
+
     def poster_thumb_path(self, indexer_id):
         """
         Builds up the path to a poster thumb cache for a given Indexer ID
@@ -146,6 +157,7 @@ class ImageCache(object):
     BANNER_THUMB = 3
     POSTER_THUMB = 4
     FANART = 5
+    FANART_THUMB = 6
 
     def which_type(self, path):
         """
@@ -234,15 +246,18 @@ class ImageCache(object):
         elif img_type == self.BANNER:
             img_type_name = 'series'
             dest_path = self.banner_path(show_obj.indexerid)
+        elif img_type == self.FANART:
+            img_type_name = 'fanart'
+            dest_path = self.fanart_path(show_obj.indexerid)
         elif img_type == self.POSTER_THUMB:
             img_type_name = 'poster_thumb'
             dest_path = self.poster_thumb_path(show_obj.indexerid)
         elif img_type == self.BANNER_THUMB:
             img_type_name = 'series_thumb'
             dest_path = self.banner_thumb_path(show_obj.indexerid)
-        elif img_type == self.FANART:
-            img_type_name = 'fanart'
-            dest_path = self.fanart_path(show_obj.indexerid)
+        elif img_type == self.FANART_THUMB:
+            img_type_name = 'fanart_thumb'
+            dest_path = self.fanart_thumb_path(show_obj.indexerid)
         else:
             sickrage.srCore.srLogger.error("Invalid cache image type: " + str(img_type))
             return False

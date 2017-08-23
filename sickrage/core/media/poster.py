@@ -36,14 +36,13 @@ class Poster(Media):
         return 'poster.png'
 
     def get_media_path(self):
-        media_file = None
+        media_file = ''
 
-        if self.get_show():
-            if self.media_format == 'normal':
-                media_file = ImageCache().poster_path(self.indexer_id)
+        if self.media_format == 'normal':
+            media_file = ImageCache().poster_path(self.indexer_id)
 
-            if self.media_format == 'thumb':
-                media_file = ImageCache().poster_thumb_path(self.indexer_id)
+        if self.media_format == 'thumb':
+            media_file = ImageCache().poster_thumb_path(self.indexer_id)
 
         if not all([media_file, os.path.exists(media_file)]):
             media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())

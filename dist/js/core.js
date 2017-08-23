@@ -1501,11 +1501,11 @@ jQuery(document).ready(function ($) {
                 });
 
                 // Handle filtering in the poster layout
-                $('#filterShowName').on('input', _.debounce(function() {
+                $('#filterShowName').on('input', _.debounce(function () {
                     $('.show-grid').isotope({
                         filter: function () {
-                          var name = $(this).find('.show-title').html().trim().toLowerCase();
-                          return name.indexOf($('#filterShowName').val().toLowerCase()) > -1;
+                            var name = $(this).find('.show-title').html().trim().toLowerCase();
+                            return name.indexOf($('#filterShowName').val().toLowerCase()) > -1;
                         }
                     });
                 }, 500));
@@ -2251,7 +2251,7 @@ jQuery(document).ready(function ($) {
                 });
             },
 
-            trending_shows: {
+            trakt_shows: {
                 init: function () {
                     // initialise combos for dirty page refreshes
                     $('#showsort').val('original');
@@ -2304,95 +2304,28 @@ jQuery(document).ready(function ($) {
                         $('#container').isotope({sortAscending: ('asc' === $(this).value)});
                     });
 
-                    $('#trendingShows').loadContent(SICKRAGE.srWebRoot + '/home/addShows/getTrendingShows/', 'Loading trending shows...', 'Trakt timed out, refresh page to try again');
-
-                    $('#container').isotope({
-                        itemSelector: '.trakt_show',
-                        layoutMode: 'fitRows'
-                    });
-                },
-
-                loadContent: function (path, loadingTxt, errorTxt) {
-                    $(this).html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="32" width="32" />&nbsp;' + loadingTxt);
-                    $(this).load(path + ' #container', function (response, status) {
-                        if (status === "error") {
-                            $(this).empty().html(errorTxt);
-                        }
-                    });
-                }
-            },
-
-            recommended_shows: {
-                init: function () {
-                    $("#tabs").tabs({
-                        collapsible: true,
-                        selected: (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? -1 : 0)
+                    $('#traktlistselection').on('change', function (e) {
+                        var traktList = e.target.value;
+                        window.history.replaceState({}, document.title);
+                        $('#traktShows').loadRemoteShows(
+                            SICKRAGE.srWebRoot + '/addShows/traktShows',
+                            'Loading trending shows...',
+                            'Trakt timed out, refresh page to try again'
+                        );
                     });
 
-                    // initialise combos for dirty page refreshes
-                    $('#showsort').val('original');
-                    $('#showsortdirection').val('asc');
-
-                    var $container = [$('#container')];
-                    $.each($container, function () {
-                        $(this).isotope({
-                            itemSelector: '.trakt_show',
-                            sortBy: 'original-order',
-                            layoutMode: 'fitRows',
-                            getSortData: {
-                                name: function (itemElem) {
-                                    var name = $(itemElem).attr('data-name');
-                                    return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? (name || '') : (name || '').replace(/^(The|A|An)\s/i, ''));
-                                },
-                                rating: '[data-rating] parseInt',
-                                votes: '[data-votes] parseInt'
-                            }
-                        });
-                    });
-
-                    $('#showsort').on('change', function () {
-                        var sortCriteria;
-                        switch ($(this).value) {
-                            case 'original':
-                                sortCriteria = 'original-order';
-                                break;
-                            case 'rating':
-                                /* randomise, else the rating_votes can already
-                                 * have sorted leaving this with nothing to do.
-                                 */
-                                $('#container').isotope({sortBy: 'random'});
-                                sortCriteria = 'rating';
-                                break;
-                            case 'rating_votes':
-                                sortCriteria = ['rating', 'votes'];
-                                break;
-                            case 'votes':
-                                sortCriteria = 'votes';
-                                break;
-                            default:
-                                sortCriteria = 'name';
-                                break;
-                        }
-                        $('#container').isotope({sortBy: sortCriteria});
-                    });
-
-                    $('#showsortdirection').on('change', function () {
-                        $('#container').isotope({sortAscending: ('asc' === $(this).value)});
-                    });
-
-                    $('#recommendedShows').loadContent(SICKRAGE.srWebRoot + '/home/addShows/getRecommendedShows/', 'Loading recommended shows...', 'Trakt timed out, refresh page to try again');
-
-                    $('#container').isotope({
-                        itemSelector: '.trakt_show',
-                        layoutMode: 'fitRows'
-                    });
-                },
-
-                loadContent: function (path, loadingTxt, errorTxt) {
-                    $(this).html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="32" width="32" />&nbsp;' + loadingTxt);
-                    $(this).load(path + ' #container', function (response, status) {
-                        if (status === "error") {
-                            $(this).empty().html(errorTxt);
+                    $('img.trakt-image').each(function () {
+                        if ($(this).data("image-loaded") != true) {
+                            $.ajax({
+                                url: SICKRAGE.srWebRoot + '/addShows/getIndexerImage',
+                                type: "POST",
+                                data: {indexerid: $(this).data('indexerid')},
+                                context: this,
+                                success: function (data) {
+                                    $(this).data("image-loaded", true);
+                                    $(this).attr("src", data);
+                                }
+                            });
                         }
                     });
                 }
@@ -2561,6 +2494,16 @@ jQuery(document).ready(function ($) {
                     $('#indexerLang').bfhlanguages({
                         language: SICKRAGE.getMeta('sickrage.DEFAULT_LANGUAGE'),
                         available: SICKRAGE.getMeta('sickrage.LANGUAGES')
+                    });
+
+                    if ($('#nameToSearch').length && $('#nameToSearch').val().length) {
+                        $('#searchName').click();
+                    }
+
+                    $('#nameToSearch').keyup(function (event) {
+                        if (event.keyCode === 13) {
+                            $('#searchName').click();
+                        }
                     });
                 },
 
@@ -4050,15 +3993,12 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#TraktGetPin').click(function () {
-                        var trakt_pin_url = $('#trakt_pin_url').val();
-                        window.open(trakt_pin_url, "popUp", "toolbar=no, scrollbars=no, resizable=no, top=200, left=200, width=650, height=550");
+                        window.open($('#trakt_pin_url').val(), "popUp", "toolbar=no, scrollbars=no, resizable=no, top=200, left=200, width=650, height=550");
                         $('#trakt_pin').removeClass('hide');
                     });
 
                     $('#trakt_pin').on('keyup change', function () {
-                        var trakt_pin = $('#trakt_pin').val();
-
-                        if (trakt_pin.length !== 0) {
+                        if ($('#trakt_pin').val().length !== 0) {
                             $('#TraktGetPin').addClass('hide');
                             $('#authTrakt').removeClass('hide');
                         } else {
@@ -4068,9 +4008,10 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#authTrakt').click(function () {
-                        var trakt_pin = $('#trakt_pin').val();
-                        if (trakt_pin.length !== 0) {
-                            $.get(SICKRAGE.srWebRoot + '/home/getTraktToken', {"trakt_pin": trakt_pin}).done(function (data) {
+                        if ($('#trakt_pin').val().length !== 0) {
+                            $.get(SICKRAGE.srWebRoot + '/home/getTraktToken', {
+                                "trakt_pin": $('#trakt_pin').val()
+                            }).done(function (data) {
                                 $('#testTrakt-result').html(data);
                                 $('#authTrakt').addClass('hide');
                                 $('#trakt_pin').addClass('hide');

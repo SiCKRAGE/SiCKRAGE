@@ -31,7 +31,7 @@ indexerConfig = {
         'api_params': {'apikey': 'F9C450E78D99172E',
                        'language': 'en'
                        },
-        'trakt_id': 'tvdb_id',
+        'trakt_id': 'tvdb',
         'xem_origin': 'tvdb',
         'icon': 'thetvdb16.png',
         'scene_loc': 'https://git.sickrage.ca/SiCKRAGE/scene_exceptions/raw/master/thetvdb.txt',

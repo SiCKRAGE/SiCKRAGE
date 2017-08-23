@@ -420,9 +420,9 @@ class srConfig(object):
         self.THETVDB_APITOKEN = None
         self.TRAKT_API_KEY = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.TRAKT_API_SECRET = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
-        self.TRAKT_PIN_URL = 'https://trakt.tv/pin/4562'
+        self.TRAKT_APP_ID = '4562'
         self.TRAKT_OAUTH_URL = 'https://trakt.tv/'
-        self.TRAKT_API_URL = 'https://api-v2launch.trakt.tv/'
+        self.TRAKT_API_URL = 'https://api.trakt.tv/'
         self.FANART_API_KEY = '9b3afaf26f6241bdb57d6cc6bd798da7'
         self.SHOWS_RECENT = []
 
@@ -1319,8 +1319,7 @@ class srConfig(object):
 
         self.USE_TRAKT = bool(self.check_setting_int('Trakt', 'use_trakt', 0))
         self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', '')
-        self.TRAKT_ACCESS_TOKEN = self.check_setting_str('Trakt', 'trakt_access_token', '')
-        self.TRAKT_REFRESH_TOKEN = self.check_setting_str('Trakt', 'trakt_refresh_token', '')
+        self.TRAKT_OAUTH_TOKEN = self.check_setting_str('Trakt', 'trakt_oauth_token', '')
         self.TRAKT_REMOVE_WATCHLIST = bool(self.check_setting_int('Trakt', 'trakt_remove_watchlist', 0))
         self.TRAKT_REMOVE_SERIESLIST = bool(
             self.check_setting_int('Trakt', 'trakt_remove_serieslist', 0))
@@ -1779,8 +1778,7 @@ class srConfig(object):
             'Trakt': {
                 'use_trakt': int(self.USE_TRAKT),
                 'trakt_username': self.TRAKT_USERNAME,
-                'trakt_access_token': self.TRAKT_ACCESS_TOKEN,
-                'trakt_refresh_token': self.TRAKT_REFRESH_TOKEN,
+                'trakt_oauth_token': self.TRAKT_OAUTH_TOKEN,
                 'trakt_remove_watchlist': int(self.TRAKT_REMOVE_WATCHLIST),
                 'trakt_remove_serieslist': int(self.TRAKT_REMOVE_SERIESLIST),
                 'trakt_remove_show_from_sickrage': int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE),

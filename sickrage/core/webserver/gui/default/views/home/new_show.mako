@@ -38,24 +38,40 @@
                                        value="${provided_indexer}"/>
                                 <input type="hidden" id="providedName" value="${provided_indexer_name}"/>
                             % else:
-                                <input type="text" id="nameToSearch" value="${default_show_name}"
-                                       class="form-control pull-left"/>
-                                <label for="providedIndexer">
-                                    <select name="providedIndexer" id="providedIndexer"
-                                            class="form-control pull-right">
-                                        % for indexer in indexers:
-                                            <option value="${indexer}" ${('', 'selected="selected"')[provided_indexer == indexer]}>
-                                                ${indexers[indexer]}
-                                            </option>
-                                        % endfor
-                                    </select>
-                                </label>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="input-group input350">
+                                            <div class="input-group-addon">
+                                                <span class="fa fa-tv"></span>
+                                            </div>
+                                            <input id="nameToSearch" value="${default_show_name}"
+                                                   title="TV show name" class="form-control"/>
+                                            <span class="input-group-addon"
+                                                  style="width:0; padding-left:0; padding-right:0; border:none;"></span>
+                                            <select name="providedIndexer" id="providedIndexer"
+                                                    class="form-control" title="Choose indexer">
+                                                % for indexer in indexers:
+                                                    <option value="${indexer}" ${('', 'selected="selected"')[provided_indexer == indexer]}>
+                                                        ${indexers[indexer]}
+                                                    </option>
+                                                % endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <br/>
-                                <label for="indexerLang">
-                                    <select name="indexerLang" id="indexerLang"
-                                            class="form-control">
-                                    </select>
-                                </label>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="input-group input350">
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-flag"></span>
+                                            </div>
+                                            <select name="indexerLang" id="indexerLang" class="form-control"
+                                                    title="Choose language">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <p>
                                 <div id="messages"></div>
                                 <br/>

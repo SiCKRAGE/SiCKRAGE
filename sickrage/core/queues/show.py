@@ -32,7 +32,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
 from sickrage.core.helpers import scrub, findCertainShow
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
-from sickrage.core.trakt import TraktAPI
+from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.show import TVShow
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.exceptions import indexer_attributenotfound, \
@@ -305,25 +305,18 @@ class QueueItemAdd(ShowQueueItem):
             )
 
             if sickrage.srCore.srConfig.USE_TRAKT:
-
-                trakt_id = srIndexerApi(self.indexer).config['trakt_id']
-                trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
-
                 title = self.showDir.split("/")[-1]
+
                 data = {
                     'shows': [
                         {
                             'title': title,
-                            'ids': {}
+                            'ids': {srIndexerApi(self.indexer).config['trakt_id']: self.indexer_id}
                         }
                     ]
                 }
-                if trakt_id == 'tvdb_id':
-                    data['shows'][0]['ids']['tvdb'] = self.indexer_id
-                else:
-                    data['shows'][0]['ids']['tvrage'] = self.indexer_id
 
-                trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
+                srTraktAPI()["sync/watchlist"].remove(data)
 
             return self._finishEarly()
 
