@@ -1,6 +1,7 @@
 # Changelog
 
-- * f2862ef - 2017-08-22: Release v9.1.10 
+- * 4356aa9 - 2017-08-22: Removed LXML warning as we&#x27;ve replaced that with html5lib 
+- * 1662bb7 - 2017-08-22: Release v9.1.10 
 - * b5ad47a - 2017-08-22: Fixed app restart issues 
 - * 76f4ffc - 2017-08-22: Updated theTVDB API Show cache code 
 - * ba560dc - 2017-08-22: Release v9.1.9 

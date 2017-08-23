@@ -203,13 +203,6 @@ def check_requirements():
     if sys.version_info < (2, 7):
         sys.exit("Sorry, SiCKRAGE requires Python 2.7+")
 
-    # Check if lxml is available
-    try:
-        from lxml import etree
-    except:
-        print(
-            'LXML not available, please install for better/faster scraping support: `http://lxml.de/installation.html`')
-
     try:
         import OpenSSL
 
