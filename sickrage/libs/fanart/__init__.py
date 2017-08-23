@@ -87,16 +87,16 @@ class LIMIT(object):
     ALL = 2
 
 
-FORMAT_LIST = values(FORMAT)
-WS_LIST = values(WS)
-TYPE_LIST = values(TYPE.MUSIC) + values(TYPE.TV) + values(TYPE.MOVIE) + [TYPE.ALL]
-MUSIC_TYPE_LIST = values(TYPE.MUSIC) + [TYPE.ALL]
-TV_TYPE_LIST = values(TYPE.TV) + [TYPE.ALL]
-MOVIE_TYPE_LIST = values(TYPE.MOVIE) + [TYPE.ALL]
-SORT_LIST = values(SORT)
-LIMIT_LIST = values(LIMIT)
-
 class Request(object):
+    FORMAT_LIST = values(FORMAT)
+    WS_LIST = values(WS)
+    TYPE_LIST = values(TYPE.MUSIC) + values(TYPE.TV) + values(TYPE.MOVIE) + [TYPE.ALL]
+    MUSIC_TYPE_LIST = values(TYPE.MUSIC) + [TYPE.ALL]
+    TV_TYPE_LIST = values(TYPE.TV) + [TYPE.ALL]
+    MOVIE_TYPE_LIST = values(TYPE.MOVIE) + [TYPE.ALL]
+    SORT_LIST = values(SORT)
+    LIMIT_LIST = values(LIMIT)
+
     def __init__(self, apikey, id, ws, type=None, sort=None, limit=None):
         self._apikey = apikey
         self._id = id
