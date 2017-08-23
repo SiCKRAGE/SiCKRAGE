@@ -100,8 +100,6 @@ class Daemon(object):
             sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
-        # decouple from parent environment
-        os.chdir(self.working_dir)
         os.setsid()
         os.umask(0)
 

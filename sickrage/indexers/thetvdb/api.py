@@ -25,6 +25,7 @@ import os
 import pickle
 import time
 import urlparse
+from collections import OrderedDict
 from operator import itemgetter
 
 import imdbpie
@@ -79,17 +80,15 @@ class BaseUI:
         return allSeries[0]
 
 
-class ShowCache(dict):
-    def __init__(self, maxsize=100):
-        super(ShowCache, self).__init__()
-        self.maxsize = maxsize
-        self._stack = []
+class ShowCache(OrderedDict):
+    def __init__(self, *args, **kwargs):
+        self.maxsize = 100
+        super(ShowCache, self).__init__(*args, **kwargs)
 
-    def __setitem__(self, key, value):
-        self._stack.append(key)
-        while len(self._stack) > self.maxsize:
-            del self[self._stack.pop()]
+    def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
         super(ShowCache, self).__setitem__(key, value)
+        while len(self) > self.maxsize:
+            self.pop(list(self.keys())[0], None)
 
 
 class Show(dict):
@@ -312,7 +311,7 @@ class Tvdb:
         if os.path.isfile(os.path.join(sickrage.DATA_DIR, 'thetvdb.db')):
             with io.open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'rb') as fp:
                 try:
-                    self.shows = pickle.load(fp)
+                    self.shows = ShowCache(pickle.load(fp))
                 except:
                     pass
 

@@ -441,8 +441,13 @@ class Core(object):
         if self.started:
             self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
-            # shutdown/restart webserver
+            # shutdown webserver
             self.srWebServer.shutdown()
+
+            # shutdown show queue
+            if self.srScheduler:
+                self.srLogger.debug("Shutting down scheduler")
+                self.srScheduler.shutdown()
 
             # shutdown show queue
             if self.SHOWQUEUE:
@@ -457,7 +462,7 @@ class Core(object):
             # log out of ADBA
             if self.ADBA_CONNECTION:
                 self.srLogger.debug("Logging out ANIDB connection")
-                self.ADBA_CONNECTION.logout()
+                self.ADBA_CONNECTION.stop()
 
             # save all show and config settings
             self.save_all()

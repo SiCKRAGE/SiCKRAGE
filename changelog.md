@@ -1,6 +1,9 @@
 # Changelog
 
-- * f5abefe - 2017-08-22: Release v9.1.9 
+- * f2862ef - 2017-08-22: Release v9.1.10 
+- * b5ad47a - 2017-08-22: Fixed app restart issues 
+- * 76f4ffc - 2017-08-22: Updated theTVDB API Show cache code 
+- * ba560dc - 2017-08-22: Release v9.1.9 
 - * 36c64f2 - 2017-08-22: Removed shutting down scheduler 
 - * 2a8af06 - 2017-08-22: Fixed theTVDB API Show cache key error&#x27;s Changed queue to use Lock instead of RLock 
 - * 730db3d - 2017-08-21: Release v9.1.8 
