@@ -463,7 +463,7 @@ class Core(object):
 
             # log out of ADBA
             if self.ADBA_CONNECTION:
-                self.srLogger.debug("Logging out ANIDB connection")
+                self.srLogger.debug("Shutting down ANIDB connection")
                 self.ADBA_CONNECTION.stop()
 
             # save all show and config settings
@@ -471,7 +471,9 @@ class Core(object):
 
             # close databases
             for db in [self.mainDB, self.cacheDB, self.failedDB]:
-                if db.opened: db.close()
+                if db.opened:
+                    self.srLogger.debug("Shutting down {} database connection".format(db.name))
+                    db.close()
 
             # shutdown logging
             self.srLogger.close()
