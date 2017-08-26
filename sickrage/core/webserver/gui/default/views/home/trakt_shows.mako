@@ -67,7 +67,7 @@
                             <p>${int(cur_show.rating.value*10)}% <span class="fa fa-heart red-text"></span></p>
                             <i>${cur_show.votes} votes</i>
                             <div class="traktShowTitleIcons">
-                                <a href="${srWebRoot}/home/addShows/newShow/?search_string=${cur_show.title}"
+                                <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${indexer_id}&showName=${cur_show.title}"
                                    class="btn btn-xs" data-no-redirect>Add Show</a>
                                 % if black_list:
                                     <a href="${srWebRoot}/addShows/addShowToBlacklist?indexer_id=${indexer_id}"

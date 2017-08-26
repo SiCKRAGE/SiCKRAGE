@@ -1538,21 +1538,21 @@ class TVShow(object):
                         self.indexer).name + "->" + srIndexerApi(
                         indexer).name + " for show: " + self.name)
 
-                    mapped[indexer] = int(mapped_show[0]['id'])
+                    mapped[indexer] = int(mapped_show['id'])
 
                     sickrage.srCore.srLogger.debug("Adding indexer mapping to DB for show: " + self.name)
 
                     dbData = [x['doc'] for x in
                               sickrage.srCore.mainDB.db.get_many('indexer_mapping', self.indexerid, with_doc=True)
                               if x['doc']['indexer'] == self.indexer
-                              and x['doc']['mindexer_id'] == int(mapped_show[0]['id'])]
+                              and x['doc']['mindexer_id'] == int(mapped_show['id'])]
 
                     if not len(dbData):
                         sickrage.srCore.mainDB.db.insert({
                             '_t': 'indexer_mapping',
                             'indexer_id': self.indexerid,
                             'indexer': self.indexer,
-                            'mindexer_id': int(mapped_show[0]['id']),
+                            'mindexer_id': int(mapped_show['id']),
                             'mindexer': indexer
                         })
 

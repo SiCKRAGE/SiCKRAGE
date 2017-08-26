@@ -2483,7 +2483,12 @@ class HomeAddShows(Home):
                            controller='home',
                            action="add_existing_shows")
 
-    def addTraktShow(self, indexer_id, showName):
+    def addShowByID(self, indexer_id, showName):
+        if re.search(r'tt\d+', indexer_id):
+            lINDEXER_API_PARMS = srIndexerApi(1).api_params.copy()
+            t = srIndexerApi(1).indexer(**lINDEXER_API_PARMS)
+            indexer_id = t[indexer_id]['id']
+
         if findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id)):
             return
 
@@ -2499,8 +2504,8 @@ class HomeAddShows(Home):
             if not dir_exists:
                 sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
                 return
-            else:
-                chmodAsParent(show_dir)
+
+            chmodAsParent(show_dir)
 
             sickrage.srCore.SHOWQUEUE.addShow(indexer=1,
                                               indexer_id=int(indexer_id),

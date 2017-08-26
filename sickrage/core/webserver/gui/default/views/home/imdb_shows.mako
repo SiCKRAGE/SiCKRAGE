@@ -77,7 +77,7 @@
                                             </p>
                                             <i>${cur_votes}</i>
                                             <div class="traktShowTitleIcons">
-                                                <a href="${srWebRoot}/home/addShows/newShow/?search_string=${cur_result['name']}"
+                                                <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${cur_result['imdb_tt']}&showName=${cur_result['name']}"
                                                    class="btn btn-xs" data-no-redirect>Add Show</a>
                                             </div>
                                         </div>
