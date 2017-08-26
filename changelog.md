@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2f72a58 - 2017-08-26: Added addShowByID function for adding shows via theTVDB using IMDB OR Trakt IDs 
+- * 7bf7c30 - 2017-08-26: Added ability to sync trakt on demand to manage menu 
+- * d574ff0 - 2017-08-26: Added addShowByID function for adding shows via theTVDB using IMDB OR Trakt IDs 
 - * 943697c - 2017-08-23: Updating Trakt.tv API code 
 - * dcfdc7f - 2017-08-23: Fixed fanart lib issues 
 - * b2b3a7b - 2017-08-22: Removed LXML warning as we&#x27;ve replaced that with html5lib 

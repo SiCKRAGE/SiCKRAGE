@@ -1637,6 +1637,13 @@ class Home(WebHandler):
         else:
             return self.redirect('/home/')
 
+    def syncTrakt(self):
+        if sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER').func():
+            sickrage.srCore.srLogger.info("Syncing Trakt with SiCKRAGE")
+            sickrage.srCore.srNotifications.message('Syncing Trakt with SiCKRAGE')
+
+        return self.redirect("/home/")
+
     def deleteEpisode(self, show=None, eps=None, direct=False):
         if not all([show, eps]):
             errMsg = "You must specify a show and at least one episode"
