@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7bf7c30 - 2017-08-26: Added ability to sync trakt on demand to manage menu 
+- * 05d34a9 - 2017-08-26: Fixed shutdown issues with queues 
+- * e24895b - 2017-08-26: Added ability to sync trakt on demand to manage menu 
 - * d574ff0 - 2017-08-26: Added addShowByID function for adding shows via theTVDB using IMDB OR Trakt IDs 
 - * 943697c - 2017-08-23: Updating Trakt.tv API code 
 - * dcfdc7f - 2017-08-23: Fixed fanart lib issues 
