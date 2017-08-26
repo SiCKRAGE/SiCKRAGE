@@ -40,6 +40,15 @@ class srTraktAPI(object):
         # Bind trakt events
         Trakt.on('oauth.token_refreshed', self.on_token_refreshed)
 
+        Trakt.configuration.defaults.oauth(
+            refresh=True
+        )
+
+        if sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN:
+            Trakt.configuration.defaults.oauth.from_response(
+                sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN
+            )
+
     @staticmethod
     def authenticate(pin):
         # Exchange `code` for `access_token`
@@ -48,6 +57,7 @@ class srTraktAPI(object):
             return False
 
         sickrage.srCore.srLogger.debug('Token exchanged - auth: %r' % sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN)
+        sickrage.srCore.srConfig.save()
 
         return True
 
@@ -57,6 +67,7 @@ class srTraktAPI(object):
         sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN = response
 
         sickrage.srCore.srLogger.debug('Token refreshed - auth: %r' % sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN)
+        sickrage.srCore.srConfig.save()
 
     def __getattr__(self, name):
         if hasattr(self, name):
@@ -71,8 +82,7 @@ class srTraktAPI(object):
         setattr(Trakt, name, value)
 
     def __getitem__(self, key):
-        with Trakt.configuration.oauth.from_response(sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN, refresh=True):
-            return Trakt[key]
+        return Trakt[key]
 
 
 class traktException(Exception):

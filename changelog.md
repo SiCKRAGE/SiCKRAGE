@@ -1,6 +1,7 @@
 # Changelog
 
-- * 721fbdb - 2017-08-26: Added more debug logging to shutdown sequence 
+- * 246a082 - 2017-08-26: Fixed issues with Trakt API oAuth 
+- * 0061eef - 2017-08-26: Added more debug logging to shutdown sequence 
 - * eba1be4 - 2017-08-26: Fixed shutdown issues with queues 
 - * e24895b - 2017-08-26: Added ability to sync trakt on demand to manage menu 
 - * d574ff0 - 2017-08-26: Added addShowByID function for adding shows via theTVDB using IMDB OR Trakt IDs 
