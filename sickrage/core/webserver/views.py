@@ -2430,20 +2430,21 @@ class HomeAddShows(Home):
             action="new_show"
         )
 
-    def traktShows(self):
+    def traktShows(self, list='trending'):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
         """
 
-        trakt_shows, black_list = srTraktAPI()['shows'].trending(extended="full"), False
+        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full"), False
 
         return self.render("/home/trakt_shows.mako",
-                           title="Trakt Trending Shows",
-                           header="Trakt Trending Shows",
+                           title="Trakt {} Shows".format(list.capitalize()),
+                           header="Trakt {} Shows".format(list.capitalize()),
                            enable_anime_options=False,
                            black_list=black_list,
                            trakt_shows=trakt_shows,
+                           trakt_list=list,
                            controller='home',
                            action="trakt_shows")
 

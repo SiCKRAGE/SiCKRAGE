@@ -19,20 +19,44 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <span>Sort By:</span>
-            <select id="showsort" class="form-control form-control-inline input-sm">
-                <option value="name">Name</option>
-                <option value="original" selected="selected">Original</option>
-                <option value="votes">Votes</option>
-                <option value="rating">% Rating</option>
-                <option value="rating_votes">% Rating > Votes</option>
-            </select>
+            <div class="text-center">
+                <span>Sort By:</span>
+                <select id="showsort" class="form-control form-control-inline input-sm">
+                    <option value="name">Name</option>
+                    <option value="original" selected>Original</option>
+                    <option value="votes">Votes</option>
+                    <option value="rating">% Rating</option>
+                    <option value="rating_votes">% Rating > Votes</option>
+                </select>
 
-            <span style="margin-left:12px">Sort Order:</span>
-            <select id="showsortdirection" class="form-control form-control-inline input-sm">
-                <option value="asc" selected="selected">Asc</option>
-                <option value="desc">Desc</option>
-            </select>
+                <span style="margin-left:12px">Sort Order:</span>
+                <select id="showsortdirection" class="form-control form-control-inline input-sm">
+                    <option value="asc" selected>Asc</option>
+                    <option value="desc">Desc</option>
+                </select>
+
+                <span style="margin-left:12px">Select Trakt List:</span>
+                <select id="traktlist" class="form-control form-control-inline input-sm" title="Trakt List Selection">
+                    <option value="anticipated" ${('', ' selected')[trakt_list == "anticipated"]}>
+                        Most Anticipated
+                    </option>
+                    <option value="trending" ${('', ' selected')[trakt_list == "trending"]}>
+                        Trending
+                    </option>
+                    <option value="popular" ${('', ' selected')[trakt_list == "popular"]}>
+                        Popular
+                    </option>
+                    <option value="watched" ${('', ' selected')[trakt_list == "watched"]}>
+                        Most Watched
+                    </option>
+                    <option value="played" ${('', ' selected')[trakt_list == "played"]}>
+                        Most Played
+                    </option>
+                    <option value="collected" ${('', ' selected')[trakt_list == "collected"]}>
+                        Most Collected
+                    </option>
+                </select>
+            </div>
         </div>
     </div>
 
