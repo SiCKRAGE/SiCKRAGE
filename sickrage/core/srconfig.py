@@ -319,7 +319,7 @@ class srConfig(object):
         self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = 0
         self.USE_TRAKT = 0
         self.TRAKT_USERNAME = ""
-        self.TRAKT_OAUTH_TOKEN = {}
+        self.TRAKT_OAUTH_TOKEN = ""
         self.TRAKT_REMOVE_WATCHLIST = 0
         self.TRAKT_REMOVE_SERIESLIST = 0
         self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = 0
@@ -935,6 +935,29 @@ class srConfig(object):
 
         return my_val
 
+    ################################################################################
+    # Check_setting_json                                                           #
+    ################################################################################
+    def check_setting_json(self, section, key, def_val="", silent=True):
+        my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
+
+        if my_val:
+            censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
+            if censored_regex.search(key) or (section, key) in self.CENSORED_ITEMS:
+                self.CENSORED_ITEMS[section, key] = my_val
+
+        if not silent:
+            print(key + " -> " + my_val)
+
+        try:
+            my_val = json.loads(my_val)
+        except TypeError:
+            my_val = json.loads(json.dumps(my_val))
+        except ValueError:
+            pass
+
+        return my_val
+
     def load(self):
         # Make sure we can write to the config file
         if not os.path.isabs(sickrage.CONFIG_FILE):
@@ -1311,8 +1334,7 @@ class srConfig(object):
 
         self.USE_TRAKT = bool(self.check_setting_int('Trakt', 'use_trakt', self.USE_TRAKT))
         self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', self.TRAKT_USERNAME)
-        self.TRAKT_OAUTH_TOKEN = json.loads(
-            self.check_setting_str('Trakt', 'trakt_oauth_token', json.dumps(self.TRAKT_OAUTH_TOKEN)))
+        self.TRAKT_OAUTH_TOKEN = self.check_setting_json('Trakt', 'trakt_oauth_token', self.TRAKT_OAUTH_TOKEN)
         self.TRAKT_REMOVE_WATCHLIST = bool(
             self.check_setting_int('Trakt', 'trakt_remove_watchlist', self.TRAKT_REMOVE_WATCHLIST))
         self.TRAKT_REMOVE_SERIESLIST = bool(
@@ -1427,7 +1449,7 @@ class srConfig(object):
         self.ANIDB_USE_MYLIST = bool(self.check_setting_int('ANIDB', 'anidb_use_mylist', 0))
         self.ANIME_SPLIT_HOME = bool(self.check_setting_int('ANIME', 'anime_split_home', 0))
 
-        self.QUALITY_SIZES = json.loads(self.check_setting_str('Quality', 'sizes', json.dumps(self.QUALITY_SIZES)))
+        self.QUALITY_SIZES = self.check_setting_json('Quality', 'sizes', self.QUALITY_SIZES)
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers', '')
 

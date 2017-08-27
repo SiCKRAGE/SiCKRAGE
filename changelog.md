@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6852928 - 2017-08-27: Grabs data from global SHOWLIST instead of database calls Added trakt_id property to indexerAPI 
+- * 1f0041e - 2017-08-27: Added check_setting_json for loading saved json data from config file 
+- * 14d95ee - 2017-08-27: Grabs data from global SHOWLIST instead of database calls Added trakt_id property to indexerAPI 
 - * 466f552 - 2017-08-26: Fixed more Trakt API issues 
 - * 4387aa8 - 2017-08-26: Fixed issues with Trakt API oAuth 
 - * 0061eef - 2017-08-26: Added more debug logging to shutdown sequence 
