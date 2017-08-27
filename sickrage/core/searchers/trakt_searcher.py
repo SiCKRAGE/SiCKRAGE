@@ -193,6 +193,9 @@ class srTraktSearcher(object):
                                                        (show.name, ep.season, ep.episode))
                         trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
 
+                # flush episodes objects from show object
+                show.flushEpisodes()
+
             if len(trakt_data):
                 try:
                     data = self.trakt_bulk_data_generate(trakt_data)
@@ -217,6 +220,9 @@ class srTraktSearcher(object):
                         sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
                                                        (show.name, ep.season, ep.episode))
                         trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
+
+                # flush episodes objects from show object
+                show.flushEpisodes()
 
             if len(trakt_data):
                 try:
@@ -258,6 +264,9 @@ class srTraktSearcher(object):
                                                        (show.name, ep.season, ep.episode))
                         trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
 
+                # flush episodes objects from show object
+                show.flushEpisodes()
+
             if len(trakt_data):
                 try:
                     data = self.trakt_bulk_data_generate(trakt_data)
@@ -282,6 +291,9 @@ class srTraktSearcher(object):
                         sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
                                                        (show.name, ep.season, ep.episode))
                         trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
+
+                # flush episodes objects from show object
+                show.flushEpisodes()
 
             if len(trakt_data):
                 try:
