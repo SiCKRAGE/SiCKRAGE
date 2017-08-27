@@ -99,12 +99,13 @@ class srTraktSearcher(object):
         traktShow = None
 
         try:
-            library = srTraktAPI()["sync/collection"].shows()
+            library = srTraktAPI()["sync/collection"].shows() or {}
             if not library:
                 sickrage.srCore.srLogger.debug("No shows found in your library, aborting library update")
                 return
 
-            traktShow = [x for x in library if int(indexerid) == int(x.ids[srIndexerApi(indexer).config['trakt_id']])]
+            traktShow = [x for _, x in library.items() if
+                         int(indexerid) == int(x.ids[srIndexerApi(indexer).config['trakt_id']])]
         except traktException as e:
             sickrage.srCore.srLogger.warning(
                 "Could not connect to Trakt service. Aborting library check. Error: %s" % repr(e))
@@ -186,9 +187,7 @@ class srTraktSearcher(object):
                 for e in [e['doc'] for e in
                           sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     if self._checkInList(srIndexerApi(s["indexer"]).config['trakt_id'],
-                                         str(e["showid"]), str(e["season"]),
-                                         str(e["episode"]),
-                                         List='Collection'):
+                                         str(e["showid"]), e["season"], e["episode"], List='Collection'):
 
                         if e["location"] == '':
                             sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
@@ -216,8 +215,7 @@ class srTraktSearcher(object):
                 for e in [e['doc'] for e in
                           sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     if not self._checkInList(srIndexerApi(s["indexer"]).config['trakt_id'],
-                                             str(e["showid"]), str(e["season"]),
-                                             str(e["episode"]), List='Collection'):
+                                             str(e["showid"]), e["season"], e["episode"], List='Collection'):
                         sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
                                                        (s["show_name"], e["season"],
                                                         e["episode"]))
@@ -258,9 +256,9 @@ class srTraktSearcher(object):
             for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
                 for e in [e['doc'] for e in
                           sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
-                    if self._checkInList(srIndexerApi(s["indexer"]).config['trakt_id'], str(e["showid"]),
-                                         str(e["season"]), str(e["episode"])) and e[
-                        "status"] not in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]:
+                    if self._checkInList(srIndexerApi(s["indexer"]).config['trakt_id'],
+                                         str(e["showid"]), e["season"], e["episode"]) \
+                            and e["status"] not in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]:
                         sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" % (
                             s["show_name"], e["season"], e["episode"]))
 
@@ -287,7 +285,7 @@ class srTraktSearcher(object):
                 for e in [e['doc'] for e in
                           sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     if not self._checkInList(srIndexerApi(s["indexer"]).config['trakt_id'],
-                                             str(e["showid"]), str(e["season"]), str(e["episode"])):
+                                             str(e["showid"]), e["season"], e["episode"]):
                         sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
                                                        (s["show_name"], e["season"], e["episode"]))
                         trakt_data.append(
@@ -310,7 +308,7 @@ class srTraktSearcher(object):
             trakt_data = []
             for show in sickrage.srCore.SHOWLIST or []:
                 if not self._checkInList(srIndexerApi(show.indexer).config['trakt_id'],
-                                         str(show.indexerid), '0', '0', List='Show'):
+                                         str(show.indexerid), 0, 0, List='Show'):
                     sickrage.srCore.srLogger.debug(
                         "Adding Show: Indexer %s %s - %s to Watchlist" % (
                             srIndexerApi(show.indexer).config['trakt_id'], str(show.indexerid), show.name))
@@ -360,16 +358,21 @@ class srTraktSearcher(object):
             sickrage.srCore.srLogger.debug("No shows found in your watchlist, aborting watchlist update")
             return
 
-        for indexer in srIndexerApi().indexers:
-            trakt_id = srIndexerApi(indexer).config['trakt_id']
-            for show_el in self.ShowWatchlist[trakt_id]:
-                indexer_id = int(str(show_el))
-                show = self.ShowWatchlist[trakt_id][show_el]
+        for key, show in self.ShowWatchlist.items():
+            # get traktID and indexerID values
+            trakt_id, indexer_id = key
 
+            try:
+                # determine
+                indexer = srIndexerApi().indexersByTraktID[trakt_id]
+            except KeyError:
+                continue
+
+            if trakt_id == srIndexerApi(indexer).trakt_id:
                 if int(sickrage.srCore.srConfig.TRAKT_METHOD_ADD) != 2:
-                    self.addDefaultShow(indexer, indexer_id, show['title'], SKIPPED)
+                    self.addDefaultShow(indexer, indexer_id, show.title, SKIPPED)
                 else:
-                    self.addDefaultShow(indexer, indexer_id, show['title'], WANTED)
+                    self.addDefaultShow(indexer, indexer_id, show.title, WANTED)
 
                 if int(sickrage.srCore.srConfig.TRAKT_METHOD_ADD) == 1:
                     newShow = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
@@ -378,6 +381,7 @@ class srTraktSearcher(object):
                         setEpisodeToWanted(newShow, 1, 1)
                     else:
                         self.todoWanted.append((indexer_id, 1, 1))
+
         sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Show Watchlist")
 
     def updateEpisodes(self):
@@ -392,34 +396,35 @@ class srTraktSearcher(object):
 
         managed_show = []
 
-        for indexer in srIndexerApi().indexers:
-            trakt_id = srIndexerApi(indexer).config['trakt_id']
-            for show_el in self.EpisodeWatchlist[trakt_id]:
-                indexer_id = int(show_el)
-                show = self.EpisodeWatchlist[trakt_id][show_el]
+        for key, show in self.EpisodeWatchlist.items():
+            # get traktID and indexerID values
+            trakt_id, indexer_id = key
 
-                newShow = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
+            try:
+                # determine
+                indexer = srIndexerApi().indexersByTraktID[trakt_id]
+            except KeyError:
+                continue
 
-                try:
-                    if newShow is None:
-                        if indexer_id not in managed_show:
-                            self.addDefaultShow(indexer, indexer_id, show['title'], SKIPPED)
-                            managed_show.append(indexer_id)
+            newShow = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
 
-                            for season_el in show['seasons']:
-                                season = int(season_el)
+            try:
+                if newShow is None:
+                    if indexer_id not in managed_show:
+                        self.addDefaultShow(indexer, indexer_id, show.title, SKIPPED)
+                        managed_show.append(indexer_id)
 
-                                for episode_el in show['seasons'][season_el]['episodes']:
-                                    self.todoWanted.append((indexer_id, season, int(episode_el)))
-                    else:
-                        if newShow.indexer == indexer:
-                            for season_el in show['seasons']:
-                                season = int(season_el)
+                        for season_number, season in show.seasons.items():
+                            for episode_number, _ in season.episodes.items():
+                                self.todoWanted.append((int(indexer_id), int(season_number), int(episode_number)))
+                else:
+                    if newShow.indexer == indexer:
+                        for season_number, season in show.seasons.items():
+                            for episode_number, _ in season.episodes.items():
+                                setEpisodeToWanted(newShow, int(season_number), int(episode_number))
+            except TypeError:
+                sickrage.srCore.srLogger.debug("Could not parse the output from trakt for %s " % show.title)
 
-                                for episode_el in show['seasons'][season_el]['episodes']:
-                                    setEpisodeToWanted(newShow, season, int(episode_el))
-                except TypeError:
-                    sickrage.srCore.srLogger.debug("Could not parse the output from trakt for %s " % show["title"])
         sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Episode Watchlist")
 
     @staticmethod
@@ -474,20 +479,17 @@ class srTraktSearcher(object):
         """
         if "Collection" == List:
             try:
-                if self.Collectionlist[trakt_id][showid]['seasons'][season]['episodes'][episode] == episode:
-                    return True
+                if self.Collectionlist[trakt_id, showid].seasons[int(season)].episodes[int(episode)]: return True
             except Exception:
                 return False
         elif "Show" == List:
             try:
-                if self.ShowWatchlist[trakt_id][showid]['id'] == showid:
-                    return True
+                if self.ShowWatchlist[trakt_id, showid]: return True
             except Exception:
                 return False
         else:
             try:
-                if self.EpisodeWatchlist[trakt_id][showid]['seasons'][season]['episodes'][episode] == episode:
-                    return True
+                if self.EpisodeWatchlist[trakt_id, showid].seasons[int(season)].episodes[int(episode)]: return True
             except Exception:
                 return False
 
@@ -496,20 +498,8 @@ class srTraktSearcher(object):
         Get Watchlist and parse once into addressable structure
         """
         try:
-            TraktShowWatchlist = srTraktAPI()["sync/watchlist"].shows() or []
-
-            self.ShowWatchlist = {}
-            for indexer in srIndexerApi().indexers:
-                trakt_id = srIndexerApi(indexer).config['trakt_id']
-                for watchlist_el in TraktShowWatchlist:
-                    title = watchlist_el.title
-                    year = str(watchlist_el.year)
-                    showid = str(watchlist_el.ids[trakt_id])
-
-                    self.ShowWatchlist.update(
-                        {trakt_id: {showid: {'id': showid,
-                                             'title': title,
-                                             'year': year}}})
+            sickrage.srCore.srLogger.debug("Getting Show Watchlist")
+            self.ShowWatchlist = srTraktAPI()["sync/watchlist"].shows() or {}
         except traktException as e:
             sickrage.srCore.srLogger.warning(
                 "Could not connect to trakt service, cannot download Show Watchlist: %s" % repr(e))
@@ -521,24 +511,8 @@ class srTraktSearcher(object):
          Get Watchlist and parse once into addressable structure
         """
         try:
-            TraktEpisodeWatchlist = srTraktAPI()["sync/watchlist"].episodes() or []
-
-            self.EpisodeWatchlist = {}
-            for indexer in srIndexerApi().indexers:
-                trakt_id = srIndexerApi(indexer).config['trakt_id']
-                for watchlist_el in TraktEpisodeWatchlist:
-                    title = watchlist_el.title
-                    year = str(watchlist_el.year)
-                    season = str(watchlist_el['episode']['season'])
-                    episode = str(watchlist_el['episode']['number'])
-                    showid = str(watchlist_el.ids[trakt_id])
-
-                    self.EpisodeWatchlist.update(
-                        {trakt_id: {showid: {'id': showid,
-                                             'title': title,
-                                             'year': year,
-                                             'seasons': {season: {'s': season,
-                                                                  'episodes': {episode: episode}}}}}})
+            sickrage.srCore.srLogger.debug("Getting Episode Watchlist")
+            self.EpisodeWatchlist = srTraktAPI()["sync/watchlist"].episodes() or {}
         except traktException as e:
             sickrage.srCore.srLogger.warning(
                 "Could not connect to trakt service, cannot download Episode Watchlist: %s" % repr(e))
@@ -552,28 +526,7 @@ class srTraktSearcher(object):
         """
         try:
             sickrage.srCore.srLogger.debug("Getting Show Collection")
-
-            TraktCollectionList = srTraktAPI()["sync/collection"].shows() or []
-
-            self.Collectionlist = {}
-            for indexer in srIndexerApi().indexers:
-                trakt_id = srIndexerApi(indexer).config['trakt_id']
-                for watchlist_el in TraktCollectionList:
-                    title = watchlist_el.title
-                    year = str(watchlist_el.year)
-                    for season_el in watchlist_el.seasons or []:
-                        for episode_el in season_el.episodes:
-                            season = str(season_el.number)
-                            episode = str(episode_el.number)
-                            showid = str(watchlist_el.ids[trakt_id])
-
-                            self.Collectionlist.update(
-                                {trakt_id: {showid: {'id': showid,
-                                                     'title': title,
-                                                     'year': year,
-                                                     'seasons': {season: {'s': season,
-                                                                          'episodes': {episode: episode}}}}}})
-
+            self.Collectionlist = srTraktAPI()["sync/collection"].shows() or {}
         except traktException as e:
             sickrage.srCore.srLogger.warning(
                 "Could not connect to trakt service, cannot download Show Collection: %s" % repr(e))

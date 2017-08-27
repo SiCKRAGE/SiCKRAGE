@@ -42,6 +42,10 @@ class srIndexerApi(object):
         return indexerConfig[self.indexerID]['name']
 
     @property
+    def trakt_id(self):
+        return indexerConfig[self.indexerID]['trakt_id']
+
+    @property
     def api_params(self):
         if sickrage.srCore.srConfig.PROXY_SETTING and sickrage.srCore.srConfig.PROXY_INDEXERS:
             indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.srCore.srConfig.PROXY_SETTING
@@ -55,6 +59,10 @@ class srIndexerApi(object):
     @property
     def indexers(self):
         return dict((int(x['id']), x['name']) for x in indexerConfig.values())
+
+    @property
+    def indexersByTraktID(self):
+        return dict((x['trakt_id'], int(x['id'])) for x in indexerConfig.values())
 
     def searchForShowID(self, regShowName, showid=None, ui=ShowListUI):
         """

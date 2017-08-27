@@ -2471,9 +2471,7 @@ class HomeAddShows(Home):
         # URL parameters
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
 
-        srTraktAPI()[
-            "users/" + sickrage.srCore.srConfig.TRAKT_USERNAME + "/lists/" + sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME
-            ].add(data)
+        srTraktAPI()["users/me/lists/{list}".format(list=sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME)].add(data)
 
         return self.redirect('/home/addShows/trendingShows/')
 

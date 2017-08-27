@@ -207,8 +207,7 @@ class TraktNotifier(srNotifiers):
         """
         try:
             if blacklist_name and blacklist_name is not None:
-                if not srTraktAPI()["users/{username}/lists/{list}".format(username=username,
-                                                                           list=blacklist_name)].get():
+                if not srTraktAPI()["users/me/lists/{list}".format(list=blacklist_name)].get():
                     return "Trakt blacklist doesn't exists"
             return "Test notice sent successfully to Trakt"
         except Exception as e:
