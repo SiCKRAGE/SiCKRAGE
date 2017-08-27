@@ -191,10 +191,10 @@ class srTraktSearcher(object):
                     if e["location"]: continue
                     trakt_id = srIndexerApi(s["indexer"]).trakt_id
                     if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
-                            sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
-                                                           (s["show_name"], e["season"], e["episode"]))
-                            trakt_data.append(
-                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
+                        sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
+                                                       (s["show_name"], e["season"], e["episode"]))
+                        trakt_data.append(
+                            (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
@@ -219,10 +219,10 @@ class srTraktSearcher(object):
                     if not e["location"]: continue
                     trakt_id = srIndexerApi(s["indexer"]).trakt_id
                     if not self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
-                            sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
-                                                           (s["show_name"], e["season"], e["episode"]))
-                            trakt_data.append(
-                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
+                        sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
+                                                       (s["show_name"], e["season"], e["episode"]))
+                        trakt_data.append(
+                            (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
@@ -262,10 +262,10 @@ class srTraktSearcher(object):
                     if e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
                     trakt_id = srIndexerApi(s["indexer"]).trakt_id
                     if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
-                            sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
-                                                           (s["show_name"], e["season"], e["episode"]))
-                            trakt_data.append(
-                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
+                        sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
+                                                       (s["show_name"], e["season"], e["episode"]))
+                        trakt_data.append(
+                            (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
@@ -290,10 +290,10 @@ class srTraktSearcher(object):
                     if not e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
                     trakt_id = srIndexerApi(s["indexer"]).trakt_id
                     if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
-                            sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
-                                                           (s["show_name"], e["season"], e["episode"]))
-                            trakt_data.append(
-                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
+                        sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
+                                                       (s["show_name"], e["season"], e["episode"]))
+                        trakt_data.append(
+                            (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
