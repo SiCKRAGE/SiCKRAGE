@@ -72,7 +72,6 @@ if not (LIBS_DIR in sys.path):
     site.addsitedir(LIBS_DIR)
     sys.path.extend(remainder)
 
-
 class Daemon(object):
     """
     Usage: subclass the Daemon class
@@ -225,6 +224,15 @@ def version():
 
 def main():
     global srCore, daemon, io_loop, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+
+    # removes stale .pyc files
+    for root, dirs, files in os.walk("."):
+        pyc_files = filter(lambda filename: filename.endswith(".pyc"), files)
+        py_files = set(filter(lambda filename: filename.endswith(".py"), files))
+        excess_pyc_files = filter(lambda pyc_filename: pyc_filename[:-1] not in py_files, pyc_files)
+        for excess_pyc_file in excess_pyc_files:
+            full_path = os.path.join(root, excess_pyc_file)
+            os.remove(full_path)
 
     try:
         from tornado.ioloop import IOLoop

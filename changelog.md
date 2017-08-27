@@ -1,6 +1,7 @@
 # Changelog
 
-- * bd78d50 - 2017-08-27: Added code to remove old/stale PYC files that could cause potential issues 
+- * fae8849 - 2017-08-27: Moved code to core for removing stale .pyc files 
+- * 44b1aac - 2017-08-27: Added code to remove old/stale PYC files that could cause potential issues 
 - * 145cfb8 - 2017-08-27: Fixed issues with syncing Trakt library when we don&#x27;t want to sync Trakt watchlist 
 - * 8b40401 - 2017-08-27: Added check_setting_json for loading saved json data from config file 
 - * 14d95ee - 2017-08-27: Grabs data from global SHOWLIST instead of database calls Added trakt_id property to indexerAPI 

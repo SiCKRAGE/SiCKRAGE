@@ -19,16 +19,6 @@
 
 from __future__ import unicode_literals
 
-import os
-
 if __name__ == '__main__':
-    for root, dirs, files in os.walk("."):
-        pyc_files = filter(lambda filename: filename.endswith(".pyc"), files)
-        py_files = set(filter(lambda filename: filename.endswith(".py"), files))
-        excess_pyc_files = filter(lambda pyc_filename: pyc_filename[:-1] not in py_files, pyc_files)
-        for excess_pyc_file in excess_pyc_files:
-            full_path = os.path.join(root, excess_pyc_file)
-            os.remove(full_path)
-
     from sickrage import main
     main()
