@@ -342,8 +342,7 @@ class srTraktSearcher(object):
                             show.name, repr(e)))
                     return
 
-                if getattr(progress, 'aired') and getattr(progress,
-                                                          'completed') in progress and progress.aired == progress.completed:
+                if progress.status in ['canceled', 'ended']:
                     sickrage.srCore.SHOWQUEUE.removeShow(show, full=True)
                     sickrage.srCore.srLogger.debug("Show: %s has been removed from SiCKRAGE" % show.name)
 
