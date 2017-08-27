@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7d3e5a6 - 2017-08-27: Added more Trakt list selections to choose from when adding new shows 
+- * b286ac4 - 2017-08-27: Updated network logos 
+- * 39010a4 - 2017-08-27: Added more Trakt list selections to choose from when adding new shows 
 - * 81ac249 - 2017-08-27: Release v9.1.13 
 - * 70827c7 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
 - * 80d6406 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
