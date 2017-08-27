@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9993c47 - 2017-08-27: Added recommendations module to Trakt library Fixed Trakt sync to remove shows from Trakt collection not present in SiCKRAGE 
+- * 62e25d2 - 2017-08-27: Fixed some small issues with Trakt syncing 
+- * 1603b54 - 2017-08-27: Added recommendations module to Trakt library Fixed Trakt sync to remove shows from Trakt collection not present in SiCKRAGE 
 - * 8773ae2 - 2017-08-27: Added CBS All Access network logo 
 - * 47d5da0 - 2017-08-27: Added unidecode to requirements.txt 
 - * be50e92 - 2017-08-27: Updated network logos 

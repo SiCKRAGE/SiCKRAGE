@@ -107,17 +107,17 @@ class srTraktSearcher(object):
                 self.updateShows()
 
             if self._getEpisodeWatchlist():
-                self.addEpisodeToTraktWatchList()
+                self.addEpisodesToTraktWatchList()
                 if sickrage.srCore.srConfig.TRAKT_REMOVE_SHOW_FROM_SICKRAGE:
-                    self.removeEpisodeFromTraktWatchList()
+                    self.removeEpisodesFromTraktWatchList()
                 self.updateEpisodes()
 
     def syncCollection(self):
         sickrage.srCore.srLogger.debug("Syncing SiCKRAGE with Trakt Collection")
         if self._getShowCollection():
-            self.addToTraktCollection()
+            self.addEpisodesToTraktCollection()
             if sickrage.srCore.srConfig.TRAKT_SYNC_REMOVE:
-                self.removeFromTraktCollection()
+                self.removeEpisodesFromTraktCollection()
 
     def findShowMatch(self, indexer, indexerid):
         traktShow = None
@@ -189,7 +189,7 @@ class srTraktSearcher(object):
                         show_obj.name, repr(e)))
                 return
 
-    def addToTraktCollection(self):
+    def addEpisodesToTraktCollection(self):
         trakt_data = []
 
         sickrage.srCore.srLogger.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
@@ -198,7 +198,7 @@ class srTraktSearcher(object):
             for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
-                if not e["location"]: continue
+
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if not self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
                     sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
@@ -215,31 +215,17 @@ class srTraktSearcher(object):
 
         sickrage.srCore.srLogger.debug("COLLECTION::ADD::FINISH - Look for Episodes to Add to Trakt Collection")
 
-    def removeFromTraktCollection(self):
+    def removeEpisodesFromTraktCollection(self):
         trakt_data = []
 
         sickrage.srCore.srLogger.debug(
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
-        # remove shows that don't exist in sickrage from trakt collection
-        for key, show in self.Collectionlist.items():
-            # get traktID and indexerID values
-            trakt_id, indexer_id = key
-
-            try:
-                # determine
-                indexer = srIndexerApi().indexersByTraktID[trakt_id]
-            except KeyError:
-                continue
-
-            if findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id)): continue
-            trakt_data.append((indexer_id, indexer, show.title, show.year, 0, 0))
-
-        # remove episodes with no location set from trakt collection
         for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
+
                 if e["location"]: continue
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
@@ -258,7 +244,7 @@ class srTraktSearcher(object):
         sickrage.srCore.srLogger.debug(
             "COLLECTION::REMOVE::FINISH - Look for Episodes to Remove From Trakt Collection")
 
-    def removeEpisodeFromTraktWatchList(self):
+    def removeEpisodesFromTraktWatchList(self):
         trakt_data = []
 
         sickrage.srCore.srLogger.debug(
@@ -268,7 +254,7 @@ class srTraktSearcher(object):
             for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
-                if e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
+
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
                     sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
@@ -287,7 +273,7 @@ class srTraktSearcher(object):
         sickrage.srCore.srLogger.debug(
             "WATCHLIST::REMOVE::FINISH - Look for Episodes to Remove from Trakt Watchlist")
 
-    def addEpisodeToTraktWatchList(self):
+    def addEpisodesToTraktWatchList(self):
         trakt_data = []
 
         sickrage.srCore.srLogger.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
@@ -296,6 +282,7 @@ class srTraktSearcher(object):
             for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
+
                 if not e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
