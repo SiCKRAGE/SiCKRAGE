@@ -1,6 +1,7 @@
 # Changelog
 
-- * 376ae9f - 2017-08-27: Added arrow lib to requirements for Trakt API module 
+- * 564a46f - 2017-08-27: Fixed startup issue do to unicode decode on os.walk 
+- * 0beea2b - 2017-08-27: Added arrow lib to requirements for Trakt API module 
 - * 27326ca - 2017-08-27: Moved code to core for removing stale .pyc files 
 - * 44b1aac - 2017-08-27: Added code to remove old/stale PYC files that could cause potential issues 
 - * 145cfb8 - 2017-08-27: Fixed issues with syncing Trakt library when we don&#x27;t want to sync Trakt watchlist 
