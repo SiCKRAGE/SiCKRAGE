@@ -51,7 +51,7 @@ from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
-    MultipleShowObjectsException, NoNFOException, CantRemoveShowException
+    NoNFOException, CantRemoveShowException
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
@@ -59,6 +59,7 @@ from sickrage.core.helpers import argToBool, backupSR, check_url, \
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
+from sickrage.core.media.util import indexerImage
 from sickrage.core.nameparser import validator
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
@@ -68,7 +69,7 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_absolute_numbering_for_show, get_scene_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_xem_numbering_for_show, set_scene_numbering, xem_refresh
-from sickrage.core.trakt import TraktAPI, traktException
+from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History as HistoryTool
@@ -492,6 +493,9 @@ class WebRoot(WebHandler):
             controller='root',
             action='schedule'
         )
+
+    def getIndexerImage(self, indexerid):
+        return indexerImage(id=indexerid, which="poster_thumb").url
 
 
 @Route('/google(/?.*)')
@@ -951,10 +955,7 @@ class Home(WebHandler):
 
     @staticmethod
     def getTraktToken(trakt_pin=None):
-
-        trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
-        response = trakt_api.traktToken(trakt_pin)
-        if response:
+        if srTraktAPI().authenticate(trakt_pin):
             return "Trakt Authorized"
         return "Trakt Not Authorized!"
 
@@ -1635,6 +1636,13 @@ class Home(WebHandler):
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
         else:
             return self.redirect('/home/')
+
+    def syncTrakt(self):
+        if sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER').func():
+            sickrage.srCore.srLogger.info("Syncing Trakt with SiCKRAGE")
+            sickrage.srCore.srNotifications.message('Syncing Trakt with SiCKRAGE')
+
+        return self.redirect("/home/")
 
     def deleteEpisode(self, show=None, eps=None, direct=False):
         if not all([show, eps]):
@@ -2422,138 +2430,22 @@ class HomeAddShows(Home):
             action="new_show"
         )
 
-    def recommendedShows(self):
-        """
-        Display the new show page which collects a tvdb id, folder, and extra options and
-        posts them to addNewShow
-        """
-        return self.render(
-            "/home/recommended_shows.mako",
-            title="Recommended Shows",
-            header="Recommended Shows",
-            enable_anime_options=False,
-            controller='home',
-            action="recommended_shows"
-        )
-
-    def getRecommendedShows(self):
-        blacklist = False
-        recommended_shows = []
-        trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
-
-        try:
-            shows = trakt_api.traktRequest("recommendations/shows?extended=full,images") or []
-            for show in shows:
-                show = {'show': show}
-                show_id = int(show['show']['ids']['tvdb']) or None
-
-                try:
-                    if not findCertainShow(sickrage.srCore.SHOWLIST, [show_id]):
-                        library_shows = trakt_api.traktRequest("sync/collection/shows?extended=full") or []
-                        if show_id in (lshow['show']['ids']['tvdb'] for lshow in library_shows):
-                            continue
-
-                    if sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME is not None and sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME:
-                        not_liked_show = trakt_api.traktRequest(
-                            "users/{}/lists/{}/items".format(sickrage.srCore.srConfig.TRAKT_USERNAME,
-                                                             sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME))
-                        if not_liked_show and [nlshow for nlshow in not_liked_show if (
-                                        show_id == nlshow['show']['ids']['tvdb'] and nlshow['type'] == 'show')]:
-                            continue
-
-                        recommended_shows += [show]
-                except MultipleShowObjectsException:
-                    continue
-
-            if sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME != '':
-                blacklist = True
-
-        except traktException as e:
-            sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
-
-        return self.render(
-            "/home/recommended_shows.mako",
-            title="Recommended Shows",
-            header="Recommended Shows",
-            trending_shows=recommended_shows,
-            blacklist=blacklist,
-            controller='home',
-            action="recommended_shows"
-        )
-
-    def trendingShows(self):
-        """
-        Display the new show page which collects a tvdb id, folder, and extra options and
-        posts them to addNewShow
-        """
-        return self.render(
-            "/home/trending_shows.mako",
-            title="Trending Shows",
-            header="Trending Shows",
-            enable_anime_options=False,
-            controller='home',
-            action="trending_shows"
-        )
-
-    def getTrendingShows(self):
+    def traktShows(self):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
         """
 
-        blacklist = False
-        trending_shows = []
-        trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
+        trakt_shows, black_list = srTraktAPI()['shows'].trending(extended="full"), False
 
-        try:
-            not_liked_show = ""
-            if sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME is not None and sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME:
-                not_liked_show = trakt_api.traktRequest(
-                    "users/" + sickrage.srCore.srConfig.TRAKT_USERNAME + "/lists/" + sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME + "/items") or []
-            else:
-                sickrage.srCore.srLogger.debug("trending blacklist name is empty")
-
-            limit_show = 50 + len(not_liked_show)
-
-            shows = trakt_api.traktRequest("shows/trending?limit=" + str(limit_show) + "&extended=full,images") or []
-
-            library_shows = trakt_api.traktRequest("sync/collection/shows?extended=full") or []
-            for show in shows:
-                show = {'show': show}
-                show_id = show['show']['ids']['tvdb']
-
-                try:
-                    if not findCertainShow(sickrage.srCore.SHOWLIST, [int(show['show']['ids']['tvdb'])]):
-                        if show_id not in [lshow['show']['ids']['tvdb'] for lshow in library_shows]:
-                            if sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME:
-                                not_liked_show = trakt_api.traktRequest(
-                                    "users/{}/lists/{}/items".format(sickrage.srCore.srConfig.TRAKT_USERNAME,
-                                                                     sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME))
-                                if not_liked_show and [nlshow for nlshow in not_liked_show if (
-                                                show_id == nlshow['show']['ids']['tvdb'] and nlshow[
-                                            'type'] == 'show')]:
-                                    continue
-
-                                trending_shows += [show]
-                            else:
-                                trending_shows += [show]
-
-                except MultipleShowObjectsException:
-                    continue
-
-            if sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME != '':
-                blacklist = True
-
-        except traktException as e:
-            sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
-
-        return self.render(
-            "/home/trending_shows.mako",
-            blacklist=blacklist,
-            trending_shows=trending_shows,
-            controller='home',
-            action="trending_shows"
-        )
+        return self.render("/home/trakt_shows.mako",
+                           title="Trakt Trending Shows",
+                           header="Trakt Trending Shows",
+                           enable_anime_options=False,
+                           black_list=black_list,
+                           trakt_shows=trakt_shows,
+                           controller='home',
+                           action="trakt_shows")
 
     def popularShows(self):
         """
@@ -2566,26 +2458,20 @@ class HomeAddShows(Home):
         except Exception as e:
             popular_shows = None
 
-        return self.render("/home/popular_shows.mako",
-                           title="Popular Shows",
-                           header="Popular Shows",
+        return self.render("/home/imdb_shows.mako",
+                           title="IMDB Popular Shows",
+                           header="IMDB Popular Shows",
                            popular_shows=popular_shows,
                            imdb_exception=e,
                            topmenu="home",
                            controller='home',
-                           action="popular_shows"
-                           )
+                           action="popular_shows")
 
     def addShowToBlacklist(self, indexer_id):
         # URL parameters
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
 
-        trakt_api = TraktAPI(sickrage.srCore.srConfig.SSL_VERIFY, sickrage.srCore.srConfig.TRAKT_TIMEOUT)
-
-        trakt_api.traktRequest(
-            "users/" + sickrage.srCore.srConfig.TRAKT_USERNAME + "/lists/" + sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME + "/items",
-            data,
-            method='POST')
+        srTraktAPI()["users/me/lists/{list}".format(list=sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME)].add(data)
 
         return self.redirect('/home/addShows/trendingShows/')
 
@@ -2600,10 +2486,14 @@ class HomeAddShows(Home):
                            header='Existing Show',
                            topmenu="home",
                            controller='home',
-                           action="add_existing_shows"
-                           )
+                           action="add_existing_shows")
 
-    def addTraktShow(self, indexer_id, showName):
+    def addShowByID(self, indexer_id, showName):
+        if re.search(r'tt\d+', indexer_id):
+            lINDEXER_API_PARMS = srIndexerApi(1).api_params.copy()
+            t = srIndexerApi(1).indexer(**lINDEXER_API_PARMS)
+            indexer_id = t[indexer_id]['id']
+
         if findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id)):
             return
 
@@ -2619,8 +2509,8 @@ class HomeAddShows(Home):
             if not dir_exists:
                 sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
                 return
-            else:
-                chmodAsParent(show_dir)
+
+            chmodAsParent(show_dir)
 
             sickrage.srCore.SHOWQUEUE.addShow(indexer=1,
                                               indexer_id=int(indexer_id),
@@ -4519,16 +4409,12 @@ class ConfigNotifications(Config):
         )
 
     def saveNotifications(self, use_kodi=None, kodi_always_on=None, kodi_notify_onsnatch=None,
-                          kodi_notify_ondownload=None,
-                          kodi_notify_onsubtitledownload=None, kodi_update_onlyfirst=None,
+                          kodi_notify_ondownload=None, kodi_notify_onsubtitledownload=None, kodi_update_onlyfirst=None,
                           kodi_update_library=None, kodi_update_full=None, kodi_host=None, kodi_username=None,
-                          kodi_password=None,
-                          use_plex=None, plex_notify_onsnatch=None, plex_notify_ondownload=None,
+                          kodi_password=None, use_plex=None, plex_notify_onsnatch=None, plex_notify_ondownload=None,
                           plex_notify_onsubtitledownload=None, plex_update_library=None,
                           plex_server_host=None, plex_server_token=None, plex_host=None, plex_username=None,
-                          plex_password=None,
-                          use_plex_client=None, plex_client_username=None, plex_client_password=None,
-                          use_emby=None, emby_host=None, emby_apikey=None,
+                          plex_password=None, use_emby=None, emby_host=None, emby_apikey=None,
                           use_growl=None, growl_notify_onsnatch=None, growl_notify_ondownload=None,
                           growl_notify_onsubtitledownload=None, growl_host=None, growl_password=None,
                           use_freemobile=None, freemobile_notify_onsnatch=None, freemobile_notify_ondownload=None,
@@ -4548,13 +4434,12 @@ class ConfigNotifications(Config):
                           libnotify_notify_onsubtitledownload=None,
                           use_nmj=None, nmj_host=None, nmj_database=None, nmj_mount=None, use_synoindex=None,
                           use_nmjv2=None, nmjv2_host=None, nmjv2_dbloc=None, nmjv2_database=None,
-                          use_trakt=None, trakt_username=None, trakt_pin=None,
+                          use_trakt=None, trakt_username=None,
                           trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_remove_show_from_sickrage=None,
                           trakt_method_add=None,
                           trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None, trakt_sync_remove=None,
                           trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_timeout=None,
-                          trakt_blacklist_name=None,
-                          use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
+                          trakt_blacklist_name=None, use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
                           synologynotifier_notify_ondownload=None, synologynotifier_notify_onsubtitledownload=None,
                           use_pytivo=None, pytivo_notify_onsnatch=None, pytivo_notify_ondownload=None,
                           pytivo_notify_onsubtitledownload=None, pytivo_update_library=None,
@@ -4564,12 +4449,10 @@ class ConfigNotifications(Config):
                           use_pushalot=None, pushalot_notify_onsnatch=None, pushalot_notify_ondownload=None,
                           pushalot_notify_onsubtitledownload=None, pushalot_authorizationtoken=None,
                           use_pushbullet=None, pushbullet_notify_onsnatch=None, pushbullet_notify_ondownload=None,
-                          pushbullet_notify_onsubtitledownload=None, pushbullet_api=None, pushbullet_device=None,
-                          pushbullet_device_list=None,
+                          pushbullet_notify_onsubtitledownload=None, pushbullet_api=None, pushbullet_device_list=None,
                           use_email=None, email_notify_onsnatch=None, email_notify_ondownload=None,
                           email_notify_onsubtitledownload=None, email_host=None, email_port=25, email_from=None,
-                          email_tls=None, email_user=None, email_password=None, email_list=None, email_show_list=None,
-                          email_show=None):
+                          email_tls=None, email_user=None, email_password=None, email_list=None, **kwargs):
 
         results = []
 

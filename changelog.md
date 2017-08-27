@@ -1,6 +1,26 @@
 # Changelog
 
-- * f2862ef - 2017-08-22: Release v9.1.10 
+- * 2651aa0 - 2017-08-27: Release v9.1.13 
+- * 70827c7 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
+- * 80d6406 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
+- * 2935e89 - 2017-08-27: Added code to flush episode objects from show objects created during Trakt sync 
+- * b6172d5 - 2017-08-27: Fixed startup issue do to unicode decode on os.walk 
+- * 0beea2b - 2017-08-27: Added arrow lib to requirements for Trakt API module 
+- * 27326ca - 2017-08-27: Moved code to core for removing stale .pyc files 
+- * 44b1aac - 2017-08-27: Added code to remove old/stale PYC files that could cause potential issues 
+- * 145cfb8 - 2017-08-27: Fixed issues with syncing Trakt library when we don&#x27;t want to sync Trakt watchlist 
+- * 8b40401 - 2017-08-27: Added check_setting_json for loading saved json data from config file 
+- * 14d95ee - 2017-08-27: Grabs data from global SHOWLIST instead of database calls Added trakt_id property to indexerAPI 
+- * 466f552 - 2017-08-26: Fixed more Trakt API issues 
+- * 4387aa8 - 2017-08-26: Fixed issues with Trakt API oAuth 
+- * 0061eef - 2017-08-26: Added more debug logging to shutdown sequence 
+- * eba1be4 - 2017-08-26: Fixed shutdown issues with queues 
+- * e24895b - 2017-08-26: Added ability to sync trakt on demand to manage menu 
+- * d574ff0 - 2017-08-26: Added addShowByID function for adding shows via theTVDB using IMDB OR Trakt IDs 
+- * 943697c - 2017-08-23: Updating Trakt.tv API code 
+- * dcfdc7f - 2017-08-23: Fixed fanart lib issues 
+- * b2b3a7b - 2017-08-22: Removed LXML warning as we&#x27;ve replaced that with html5lib 
+- * 1662bb7 - 2017-08-22: Release v9.1.10 
 - * b5ad47a - 2017-08-22: Fixed app restart issues 
 - * 76f4ffc - 2017-08-22: Updated theTVDB API Show cache code 
 - * ba560dc - 2017-08-22: Release v9.1.9 

@@ -35,7 +35,7 @@ class Network(Media):
         return os.path.join('network', 'nonetwork.png')
 
     def get_media_path(self):
-        media_file = None
+        media_file = ''
 
         show = self.get_show()
         if show:

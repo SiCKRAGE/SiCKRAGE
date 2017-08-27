@@ -47,7 +47,6 @@ class srQueue(threading.Thread):
         self.amActive = False
         self.lock = threading.Lock()
         self.stop = threading.Event()
-        self.threads = []
 
     def run(self):
         """
@@ -68,7 +67,6 @@ class srQueue(threading.Thread):
                         self.currentItem = None
                     else:
                         self.currentItem.start()
-                        self.threads += [self.currentItem]
 
                 self.amActive = False
 
@@ -107,7 +105,6 @@ class srQueue(threading.Thread):
     def shutdown(self):
         self.stop.set()
         try:
-            [t.join() for t in self.threads if t.isAlive()]
             self.join(1)
         except:
             pass

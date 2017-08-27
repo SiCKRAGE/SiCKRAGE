@@ -21,9 +21,9 @@ from __future__ import unicode_literals
 
 import base64
 import datetime
+import json
 import os
 import os.path
-import pickle
 import re
 import sys
 import uuid
@@ -318,21 +318,20 @@ class srConfig(object):
         self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = 0
         self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = 0
         self.USE_TRAKT = 0
-        self.TRAKT_USERNAME = None
-        self.TRAKT_ACCESS_TOKEN = None
-        self.TRAKT_REFRESH_TOKEN = None
+        self.TRAKT_USERNAME = ""
+        self.TRAKT_OAUTH_TOKEN = ""
         self.TRAKT_REMOVE_WATCHLIST = 0
         self.TRAKT_REMOVE_SERIESLIST = 0
         self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = 0
         self.TRAKT_SYNC_WATCHLIST = 0
-        self.TRAKT_METHOD_ADD = None
+        self.TRAKT_METHOD_ADD = 0
         self.TRAKT_START_PAUSED = 0
         self.TRAKT_USE_RECOMMENDED = 0
         self.TRAKT_SYNC = 0
         self.TRAKT_SYNC_REMOVE = 0
-        self.TRAKT_DEFAULT_INDEXER = None
-        self.TRAKT_TIMEOUT = None
-        self.TRAKT_BLACKLIST_NAME = None
+        self.TRAKT_DEFAULT_INDEXER = 1
+        self.TRAKT_TIMEOUT = 30
+        self.TRAKT_BLACKLIST_NAME = ""
         self.USE_PYTIVO = 0
         self.PYTIVO_NOTIFY_ONSNATCH = 0
         self.PYTIVO_NOTIFY_ONDOWNLOAD = 0
@@ -420,9 +419,9 @@ class srConfig(object):
         self.THETVDB_APITOKEN = None
         self.TRAKT_API_KEY = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.TRAKT_API_SECRET = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
-        self.TRAKT_PIN_URL = 'https://trakt.tv/pin/4562'
+        self.TRAKT_APP_ID = '4562'
         self.TRAKT_OAUTH_URL = 'https://trakt.tv/'
-        self.TRAKT_API_URL = 'https://api-v2launch.trakt.tv/'
+        self.TRAKT_API_URL = 'https://api.trakt.tv/'
         self.FANART_API_KEY = '9b3afaf26f6241bdb57d6cc6bd798da7'
         self.SHOWS_RECENT = []
 
@@ -937,13 +936,25 @@ class srConfig(object):
         return my_val
 
     ################################################################################
-    # Check_setting_pickle                                                           #
+    # Check_setting_json                                                           #
     ################################################################################
-    def check_setting_pickle(self, section, key, def_val="", silent=True):
-        my_val = pickle.loads(self.CONFIG_OBJ.get(section, {section: key}).get(key, pickle.dumps(def_val)))
+    def check_setting_json(self, section, key, def_val="", silent=True):
+        my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
+
+        if my_val:
+            censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
+            if censored_regex.search(key) or (section, key) in self.CENSORED_ITEMS:
+                self.CENSORED_ITEMS[section, key] = my_val
 
         if not silent:
             print(key + " -> " + my_val)
+
+        try:
+            my_val = json.loads(my_val)
+        except TypeError:
+            my_val = json.loads(json.dumps(my_val))
+        except ValueError:
+            pass
 
         return my_val
 
@@ -996,8 +1007,10 @@ class srConfig(object):
         self.WEB_USE_GZIP = bool(self.check_setting_int('General', 'web_use_gzip', self.WEB_USE_GZIP))
         self.SSL_VERIFY = bool(self.check_setting_int('General', 'ssl_verify', self.SSL_VERIFY))
         self.LAUNCH_BROWSER = bool(self.check_setting_int('General', 'launch_browser', self.LAUNCH_BROWSER))
-        self.INDEXER_DEFAULT_LANGUAGE = self.check_setting_str('General', 'indexerDefaultLang', self.INDEXER_DEFAULT_LANGUAGE)
-        self.EP_DEFAULT_DELETED_STATUS = self.check_setting_int('General', 'ep_default_deleted_status', self.EP_DEFAULT_DELETED_STATUS)
+        self.INDEXER_DEFAULT_LANGUAGE = self.check_setting_str('General', 'indexerDefaultLang',
+                                                               self.INDEXER_DEFAULT_LANGUAGE)
+        self.EP_DEFAULT_DELETED_STATUS = self.check_setting_int('General', 'ep_default_deleted_status',
+                                                                self.EP_DEFAULT_DELETED_STATUS)
         self.DOWNLOAD_URL = self.check_setting_str('General', 'download_url', self.DOWNLOAD_URL)
         self.CPU_PRESET = self.check_setting_str('General', 'cpu_preset', self.CPU_PRESET)
         self.ANON_REDIRECT = self.check_setting_str('General', 'anon_redirect', self.ANON_REDIRECT)
@@ -1010,7 +1023,8 @@ class srConfig(object):
         self.ENABLE_HTTPS = bool(self.check_setting_int('General', 'enable_https', self.ENABLE_HTTPS))
         self.HTTPS_CERT = self.check_setting_str('General', 'https_cert', self.HTTPS_CERT)
         self.HTTPS_KEY = self.check_setting_str('General', 'https_key', self.HTTPS_KEY)
-        self.HANDLE_REVERSE_PROXY = bool(self.check_setting_int('General', 'handle_reverse_proxy', self.HANDLE_REVERSE_PROXY))
+        self.HANDLE_REVERSE_PROXY = bool(
+            self.check_setting_int('General', 'handle_reverse_proxy', self.HANDLE_REVERSE_PROXY))
         self.ROOT_DIRS = self.check_setting_str('General', 'root_dirs', self.ROOT_DIRS)
         self.QUALITY_DEFAULT = self.check_setting_int('General', 'quality_default', self.QUALITY_DEFAULT)
         self.STATUS_DEFAULT = self.check_setting_int('General', 'status_default', self.STATUS_DEFAULT)
@@ -1018,7 +1032,8 @@ class srConfig(object):
         self.VERSION_NOTIFY = bool(self.check_setting_int('General', 'version_notify', self.VERSION_NOTIFY))
         self.AUTO_UPDATE = bool(self.check_setting_int('General', 'auto_update', self.AUTO_UPDATE))
         self.NOTIFY_ON_UPDATE = bool(self.check_setting_int('General', 'notify_on_update', self.NOTIFY_ON_UPDATE))
-        self.FLATTEN_FOLDERS_DEFAULT = bool(self.check_setting_int('General', 'flatten_folders_default', self.FLATTEN_FOLDERS_DEFAULT))
+        self.FLATTEN_FOLDERS_DEFAULT = bool(
+            self.check_setting_int('General', 'flatten_folders_default', self.FLATTEN_FOLDERS_DEFAULT))
         self.INDEXER_DEFAULT = self.check_setting_int('General', 'indexer_default', self.INDEXER_DEFAULT)
         self.INDEXER_TIMEOUT = self.check_setting_int('General', 'indexer_timeout', self.INDEXER_TIMEOUT)
         self.ANIME_DEFAULT = bool(self.check_setting_int('General', 'anime_default', 0))
@@ -1317,24 +1332,27 @@ class srConfig(object):
 
         self.THETVDB_APITOKEN = self.check_setting_str('theTVDB', 'thetvdb_apitoken', '')
 
-        self.USE_TRAKT = bool(self.check_setting_int('Trakt', 'use_trakt', 0))
-        self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', '')
-        self.TRAKT_ACCESS_TOKEN = self.check_setting_str('Trakt', 'trakt_access_token', '')
-        self.TRAKT_REFRESH_TOKEN = self.check_setting_str('Trakt', 'trakt_refresh_token', '')
-        self.TRAKT_REMOVE_WATCHLIST = bool(self.check_setting_int('Trakt', 'trakt_remove_watchlist', 0))
+        self.USE_TRAKT = bool(self.check_setting_int('Trakt', 'use_trakt', self.USE_TRAKT))
+        self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', self.TRAKT_USERNAME)
+        self.TRAKT_OAUTH_TOKEN = self.check_setting_json('Trakt', 'trakt_oauth_token', self.TRAKT_OAUTH_TOKEN)
+        self.TRAKT_REMOVE_WATCHLIST = bool(
+            self.check_setting_int('Trakt', 'trakt_remove_watchlist', self.TRAKT_REMOVE_WATCHLIST))
         self.TRAKT_REMOVE_SERIESLIST = bool(
-            self.check_setting_int('Trakt', 'trakt_remove_serieslist', 0))
+            self.check_setting_int('Trakt', 'trakt_remove_serieslist', self.TRAKT_REMOVE_SERIESLIST))
         self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = bool(
-            self.check_setting_int('Trakt', 'trakt_remove_show_from_sickrage', 0))
-        self.TRAKT_SYNC_WATCHLIST = bool(self.check_setting_int('Trakt', 'trakt_sync_watchlist', 0))
-        self.TRAKT_METHOD_ADD = self.check_setting_int('Trakt', 'trakt_method_add', 0)
-        self.TRAKT_START_PAUSED = bool(self.check_setting_int('Trakt', 'trakt_start_paused', 0))
-        self.TRAKT_USE_RECOMMENDED = bool(self.check_setting_int('Trakt', 'trakt_use_recommended', 0))
-        self.TRAKT_SYNC = bool(self.check_setting_int('Trakt', 'trakt_sync', 0))
-        self.TRAKT_SYNC_REMOVE = bool(self.check_setting_int('Trakt', 'trakt_sync_remove', 0))
-        self.TRAKT_DEFAULT_INDEXER = self.check_setting_int('Trakt', 'trakt_default_indexer', 1)
-        self.TRAKT_TIMEOUT = self.check_setting_int('Trakt', 'trakt_timeout', 30)
-        self.TRAKT_BLACKLIST_NAME = self.check_setting_str('Trakt', 'trakt_blacklist_name', '')
+            self.check_setting_int('Trakt', 'trakt_remove_show_from_sickrage', self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE))
+        self.TRAKT_SYNC_WATCHLIST = bool(
+            self.check_setting_int('Trakt', 'trakt_sync_watchlist', self.TRAKT_SYNC_WATCHLIST))
+        self.TRAKT_METHOD_ADD = self.check_setting_int('Trakt', 'trakt_method_add', self.TRAKT_METHOD_ADD)
+        self.TRAKT_START_PAUSED = bool(self.check_setting_int('Trakt', 'trakt_start_paused', self.TRAKT_START_PAUSED))
+        self.TRAKT_USE_RECOMMENDED = bool(
+            self.check_setting_int('Trakt', 'trakt_use_recommended', self.TRAKT_USE_RECOMMENDED))
+        self.TRAKT_SYNC = bool(self.check_setting_int('Trakt', 'trakt_sync', self.TRAKT_SYNC))
+        self.TRAKT_SYNC_REMOVE = bool(self.check_setting_int('Trakt', 'trakt_sync_remove', self.TRAKT_SYNC_REMOVE))
+        self.TRAKT_DEFAULT_INDEXER = self.check_setting_int('Trakt', 'trakt_default_indexer',
+                                                            self.TRAKT_DEFAULT_INDEXER)
+        self.TRAKT_TIMEOUT = self.check_setting_int('Trakt', 'trakt_timeout', self.TRAKT_TIMEOUT)
+        self.TRAKT_BLACKLIST_NAME = self.check_setting_str('Trakt', 'trakt_blacklist_name', self.TRAKT_BLACKLIST_NAME)
 
         self.USE_PYTIVO = bool(self.check_setting_int('pyTivo', 'use_pytivo', 0))
         self.PYTIVO_NOTIFY_ONSNATCH = bool(
@@ -1431,7 +1449,7 @@ class srConfig(object):
         self.ANIDB_USE_MYLIST = bool(self.check_setting_int('ANIDB', 'anidb_use_mylist', 0))
         self.ANIME_SPLIT_HOME = bool(self.check_setting_int('ANIME', 'anime_split_home', 0))
 
-        self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes', self.QUALITY_SIZES)
+        self.QUALITY_SIZES = self.check_setting_json('Quality', 'sizes', self.QUALITY_SIZES)
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers', '')
 
@@ -1779,8 +1797,7 @@ class srConfig(object):
             'Trakt': {
                 'use_trakt': int(self.USE_TRAKT),
                 'trakt_username': self.TRAKT_USERNAME,
-                'trakt_access_token': self.TRAKT_ACCESS_TOKEN,
-                'trakt_refresh_token': self.TRAKT_REFRESH_TOKEN,
+                'trakt_oauth_token': json.dumps(self.TRAKT_OAUTH_TOKEN),
                 'trakt_remove_watchlist': int(self.TRAKT_REMOVE_WATCHLIST),
                 'trakt_remove_serieslist': int(self.TRAKT_REMOVE_SERIESLIST),
                 'trakt_remove_show_from_sickrage': int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE),
@@ -1876,7 +1893,7 @@ class srConfig(object):
                 'anime_split_home': int(self.ANIME_SPLIT_HOME),
             },
             'Quality': {
-                'sizes': pickle.dumps(self.QUALITY_SIZES),
+                'sizes': json.dumps(self.QUALITY_SIZES),
             },
             'Providers': {
                 'providers_order': sickrage.srCore.providersDict.provider_order,

@@ -15,7 +15,7 @@
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/newShow/" id="btnNewShow" class="btn btn-large">
                     <div class="button">
-                        <div class="icon-addnewshow"></div>
+                        <div class="icon-addnew-show"></div>
                     </div>
                     <div class="buttontext">
                         <h3>Add New Show</h3>
@@ -26,49 +26,32 @@
             </div>
         </div>
         <br/>
-        % if sickrage.srCore.srConfig.USE_TRAKT == True:
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="${srWebRoot}/home/addShows/trendingShows/" id="btnNewShow" class="btn btn-large">
-                        <div class="button">
-                            <div class="icon-addtrendingshow"></div>
-                        </div>
-                        <div class="buttontext">
-                            <h3>Add Trending Show</h3>
-                            <p>For shows that you haven't downloaded yet, this option lets you choose from a list of
-                                current
-                                trending shows with ratings to add, creates a directory for its episodes and adds
-                                it.</p>
-                        </div>
-                    </a>
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <a href="${srWebRoot}/home/addShows/traktShows" id="btnNewShow"
+                   class="btn btn-large">
+                    <div class="button">
+                        <div class="icon-trakt-show"></div>
+                    </div>
+                    <div class="buttontext">
+                        <h3>Add from Trakt</h3>
+                        <p>
+                            For shows that you haven't downloaded yet, this option lets you choose a show from one
+                            of the Trakt lists to add to SiCKRAGE.
+                        </p>
+                    </div>
+                </a>
             </div>
-            <br/>
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="${srWebRoot}/home/addShows/recommendedShows/" id="btnNewShow" class="btn btn-large">
-                        <div class="button">
-                            <div class="icon-addrecommendedshow"></div>
-                        </div>
-                        <div class="buttontext">
-                            <h3>Add Recommended Shows</h3>
-                            <p>For shows that you haven't downloaded yet, this option recommends shows to add based on
-                                your
-                                Trakt.tv show library, creates a directory for its episodes and adds it</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <br/>
-        % endif
+        </div>
+        <br/>
         <div class="row">
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/popularShows/" id="btnNewShow" class="btn btn-large">
                     <div class="button">
-                        <div class="icon-addtrendingshow"></div>
+                        <div class="icon-imdb-show"></div>
                     </div>
                     <div class="buttontext">
-                        <h3>View Popular Shows</h3>
+                        <h3>Add from IMDB</h3>
                         <p>View IMDB's list of the most popular shows. This feature uses IMDB's MOVIEMeter algorithm to
                             identify
                             popular TV Series.</p>
@@ -81,7 +64,7 @@
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/existingShows/" id="btnExistingShow" class="btn btn-large">
                     <div class="button">
-                        <div class="icon-addexistingshow"></div>
+                        <div class="icon-addexisting-show"></div>
                     </div>
                     <div class="buttontext">
                         <h3>Add Existing Shows</h3>

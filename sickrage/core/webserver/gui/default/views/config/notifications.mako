@@ -4,6 +4,7 @@
     import re
 
     import sickrage
+    from sickrage.core.traktapi import srTraktAPI
     from sickrage.core.helpers import anon_url
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
@@ -2267,26 +2268,28 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="trakt_pin_url"
-                           value="${sickrage.srCore.srConfig.TRAKT_PIN_URL}">
-                    <input type="button"
-                           class="btn ${('', 'hide')[bool(sickrage.srCore.srConfig.TRAKT_ACCESS_TOKEN)]}"
-                           value="Get Trakt PIN" id="TraktGetPin"/>
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Trakt PIN</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                    <input type="hidden" id="trakt_pin_url" value="${srTraktAPI()['oauth/pin'].url()}">
+                    % if not sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN:
+                        <div class="row field-pair">
+                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                <label class="component-title">Trakt PIN</label>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-lock"></span>
+                                    </div>
+                                    <input name="trakt_pin" id="trakt_pin" value=""
+                                           placeholder="authorization PIN code"
+                                           class="form-control" autocapitalize="off"/>
+                                    <div class="input-group-addon">
+                                        <a href="#" id="TraktGetPin">Get PIN</a>
+                                        <a href="#" id="authTrakt" class="hide">Authorize</a>
+                                    </div>
                                 </div>
-                                <input name="trakt_pin" id="trakt_pin" value=""
-                                       placeholder="authorization PIN code"
-                                       class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
-                    </div>
+                    % endif
                     <input type="button" class="btn hide" value="Authorize SiCKRAGE" id="authTrakt"/>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -2320,11 +2323,11 @@
                                 </div>
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
                                         class="form-control " title="Default Indexer">
+                                    % for indexer in srIndexerApi().indexers:
+                                        <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                                    % endfor
+                                </select>
                             </div>
-                            % for indexer in srIndexerApi().indexers:
-                                <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
-                            % endfor
-                            </select>
                         </div>
                     </div>
                     <div class="row field-pair">

@@ -169,6 +169,13 @@
                                         <i class="menu-icon-backlog"></i>&nbsp;Episode Status Management
                                     </a>
                                 </li>
+                                % if sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN != "":
+                                    <li>
+                                        <a href="${srWebRoot}/home/syncTrakt/">
+                                            <i class="menu-icon-backlog-view"></i>&nbsp;Sync Trakt
+                                        </a>
+                                    </li>
+                                % endif
                                 % if sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_SERVER_HOST != "":
                                     <li>
                                         <a href="${srWebRoot}/home/updatePLEX/">

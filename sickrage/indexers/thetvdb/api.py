@@ -23,12 +23,11 @@ import functools
 import io
 import os
 import pickle
+import re
 import time
 import urlparse
 from collections import OrderedDict
 from operator import itemgetter
-
-import imdbpie
 
 import sickrage
 
@@ -448,20 +447,20 @@ class Tvdb:
         return data.replace("&amp;", "&").strip() if isinstance(data, basestring) else data
 
     @login_required
-    def search(self, series=None, imdbid=None, zap2itid=None):
+    def search(self, series):
         """This searches TheTVDB.com for the series by name, imdbid, or zap2itid
         and returns the result list
         """
 
-        if series:
+        if not re.search(r'tt\d+', series):
             sickrage.srCore.srLogger.debug("Searching for show by name: {}".format(series))
             return self._request('get', self.config['api']['getSeries'].format(name=series))['data']
-        elif imdbid:
-            sickrage.srCore.srLogger.debug("Searching for show by imdbId: {}".format(imdbid))
-            return self._request('get', self.config['api']['getSeriesIMDB'].format(id=imdbid))['data']
-        elif zap2itid:
-            sickrage.srCore.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
-            return self._request('get', self.config['api']['getSeriesZap2It'].format(id=zap2itid))['data']
+        else:
+            sickrage.srCore.srLogger.debug("Searching for show by imdbId: {}".format(series))
+            return self._request('get', self.config['api']['getSeriesIMDB'].format(id=series))['data']
+        #elif zap2itid:
+        #    sickrage.srCore.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
+        #    return self._request('get', self.config['api']['getSeriesZap2It'].format(id=zap2itid))['data']
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -469,18 +468,7 @@ class Tvdb:
         series. If not, and interactive == True, ConsoleUI is used, if not
         BaseUI is used to select the first result.
         """
-        allSeries = []
-
-        try:
-            allSeries += self.search(series)
-            if not allSeries:
-                raise tvdb_shownotfound
-        except tvdb_shownotfound:
-            # search via imdbId
-            for x in imdbpie.Imdb().search_for_title(series):
-                if x['title'].lower() == series.lower():
-                    allSeries += self.search(imdbid=x['imdb_id'])
-
+        allSeries = self.search(series)
         if not allSeries:
             sickrage.srCore.srLogger.debug('Series result returned zero')
             raise tvdb_shownotfound("Show search returned zero results (cannot find show on theTVDB)")
@@ -670,15 +658,8 @@ class Tvdb:
                     return self.shows[key]
                 else:
                     del self.shows[key]
-
             return self._getShowData(key)
-
-        selected_series = self._getSeries(key)
-        if isinstance(selected_series, dict):
-            selected_series = [selected_series]
-
-        # return show data
-        return selected_series
+        return self._getSeries(key)
 
     def __repr__(self):
         return repr(self.shows)

@@ -157,26 +157,26 @@ td.tvShow a:hover {
 add_shows.mako
 ========================================================================== */
 
-.icon-addnewshow {
-    background-image: url("../../images/addshows/add-new32-white.png");
+.icon-addnew-show {
+    background-image: url("../../images/addshows/add-new32.png");
     width: 32px;
     height: 32px;
 }
 
-.icon-addtrendingshow {
-    background-image: url("../../images/addshows/add-trending32-white.png");
+.icon-trakt-show {
+    background-image: url("../../images/addshows/add-trakt32.png");
     width: 32px;
     height: 32px;
 }
 
-.icon-addrecommendedshow {
-    background-image: url("../../images/addshows/add-trakt32-white.png");
+.icon-imdb-show {
+    background-image: url("../../images/addshows/add-imdb32.png");
     width: 32px;
     height: 32px;
 }
 
-.icon-addexistingshow {
-    background-image: url("../../images/addshows/add-existing32-white.png");
+.icon-addexisting-show {
+    background-image: url("../../images/addshows/add-existing32.png");
     width: 32px;
     height: 32px;
 }
