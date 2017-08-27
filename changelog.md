@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1f0041e - 2017-08-27: Added check_setting_json for loading saved json data from config file 
+- * 5f5b3b6 - 2017-08-27: Fixed issues with syncing Trakt library when we don&#x27;t want to sync Trakt watchlist 
+- * 8b40401 - 2017-08-27: Added check_setting_json for loading saved json data from config file 
 - * 14d95ee - 2017-08-27: Grabs data from global SHOWLIST instead of database calls Added trakt_id property to indexerAPI 
 - * 466f552 - 2017-08-26: Fixed more Trakt API issues 
 - * 4387aa8 - 2017-08-26: Fixed issues with Trakt API oAuth 

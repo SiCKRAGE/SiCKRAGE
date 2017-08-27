@@ -75,20 +75,21 @@ class srTraktSearcher(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
+        self.todoWanted = []  # its about to all get re-added
+        if len(sickrage.srCore.srConfig.ROOT_DIRS.split('|')) < 2:
+            sickrage.srCore.srLogger.warning("No default root directory")
+            return
+
         # add shows from tv watchlist
         if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
-            self.todoWanted = []  # its about to all get re-added
-            if len(sickrage.srCore.srConfig.ROOT_DIRS.split('|')) < 2:
-                sickrage.srCore.srLogger.warning("No default root directory")
-                return
-
             try:
                 self.syncWatchlist()
             except Exception:
                 sickrage.srCore.srLogger.debug(traceback.format_exc())
 
+        # add shows from tv collection
+        if sickrage.srCore.srConfig.TRAKT_SYNC:
             try:
-                # sync tv library with sickrage library
                 self.syncLibrary()
             except Exception:
                 sickrage.srCore.srLogger.debug(traceback.format_exc())
