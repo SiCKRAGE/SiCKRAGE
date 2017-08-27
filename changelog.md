@@ -1,6 +1,7 @@
 # Changelog
 
-- * c5e796f - 2017-08-27: Added unidecode to requirements.txt 
+- * abeacec - 2017-08-27: Added CBS All Access network logo 
+- * 47d5da0 - 2017-08-27: Added unidecode to requirements.txt 
 - * be50e92 - 2017-08-27: Updated network logos 
 - * 39010a4 - 2017-08-27: Added more Trakt list selections to choose from when adding new shows 
 - * 81ac249 - 2017-08-27: Release v9.1.13 
