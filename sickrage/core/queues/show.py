@@ -311,7 +311,7 @@ class QueueItemAdd(ShowQueueItem):
                     'shows': [
                         {
                             'title': title,
-                            'ids': {srIndexerApi(self.indexer).config['trakt_id']: self.indexer_id}
+                            'ids': {srIndexerApi(self.indexer).trakt_id: self.indexer_id}
                         }
                     ]
                 }

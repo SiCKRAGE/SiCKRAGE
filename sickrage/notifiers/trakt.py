@@ -19,7 +19,7 @@
 from __future__ import unicode_literals
 
 import sickrage
-from sickrage.core.traktapi import traktAuthException, traktException, traktServerBusy, srTraktAPI
+from sickrage.core.traktapi import srTraktAPI
 from sickrage.indexers import srIndexerApi
 from sickrage.notifiers import srNotifiers
 
@@ -60,7 +60,7 @@ class TraktNotifier(srNotifiers):
                         {
                             'title': ep_obj.show.name,
                             'year': ep_obj.show.startyear,
-                            'ids': {srIndexerApi(ep_obj.show.indexer).config['trakt_id']: ep_obj.show.indexerid},
+                            'ids': {srIndexerApi(ep_obj.show.indexer).trakt_id: ep_obj.show.indexerid},
                         }
                     ]
                 }
@@ -82,7 +82,7 @@ class TraktNotifier(srNotifiers):
                 # update library
                 srTraktAPI()["sync/collection"].add(data)
 
-            except (traktException, traktAuthException, traktServerBusy) as e:
+            except Exception as e:
                 sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
 
     def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
@@ -108,7 +108,7 @@ class TraktNotifier(srNotifiers):
                             {
                                 'title': show_obj.name,
                                 'year': show_obj.startyear,
-                                'ids': {srIndexerApi(show_obj.indexer).config['trakt_id']: show_obj.indexerid},
+                                'ids': {srIndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid},
                             }
                         ]
                     }
@@ -153,7 +153,7 @@ class TraktNotifier(srNotifiers):
                 else:
                     srTraktAPI()[trakt_url].add(data)
 
-            except (traktException, traktAuthException, traktServerBusy) as e:
+            except Exception as e:
                 sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
                 return False
 
@@ -165,7 +165,7 @@ class TraktNotifier(srNotifiers):
         for indexer, indexerid, title, year in data:
             show = {'title': title,
                     'year': year,
-                    'ids': {srIndexerApi(indexer).config['trakt_id']: indexerid}}
+                    'ids': {srIndexerApi(indexer).trakt_id: indexerid}}
 
             showList.append(show)
 

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 40e9210 - 2017-08-26: Fixed more Trakt API issues 
+- * 6852928 - 2017-08-27: Grabs data from global SHOWLIST instead of database calls Added trakt_id property to indexerAPI 
+- * 466f552 - 2017-08-26: Fixed more Trakt API issues 
 - * 4387aa8 - 2017-08-26: Fixed issues with Trakt API oAuth 
 - * 0061eef - 2017-08-26: Added more debug logging to shutdown sequence 
 - * eba1be4 - 2017-08-26: Fixed shutdown issues with queues 
