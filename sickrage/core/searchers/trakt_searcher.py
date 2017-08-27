@@ -184,17 +184,17 @@ class srTraktSearcher(object):
                 "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
             trakt_data = []
-            for show in sickrage.srCore.SHOWLIST:
-                for ep in show.getAllEpisodes():
-                    if ep.location: continue
-                    trakt_id = srIndexerApi(show.indexer).trakt_id
-                    if self._checkInList(trakt_id, str(show.indexerid), ep.season, ep.episode, 'Collection'):
-                        sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
-                                                       (show.name, ep.season, ep.episode))
-                        trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
-
-                # flush episodes objects from show object
-                show.flushEpisodes()
+            for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+                                                                               s['indexer_id'],
+                                                                               with_doc=True)]:
+                    if e["location"]: continue
+                    trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                    if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
+                            sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
+                                                           (s["show_name"], e["season"], e["episode"]))
+                            trakt_data.append(
+                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
@@ -212,17 +212,17 @@ class srTraktSearcher(object):
             sickrage.srCore.srLogger.debug("COLLECTION::ADD::START - Look for Episodes to Add to Trakt Collection")
 
             trakt_data = []
-            for show in sickrage.srCore.SHOWLIST:
-                for ep in show.getAllEpisodes():
-                    if not ep.location: continue
-                    trakt_id = srIndexerApi(show.indexer).trakt_id
-                    if not self._checkInList(trakt_id, str(show.indexerid), ep.season, ep.episode, 'Collection'):
-                        sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
-                                                       (show.name, ep.season, ep.episode))
-                        trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
-
-                # flush episodes objects from show object
-                show.flushEpisodes()
+            for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+                                                                               s['indexer_id'],
+                                                                               with_doc=True)]:
+                    if not e["location"]: continue
+                    trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                    if not self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
+                            sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
+                                                           (s["show_name"], e["season"], e["episode"]))
+                            trakt_data.append(
+                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
@@ -255,17 +255,17 @@ class srTraktSearcher(object):
                 "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
             trakt_data = []
-            for show in sickrage.srCore.SHOWLIST:
-                for ep in show.getAllEpisodes():
-                    if ep.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
-                    trakt_id = srIndexerApi(show.indexer).trakt_id
-                    if self._checkInList(trakt_id, str(show.indexerid), ep.season, ep.episode):
-                        sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
-                                                       (show.name, ep.season, ep.episode))
-                        trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
-
-                # flush episodes objects from show object
-                show.flushEpisodes()
+            for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+                                                                               s['indexer_id'],
+                                                                               with_doc=True)]:
+                    if e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
+                    trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                    if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
+                            sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
+                                                           (s["show_name"], e["season"], e["episode"]))
+                            trakt_data.append(
+                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
@@ -283,17 +283,17 @@ class srTraktSearcher(object):
             sickrage.srCore.srLogger.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
             trakt_data = []
-            for show in sickrage.srCore.SHOWLIST:
-                for ep in show.getAllEpisodes():
-                    if not ep.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
-                    trakt_id = srIndexerApi(show.indexer).trakt_id
-                    if not self._checkInList(trakt_id, str(show.indexerid), ep.season, ep.episode):
-                        sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
-                                                       (show.name, ep.season, ep.episode))
-                        trakt_data.append((show.indexerid,show.indexer,show.name,show.startyear,ep.season,ep.episode))
-
-                # flush episodes objects from show object
-                show.flushEpisodes()
+            for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+                for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+                                                                               s['indexer_id'],
+                                                                               with_doc=True)]:
+                    if not e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
+                    trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                    if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
+                            sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
+                                                           (s["show_name"], e["season"], e["episode"]))
+                            trakt_data.append(
+                                (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
 
             if len(trakt_data):
                 try:
