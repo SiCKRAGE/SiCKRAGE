@@ -1,6 +1,7 @@
 # Changelog
 
-- * c0b2f61 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
+- * 2651aa0 - 2017-08-27: Release v9.1.13 
+- * 70827c7 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
 - * 80d6406 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
 - * 2935e89 - 2017-08-27: Added code to flush episode objects from show objects created during Trakt sync 
 - * b6172d5 - 2017-08-27: Fixed startup issue do to unicode decode on os.walk 

@@ -2304,18 +2304,8 @@ jQuery(document).ready(function ($) {
                         $('#container').isotope({sortAscending: ('asc' === $(this).value)});
                     });
 
-                    $('#traktlistselection').on('change', function (e) {
-                        var traktList = e.target.value;
-                        window.history.replaceState({}, document.title);
-                        $('#traktShows').loadRemoteShows(
-                            SICKRAGE.srWebRoot + '/addShows/traktShows',
-                            'Loading trending shows...',
-                            'Trakt timed out, refresh page to try again'
-                        );
-                    });
-
                     $('img.trakt-image').each(function () {
-                        if ($(this).data("image-loaded") != true) {
+                        if ($(this).data("image-loaded") !== true) {
                             $.ajax({
                                 url: SICKRAGE.srWebRoot + '/addShows/getIndexerImage',
                                 type: "POST",
