@@ -536,8 +536,10 @@ class srTraktSearcher(object):
         """
         Build the JSON structure to send back to Trakt
         """
-        shows = {}
         show_list = []
+
+        shows = {}
+        seasons = {}
 
         for indexerid, indexer, show_name, startyear, season, episode in data:
             if indexerid not in shows:
@@ -545,9 +547,17 @@ class srTraktSearcher(object):
                                     'year': startyear,
                                     'ids': {srIndexerApi(indexer).trakt_id: indexerid}}
 
-            if all([season, episode]):
-                if 'seasons' not in shows[indexerid]: shows[indexerid]['seasons'] = []
-                shows[indexerid]['seasons'].append({'number': season, 'episodes': [{'number': episode}]})
+            if indexerid not in seasons:
+                seasons[indexerid] = {}
+            if season not in seasons[indexerid]:
+                seasons[indexerid] = {season:[]}
+            if episode not in seasons[indexerid][season]:
+                seasons[indexerid][season] += [{'number':episode}]
+
+        for indexerid, seasonlist in seasons.items():
+            if 'seasons' not in shows[indexerid]: shows[indexerid]['seasons'] = []
+            for season, episodelist in seasonlist.items():
+                shows[indexerid]['seasons'] += [{'number': season, 'episodes': episodelist}]
 
             show_list.append(shows[indexerid])
 

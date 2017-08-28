@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7b9b1c8 - 2017-08-27: Updated code for Trakt shows that have ended for removal 
+- * b402f2d - 2017-08-27: Corrected trakt data generator code 
+- * 4e05ed6 - 2017-08-27: Updated code for Trakt shows that have ended for removal 
 - * 4e74954 - 2017-08-27: Fixed some small issues with Trakt syncing 
 - * 1603b54 - 2017-08-27: Added recommendations module to Trakt library Fixed Trakt sync to remove shows from Trakt collection not present in SiCKRAGE 
 - * 8773ae2 - 2017-08-27: Added CBS All Access network logo 
