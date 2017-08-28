@@ -1,6 +1,7 @@
 # Changelog
 
-- * 97f09a0 - 2017-08-28: Convert results back from indexers into integers before comparison. 
+- * ec0ab03 - 2017-08-28: Release v9.1.14 
+- * 900c785 - 2017-08-28: Convert results back from indexers into integers before comparison. 
 - * d9b6217 - 2017-08-28: Using pickle instead of json for storing config settings when needed, retains integers for dict keys. Cleaned up Trakt searcher code. Fixed issues with adding existing shows. Double comparison done when searching show names via nameparser. 
 - * 9d2b9de - 2017-08-27: Corrected trakt data generator code 
 - * 4e05ed6 - 2017-08-27: Updated code for Trakt shows that have ended for removal 
