@@ -2304,6 +2304,10 @@ jQuery(document).ready(function ($) {
                         $('#container').isotope({sortAscending: ('asc' === $(this).value)});
                     });
 
+                    $('#traktlist').on('change', function (e) {
+                        document.location.href = SICKRAGE.srWebRoot = '/home/addShows/traktShows?list=' + e.target.value;
+                    });
+
                     $('img.trakt-image').each(function () {
                         if ($(this).data("image-loaded") !== true) {
                             $.ajax({

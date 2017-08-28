@@ -30,6 +30,7 @@ import traceback
 import imdbpie
 import send2trash
 from CodernityDB.database import RecordNotFound
+from unidecode import unidecode
 
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
@@ -396,19 +397,19 @@ class TVShow(object):
 
     @property
     def is_anime(self):
-        return True if int(self.anime) > 0 else False
+        return int(self.anime) > 0
 
     @property
     def is_sports(self):
-        return True if int(self.sports) > 0 else False
+        return int(self.sports) > 0
 
     @property
     def is_scene(self):
-        return True if int(self.scene) > 0 else False
+        return int(self.scene) > 0
 
     @property
     def network_logo_name(self):
-        return self.network.replace('\u00C9', 'e').replace('\u00E9', 'e').lower()
+        return unidecode(self.network).lower()
 
     @property
     def location(self):

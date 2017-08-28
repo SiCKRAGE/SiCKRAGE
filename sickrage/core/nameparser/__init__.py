@@ -27,7 +27,6 @@ from threading import Lock
 from dateutil import parser
 
 import sickrage
-from sickrage.core.classes import AllShowsUI
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, get_all_episodes_from_absolute_number, \
     remove_extension
@@ -35,6 +34,7 @@ from sickrage.core.nameparser import regexes
 from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
+from sickrage.core.traktapi import srTraktAPI
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error
 
@@ -75,7 +75,9 @@ class NameParser(object):
             # try indexers
             if not show_id and self.tryIndexers:
                 try:
-                    show_id = srIndexerApi().searchForShowID(full_sanitizeSceneName(name), ui=AllShowsUI)[2]
+                    show_id1 = int(srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+                    show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
+                    show_id = (show_id, show_id1)[show_id1 == show_id2]
                 except Exception:
                     pass
 
@@ -648,6 +650,7 @@ class NameParserCache(object):
             self.data.update({key: value})
             while len(self.data) > self.max_size:
                 self.data.pop(list(self.data.keys())[0], None)
+
 
 name_parser_cache = NameParserCache()
 

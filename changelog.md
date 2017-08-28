@@ -1,6 +1,17 @@
 # Changelog
 
-- * 2651aa0 - 2017-08-27: Release v9.1.13 
+- * ec0ab03 - 2017-08-28: Release v9.1.14 
+- * 900c785 - 2017-08-28: Convert results back from indexers into integers before comparison. 
+- * d9b6217 - 2017-08-28: Using pickle instead of json for storing config settings when needed, retains integers for dict keys. Cleaned up Trakt searcher code. Fixed issues with adding existing shows. Double comparison done when searching show names via nameparser. 
+- * 9d2b9de - 2017-08-27: Corrected trakt data generator code 
+- * 4e05ed6 - 2017-08-27: Updated code for Trakt shows that have ended for removal 
+- * 4e74954 - 2017-08-27: Fixed some small issues with Trakt syncing 
+- * 1603b54 - 2017-08-27: Added recommendations module to Trakt library Fixed Trakt sync to remove shows from Trakt collection not present in SiCKRAGE 
+- * 8773ae2 - 2017-08-27: Added CBS All Access network logo 
+- * 47d5da0 - 2017-08-27: Added unidecode to requirements.txt 
+- * be50e92 - 2017-08-27: Updated network logos 
+- * 39010a4 - 2017-08-27: Added more Trakt list selections to choose from when adding new shows 
+- * 81ac249 - 2017-08-27: Release v9.1.13 
 - * 70827c7 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
 - * 80d6406 - 2017-08-27: Switched Trakt sync code back to using database calls, faster 
 - * 2935e89 - 2017-08-27: Added code to flush episode objects from show objects created during Trakt sync 
