@@ -75,8 +75,8 @@ class NameParser(object):
             # try indexers
             if not show_id and self.tryIndexers:
                 try:
-                    show_id1 = srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2]
-                    show_id2 = srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb']
+                    show_id1 = int(srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+                    show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
                     show_id = (show_id, show_id1)[show_id1 == show_id2]
                 except Exception:
                     pass
