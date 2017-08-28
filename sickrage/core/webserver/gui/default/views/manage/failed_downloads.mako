@@ -9,15 +9,20 @@
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
 %>
 <%block name="content">
-
-
-    <div class="h2footer pull-right"><b>Limit:</b>
-        <select name="limit" id="limit" class="form-control form-control-inline input-sm">
-            <option value="100" ${('', 'selected="selected"')[limit == '100']}>100</option>
-            <option value="250" ${('', 'selected="selected"')[limit == '250']}>250</option>
-            <option value="500" ${('', 'selected="selected"')[limit == '500']}>500</option>
-            <option value="0" ${('', 'selected="selected"')[limit == '0']}>All</option>
-        </select>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <label for="limit" class="badge">Limit:
+                <select name="limit" id="limit" class="form-control form-control-inline input-sm">
+                    <option value="100" ${('', 'selected')[limit == 100]}>100</option>
+                    <option value="250" ${('', 'selected')[limit == 250]}>250</option>
+                    <option value="500" ${('', 'selected')[limit == 500]}>500</option>
+                    <option value="0"   ${('', 'selected')[limit == 0  ]}>All</option>
+                </select>
+            </label>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
+            <h1 class="title">${title}</h1>
+        </div>
     </div>
 
     <table id="failedTable" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
@@ -50,13 +55,14 @@
                         % endif
                     </td>
                     <td align="center">
-                        <% provider = [x for x in sickrage.srCore.providersDict.all() if x.name == hItem["provider"]] %>
+                        <% provider = sickrage.srCore.providersDict.all()[hItem["provider"].lower()] %>
                         % if provider is not None:
                             <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                  alt="${provider.name}"
                                  title="${provider.name}"/>
                         % else:
-                            <img src="${srWebRoot}/images/providers/missing.png" width="16" height="16" alt="missing provider"
+                            <img src="${srWebRoot}/images/providers/missing.png" width="16" height="16"
+                                 alt="missing provider"
                                  title="missing provider"/>
                         % endif
                     </td>
