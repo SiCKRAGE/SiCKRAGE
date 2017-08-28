@@ -86,8 +86,8 @@ class srIndexerApi(object):
 
             try:
                 search = t[showid] if showid else t[name]
-                seriesname = search[0]['seriesname']
-                series_id = search[0]['id']
+                seriesname = search['seriesname']
+                series_id = search['id']
             except Exception:
                 continue
 

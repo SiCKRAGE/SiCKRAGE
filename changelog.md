@@ -1,6 +1,7 @@
 # Changelog
 
-- * b402f2d - 2017-08-27: Corrected trakt data generator code 
+- * a3bcca9 - 2017-08-28: Using pickle instead of json for storing config settings when needed, retains integers for dict keys. Cleaned up Trakt searcher code. Fixed issues with adding existing shows. Double comparison done when searching show names via nameparser. 
+- * 9d2b9de - 2017-08-27: Corrected trakt data generator code 
 - * 4e05ed6 - 2017-08-27: Updated code for Trakt shows that have ended for removal 
 - * 4e74954 - 2017-08-27: Fixed some small issues with Trakt syncing 
 - * 1603b54 - 2017-08-27: Added recommendations module to Trakt library Fixed Trakt sync to remove shows from Trakt collection not present in SiCKRAGE 

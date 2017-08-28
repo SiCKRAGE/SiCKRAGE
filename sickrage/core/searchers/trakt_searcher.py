@@ -307,8 +307,7 @@ class srTraktSearcher(object):
         sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::ADD::START - Look for Shows to Add to Trakt Watchlist")
 
         for show in sickrage.srCore.SHOWLIST or []:
-            if not self._checkInList(srIndexerApi(show.indexer).trakt_id,
-                                     str(show.indexerid), 0, 0, List='Show'):
+            if not self._checkInList(srIndexerApi(show.indexer).trakt_id, str(show.indexerid), 0, 0, 'Show'):
                 sickrage.srCore.srLogger.debug(
                     "Adding Show: Indexer %s %s - %s to Watchlist" % (
                         srIndexerApi(show.indexer).trakt_id, str(show.indexerid), show.name))
@@ -550,9 +549,9 @@ class srTraktSearcher(object):
             if indexerid not in seasons:
                 seasons[indexerid] = {}
             if season not in seasons[indexerid]:
-                seasons[indexerid] = {season:[]}
+                seasons[indexerid] = {season: []}
             if episode not in seasons[indexerid][season]:
-                seasons[indexerid][season] += [{'number':episode}]
+                seasons[indexerid][season] += [{'number': episode}]
 
         for indexerid, seasonlist in seasons.items():
             if 'seasons' not in shows[indexerid]: shows[indexerid]['seasons'] = []

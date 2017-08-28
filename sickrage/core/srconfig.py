@@ -21,9 +21,9 @@ from __future__ import unicode_literals
 
 import base64
 import datetime
-import json
 import os
 import os.path
+import pickle
 import re
 import sys
 import uuid
@@ -936,9 +936,9 @@ class srConfig(object):
         return my_val
 
     ################################################################################
-    # Check_setting_json                                                           #
+    # Check_setting_pickle                                                           #
     ################################################################################
-    def check_setting_json(self, section, key, def_val="", silent=True):
+    def check_setting_pickle(self, section, key, def_val="", silent=True):
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
 
         if my_val:
@@ -950,9 +950,9 @@ class srConfig(object):
             print(key + " -> " + my_val)
 
         try:
-            my_val = json.loads(my_val)
-        except TypeError:
-            my_val = json.loads(json.dumps(my_val))
+            my_val = pickle.loads(my_val)
+        except (KeyError, TypeError):
+            my_val = pickle.loads(pickle.dumps(def_val))
         except ValueError:
             pass
 
@@ -1334,7 +1334,7 @@ class srConfig(object):
 
         self.USE_TRAKT = bool(self.check_setting_int('Trakt', 'use_trakt', self.USE_TRAKT))
         self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', self.TRAKT_USERNAME)
-        self.TRAKT_OAUTH_TOKEN = self.check_setting_json('Trakt', 'trakt_oauth_token', self.TRAKT_OAUTH_TOKEN)
+        self.TRAKT_OAUTH_TOKEN = self.check_setting_pickle('Trakt', 'trakt_oauth_token', self.TRAKT_OAUTH_TOKEN)
         self.TRAKT_REMOVE_WATCHLIST = bool(
             self.check_setting_int('Trakt', 'trakt_remove_watchlist', self.TRAKT_REMOVE_WATCHLIST))
         self.TRAKT_REMOVE_SERIESLIST = bool(
@@ -1449,7 +1449,7 @@ class srConfig(object):
         self.ANIDB_USE_MYLIST = bool(self.check_setting_int('ANIDB', 'anidb_use_mylist', 0))
         self.ANIME_SPLIT_HOME = bool(self.check_setting_int('ANIME', 'anime_split_home', 0))
 
-        self.QUALITY_SIZES = self.check_setting_json('Quality', 'sizes', self.QUALITY_SIZES)
+        self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes', self.QUALITY_SIZES)
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers', '')
 
@@ -1797,7 +1797,7 @@ class srConfig(object):
             'Trakt': {
                 'use_trakt': int(self.USE_TRAKT),
                 'trakt_username': self.TRAKT_USERNAME,
-                'trakt_oauth_token': json.dumps(self.TRAKT_OAUTH_TOKEN),
+                'trakt_oauth_token': pickle.dumps(self.TRAKT_OAUTH_TOKEN),
                 'trakt_remove_watchlist': int(self.TRAKT_REMOVE_WATCHLIST),
                 'trakt_remove_serieslist': int(self.TRAKT_REMOVE_SERIESLIST),
                 'trakt_remove_show_from_sickrage': int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE),
@@ -1893,7 +1893,7 @@ class srConfig(object):
                 'anime_split_home': int(self.ANIME_SPLIT_HOME),
             },
             'Quality': {
-                'sizes': json.dumps(self.QUALITY_SIZES),
+                'sizes': pickle.dumps(self.QUALITY_SIZES),
             },
             'Providers': {
                 'providers_order': sickrage.srCore.providersDict.provider_order,
