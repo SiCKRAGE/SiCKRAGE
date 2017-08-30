@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2df607c - 2017-08-30: Fixed EOF issue related to pickled settings with new configs 
+- * 291282a - 2017-08-30: Release v9.1.15 
+- * f9f02ff - 2017-08-30: Fixed EOF issue related to pickled settings with new configs 
 - * be8b178 - 2017-08-28: Removed ExtraTorrent provider. Failed history template is now responsive. History template is now responsive. 
 - * ff9dbcb - 2017-08-28: Fixed failed download handling 
 - * 1e1a90b - 2017-08-28: Release v9.1.14 
