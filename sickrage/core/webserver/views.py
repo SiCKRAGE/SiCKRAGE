@@ -3442,16 +3442,17 @@ class Manage(Home, WebRoot):
         )
 
     def failedDownloads(self, limit=100, toRemove=None):
-        if limit == "0":
+        if int(limit) == 0:
             dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', with_doc=True)]
         else:
-            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', limit, with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', int(limit), with_doc=True)]
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
             try:
-                sickrage.srCore.mainDB.db.delete(sickrage.srCore.mainDB.db.get('failed', release, with_doc=True)['doc'])
+                [sickrage.srCore.failedDB.db.delete(x['doc']) for x in
+                 sickrage.srCore.failedDB.db.get_many('failed', release, with_doc=True)]
             except RecordNotFound:
                 continue
 
@@ -3460,7 +3461,7 @@ class Manage(Home, WebRoot):
 
         return self.render(
             "/manage/failed_downloads.mako",
-            limit=limit,
+            limit=int(limit),
             failedResults=dbData,
             title='Failed Downloads',
             header='Failed Downloads',

@@ -1,6 +1,10 @@
 # Changelog
 
-- * ec0ab03 - 2017-08-28: Release v9.1.14 
+- * 291282a - 2017-08-30: Release v9.1.15 
+- * f9f02ff - 2017-08-30: Fixed EOF issue related to pickled settings with new configs 
+- * be8b178 - 2017-08-28: Removed ExtraTorrent provider. Failed history template is now responsive. History template is now responsive. 
+- * ff9dbcb - 2017-08-28: Fixed failed download handling 
+- * 1e1a90b - 2017-08-28: Release v9.1.14 
 - * 900c785 - 2017-08-28: Convert results back from indexers into integers before comparison. 
 - * d9b6217 - 2017-08-28: Using pickle instead of json for storing config settings when needed, retains integers for dict keys. Cleaned up Trakt searcher code. Fixed issues with adding existing shows. Double comparison done when searching show names via nameparser. 
 - * 9d2b9de - 2017-08-27: Corrected trakt data generator code 

@@ -24,19 +24,18 @@ from CodernityDB.hash_index import HashIndex
 
 
 class FailedIndex(HashIndex):
-    _version = 1
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
         super(FailedIndex, self).__init__(*args, **kwargs)
 
-    def make_key(self, key):
-        return key
-
     def make_key_value(self, data):
         if data.get('_t') == 'failed' and data.get('release'):
             return md5(data.get('release')).hexdigest(), None
 
+    def make_key(self, key):
+        return md5(key.encode('utf-8')).hexdigest()
 
 class FailedHistoryIndex(HashIndex):
     _version = 1

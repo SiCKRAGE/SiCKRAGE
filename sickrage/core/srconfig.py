@@ -951,10 +951,8 @@ class srConfig(object):
 
         try:
             my_val = pickle.loads(my_val)
-        except (KeyError, TypeError):
+        except Exception:
             my_val = pickle.loads(pickle.dumps(def_val))
-        except ValueError:
-            pass
 
         return my_val
 

@@ -303,8 +303,7 @@ class FailedHistory(object):
 
         release = FailedHistory.prepareFailedName(release)
         dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.get_many('failed', release, with_doc=True)
-                  if x['doc']['size'] == size
-                  and x['doc']['provider'] == provider]
+                  if all([x['doc']['size'] == size, x['doc']['provider'] == provider])]
 
         return len(dbData) > 0
 
