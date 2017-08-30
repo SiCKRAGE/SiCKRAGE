@@ -1,6 +1,7 @@
 # Changelog
 
-- * ba7c84e - 2017-08-28: Removed ExtraTorrent provider. Failed history template is now responsive. History template is now responsive. 
+- * 2df607c - 2017-08-30: Fixed EOF issue related to pickled settings with new configs 
+- * be8b178 - 2017-08-28: Removed ExtraTorrent provider. Failed history template is now responsive. History template is now responsive. 
 - * ff9dbcb - 2017-08-28: Fixed failed download handling 
 - * 1e1a90b - 2017-08-28: Release v9.1.14 
 - * 900c785 - 2017-08-28: Convert results back from indexers into integers before comparison. 
