@@ -2861,7 +2861,7 @@ class Manage(Home, WebRoot):
         result = {}
         for dbData in [x['doc'] for x in
                        sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
-                       if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]:
+                       if str(x['doc']['status']).endswith('4') and x['doc']['season'] != 0]:
 
             if whichSubs == 'all':
                 if not frozenset(sickrage.subtitles.wanted_languages()).difference(dbData["subtitles"].split(',')):
@@ -2956,7 +2956,7 @@ class Manage(Home, WebRoot):
             if 'all' in to_download[cur_indexer_id]:
                 dbData = [x['doc'] for x in
                           sickrage.srCore.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
-                          if x['doc']['status'].endswith('4') and x['doc']['season'] != 0]
+                          if str(x['doc']['status']).endswith('4') and x['doc']['season'] != 0]
 
                 to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
 
