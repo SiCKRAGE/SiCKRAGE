@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6489161 - 2017-09-03: Fixed issue #71 - missed subtitles search Cleaned up check_setting_pickle function 
+- * d3c1ab7 - 2017-09-03: Removed next episode scheduler 
+- * e10fec6 - 2017-09-03: Fixed issue #71 - missed subtitles search Cleaned up check_setting_pickle function 
 - * 39ca900 - 2017-08-30: Release v9.1.15 
 - * f9f02ff - 2017-08-30: Fixed EOF issue related to pickled settings with new configs 
 - * be8b178 - 2017-08-28: Removed ExtraTorrent provider. Failed history template is now responsive. History template is now responsive. 

@@ -66,6 +66,7 @@ class srShowUpdater(object):
         pi_list = []
         for curShow in sickrage.srCore.SHOWLIST:
             try:
+                curShow.nextEpisode()
                 stale = (datetime.datetime.now() - datetime.datetime.fromordinal(curShow.last_update)).days > 7
                 if curShow.indexerid in updated_shows or stale:
                     pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, False))
@@ -78,15 +79,5 @@ class srShowUpdater(object):
 
         dbData['time'] = update_timestamp
         sickrage.srCore.cacheDB.db.update(dbData)
-
-        self.amActive = False
-
-    def nextEpisode(self):
-        self.amActive = True
-
-        # set thread name
-        threading.currentThread().setName(self.name)
-
-        [curShow.nextEpisode() for curShow in sickrage.srCore.SHOWLIST]
 
         self.amActive = False
