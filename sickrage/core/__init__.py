@@ -436,11 +436,6 @@ class Core(object):
             self.srWebServer.shutdown()
 
             # shutdown show queue
-            if self.srScheduler:
-                self.srLogger.debug("Shutting down scheduler")
-                self.srScheduler.shutdown()
-
-            # shutdown show queue
             if self.SHOWQUEUE:
                 self.srLogger.debug("Shutting down show queue")
                 self.SHOWQUEUE.shutdown()
