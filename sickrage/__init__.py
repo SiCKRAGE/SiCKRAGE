@@ -199,9 +199,9 @@ def isVirtualEnv():
 
 
 def check_requirements():
-    # sickrage requires python 2.7+
-    if sys.version_info < (2, 7):
-        sys.exit("Sorry, SiCKRAGE requires Python 2.7+")
+    # sickrage requires python 2.7.8+
+    if sys.version_info < (2, 7, 8):
+        sys.exit("Sorry, SiCKRAGE requires Python 2.7.8+")
 
     try:
         import OpenSSL

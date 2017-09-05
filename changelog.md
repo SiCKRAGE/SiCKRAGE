@@ -1,6 +1,7 @@
 # Changelog
 
-- * d3c1ab7 - 2017-09-03: Removed next episode scheduler 
+- * 75794fa - 2017-09-04: Changed minimum allowed python version to 2.7.8 
+- * 18bf4b5 - 2017-09-03: Removed next episode scheduler 
 - * e10fec6 - 2017-09-03: Fixed issue #71 - missed subtitles search Cleaned up check_setting_pickle function 
 - * 39ca900 - 2017-08-30: Release v9.1.15 
 - * f9f02ff - 2017-08-30: Fixed EOF issue related to pickled settings with new configs 
