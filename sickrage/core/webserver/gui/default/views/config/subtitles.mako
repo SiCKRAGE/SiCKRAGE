@@ -57,46 +57,6 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Subtitle Directory</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-folder-open"></span>
-                                </div>
-                                <input value="${sickrage.srCore.srConfig.SUBTITLES_DIR}"
-                                       id="subtitles_dir"
-                                       name="subtitles_dir" class="form-control"
-                                       autocapitalize="off"/>
-                            </div>
-                            <label for="subtitles_dir">
-                                The directory where SickRage should store your <i>Subtitles</i> files.<br/>
-                                <b>NOTE:</b> Leave empty if you want store subtitle in episode path.
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Subtitle Find Frequency</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
-                                </div>
-                                <input type="number" name="subtitles_finder_frequency"
-                                       value="${sickrage.srCore.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
-                                       placeholder="1"
-                                       title="time in hours between scans"
-                                       class="form-control"/>
-                                <div class="input-group-addon">
-                                    hours
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">Subtitles History</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
@@ -137,6 +97,46 @@
                                    id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED)]}/>
                             <label for="subtitles_hearing_impaired"><p>Download hearing impaired style subtitles?</p>
                             </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Subtitle Directory</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-folder-open"></span>
+                                </div>
+                                <input value="${sickrage.srCore.srConfig.SUBTITLES_DIR}"
+                                       id="subtitles_dir"
+                                       name="subtitles_dir" class="form-control"
+                                       autocapitalize="off"/>
+                            </div>
+                            <label for="subtitles_dir">
+                                The directory where SickRage should store your <i>Subtitles</i> files.<br/>
+                                <b>NOTE:</b> Leave empty if you want store subtitle in episode path.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Subtitle Find Frequency</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </div>
+                                <input type="number" name="subtitles_finder_frequency"
+                                       value="${sickrage.srCore.srConfig.SUBTITLE_SEARCHER_FREQ}" hours="1"
+                                       placeholder="1"
+                                       title="time in hours between scans"
+                                       class="form-control"/>
+                                <div class="input-group-addon">
+                                    hours
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row field-pair">
