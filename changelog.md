@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0848e4f - 2017-09-05: Cleanup of subtitle mako templates 
+- * 8aeeeea - 2017-09-05: Fixed issues with scene numbering functions 
+- * fe775d7 - 2017-09-05: Cleanup of subtitle mako templates 
 - * 0a0ff73 - 2017-09-04: Changed minimum allowed python version to 2.7.8 
 - * 18bf4b5 - 2017-09-03: Removed next episode scheduler 
 - * e10fec6 - 2017-09-03: Fixed issue #71 - missed subtitles search Cleaned up check_setting_pickle function 
