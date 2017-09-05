@@ -319,9 +319,11 @@
                                     % endif
                                     <tr>
                                         <td class="showLegend">Subtitles Metadata:</td>
-                                        <td><span
-                                                class="displayshow-icon-${("disable", "enable")[bool(show.subtitles_sr_metadata)]}"
-                                                title=${("N", "Y")[bool(show.subtitles_sr_metadata)]}></span></td>
+                                        <td><img
+                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles_sr_metadata)]}"
+                                                alt="${("N", "Y")[bool(show.subtitles_sr_metadata)]}" width="16"
+                                                height="16"/>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">Season Folders:</td>

@@ -939,20 +939,13 @@ class srConfig(object):
     # Check_setting_pickle                                                           #
     ################################################################################
     def check_setting_pickle(self, section, key, def_val="", silent=True):
-        my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
-
-        if my_val:
-            censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
-            if censored_regex.search(key) or (section, key) in self.CENSORED_ITEMS:
-                self.CENSORED_ITEMS[section, key] = my_val
+        try:
+            my_val = pickle.loads(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
+        except Exception:
+            my_val = def_val
 
         if not silent:
             print(key + " -> " + my_val)
-
-        try:
-            my_val = pickle.loads(my_val)
-        except Exception:
-            my_val = pickle.loads(pickle.dumps(def_val))
 
         return my_val
 

@@ -1,6 +1,13 @@
 # Changelog
 
-- * 291282a - 2017-08-30: Release v9.1.15 
+- * a20a376 - 2017-09-05: Release v9.1.16 
+- * 2b006c0 - 2017-09-05: Removed shutting down scheduler, may be causing restarts to lock up 
+- * bb4adb8 - 2017-09-05: Fixed issues with scene numbering functions 
+- * fe775d7 - 2017-09-05: Cleanup of subtitle mako templates 
+- * 0a0ff73 - 2017-09-04: Changed minimum allowed python version to 2.7.8 
+- * 18bf4b5 - 2017-09-03: Removed next episode scheduler 
+- * e10fec6 - 2017-09-03: Fixed issue #71 - missed subtitles search Cleaned up check_setting_pickle function 
+- * 39ca900 - 2017-08-30: Release v9.1.15 
 - * f9f02ff - 2017-08-30: Fixed EOF issue related to pickled settings with new configs 
 - * be8b178 - 2017-08-28: Removed ExtraTorrent provider. Failed history template is now responsive. History template is now responsive. 
 - * ff9dbcb - 2017-08-28: Fixed failed download handling 

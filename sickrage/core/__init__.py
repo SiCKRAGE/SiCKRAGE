@@ -341,15 +341,6 @@ class Core(object):
             id="SHOWUPDATER"
         )
 
-        # add show next episode job
-        self.srScheduler.add_job(
-            self.SHOWUPDATER.nextEpisode,
-            srIntervalTrigger(
-                **{'hours': 1}),
-            name="SHOWNEXTEP",
-            id="SHOWNEXTEP"
-        )
-
         # add daily search job
         self.srScheduler.add_job(
             self.DAILYSEARCHER.run,
@@ -443,11 +434,6 @@ class Core(object):
 
             # shutdown webserver
             self.srWebServer.shutdown()
-
-            # shutdown show queue
-            if self.srScheduler:
-                self.srLogger.debug("Shutting down scheduler")
-                self.srScheduler.shutdown()
 
             # shutdown show queue
             if self.SHOWQUEUE:
