@@ -30,7 +30,6 @@ from guessit import guessit
 
 import sickrage
 from sickrage.core import makeDir
-from sickrage.core.common import Quality
 from sickrage.core.helpers import chmodAsParent, fixSetGroupID
 
 if 'legendastv' not in subliminal.provider_manager.names():
@@ -239,6 +238,9 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
     try:
         video = subliminal.scan_video(video_path)
 
+        # remove video format
+        video.format = ""
+
         # external subtitles
         if subtitles:
             video.subtitle_languages |= \
@@ -399,25 +401,3 @@ def refine_video(video, episode):
             setattr(video, name, get_attr_value(episode, metadata_mapping[name]))
         elif episode.show.subtitles_sr_metadata and get_attr_value(episode, metadata_mapping[name]):
             setattr(video, name, get_attr_value(episode, metadata_mapping[name]))
-
-    # Set quality from metadata
-    _, quality = Quality.splitCompositeStatus(episode.status)
-    if not video.format or episode.show.subtitles_sr_metadata:
-        if quality & Quality.ANYHDTV:
-            video.format = Quality.combinedQualityStrings.get(Quality.ANYHDTV)
-        elif quality & Quality.ANYWEBDL:
-            video.format = Quality.combinedQualityStrings.get(Quality.ANYWEBDL)
-        elif quality & Quality.ANYBLURAY:
-            video.format = Quality.combinedQualityStrings.get(Quality.ANYBLURAY)
-
-    if not video.resolution or episode.show.subtitles_sr_metadata:
-        if quality & (Quality.HDTV | Quality.HDWEBDL | Quality.HDBLURAY):
-            video.resolution = '720p'
-        elif quality & Quality.RAWHDTV:
-            video.resolution = '1080i'
-        elif quality & (Quality.FULLHDTV | Quality.FULLHDWEBDL | Quality.FULLHDBLURAY):
-            video.resolution = '1080p'
-        elif quality & (Quality.UHD_4K_TV | Quality.UHD_4K_WEBDL | Quality.UHD_4K_BLURAY):
-            video.resolution = '4K'
-        elif quality & (Quality.UHD_8K_TV | Quality.UHD_8K_WEBDL | Quality.UHD_8K_BLURAY):
-            video.resolution = '8K'
