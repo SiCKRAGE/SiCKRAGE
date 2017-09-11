@@ -1020,7 +1020,7 @@ class TVShow(object):
             self.imdbid = safe_getattr(myEp, 'imdbid', self.imdbid)
 
             try:
-                self.airs = safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')
+                self.airs = (safe_getattr(myEp, 'airsdayofweek') + " " + safe_getattr(myEp, 'airstime')).strip()
             except:
                 pass
 
