@@ -1,6 +1,7 @@
 # Changelog
 
-- * e7ba420 - 2017-09-10: Fixed issue #77 - strips whitespaces if show airs property is blank 
+- * 2cd9ba9 - 2017-09-10: Release v9.1.17 
+- * d3cf02c - 2017-09-10: Fixed issue #77 - strips whitespaces if show airs property is blank 
 - * 66a5e96 - 2017-09-10: Fixed issue #79 - Deprecate TransmitTheNet for Nebulance.io 
 - * 20404d7 - 2017-09-10: Fixed issue #71 - Subtitle search broken 
 - * 1a64092 - 2017-09-05: Release v9.1.16 
