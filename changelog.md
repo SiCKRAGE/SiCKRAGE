@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2cd9ba9 - 2017-09-10: Release v9.1.17 
+- * b03bce0 - 2017-09-10: Fixed issue #78 - ASCII error while manual postprocessing 
+- * 489ea29 - 2017-09-10: Release v9.1.17 
 - * d3cf02c - 2017-09-10: Fixed issue #77 - strips whitespaces if show airs property is blank 
 - * 66a5e96 - 2017-09-10: Fixed issue #79 - Deprecate TransmitTheNet for Nebulance.io 
 - * 20404d7 - 2017-09-10: Fixed issue #71 - Subtitle search broken 
