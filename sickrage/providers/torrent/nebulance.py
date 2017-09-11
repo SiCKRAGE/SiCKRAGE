@@ -26,10 +26,10 @@ from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
-class TransmitTheNetProvider(TorrentProvider):
+class NebulanceProvider(TorrentProvider):
     def __init__(self):
 
-        super(TransmitTheNetProvider, self).__init__("TransmitTheNet", 'http://transmithe.net', True)
+        super(NebulanceProvider, self).__init__("Nebulance", 'http://nebulance.io', True)
 
         self.supports_backlog = True
 

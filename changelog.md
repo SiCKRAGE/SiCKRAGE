@@ -1,6 +1,7 @@
 # Changelog
 
-- * 80a2a34 - 2017-09-10: Fixed issue #71 - Subtitle search broken 
+- * 883bd55 - 2017-09-10: Fixed issue #79 - Deprecate TransmitTheNet for Nebulance.io 
+- * 20404d7 - 2017-09-10: Fixed issue #71 - Subtitle search broken 
 - * 1a64092 - 2017-09-05: Release v9.1.16 
 - * 2b006c0 - 2017-09-05: Removed shutting down scheduler, may be causing restarts to lock up 
 - * bb4adb8 - 2017-09-05: Fixed issues with scene numbering functions 
