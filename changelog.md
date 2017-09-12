@@ -1,6 +1,7 @@
 # Changelog
 
-- * b03bce0 - 2017-09-10: Fixed issue #78 - ASCII error while manual postprocessing 
+- * a2cbdca - 2017-09-11: Fix for issue #71 - removes format metadata from video file 
+- * 906b7df - 2017-09-10: Fixed issue #78 - ASCII error while manual postprocessing 
 - * 489ea29 - 2017-09-10: Release v9.1.17 
 - * d3cf02c - 2017-09-10: Fixed issue #77 - strips whitespaces if show airs property is blank 
 - * 66a5e96 - 2017-09-10: Fixed issue #79 - Deprecate TransmitTheNet for Nebulance.io 
