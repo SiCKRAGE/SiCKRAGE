@@ -167,6 +167,7 @@ def patch_modules():
                 'os.utime',
                 'os.walk',
                 'os.statvfs',
+                'os.rename',
                 'os.renames',
                 'os.path.join',
                 'os.path.normpath',

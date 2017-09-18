@@ -1,6 +1,10 @@
 # Changelog
 
-- * 2cd9ba9 - 2017-09-10: Release v9.1.17 
+- * d028084 - 2017-09-18: Release v9.1.18 
+- * a6a84d4 - 2017-09-18: Fixed issue with retrieving cached results for searches when performing a provider search 
+- * 1e5bd13 - 2017-09-11: Fix for issue #71 - removes format metadata from video file 
+- * 906b7df - 2017-09-10: Fixed issue #78 - ASCII error while manual postprocessing 
+- * 489ea29 - 2017-09-10: Release v9.1.17 
 - * d3cf02c - 2017-09-10: Fixed issue #77 - strips whitespaces if show airs property is blank 
 - * 66a5e96 - 2017-09-10: Fixed issue #79 - Deprecate TransmitTheNet for Nebulance.io 
 - * 20404d7 - 2017-09-10: Fixed issue #71 - Subtitle search broken 

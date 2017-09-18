@@ -464,7 +464,7 @@ class GenericProvider(object):
             if epNum not in results:
                 results[epNum] = [result]
             else:
-                results[epNum].append(result)
+                results[epNum] += [result]
 
         return results
 

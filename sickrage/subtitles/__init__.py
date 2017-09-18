@@ -238,9 +238,6 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
     try:
         video = subliminal.scan_video(video_path)
 
-        # remove video format
-        video.format = ""
-
         # external subtitles
         if subtitles:
             video.subtitle_languages |= \
@@ -258,6 +255,9 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
     except Exception as error:
         sickrage.srCore.srLogger.debug('Exception: {}'.format(error))
         return None
+
+    # remove format metadata
+    video.format = ""
 
     return video
 

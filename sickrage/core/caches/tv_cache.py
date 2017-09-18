@@ -300,10 +300,10 @@ class TVCache(object):
             result.files = self.provider._get_files(url)
 
             # add it to the list
-            if epObj not in neededEps:
+            if epObj.episode not in neededEps:
                 neededEps[epObj.episode] = [result]
             else:
-                neededEps[epObj.episode].append(result)
+                neededEps[epObj.episode] += [result]
 
         # datetime stamp this search so cache gets cleared
         self.last_search = datetime.datetime.today()
