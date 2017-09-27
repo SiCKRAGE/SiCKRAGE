@@ -233,10 +233,10 @@ class LoginHandler(BaseHandler):
         try:
             username = self.get_argument('username', '')
             password = self.get_argument('password', '')
+            remember_me = int(self.get_argument('remember_me', default=0))
 
             if cmp([username, password],
                    [sickrage.srCore.srConfig.WEB_USERNAME, sickrage.srCore.srConfig.WEB_PASSWORD]) == 0:
-                remember_me = int(self.get_argument('remember_me', default=0))
                 self.set_secure_cookie('user', json_encode(sickrage.srCore.srConfig.API_KEY),
                                        expires_days=30 if remember_me > 0 else None)
                 sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')

@@ -27,7 +27,7 @@ from sickrage.providers import TorrentProvider
 
 class HDBitsProvider(TorrentProvider):
     def __init__(self):
-        super(HDBitsProvider, self).__init__("HDBits", 'http://hdbits.org', True)
+        super(HDBitsProvider, self).__init__("HDBits", 'https://hdbits.org', True)
 
         self.supports_backlog = True
 
@@ -40,7 +40,7 @@ class HDBitsProvider(TorrentProvider):
         self.urls.update({
             'search': '{base_url}/api/torrents'.format(base_url=self.urls['base_url']),
             'rss': '{base_url}/api/torrents'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/download.php?'.format(base_url=self.urls['base_url'])
+            'download': '{base_url}/download.php'.format(base_url=self.urls['base_url'])
         })
 
     def _check_auth(self):
@@ -73,7 +73,7 @@ class HDBitsProvider(TorrentProvider):
         if title:
             title = self._clean_title_from_provider(title)
 
-        url = self.urls['download'] + urllib.urlencode({'id': item['id'], 'passkey': self.passkey})
+        url = self.urls['download'] + '?' + urllib.urlencode({'id': item['id'], 'passkey': self.passkey})
 
         return title, url
 
