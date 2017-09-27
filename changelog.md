@@ -1,6 +1,7 @@
 # Changelog
 
-- * f692c2a - 2017-09-27: Updated HTBits provider to use https for url 
+- * 0abd78d - 2017-09-27: Fixed duplicate issue with configure provider select box 
+- * 38575a1 - 2017-09-27: Updated HTBits provider to use https for url 
 - * 4b1e431 - 2017-09-18: Release v9.1.18 
 - * a6a84d4 - 2017-09-18: Fixed issue with retrieving cached results for searches when performing a provider search 
 - * 1e5bd13 - 2017-09-11: Fix for issue #71 - removes format metadata from video file 
