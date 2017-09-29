@@ -1,6 +1,7 @@
 # Changelog
 
-- * 895644d - 2017-09-29: Release v9.1.19 
+- * e0b4fd1 - 2017-09-29: Release v9.1.20 
+- * f0c8cbe - 2017-09-29: Release v9.1.19 
 - * 489c239 - 2017-09-29: Fixed issues with TorrentRSS and downloads 
 - * b8adf84 - 2017-09-27: Fixed duplicate issue with configure provider select box 
 - * 38575a1 - 2017-09-27: Updated HTBits provider to use https for url 
