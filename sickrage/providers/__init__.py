@@ -671,7 +671,7 @@ class TorrentProvider(GenericProvider):
 
     def make_filename(self, name):
         return os.path.join(sickrage.srCore.srConfig.TORRENT_DIR,
-                            '{}.{}'.format(sanitizeFileName(name), self.type))
+                            '{}.torrent'.format(sanitizeFileName(name)))
 
     def find_propers(self, search_date=datetime.datetime.today()):
         results = []
@@ -768,7 +768,7 @@ class NZBProvider(GenericProvider):
 
     def make_filename(self, name):
         return os.path.join(sickrage.srCore.srConfig.NZB_DIR,
-                            '{}.{}'.format(sanitizeFileName(name), self.type))
+                            '{}.nzb'.format(sanitizeFileName(name)))
 
     @classmethod
     def getProviders(cls):
