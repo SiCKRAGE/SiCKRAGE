@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0abd78d - 2017-09-27: Fixed duplicate issue with configure provider select box 
+- * 9780127 - 2017-09-29: Fixed issues with TorrentRSS and downloads 
+- * b8adf84 - 2017-09-27: Fixed duplicate issue with configure provider select box 
 - * 38575a1 - 2017-09-27: Updated HTBits provider to use https for url 
 - * 4b1e431 - 2017-09-18: Release v9.1.18 
 - * a6a84d4 - 2017-09-18: Fixed issue with retrieving cached results for searches when performing a provider search 
