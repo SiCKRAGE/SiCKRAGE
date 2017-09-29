@@ -75,7 +75,7 @@ def _download_result(result):
         except EnvironmentError as e:
             sickrage.srCore.srLogger.error("Error trying to save NZB to black hole: {}".format(e.message))
             newResult = False
-    elif resProvider.type == "torrent":
+    elif result.resultType == "torrent":
         newResult = resProvider.download_result(result)
     else:
         sickrage.srCore.srLogger.error("Invalid provider type - this is a coding error, report it please")

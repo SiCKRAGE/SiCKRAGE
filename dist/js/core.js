@@ -4820,7 +4820,7 @@ jQuery(document).ready(function ($) {
                 },
 
                 refreshEditAProvider: function () {
-                    $('#provider-list').empty();
+                    $('#editAProvider').empty();
 
                     var idArr = $("#provider_order_list").sortable('toArray');
                     var finalArr = [];
