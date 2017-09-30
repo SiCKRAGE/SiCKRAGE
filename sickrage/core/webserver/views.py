@@ -233,10 +233,10 @@ class LoginHandler(BaseHandler):
     def auth(self):
         if self.get_current_user(): return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
 
-        username = self.get_argument('username', '') == sickrage.srCore.srConfig.WEB_USERNAME
-        password = self.get_argument('password', '') == sickrage.srCore.srConfig.WEB_PASSWORD
+        username = self.get_argument('username', '')
+        password = self.get_argument('password', '')
 
-        if username and password:
+        if username == sickrage.srCore.srConfig.WEB_USERNAME and password == sickrage.srCore.srConfig.WEB_PASSWORD:
             srNotifiers.notify_login(self.request.remote_ip)
 
             remember_me = int(self.get_argument('remember_me', default=0))
@@ -248,7 +248,7 @@ class LoginHandler(BaseHandler):
             sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
 
             return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
-        else:
+        elif username and password:
             sickrage.srCore.srLogger.warning(
                 'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
                     self.request.remote_ip)
