@@ -363,9 +363,8 @@ class MediaBrowserMetadata(GenericMetadata):
             Studio = SubElement(Studios, "Studio")
             Studio.text = myShow['network']
 
-        if getattr(myShow, '_actors', None):
             Persons = SubElement(tv_node, "Persons")
-            for actor in myShow['_actors']:
+            for actor in t.actors(int(show_obj.indexerid)):
                 if not ('name' in actor and actor['name'].strip()):
                     continue
 
@@ -507,22 +506,21 @@ class MediaBrowserMetadata(GenericMetadata):
                         cur_person_type = SubElement(Person, "Type")
                         cur_person_type.text = person_type
 
-                if getattr(myShow, '_actors', None):
-                    for actor in myShow['_actors']:
-                        if not ('name' in actor and actor['name'].strip()):
-                            continue
+                for actor in t.actors(int(ep_obj.show.indexerid)):
+                    if not ('name' in actor and actor['name'].strip()):
+                        continue
 
-                        cur_actor = SubElement(Persons, "Person")
+                    cur_actor = SubElement(Persons, "Person")
 
-                        cur_actor_name = SubElement(cur_actor, "Name")
-                        cur_actor_name.text = actor['name'].strip()
+                    cur_actor_name = SubElement(cur_actor, "Name")
+                    cur_actor_name.text = actor['name'].strip()
 
-                        cur_actor_type = SubElement(cur_actor, "Type")
-                        cur_actor_type.text = "Actor"
+                    cur_actor_type = SubElement(cur_actor, "Type")
+                    cur_actor_type.text = "Actor"
 
-                        if 'role' in actor and actor['role'].strip():
-                            cur_actor_role = SubElement(cur_actor, "Role")
-                            cur_actor_role.text = actor['role'].strip()
+                    if 'role' in actor and actor['role'].strip():
+                        cur_actor_role = SubElement(cur_actor, "Role")
+                        cur_actor_role.text = actor['role'].strip()
 
                 Language = SubElement(episode, "Language")
                 try:

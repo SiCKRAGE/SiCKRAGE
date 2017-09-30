@@ -427,7 +427,6 @@ class Tvdb:
 
         if sid not in self.shows:
             self.shows[sid] = Show()
-            self.shows[sid].data['_actors'] = self.actors(sid)
 
         self.shows[sid].data[key] = value
 

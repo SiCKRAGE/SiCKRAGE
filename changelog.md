@@ -1,6 +1,7 @@
 # Changelog
 
-- * d8aa2be - 2017-09-30: Release v9.1.23 
+- * 3da0f4c - 2017-09-30: Metadata for actors is now pulled from indexers using a function 
+- * a99f625 - 2017-09-30: Release v9.1.23 
 - * 0bb6c69 - 2017-09-30: Fixed issues with login handler 
 - * 257d1f9 - 2017-09-30: Checks current user before attempting to auth for login 
 - * 4295e55 - 2017-09-30: Fixed typo 

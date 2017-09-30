@@ -253,10 +253,9 @@ class TIVOMetadata(GenericMetadata):
                 data += ("originalAirDate : " + str(curEpToWrite.airdate) + "T00:00:00Z\n")
 
             # This shows up at the beginning of the description on the Program screen and on the Details screen.
-            if getattr(myShow, '_actors', None):
-                for actor in myShow["_actors"]:
-                    if 'name' in actor and actor['name'].strip():
-                        data += ("vActor : " + actor['name'].strip() + "\n")
+            for actor in t.actors(int(ep_obj.show.indexerid)):
+                if 'name' in actor and actor['name'].strip():
+                    data += ("vActor : " + actor['name'].strip() + "\n")
 
             # This is shown on both the Program screen and the Details screen.
             if getattr(myEp, 'rating', None):

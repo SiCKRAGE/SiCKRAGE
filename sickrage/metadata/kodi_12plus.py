@@ -176,23 +176,22 @@ class KODI_12PlusMetadata(GenericMetadata):
             studio = SubElement(tv_node, "studio")
             studio.text = myShow["network"].strip()
 
-        if getattr(myShow, '_actors', None):
-            for actor in myShow['_actors']:
-                cur_actor = SubElement(tv_node, "actor")
+        for actor in t.actors(int(show_ID)):
+            cur_actor = SubElement(tv_node, "actor")
 
-                if 'name' in actor and actor['name'].strip():
-                    cur_actor_name = SubElement(cur_actor, "name")
-                    cur_actor_name.text = actor['name'].strip()
-                else:
-                    continue
+            if 'name' in actor and actor['name'].strip():
+                cur_actor_name = SubElement(cur_actor, "name")
+                cur_actor_name.text = actor['name'].strip()
+            else:
+                continue
 
-                if 'role' in actor and actor['role'].strip():
-                    cur_actor_role = SubElement(cur_actor, "role")
-                    cur_actor_role.text = actor['role'].strip()
+            if 'role' in actor and actor['role'].strip():
+                cur_actor_role = SubElement(cur_actor, "role")
+                cur_actor_role.text = actor['role'].strip()
 
-                if 'image' in actor and actor['image'].strip():
-                    cur_actor_thumb = SubElement(cur_actor, "thumb")
-                    cur_actor_thumb.text = actor['image'].strip()
+            if 'image' in actor and actor['image'].strip():
+                cur_actor_thumb = SubElement(cur_actor, "thumb")
+                cur_actor_thumb.text = actor['image'].strip()
 
         # Make it purdy
         indentXML(tv_node)
@@ -323,23 +322,22 @@ class KODI_12PlusMetadata(GenericMetadata):
                     cur_actor_name = SubElement(cur_actor, "name")
                     cur_actor_name.text = actor
 
-            if getattr(myShow, '_actors', None):
-                for actor in myShow['_actors']:
-                    cur_actor = SubElement(episode, "actor")
+            for actor in t.actors(int(ep_obj.show.indexerid)):
+                cur_actor = SubElement(episode, "actor")
 
-                    if 'name' in actor and actor['name'].strip():
-                        cur_actor_name = SubElement(cur_actor, "name")
-                        cur_actor_name.text = actor['name'].strip()
-                    else:
-                        continue
+                if 'name' in actor and actor['name'].strip():
+                    cur_actor_name = SubElement(cur_actor, "name")
+                    cur_actor_name.text = actor['name'].strip()
+                else:
+                    continue
 
-                    if 'role' in actor and actor['role'].strip():
-                        cur_actor_role = SubElement(cur_actor, "role")
-                        cur_actor_role.text = actor['role'].strip()
+                if 'role' in actor and actor['role'].strip():
+                    cur_actor_role = SubElement(cur_actor, "role")
+                    cur_actor_role.text = actor['role'].strip()
 
-                    if 'image' in actor and actor['image'].strip():
-                        cur_actor_thumb = SubElement(cur_actor, "thumb")
-                        cur_actor_thumb.text = actor['image'].strip()
+                if 'image' in actor and actor['image'].strip():
+                    cur_actor_thumb = SubElement(cur_actor, "thumb")
+                    cur_actor_thumb.text = actor['image'].strip()
 
         # Make it purdy
         indentXML(rootNode)

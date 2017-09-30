@@ -189,12 +189,11 @@ class Mede8erMetadata(MediaBrowserMetadata):
             Runtime = SubElement(tv_node, "runtime")
             Runtime.text = myShow['runtime']
 
-        if getattr(myShow, '_actors', None):
-            cast = SubElement(tv_node, "cast")
-            for actor in myShow['_actors']:
-                if 'name' in actor and actor['name'].strip():
-                    cur_actor = SubElement(cast, "actor")
-                    cur_actor.text = actor['name'].strip()
+        cast = SubElement(tv_node, "cast")
+        for actor in t.actors(int(show_obj.indexerid)):
+            if 'name' in actor and actor['name'].strip():
+                cur_actor = SubElement(cast, "actor")
+                cur_actor.text = actor['name'].strip()
 
         indentXML(rootNode)
 
@@ -312,18 +311,16 @@ class Mede8erMetadata(MediaBrowserMetadata):
                     writer = SubElement(episode, "credits")
                     writer.text = myEp['writer']
 
-                if getattr(myShow, '_actors', None) or getattr(myEp, 'gueststars', None):
-                    cast = SubElement(episode, "cast")
-                    if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], basestring):
-                        for actor in (x.strip() for x in myEp['gueststars'].split('|') if x.strip()):
-                            cur_actor = SubElement(cast, "actor")
-                            cur_actor.text = actor
+                cast = SubElement(episode, "cast")
+                if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], basestring):
+                    for actor in (x.strip() for x in myEp['gueststars'].split('|') if x.strip()):
+                        cur_actor = SubElement(cast, "actor")
+                        cur_actor.text = actor
 
-                    if getattr(myShow, '_actors', None):
-                        for actor in myShow['_actors']:
-                            if 'name' in actor and actor['name'].strip():
-                                cur_actor = SubElement(cast, "actor")
-                                cur_actor.text = actor['name'].strip()
+                for actor in t.actors(int(ep_obj.show.indexerid)):
+                    if 'name' in actor and actor['name'].strip():
+                        cur_actor = SubElement(cast, "actor")
+                        cur_actor.text = actor['name'].strip()
 
             else:
                 # append data from (if any) related episodes
