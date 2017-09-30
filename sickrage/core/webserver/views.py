@@ -31,7 +31,7 @@ import markdown2
 from CodernityDB.database import RecordNotFound
 from adba import aniDBAbstracter
 from concurrent.futures import ThreadPoolExecutor
-from mako.exceptions import html_error_template, RichTraceback
+from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode, recursive_unicode
@@ -230,36 +230,33 @@ class LoginHandler(BaseHandler):
         self.finish(result)
 
     def auth(self):
-        try:
-            username = self.get_argument('username', '')
-            password = self.get_argument('password', '')
+        username = self.get_argument('username', '') == sickrage.srCore.srConfig.WEB_USERNAME
+        password = self.get_argument('password', '') == sickrage.srCore.srConfig.WEB_PASSWORD
+
+        if username and password:
             remember_me = int(self.get_argument('remember_me', default=0))
 
-            if cmp([username, password],
-                   [sickrage.srCore.srConfig.WEB_USERNAME, sickrage.srCore.srConfig.WEB_PASSWORD]) == 0:
-                self.set_secure_cookie('user', json_encode(sickrage.srCore.srConfig.API_KEY),
-                                       expires_days=30 if remember_me > 0 else None)
-                sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
+            self.set_secure_cookie('user',
+                                   json_encode(sickrage.srCore.srConfig.API_KEY),
+                                   expires_days=30 if remember_me > 0 else None)
 
-                return self.redirect(self.get_argument("next", "/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE)))
-            elif username and password:
-                sickrage.srCore.srLogger.warning(
-                    'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
-                        self.request.remote_ip)
-                )
+            sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
 
-            return self.render(
-                "/login.mako",
-                title="Login",
-                header="Login",
-                topmenu="login",
-                controller='root',
-                action='login'
+            return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
+        else:
+            sickrage.srCore.srLogger.warning(
+                'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
+                    self.request.remote_ip)
             )
-        except Exception:
-            sickrage.srCore.srLogger.debug(
-                'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
-            return html_error_template().render_unicode()
+
+        return self.render(
+            "/login.mako",
+            title="Login",
+            header="Login",
+            topmenu="login",
+            controller='root',
+            action='login'
+        )
 
 
 class LogoutHandler(BaseHandler):
