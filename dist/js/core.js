@@ -1,6 +1,15 @@
 jQuery(document).ready(function ($) {
     // SiCKRAGE Core Namespace Object
     var SICKRAGE = {
+        xhrPool: [],
+
+        xhrAbortAll: function () {
+            $(this).each(function (idx, jqXHR) {
+                jqXHR.abort();
+            });
+            this.xhrPool = [];
+        },
+
         check_notifications: function () {
             var message_url = SICKRAGE.srWebRoot + '/ui/get_messages';
             if ('visible' === document.visibilityState) {
@@ -384,6 +393,22 @@ jQuery(document).ready(function ($) {
                     shiftWindow();
                 }
                 window.addEventListener("hashchange", shiftWindow);
+
+                $.ajaxSetup({
+                    beforeSend: function (jqXHR) {
+                        SICKRAGE.xhrPool.push(jqXHR);
+                    },
+                    complete: function (jqXHR) {
+                        var index = SICKRAGE.xhrPool.indexOf(jqXHR);
+                        if (index > -1) {
+                            SICKRAGE.xhrPool.splice(index, 1);
+                        }
+                    }
+                });
+
+                $(window).unload(function () {
+                    SICKRAGE.xhrAbortAll();
+                });
             }
         },
 

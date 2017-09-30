@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import requests
+from trakt.core.helpers import popitems
 from trakt.interfaces.base import Interface
 from trakt.mapper.summary import SummaryMapper
 
@@ -8,10 +9,8 @@ from trakt.mapper.summary import SummaryMapper
 class ShowsInterface(Interface):
     path = 'shows'
 
-    def get(self, id, extended=None, **kwargs):
-        response = self.http.get(str(id), query={
-            'extended': extended
-        })
+    def get(self, id, **kwargs):
+        response = self.http.get(str(id), query=dict(**popitems(kwargs, ['extended', 'limit'])))
 
         item = self.get_data(response, **kwargs)
 
@@ -20,10 +19,8 @@ class ShowsInterface(Interface):
 
         return SummaryMapper.show(self.client, item)
 
-    def played(self, extended=None, **kwargs):
-        response = self.http.get('played', query={
-            'extended': extended
-        })
+    def played(self, **kwargs):
+        response = self.http.get('played', query=dict(**popitems(kwargs, ['extended', 'limit'])))
 
         items = self.get_data(response, **kwargs)
 
@@ -32,10 +29,8 @@ class ShowsInterface(Interface):
 
         return SummaryMapper.shows(self.client, items)
 
-    def watched(self, extended=None, **kwargs):
-        response = self.http.get('watched', query={
-            'extended': extended
-        })
+    def watched(self, **kwargs):
+        response = self.http.get('watched', query=dict(**popitems(kwargs, ['extended', 'limit'])))
 
         items = self.get_data(response, **kwargs)
 
@@ -44,10 +39,8 @@ class ShowsInterface(Interface):
 
         return SummaryMapper.shows(self.client, items)
 
-    def collected(self, extended=None, **kwargs):
-        response = self.http.get('collected', query={
-            'extended': extended
-        })
+    def collected(self, **kwargs):
+        response = self.http.get('collected', query=dict(**popitems(kwargs, ['extended', 'limit'])))
 
         items = self.get_data(response, **kwargs)
 
@@ -56,10 +49,8 @@ class ShowsInterface(Interface):
 
         return SummaryMapper.shows(self.client, items)
 
-    def anticipated(self, extended=None, **kwargs):
-        response = self.http.get('anticipated', query={
-            'extended': extended
-        })
+    def anticipated(self, **kwargs):
+        response = self.http.get('anticipated', query=dict(**popitems(kwargs, ['extended', 'limit'])))
 
         items = self.get_data(response, **kwargs)
 
@@ -68,10 +59,8 @@ class ShowsInterface(Interface):
 
         return SummaryMapper.shows(self.client, items)
 
-    def popular(self, extended=None, **kwargs):
-        response = self.http.get('popular', query={
-            'extended': extended
-        })
+    def popular(self, **kwargs):
+        response = self.http.get('popular', query=dict(**popitems(kwargs, ['extended', 'limit'])))
 
         items = self.get_data(response, **kwargs)
 
@@ -80,10 +69,8 @@ class ShowsInterface(Interface):
 
         return SummaryMapper.shows(self.client, items)
 
-    def trending(self, extended=None, **kwargs):
-        response = self.http.get('trending', query={
-            'extended': extended
-        })
+    def trending(self, **kwargs):
+        response = self.http.get('trending', query=dict(**popitems(kwargs, ['extended', 'limit'])))
 
         items = self.get_data(response, **kwargs)
 

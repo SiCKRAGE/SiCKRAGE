@@ -2438,7 +2438,7 @@ class HomeAddShows(Home):
         posts them to addNewShow
         """
 
-        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full", pagination=True), False
+        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full", limit=limit), False
 
         # filter shows
         trakt_shows = [x for x in trakt_shows if
@@ -2449,7 +2449,7 @@ class HomeAddShows(Home):
                            header="Trakt {} Shows".format(list.capitalize()),
                            enable_anime_options=False,
                            black_list=black_list,
-                           trakt_shows=trakt_shows[:int(limit)],
+                           trakt_shows=trakt_shows,
                            trakt_list=list,
                            limit=limit,
                            controller='home',
