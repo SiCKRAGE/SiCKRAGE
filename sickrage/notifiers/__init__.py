@@ -23,6 +23,7 @@ import os
 import re
 
 import sickrage
+from sickrage.core.helpers import is_ip_private
 
 
 def _getNotifiersClass(name):
@@ -88,8 +89,18 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_version_update(new_version=""):
-        for n in sickrage.srCore.notifiersDict.values():
-            try:
-                n._notify_version_update(new_version)
-            except:
-                continue
+        if sickrage.srCore.srConfig.NOTIFY_ON_UPDATE:
+            for n in sickrage.srCore.notifiersDict.values():
+                try:
+                    n._notify_version_update(new_version)
+                except:
+                    continue
+
+    @staticmethod
+    def notify_login(ipaddress):
+        if sickrage.srCore.srConfig.NOTIFY_ON_LOGIN and not is_ip_private(ipaddress):
+            for n in sickrage.srCore.notifiersDict.values():
+                try:
+                    n.notify_login(ipaddress)
+                except:
+                    continue

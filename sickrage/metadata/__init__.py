@@ -705,7 +705,6 @@ class GenericMetadata(object):
 
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
-            indexer_show_obj = t[show_obj.indexerid]
         except (indexer_error, IOError) as e:
             sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
@@ -721,18 +720,18 @@ class GenericMetadata(object):
 
         if image_type == 'poster_thumb':
             try:
-                image_url = indexer_show_obj['_images']['poster'][which]['thumbnail']
-            except KeyError:
+                image_url = t.images(show_obj.indexerid, key_type='poster')[which]['thumbnail']
+            except (KeyError, IndexError):
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         elif image_type == 'series_thumb':
             try:
-                image_url = indexer_show_obj['_images']['series'][which]['thumbnail']
-            except KeyError:
+                image_url = t.images(show_obj.indexerid, key_type='series')[which]['thumbnail']
+            except (KeyError, IndexError):
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
         else:
             try:
-                image_url = indexer_show_obj['_images'][image_type][which]['filename']
-            except KeyError:
+                image_url = t.images(show_obj.indexerid, key_type=image_type)[which]['filename']
+            except (KeyError, IndexError):
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
 
         if image_url:
@@ -749,10 +748,7 @@ class GenericMetadata(object):
                     {1: '<url 1>', 2: <url 2>, ...},}
         """
 
-        result = None
-
         indexer_lang = show_obj.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
-
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
@@ -765,18 +761,16 @@ class GenericMetadata(object):
                 lINDEXER_API_PARMS['dvdorder'] = True
 
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-            indexer_show_obj = t[show_obj.indexerid]
 
             # Give us just the normal poster-style season graphics
-            try:
-                return indexer_show_obj[season]['_images']['season'][which]['filename']
-            except KeyError:
-                pass
+            return t.images(show_obj.indexerid, key_type='season', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
             sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
             sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
+        except (KeyError, IndexError):
+            pass
 
     @staticmethod
     def _retrieve_season_banner_image(show_obj, season, which=0):
@@ -797,18 +791,16 @@ class GenericMetadata(object):
             lINDEXER_API_PARMS['language'] = indexer_lang
 
             t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-            indexer_show_obj = t[show_obj.indexerid]
 
             # Give us just the normal season graphics
-            try:
-                return indexer_show_obj[season]['_images']['seasonwide'][which]['filename']
-            except KeyError:
-                pass
+            return t.images(show_obj.indexerid, key_type='seasonwide', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
             sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
             sickrage.srCore.srLogger.debug("Indexer " + srIndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
+        except (KeyError, IndexError):
+            pass
 
     def retrieveShowMetadata(self, folder):
         """
@@ -834,7 +826,7 @@ class GenericMetadata(object):
                 showXML = ElementTree(file=xmlFileObj)
 
             if showXML.findtext('title') is None or (
-                    showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
+                            showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
                 sickrage.srCore.srLogger.info(
                     "Invalid info in tvshow.nfo (missing name or id): {} {} {}".format(showXML.findtext('title'),
                                                                                        showXML.findtext('tvdbid'),

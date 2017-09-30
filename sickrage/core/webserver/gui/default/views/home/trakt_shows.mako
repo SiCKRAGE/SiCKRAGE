@@ -56,6 +56,14 @@
                         Most Collected
                     </option>
                 </select>
+
+                <span style="margin-left:12px">Limit:</span>
+                <select id="limit" class="form-control form-control-inline input-sm">
+                    <option value="10" ${('', ' selected')[limit == "10"]}>10</option>
+                    <option value="25" ${('', ' selected')[limit == "25"]}>25</option>
+                    <option value="50" ${('', ' selected')[limit == "50"]}>50</option>
+                    <option value="100" ${('', ' selected')[limit == "100"]}>100</option>
+                </select>
             </div>
         </div>
     </div>

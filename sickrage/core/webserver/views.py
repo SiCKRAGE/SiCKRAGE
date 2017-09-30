@@ -31,7 +31,7 @@ import markdown2
 from CodernityDB.database import RecordNotFound
 from adba import aniDBAbstracter
 from concurrent.futures import ThreadPoolExecutor
-from mako.exceptions import html_error_template, RichTraceback
+from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode, recursive_unicode
@@ -76,6 +76,7 @@ from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
+from sickrage.notifiers import srNotifiers
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 
@@ -230,36 +231,37 @@ class LoginHandler(BaseHandler):
         self.finish(result)
 
     def auth(self):
-        try:
-            username = self.get_argument('username', '')
-            password = self.get_argument('password', '')
+        if self.get_current_user(): return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
+
+        username = self.get_argument('username', '')
+        password = self.get_argument('password', '')
+
+        if username == sickrage.srCore.srConfig.WEB_USERNAME and password == sickrage.srCore.srConfig.WEB_PASSWORD:
+            srNotifiers.notify_login(self.request.remote_ip)
+
             remember_me = int(self.get_argument('remember_me', default=0))
 
-            if cmp([username, password],
-                   [sickrage.srCore.srConfig.WEB_USERNAME, sickrage.srCore.srConfig.WEB_PASSWORD]) == 0:
-                self.set_secure_cookie('user', json_encode(sickrage.srCore.srConfig.API_KEY),
-                                       expires_days=30 if remember_me > 0 else None)
-                sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
+            self.set_secure_cookie('user',
+                                   json_encode(sickrage.srCore.srConfig.API_KEY),
+                                   expires_days=30 if remember_me > 0 else None)
 
-                return self.redirect(self.get_argument("next", "/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE)))
-            elif username and password:
-                sickrage.srCore.srLogger.warning(
-                    'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
-                        self.request.remote_ip)
-                )
+            sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
 
-            return self.render(
-                "/login.mako",
-                title="Login",
-                header="Login",
-                topmenu="login",
-                controller='root',
-                action='login'
+            return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
+        elif username and password:
+            sickrage.srCore.srLogger.warning(
+                'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
+                    self.request.remote_ip)
             )
-        except Exception:
-            sickrage.srCore.srLogger.debug(
-                'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
-            return html_error_template().render_unicode()
+
+        return self.render(
+            "/login.mako",
+            title="Login",
+            header="Login",
+            topmenu="login",
+            controller='root',
+            action='login'
+        )
 
 
 class LogoutHandler(BaseHandler):
@@ -495,7 +497,7 @@ class WebRoot(WebHandler):
         )
 
     def getIndexerImage(self, indexerid):
-        return indexerImage(id=indexerid, which="poster_thumb").url
+        return indexerImage(id=indexerid, which="poster_thumb")
 
 
 @Route('/google(/?.*)')
@@ -2430,21 +2432,26 @@ class HomeAddShows(Home):
             action="new_show"
         )
 
-    def traktShows(self, list='trending'):
+    def traktShows(self, list='trending', limit=10):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
         """
 
-        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full"), False
+        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full", pagination=True), False
+
+        # filter shows
+        trakt_shows = [x for x in trakt_shows if
+                       'tvdb' in x.ids and not findCertainShow(sickrage.srCore.SHOWLIST, int(x.ids['tvdb']))]
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(list.capitalize()),
                            header="Trakt {} Shows".format(list.capitalize()),
                            enable_anime_options=False,
                            black_list=black_list,
-                           trakt_shows=trakt_shows,
+                           trakt_shows=trakt_shows[:int(limit)],
                            trakt_list=list,
+                           limit=limit,
                            controller='home',
                            action="trakt_shows")
 
@@ -3717,7 +3724,7 @@ class ConfigGeneral(Config):
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None,
-                    display_all_seasons=None, showupdate_stale=None, **kwargs):
+                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None, **kwargs):
 
         results = []
 
@@ -3735,6 +3742,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.change_version_notify(sickrage.srCore.srConfig.checkbox_to_value(version_notify))
         sickrage.srCore.srConfig.AUTO_UPDATE = sickrage.srCore.srConfig.checkbox_to_value(auto_update)
         sickrage.srCore.srConfig.NOTIFY_ON_UPDATE = sickrage.srCore.srConfig.checkbox_to_value(notify_on_update)
+        sickrage.srCore.srConfig.NOTIFY_ON_LOGIN = sickrage.srCore.srConfig.checkbox_to_value(notify_on_login)
         sickrage.srCore.srConfig.SHOWUPDATE_STALE = sickrage.srCore.srConfig.checkbox_to_value(showupdate_stale)
         sickrage.srCore.srConfig.LOG_NR = log_nr
         sickrage.srCore.srConfig.LOG_SIZE = log_size

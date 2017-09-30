@@ -77,6 +77,7 @@ class srConfig(object):
         self.VERSION_NOTIFY = 1
         self.AUTO_UPDATE = 1
         self.NOTIFY_ON_UPDATE = 1
+        self.NOTIFY_ON_LOGIN = 0
         self.PIP_PATH = "pip"
         self.GIT_RESET = 1
         self.GIT_USERNAME = ""
@@ -1023,6 +1024,7 @@ class srConfig(object):
         self.VERSION_NOTIFY = bool(self.check_setting_int('General', 'version_notify', self.VERSION_NOTIFY))
         self.AUTO_UPDATE = bool(self.check_setting_int('General', 'auto_update', self.AUTO_UPDATE))
         self.NOTIFY_ON_UPDATE = bool(self.check_setting_int('General', 'notify_on_update', self.NOTIFY_ON_UPDATE))
+        self.NOTIFY_ON_LOGIN = bool(self.check_setting_int('General', 'notify_on_login', self.NOTIFY_ON_LOGIN))
         self.FLATTEN_FOLDERS_DEFAULT = bool(
             self.check_setting_int('General', 'flatten_folders_default', self.FLATTEN_FOLDERS_DEFAULT))
         self.INDEXER_DEFAULT = self.check_setting_int('General', 'indexer_default', self.INDEXER_DEFAULT)
@@ -1540,6 +1542,7 @@ class srConfig(object):
                 'version_notify': int(self.VERSION_NOTIFY),
                 'auto_update': int(self.AUTO_UPDATE),
                 'notify_on_update': int(self.NOTIFY_ON_UPDATE),
+                'notify_on_login': int(self.NOTIFY_ON_LOGIN),
                 'naming_strip_year': int(self.NAMING_STRIP_YEAR),
                 'naming_pattern': self.NAMING_PATTERN,
                 'naming_custom_abd': int(self.NAMING_CUSTOM_ABD),

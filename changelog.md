@@ -1,6 +1,16 @@
 # Changelog
 
-- * e0b4fd1 - 2017-09-29: Release v9.1.20 
+- * d8aa2be - 2017-09-30: Release v9.1.23 
+- * 0bb6c69 - 2017-09-30: Fixed issues with login handler 
+- * 257d1f9 - 2017-09-30: Checks current user before attempting to auth for login 
+- * 4295e55 - 2017-09-30: Fixed typo 
+- * cdfabc6 - 2017-09-30: Added notifications for logins to webui, can be toggled from general interface settings 
+- * 7c63227 - 2017-09-30: Fixed issues with login function for webui 
+- * 7787693 - 2017-09-30: Fixed theTVDB indexer api images function to return list instead of None 
+- * efd659d - 2017-09-30: Fixed issues with retrieval of Trakt images from theTVDB or cache 
+- * 85812da - 2017-09-29: Removed code that manually sorted trakt shows by votes before display on page 
+- * 2342428 - 2017-09-29: Improved code for getting images from theTVDB indexer 
+- * cd6f0fe - 2017-09-29: Release v9.1.20 
 - * f0c8cbe - 2017-09-29: Release v9.1.19 
 - * 489c239 - 2017-09-29: Fixed issues with TorrentRSS and downloads 
 - * b8adf84 - 2017-09-27: Fixed duplicate issue with configure provider select box 

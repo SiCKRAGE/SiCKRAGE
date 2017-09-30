@@ -308,7 +308,6 @@
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Notify on software update</label>
                     </div>
@@ -318,7 +317,6 @@
                         <label for="notify_on_update">send a message to all enabled notifiers when SickRage
                             has been updated</label>
                     </div>
-
                 </div>
 
                 <div class="row">
@@ -765,7 +763,6 @@
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Reverse proxy headers</label>
                     </div>
@@ -777,7 +774,19 @@
                             (X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)
                         </label>
                     </div>
+                </div>
 
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Notify on login</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="notify_on_login"
+                               id="notify_on_login" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_LOGIN)]}/>
+                        <label for="notify_on_login">
+                            send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address
+                        </label>
+                    </div>
                 </div>
 
                 <div class="row">
