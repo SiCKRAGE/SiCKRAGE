@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7aa83b6 - 2017-09-29: Improved code for getting images from theTVDB indexer 
+- * 3277c7e - 2017-09-29: Removed code that manually sorted trakt shows by votes before display on page 
+- * 2342428 - 2017-09-29: Improved code for getting images from theTVDB indexer 
 - * cd6f0fe - 2017-09-29: Release v9.1.20 
 - * f0c8cbe - 2017-09-29: Release v9.1.19 
 - * 489c239 - 2017-09-29: Fixed issues with TorrentRSS and downloads 

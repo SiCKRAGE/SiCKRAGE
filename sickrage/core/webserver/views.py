@@ -2442,9 +2442,6 @@ class HomeAddShows(Home):
         trakt_shows = [x for x in trakt_shows if
                        'tvdb' in x.ids and not findCertainShow(sickrage.srCore.SHOWLIST, int(x.ids['tvdb']))]
 
-        # sort shows by votes
-        trakt_shows = sorted(trakt_shows, key=lambda k: k.votes, reverse=True)
-
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(list.capitalize()),
                            header="Trakt {} Shows".format(list.capitalize()),
