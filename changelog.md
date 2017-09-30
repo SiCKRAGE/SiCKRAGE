@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5d1e136 - 2017-09-30: Fixed issues with login handler 
+- * d8aa2be - 2017-09-30: Release v9.1.23 
+- * 0bb6c69 - 2017-09-30: Fixed issues with login handler 
 - * 257d1f9 - 2017-09-30: Checks current user before attempting to auth for login 
 - * 4295e55 - 2017-09-30: Fixed typo 
 - * cdfabc6 - 2017-09-30: Added notifications for logins to webui, can be toggled from general interface settings 

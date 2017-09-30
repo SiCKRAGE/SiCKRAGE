@@ -85,8 +85,11 @@ jQuery(document).ready(function ($) {
                 if (uri.slice(-1) === '?') {
                     uri = uri.slice(0, -1);
                 }
+
                 // replace first occurrence of & by ? if no ? is present
-                if (uri.indexOf('?') === -1) uri = uri.replace(/&/, '?');
+                if (uri.indexOf('?') === -1) {
+                    uri = uri.replace(/&/, '?');
+                }
             } else if (uri.match(re)) {
                 uri = uri.replace(re, '$1' + key + "=" + value + '$2');
             } else {
@@ -2330,12 +2333,12 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#traktlist').on('change', function (e) {
-                        var url = SICKRAGE.updateUrlParameter(document.location.href, 'list', e.target.value)
+                        var url = SICKRAGE.updateUrlParameter(document.location.href, 'list', e.target.value);
                         document.location.href = url;
                     });
 
                     $('#limit').on('change', function (e) {
-                        var url = SICKRAGE.updateUrlParameter(document.location.href, 'limit', e.target.value)
+                        var url = SICKRAGE.updateUrlParameter(document.location.href, 'limit', e.target.value);
                         document.location.href = url;
                     });
 
