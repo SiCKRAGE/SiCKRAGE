@@ -1,6 +1,7 @@
 # Changelog
 
-- * 20f1954 - 2017-09-30: Added notifications for logins to webui, can be toggled from general interface settings 
+- * 9813356 - 2017-09-30: Fixed typo 
+- * cdfabc6 - 2017-09-30: Added notifications for logins to webui, can be toggled from general interface settings 
 - * 7c63227 - 2017-09-30: Fixed issues with login function for webui 
 - * 7787693 - 2017-09-30: Fixed theTVDB indexer api images function to return list instead of None 
 - * efd659d - 2017-09-30: Fixed issues with retrieval of Trakt images from theTVDB or cache 

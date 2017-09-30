@@ -784,7 +784,7 @@
                         <input type="checkbox" name="notify_on_login"
                                id="notify_on_login" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_LOGIN)]}/>
                         <label for="notify_on_login">
-                            send a message to all enabled notifiers when someone logs into SiCKRAGE has been updated
+                            send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address
                         </label>
                     </div>
                 </div>
