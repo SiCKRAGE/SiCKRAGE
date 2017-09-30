@@ -596,7 +596,7 @@ class Tvdb:
                 images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season),
                                        self.config['api']['lang'])['data']
         except tvdb_error:
-            return
+            return []
 
         for i, image in enumerate(images):
             if season and int(image['subkey']) != season: continue
