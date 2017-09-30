@@ -1,6 +1,7 @@
 # Changelog
 
-- * 443ecd9 - 2017-09-30: Fixed issues with login function for webui 
+- * 20f1954 - 2017-09-30: Added notifications for logins to webui, can be toggled from general interface settings 
+- * 7c63227 - 2017-09-30: Fixed issues with login function for webui 
 - * 7787693 - 2017-09-30: Fixed theTVDB indexer api images function to return list instead of None 
 - * efd659d - 2017-09-30: Fixed issues with retrieval of Trakt images from theTVDB or cache 
 - * 85812da - 2017-09-29: Removed code that manually sorted trakt shows by votes before display on page 

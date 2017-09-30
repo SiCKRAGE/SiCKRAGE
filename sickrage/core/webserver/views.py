@@ -76,6 +76,7 @@ from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
+from sickrage.notifiers import srNotifiers
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 
@@ -234,6 +235,8 @@ class LoginHandler(BaseHandler):
         password = self.get_argument('password', '') == sickrage.srCore.srConfig.WEB_PASSWORD
 
         if username and password:
+            srNotifiers.notify_login(self.request.remote_ip)
+
             remember_me = int(self.get_argument('remember_me', default=0))
 
             self.set_secure_cookie('user',
@@ -3719,7 +3722,7 @@ class ConfigGeneral(Config):
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None,
-                    display_all_seasons=None, showupdate_stale=None, **kwargs):
+                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None, **kwargs):
 
         results = []
 
@@ -3737,6 +3740,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.change_version_notify(sickrage.srCore.srConfig.checkbox_to_value(version_notify))
         sickrage.srCore.srConfig.AUTO_UPDATE = sickrage.srCore.srConfig.checkbox_to_value(auto_update)
         sickrage.srCore.srConfig.NOTIFY_ON_UPDATE = sickrage.srCore.srConfig.checkbox_to_value(notify_on_update)
+        sickrage.srCore.srConfig.NOTIFY_ON_LOGIN = sickrage.srCore.srConfig.checkbox_to_value(notify_on_login)
         sickrage.srCore.srConfig.SHOWUPDATE_STALE = sickrage.srCore.srConfig.checkbox_to_value(showupdate_stale)
         sickrage.srCore.srConfig.LOG_NR = log_nr
         sickrage.srCore.srConfig.LOG_SIZE = log_size
