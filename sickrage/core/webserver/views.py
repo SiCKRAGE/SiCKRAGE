@@ -231,6 +231,8 @@ class LoginHandler(BaseHandler):
         self.finish(result)
 
     def auth(self):
+        if self.get_current_user(): return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
+
         username = self.get_argument('username', '') == sickrage.srCore.srConfig.WEB_USERNAME
         password = self.get_argument('password', '') == sickrage.srCore.srConfig.WEB_PASSWORD
 

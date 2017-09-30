@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9813356 - 2017-09-30: Fixed typo 
+- * 4e71117 - 2017-09-30: Checks current user before attempting to auth for login 
+- * 4295e55 - 2017-09-30: Fixed typo 
 - * cdfabc6 - 2017-09-30: Added notifications for logins to webui, can be toggled from general interface settings 
 - * 7c63227 - 2017-09-30: Fixed issues with login function for webui 
 - * 7787693 - 2017-09-30: Fixed theTVDB indexer api images function to return list instead of None 
