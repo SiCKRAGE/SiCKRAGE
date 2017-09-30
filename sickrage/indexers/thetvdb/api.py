@@ -417,7 +417,6 @@ class Tvdb:
             self.shows[sid] = Show()
         if seas not in self.shows[sid]:
             self.shows[sid][seas] = Season()
-            self.shows[sid][seas].data['_images'] = self._get_images(sid, seas)
         if ep not in self.shows[sid][seas]:
             self.shows[sid][seas][ep] = Episode()
         self.shows[sid][seas][ep][attrib] = value
@@ -428,8 +427,7 @@ class Tvdb:
 
         if sid not in self.shows:
             self.shows[sid] = Show()
-            self.shows[sid].data['_images'] = self._get_images(sid)
-            self.shows[sid].data['_actors'] = self._get_actors(sid)
+            self.shows[sid].data['_actors'] = self.actors(sid)
 
         self.shows[sid].data[key] = value
 
@@ -458,9 +456,9 @@ class Tvdb:
         else:
             sickrage.srCore.srLogger.debug("Searching for show by imdbId: {}".format(series))
             return self._request('get', self.config['api']['getSeriesIMDB'].format(id=series))['data']
-        #elif zap2itid:
-        #    sickrage.srCore.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
-        #    return self._request('get', self.config['api']['getSeriesZap2It'].format(id=zap2itid))['data']
+            # elif zap2itid:
+            #    sickrage.srCore.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
+            #    return self._request('get', self.config['api']['getSeriesZap2It'].format(id=zap2itid))['data']
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -478,59 +476,6 @@ class Tvdb:
             ui = self.config['custom_ui'](config=self.config)
 
         return ui.selectSeries(allSeries, series)
-
-    @login_required
-    def _get_images(self, sid, season=None):
-        images = {}
-
-        for keyType in ['fanart', 'banner', 'poster', 'series', 'season', 'seasonwide']:
-            if season and not keyType.startswith('season') or not season and keyType.startswith('season'): continue
-
-            sickrage.srCore.srLogger.debug('Getting {} images for {}'.format(keyType, sid))
-
-            try:
-                if not season:
-                    images[keyType] = \
-                        self._request('get', self.config['api']['images'][keyType].format(id=sid),
-                                      self.config['api']['lang'])['data']
-                else:
-                    images[keyType] = \
-                        self._request('get', self.config['api']['images'][keyType].format(id=sid, season=season),
-                                      self.config['api']['lang'])['data']
-            except tvdb_error:
-                continue
-
-            for i, image in enumerate(images[keyType]):
-                if season and int(image['subkey']) != season: continue
-                image["score"] = image["ratingsinfo"]["average"] * image["ratingsinfo"]["count"]
-                for k, v in image.items():
-                    if not all([k, v]): continue
-                    v = (v, self.config['api']['images']['prefix'].format(id=v))[k in ['filename', 'thumbnail']]
-                    images[keyType][i][k] = v
-
-            images[keyType] = [item for item in sorted(images[keyType], key=itemgetter("score"), reverse=True)]
-
-        return images
-
-    @login_required
-    def _get_actors(self, sid):
-        sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
-
-        cur_actors = Actors()
-
-        try:
-            for cur_actor in self._request('get', self.config['api']['actors'].format(id=sid))['data']:
-                curActor = Actor()
-                for k, v in cur_actor.items():
-                    if not all([k, v]): continue
-                    v = (v, self.config['api']['images']['prefix'].format(id=v))[k == 'images']
-                    curActor[k] = v
-
-                cur_actors.append(curActor)
-        except Exception:
-            sickrage.srCore.srLogger.debug('Actors result returned zero')
-
-        return cur_actors
 
     @login_required
     def _getShowData(self, sid):
@@ -638,6 +583,50 @@ class Tvdb:
         self._setShowData(sid, 'last_updated', int(time.mktime(datetime.datetime.now().timetuple())))
 
         return self.shows[int(sid)]
+
+    @login_required
+    def images(self, sid, key_type='poster', season=None):
+        sickrage.srCore.srLogger.debug('Getting {} images for {}'.format(key_type, sid))
+
+        try:
+            if not season:
+                images = self._request('get', self.config['api']['images'][key_type].format(id=sid),
+                                       self.config['api']['lang'])['data']
+            else:
+                images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season),
+                                       self.config['api']['lang'])['data']
+        except tvdb_error:
+            return
+
+        for i, image in enumerate(images):
+            if season and int(image['subkey']) != season: continue
+            image["score"] = image["ratingsinfo"]["average"] * image["ratingsinfo"]["count"]
+            for k, v in image.items():
+                if not all([k, v]): continue
+                v = (v, self.config['api']['images']['prefix'].format(id=v))[k in ['filename', 'thumbnail']]
+                images[i][k] = v
+
+        return [item for item in sorted(images, key=itemgetter("score"), reverse=True)]
+
+    @login_required
+    def actors(self, sid):
+        sickrage.srCore.srLogger.debug("Getting actors for {}".format(sid))
+
+        cur_actors = Actors()
+
+        try:
+            for cur_actor in self._request('get', self.config['api']['actors'].format(id=sid))['data']:
+                curActor = Actor()
+                for k, v in cur_actor.items():
+                    if not all([k, v]): continue
+                    v = (v, self.config['api']['images']['prefix'].format(id=v))[k == 'images']
+                    curActor[k] = v
+
+                cur_actors.append(curActor)
+        except Exception:
+            sickrage.srCore.srLogger.debug('Actors result returned zero')
+
+        return cur_actors
 
     @login_required
     def updated(self, fromTime):

@@ -64,14 +64,14 @@ def indexerImage(id=None, which=None):
             if media_format == "thumb":
                 image_path = os.path.join(ImageCache()._thumbnails_dir(), image_name)
                 if not os.path.exists(image_path):
-                    image_url = t[int(id)]['_images'][image_type][0]['thumbnail']
+                    image_url = t.images(int(id), key_type=image_type)[0]['thumbnail']
                     sickrage.srCore.srWebSession.download(image_url, image_path)
             else:
                 image_path = os.path.join(ImageCache()._cache_dir(), image_name)
                 if not os.path.exists(image_path):
-                    image_url = t[int(id)]['_images'][image_type][0]['filename']
+                    image_url = t.images(int(id), key_type=image_type)[0]['filename']
                     sickrage.srCore.srWebSession.download(image_url, image_path)
-        except KeyError:
+        except (KeyError, IndexError):
             pass
 
         if image_type == 'banner':

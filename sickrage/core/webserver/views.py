@@ -2436,14 +2436,21 @@ class HomeAddShows(Home):
         posts them to addNewShow
         """
 
-        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full"), False
+        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full", pagination=True), False
+
+        # filter shows
+        trakt_shows = [x for x in trakt_shows if
+                       'tvdb' in x.ids and not findCertainShow(sickrage.srCore.SHOWLIST, int(x.ids['tvdb']))]
+
+        # sort shows by votes
+        trakt_shows = sorted(trakt_shows, key=lambda k: k.votes, reverse=True)
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(list.capitalize()),
                            header="Trakt {} Shows".format(list.capitalize()),
                            enable_anime_options=False,
                            black_list=black_list,
-                           trakt_shows=trakt_shows,
+                           trakt_shows=trakt_shows[:25],
                            trakt_list=list,
                            controller='home',
                            action="trakt_shows")

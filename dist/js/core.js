@@ -2318,7 +2318,8 @@ jQuery(document).ready(function ($) {
                                 success: function (data) {
                                     $(this).data("image-loaded", true);
                                     $(this).attr("src", data);
-                                }
+                                },
+                                timeout: 3000
                             });
                         }
                     });
