@@ -495,7 +495,7 @@ class WebRoot(WebHandler):
         )
 
     def getIndexerImage(self, indexerid):
-        return indexerImage(id=indexerid, which="poster_thumb").url
+        return indexerImage(id=indexerid, which="poster_thumb")
 
 
 @Route('/google(/?.*)')
@@ -2430,7 +2430,7 @@ class HomeAddShows(Home):
             action="new_show"
         )
 
-    def traktShows(self, list='trending'):
+    def traktShows(self, list='trending', limit=10):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
@@ -2447,8 +2447,9 @@ class HomeAddShows(Home):
                            header="Trakt {} Shows".format(list.capitalize()),
                            enable_anime_options=False,
                            black_list=black_list,
-                           trakt_shows=trakt_shows[:25],
+                           trakt_shows=trakt_shows[:int(limit)],
                            trakt_list=list,
+                           limit=limit,
                            controller='home',
                            action="trakt_shows")
 

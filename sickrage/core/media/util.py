@@ -72,14 +72,14 @@ def indexerImage(id=None, which=None):
                     image_url = t.images(int(id), key_type=image_type)[0]['filename']
                     sickrage.srCore.srWebSession.download(image_url, image_path)
         except (KeyError, IndexError):
-            pass
+            return
 
         if image_type == 'banner':
-            return Banner(int(id), media_format)
+            return Banner(int(id), media_format).url
         elif image_type == 'fanart':
-            return FanArt(int(id), media_format)
+            return FanArt(int(id), media_format).url
         elif image_type == 'poster':
-            return Poster(int(id), media_format)
+            return Poster(int(id), media_format).url
     except (indexer_error, IOError) as e:
         sickrage.srCore.srLogger.warning("{}: Unable to look up show on ".format(id) + srIndexerApi(
             INDEXER_TVDB).name + ", not downloading images: {}".format(e.message))

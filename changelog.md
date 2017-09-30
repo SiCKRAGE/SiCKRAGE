@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3277c7e - 2017-09-29: Removed code that manually sorted trakt shows by votes before display on page 
+- * db3bd19 - 2017-09-30: Fixed issues with retrieval of Trakt images from theTVDB or cache 
+- * 85812da - 2017-09-29: Removed code that manually sorted trakt shows by votes before display on page 
 - * 2342428 - 2017-09-29: Improved code for getting images from theTVDB indexer 
 - * cd6f0fe - 2017-09-29: Release v9.1.20 
 - * f0c8cbe - 2017-09-29: Release v9.1.19 
