@@ -258,8 +258,14 @@ class srConfig(object):
         self.FREEMOBILE_NOTIFY_ONSNATCH = 0
         self.FREEMOBILE_NOTIFY_ONDOWNLOAD = 0
         self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = 0
-        self.FREEMOBILE_ID = None
-        self.FREEMOBILE_APIKEY = None
+        self.FREEMOBILE_ID = ""
+        self.FREEMOBILE_APIKEY = ""
+        self.USE_TELEGRAM = 0
+        self.TELEGRAM_NOTIFY_ONSNATCH = 0
+        self.TELEGRAM_NOTIFY_ONDOWNLOAD = 0
+        self.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = 0
+        self.TELEGRAM_ID = ""
+        self.TELEGRAM_APIKEY = ""
         self.USE_PROWL = 0
         self.PROWL_NOTIFY_ONSNATCH = 0
         self.PROWL_NOTIFY_ONDOWNLOAD = 0
@@ -275,13 +281,6 @@ class srConfig(object):
         self.TWITTER_PREFIX = None
         self.TWITTER_DMTO = None
         self.TWITTER_USEDM = 0
-        self.USE_BOXCAR = 0
-        self.BOXCAR_NOTIFY_ONSNATCH = 0
-        self.BOXCAR_NOTIFY_ONDOWNLOAD = 0
-        self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD = 0
-        self.BOXCAR_USERNAME = None
-        self.BOXCAR_PASSWORD = None
-        self.BOXCAR_PREFIX = None
         self.USE_BOXCAR2 = 0
         self.BOXCAR2_NOTIFY_ONSNATCH = 0
         self.BOXCAR2_NOTIFY_ONDOWNLOAD = 0
@@ -1240,6 +1239,17 @@ class srConfig(object):
         self.FREEMOBILE_ID = self.check_setting_str('FreeMobile', 'freemobile_id', '')
         self.FREEMOBILE_APIKEY = self.check_setting_str('FreeMobile', 'freemobile_apikey', '')
 
+        # TELEGRAM SETTINGS
+        self.USE_TELEGRAM = bool(self.check_setting_int('TELEGRAM', 'use_telegram', 0))
+        self.TELEGRAM_NOTIFY_ONSNATCH = bool(
+            self.check_setting_int('TELEGRAM', 'telegram_notify_onsnatch', 0))
+        self.TELEGRAM_NOTIFY_ONDOWNLOAD = bool(
+            self.check_setting_int('TELEGRAM', 'telegram_notify_ondownload', 0))
+        self.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
+            self.check_setting_int('TELEGRAM', 'telegram_notify_onsubtitledownload', 0))
+        self.TELEGRAM_ID = self.check_setting_str('TELEGRAM', 'telegram_id', '')
+        self.TELEGRAM_APIKEY = self.check_setting_str('TELEGRAM', 'telegram_apikey', '')
+
         # PROWL SETTINGS
         self.USE_PROWL = bool(self.check_setting_int('Prowl', 'use_prowl', 0))
         self.PROWL_NOTIFY_ONSNATCH = bool(self.check_setting_int('Prowl', 'prowl_notify_onsnatch', 0))
@@ -1263,15 +1273,6 @@ class srConfig(object):
         self.TWITTER_PREFIX = self.check_setting_str('Twitter', 'twitter_prefix', 'SiCKRAGE')
         self.TWITTER_DMTO = self.check_setting_str('Twitter', 'twitter_dmto', '')
         self.TWITTER_USEDM = bool(self.check_setting_int('Twitter', 'twitter_usedm', 0))
-
-        self.USE_BOXCAR = bool(self.check_setting_int('Boxcar', 'use_boxcar', 0))
-        self.BOXCAR_NOTIFY_ONSNATCH = bool(
-            self.check_setting_int('Boxcar', 'boxcar_notify_onsnatch', 0))
-        self.BOXCAR_NOTIFY_ONDOWNLOAD = bool(
-            self.check_setting_int('Boxcar', 'boxcar_notify_ondownload', 0))
-        self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-            self.check_setting_int('Boxcar', 'boxcar_notify_onsubtitledownload', 0))
-        self.BOXCAR_USERNAME = self.check_setting_str('Boxcar', 'boxcar_username', '')
 
         self.USE_BOXCAR2 = bool(self.check_setting_int('Boxcar2', 'use_boxcar2', 0))
         self.BOXCAR2_NOTIFY_ONSNATCH = bool(
@@ -1713,6 +1714,14 @@ class srConfig(object):
                 'freemobile_id': self.FREEMOBILE_ID,
                 'freemobile_apikey': self.FREEMOBILE_APIKEY,
             },
+            'TELEGRAM': {
+                'use_telegram': int(self.USE_TELEGRAM),
+                'telegram_notify_onsnatch': int(self.TELEGRAM_NOTIFY_ONSNATCH),
+                'telegram_notify_ondownload': int(self.TELEGRAM_NOTIFY_ONDOWNLOAD),
+                'telegram_notify_onsubtitledownload': int(self.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD),
+                'telegram_id': self.TELEGRAM_ID,
+                'telegram_apikey': self.TELEGRAM_APIKEY,
+            },
             'Prowl': {
                 'use_prowl': int(self.USE_PROWL),
                 'prowl_notify_onsnatch': int(self.PROWL_NOTIFY_ONSNATCH),
@@ -1732,14 +1741,6 @@ class srConfig(object):
                 'twitter_prefix': self.TWITTER_PREFIX,
                 'twitter_dmto': self.TWITTER_DMTO,
                 'twitter_usedm': int(self.TWITTER_USEDM),
-            },
-            'Boxcar': {
-                'use_boxcar': int(self.USE_BOXCAR),
-                'boxcar_notify_onsnatch': int(self.BOXCAR_NOTIFY_ONSNATCH),
-                'boxcar_notify_ondownload': int(self.BOXCAR_NOTIFY_ONDOWNLOAD),
-                'boxcar_notify_onsubtitledownload': int(self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'boxcar_username': self.BOXCAR_USERNAME,
-
             },
             'Boxcar2': {
                 'use_boxcar2': int(self.USE_BOXCAR2),
