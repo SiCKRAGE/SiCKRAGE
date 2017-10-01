@@ -101,6 +101,6 @@ class srNotifiers(object):
         if sickrage.srCore.srConfig.NOTIFY_ON_LOGIN and not is_ip_private(ipaddress):
             for n in sickrage.srCore.notifiersDict.values():
                 try:
-                    n.notify_login(ipaddress)
+                    n._notify_login(ipaddress)
                 except:
                     continue

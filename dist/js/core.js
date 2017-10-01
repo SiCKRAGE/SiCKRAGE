@@ -1,6 +1,15 @@
 jQuery(document).ready(function ($) {
     // SiCKRAGE Core Namespace Object
     var SICKRAGE = {
+        xhrPool: [],
+
+        xhrAbortAll: function () {
+            $(this).each(function (idx, jqXHR) {
+                jqXHR.abort();
+            });
+            this.xhrPool = [];
+        },
+
         check_notifications: function () {
             var message_url = SICKRAGE.srWebRoot + '/ui/get_messages';
             if ('visible' === document.visibilityState) {
@@ -384,6 +393,22 @@ jQuery(document).ready(function ($) {
                     shiftWindow();
                 }
                 window.addEventListener("hashchange", shiftWindow);
+
+                $.ajaxSetup({
+                    beforeSend: function (jqXHR) {
+                        SICKRAGE.xhrPool.push(jqXHR);
+                    },
+                    complete: function (jqXHR) {
+                        var index = SICKRAGE.xhrPool.indexOf(jqXHR);
+                        if (index > -1) {
+                            SICKRAGE.xhrPool.splice(index, 1);
+                        }
+                    }
+                });
+
+                $(window).unload(function () {
+                    SICKRAGE.xhrAbortAll();
+                });
             }
         },
 
@@ -4017,6 +4042,36 @@ jQuery(document).ready(function ($) {
                         }).done(function (data) {
                             $('#testFreeMobile-result').html(data);
                             $('#testFreeMobile').prop('disabled', false);
+                        });
+                    });
+
+                    $('#testTelegram').on('click', function () {
+                        var telegram = {};
+                        telegram.id = $.trim($('#telegram_id').val());
+                        telegram.apikey = $.trim($('#telegram_apikey').val());
+                        if (!telegram.id || !telegram.apikey) {
+                            $('#testTelegram-result').html( _('Please fill out the necessary fields above.') );
+                            if (!telegram.id) {
+                                $('#telegram_id').addClass('warning');
+                            } else {
+                                $('#telegram_id').removeClass('warning');
+                            }
+                            if (!telegram.apikey) {
+                                $('#telegram_apikey').addClass('warning');
+                            } else {
+                                $('#telegram_apikey').removeClass('warning');
+                            }
+                            return;
+                        }
+                        $('#telegram_id,#telegram_apikey').removeClass('warning');
+                        $(this).prop('disabled', true);
+                        $('#testTelegram-result').html(SICKRAGE.loadingHTML);
+                        $.get(SICKRAGE.srWebRoot + '/home/testTelegram', {
+                            'telegram_id': telegram.id,
+                            'telegram_apikey': telegram.apikey
+                        }).done(function (data) {
+                            $('#testTelegram-result').html(data);
+                            $('#testTelegram').prop('disabled', false);
                         });
                     });
 

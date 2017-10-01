@@ -1,6 +1,10 @@
 # Changelog
 
-- * d8aa2be - 2017-09-30: Release v9.1.23 
+- * da12093 - 2017-10-01: Release v9.1.24 
+- * 5acbdd0 - 2017-10-01: Added Telegram notifier Removed Boxcar notifier in favour of Boxcar2 notifier 
+- * fa8e781 - 2017-09-30: Added ability to limit amount of trakt show results returned from API 
+- * 8c581c5 - 2017-09-30: Metadata for actors is now pulled from indexers using a function 
+- * a99f625 - 2017-09-30: Release v9.1.23 
 - * 0bb6c69 - 2017-09-30: Fixed issues with login handler 
 - * 257d1f9 - 2017-09-30: Checks current user before attempting to auth for login 
 - * 4295e55 - 2017-09-30: Fixed typo 

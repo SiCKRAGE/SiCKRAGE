@@ -34,7 +34,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_kodi"
                                id="use_kodi" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_KODI)]}/>
-                        <label for="use_kodi">should SickRage send KODI commands ?</label>
+                        <label for="use_kodi">send KODI commands ?</label>
                     </div>
                 </div>
 
@@ -213,7 +213,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
                                id="use_plex" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PLEX)]}/>
-                        <label for="use_plex"><p>should SickRage send Plex commands ?</p></label>
+                        <label for="use_plex"><p>send Plex commands ?</p></label>
                     </div>
                 </div>
 
@@ -352,7 +352,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
                                id="use_plex_client" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PLEX_CLIENT)]}/>
-                        <label for="use_plex_client"><p>should SickRage send Plex commands ?</p></label>
+                        <label for="use_plex_client"><p>send Plex commands ?</p></label>
                     </div>
                 </div>
 
@@ -476,7 +476,7 @@
                         <input type="checkbox" class="enabler" name="use_emby"
                                id="use_emby" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_EMBY)]} />
                         <label class="control-label" for="use_emby">
-                            should SickRage send update commands to Emby?
+                            send update commands to Emby?
                         </label>
                     </div>
                 </div>
@@ -548,7 +548,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmj"
                                id="use_nmj" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_NMJ)]}/>
-                        <label for="use_nmj"><p>should SickRage send update commands to NMJ ?</p></label>
+                        <label for="use_nmj"><p>send update commands to NMJ ?</p></label>
                     </div>
                 </div>
 
@@ -649,7 +649,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmjv2"
                                id="use_nmjv2" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_NMJv2)]}/>
-                        <label for="use_nmjv2"><p>should SickRage send update commands to NMJv2 ?</p></label>
+                        <label for="use_nmjv2"><p>send update commands to NMJv2 ?</p></label>
                     </div>
                 </div>
 
@@ -785,7 +785,7 @@
                         <input type="checkbox" class="enabler" name="use_synoindex"
                                id="use_synoindex" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_SYNOINDEX)]}/>
                         <label for="use_synoindex">
-                            should SickRage send Synology notifications ?<br/>
+                            send Synology notifications ?<br/>
                             <b>Note:</b> requires SickRage to be running on your Synology NAS.
                         </label>
                     </div>
@@ -820,7 +820,7 @@
                         <input type="checkbox" class="enabler" name="use_synologynotifier"
                                id="use_synologynotifier" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_SYNOLOGYNOTIFIER)]}/>
                         <label for="use_synologynotifier">
-                            should SickRage send notifications to the Synology Notifier ?<br/>
+                            send notifications to the Synology Notifier ?<br/>
                             <b>Note:</b> requires SickRage to be running on your Synology DSM.
                         </label>
                     </div>
@@ -889,7 +889,7 @@
                         <input type="checkbox" class="enabler" name="use_pytivo"
                                id="use_pytivo" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PYTIVO)]}/>
                         <label for="use_pytivo">
-                            should SickRage send notifications to pyTivo ?<br/>
+                            send notifications to pyTivo ?<br/>
                             <b>Note:</b> requires the downloaded files to be accessible by pyTivo.
                         </label>
                     </div>
@@ -977,7 +977,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_growl"
                                id="use_growl" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_GROWL)]}/>
-                        <label for="use_growl"><p>should SickRage send Growl notifications ?</p></label>
+                        <label for="use_growl"><p>send Growl notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1086,7 +1086,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_prowl"
                                id="use_prowl" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PROWL)]}/>
-                        <label for="use_prowl"><p>should SickRage send Prowl notifications ?</p></label>
+                        <label for="use_prowl"><p>send Prowl notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1210,7 +1210,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_libnotify"
                                id="use_libnotify" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_LIBNOTIFY)]}/>
-                        <label for="use_libnotify"><p>should SickRage send Libnotify notifications ?</p></label>
+                        <label for="use_libnotify"><p>send Libnotify notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1281,7 +1281,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushover"
                                id="use_pushover" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PUSHOVER)]}/>
-                        <label for="use_pushover"><p>should SickRage send Pushover notifications ?</p></label>
+                        <label for="use_pushover"><p>send Pushover notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1472,96 +1472,6 @@
 
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar.png" alt=""
-                     title="Boxcar"/>
-                <h3><a href="${anon_url('http://boxcar.io/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Boxcar</a></h3>
-                <p>Universal push notification for iOS. Read your messages where and when you want them! A
-                    subscription will be sent if needed.</p>
-            </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" class="enabler" name="use_boxcar"
-                               id="use_boxcar" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_BOXCAR)]}/>
-                        <label for="use_boxcar"><p>should SickRage send Boxcar notifications ?</p></label>
-                    </div>
-                </div>
-
-                <div id="content_use_boxcar">
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="checkbox" name="boxcar_notify_onsnatch"
-                                   id="boxcar_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONSNATCH)]}/>
-                            <label for="boxcar_notify_onsnatch"><p>send a notification when a download starts ?</p>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="checkbox" name="boxcar_notify_ondownload"
-                                   id="boxcar_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="boxcar_notify_ondownload"><p>send a notification when a download finishes ?</p>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="checkbox" name="boxcar_notify_onsubtitledownload"
-                                   id="boxcar_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
-                            <label for="boxcar_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
-                        </div>
-                    </div>
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Boxcar username</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                </div>
-                                <input name="boxcar_username" id="boxcar_username"
-                                       value="${sickrage.srCore.srConfig.BOXCAR_USERNAME}"
-                                       class="form-control"
-                                       placeholder="username of your Boxcar account"
-                                       autocapitalize="off"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="testNotification" id="testBoxcar-result">Click below to test.</div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Boxcar" id="testBoxcar"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
-                        </div>
-                    </div>
-
-                </div><!-- /content_use_boxcar //-->
-
-            </fieldset>
-        </div><!-- /boxcar tab-pane //-->
-
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar2.png" alt=""
                      title="Boxcar2"/>
                 <h3><a href="${anon_url('https://new.boxcar.io/')}" rel="noreferrer"
@@ -1576,7 +1486,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_boxcar2"
                                id="use_boxcar2" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_BOXCAR2)]}/>
-                        <label for="use_boxcar2"><p>should SickRage send Boxcar2 notifications ?</p></label>
+                        <label for="use_boxcar2"><p>send Boxcar2 notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1664,7 +1574,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nma"
                                id="use_nma" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_NMA)]}/>
-                        <label for="use_nma"><p>should SickRage send NMA notifications ?</p></label>
+                        <label for="use_nma"><p>send NMA notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1785,7 +1695,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushalot"
                                id="use_pushalot" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PUSHALOT)]}/>
-                        <label for="use_pushalot"><p>should SickRage send Pushalot notifications ?</p></label>
+                        <label for="use_pushalot"><p>send Pushalot notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1876,7 +1786,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushbullet"
                                id="use_pushbullet" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PUSHBULLET)]}/>
-                        <label for="use_pushbullet"><p>should SickRage send Pushbullet notifications ?</p></label>
+                        <label for="use_pushbullet"><p>send Pushbullet notifications ?</p></label>
                     </div>
                 </div>
 
@@ -1982,9 +1892,7 @@
                      title="Free Mobile"/>
                 <h3><a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Free Mobile</a></h3>
-                <p>Free Mobile is a famous French cellular network provider.<br> It provides to their
-                    customer a
-                    free SMS API.</p>
+                <p>Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
@@ -1994,7 +1902,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_freemobile"
                                id="use_freemobile" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FREEMOBILE)]}/>
-                        <label for="use_freemobile"><p>should SickRage send SMS notifications ?</p></label>
+                        <label for="use_freemobile"><p>send SMS notifications ?</p></label>
                     </div>
                 </div>
 
@@ -2082,7 +1990,145 @@
                 </div><!-- /content_use_freemobile //-->
             </fieldset>
         </div><!-- /freemobile tab-pane //-->
+        <div class="row tab-pane">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/telegram.png" alt=""
+                     title="Telegram"/>
+                <h3><a href="${anon_url('http://telegram.org/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">Telegram</a></h3>
+                <p>Telegram is a cloud-based instant messaging service</p>
+            </div>
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Enable</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" class="enabler" name="use_telegram"
+                               id="use_telegram" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_TELEGRAM)]}/>
+                        <label for="use_telegram"><p>send Telegram notifications?</p></label>
+                    </div>
+                </div>
 
+                <div id="content_use_telegram">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on snatch</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="telegram_notify_onsnatch"
+                                   id="telegram_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSNATCH)]}/>
+                            <label for="telegram_notify_onsnatch">
+                                <p>send a message when a download starts?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="telegram_notify_ondownload"
+                                   id="telegram_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONDOWNLOAD)]}/>
+                            <label for="telegram_notify_ondownload">
+                                <p>send a message when a download finishes?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on subtitle download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="telegram_notify_onsubtitledownload"
+                                   id="telegram_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                            <label for="telegram_notify_onsubtitledownload">
+                                <p>send a message when subtitles are downloaded?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">User/Group ID</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-user"></span>
+                                        </div>
+                                        <input name="telegram_id" id="telegram_id"
+                                               value="${sickrage.srCore.srConfig.TELEGRAM_ID}"
+                                               class="form-control"
+                                               placeholder="ex. 12345678"
+                                               autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="telegram_id">
+                                        contact @myidbot on Telegram to get an ID
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>
+                                        Note: Don't forget to talk with your bot at least one time if you get a 403
+                                        error.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Bot API Key</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-cloud"></span>
+                                        </div>
+                                        <input name="telegram_apikey" id="telegram_apikey"
+                                               value="${sickrage.srCore.srConfig.TELEGRAM_APIKEY}"
+                                               class="form-control"
+                                               placeholder="enter yourt API key"
+                                               autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="telegram_apikey">
+                                        contact @BotFather on Telegram to set up one
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="testNotification" id="testTelegram-result">
+                                Click below to test your settings.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input class="btn" type="button" value="Test Telegram" id="testTelegram"/>
+                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                        </div>
+                    </div>
+                </div><!-- /content_use_telegram //-->
+            </fieldset>
+        </div><!-- /telegram tab-pane //-->
     </div>
 
     <div id="tabs-3" class="tab-pane fade">
@@ -2104,7 +2150,7 @@
                         <input type="checkbox" class="enabler" name="use_twitter"
                                id="use_twitter" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_TWITTER)]}/>
                         <label for="use_twitter">
-                            should SickRage post tweets on Twitter ?<br/>
+                            post tweets on Twitter ?<br/>
                             <b>Note:</b> you may want to use a secondary account.
                         </label>
                     </div>
@@ -2246,7 +2292,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_trakt"
                                id="use_trakt" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_TRAKT)]}/>
-                        <label for="use_trakt"><p>should SickRage send Trakt.tv notifications ?</p></label>
+                        <label for="use_trakt"><p>send Trakt.tv notifications ?</p></label>
                     </div>
                 </div>
 
@@ -2496,7 +2542,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_email"
                                id="use_email" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_EMAIL)]}/>
-                        <label for="use_email"><p>should SickRage send email notifications ?</p></label>
+                        <label for="use_email"><p>send email notifications ?</p></label>
                     </div>
                 </div>
 

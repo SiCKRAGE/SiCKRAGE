@@ -719,8 +719,6 @@ class Home(WebHandler):
 
     @staticmethod
     def testSABnzbd(host=None, username=None, password=None, apikey=None):
-        # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-
         host = clean_url(host)
 
         connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
@@ -747,12 +745,20 @@ class Home(WebHandler):
     @staticmethod
     def testFreeMobile(freemobile_id=None, freemobile_apikey=None):
 
-        result, message = sickrage.srCore.notifiersDict['freemobile'].test_notify(freemobile_id,
-                                                                                  freemobile_apikey)
+        result, message = sickrage.srCore.notifiersDict['freemobile'].test_notify(freemobile_id, freemobile_apikey)
         if result:
             return "SMS sent successfully"
         else:
             return "Problem sending SMS: " + message
+
+    @staticmethod
+    def testTelegram(telegram_id=None, telegram_apikey=None):
+
+        result, message = sickrage.srCore.notifiersDict['telegram'].test_notify(telegram_id, telegram_apikey)
+        if result:
+            return "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
+        else:
+            return "Error sending Telegram notification: {message}".format(message=message)
 
     @staticmethod
     def testGrowl(host=None, password=None):
@@ -779,15 +785,6 @@ class Home(WebHandler):
             return "Test prowl notice sent successfully"
         else:
             return "Test prowl notice failed"
-
-    @staticmethod
-    def testBoxcar(username=None):
-
-        result = sickrage.srCore.notifiersDict['boxcar'].test_notify(username)
-        if result:
-            return "Boxcar notification succeeded. Check your Boxcar clients to make sure it worked"
-        else:
-            return "Error sending Boxcar notification"
 
     @staticmethod
     def testBoxcar2(accesstoken=None):
@@ -2438,7 +2435,7 @@ class HomeAddShows(Home):
         posts them to addNewShow
         """
 
-        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full", pagination=True), False
+        trakt_shows, black_list = getattr(srTraktAPI()['shows'], list)(extended="full", limit=limit), False
 
         # filter shows
         trakt_shows = [x for x in trakt_shows if
@@ -2449,7 +2446,7 @@ class HomeAddShows(Home):
                            header="Trakt {} Shows".format(list.capitalize()),
                            enable_anime_options=False,
                            black_list=black_list,
-                           trakt_shows=trakt_shows[:int(limit)],
+                           trakt_shows=trakt_shows,
                            trakt_list=list,
                            limit=limit,
                            controller='home',
@@ -4429,12 +4426,12 @@ class ConfigNotifications(Config):
                           growl_notify_onsubtitledownload=None, growl_host=None, growl_password=None,
                           use_freemobile=None, freemobile_notify_onsnatch=None, freemobile_notify_ondownload=None,
                           freemobile_notify_onsubtitledownload=None, freemobile_id=None, freemobile_apikey=None,
+                          use_telegram=None, telegram_notify_onsnatch=None, telegram_notify_ondownload=None,
+                          telegram_notify_onsubtitledownload=None, telegram_id=None, telegram_apikey=None,
                           use_prowl=None, prowl_notify_onsnatch=None, prowl_notify_ondownload=None,
                           prowl_notify_onsubtitledownload=None, prowl_api=None, prowl_priority=0,
                           use_twitter=None, twitter_notify_onsnatch=None, twitter_notify_ondownload=None,
                           twitter_notify_onsubtitledownload=None, twitter_usedm=None, twitter_dmto=None,
-                          use_boxcar=None, boxcar_notify_onsnatch=None, boxcar_notify_ondownload=None,
-                          boxcar_notify_onsubtitledownload=None, boxcar_username=None,
                           use_boxcar2=None, boxcar2_notify_onsnatch=None, boxcar2_notify_ondownload=None,
                           boxcar2_notify_onsubtitledownload=None, boxcar2_accesstoken=None,
                           use_pushover=None, pushover_notify_onsnatch=None, pushover_notify_ondownload=None,
@@ -4521,6 +4518,16 @@ class ConfigNotifications(Config):
         sickrage.srCore.srConfig.FREEMOBILE_ID = freemobile_id
         sickrage.srCore.srConfig.FREEMOBILE_APIKEY = freemobile_apikey
 
+        sickrage.srCore.srConfig.USE_TELEGRAM = sickrage.srCore.srConfig.checkbox_to_value(use_telegram)
+        sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(
+            telegram_notify_onsnatch)
+        sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            telegram_notify_ondownload)
+        sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            telegram_notify_onsubtitledownload)
+        sickrage.srCore.srConfig.TELEGRAM_ID = telegram_id
+        sickrage.srCore.srConfig.TELEGRAM_APIKEY = telegram_apikey
+
         sickrage.srCore.srConfig.USE_PROWL = sickrage.srCore.srConfig.checkbox_to_value(use_prowl)
         sickrage.srCore.srConfig.PROWL_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(
             prowl_notify_onsnatch)
@@ -4540,15 +4547,6 @@ class ConfigNotifications(Config):
             twitter_notify_onsubtitledownload)
         sickrage.srCore.srConfig.TWITTER_USEDM = sickrage.srCore.srConfig.checkbox_to_value(twitter_usedm)
         sickrage.srCore.srConfig.TWITTER_DMTO = twitter_dmto
-
-        sickrage.srCore.srConfig.USE_BOXCAR = sickrage.srCore.srConfig.checkbox_to_value(use_boxcar)
-        sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(
-            boxcar_notify_onsnatch)
-        sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
-            boxcar_notify_ondownload)
-        sickrage.srCore.srConfig.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
-            boxcar_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.BOXCAR_USERNAME = boxcar_username
 
         sickrage.srCore.srConfig.USE_BOXCAR2 = sickrage.srCore.srConfig.checkbox_to_value(use_boxcar2)
         sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(

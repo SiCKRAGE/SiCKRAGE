@@ -271,19 +271,18 @@ class WDTVMetadata(GenericMetadata):
                 director = SubElement(episode, "director")
                 director.text = myEp['director']
 
-            if getattr(myShow, '_actors', None):
-                for actor in myShow['_actors']:
-                    if not ('name' in actor and actor['name'].strip()):
-                        continue
+            for actor in t.actors(int(ep_obj.show.indexerid)):
+                if not ('name' in actor and actor['name'].strip()):
+                    continue
 
-                    cur_actor = SubElement(episode, "actor")
+                cur_actor = SubElement(episode, "actor")
 
-                    cur_actor_name = SubElement(cur_actor, "name")
-                    cur_actor_name.text = actor['name']
+                cur_actor_name = SubElement(cur_actor, "name")
+                cur_actor_name.text = actor['name']
 
-                    if 'role' in actor and actor['role'].strip():
-                        cur_actor_role = SubElement(cur_actor, "role")
-                        cur_actor_role.text = actor['role'].strip()
+                if 'role' in actor and actor['role'].strip():
+                    cur_actor_role = SubElement(cur_actor, "role")
+                    cur_actor_role.text = actor['role'].strip()
 
             if curEpToWrite.description:
                 overview = SubElement(episode, "overview")

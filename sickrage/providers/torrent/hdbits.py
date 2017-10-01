@@ -16,6 +16,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import json
 import urllib
 
 import sickrage
@@ -100,7 +101,10 @@ class HDBitsProvider(TorrentProvider):
 
             for item in items:
                 results.append(item)
-        # FIXME SORTING
+
+        # sort by number of seeders
+        if results: results.sort(key=lambda x: x['seeders'], reverse=True)
+
         return results
 
     def find_propers(self, search_date=None):
@@ -175,7 +179,7 @@ class HDBitsProvider(TorrentProvider):
         if search_term:
             post_data['search'] = search_term
 
-        return post_data
+        return json.dumps(post_data)
 
     def seed_ratio(self):
         return self.ratio
