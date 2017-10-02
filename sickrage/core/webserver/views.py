@@ -55,7 +55,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
-    sanitizeFileName, tryInt, clean_url
+    sanitizeFileName, tryInt, clean_url, try_int
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
@@ -3654,6 +3654,11 @@ class Config(WebHandler):
             action='index'
         )
 
+    def reset(self):
+        sickrage.srCore.srConfig.load(True)
+        sickrage.srCore.srNotifications.message('Configuration Reset to Defaults', os.path.join(sickrage.CONFIG_FILE))
+        return self.redirect("/config/")
+
 
 @Route('/config/general(/?.*)')
 class ConfigGeneral(Config):
@@ -3763,11 +3768,10 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.NO_RESTART = sickrage.srCore.srConfig.checkbox_to_value(no_restart)
 
         sickrage.srCore.srConfig.SSL_VERIFY = sickrage.srCore.srConfig.checkbox_to_value(ssl_verify)
-        sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srCore.srConfig.to_int(coming_eps_missed_range,
-                                                                                           default=7)
+        sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = try_int(coming_eps_missed_range, 7)
         sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS = sickrage.srCore.srConfig.checkbox_to_value(display_all_seasons)
 
-        sickrage.srCore.srConfig.WEB_PORT = sickrage.srCore.srConfig.to_int(web_port)
+        sickrage.srCore.srConfig.WEB_PORT = try_int(web_port)
         sickrage.srCore.srConfig.WEB_IPV6 = sickrage.srCore.srConfig.checkbox_to_value(web_ipv6)
         if sickrage.srCore.srConfig.checkbox_to_value(encryption_version) == 1:
             sickrage.srCore.srConfig.ENCRYPTION_VERSION = 2
@@ -3784,10 +3788,10 @@ class ConfigGeneral(Config):
             sickrage.srCore.srConfig.DATE_PRESET = date_preset
 
         if indexer_default:
-            sickrage.srCore.srConfig.INDEXER_DEFAULT = sickrage.srCore.srConfig.to_int(indexer_default)
+            sickrage.srCore.srConfig.INDEXER_DEFAULT = try_int(indexer_default)
 
         if indexer_timeout:
-            sickrage.srCore.srConfig.INDEXER_TIMEOUT = sickrage.srCore.srConfig.to_int(indexer_timeout)
+            sickrage.srCore.srConfig.INDEXER_TIMEOUT = try_int(indexer_timeout)
 
         if time_preset:
             sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS = time_preset
@@ -3926,7 +3930,7 @@ class ConfigSearch(Config):
 
         sickrage.srCore.srConfig.NZB_METHOD = nzb_method
         sickrage.srCore.srConfig.TORRENT_METHOD = torrent_method
-        sickrage.srCore.srConfig.USENET_RETENTION = sickrage.srCore.srConfig.to_int(usenet_retention, default=500)
+        sickrage.srCore.srConfig.USENET_RETENTION = try_int(usenet_retention, 500)
 
         sickrage.srCore.srConfig.TORRENT_TRACKERS = torrent_trackers if torrent_trackers else ""
         sickrage.srCore.srConfig.IGNORE_WORDS = ignore_words if ignore_words else ""
@@ -3964,7 +3968,7 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME_BACKLOG = nzbget_category_anime_backlog
         sickrage.srCore.srConfig.NZBGET_HOST = sickrage.srCore.srConfig.clean_host(nzbget_host)
         sickrage.srCore.srConfig.NZBGET_USE_HTTPS = sickrage.srCore.srConfig.checkbox_to_value(nzbget_use_https)
-        sickrage.srCore.srConfig.NZBGET_PRIORITY = sickrage.srCore.srConfig.to_int(nzbget_priority, default=100)
+        sickrage.srCore.srConfig.NZBGET_PRIORITY = try_int(nzbget_priority, 100)
 
         sickrage.srCore.srConfig.TORRENT_USERNAME = torrent_username
         sickrage.srCore.srConfig.TORRENT_PASSWORD = torrent_password
@@ -4294,7 +4298,7 @@ class ConfigProviders(Config):
             sickrage.srCore.providersDict.provider_order += [curProvider]
             if curProvider in sickrage.srCore.providersDict.all():
                 curProvObj = sickrage.srCore.providersDict.all()[curProvider]
-                curProvObj.enabled = bool(sickrage.srCore.srConfig.to_int(curEnabled))
+                curProvObj.enabled = bool(try_int(curEnabled))
 
         # dynamically load provider settings
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
@@ -4624,7 +4628,7 @@ class ConfigNotifications(Config):
         sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
             email_notify_onsubtitledownload)
         sickrage.srCore.srConfig.EMAIL_HOST = sickrage.srCore.srConfig.clean_host(email_host)
-        sickrage.srCore.srConfig.EMAIL_PORT = sickrage.srCore.srConfig.to_int(email_port, default=25)
+        sickrage.srCore.srConfig.EMAIL_PORT = try_int(email_port, 25)
         sickrage.srCore.srConfig.EMAIL_FROM = email_from
         sickrage.srCore.srConfig.EMAIL_TLS = sickrage.srCore.srConfig.checkbox_to_value(email_tls)
         sickrage.srCore.srConfig.EMAIL_USER = email_user

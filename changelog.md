@@ -1,6 +1,7 @@
 # Changelog
 
-- * d34f03a - 2017-10-01: Improved censorship of sensitive data in logs 
+- * 5dbf0ee - 2017-10-02: Added defaults property function for config settings 
+- * e1c6cdc - 2017-10-01: Improved censorship of sensitive data in logs 
 - * 6fb98e1 - 2017-10-01: Added check_settings_bool function for config operations 
 - * 077a85c - 2017-10-01: Release v9.1.24 
 - * 5acbdd0 - 2017-10-01: Added Telegram notifier Removed Boxcar notifier in favour of Boxcar2 notifier 
