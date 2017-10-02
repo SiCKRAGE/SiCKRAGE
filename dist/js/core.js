@@ -3892,6 +3892,27 @@ jQuery(document).ready(function ($) {
                         });
                     });
 
+                    $('#testTwilio').on('click', function() {
+                        $('#testTwilio').addClass('disabled');
+                        $.post(srRoot + '/home/testTwilio', function(data) {
+                            $('#testTwilio-result').html(data);
+                        }).always(function() {
+                            $('#testTwilio').removeClass('disabled');
+                        });
+                    });
+
+                    $('#testSlack').on('click', function() {
+                        $.post(srRoot + '/home/testSlack', function(data) {
+                            $('#testSlack-result').html(data);
+                        });
+                    });
+
+                    $('#testDiscord').on('click', function() {
+                        $.get(srRoot + '/home/testDiscord', function(data) {
+                            $('#testDiscord-result').html(data);
+                        });
+                    });
+
                     $('#settingsNMJ').click(function () {
                         if (!$('#nmj_host').val()) {
                             alert('Please fill in the Popcorn IP address');

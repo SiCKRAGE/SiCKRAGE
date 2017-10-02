@@ -54,8 +54,6 @@ class srConfig(object):
 
         self.LAST_DB_COMPACT = 0
 
-        self.CENSORED_ITEMS = {}
-
         self.NAMING_EP_TYPE = ("%(seasonnumber)dx%(episodenumber)02d",
                                "s%(seasonnumber)02de%(episodenumber)02d",
                                "S%(seasonnumber)02dE%(episodenumber)02d",
@@ -938,16 +936,14 @@ class srConfig(object):
     ################################################################################
     # check_setting_str                                                            #
     ################################################################################
-    def check_setting_str(self, section, key, def_val="", silent=True):
+    def check_setting_str(self, section, key, def_val="", silent=True, censor=False):
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
 
-        if my_val:
-            censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
-            if censored_regex.search(key) or (section, key) in self.CENSORED_ITEMS:
-                self.CENSORED_ITEMS[section, key] = my_val
+        if censor or (section, key) in sickrage.srCore.srLogger.CENSORED_ITEMS:
+            sickrage.srCore.srLogger.CENSORED_ITEMS[section, key] = my_val
 
         if not silent:
-            print(key + " -> " + my_val)
+            sickrage.srCore.srLogger.debug(key + " -> " + my_val)
 
         return my_val
 
@@ -996,7 +992,7 @@ class srConfig(object):
 
         # decrypt settings
         self.ENCRYPTION_VERSION = self.check_setting_int('General', 'encryption_version', self.ENCRYPTION_VERSION)
-        self.ENCRYPTION_SECRET = self.check_setting_str('General', 'encryption_secret', self.ENCRYPTION_SECRET)
+        self.ENCRYPTION_SECRET = self.check_setting_str('General', 'encryption_secret', self.ENCRYPTION_SECRET, censor=True)
         self.CONFIG_OBJ.walk(self.decrypt)
 
         # migrate config
@@ -1014,7 +1010,7 @@ class srConfig(object):
         self.GIT_PATH = self.check_setting_str('General', 'git_path', self.GIT_PATH)
         self.GIT_AUTOISSUES = self.check_setting_bool('General', 'git_autoissues', self.GIT_AUTOISSUES)
         self.GIT_USERNAME = self.check_setting_str('General', 'git_username', self.GIT_USERNAME)
-        self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', self.GIT_PASSWORD)
+        self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', self.GIT_PASSWORD, censor=True)
         self.GIT_NEWVER = self.check_setting_bool('General', 'git_newver', self.GIT_NEWVER)
         self.GIT_RESET = self.check_setting_bool('General', 'git_reset', self.GIT_RESET)
         self.WEB_PORT = self.check_setting_int('General', 'web_port', self.WEB_PORT)
@@ -1023,7 +1019,7 @@ class srConfig(object):
         self.WEB_ROOT = self.check_setting_str('General', 'web_root', '').rstrip("/")
         self.WEB_LOG = self.check_setting_bool('General', 'web_log', self.WEB_LOG)
         self.WEB_USERNAME = self.check_setting_str('General', 'web_username', self.WEB_USERNAME)
-        self.WEB_PASSWORD = self.check_setting_str('General', 'web_password', self.WEB_PASSWORD)
+        self.WEB_PASSWORD = self.check_setting_str('General', 'web_password', self.WEB_PASSWORD, censor=True)
         self.WEB_COOKIE_SECRET = self.check_setting_str('General', 'web_cookie_secret', self.WEB_COOKIE_SECRET)
         self.WEB_USE_GZIP = self.check_setting_bool('General', 'web_use_gzip', self.WEB_USE_GZIP)
         self.SSL_VERIFY = self.check_setting_bool('General', 'ssl_verify', self.SSL_VERIFY)
@@ -1040,7 +1036,7 @@ class srConfig(object):
         self.TRASH_REMOVE_SHOW = self.check_setting_bool('General', 'trash_remove_show', self.TRASH_REMOVE_SHOW)
         self.TRASH_ROTATE_LOGS = self.check_setting_bool('General', 'trash_rotate_logs', self.TRASH_ROTATE_LOGS)
         self.SORT_ARTICLE = self.check_setting_bool('General', 'sort_article', self.SORT_ARTICLE)
-        self.API_KEY = self.check_setting_str('General', 'api_key', self.API_KEY)
+        self.API_KEY = self.check_setting_str('General', 'api_key', self.API_KEY, censor=True)
         self.ENABLE_HTTPS = self.check_setting_bool('General', 'enable_https', self.ENABLE_HTTPS)
         self.HTTPS_CERT = self.check_setting_str('General', 'https_cert', self.HTTPS_CERT)
         self.HTTPS_KEY = self.check_setting_str('General', 'https_key', self.HTTPS_KEY)
@@ -1161,17 +1157,17 @@ class srConfig(object):
         # NZBS SETTINGS
         self.NZBS = self.check_setting_bool('NZBs', 'nzbs', 0)
         self.NZBS_UID = self.check_setting_str('NZBs', 'nzbs_uid', '')
-        self.NZBS_HASH = self.check_setting_str('NZBs', 'nzbs_hash', '')
+        self.NZBS_HASH = self.check_setting_str('NZBs', 'nzbs_hash', '', censor=True)
 
         # NEWZBIN SETTINGS
         self.NEWZBIN = self.check_setting_bool('Newzbin', 'newzbin', 0)
         self.NEWZBIN_USERNAME = self.check_setting_str('Newzbin', 'newzbin_username', '')
-        self.NEWZBIN_PASSWORD = self.check_setting_str('Newzbin', 'newzbin_password', '')
+        self.NEWZBIN_PASSWORD = self.check_setting_str('Newzbin', 'newzbin_password', '', censor=True)
 
         # SABNZBD SETTINGS
         self.SAB_USERNAME = self.check_setting_str('SABnzbd', 'sab_username', '')
-        self.SAB_PASSWORD = self.check_setting_str('SABnzbd', 'sab_password', '')
-        self.SAB_APIKEY = self.check_setting_str('SABnzbd', 'sab_apikey', '')
+        self.SAB_PASSWORD = self.check_setting_str('SABnzbd', 'sab_password', '', censor=True)
+        self.SAB_APIKEY = self.check_setting_str('SABnzbd', 'sab_apikey', '', censor=True)
         self.SAB_CATEGORY = self.check_setting_str('SABnzbd', 'sab_category', 'tv')
         self.SAB_CATEGORY_BACKLOG = self.check_setting_str('SABnzbd', 'sab_category_backlog', self.SAB_CATEGORY)
         self.SAB_CATEGORY_ANIME = self.check_setting_str('SABnzbd', 'sab_category_anime', 'anime')
@@ -1182,7 +1178,7 @@ class srConfig(object):
 
         # NZBGET SETTINGS
         self.NZBGET_USERNAME = self.check_setting_str('NZBget', 'nzbget_username', 'nzbget')
-        self.NZBGET_PASSWORD = self.check_setting_str('NZBget', 'nzbget_password', 'tegbzn6789')
+        self.NZBGET_PASSWORD = self.check_setting_str('NZBget', 'nzbget_password', 'tegbzn6789', censor=True)
         self.NZBGET_CATEGORY = self.check_setting_str('NZBget', 'nzbget_category', 'tv')
         self.NZBGET_CATEGORY_BACKLOG = self.check_setting_str('NZBget', 'nzbget_category_backlog', self.NZBGET_CATEGORY)
         self.NZBGET_CATEGORY_ANIME = self.check_setting_str('NZBget', 'nzbget_category_anime', 'anime')
@@ -1194,7 +1190,7 @@ class srConfig(object):
 
         # TORRENT SETTINGS
         self.TORRENT_USERNAME = self.check_setting_str('TORRENT', 'torrent_username', '')
-        self.TORRENT_PASSWORD = self.check_setting_str('TORRENT', 'torrent_password', '')
+        self.TORRENT_PASSWORD = self.check_setting_str('TORRENT', 'torrent_password', '', censor=True)
         self.TORRENT_HOST = self.check_setting_str('TORRENT', 'torrent_host', '')
         self.TORRENT_PATH = self.check_setting_str('TORRENT', 'torrent_path', '')
         self.TORRENT_SEED_TIME = self.check_setting_int('TORRENT', 'torrent_seed_time', 0)
@@ -1218,7 +1214,7 @@ class srConfig(object):
         self.KODI_UPDATE_ONLYFIRST = self.check_setting_bool('KODI', 'kodi_update_onlyfirst', 0)
         self.KODI_HOST = self.check_setting_str('KODI', 'kodi_host', '')
         self.KODI_USERNAME = self.check_setting_str('KODI', 'kodi_username', '')
-        self.KODI_PASSWORD = self.check_setting_str('KODI', 'kodi_password', '')
+        self.KODI_PASSWORD = self.check_setting_str('KODI', 'kodi_password', '', censor=True)
 
         # PLEX SETTINGS
         self.USE_PLEX = self.check_setting_bool('Plex', 'use_plex', 0)
@@ -1227,18 +1223,18 @@ class srConfig(object):
         self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Plex', 'plex_notify_onsubtitledownload', 0)
         self.PLEX_UPDATE_LIBRARY = self.check_setting_bool('Plex', 'plex_update_library', 0)
         self.PLEX_SERVER_HOST = self.check_setting_str('Plex', 'plex_server_host', '')
-        self.PLEX_SERVER_TOKEN = self.check_setting_str('Plex', 'plex_server_token', '')
+        self.PLEX_SERVER_TOKEN = self.check_setting_str('Plex', 'plex_server_token', '', censor=True)
         self.PLEX_HOST = self.check_setting_str('Plex', 'plex_host', '')
         self.PLEX_USERNAME = self.check_setting_str('Plex', 'plex_username', '')
-        self.PLEX_PASSWORD = self.check_setting_str('Plex', 'plex_password', '')
+        self.PLEX_PASSWORD = self.check_setting_str('Plex', 'plex_password', '', censor=True)
         self.USE_PLEX_CLIENT = self.check_setting_bool('Plex', 'use_plex_client', 0)
         self.PLEX_CLIENT_USERNAME = self.check_setting_str('Plex', 'plex_client_username', '')
-        self.PLEX_CLIENT_PASSWORD = self.check_setting_str('Plex', 'plex_client_password', '')
+        self.PLEX_CLIENT_PASSWORD = self.check_setting_str('Plex', 'plex_client_password', '', censor=True)
 
         # EMBY SETTINGS
         self.USE_EMBY = self.check_setting_bool('Emby', 'use_emby', 0)
         self.EMBY_HOST = self.check_setting_str('Emby', 'emby_host', '')
-        self.EMBY_APIKEY = self.check_setting_str('Emby', 'emby_apikey', '')
+        self.EMBY_APIKEY = self.check_setting_str('Emby', 'emby_apikey', '', censor=True)
 
         # GROWL SETTINGS
         self.USE_GROWL = self.check_setting_bool('Growl', 'use_growl', 0)
@@ -1246,7 +1242,7 @@ class srConfig(object):
         self.GROWL_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Growl', 'growl_notify_ondownload', 0)
         self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Growl', 'growl_notify_onsubtitledownload', 0)
         self.GROWL_HOST = self.check_setting_str('Growl', 'growl_host', '')
-        self.GROWL_PASSWORD = self.check_setting_str('Growl', 'growl_password', '')
+        self.GROWL_PASSWORD = self.check_setting_str('Growl', 'growl_password', '', censor=True)
 
         # FREEMOBILE SETTINGS
         self.USE_FREEMOBILE = self.check_setting_bool('FreeMobile', 'use_freemobile', 0)
@@ -1255,7 +1251,7 @@ class srConfig(object):
         self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('FreeMobile',
                                                                             'freemobile_notify_onsubtitledownload', 0)
         self.FREEMOBILE_ID = self.check_setting_str('FreeMobile', 'freemobile_id', '')
-        self.FREEMOBILE_APIKEY = self.check_setting_str('FreeMobile', 'freemobile_apikey', '')
+        self.FREEMOBILE_APIKEY = self.check_setting_str('FreeMobile', 'freemobile_apikey', '', censor=True)
 
         # TELEGRAM SETTINGS
         self.USE_TELEGRAM = self.check_setting_bool('TELEGRAM', 'use_telegram', 0)
@@ -1264,14 +1260,14 @@ class srConfig(object):
         self.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('TELEGRAM',
                                                                           'telegram_notify_onsubtitledownload', 0)
         self.TELEGRAM_ID = self.check_setting_str('TELEGRAM', 'telegram_id', '')
-        self.TELEGRAM_APIKEY = self.check_setting_str('TELEGRAM', 'telegram_apikey', '')
+        self.TELEGRAM_APIKEY = self.check_setting_str('TELEGRAM', 'telegram_apikey', '', censor=True)
 
         # PROWL SETTINGS
         self.USE_PROWL = self.check_setting_bool('Prowl', 'use_prowl', 0)
         self.PROWL_NOTIFY_ONSNATCH = self.check_setting_bool('Prowl', 'prowl_notify_onsnatch', 0)
         self.PROWL_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Prowl', 'prowl_notify_ondownload', 0)
         self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Prowl', 'prowl_notify_onsubtitledownload', 0)
-        self.PROWL_API = self.check_setting_str('Prowl', 'prowl_api', '')
+        self.PROWL_API = self.check_setting_str('Prowl', 'prowl_api', '', censor=True)
         self.PROWL_PRIORITY = self.check_setting_str('Prowl', 'prowl_priority', "0")
 
         # TWITTER SETTINGS
@@ -1281,17 +1277,26 @@ class srConfig(object):
         self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Twitter', 'twitter_notify_onsubtitledownload',
                                                                          0)
         self.TWITTER_USERNAME = self.check_setting_str('Twitter', 'twitter_username', '')
-        self.TWITTER_PASSWORD = self.check_setting_str('Twitter', 'twitter_password', '')
+        self.TWITTER_PASSWORD = self.check_setting_str('Twitter', 'twitter_password', '', censor=True)
         self.TWITTER_PREFIX = self.check_setting_str('Twitter', 'twitter_prefix', 'SiCKRAGE')
         self.TWITTER_DMTO = self.check_setting_str('Twitter', 'twitter_dmto', '')
         self.TWITTER_USEDM = self.check_setting_bool('Twitter', 'twitter_usedm', 0)
+
+        self.USE_TWILIO = self.check_setting_bool('Twilio', 'use_twilio')
+        self.TWILIO_NOTIFY_ONSNATCH = self.check_setting_bool('Twilio', 'twilio_notify_onsnatch')
+        self.TWILIO_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Twilio', 'twilio_notify_ondownload')
+        self.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Twilio', 'twilio_notify_onsubtitledownload')
+        self.TWILIO_PHONE_SID = self.check_setting_str('Twilio', 'twilio_phone_sid')
+        self.TWILIO_ACCOUNT_SID = self.check_setting_str('Twilio', 'twilio_account_sid')
+        self.TWILIO_AUTH_TOKEN = self.check_setting_str('Twilio', 'twilio_auth_token', censor=True)
+        self.TWILIO_TO_NUMBER = self.check_setting_str('Twilio', 'twilio_to_number')
 
         self.USE_BOXCAR2 = self.check_setting_bool('Boxcar2', 'use_boxcar2', 0)
         self.BOXCAR2_NOTIFY_ONSNATCH = self.check_setting_bool('Boxcar2', 'boxcar2_notify_onsnatch', 0)
         self.BOXCAR2_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Boxcar2', 'boxcar2_notify_ondownload', 0)
         self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Boxcar2', 'boxcar2_notify_onsubtitledownload',
                                                                          0)
-        self.BOXCAR2_ACCESSTOKEN = self.check_setting_str('Boxcar2', 'boxcar2_accesstoken', '')
+        self.BOXCAR2_ACCESSTOKEN = self.check_setting_str('Boxcar2', 'boxcar2_accesstoken', '', censor=True)
 
         self.USE_PUSHOVER = self.check_setting_bool('Pushover', 'use_pushover', 0)
         self.PUSHOVER_NOTIFY_ONSNATCH = self.check_setting_bool('Pushover', 'pushover_notify_onsnatch', 0)
@@ -1299,7 +1304,7 @@ class srConfig(object):
         self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Pushover',
                                                                           'pushover_notify_onsubtitledownload', 0)
         self.PUSHOVER_USERKEY = self.check_setting_str('Pushover', 'pushover_userkey', '')
-        self.PUSHOVER_APIKEY = self.check_setting_str('Pushover', 'pushover_apikey', '')
+        self.PUSHOVER_APIKEY = self.check_setting_str('Pushover', 'pushover_apikey', '', censor=True)
         self.PUSHOVER_DEVICE = self.check_setting_str('Pushover', 'pushover_device', '')
         self.PUSHOVER_SOUND = self.check_setting_str('Pushover', 'pushover_sound', 'pushover')
 
@@ -1330,7 +1335,7 @@ class srConfig(object):
                                                                                   'synologynotifier_notify_onsubtitledownload',
                                                                                   0)
 
-        self.THETVDB_APITOKEN = self.check_setting_str('theTVDB', 'thetvdb_apitoken', '')
+        self.THETVDB_APITOKEN = self.check_setting_str('theTVDB', 'thetvdb_apitoken', '', censor=True)
 
         self.USE_SLACK = self.check_setting_bool('Slack', 'use_slack')
         self.SLACK_NOTIFY_SNATCH = self.check_setting_bool('Slack', 'slack_notify_snatch')
@@ -1376,7 +1381,7 @@ class srConfig(object):
         self.NMA_NOTIFY_ONSNATCH = self.check_setting_bool('NMA', 'nma_notify_onsnatch', 0)
         self.NMA_NOTIFY_ONDOWNLOAD = self.check_setting_bool('NMA', 'nma_notify_ondownload', 0)
         self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('NMA', 'nma_notify_onsubtitledownload', 0)
-        self.NMA_API = self.check_setting_str('NMA', 'nma_api', '')
+        self.NMA_API = self.check_setting_str('NMA', 'nma_api', '', censor=True)
         self.NMA_PRIORITY = self.check_setting_str('NMA', 'nma_priority', "0")
 
         self.USE_PUSHALOT = self.check_setting_bool('Pushalot', 'use_pushalot', 0)
@@ -1384,14 +1389,14 @@ class srConfig(object):
         self.PUSHALOT_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Pushalot', 'pushalot_notify_ondownload', 0)
         self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Pushalot',
                                                                           'pushalot_notify_onsubtitledownload', 0)
-        self.PUSHALOT_AUTHORIZATIONTOKEN = self.check_setting_str('Pushalot', 'pushalot_authorizationtoken', '')
+        self.PUSHALOT_AUTHORIZATIONTOKEN = self.check_setting_str('Pushalot', 'pushalot_authorizationtoken', '', censor=True)
 
         self.USE_PUSHBULLET = self.check_setting_bool('Pushbullet', 'use_pushbullet', 0)
         self.PUSHBULLET_NOTIFY_ONSNATCH = self.check_setting_bool('Pushbullet', 'pushbullet_notify_onsnatch', 0)
         self.PUSHBULLET_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Pushbullet', 'pushbullet_notify_ondownload', 0)
         self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Pushbullet',
                                                                             'pushbullet_notify_onsubtitledownload', 0)
-        self.PUSHBULLET_API = self.check_setting_str('Pushbullet', 'pushbullet_api', '')
+        self.PUSHBULLET_API = self.check_setting_str('Pushbullet', 'pushbullet_api', '', censor=True)
         self.PUSHBULLET_DEVICE = self.check_setting_str('Pushbullet', 'pushbullet_device', '')
 
         self.USE_EMAIL = self.check_setting_bool('Email', 'use_email', 0)
@@ -1402,7 +1407,7 @@ class srConfig(object):
         self.EMAIL_PORT = self.check_setting_int('Email', 'email_port', 25)
         self.EMAIL_TLS = self.check_setting_bool('Email', 'email_tls', 0)
         self.EMAIL_USER = self.check_setting_str('Email', 'email_user', '')
-        self.EMAIL_PASSWORD = self.check_setting_str('Email', 'email_password', '')
+        self.EMAIL_PASSWORD = self.check_setting_str('Email', 'email_password', '', censor=True)
         self.EMAIL_FROM = self.check_setting_str('Email', 'email_from', '')
         self.EMAIL_LIST = self.check_setting_str('Email', 'email_list', '')
 
@@ -1423,13 +1428,13 @@ class srConfig(object):
                                         self.check_setting_str('Subtitles', 'subtitles_extra_scripts',
                                                                '').split('|') if x.strip()]
         self.ADDIC7ED_USER = self.check_setting_str('Subtitles', 'addic7ed_username', '')
-        self.ADDIC7ED_PASS = self.check_setting_str('Subtitles', 'addic7ed_password', '')
+        self.ADDIC7ED_PASS = self.check_setting_str('Subtitles', 'addic7ed_password', '', censor=True)
         self.LEGENDASTV_USER = self.check_setting_str('Subtitles', 'legendastv_username', '')
-        self.LEGENDASTV_PASS = self.check_setting_str('Subtitles', 'legendastv_password', '')
+        self.LEGENDASTV_PASS = self.check_setting_str('Subtitles', 'legendastv_password', '', censor=True)
         self.ITASA_USER = self.check_setting_str('Subtitles', 'itasa_username', '')
-        self.ITASA_PASS = self.check_setting_str('Subtitles', 'itasa_password', '')
+        self.ITASA_PASS = self.check_setting_str('Subtitles', 'itasa_password', '', censor=True)
         self.OPENSUBTITLES_USER = self.check_setting_str('Subtitles', 'opensubtitles_username', '')
-        self.OPENSUBTITLES_PASS = self.check_setting_str('Subtitles', 'opensubtitles_password', '')
+        self.OPENSUBTITLES_PASS = self.check_setting_str('Subtitles', 'opensubtitles_password', '', censor=True)
         self.SUBTITLE_SEARCHER_FREQ = self.check_setting_int(
             'Subtitles', 'subtitles_finder_frequency', self.DEFAULT_SUBTITLE_SEARCHER_FREQ
         )
@@ -1441,7 +1446,7 @@ class srConfig(object):
         # ANIDB SETTINGS
         self.USE_ANIDB = self.check_setting_bool('ANIDB', 'use_anidb', 0)
         self.ANIDB_USERNAME = self.check_setting_str('ANIDB', 'anidb_username', '')
-        self.ANIDB_PASSWORD = self.check_setting_str('ANIDB', 'anidb_password', '')
+        self.ANIDB_PASSWORD = self.check_setting_str('ANIDB', 'anidb_password', '', censor=True)
         self.ANIDB_USE_MYLIST = self.check_setting_bool('ANIDB', 'anidb_use_mylist', 0)
         self.ANIME_SPLIT_HOME = self.check_setting_bool('ANIME', 'anime_split_home', 0)
 
