@@ -86,6 +86,13 @@ def safe_getattr(object, name, default=None):
         return default
 
 
+def try_int(value, default_value=0):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default_value
+
+
 def readFileBuffered(filename, reverse=False):
     blocksize = (1 << 15)
     with io.open(filename, 'r', encoding='utf-8') as fh:

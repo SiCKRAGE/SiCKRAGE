@@ -1,6 +1,7 @@
 # Changelog
 
-- * da12093 - 2017-10-01: Release v9.1.24 
+- * 3c9666f - 2017-10-01: Added check_settings_bool function for config operations 
+- * 077a85c - 2017-10-01: Release v9.1.24 
 - * 5acbdd0 - 2017-10-01: Added Telegram notifier Removed Boxcar notifier in favour of Boxcar2 notifier 
 - * fa8e781 - 2017-09-30: Added ability to limit amount of trakt show results returned from API 
 - * 8c581c5 - 2017-09-30: Metadata for actors is now pulled from indexers using a function 
