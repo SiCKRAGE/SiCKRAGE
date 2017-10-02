@@ -2,7 +2,7 @@ APScheduler == 3.3.1
 babelfish == 0.5.5
 bencode == 1.0
 CacheControl == 0.12.2
-certifi == 2017.1.23
+certifi == 2017.7.27.1
 cfscrape == 1.7.1
 configobj == 5.0.6
 feedparser == 5.2.1
@@ -36,9 +36,10 @@ pyxdg == 0.25
 urllib3 == 1.20
 py-unrar2 == 0.99.6
 lockfile == 0.12.2
-requests == 2.13.0
+requests == 2.18.4
 codernitydb == 0.5.0
 fake-useragent == 0.1.7
 html5lib == 1.0b10
 arrow==0.10.0
 unidecode==0.4.21
+twilio==6.7.0

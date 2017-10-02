@@ -156,7 +156,6 @@ class srConfig(object):
         self.SAB_FORCED = False
         self.RANDOMIZE_PROVIDERS = False
         self.MIN_AUTOPOSTPROCESSOR_FREQ = 1
-        self.MIN_NAMECACHE_FREQ = 1
         self.MIN_DAILY_SEARCHER_FREQ = 10
         self.MIN_BACKLOG_SEARCHER_FREQ = 10
         self.MIN_VERSION_UPDATER_FREQ = 1
@@ -318,17 +317,17 @@ class srConfig(object):
         self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = False
         self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = False
         self.USE_SLACK = False
-        self.SLACK_NOTIFY_SNATCH = None
-        self.SLACK_NOTIFY_DOWNLOAD = None
-        self.SLACK_NOTIFY_SUBTITLEDOWNLOAD = None
+        self.SLACK_NOTIFY_ONSNATCH = None
+        self.SLACK_NOTIFY_ONDOWNLOAD = None
+        self.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD = None
         self.SLACK_WEBHOOK = ""
         self.USE_DISCORD = False
-        self.DISCORD_NOTIFY_SNATCH = False
-        self.DISCORD_NOTIFY_DOWNLOAD = False
-        self.DISCORD_NOTIFY_SUBTITLEDOWNLOAD = False
+        self.DISCORD_NOTIFY_ONSNATCH = False
+        self.DISCORD_NOTIFY_ONDOWNLOAD = False
+        self.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD = False
         self.DISCORD_WEBHOOK = ""
-        self.DISCORD_NAME = 'SiCKRAGE'
-        self.DISCORD_AVATAR_URL = 'https://raw.githubusercontent.com/SickRage/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'
+        self.DISCORD_NAME = None
+        self.DISCORD_AVATAR_URL = None
         self.DISCORD_TTS = False
         self.USE_TRAKT = False
         self.TRAKT_USERNAME = ""
@@ -495,10 +494,11 @@ class srConfig(object):
                 'growl_password': ''
             },
             'Slack': {
-                'slack_notify_snatch': False,
-                'slack_notify_download': False,
+                'slack_notify_onsnatch': False,
+                'slack_notify_ondownload': False,
+                'slack_notify_onsubtitledownload': False,
                 'use_slack': False,
-                'slack_webhook': None
+                'slack_webhook': ''
             },
             'TELEGRAM': {
                 'telegram_notify_ondownload': False,
@@ -598,7 +598,10 @@ class srConfig(object):
                 'plex_username': '',
                 'plex_notify_ondownload': False,
                 'plex_server_token': '',
-                'use_plex': False
+                'use_plex': False,
+                'use_plex_client': False,
+                'plex_client_username': '',
+                'plex_client_password': ''
             },
             'TORRENT': {
                 'torrent_verify_cert': False,
@@ -676,10 +679,14 @@ class srConfig(object):
                 'use_freemobile': False
             },
             'Discord': {
-                'discord_notify_download': False,
-                'discord_notify_snatch': False,
-                'discord_webhook': None,
-                'use_discord': False
+                'discord_notify_onsubtitledownload': False,
+                'discord_notify_ondownload': False,
+                'discord_notify_onsnatch': False,
+                'discord_webhook': '',
+                'use_discord': False,
+                'discord_name': '',
+                'discord_avatar_url': '',
+                'discord_tts': False
             },
             'SynologyNotifier': {
                 'synologynotifier_notify_onsnatch': False,
@@ -1331,7 +1338,7 @@ class srConfig(object):
     # check_setting_int                                                            #
     ################################################################################
     def check_setting_int(self, section, key, def_val=None, silent=True):
-        def_val = def_val or self.defaults[section][key]
+        def_val = def_val if def_val is not None else self.defaults[section][key]
 
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
 
@@ -1354,7 +1361,7 @@ class srConfig(object):
     # check_setting_float                                                          #
     ################################################################################
     def check_setting_float(self, section, key, def_val=None, silent=True):
-        def_val = def_val or self.defaults[section][key]
+        def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
             my_val = float(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
@@ -1370,7 +1377,7 @@ class srConfig(object):
     # check_setting_str                                                            #
     ################################################################################
     def check_setting_str(self, section, key, def_val=None, silent=True, censor=False):
-        def_val = def_val or self.defaults[section][key]
+        def_val = def_val if def_val is not None else self.defaults[section][key]
 
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
 
@@ -1386,7 +1393,7 @@ class srConfig(object):
     # check_setting_pickle                                                           #
     ################################################################################
     def check_setting_pickle(self, section, key, def_val=None, silent=True):
-        def_val = def_val or self.defaults[section][key]
+        def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
             my_val = pickle.loads(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
@@ -1402,7 +1409,7 @@ class srConfig(object):
     # check_setting_bool                                                           #
     ################################################################################
     def check_setting_bool(self, section, key, def_val=None, silent=True):
-        def_val = def_val or self.defaults[section][key]
+        def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
             my_val = self.checkbox_to_value(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
@@ -1451,7 +1458,7 @@ class srConfig(object):
         self.PIP_PATH = self.check_setting_str('General', 'pip_path')
         self.GIT_PATH = self.check_setting_str('General', 'git_path')
         self.GIT_AUTOISSUES = self.check_setting_bool('General', 'git_autoissues')
-        self.GIT_USERNAME = self.check_setting_str('General', 'git_username')
+        self.GIT_USERNAME = self.check_setting_str('General', 'git_username', censor=True)
         self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', censor=True)
         self.GIT_NEWVER = self.check_setting_bool('General', 'git_newver')
         self.GIT_RESET = self.check_setting_bool('General', 'git_reset')
@@ -1460,7 +1467,7 @@ class srConfig(object):
         self.WEB_IPV6 = self.check_setting_bool('General', 'web_ipv6')
         self.WEB_ROOT = self.check_setting_str('General', 'web_root').rstrip("/")
         self.WEB_LOG = self.check_setting_bool('General', 'web_log')
-        self.WEB_USERNAME = self.check_setting_str('General', 'web_username')
+        self.WEB_USERNAME = self.check_setting_str('General', 'web_username', censor=True)
         self.WEB_PASSWORD = self.check_setting_str('General', 'web_password', censor=True)
         self.WEB_COOKIE_SECRET = self.check_setting_str('General', 'web_cookie_secret')
         self.WEB_USE_GZIP = self.check_setting_bool('General', 'web_use_gzip')
@@ -1517,7 +1524,6 @@ class srConfig(object):
         self.ALLOW_HIGH_PRIORITY = self.check_setting_bool('General', 'allow_high_priority')
         self.SKIP_REMOVED_FILES = self.check_setting_bool('General', 'skip_removed_files')
         self.USENET_RETENTION = self.check_setting_int('General', 'usenet_retention')
-        self.NAMECACHE_FREQ = self.check_setting_int('General', 'namecache_frequency')
         self.DAILY_SEARCHER_FREQ = self.check_setting_int('General', 'dailysearch_frequency')
         self.BACKLOG_SEARCHER_FREQ = self.check_setting_int('General', 'backlog_frequency')
         self.VERSION_UPDATER_FREQ = self.check_setting_int('General', 'update_frequency')
@@ -1570,7 +1576,7 @@ class srConfig(object):
         self.TRIM_ZERO = self.check_setting_bool('GUI', 'trim_zero')
         self.DATE_PRESET = self.check_setting_str('GUI', 'date_preset')
         self.TIME_PRESET_W_SECONDS = self.check_setting_str('GUI', 'time_preset')
-        self.TIME_PRESET = self.TIME_PRESET_W_SECONDS.replace(":%S")
+        self.TIME_PRESET = self.TIME_PRESET_W_SECONDS.replace(":%S", "")
         self.TIMEZONE_DISPLAY = self.check_setting_str('GUI', 'timezone_display')
         self.POSTER_SORTBY = self.check_setting_str('GUI', 'poster_sortby')
         self.POSTER_SORTDIR = self.check_setting_int('GUI', 'poster_sortdir')
@@ -1587,11 +1593,11 @@ class srConfig(object):
 
         # NEWZBIN SETTINGS
         self.NEWZBIN = self.check_setting_bool('Newzbin', 'newzbin')
-        self.NEWZBIN_USERNAME = self.check_setting_str('Newzbin', 'newzbin_username')
+        self.NEWZBIN_USERNAME = self.check_setting_str('Newzbin', 'newzbin_username', censor=True)
         self.NEWZBIN_PASSWORD = self.check_setting_str('Newzbin', 'newzbin_password', censor=True)
 
         # SABNZBD SETTINGS
-        self.SAB_USERNAME = self.check_setting_str('SABnzbd', 'sab_username')
+        self.SAB_USERNAME = self.check_setting_str('SABnzbd', 'sab_username', censor=True)
         self.SAB_PASSWORD = self.check_setting_str('SABnzbd', 'sab_password', censor=True)
         self.SAB_APIKEY = self.check_setting_str('SABnzbd', 'sab_apikey', censor=True)
         self.SAB_CATEGORY = self.check_setting_str('SABnzbd', 'sab_category')
@@ -1602,8 +1608,8 @@ class srConfig(object):
         self.SAB_FORCED = self.check_setting_bool('SABnzbd', 'sab_forced')
 
         # NZBGET SETTINGS
-        self.NZBGET_USERNAME = self.check_setting_str('NZBget', 'nzbget_username')
-        self.NZBGET_PASSWORD = self.check_setting_str('NZBget', 'nzbget_password')
+        self.NZBGET_USERNAME = self.check_setting_str('NZBget', 'nzbget_username', censor=True)
+        self.NZBGET_PASSWORD = self.check_setting_str('NZBget', 'nzbget_password', censor=True)
         self.NZBGET_CATEGORY = self.check_setting_str('NZBget', 'nzbget_category')
         self.NZBGET_CATEGORY_BACKLOG = self.check_setting_str('NZBget', 'nzbget_category_backlog')
         self.NZBGET_CATEGORY_ANIME = self.check_setting_str('NZBget', 'nzbget_category_anime')
@@ -1613,7 +1619,7 @@ class srConfig(object):
         self.NZBGET_PRIORITY = self.check_setting_int('NZBget', 'nzbget_priority')
 
         # TORRENT SETTINGS
-        self.TORRENT_USERNAME = self.check_setting_str('TORRENT', 'torrent_username')
+        self.TORRENT_USERNAME = self.check_setting_str('TORRENT', 'torrent_username', censor=True)
         self.TORRENT_PASSWORD = self.check_setting_str('TORRENT', 'torrent_password', censor=True)
         self.TORRENT_HOST = self.check_setting_str('TORRENT', 'torrent_host')
         self.TORRENT_PATH = self.check_setting_str('TORRENT', 'torrent_path')
@@ -1637,7 +1643,7 @@ class srConfig(object):
         self.KODI_UPDATE_FULL = self.check_setting_bool('KODI', 'kodi_update_full')
         self.KODI_UPDATE_ONLYFIRST = self.check_setting_bool('KODI', 'kodi_update_onlyfirst')
         self.KODI_HOST = self.check_setting_str('KODI', 'kodi_host')
-        self.KODI_USERNAME = self.check_setting_str('KODI', 'kodi_username')
+        self.KODI_USERNAME = self.check_setting_str('KODI', 'kodi_username', censor=True)
         self.KODI_PASSWORD = self.check_setting_str('KODI', 'kodi_password', censor=True)
 
         # PLEX SETTINGS
@@ -1649,10 +1655,10 @@ class srConfig(object):
         self.PLEX_SERVER_HOST = self.check_setting_str('Plex', 'plex_server_host')
         self.PLEX_SERVER_TOKEN = self.check_setting_str('Plex', 'plex_server_token', censor=True)
         self.PLEX_HOST = self.check_setting_str('Plex', 'plex_host')
-        self.PLEX_USERNAME = self.check_setting_str('Plex', 'plex_username')
+        self.PLEX_USERNAME = self.check_setting_str('Plex', 'plex_username', censor=True)
         self.PLEX_PASSWORD = self.check_setting_str('Plex', 'plex_password', censor=True)
         self.USE_PLEX_CLIENT = self.check_setting_bool('Plex', 'use_plex_client')
-        self.PLEX_CLIENT_USERNAME = self.check_setting_str('Plex', 'plex_client_username')
+        self.PLEX_CLIENT_USERNAME = self.check_setting_str('Plex', 'plex_client_username', censor=True)
         self.PLEX_CLIENT_PASSWORD = self.check_setting_str('Plex', 'plex_client_password', censor=True)
 
         # EMBY SETTINGS
@@ -1699,7 +1705,7 @@ class srConfig(object):
         self.TWITTER_NOTIFY_ONSNATCH = self.check_setting_bool('Twitter', 'twitter_notify_onsnatch')
         self.TWITTER_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Twitter', 'twitter_notify_ondownload')
         self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Twitter', 'twitter_notify_onsubtitledownload')
-        self.TWITTER_USERNAME = self.check_setting_str('Twitter', 'twitter_username')
+        self.TWITTER_USERNAME = self.check_setting_str('Twitter', 'twitter_username', censor=True)
         self.TWITTER_PASSWORD = self.check_setting_str('Twitter', 'twitter_password', censor=True)
         self.TWITTER_PREFIX = self.check_setting_str('Twitter', 'twitter_prefix', 'SiCKRAGE')
         self.TWITTER_DMTO = self.check_setting_str('Twitter', 'twitter_dmto')
@@ -1709,10 +1715,10 @@ class srConfig(object):
         self.TWILIO_NOTIFY_ONSNATCH = self.check_setting_bool('Twilio', 'twilio_notify_onsnatch')
         self.TWILIO_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Twilio', 'twilio_notify_ondownload')
         self.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Twilio', 'twilio_notify_onsubtitledownload')
-        self.TWILIO_PHONE_SID = self.check_setting_str('Twilio', 'twilio_phone_sid')
-        self.TWILIO_ACCOUNT_SID = self.check_setting_str('Twilio', 'twilio_account_sid')
+        self.TWILIO_PHONE_SID = self.check_setting_str('Twilio', 'twilio_phone_sid', censor=True)
+        self.TWILIO_ACCOUNT_SID = self.check_setting_str('Twilio', 'twilio_account_sid', censor=True)
         self.TWILIO_AUTH_TOKEN = self.check_setting_str('Twilio', 'twilio_auth_token', censor=True)
-        self.TWILIO_TO_NUMBER = self.check_setting_str('Twilio', 'twilio_to_number')
+        self.TWILIO_TO_NUMBER = self.check_setting_str('Twilio', 'twilio_to_number', censor=True)
 
         self.USE_BOXCAR2 = self.check_setting_bool('Boxcar2', 'use_boxcar2')
         self.BOXCAR2_NOTIFY_ONSNATCH = self.check_setting_bool('Boxcar2', 'boxcar2_notify_onsnatch')
@@ -1725,7 +1731,7 @@ class srConfig(object):
         self.PUSHOVER_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Pushover', 'pushover_notify_ondownload')
         self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Pushover',
                                                                           'pushover_notify_onsubtitledownload')
-        self.PUSHOVER_USERKEY = self.check_setting_str('Pushover', 'pushover_userkey')
+        self.PUSHOVER_USERKEY = self.check_setting_str('Pushover', 'pushover_userkey', censor=True)
         self.PUSHOVER_APIKEY = self.check_setting_str('Pushover', 'pushover_apikey', censor=True)
         self.PUSHOVER_DEVICE = self.check_setting_str('Pushover', 'pushover_device')
         self.PUSHOVER_SOUND = self.check_setting_str('Pushover', 'pushover_sound', 'pushover')
@@ -1759,17 +1765,22 @@ class srConfig(object):
         self.THETVDB_APITOKEN = self.check_setting_str('theTVDB', 'thetvdb_apitoken', censor=True)
 
         self.USE_SLACK = self.check_setting_bool('Slack', 'use_slack')
-        self.SLACK_NOTIFY_SNATCH = self.check_setting_bool('Slack', 'slack_notify_snatch')
-        self.SLACK_NOTIFY_DOWNLOAD = self.check_setting_bool('Slack', 'slack_notify_download')
+        self.SLACK_NOTIFY_ONSNATCH = self.check_setting_bool('Slack', 'slack_notify_onsnatch')
+        self.SLACK_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Slack', 'slack_notify_ondownload')
+        self.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Slack', 'slack_notify_onsubtitledownload')
         self.SLACK_WEBHOOK = self.check_setting_str('Slack', 'slack_webhook')
 
         self.USE_DISCORD = self.check_setting_bool('Discord', 'use_discord')
-        self.DISCORD_NOTIFY_SNATCH = self.check_setting_bool('Discord', 'discord_notify_snatch')
-        self.DISCORD_NOTIFY_DOWNLOAD = self.check_setting_bool('Discord', 'discord_notify_download')
+        self.DISCORD_NOTIFY_ONSNATCH = self.check_setting_bool('Discord', 'discord_notify_onsnatch')
+        self.DISCORD_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Discord', 'discord_notify_ondownload')
+        self.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Discord', 'discord_notify_onsubtitledownload')
         self.DISCORD_WEBHOOK = self.check_setting_str('Discord', 'discord_webhook')
+        self.DISCORD_AVATAR_URL = self.check_setting_str('Discord', 'discord_avatar_url')
+        self.DISCORD_NAME = self.check_setting_str('Discord', 'discord_name')
+        self.DISCORD_TTS = self.check_setting_bool('Discord', 'discord_tts')
 
         self.USE_TRAKT = self.check_setting_bool('Trakt', 'use_trakt')
-        self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username')
+        self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', censor=True)
         self.TRAKT_OAUTH_TOKEN = self.check_setting_pickle('Trakt', 'trakt_oauth_token')
         self.TRAKT_REMOVE_WATCHLIST = self.check_setting_bool('Trakt', 'trakt_remove_watchlist')
         self.TRAKT_REMOVE_SERIESLIST = self.check_setting_bool('Trakt', 'trakt_remove_serieslist')
@@ -1823,7 +1834,7 @@ class srConfig(object):
         self.EMAIL_HOST = self.check_setting_str('Email', 'email_host')
         self.EMAIL_PORT = self.check_setting_int('Email', 'email_port')
         self.EMAIL_TLS = self.check_setting_bool('Email', 'email_tls')
-        self.EMAIL_USER = self.check_setting_str('Email', 'email_user')
+        self.EMAIL_USER = self.check_setting_str('Email', 'email_user', censor=True)
         self.EMAIL_PASSWORD = self.check_setting_str('Email', 'email_password', censor=True)
         self.EMAIL_FROM = self.check_setting_str('Email', 'email_from')
         self.EMAIL_LIST = self.check_setting_str('Email', 'email_list')
@@ -1844,13 +1855,13 @@ class srConfig(object):
         self.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in
                                         self.check_setting_str('Subtitles', 'subtitles_extra_scripts').split('|') if
                                         x.strip()]
-        self.ADDIC7ED_USER = self.check_setting_str('Subtitles', 'addic7ed_username')
+        self.ADDIC7ED_USER = self.check_setting_str('Subtitles', 'addic7ed_username', censor=True)
         self.ADDIC7ED_PASS = self.check_setting_str('Subtitles', 'addic7ed_password', censor=True)
-        self.LEGENDASTV_USER = self.check_setting_str('Subtitles', 'legendastv_username')
+        self.LEGENDASTV_USER = self.check_setting_str('Subtitles', 'legendastv_username', censor=True)
         self.LEGENDASTV_PASS = self.check_setting_str('Subtitles', 'legendastv_password', censor=True)
-        self.ITASA_USER = self.check_setting_str('Subtitles', 'itasa_username')
+        self.ITASA_USER = self.check_setting_str('Subtitles', 'itasa_username', censor=True)
         self.ITASA_PASS = self.check_setting_str('Subtitles', 'itasa_password', censor=True)
-        self.OPENSUBTITLES_USER = self.check_setting_str('Subtitles', 'opensubtitles_username')
+        self.OPENSUBTITLES_USER = self.check_setting_str('Subtitles', 'opensubtitles_username', censor=True)
         self.OPENSUBTITLES_PASS = self.check_setting_str('Subtitles', 'opensubtitles_password', censor=True)
         self.SUBTITLE_SEARCHER_FREQ = self.check_setting_int('Subtitles', 'subtitles_finder_frequency')
 
@@ -1860,7 +1871,7 @@ class srConfig(object):
 
         # ANIDB SETTINGS
         self.USE_ANIDB = self.check_setting_bool('ANIDB', 'use_anidb')
-        self.ANIDB_USERNAME = self.check_setting_str('ANIDB', 'anidb_username')
+        self.ANIDB_USERNAME = self.check_setting_str('ANIDB', 'anidb_username', censor=True)
         self.ANIDB_PASSWORD = self.check_setting_str('ANIDB', 'anidb_password', censor=True)
         self.ANIDB_USE_MYLIST = self.check_setting_bool('ANIDB', 'anidb_use_mylist')
         self.ANIME_SPLIT_HOME = self.check_setting_bool('ANIME', 'anime_split_home')
@@ -1871,7 +1882,7 @@ class srConfig(object):
 
         sickrage.srCore.providersDict.load()
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
-            providerSettings = self.check_setting_str('Providers', providerID) or {}
+            providerSettings = self.check_setting_str('Providers', providerID, '') or {}
             for k, v in providerSettings.items():
                 providerSettings[k] = autoType(v)
 
@@ -2222,15 +2233,20 @@ class srConfig(object):
             },
             'Slack': {
                 'use_slack': int(self.USE_SLACK),
-                'slack_notify_snatch': int(self.SLACK_NOTIFY_SNATCH),
-                'slack_notify_download': int(self.SLACK_NOTIFY_DOWNLOAD),
+                'slack_notify_onsnatch': int(self.SLACK_NOTIFY_ONSNATCH),
+                'slack_notify_ondownload': int(self.SLACK_NOTIFY_ONDOWNLOAD),
+                'slack_notify_onsubtitledownload': int(self.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD),
                 'slack_webhook': self.SLACK_WEBHOOK
             },
             'Discord': {
                 'use_discord': int(self.USE_DISCORD),
-                'discord_notify_snatch': int(self.DISCORD_NOTIFY_SNATCH),
-                'discord_notify_download': int(self.DISCORD_NOTIFY_DOWNLOAD),
-                'discord_webhook': self.DISCORD_WEBHOOK
+                'discord_notify_onsnatch': int(self.DISCORD_NOTIFY_ONSNATCH),
+                'discord_notify_ondownload': int(self.DISCORD_NOTIFY_ONDOWNLOAD),
+                'discord_notify_onsubtitledownload': int(self.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD),
+                'discord_webhook': self.DISCORD_WEBHOOK,
+                'discord_name': self.DISCORD_NAME,
+                'discord_avatar_url': self.DISCORD_AVATAR_URL,
+                'discord_tts': int(self.DISCORD_TTS)
             },
             'Trakt': {
                 'use_trakt': int(self.USE_TRAKT),

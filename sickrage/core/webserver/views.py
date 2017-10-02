@@ -828,6 +828,42 @@ class Home(WebHandler):
             return "Error sending tweet"
 
     @staticmethod
+    def testTwilio(account_sid=None, auth_token=None, phone_sid=None, to_number=None):
+        if not sickrage.srCore.notifiersDict['twilio'].account_regex.match(account_sid):
+            return 'Please enter a valid account sid'
+
+        if not sickrage.srCore.notifiersDict['twilio'].auth_regex.match(auth_token):
+            return 'Please enter a valid auth token'
+
+        if not sickrage.srCore.notifiersDict['twilio'].phone_regex.match(phone_sid):
+            return 'Please enter a valid phone sid'
+
+        if not sickrage.srCore.notifiersDict['twilio'].number_regex.match(to_number):
+            return 'Please format the phone number as "+1-###-###-####"'
+
+        result = sickrage.srCore.notifiersDict['twilio'].test_notify()
+        if result:
+            return 'Authorization successful and number ownership verified'
+        else:
+            return 'Error sending sms'
+
+    @staticmethod
+    def testSlack():
+        result = sickrage.srCore.notifiersDict['slack'].test_notify()
+        if result:
+            return "Slack message successful"
+        else:
+            return "Slack message failed"
+
+    @staticmethod
+    def testDiscord():
+        result = sickrage.srCore.notifiersDict['discord'].test_notify()
+        if result:
+            return "Discord message successful"
+        else:
+            return "Discord message failed"
+
+    @staticmethod
     def testKODI(host=None, username=None, password=None):
 
         host = sickrage.srCore.srConfig.clean_hosts(host)
@@ -3657,7 +3693,7 @@ class Config(WebHandler):
     def reset(self):
         sickrage.srCore.srConfig.load(True)
         sickrage.srCore.srNotifications.message('Configuration Reset to Defaults', os.path.join(sickrage.CONFIG_FILE))
-        return self.redirect("/config/")
+        return self.redirect("/config/general")
 
 
 @Route('/config/general(/?.*)')
@@ -4436,6 +4472,9 @@ class ConfigNotifications(Config):
                           prowl_notify_onsubtitledownload=None, prowl_api=None, prowl_priority=0,
                           use_twitter=None, twitter_notify_onsnatch=None, twitter_notify_ondownload=None,
                           twitter_notify_onsubtitledownload=None, twitter_usedm=None, twitter_dmto=None,
+                          use_twilio=None, twilio_notify_onsnatch=None, twilio_notify_ondownload=None,
+                          twilio_notify_onsubtitledownload=None, twilio_phone_sid=None, twilio_account_sid=None,
+                          twilio_auth_token=None, twilio_to_number=None,
                           use_boxcar2=None, boxcar2_notify_onsnatch=None, boxcar2_notify_ondownload=None,
                           boxcar2_notify_onsubtitledownload=None, boxcar2_accesstoken=None,
                           use_pushover=None, pushover_notify_onsnatch=None, pushover_notify_ondownload=None,
@@ -4463,7 +4502,13 @@ class ConfigNotifications(Config):
                           pushbullet_notify_onsubtitledownload=None, pushbullet_api=None, pushbullet_device_list=None,
                           use_email=None, email_notify_onsnatch=None, email_notify_ondownload=None,
                           email_notify_onsubtitledownload=None, email_host=None, email_port=25, email_from=None,
-                          email_tls=None, email_user=None, email_password=None, email_list=None, **kwargs):
+                          email_tls=None, email_user=None, email_password=None, email_list=None, use_slack=None,
+                          slack_notify_onsnatch=None, slack_notify_ondownload=None,
+                          slack_notify_onsubtitledownload=None, slack_webhook=None, use_discord=False,
+                          discord_notify_onsnatch=None, discord_notify_ondownload=None,
+                          discord_notify_onsubtitledownload=None, discord_webhook=None, discord_name=None,
+                          discord_avatar_url=None, discord_tts=None,
+                          **kwargs):
 
         results = []
 
@@ -4551,6 +4596,39 @@ class ConfigNotifications(Config):
             twitter_notify_onsubtitledownload)
         sickrage.srCore.srConfig.TWITTER_USEDM = sickrage.srCore.srConfig.checkbox_to_value(twitter_usedm)
         sickrage.srCore.srConfig.TWITTER_DMTO = twitter_dmto
+
+        sickrage.srCore.srConfig.USE_TWILIO = sickrage.srCore.srConfig.checkbox_to_value(use_twilio)
+        sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(
+            twilio_notify_onsnatch)
+        sickrage.srCore.srConfig.TWILIO_NOTIFY_ONDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            twilio_notify_ondownload)
+        sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            twilio_notify_onsubtitledownload)
+        sickrage.srCore.srConfig.TWILIO_PHONE_SID = twilio_phone_sid
+        sickrage.srCore.srConfig.TWILIO_ACCOUNT_SID = twilio_account_sid
+        sickrage.srCore.srConfig.TWILIO_AUTH_TOKEN = twilio_auth_token
+        sickrage.srCore.srConfig.TWILIO_TO_NUMBER = twilio_to_number
+
+        sickrage.srCore.srConfig.USE_SLACK = sickrage.srCore.srConfig.checkbox_to_value(use_slack)
+        sickrage.srCore.srConfig.SLACK_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(
+            slack_notify_onsnatch)
+        sickrage.srCore.srConfig.SLACK_NOTIFY_ONDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            slack_notify_ondownload)
+        sickrage.srCore.srConfig.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            slack_notify_onsubtitledownload)
+        sickrage.srCore.srConfig.SLACK_WEBHOOK = slack_webhook
+
+        sickrage.srCore.srConfig.USE_DISCORD = sickrage.srCore.srConfig.checkbox_to_value(use_discord)
+        sickrage.srCore.srConfig.DISCORD_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(
+            discord_notify_onsnatch)
+        sickrage.srCore.srConfig.DISCORD_NOTIFY_ONDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            discord_notify_ondownload)
+        sickrage.srCore.srConfig.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD = sickrage.srCore.srConfig.checkbox_to_value(
+            discord_notify_onsubtitledownload)
+        sickrage.srCore.srConfig.DISCORD_WEBHOOK = discord_webhook
+        sickrage.srCore.srConfig.DISCORD_NAME = discord_name
+        sickrage.srCore.srConfig.DISCORD_AVATAR_URL = discord_avatar_url
+        sickrage.srCore.srConfig.DISCORD_TTS = discord_tts
 
         sickrage.srCore.srConfig.USE_BOXCAR2 = sickrage.srCore.srConfig.checkbox_to_value(use_boxcar2)
         sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(

@@ -34,7 +34,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_kodi"
                                id="use_kodi" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_KODI)]}/>
-                        <label for="use_kodi">send KODI commands ?</label>
+                        <label for="use_kodi">send KODI commands?</label>
                     </div>
                 </div>
 
@@ -47,7 +47,7 @@
                             <input type="checkbox" name="kodi_always_on"
                                    id="kodi_always_on" ${('', 'checked')[bool(sickrage.srCore.srConfig.KODI_ALWAYS_ON)]}/>
                             <label for="kodi_always_on">
-                                <p>log errors when unreachable ?</p>
+                                <p>log errors when unreachable?</p>
                             </label>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                             <input type="checkbox" name="kodi_notify_onsnatch"
                                    id="kodi_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.KODI_NOTIFY_ONSNATCH)]}/>
                             <label for="kodi_notify_onsnatch">
-                                <p>send a notification when a download starts ?</p>
+                                <p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                             <input type="checkbox" name="kodi_notify_ondownload"
                                    id="kodi_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.KODI_NOTIFY_ONDOWNLOAD)]}/>
                             <label for="kodi_notify_ondownload">
-                                <p>send a notification when a download finishes ?</p>
+                                <p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                             <input type="checkbox" name="kodi_notify_onsubtitledownload"
                                    id="kodi_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.KODI_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="kodi_notify_onsubtitledownload">
-                                <p>send a notification when subtitles are downloaded ?</p>
+                                <p>send a notification when subtitles are downloaded?</p>
                             </label>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                             <input type="checkbox" name="kodi_update_library"
                                    id="kodi_update_library" ${('', 'checked')[bool(sickrage.srCore.srConfig.KODI_UPDATE_LIBRARY)]}/>
                             <label for="kodi_update_library">
-                                <p>update KODI library when a download finishes ?</p>
+                                <p>update KODI library when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                             <input type="checkbox" name="kodi_update_full"
                                    id="kodi_update_full" ${('', 'checked')[bool(sickrage.srCore.srConfig.KODI_UPDATE_FULL)]}/>
                             <label for="kodi_update_full">
-                                <p>perform a full library update if update per-show fails ?</p>
+                                <p>perform a full library update if update per-show fails?</p>
                             </label>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                             <input type="checkbox" name="kodi_update_onlyfirst"
                                    id="kodi_update_onlyfirst" ${('', 'checked')[bool(sickrage.srCore.srConfig.KODI_UPDATE_ONLYFIRST)]}/>
                             <label for="kodi_update_onlyfirst">
-                                <p>only send library updates to the first active host ?</p>
+                                <p>only send library updates to the first active host?</p>
                             </label>
                         </div>
                     </div>
@@ -213,7 +213,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
                                id="use_plex" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PLEX)]}/>
-                        <label for="use_plex"><p>send Plex commands ?</p></label>
+                        <label for="use_plex"><p>send Plex commands?</p></label>
                     </div>
                 </div>
 
@@ -352,7 +352,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
                                id="use_plex_client" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PLEX_CLIENT)]}/>
-                        <label for="use_plex_client"><p>send Plex commands ?</p></label>
+                        <label for="use_plex_client"><p>send Plex commands?</p></label>
                     </div>
                 </div>
 
@@ -364,7 +364,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="plex_notify_onsnatch"
                                    id="plex_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.PLEX_NOTIFY_ONSNATCH)]}/>
-                            <label for="plex_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="plex_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -375,7 +375,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="plex_notify_ondownload"
                                    id="plex_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.PLEX_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="plex_notify_ondownload"><p>send a notification when a download finishes ?</p>
+                            <label for="plex_notify_ondownload"><p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -388,7 +388,7 @@
                             <input type="checkbox" name="plex_notify_onsubtitledownload"
                                    id="plex_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="plex_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -548,7 +548,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmj"
                                id="use_nmj" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_NMJ)]}/>
-                        <label for="use_nmj"><p>send update commands to NMJ ?</p></label>
+                        <label for="use_nmj"><p>send update commands to NMJ?</p></label>
                     </div>
                 </div>
 
@@ -649,7 +649,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmjv2"
                                id="use_nmjv2" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_NMJv2)]}/>
-                        <label for="use_nmjv2"><p>send update commands to NMJv2 ?</p></label>
+                        <label for="use_nmjv2"><p>send update commands to NMJv2?</p></label>
                     </div>
                 </div>
 
@@ -785,7 +785,7 @@
                         <input type="checkbox" class="enabler" name="use_synoindex"
                                id="use_synoindex" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_SYNOINDEX)]}/>
                         <label for="use_synoindex">
-                            send Synology notifications ?<br/>
+                            send Synology notifications?<br/>
                             <b>Note:</b> requires SickRage to be running on your Synology NAS.
                         </label>
                     </div>
@@ -820,7 +820,7 @@
                         <input type="checkbox" class="enabler" name="use_synologynotifier"
                                id="use_synologynotifier" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_SYNOLOGYNOTIFIER)]}/>
                         <label for="use_synologynotifier">
-                            send notifications to the Synology Notifier ?<br/>
+                            send notifications to the Synology Notifier?<br/>
                             <b>Note:</b> requires SickRage to be running on your Synology DSM.
                         </label>
                     </div>
@@ -845,7 +845,7 @@
                             <input type="checkbox" name="synologynotifier_notify_ondownload"
                                    id="synologynotifier_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD)]}/>
                             <label for="synologynotifier_notify_ondownload"><p>send a notification when a download
-                                finishes ?</p></label>
+                                finishes?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -856,7 +856,7 @@
                             <input type="checkbox" name="synologynotifier_notify_onsubtitledownload"
                                    id="synologynotifier_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="synologynotifier_notify_onsubtitledownload"><p>send a notification when
-                                subtitles are downloaded ?</p></label>
+                                subtitles are downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row">
@@ -889,7 +889,7 @@
                         <input type="checkbox" class="enabler" name="use_pytivo"
                                id="use_pytivo" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PYTIVO)]}/>
                         <label for="use_pytivo">
-                            send notifications to pyTivo ?<br/>
+                            send notifications to pyTivo?<br/>
                             <b>Note:</b> requires the downloaded files to be accessible by pyTivo.
                         </label>
                     </div>
@@ -977,7 +977,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_growl"
                                id="use_growl" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_GROWL)]}/>
-                        <label for="use_growl"><p>send Growl notifications ?</p></label>
+                        <label for="use_growl"><p>send Growl notifications?</p></label>
                     </div>
                 </div>
 
@@ -989,7 +989,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="growl_notify_onsnatch"
                                    id="growl_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.GROWL_NOTIFY_ONSNATCH)]}/>
-                            <label for="growl_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="growl_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -1000,7 +1000,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="growl_notify_ondownload"
                                    id="growl_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.GROWL_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="growl_notify_ondownload"><p>send a notification when a download finishes ?</p>
+                            <label for="growl_notify_ondownload"><p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -1012,7 +1012,7 @@
                             <input type="checkbox" name="growl_notify_onsubtitledownload"
                                    id="growl_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="growl_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1086,7 +1086,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_prowl"
                                id="use_prowl" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PROWL)]}/>
-                        <label for="use_prowl"><p>send Prowl notifications ?</p></label>
+                        <label for="use_prowl"><p>send Prowl notifications?</p></label>
                     </div>
                 </div>
 
@@ -1098,7 +1098,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="prowl_notify_onsnatch"
                                    id="prowl_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROWL_NOTIFY_ONSNATCH)]}/>
-                            <label for="prowl_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="prowl_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -1109,7 +1109,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="prowl_notify_ondownload"
                                    id="prowl_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROWL_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="prowl_notify_ondownload"><p>send a notification when a download finishes ?</p>
+                            <label for="prowl_notify_ondownload"><p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -1121,7 +1121,7 @@
                             <input type="checkbox" name="prowl_notify_onsubtitledownload"
                                    id="prowl_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="prowl_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1210,7 +1210,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_libnotify"
                                id="use_libnotify" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_LIBNOTIFY)]}/>
-                        <label for="use_libnotify"><p>send Libnotify notifications ?</p></label>
+                        <label for="use_libnotify"><p>send Libnotify notifications?</p></label>
                     </div>
                 </div>
 
@@ -1222,7 +1222,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="libnotify_notify_onsnatch"
                                    id="libnotify_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONSNATCH)]}/>
-                            <label for="libnotify_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="libnotify_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -1245,7 +1245,7 @@
                             <input type="checkbox" name="libnotify_notify_onsubtitledownload"
                                    id="libnotify_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="libnotify_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row">
@@ -1281,7 +1281,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushover"
                                id="use_pushover" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PUSHOVER)]}/>
-                        <label for="use_pushover"><p>send Pushover notifications ?</p></label>
+                        <label for="use_pushover"><p>send Pushover notifications?</p></label>
                     </div>
                 </div>
 
@@ -1293,7 +1293,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushover_notify_onsnatch"
                                    id="pushover_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSNATCH)]}/>
-                            <label for="pushover_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="pushover_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -1316,7 +1316,7 @@
                             <input type="checkbox" name="pushover_notify_onsubtitledownload"
                                    id="pushover_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="pushover_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1486,7 +1486,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_boxcar2"
                                id="use_boxcar2" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_BOXCAR2)]}/>
-                        <label for="use_boxcar2"><p>send Boxcar2 notifications ?</p></label>
+                        <label for="use_boxcar2"><p>send Boxcar2 notifications?</p></label>
                     </div>
                 </div>
 
@@ -1498,7 +1498,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="boxcar2_notify_onsnatch"
                                    id="boxcar2_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONSNATCH)]}/>
-                            <label for="boxcar2_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="boxcar2_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -1509,7 +1509,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="boxcar2_notify_ondownload"
                                    id="boxcar2_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="boxcar2_notify_ondownload"><p>send a notification when a download finishes ?</p>
+                            <label for="boxcar2_notify_ondownload"><p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -1521,7 +1521,7 @@
                             <input type="checkbox" name="boxcar2_notify_onsubtitledownload"
                                    id="boxcar2_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="boxcar2_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1574,7 +1574,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nma"
                                id="use_nma" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_NMA)]}/>
-                        <label for="use_nma"><p>send NMA notifications ?</p></label>
+                        <label for="use_nma"><p>send NMA notifications?</p></label>
                     </div>
                 </div>
 
@@ -1586,7 +1586,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="nma_notify_onsnatch"
                                    id="nma_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.NMA_NOTIFY_ONSNATCH)]}/>
-                            <label for="nma_notify_onsnatch"><p>send a notification when a download starts ?</p></label>
+                            <label for="nma_notify_onsnatch"><p>send a notification when a download starts?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1596,7 +1596,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="nma_notify_ondownload"
                                    id="nma_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.NMA_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="nma_notify_ondownload"><p>send a notification when a download finishes ?</p>
+                            <label for="nma_notify_ondownload"><p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -1608,7 +1608,7 @@
                             <input type="checkbox" name="nma_notify_onsubtitledownload"
                                    id="nma_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.NMA_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="nma_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1695,7 +1695,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushalot"
                                id="use_pushalot" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PUSHALOT)]}/>
-                        <label for="use_pushalot"><p>send Pushalot notifications ?</p></label>
+                        <label for="use_pushalot"><p>send Pushalot notifications?</p></label>
                     </div>
                 </div>
 
@@ -1707,7 +1707,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushalot_notify_onsnatch"
                                    id="pushalot_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSNATCH)]}/>
-                            <label for="pushalot_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="pushalot_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -1730,7 +1730,7 @@
                             <input type="checkbox" name="pushalot_notify_onsubtitledownload"
                                    id="pushalot_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="pushalot_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1786,7 +1786,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushbullet"
                                id="use_pushbullet" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_PUSHBULLET)]}/>
-                        <label for="use_pushbullet"><p>send Pushbullet notifications ?</p></label>
+                        <label for="use_pushbullet"><p>send Pushbullet notifications?</p></label>
                     </div>
                 </div>
 
@@ -1798,7 +1798,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushbullet_notify_onsnatch"
                                    id="pushbullet_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSNATCH)]}/>
-                            <label for="pushbullet_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="pushbullet_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -1821,7 +1821,7 @@
                             <input type="checkbox" name="pushbullet_notify_onsubtitledownload"
                                    id="pushbullet_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="pushbullet_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1892,7 +1892,8 @@
                      title="Free Mobile"/>
                 <h3><a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Free Mobile</a></h3>
-                <p>Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.</p>
+                <p>Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free
+                    SMS API.</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
@@ -1902,7 +1903,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_freemobile"
                                id="use_freemobile" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FREEMOBILE)]}/>
-                        <label for="use_freemobile"><p>send SMS notifications ?</p></label>
+                        <label for="use_freemobile"><p>send SMS notifications?</p></label>
                     </div>
                 </div>
 
@@ -1914,7 +1915,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="freemobile_notify_onsnatch"
                                    id="freemobile_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSNATCH)]}/>
-                            <label for="freemobile_notify_onsnatch"><p>send a SMS when a download starts ?</p></label>
+                            <label for="freemobile_notify_onsnatch"><p>send a SMS when a download starts?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1924,7 +1925,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="freemobile_notify_ondownload"
                                    id="freemobile_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="freemobile_notify_ondownload"><p>send a SMS when a download finishes ?</p>
+                            <label for="freemobile_notify_ondownload"><p>send a SMS when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -1936,7 +1937,7 @@
                             <input type="checkbox" name="freemobile_notify_onsubtitledownload"
                                    id="freemobile_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="freemobile_notify_onsubtitledownload"><p>send a SMS when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -1990,6 +1991,7 @@
                 </div><!-- /content_use_freemobile //-->
             </fieldset>
         </div><!-- /freemobile tab-pane //-->
+
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/telegram.png" alt=""
@@ -2129,6 +2131,190 @@
                 </div><!-- /content_use_telegram //-->
             </fieldset>
         </div><!-- /telegram tab-pane //-->
+
+        <div class="row tab-pane">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/twilio.png" alt=""
+                     title="Twilio"/>
+                <h3><a href="${anon_url('http://www.twilio.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">Twilio</a></h3>
+                <p>
+                    Twilio is a webservice API that allows you to communicate directly with a mobile number. This
+                    notifier will send a text directly to your mobile device.
+                </p>
+            </div>
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Enable</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" class="enabler" name="use_twilio"
+                               id="use_twilio" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_TWILIO)]}/>
+                        <label for="use_twilio"><p>text your mobile device?</p></label>
+                    </div>
+                </div>
+
+                <div id="content_use_twilio">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on snatch</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="twilio_notify_onsnatch"
+                                   id="twilio_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSNATCH)]}/>
+                            <label for="twilio_notify_onsnatch">
+                                <p>send a message when a download starts?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="twilio_notify_ondownload"
+                                   id="twilio_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.TWILIO_NOTIFY_ONDOWNLOAD)]}/>
+                            <label for="twilio_notify_ondownload">
+                                <p>send a message when a download finishes?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on subtitle download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="twilio_notify_onsubtitledownload"
+                                   id="twilio_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                            <label for="twilio_notify_onsubtitledownload">
+                                <p>send a message when subtitles are downloaded?</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Twilio Account SID</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-user"></span>
+                                        </div>
+                                        <input name="twilio_account_sid" id="twilio_account_sid"
+                                               value="${sickrage.srCore.srConfig.TWILIO_ACCOUNT_SID}"
+                                               class="form-control"
+                                               placeholder="ex. 12345678"
+                                               autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="twilio_account_sid">
+                                        account SID of your Twilio account.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Twilio Auth Token</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-cloud"></span>
+                                </div>
+                                <input name="twilio_auth_token" id="twilio_auth_token"
+                                       value="${sickrage.srCore.srConfig.TWILIO_AUTH_TOKEN}"
+                                       class="form-control"
+                                       placeholder="enter your auth token"
+                                       autocapitalize="off"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Twilio Phone SID</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="fa fa-hashtag"></span>
+                                        </div>
+                                        <input name="twilio_phone_sid" id="twilio_phone_sid"
+                                               value="${sickrage.srCore.srConfig.TWILIO_PHONE_SID}"
+                                               class="form-control"
+                                               placeholder="ex. 12345678"
+                                               autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="twilio_phone_sid">
+                                        phone SID that you would like to send the sms from.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Twilio Account SID</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="fa fa-hashtag"></span>
+                                        </div>
+                                        <input name="twilio_to_number" id="twilio_to_number"
+                                               value="${sickrage.srCore.srConfig.TWILIO_TO_NUMBER}"
+                                               class="form-control"
+                                               placeholder="ex. +1-###-###-####"
+                                               autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="twilio_to_number">
+                                        phone number that will receive the sms.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="testNotification" id="testTwilio-result">
+                                Click below to test your settings.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input class="btn" type="button" value="Test Twilio" id="testTwilio"/>
+                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                        </div>
+                    </div>
+                </div><!-- /content_use_twilio //-->
+            </fieldset>
+        </div><!-- /twilio tab-pane //-->
     </div>
 
     <div id="tabs-3" class="tab-pane fade">
@@ -2150,7 +2336,7 @@
                         <input type="checkbox" class="enabler" name="use_twitter"
                                id="use_twitter" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_TWITTER)]}/>
                         <label for="use_twitter">
-                            post tweets on Twitter ?<br/>
+                            post tweets on Twitter?<br/>
                             <b>Note:</b> you may want to use a secondary account.
                         </label>
                     </div>
@@ -2164,7 +2350,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twitter_notify_onsnatch"
                                    id="twitter_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.TWITTER_NOTIFY_ONSNATCH)]}/>
-                            <label for="twitter_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="twitter_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -2175,7 +2361,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twitter_notify_ondownload"
                                    id="twitter_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.TWITTER_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="twitter_notify_ondownload"><p>send a notification when a download finishes ?</p>
+                            <label for="twitter_notify_ondownload"><p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -2187,7 +2373,7 @@
                             <input type="checkbox" name="twitter_notify_onsubtitledownload"
                                    id="twitter_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="twitter_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -2292,7 +2478,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_trakt"
                                id="use_trakt" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_TRAKT)]}/>
-                        <label for="use_trakt"><p>send Trakt.tv notifications ?</p></label>
+                        <label for="use_trakt"><p>send Trakt.tv notifications?</p></label>
                     </div>
                 </div>
 
@@ -2542,7 +2728,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_email"
                                id="use_email" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_EMAIL)]}/>
-                        <label for="use_email"><p>send email notifications ?</p></label>
+                        <label for="use_email"><p>send email notifications?</p></label>
                     </div>
                 </div>
 
@@ -2554,7 +2740,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="email_notify_onsnatch"
                                    id="email_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSNATCH)]}/>
-                            <label for="email_notify_onsnatch"><p>send a notification when a download starts ?</p>
+                            <label for="email_notify_onsnatch"><p>send a notification when a download starts?</p>
                             </label>
                         </div>
                     </div>
@@ -2565,7 +2751,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="email_notify_ondownload"
                                    id="email_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.EMAIL_NOTIFY_ONDOWNLOAD)]}/>
-                            <label for="email_notify_ondownload"><p>send a notification when a download finishes ?</p>
+                            <label for="email_notify_ondownload"><p>send a notification when a download finishes?</p>
                             </label>
                         </div>
                     </div>
@@ -2577,7 +2763,7 @@
                             <input type="checkbox" name="email_notify_onsubtitledownload"
                                    id="email_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                             <label for="email_notify_onsubtitledownload"><p>send a notification when subtitles are
-                                downloaded ?</p></label>
+                                downloaded?</p></label>
                         </div>
                     </div>
                     <div class="row field-pair">
@@ -2749,5 +2935,261 @@
                 </div><!-- /content_use_email //-->
             </fieldset>
         </div><!-- /email tab-pane //-->
+
+        <div class="row tab-pane">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/slack.png" alt=""
+                     title="Slack"/>
+                <h3><a href="${anon_url('http://www.slack.com')}"
+                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Slack</a>
+                </h3>
+                <p>
+                    Slack brings all your communication together in one place. It's real-time messaging, archiving and
+                    search for modern teams.
+                </p>
+            </div>
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Enable</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" class="enabler" name="use_slack"
+                               id="use_slack" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_SLACK)]}/>
+                        <label for="use_slack"><p>send slack notifications?</p></label>
+                    </div>
+                </div>
+
+                <div id="content_use_slack">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on snatch</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="slack_notify_onsnatch"
+                                   id="slack_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.SLACK_NOTIFY_ONSNATCH)]}/>
+                            <label for="slack_notify_onsnatch"><p>send a notification when a download starts?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="slack_notify_ondownload"
+                                   id="slack_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.SLACK_NOTIFY_ONDOWNLOAD)]}/>
+                            <label for="slack_notify_ondownload">
+                                <p>send a notification when a download finishes?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on subtitle download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="slack_notify_onsubtitledownload"
+                                   id="slack_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                            <label for="slack_notify_onsubtitledownload">
+                                <p>send a notification when subtitles are downloaded?</p>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Slack Incoming Webhook</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-globe"></span>
+                                </div>
+                                <input name="slack_webhook" id="slack_webhook"
+                                       value="${sickrage.srCore.srConfig.SLACK_WEBHOOK}"
+                                       placeholder="Slack webhook"
+                                       class="form-control" autocapitalize="off"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="testNotification" id="testSlack-result">Click below to test.</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input class="btn" type="button" value="Test Slack" id="testSlack"/>
+                            <input class="btn config_submitter" type="submit" value="Save Changes"/>
+                        </div>
+                    </div>
+                </div><!-- /content_use_slack //-->
+            </fieldset>
+        </div><!-- /slack tab-pane //-->
+
+        <div class="row tab-pane">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/discord.png" alt=""
+                     title="Discord"/>
+                <h3><a href="${anon_url('http://www.discordapp.com')}"
+                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Discord</a>
+                </h3>
+                <p>
+                    All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and
+                    phone.
+                </p>
+            </div>
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Enable</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" class="enabler" name="use_discord"
+                               id="use_discord" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_DISCORD)]}/>
+                        <label for="use_discord"><p>send discord notifications?</p></label>
+                    </div>
+                </div>
+
+                <div id="content_use_discord">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on snatch</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="discord_notify_onsnatch"
+                                   id="discord_notify_onsnatch" ${('', 'checked')[bool(sickrage.srCore.srConfig.DISCORD_NOTIFY_ONSNATCH)]}/>
+                            <label for="discord_notify_onsnatch"><p>send a notification when a download starts?</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="discord_notify_ondownload"
+                                   id="discord_notify_ondownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.DISCORD_NOTIFY_ONDOWNLOAD)]}/>
+                            <label for="discord_notify_ondownload">
+                                <p>send a notification when a download finishes?</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Notify on subtitle download</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="discord_notify_onsubtitledownload"
+                                   id="discord_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.srCore.srConfig.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                            <label for="discord_notify_onsubtitledownload">
+                                <p>send a notification when subtitles are downloaded?</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Discord Incoming Webhook</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-globe"></span>
+                                        </div>
+                                        <input name="discord_webhook" id="discord_webhook"
+                                               value="${sickrage.srCore.srConfig.DISCORD_WEBHOOK}"
+                                               placeholder="Discord webhook"
+                                               class="form-control" autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="discord_webhook">Create webhook under channel settings.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Discord Bot Name</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-globe"></span>
+                                        </div>
+                                        <input name="discord_name" id="discord_name"
+                                               value="${sickrage.srCore.srConfig.DISCORD_NAME}"
+                                               placeholder="Discord Bot Name"
+                                               class="form-control" autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="discord_name">Blank will use webhook default name.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Discord Avatar URL</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-globe"></span>
+                                        </div>
+                                        <input name="discord_avatar_url" id="discord_avatar_url"
+                                               value="${sickrage.srCore.srConfig.DISCORD_AVATAR_URL}"
+                                               placeholder="Discord Avatar URL"
+                                               class="form-control" autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="discord_avatar_url">Blank will use webhook default avatar.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">Discord TTS</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="discord_tts"
+                                   id="discord_tts" ${('', 'checked="checked"')[bool(sickrage.srCore.srConfig.DISCORD_TTS)]}/>
+                            <label for="discord_tts">Send notifications using text-to-speech.</label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="testNotification" id="testDiscord-result">Click below to test.</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input class="btn" type="button" value="Test Discord" id="testDiscord"/>
+                            <input class="btn config_submitter" type="submit" value="Save Changes"/>
+                        </div>
+                    </div>
+                </div><!-- /content_use_discord //-->
+            </fieldset>
+        </div><!-- /discord tab-pane //-->
     </div>
 </%block>
