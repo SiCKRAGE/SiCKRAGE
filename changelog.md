@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6fa8e39 - 2017-10-02: Added Slack notifier Added Discord notifier Added Twilio notifier 
+- * dc10452 - 2017-10-03: Added Twilio notifier icon 
+- * 9329b80 - 2017-10-02: Added Slack notifier Added Discord notifier Added Twilio notifier 
 - * 82ef1cb - 2017-10-02: Added defaults property function for config settings 
 - * e1c6cdc - 2017-10-01: Improved censorship of sensitive data in logs 
 - * 6fb98e1 - 2017-10-01: Added check_settings_bool function for config operations 
