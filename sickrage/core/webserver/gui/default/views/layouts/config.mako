@@ -24,12 +24,13 @@
             </div>
             <br/>
             <div class="row">
-                <%block name="saveButton">
-                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-                        <input type="button" onclick="$('#configForm').submit()"
-                               class="btn pull-left config_submitter button" value="Save Changes"/>
-                    </div>
-                </%block>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                    <input type="button" onclick="$('#configForm').submit()"
+                           class="btn pull-left config_submitter button" value="Save Changes"/>
+                    <a type="button" href="/config/reset" class="btn pull-left resetConfig button">
+                        Reset to Defaults
+                    </a>
+                </div>
                 <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 pull-right">
                     <h6 class="pull-right">
                         <b>

@@ -289,38 +289,17 @@ jQuery(document).ready(function ($) {
 
                 $('a.shutdown').confirm({
                     title: 'Shutdown',
-                    text: 'Are you sure you want to shutdown SiCKRAGE ?'
+                    content: 'Are you sure you want to shutdown SiCKRAGE ?'
                 });
 
                 $('a.restart').confirm({
                     title: 'Restart',
-                    text: 'Are you sure you want to restart SiCKRAGE ?'
-                });
-
-                $('a.clearhistory').confirm({
-                    title: 'Clear History',
-                    text: 'Are you sure you want to clear all download history ?'
-                });
-
-                $('a.trimhistory').confirm({
-                    title: 'Trim History',
-                    text: 'Are you sure you want to trim all download history older than 30 days ?'
+                    content: 'Are you sure you want to restart SiCKRAGE ?'
                 });
 
                 $('a.submiterrors').confirm({
                     title: 'Submit Errors',
-                    text: 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>'
-                });
-
-                $("a.removeshow").confirm({
-                    title: "Remove Show",
-                    content: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
-                    '</span> from the database?<br><br>' +
-                    '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
-                    '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
-                    confirm: function () {
-                        location.href = this.$target.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
-                    }
+                    content: 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>'
                 });
 
                 $('#removeW').click(function () {
@@ -1159,11 +1138,9 @@ jQuery(document).ready(function ($) {
                     }
                 });
                 logString += 'def: ' + $('#whichDefaultRootDir').val();
-                console.log(logString);
 
                 $('#rootDirText').val(dirString);
                 $('#rootDirText').change();
-                console.log('rootDirText: ' + $('#rootDirText').val());
             }
         },
 
@@ -1331,6 +1308,16 @@ jQuery(document).ready(function ($) {
 
                 $('#history_limit').on('change', function () {
                     window.location.href = SICKRAGE.srWebRoot + '/history/?limit=' + $(this).val();
+                });
+
+                $('a.clearhistory').confirm({
+                    title: 'Clear History',
+                    content: 'Are you sure you want to clear all download history ?'
+                });
+
+                $('a.trimhistory').confirm({
+                    title: 'Trim History',
+                    content: 'Are you sure you want to trim all download history older than 30 days ?'
                 });
             },
 
@@ -2017,6 +2004,17 @@ jQuery(document).ready(function ($) {
                     });
 
                     SICKRAGE.ajax_search.init();
+
+                    $("a.removeshow").confirm({
+                        title: "Remove Show",
+                        content: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
+                        '</span> from the database?<br><br>' +
+                        '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
+                        '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
+                        confirm: function () {
+                            location.href = this.$target.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
+                        }
+                    });
                 },
 
                 setEpisodeSceneNumbering: function (forSeason, forEpisode, sceneSeason, sceneEpisode) {
@@ -2748,6 +2746,11 @@ jQuery(document).ready(function ($) {
                 // on load of the page: switch to the currently selected tab
                 var hash = window.location.hash;
                 $('#config-tabs a[href="' + hash + '"]').tab('show');
+
+                $('a.resetConfig').confirm({
+                    title: 'Reset Config to Defaults',
+                    content: 'Are you sure you want to reset config to defaults?'
+                });
             },
 
             general: function () {
@@ -3811,22 +3814,6 @@ jQuery(document).ready(function ($) {
                         });
                     });
 
-                    $('#testBoxcar').click(function () {
-                        var boxcar_username = $.trim($('#boxcar_username').val());
-                        if (!boxcar_username) {
-                            $('#testBoxcar-result').html('Please fill out the necessary fields above.');
-                            $('#boxcar_username').addClass('warning');
-                            return;
-                        }
-                        $('#boxcar_username').removeClass('warning');
-                        $(this).prop('disabled', true);
-                        $('#testBoxcar-result').html(SICKRAGE.loadingHTML);
-                        $.get(SICKRAGE.srWebRoot + '/home/testBoxcar', {'username': boxcar_username}).done(function (data) {
-                            $('#testBoxcar-result').html(data);
-                            $('#testBoxcar').prop('disabled', false);
-                        });
-                    });
-
                     $('#testBoxcar2').click(function () {
                         var boxcar2_accesstoken = $.trim($('#boxcar2_accesstoken').val());
                         if (!boxcar2_accesstoken) {
@@ -3905,6 +3892,37 @@ jQuery(document).ready(function ($) {
                     $('#testTwitter').click(function () {
                         $.get(SICKRAGE.srWebRoot + '/home/testTwitter', function (data) {
                             $('#testTwitter-result').html(data);
+                        });
+                    });
+
+                    $('#testTwilio').on('click', function () {
+                        var twilio_account_sid = $.trim($('#twilio_account_sid').val());
+                        var twilio_phone_sid = $.trim($('#twilio_phone_sid').val());
+                        var twilio_auth_token = $.trim($('#twilio_auth_token').val());
+                        var twilio_to_number = $.trim($('#twilio_to_number').val());
+
+                        $(this).prop('disabled', true);
+                        $('#testTwilio-result').html(SICKRAGE.loadingHTML);
+                        $.get(SICKRAGE.srWebRoot + '/home/testTwilio', {
+                            'account_sid': twilio_account_sid,
+                            'phone_sid': twilio_phone_sid,
+                            'auth_token': twilio_auth_token,
+                            'to_number': twilio_to_number
+                        }).done(function (data) {
+                            $('#testTwilio-result').html(data);
+                            $('#testTwilio').prop('disabled', false);
+                        });
+                    });
+
+                    $('#testSlack').on('click', function () {
+                        $.get(SICKRAGE.srWebRoot + '/home/testSlack', function (data) {
+                            $('#testSlack-result').html(data);
+                        });
+                    });
+
+                    $('#testDiscord').on('click', function () {
+                        $.get(SICKRAGE.srWebRoot + '/home/testDiscord', function (data) {
+                            $('#testDiscord-result').html(data);
                         });
                     });
 
@@ -4050,7 +4068,7 @@ jQuery(document).ready(function ($) {
                         telegram.id = $.trim($('#telegram_id').val());
                         telegram.apikey = $.trim($('#telegram_apikey').val());
                         if (!telegram.id || !telegram.apikey) {
-                            $('#testTelegram-result').html( _('Please fill out the necessary fields above.') );
+                            $('#testTelegram-result').html(_('Please fill out the necessary fields above.'));
                             if (!telegram.id) {
                                 $('#telegram_id').addClass('warning');
                             } else {

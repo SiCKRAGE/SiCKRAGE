@@ -23,14 +23,18 @@ from six.moves import urllib
 import sickrage
 from sickrage.core.common import notifyStrings, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
     NOTIFY_GIT_UPDATE, NOTIFY_SNATCH, NOTIFY_LOGIN_TEXT, NOTIFY_LOGIN
+from sickrage.notifiers import srNotifiers
 
 
-class Notifier(object):
+class TelegramNotifier(srNotifiers):
     """
-    Use Telegram to send notifications
-
-    https://telegram.org/
+    A notifier for Telegram
     """
+
+    def __init__(self):
+        super(TelegramNotifier, self).__init__()
+        self.name = 'telegram'
+
     def test_notify(self, id=None, api_key=None):
         """
         Send a test notification

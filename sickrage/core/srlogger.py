@@ -51,6 +51,8 @@ class srLogger(logging.getLoggerClass()):
         self.INFO = INFO
         self.DB = 5
 
+        self.CENSORED_ITEMS = {}
+
         self.logLevels = {
             'CRITICAL': self.CRITICAL,
             'ERROR': self.ERROR,
@@ -142,7 +144,7 @@ class srLogger(logging.getLoggerClass()):
             try:
                 record.msg = re.sub(
                     r"(.*)\b({})\b(.*)".format(
-                        '|'.join([x for x in sickrage.srCore.srConfig.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
+                        '|'.join([x for x in self.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
                     record.msg)
 
                 # needed because Newznab apikey isn't stored as key=value in a section.

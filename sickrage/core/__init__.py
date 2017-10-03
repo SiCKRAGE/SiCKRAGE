@@ -290,9 +290,6 @@ class Core(object):
         if self.srConfig.AUTOPOSTPROCESSOR_FREQ < self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ:
             self.srConfig.AUTOPOSTPROCESSOR_FREQ = self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ
 
-        if self.srConfig.NAMECACHE_FREQ < self.srConfig.MIN_NAMECACHE_FREQ:
-            self.srConfig.NAMECACHE_FREQ = self.srConfig.MIN_NAMECACHE_FREQ
-
         if self.srConfig.DAILY_SEARCHER_FREQ < self.srConfig.MIN_DAILY_SEARCHER_FREQ:
             self.srConfig.DAILY_SEARCHER_FREQ = self.srConfig.MIN_DAILY_SEARCHER_FREQ
 

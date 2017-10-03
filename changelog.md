@@ -1,6 +1,12 @@
 # Changelog
 
-- * da12093 - 2017-10-01: Release v9.1.24 
+- * 0ad60b9 - 2017-10-03: Release v9.1.25 
+- * aac7e3e - 2017-10-03: Added Twilio notifier icon 
+- * 9329b80 - 2017-10-02: Added Slack notifier Added Discord notifier Added Twilio notifier 
+- * 82ef1cb - 2017-10-02: Added defaults property function for config settings 
+- * e1c6cdc - 2017-10-01: Improved censorship of sensitive data in logs 
+- * 6fb98e1 - 2017-10-01: Added check_settings_bool function for config operations 
+- * 077a85c - 2017-10-01: Release v9.1.24 
 - * 5acbdd0 - 2017-10-01: Added Telegram notifier Removed Boxcar notifier in favour of Boxcar2 notifier 
 - * fa8e781 - 2017-09-30: Added ability to limit amount of trakt show results returned from API 
 - * 8c581c5 - 2017-09-30: Metadata for actors is now pulled from indexers using a function 
