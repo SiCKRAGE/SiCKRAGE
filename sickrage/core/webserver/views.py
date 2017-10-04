@@ -4628,7 +4628,7 @@ class ConfigNotifications(Config):
         sickrage.srCore.srConfig.DISCORD_WEBHOOK = discord_webhook
         sickrage.srCore.srConfig.DISCORD_NAME = discord_name
         sickrage.srCore.srConfig.DISCORD_AVATAR_URL = discord_avatar_url
-        sickrage.srCore.srConfig.DISCORD_TTS = discord_tts
+        sickrage.srCore.srConfig.DISCORD_TTS = sickrage.srCore.srConfig.checkbox_to_value(discord_tts)
 
         sickrage.srCore.srConfig.USE_BOXCAR2 = sickrage.srCore.srConfig.checkbox_to_value(use_boxcar2)
         sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONSNATCH = sickrage.srCore.srConfig.checkbox_to_value(

@@ -1,6 +1,9 @@
 # Changelog
 
-- * 0ad60b9 - 2017-10-03: Release v9.1.25 
+- * a0663e6 - 2017-10-04: Release v9.1.26 
+- * 156c0f3 - 2017-10-04: Fixed issues with saving settings 
+- * b4279d5 - 2017-10-03: Text correction for Twilio notifier in webui 
+- * 3ec56ef - 2017-10-03: Release v9.1.25 
 - * aac7e3e - 2017-10-03: Added Twilio notifier icon 
 - * 9329b80 - 2017-10-02: Added Slack notifier Added Discord notifier Added Twilio notifier 
 - * 82ef1cb - 2017-10-02: Added defaults property function for config settings 
