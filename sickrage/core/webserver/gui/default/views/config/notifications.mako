@@ -2271,7 +2271,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Twilio Account SID</label>
+                            <label class="component-title">Your phone number</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
