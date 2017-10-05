@@ -225,10 +225,8 @@ class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
-    @coroutine
     def prepare(self, *args, **kwargs):
-        result = yield self.route(self.auth)
-        self.finish(result)
+        self.finish(self.auth())
 
     def auth(self):
         if self.get_current_user(): return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
