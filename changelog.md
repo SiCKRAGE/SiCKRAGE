@@ -1,6 +1,7 @@
 # Changelog
 
-- * f4dfcde - 2017-10-04: Removed async for login handler 
+- * f2fa751 - 2017-10-04: Release v9.1.27 
+- * 4a81426 - 2017-10-04: Removed async for login handler 
 - * c4277b5 - 2017-10-04: Removed async for login handler 
 - * 4070c4c - 2017-10-04: Release v9.1.26 
 - * 156c0f3 - 2017-10-04: Fixed issues with saving settings 
