@@ -226,7 +226,7 @@ class LoginHandler(BaseHandler):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
     def prepare(self, *args, **kwargs):
-        self.finish(self.route(self.auth))
+        self.finish(self.auth())
 
     def auth(self):
         if self.get_current_user(): return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
