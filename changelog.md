@@ -1,6 +1,7 @@
 # Changelog
 
-- * a0663e6 - 2017-10-04: Release v9.1.26 
+- * 11a8875 - 2017-10-04: Removed async for login handler 
+- * 4070c4c - 2017-10-04: Release v9.1.26 
 - * 156c0f3 - 2017-10-04: Fixed issues with saving settings 
 - * b4279d5 - 2017-10-03: Text correction for Twilio notifier in webui 
 - * 3ec56ef - 2017-10-03: Release v9.1.25 
