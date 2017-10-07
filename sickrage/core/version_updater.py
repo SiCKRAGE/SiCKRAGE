@@ -190,48 +190,14 @@ class srVersionUpdater(object):
 
 
 class UpdateManager(object):
-    @staticmethod
-    def get_update_url():
-        return "{}/home/update/?pid={}".format(sickrage.srCore.srConfig.WEB_ROOT, sickrage.srCore.PID)
-
-    @staticmethod
-    def github():
-        import github
-
-        try:
-            return github.Github(
-                login_or_token=sickrage.srCore.srConfig.GIT_USERNAME,
-                password=sickrage.srCore.srConfig.GIT_PASSWORD,
-                user_agent="SiCKRAGE")
-        except:
-            return github.Github(user_agent="SiCKRAGE")
-
-
-class GitUpdateManager(UpdateManager):
-    def __init__(self):
-        self.type = "git"
-        self._git_path = self._find_working_git()
-
     @property
-    def version(self):
-        return self._find_installed_version()
-
-    @property
-    def get_newest_version(self):
-        return self._check_for_new_version() or self.version
-
-    @staticmethod
-    def _git_error():
-        error_message = 'Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your config.ini OR delete your .git folder and run from source to enable updates.'
-        sickrage.srCore.NEWEST_VERSION_STRING = error_message
-
-    def _find_working_git(self):
+    def _git_path(self):
         test_cmd = 'version'
 
         main_git = sickrage.srCore.srConfig.GIT_PATH or 'git'
 
         sickrage.srCore.srLogger.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
-        _, _, exit_status = self._run_git(main_git, test_cmd)
+        _, _, exit_status = self._git_cmd(main_git, test_cmd)
 
         if exit_status == 0:
             sickrage.srCore.srLogger.debug("Using: " + main_git)
@@ -255,7 +221,7 @@ class GitUpdateManager(UpdateManager):
 
             for cur_git in alternative_git:
                 sickrage.srCore.srLogger.debug("Checking if we can use git commands: " + cur_git + ' ' + test_cmd)
-                _, _, exit_status = self._run_git(cur_git, test_cmd)
+                _, _, exit_status = self._git_cmd(cur_git, test_cmd)
 
                 if exit_status == 0:
                     sickrage.srCore.srLogger.debug("Using: " + cur_git)
@@ -269,13 +235,57 @@ class GitUpdateManager(UpdateManager):
 
         return None
 
-    @staticmethod
-    def _run_git(git_path, args):
+    @property
+    def _pip_path(self):
+        test_cmd = '-V'
 
+        main_pip = sickrage.srCore.srConfig.PIP_PATH or 'pip'
+
+        sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
+        _, _, exit_status = self._pip_cmd(main_pip, test_cmd)
+
+        if exit_status == 0:
+            sickrage.srCore.srLogger.debug("Using: " + main_pip)
+            return main_pip
+        else:
+            sickrage.srCore.srLogger.debug("Not using: " + main_pip)
+
+        # trying alternatives
+        alternative_pip = []
+
+        # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
+        if platform.system().lower() == 'darwin':
+            alternative_pip.append('/usr/local/python2.7/bin/pip')
+
+        if platform.system().lower() == 'windows':
+            if main_pip != main_pip.lower():
+                alternative_pip.append(main_pip.lower())
+
+        if alternative_pip:
+            sickrage.srCore.srLogger.debug("Trying known alternative pip locations")
+
+            for cur_pip in alternative_pip:
+                sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + cur_pip + ' ' + test_cmd)
+                _, _, exit_status = self._pip_cmd(cur_pip, test_cmd)
+
+                if exit_status == 0:
+                    sickrage.srCore.srLogger.debug("Using: " + cur_pip)
+                    return cur_pip
+                else:
+                    sickrage.srCore.srLogger.debug("Not using: " + cur_pip)
+
+        # Still haven't found a working git
+        error_message = 'Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini'
+        sickrage.srCore.NEWEST_VERSION_STRING = error_message
+
+        return None
+
+    @staticmethod
+    def _git_cmd(git_path, args):
         output = err = None
 
         if not git_path:
-            sickrage.srCore.srLogger.warning("No git specified, can't use git commands")
+            sickrage.srCore.srLogger.warning("No path to git specified, can't use git commands")
             exit_status = 1
             return output, err, exit_status
 
@@ -317,6 +327,83 @@ class GitUpdateManager(UpdateManager):
 
         return output, err, exit_status
 
+    @staticmethod
+    def _pip_cmd(pip_path, args):
+        output = err = None
+
+        if not pip_path:
+            sickrage.srCore.srLogger.warning("No path to pip specified, can't use pip commands")
+            exit_status = 1
+            return output, err, exit_status
+
+        cmd = pip_path + ' ' + args
+
+        try:
+            sickrage.srCore.srLogger.debug("Executing " + cmd + " with your shell in " + sickrage.PROG_DIR)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                 shell=True, cwd=sickrage.PROG_DIR)
+            output, err = p.communicate()
+            exit_status = p.returncode
+
+            if output:
+                output = output.strip()
+
+
+        except OSError:
+            sickrage.srCore.srLogger.info("Command " + cmd + " didn't work")
+            exit_status = 1
+
+        if exit_status == 0:
+            sickrage.srCore.srLogger.debug(cmd + " : returned successful")
+            exit_status = 0
+        else:
+            sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output) + ", treat as error for now")
+            exit_status = 1
+
+        return output, err, exit_status
+
+    @staticmethod
+    def get_update_url():
+        return "{}/home/update/?pid={}".format(sickrage.srCore.srConfig.WEB_ROOT, sickrage.srCore.PID)
+
+    @staticmethod
+    def github():
+        import github
+
+        try:
+            return github.Github(
+                login_or_token=sickrage.srCore.srConfig.GIT_USERNAME,
+                password=sickrage.srCore.srConfig.GIT_PASSWORD,
+                user_agent="SiCKRAGE")
+        except:
+            return github.Github(user_agent="SiCKRAGE")
+
+    def install_requirements(self):
+        _, _, exit_status = self._pip_cmd(self._pip_path,
+                                          'install --no-cache-dir --user -r {}'.format(sickrage.REQS_FILE))
+        if not exit_status == 0:
+            sickrage.srCore.srLogger.warning(
+                "Failed to install requirements, please manually run 'pip install --no-cache-dir --user -r {}".format(
+                    sickrage.REQS_FILE))
+
+
+class GitUpdateManager(UpdateManager):
+    def __init__(self):
+        self.type = "git"
+
+    @property
+    def version(self):
+        return self._find_installed_version()
+
+    @property
+    def get_newest_version(self):
+        return self._check_for_new_version() or self.version
+
+    @staticmethod
+    def _git_error():
+        error_message = 'Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your config.ini OR delete your .git folder and run from source to enable updates.'
+        sickrage.srCore.NEWEST_VERSION_STRING = error_message
+
     def _find_installed_version(self):
         """
         Attempts to find the currently installed version of SiCKRAGE.
@@ -326,7 +413,7 @@ class GitUpdateManager(UpdateManager):
         Returns: True for success or False for failure
         """
 
-        output, _, exit_status = self._run_git(self._git_path, 'rev-parse HEAD')
+        output, _, exit_status = self._git_cmd(self._git_path, 'rev-parse HEAD')
         if exit_status == 0 and output:
             cur_commit_hash = output.strip()
             if not re.match('^[a-z0-9]+$', cur_commit_hash):
@@ -341,13 +428,13 @@ class GitUpdateManager(UpdateManager):
         """
 
         # get all new info from server
-        output, _, exit_status = self._run_git(self._git_path, 'remote update')
+        output, _, exit_status = self._git_cmd(self._git_path, 'remote update')
         if not exit_status == 0:
             sickrage.srCore.srLogger.warning("Unable to contact server, can't check for update")
             return
 
         # get latest commit_hash from remote
-        output, _, exit_status = self._run_git(self._git_path, 'rev-parse --verify --quiet "@{upstream}"')
+        output, _, exit_status = self._git_cmd(self._git_path, 'rev-parse --verify --quiet "@{upstream}"')
         if exit_status == 0 and output:
             return output.strip()
 
@@ -379,7 +466,7 @@ class GitUpdateManager(UpdateManager):
             # self.clean() # This is removing user data and backups
             self.reset()
 
-        _, _, exit_status = self._run_git(self._git_path, 'pull -f {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
+        _, _, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
                                                                                  self.current_branch))
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from GIT servers")
@@ -394,7 +481,7 @@ class GitUpdateManager(UpdateManager):
         Calls git clean to remove all untracked files. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._run_git(self._git_path, 'clean -df ""')
+        _, _, exit_status = self._git_cmd(self._git_path, 'clean -df ""')
         return (False, True)[exit_status == 0]
 
     def reset(self):
@@ -402,7 +489,7 @@ class GitUpdateManager(UpdateManager):
         Calls git reset --hard to perform a hard reset. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._run_git(self._git_path, 'reset --hard')
+        _, _, exit_status = self._git_cmd(self._git_path, 'reset --hard')
         return (False, True)[exit_status == 0]
 
     def fetch(self):
@@ -410,10 +497,10 @@ class GitUpdateManager(UpdateManager):
         Calls git fetch to fetch all remote branches
         on the call's success.
         """
-        _, _, exit_status = self._run_git(self._git_path,
+        _, _, exit_status = self._git_cmd(self._git_path,
                                           'config remote.origin.fetch %s' % '+refs/heads/*:refs/remotes/origin/*')
         if exit_status == 0:
-            _, _, exit_status = self._run_git(self._git_path, 'fetch --all')
+            _, _, exit_status = self._git_cmd(self._git_path, 'fetch --all')
         return (False, True)[exit_status == 0]
 
     def checkout_branch(self, branch):
@@ -427,7 +514,7 @@ class GitUpdateManager(UpdateManager):
             # fetch all branches
             self.fetch()
 
-            _, _, exit_status = self._run_git(self._git_path, 'checkout -f ' + branch)
+            _, _, exit_status = self._git_cmd(self._git_path, 'checkout -f ' + branch)
             if exit_status == 0:
                 self.install_requirements()
                 return True
@@ -435,28 +522,23 @@ class GitUpdateManager(UpdateManager):
         return False
 
     def get_remote_url(self):
-        url, _, exit_status = self._run_git(self._git_path,
+        url, _, exit_status = self._git_cmd(self._git_path,
                                             'remote get-url {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         return ("", url)[exit_status == 0 and url is not None]
 
     def set_remote_url(self):
         if not sickrage.srCore.srConfig.DEVELOPER:
-            self._run_git(self._git_path, 'remote set-url {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
+            self._git_cmd(self._git_path, 'remote set-url {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
                                                                         sickrage.srCore.srConfig.GIT_REMOTE_URL))
-
-    @staticmethod
-    def install_requirements():
-        # install requirements
-        subprocess.call("pip install --no-cache-dir --user -r {}".format(sickrage.REQS_FILE), shell=True)
 
     @property
     def current_branch(self):
-        branch, _, exit_status = self._run_git(self._git_path, 'rev-parse --abbrev-ref HEAD')
+        branch, _, exit_status = self._git_cmd(self._git_path, 'rev-parse --abbrev-ref HEAD')
         return ("", branch)[exit_status == 0 and branch is not None]
 
     @property
     def remote_branches(self):
-        branches, _, exit_status = self._run_git(self._git_path,
+        branches, _, exit_status = self._git_cmd(self._git_path,
                                                  'ls-remote --heads {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
@@ -596,6 +678,9 @@ class SourceUpdateManager(UpdateManager):
         # Notify update successful
         srNotifiers.notify_version_update(self.get_newest_version)
 
+        # install requirements
+        self.install_requirements()
+
         return True
 
 
@@ -616,89 +701,8 @@ class PipUpdateManager(UpdateManager):
         error_message = 'Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini.'
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
-    @property
-    def _find_working_pip(self):
-        test_cmd = '-V'
-
-        main_pip = sickrage.srCore.srConfig.PIP_PATH or 'pip'
-
-        sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
-        _, _, exit_status = self._run_pip(main_pip, test_cmd)
-
-        if exit_status == 0:
-            sickrage.srCore.srLogger.debug("Using: " + main_pip)
-            return main_pip
-        else:
-            sickrage.srCore.srLogger.debug("Not using: " + main_pip)
-
-        # trying alternatives
-        alternative_pip = []
-
-        # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
-        if platform.system().lower() == 'darwin':
-            alternative_pip.append('/usr/local/python2.7/bin/pip')
-
-        if platform.system().lower() == 'windows':
-            if main_pip != main_pip.lower():
-                alternative_pip.append(main_pip.lower())
-
-        if alternative_pip:
-            sickrage.srCore.srLogger.debug("Trying known alternative pip locations")
-
-            for cur_pip in alternative_pip:
-                sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + cur_pip + ' ' + test_cmd)
-                _, _, exit_status = self._run_pip(cur_pip, test_cmd)
-
-                if exit_status == 0:
-                    sickrage.srCore.srLogger.debug("Using: " + cur_pip)
-                    return cur_pip
-                else:
-                    sickrage.srCore.srLogger.debug("Not using: " + cur_pip)
-
-        # Still haven't found a working git
-        error_message = 'Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini'
-        sickrage.srCore.NEWEST_VERSION_STRING = error_message
-
-        return None
-
-    @staticmethod
-    def _run_pip(pip_path, args):
-
-        output = err = None
-
-        if not pip_path:
-            sickrage.srCore.srLogger.warning("No pip specified, can't use pip commands")
-            exit_status = 1
-            return output, err, exit_status
-
-        cmd = pip_path + ' ' + args
-
-        try:
-            sickrage.srCore.srLogger.debug("Executing " + cmd + " with your shell in " + sickrage.PROG_DIR)
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                 shell=True, cwd=sickrage.PROG_DIR)
-            output, err = p.communicate()
-            exit_status = p.returncode
-
-            if output:
-                output = output.strip()
-
-
-        except OSError:
-            sickrage.srCore.srLogger.info("Command " + cmd + " didn't work")
-            exit_status = 1
-
-        if exit_status == 0:
-            sickrage.srCore.srLogger.debug(cmd + " : returned successful")
-            exit_status = 0
-        else:
-            sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output) + ", treat as error for now")
-            exit_status = 1
-
-        return output, err, exit_status
-
     def _find_installed_version(self):
-        out, _, exit_status = self._run_pip(self._find_working_pip, 'show sickrage')
+        out, _, exit_status = self._pip_cmd(self._pip_path, 'show sickrage')
         if exit_status == 0:
             return out.split('\n')[1].split()[1]
         return ""
@@ -748,7 +752,7 @@ class PipUpdateManager(UpdateManager):
         """
         Performs pip upgrade
         """
-        _, _, exit_status = self._run_pip(self._find_working_pip, 'install -U --no-cache-dir sickrage')
+        _, _, exit_status = self._pip_cmd(self._pip_path, 'install -U --no-cache-dir sickrage')
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from PyPi servers")
             srNotifiers.notify_version_update(self.get_newest_version)

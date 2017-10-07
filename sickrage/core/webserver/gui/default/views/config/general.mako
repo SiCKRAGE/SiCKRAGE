@@ -999,7 +999,6 @@
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Default deleted episode status:</label>
                     </div>
@@ -1041,6 +1040,25 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">PIP executable path</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-file"></span>
+                            </div>
+                            <input id="pip_path" name="pip_path"
+                                   value="${sickrage.srCore.srConfig.PIP_PATH}"
+                                   placeholder="ex: /path/to/pip"
+                                   title="only needed if OS is unable to locate pip from env"
+                                   class="form-control" autocapitalize="off"/>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-md-12">
                         <input type="submit" class="btn config_submitter" value="Save Changes"/>
@@ -1105,9 +1123,8 @@
                     </div>
 
                     <div class="row field-pair">
-
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Git executable path</label>
+                            <label class="component-title">GIT executable path</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1116,11 +1133,11 @@
                                 </div>
                                 <input id="git_path" name="git_path"
                                        value="${sickrage.srCore.srConfig.GIT_PATH}"
+                                       placeholder="ex: /path/to/git"
                                        title="only needed if OS is unable to locate git from env"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="row field-pair" hidden>
