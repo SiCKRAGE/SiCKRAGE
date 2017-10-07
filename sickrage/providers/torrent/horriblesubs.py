@@ -84,6 +84,10 @@ class HorribleSubsProvider(TorrentProvider):
                             label = torrent_row.find('td', class_='dl-label')
                             title = label.get_text(strip=True)
 
+                            size = -1
+                            seeders = 1
+                            leechers = 1
+
                             link = torrent_row.find('td', class_='hs-torrent-link')
                             download_url = link.find('a')['href'] if link and link.find('a') else None
 
@@ -98,7 +102,7 @@ class HorribleSubsProvider(TorrentProvider):
                         if not all([title, download_url]):
                             continue
 
-                        item = title, download_url, -1, 1, 1
+                        item = title, download_url, size, seeders, leechers
                         if mode != 'RSS':
                             sickrage.srCore.srLogger.debug("Found result: %s " % title)
 
