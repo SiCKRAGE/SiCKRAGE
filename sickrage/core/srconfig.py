@@ -78,11 +78,11 @@ class srConfig(object):
         self.AUTO_UPDATE = True
         self.NOTIFY_ON_UPDATE = True
         self.NOTIFY_ON_LOGIN = False
-        self.PIP_PATH = "pip"
+        self.PIP_PATH = ""
         self.GIT_RESET = True
         self.GIT_USERNAME = ""
         self.GIT_PASSWORD = ""
-        self.GIT_PATH = "git"
+        self.GIT_PATH = ""
         self.GIT_AUTOISSUES = False
         self.GIT_NEWVER = False
         self.CHANGES_URL = 'https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/changelog.md'

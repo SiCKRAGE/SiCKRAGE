@@ -3755,7 +3755,7 @@ class ConfigGeneral(Config):
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL', web_password=None,
                     version_notify=None, enable_https=None, https_cert=None, https_key=None, handle_reverse_proxy=None,
                     sort_article=None, auto_update=None, notify_on_update=None, proxy_setting=None, proxy_indexers=None,
-                    anon_redirect=None, git_path=None, calendar_unprotected=None, calendar_icons=None,
+                    anon_redirect=None, git_path=None, pip_path=None, calendar_unprotected=None, calendar_icons=None,
                     debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None, filter_row=None,
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
@@ -3797,6 +3797,7 @@ class ConfigGeneral(Config):
         sickrage.srCore.srConfig.GIT_RESET = 1
         sickrage.srCore.srConfig.GIT_AUTOISSUES = sickrage.srCore.srConfig.checkbox_to_value(git_autoissues)
         sickrage.srCore.srConfig.GIT_PATH = git_path
+        sickrage.srCore.srConfig.PIP_PATH = pip_path
         sickrage.srCore.srConfig.CALENDAR_UNPROTECTED = sickrage.srCore.srConfig.checkbox_to_value(calendar_unprotected)
         sickrage.srCore.srConfig.CALENDAR_ICONS = sickrage.srCore.srConfig.checkbox_to_value(calendar_icons)
         sickrage.srCore.srConfig.NO_RESTART = sickrage.srCore.srConfig.checkbox_to_value(no_restart)

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2be62d5 - 2017-10-07: Release v9.1.29 
+- * 7a05ad7 - 2017-10-07: Updated general advanced settings to allow setting of PIP path 
+- * 1b67369 - 2017-10-07: Release v9.1.29 
 - * 8562a7d - 2017-10-07: Updated requirements 
 - * d06862a - 2017-10-06: Release v9.1.28 
 - * 3e4d144 - 2017-10-06: Updated HorribleSubs code 
