@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7a05ad7 - 2017-10-07: Updated general advanced settings to allow setting of PIP path 
+- * 39125eb - 2017-10-07: Release v9.1.30 
+- * b8786d6 - 2017-10-07: Updated general advanced settings to allow setting of PIP path 
 - * 1b67369 - 2017-10-07: Release v9.1.29 
 - * 8562a7d - 2017-10-07: Updated requirements 
 - * d06862a - 2017-10-06: Release v9.1.28 
