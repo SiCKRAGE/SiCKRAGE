@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9212f37 - 2017-10-07: Updated requirements 
+- * 2be62d5 - 2017-10-07: Release v9.1.29 
+- * 8562a7d - 2017-10-07: Updated requirements 
 - * d06862a - 2017-10-06: Release v9.1.28 
 - * 3e4d144 - 2017-10-06: Updated HorribleSubs code 
 - * c49a6fc - 2017-10-06: Fixed issues with TorrentDay search provider 
