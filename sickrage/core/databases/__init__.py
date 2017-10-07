@@ -219,7 +219,7 @@ class srDatabase(object):
 
             import sqlite3
             conn = sqlite3.connect(self.old_db_path)
-            conn.text_factory = str
+            conn.text_factory = lambda x: (x.decode('utf-8', 'ignore'))
 
             migrate_data = {}
             rename_old = False
@@ -271,7 +271,7 @@ class srDatabase(object):
                 sickrage.srCore.srLogger.info('=' * 30)
 
                 rename_old = True
-            except OperationalError as e:
+            except OperationalError:
                 sickrage.srCore.srLogger.debug('Migrating from unsupported/corrupt %s database version', self.name)
                 rename_old = True
             except:
