@@ -1,6 +1,7 @@
 # Changelog
 
-- * 66750ab - 2017-10-06: Fixed database UTF-8 decoding migration issues 
+- * 0d09dcb - 2017-10-06: Added HorribleSubs anime search provider back Fixed issues with search providers and cookies used for authentication 
+- * c63f1be - 2017-10-06: Fixed database UTF-8 decoding migration issues 
 - * 6b59344 - 2017-10-06: Fixed database UTF-8 decoding migration issues 
 - * 3732ce2 - 2017-10-04: Release v9.1.27 
 - * 4a81426 - 2017-10-04: Removed async for login handler 

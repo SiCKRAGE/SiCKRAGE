@@ -49,15 +49,17 @@ class TorrentDayProvider(TorrentProvider):
             'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
         })
 
-        self.cookies = None
-
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1},
                            'RSS': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c14': 1}}
 
     def login(self):
-        cookie_dict = dict_from_cookiejar(self.cookie_jar)
+        cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)
         if cookie_dict.get('uid') and cookie_dict.get('pass'):
             return True
+
+        if not self.cookies:
+            sickrage.srCore.srLogger.info('You need to set your cookies to use {}'.format(self.name))
+            return False
 
         if not self.add_cookies_from_ui():
             return False
