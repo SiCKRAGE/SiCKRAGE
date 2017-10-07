@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
-        super(IPTorrentsProvider, self).__init__("IPTorrents", 'http://iptorrents.eu', True)
+        super(IPTorrentsProvider, self).__init__("IPTorrents", 'https://iptorrents.eu', True)
 
         self.supports_backlog = True
 
@@ -54,16 +54,19 @@ class IPTorrentsProvider(TorrentProvider):
         self.categories = '73=&60='
 
     def _check_auth(self):
-
         if not self.username or not self.password:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
     def login(self):
-        cookie_dict = dict_from_cookiejar(self.cookie_jar)
+        cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)
         if cookie_dict.get('uid') and cookie_dict.get('pass'):
             return True
+
+        if not self.cookies:
+            sickrage.srCore.srLogger.info('You need to set your cookies to use {}'.format(self.name))
+            return False
 
         if not self.add_cookies_from_ui():
             return False

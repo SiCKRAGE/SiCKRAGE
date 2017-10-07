@@ -1,6 +1,12 @@
 # Changelog
 
-- * f2fa751 - 2017-10-04: Release v9.1.27 
+- * 9ed5cc0 - 2017-10-06: Release v9.1.28 
+- * 3e4d144 - 2017-10-06: Updated HorribleSubs code 
+- * c49a6fc - 2017-10-06: Fixed issues with TorrentDay search provider 
+- * 3e65946 - 2017-10-06: Added HorribleSubs anime search provider back Fixed issues with search providers and cookies used for authentication 
+- * c63f1be - 2017-10-06: Fixed database UTF-8 decoding migration issues 
+- * 6b59344 - 2017-10-06: Fixed database UTF-8 decoding migration issues 
+- * 3732ce2 - 2017-10-04: Release v9.1.27 
 - * 4a81426 - 2017-10-04: Removed async for login handler 
 - * c4277b5 - 2017-10-04: Removed async for login handler 
 - * 4070c4c - 2017-10-04: Release v9.1.26 

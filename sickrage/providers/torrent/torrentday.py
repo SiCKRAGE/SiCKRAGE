@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 class TorrentDayProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentDayProvider, self).__init__("TorrentDay", 'http://torrentday.com', True)
+        super(TorrentDayProvider, self).__init__("TorrentDay", 'https://www.torrentday.com', True)
 
         self.username = None
         self.password = None
@@ -49,15 +49,20 @@ class TorrentDayProvider(TorrentProvider):
             'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
         })
 
-        self.cookies = None
-
-        self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1},
-                           'RSS': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c14': 1}}
+        self.categories = {
+            'Season': {'c14': 1},
+            'Episode': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c34': 1},
+            'RSS': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c34': 1, 'c14': 1}
+        }
 
     def login(self):
-        cookie_dict = dict_from_cookiejar(self.cookie_jar)
+        cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)
         if cookie_dict.get('uid') and cookie_dict.get('pass'):
             return True
+
+        if not self.cookies:
+            sickrage.srCore.srLogger.info('You need to set your cookies to use {}'.format(self.name))
+            return False
 
         if not self.add_cookies_from_ui():
             return False
@@ -103,9 +108,9 @@ class TorrentDayProvider(TorrentProvider):
                     post_data.update({'free': 'on'})
 
                 try:
-                    parsedJSON = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
-                    torrents = parsedJSON['Fs'][0]['Cn']['torrents']
-                except Exception:
+                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data, cache=False).json()
+                    torrents = data['Fs'][0]['Cn']['torrents']
+                except Exception as e:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 

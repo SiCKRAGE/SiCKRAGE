@@ -55,9 +55,13 @@ class SceneTimeProvider(TorrentProvider):
         self.categories = [2, 42, 9, 63, 77, 79, 100, 83]
 
     def login(self):
-        cookie_dict = dict_from_cookiejar(self.cookie_jar)
+        cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)
         if cookie_dict.get('uid') and cookie_dict.get('pass'):
             return True
+
+        if not self.cookies:
+            sickrage.srCore.srLogger.info('You need to set your cookies to use {}'.format(self.name))
+            return False
 
         if not self.add_cookies_from_ui():
             return False

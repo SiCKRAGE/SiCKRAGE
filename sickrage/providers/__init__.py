@@ -71,10 +71,10 @@ class GenericProvider(object):
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
 
+        # cookies
         self.enable_cookies = False
         self.cookies = ''
         self.rss_cookies = ''
-        self.cookie_jar = dict()
 
     @property
     def id(self):
