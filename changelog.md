@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9ed5cc0 - 2017-10-06: Release v9.1.28 
+- * 9212f37 - 2017-10-07: Updated requirements 
+- * d06862a - 2017-10-06: Release v9.1.28 
 - * 3e4d144 - 2017-10-06: Updated HorribleSubs code 
 - * c49a6fc - 2017-10-06: Fixed issues with TorrentDay search provider 
 - * 3e65946 - 2017-10-06: Added HorribleSubs anime search provider back Fixed issues with search providers and cookies used for authentication 
