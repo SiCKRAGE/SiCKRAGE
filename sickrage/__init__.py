@@ -213,8 +213,8 @@ def check_requirements():
             print('OpenSSL installed but {} is needed while {} is installed. Run `pip install -U pyopenssl`'.format(
                 v_needed, v))
     except:
-        print(
-            'OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`')
+        print('OpenSSL not available, please install for better requests validation: '
+              '`https://pyopenssl.readthedocs.org/en/latest/install.html`')
 
 
 def version():
@@ -337,7 +337,7 @@ def main():
         if os.path.isfile(REQS_FILE):
             print("Failed to import required libs, please run 'pip install --user -U -r {}' from console".format(
                 REQS_FILE))
-    except:
+    except Exception:
         traceback.print_exc()
 
 

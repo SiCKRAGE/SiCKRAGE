@@ -23,6 +23,7 @@ import collections
 import datetime
 import os
 import re
+import threading
 import time
 import traceback
 import urllib
@@ -106,9 +107,7 @@ class ApiHandler(RequestHandler):
     version = 5  # use an int since float-point is unpredictable
 
     def prepare(self, *args, **kwargs):
-        args = args[1:]
-        kwargs = dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
-                       recursive_unicode(self.request.arguments.items())])
+        threading.currentThread().setName("API")
 
         # set the output callback
         # default json
@@ -117,28 +116,26 @@ class ApiHandler(RequestHandler):
             'image': self._out_as_image,
         }
 
-        accessMsg = "API :: " + self.request.remote_ip + " - gave correct API KEY. ACCESS GRANTED"
+        accessMsg = self.request.remote_ip + " - ACCESS GRANTED"
         sickrage.srCore.srLogger.debug(accessMsg)
 
         # set the original call_dispatcher as the local _call_dispatcher
         _call_dispatcher = self.call_dispatcher
+
         # if profile was set wrap "_call_dispatcher" in the profile function
-        if 'profile' in kwargs:
+        if 'profile' in self.request.arguments:
             from profilehooks import profile
 
             _call_dispatcher = profile(_call_dispatcher, immediate=True)
-            del kwargs["profile"]
+            del self.request.arguments["profile"]
 
         try:
-            outDict = self.route(_call_dispatcher, *args, **kwargs)
+            outDict = self.route(_call_dispatcher, **self.request.arguments)
         except Exception as e:
-            sickrage.srCore.srLogger.error("API :: {}".format(e.message))
-            errorData = {
-                "error_msg": e,
-                "args": args,
-                "kwargs": kwargs
-            }
-            outDict = _responds(RESULT_FATAL, errorData,
+            sickrage.srCore.srLogger.error(e.message)
+            errorData = {"error_msg": e, "request arguments": self.request.arguments}
+            outDict = _responds(RESULT_FATAL,
+                                errorData,
                                 "SiCKRAGE encountered an internal error! Please report to the Devs")
 
         outputCallback = outputCallbackDict['default']
@@ -147,12 +144,13 @@ class ApiHandler(RequestHandler):
 
         self.finish(outputCallback(outDict))
 
-    def route(self, function, *args, **kwargs):
-        # threading.currentThread().setName('API')
-        return recursive_unicode(function(
-            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
-                    recursive_unicode(kwargs.items())])
-        ))
+    def route(self, function, **kwargs):
+        kwargs = recursive_unicode(kwargs)
+        for arg, value in kwargs.items():
+            if len(value) == 1:
+                kwargs[arg] = value[0]
+
+        return function(**kwargs)
 
     def _out_as_image(self, _dict):
         self.set_header('Content-Type', _dict['image'].type)
@@ -166,7 +164,7 @@ class ApiHandler(RequestHandler):
             if callback is not None:
                 out = callback + '(' + out + ');'  # wrap with JSONP call if requested
         except Exception as e:  # if we fail to generate the output fake an error
-            sickrage.srCore.srLogger.debug("API :: " + traceback.format_exc())
+            sickrage.srCore.srLogger.debug(traceback.format_exc())
             out = '{"result": "%s", "message": "error while composing output: %s"}' % \
                   (result_type_map[RESULT_ERROR], e)
         return out
@@ -181,8 +179,7 @@ class ApiHandler(RequestHandler):
             or calls the TVDBShorthandWrapper when the first args element is a number
             or returns an error that there is no such cmd
         """
-        sickrage.srCore.srLogger.debug("API :: all args: '" + str(args) + "'")
-        sickrage.srCore.srLogger.debug("API :: all kwargs: '" + str(kwargs) + "'")
+        sickrage.srCore.srLogger.debug("params: '" + str(kwargs) + "'")
 
         try:
             cmds = kwargs.pop('cmd', args[0] if len(args) else "").split('|') or []
@@ -197,7 +194,7 @@ class ApiHandler(RequestHandler):
             if len(cmd.split("_")) > 1:  # was a index used for this cmd ?
                 cmd, cmdIndex = cmd.split("_")  # this gives us the clear cmd and the index
 
-            sickrage.srCore.srLogger.debug("API :: " + cmd + ": curKwargs " + str(curKwargs))
+            sickrage.srCore.srLogger.debug(cmd + ": curKwargs " + str(curKwargs))
             if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo',
                                           'show.getposter')):  # skip these cmd while chaining
                 try:
@@ -284,7 +281,7 @@ class ApiCall(ApiHandler):
     _missing = []
 
     def __init__(self, application, request, *args, **kwargs):
-        super(ApiCall, self).__init__(application, request, *args, **kwargs)
+        super(ApiCall, self).__init__(application, request)
 
         try:
             if self._missing:
@@ -418,7 +415,7 @@ class ApiCall(ApiHandler):
             pass
         else:
             sickrage.srCore.srLogger.error(
-                'API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
+                'Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
 
         if error:
             # this is a real ApiError !!
@@ -921,7 +918,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         if start_backlog:
             for season, segment in segments.items():
                 sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
-                sickrage.srCore.srLogger.info("API :: Starting backlog for " + showObj.name + " season " + str(
+                sickrage.srCore.srLogger.info("Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"
@@ -1615,7 +1612,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 try:
                     apiData = t[str(self.name).encode()]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.srCore.srLogger.warning("API :: Unable to find show with id " + str(self.indexerid))
+                    sickrage.srCore.srLogger.warning("Unable to find show with id " + str(self.indexerid))
                     continue
 
                 for curSeries in apiData:
@@ -1639,12 +1636,12 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 try:
                     myShow = t[int(self.indexerid)]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.srCore.srLogger.warning("API :: Unable to find show with id " + str(self.indexerid))
+                    sickrage.srCore.srLogger.warning("Unable to find show with id " + str(self.indexerid))
                     return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
 
                 if not myShow.data['seriesname']:
                     sickrage.srCore.srLogger.debug(
-                        "API :: Found show with indexerid: " + str(
+                        "Found show with indexerid: " + str(
                             self.indexerid) + ", however it contained no show name")
                     return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
 
@@ -2233,7 +2230,7 @@ class CMD_ShowAddNew(ApiCall):
             dir_exists = makeDir(showPath)
             if not dir_exists:
                 sickrage.srCore.srLogger.error(
-                    "API :: Unable to create the folder " + showPath + ", can't add the show")
+                    "Unable to create the folder " + showPath + ", can't add the show")
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
             else:
@@ -2565,14 +2562,14 @@ class CMD_ShowSeasonList(ApiCall):
 
         if self.sort == "asc":
             seasonList = sorted(
-                [x['doc']['season'] for x in
-                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
-                key=lambda d: d['season'])
+                *[{x['doc']['season'] for x in
+                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
+                key=lambda d: d)
         else:
             seasonList = sorted(
-                [x['doc']['season'] for x in
-                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)],
-                key=lambda d: d['season'], reverse=True)
+                *[{x['doc']['season'] for x in
+                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
+                key=lambda d: d, reverse=True)
 
         return _responds(RESULT_SUCCESS, seasonList)
 
@@ -2633,7 +2630,7 @@ class CMD_ShowSeasons(ApiCall):
 
         else:
             dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                      if x['season'] == self.season]
+                      if x['doc']['season'] == self.season]
 
             if len(dbData) is 0:
                 return _responds(RESULT_FAILURE, msg="Season not found")

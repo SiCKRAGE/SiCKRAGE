@@ -1,6 +1,7 @@
 # Changelog
 
-- * a7bd8da - 2017-10-07: Release v9.1.31 
+- * b52eeab - 2017-10-08: Fixed API cmds 
+- * 12b6e6b - 2017-10-07: Release v9.1.31 
 - * cd9041d - 2017-10-07: Release v9.1.30 
 - * b8786d6 - 2017-10-07: Updated general advanced settings to allow setting of PIP path 
 - * 1b67369 - 2017-10-07: Release v9.1.29 
