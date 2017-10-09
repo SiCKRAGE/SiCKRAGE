@@ -274,20 +274,16 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                     process_media(processPath, videoFiles, nzbName, process_method, force, is_priority, result)
 
                     # Delete all file not needed
-                    if process_method != "move" or not result.result \
-                            or (
-                                            proc_type == "manual" and not delete_on):  # Avoid to delete files if is Manual PostProcessing
+                    if process_method != "move" or not result.result or (proc_type == "manual" and not delete_on):
                         continue
 
                     delete_files(processPath, notwantedFiles, result)
 
-                    if (
-                                not sickrage.srCore.srConfig.NO_DELETE or proc_type == "manual") and process_method == "move" and \
-                                    os.path.normpath(processPath) != os.path.normpath(
-                                sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
-                        if delete_folder(processPath, check_empty=True):
-                            result.output += logHelper("Deleted folder: %s" % processPath,
-                                                       sickrage.srCore.srLogger.DEBUG)
+                    if (not sickrage.srCore.srConfig.NO_DELETE or proc_type == "manual") and process_method == "move":
+                        if os.path.normpath(processPath) != os.path.normpath(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
+                            if delete_folder(processPath, check_empty=True):
+                                result.output += logHelper("Deleted folder: %s" % processPath,
+                                                           sickrage.srCore.srLogger.DEBUG)
             else:
                 result.output += logHelper("Found temporary sync files, skipping post processing for: %s" % processPath)
                 result.output += logHelper("Sync Files: [%s] in path %s" % (", ".join(SyncFiles), processPath))
