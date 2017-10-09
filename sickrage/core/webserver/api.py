@@ -276,22 +276,14 @@ class ApiHandler(RequestHandler):
 
 class ApiCall(ApiHandler):
     _help = {"desc": "This command is not documented. Please report this to the developers."}
-    _requiredParams = {}
-    _optionalParams = {}
-    _missing = []
 
     def __init__(self, application, request, *args, **kwargs):
         super(ApiCall, self).__init__(application, request)
-
-        try:
-            if self._missing:
-                self.run = self.return_missing
-        except AttributeError:
-            pass
-
-        # help
-        if 'help' in kwargs:
-            self.run = self.return_help
+        self.indexer = 1
+        self._missing = []
+        self._requiredParams = {}
+        self._optionalParams = {}
+        self.check_params(*args, **kwargs)
 
     def run(self):
         # override with real output function in subclass
@@ -305,20 +297,18 @@ class ApiCall(ApiHandler):
                 for paramName in paramDict:
                     if paramName not in self._help[paramType]:
                         self._help[paramType][paramName] = {}
-
-                    if isinstance(paramDict[paramName], dict) and paramDict[paramName].setdefault("allowedValues"):
-                        self._help[paramType][paramName].setdefault("allowedValues",
-                                                                    paramDict[paramName]["allowedValues"])
+                    if paramDict[paramName]["allowedValues"]:
+                        self._help[paramType][paramName]["allowedValues"] = paramDict[paramName]["allowedValues"]
                     else:
-                        self._help[paramType][paramName].setdefault("allowedValues", "see desc")
+                        self._help[paramType][paramName]["allowedValues"] = "see desc"
 
-                    if isinstance(paramDict[paramName], dict):
-                        self._help[paramType][paramName].setdefault("defaultValue",
-                                                                    paramDict[paramName].setdefault("defaultValue"))
-                        self._help[paramType][paramName].setdefault("type", paramDict[paramName].setdefault("type"))
+                    self._help[paramType][paramName]["defaultValue"] = paramDict[paramName]["defaultValue"]
+                    self._help[paramType][paramName]["type"] = paramDict[paramName]["type"]
+
             elif paramDict:
                 for paramName in paramDict:
-                    self._help[paramType] = {}.setdefault(paramName, paramDict[paramName])
+                    self._help[paramType] = {}
+                    self._help[paramType][paramName] = paramDict[paramName]
             else:
                 self._help[paramType] = {}
 
@@ -335,7 +325,7 @@ class ApiCall(ApiHandler):
             msg = "The required parameters: '" + "','".join(self._missing) + "' where not set"
         return _responds(RESULT_ERROR, msg=msg)
 
-    def check_params(self, key, default, required, arg_type, allowedValues, *args, **kwargs):
+    def check_params(self, key=None, default=None, required=None, arg_type=None, allowed_values=None, *args, **kwargs):
 
         """ function to check passed params for the shorthand wrapper
             and to detect missing/required params
@@ -348,40 +338,48 @@ class ApiCall(ApiHandler):
 
             self.indexer = indexer_ids.index(key)
 
-        missing = True
-        orgDefault = default
+        if key:
+            missing = True
+            org_default = default
 
-        if arg_type == "bool":
-            allowedValues = [0, 1]
+            if arg_type == "bool":
+                allowed_values = [0, 1]
 
-        if args:
-            default = args[0]
-            args = args[1:]
-            missing = False
+            if args:
+                default = args[0]
+                missing = False
+                args = args[1:]
+            if kwargs.get(key):
+                default = kwargs.get(key)
+                missing = False
 
-        if kwargs.get(key):
-            default = kwargs.get(key)
-            missing = False
+            key_value = {
+                "allowedValues": allowed_values,
+                "defaultValue": org_default,
+                "type": arg_type
+            }
 
-        if required:
-            self._requiredParams = {}.setdefault(key, {"allowedValues": allowedValues,
-                                                       "defaultValue": orgDefault,
-                                                       "type": arg_type})
+            if required:
+                self._requiredParams[key] = key_value
+                if missing and key not in self._missing:
+                    self._missing.append(key)
+            else:
+                self._optionalParams[key] = key_value
 
-            if missing and key not in self._missing:
-                self._missing.append(key)
-        else:
-            self._optionalParams = {}.setdefault(key, {"allowedValues": allowedValues,
-                                                       "defaultValue": orgDefault,
-                                                       "type": arg_type})
+            if default:
+                default = self._check_param_type(default, key, arg_type)
+                self._check_param_value(default, key, allowed_values)
 
-        if default:
-            default = self._check_param_type(default, key, arg_type)
-            self._check_param_value(default, key, allowedValues)
+        if self._missing:
+            setattr(self, "run", self.return_missing)
+
+        if 'help' in kwargs:
+            setattr(self, "run", self.return_help)
 
         return default, args
 
-    def _check_param_type(self, value, name, arg_type):
+    @staticmethod
+    def _check_param_type(value, name, arg_type):
         """ checks if value can be converted / parsed to arg_type
             will raise an error on failure
             or will convert it to arg_type and return new converted value
@@ -415,40 +413,44 @@ class ApiCall(ApiHandler):
             pass
         else:
             sickrage.srCore.srLogger.error(
-                'Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
+                'Invalid param type: "{}" can not be checked. Ignoring it.'.format(str(arg_type)))
 
         if error:
             # this is a real ApiError !!
-            raise ApiError('param "%s" with given value "%s" could not be parsed into "%s"'
-                           % (str(name), str(value), str(arg_type)))
+            raise ApiError(
+                'param "{}" with given value "{}" could not be parsed into "{}"'.format(str(name), str(value),
+                                                                                        str(arg_type)))
 
         return value
 
-    def _check_param_value(self, value, name, allowedValues):
+    @staticmethod
+    def _check_param_value(value, name, allowed_values):
         """ will check if value (or all values in it ) are in allowed values
             will raise an exception if value is "out of range"
-            if bool(allowedValue) == False a check is not performed and all values are excepted
+            if bool(allowed_value) is False a check is not performed and all values are excepted
         """
-        if allowedValues:
+        if allowed_values:
             error = False
             if isinstance(value, list):
                 for item in value:
-                    if not item in allowedValues:
+                    if item not in allowed_values:
                         error = True
             else:
-                if not value in allowedValues:
+                if value not in allowed_values:
                     error = True
 
             if error:
                 # this is kinda a ApiError but raising an error is the only way of quitting here
                 raise ApiError("param: '" + str(name) + "' with given value: '" + str(
-                    value) + "' is out of allowed range '" + str(allowedValues) + "'")
+                    value) + "' is out of allowed range '" + str(allowed_values) + "'")
 
 
 class TVDBShorthandWrapper(ApiCall):
     _help = {"desc": "This is an internal function wrapper. Call the help command directly for more information."}
 
     def __init__(self, sid, application, request, *args, **kwargs):
+        super(TVDBShorthandWrapper, self).__init__(application, request, *args, **kwargs)
+
         self.origArgs = args
         self.kwargs = kwargs
         self.sid = sid
@@ -456,8 +458,6 @@ class TVDBShorthandWrapper(ApiCall):
         self.s, args = self.check_params("s", None, False, "ignore", [], *args, **kwargs)
         self.e, args = self.check_params("e", None, False, "ignore", [], *args, **kwargs)
         self.args = args
-
-        super(TVDBShorthandWrapper, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ internal function wrapper """
@@ -623,11 +623,8 @@ class CMD_Help(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        self.subject, args = self.check_params("subject", "help", False, "string", self.api_calls.keys(), args,
-                                               kwargs)
         super(CMD_Help, self).__init__(application, request, *args, **kwargs)
+        self.subject, args = self.check_params("subject", "help", False, "string", self.api_calls.keys(), args, kwargs)
 
     def run(self):
         """ Get help about a given command """
@@ -653,8 +650,7 @@ class CMD_ComingEpisodes(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
+        super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
         self.sort, args = self.check_params("sort", "date", False, "string", ComingEpisodes.sorts.keys(), *args,
                                             **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list",
@@ -662,8 +658,6 @@ class CMD_ComingEpisodes(ApiCall):
         self.paused, args = self.check_params("paused", bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED), False,
                                               "bool", [],
                                               *args, **kwargs)
-        # super, missing, help
-        super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Get the coming episodes """
@@ -710,14 +704,11 @@ class CMD_Episode(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
+        super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
-        # optional
         self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
-        # super, missing, help
-        super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Get detailed information about an episode """
@@ -777,13 +768,10 @@ class CMD_EpisodeSearch(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
+        super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
-        super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Search for an episode """
@@ -831,16 +819,13 @@ class CMD_EpisodeSetStatus(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
+        super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, True, "string",
                                               ["wanted", "skipped", "ignored", "failed"], *args, **kwargs)
-        # optional
         self.e, args = self.check_params("episode", None, False, "int", [], *args, **kwargs)
         self.force, args = self.check_params("force", False, False, "bool", [], *args, **kwargs)
-        # super, missing, help
-        super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Set the status of an episode or a season (when no episode is provided) """
@@ -944,13 +929,10 @@ class CMD_SubtitleSearch(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
+        super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
         self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
-        super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Search for an episode subtitles """
@@ -997,12 +979,8 @@ class CMD_Exceptions(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
-
-        # super, missing, help
         super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the scene exceptions for all or a given show """
@@ -1021,7 +999,8 @@ class CMD_Exceptions(ApiCall):
 
             scene_exceptions = []
             for dbData in [x['doc'] for x in
-                           sickrage.srCore.cacheDB.db.all('scene_exceptions', self.indexerid, with_doc=True)]:
+                           sickrage.srCore.cacheDB.db.all('scene_exceptions', self.indexerid, with_doc=True)
+                           if x['doc']['indexer_id'] == self.indexerid]:
                 scene_exceptions.append(dbData['show_name'])
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
@@ -1038,14 +1017,10 @@ class CMD_History(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
+        super(CMD_History, self).__init__(application, request, *args, **kwargs)
         self.limit, args = self.check_params("limit", 100, False, "int", [], *args, **kwargs)
         self.type, args = self.check_params("type", None, False, "string", ["downloaded", "snatched"], *args, **kwargs)
         self.type = self.type.lower() if isinstance(self.type, str) else ''
-
-        # super, missing, help
-        super(CMD_History, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Get the downloaded and/or snatched history """
@@ -1081,9 +1056,6 @@ class CMD_HistoryClear(ApiCall):
     _help = {"desc": "Clear the entire history"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_HistoryClear, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1098,9 +1070,6 @@ class CMD_HistoryTrim(ApiCall):
     _help = {"desc": "Trim history entries older than 30 days"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_HistoryTrim, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1120,11 +1089,8 @@ class CMD_Failed(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        self.limit, args = self.check_params("limit", 100, False, "int", [], *args, **kwargs)
-        # super, missing, help
         super(CMD_Failed, self).__init__(application, request, *args, **kwargs)
+        self.limit, args = self.check_params("limit", 100, False, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the failed downloads """
@@ -1143,9 +1109,6 @@ class CMD_Backlog(ApiCall):
     _help = {"desc": "Get the backlogged episodes"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_Backlog, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1188,12 +1151,9 @@ class CMD_Logs(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
+        super(CMD_Logs, self).__init__(application, request, *args, **kwargs)
         self.min_level, args = self.check_params("min_level", "error", False, "string",
                                                  ["error", "warning", "info", "debug"], *args, **kwargs)
-        # super, missing, help
-        super(CMD_Logs, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Get the logs """
@@ -1242,8 +1202,7 @@ class CMD_PostProcess(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
+        super(CMD_PostProcess, self).__init__(application, request, *args, **kwargs)
         self.path, args = self.check_params("path", None, False, "string", [], *args, **kwargs)
         self.force_replace, args = self.check_params("force_replace", False, False, "bool", [], *args, **kwargs)
         self.return_data, args = self.check_params("return_data", False, False, "bool", [], *args, **kwargs)
@@ -1252,8 +1211,6 @@ class CMD_PostProcess(ApiCall):
         self.is_priority, args = self.check_params("is_priority", False, False, "bool", [], *args, **kwargs)
         self.failed, args = self.check_params("failed", False, False, "bool", [], *args, **kwargs)
         self.type, args = self.check_params("type", "auto", None, "string", ["auto", "manual"], *args, **kwargs)
-        # super, missing, help
-        super(CMD_PostProcess, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Manually post-process the files in the download folder """
@@ -1280,9 +1237,6 @@ class CMD_SiCKRAGE(ApiCall):
     _help = {"desc": "Get miscellaneous information about SiCKRAGE"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGE, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1305,12 +1259,9 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
-        # optional
-        self.default, args = self.check_params("default", False, False, "bool", [], *args, **kwargs)
-        # super, missing, help
         super(CMD_SiCKRAGEAddRootDir, self).__init__(application, request, *args, **kwargs)
+        self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
+        self.default, args = self.check_params("default", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Add a new root (parent) directory to SiCKRAGE """
@@ -1359,9 +1310,6 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
     _help = {"desc": "Check if a new version of SiCKRAGE is available"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGECheckVersion, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1381,9 +1329,6 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
     _help = {"desc": "Get information about the scheduler"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGECheckScheduler, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1396,7 +1341,8 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
 
         backlogPaused = sickrage.srCore.SEARCHQUEUE.is_backlog_paused()  # @UndefinedVariable
         backlogRunning = sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress()  # @UndefinedVariable
-        nextBacklog = sickrage.srCore.BACKLOGSEARCHER.nextRun().strftime(dateFormat).decode(sickrage.srCore.SYS_ENCODING)
+        nextBacklog = sickrage.srCore.BACKLOGSEARCHER.nextRun().strftime(dateFormat).decode(
+            sickrage.srCore.SYS_ENCODING)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
                 "last_backlog": _ordinal_to_dateForm(last_backlog),
@@ -1412,11 +1358,8 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
     }}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGEDeleteRootDir, self).__init__(application, request, *args, **kwargs)
+        self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
 
     def run(self):
         """ Delete a root (parent) directory from SiCKRAGE """
@@ -1457,9 +1400,6 @@ class CMD_SiCKRAGEGetDefaults(ApiCall):
     _help = {"desc": "Get SiCKRAGE's user default configuration value"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGEGetDefaults, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1478,9 +1418,6 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
     _help = {"desc": "Get all messages"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGEGetMessages, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1497,9 +1434,6 @@ class CMD_SiCKRAGEGetRootDirs(ApiCall):
     _help = {"desc": "Get all root (parent) directories"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGEGetRootDirs, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1518,11 +1452,8 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
-        # super, missing, help
         super(CMD_SiCKRAGEPauseBacklog, self).__init__(application, request, *args, **kwargs)
+        self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Pause or unpause the backlog search """
@@ -1539,9 +1470,6 @@ class CMD_SiCKRAGEPing(ApiCall):
     _help = {"desc": "Ping SiCKRAGE to check if it is running"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGEPing, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1557,9 +1485,6 @@ class CMD_SiCKRAGERestart(ApiCall):
     _help = {"desc": "Restart SiCKRAGE"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGERestart, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1581,16 +1506,12 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
+        super(CMD_SiCKRAGESearchIndexers, self).__init__(application, request, *args, **kwargs)
         self.valid_languages = srIndexerApi().indexer().languages
-        # required
-        # optional
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
         self.lang, args = self.check_params("lang", sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
-
-        # super, missing, help
-        super(CMD_SiCKRAGESearchIndexers, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Search for a show with a given name on all the indexers, in a specific language """
@@ -1686,8 +1607,6 @@ class CMD_SiCKRAGESearchTVRAGE(CMD_SiCKRAGESearchIndexers):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # Leave this one as APICall so it doesnt try and search anything
-        # pylint: disable=W0233,W0231
         super(CMD_SiCKRAGESearchTVRAGE, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1708,8 +1627,7 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
+        super(CMD_SiCKRAGESetDefaults, self).__init__(application, request, *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list",
                                                ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray", "unknown"], *args, **kwargs)
@@ -1721,8 +1639,6 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
         self.flatten_folders, args = self.check_params("flatten_folders", None, False, "bool", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], args,
                                               kwargs)
-        # super, missing, help
-        super(CMD_SiCKRAGESetDefaults, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Set SiCKRAGE's user default configuration value """
@@ -1779,9 +1695,6 @@ class CMD_SiCKRAGEShutdown(ApiCall):
     _help = {"desc": "Shutdown SiCKRAGE"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGEShutdown, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1797,9 +1710,6 @@ class CMD_SiCKRAGEUpdate(ApiCall):
     _help = {"desc": "Update SiCKRAGE to the latest version available"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_SiCKRAGEUpdate, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1823,11 +1733,8 @@ class CMD_Show(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get detailed information about a show """
@@ -1918,26 +1825,21 @@ class CMD_ShowAddExisting(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
+        super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "", [], *args, **kwargs)
         self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
-        # optional
         self.initial, args = self.check_params("initial", None, False, "list",
                                                ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray", "unknown"], *args, **kwargs)
         self.archive, args = self.check_params("archive", None, False, "list",
-                                               ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
-                                                "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
+                                               ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl", "fullhdwebdl",
+                                                "hdbluray", "fullhdbluray"], *args, **kwargs)
         self.archive_firstmatch, args = self.check_params("archive_firstmatch", None, False, "int", [], *args, **kwargs)
-        self.flatten_folders, args = self.check_params("flatten_folders", bool(
-            sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
-                                                       False, "bool", [], *args, **kwargs)
+        self.flatten_folders, args = self.check_params("flatten_folders",
+                                                       bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT), False,
+                                                       "bool", [], *args, **kwargs)
         self.subtitles, args = self.check_params("subtitles", int(sickrage.srCore.srConfig.USE_SUBTITLES), False, "int",
-                                                 [],
-                                                 args,
-                                                 kwargs)
-        # super, missing, help
-        super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
+                                                 [], *args, **kwargs)
 
     def run(self):
         """ Add an existing show in SiCKRAGE """
@@ -2024,108 +1926,34 @@ class CMD_ShowAddNew(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        self.valid_languages = srIndexerApi().indexer().languages
-        # required
-        self.indexerid, args = self.check_params("indexerid",
-                                                 None,
-                                                 True,
-                                                 "int",
-                                                 [],
-                                                 *args,
-                                                 **kwargs)
-        # optional
-        self.location, args = self.check_params("location",
-                                                None,
-                                                False,
-                                                "string",
-                                                [],
-                                                *args,
-                                                **kwargs)
-
-        self.initial, args = self.check_params("initial",
-                                               None,
-                                               False,
-                                               "list",
-                                               ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
-                                                "fullhdwebdl", "hdbluray", "fullhdbluray", "unknown"],
-                                               *args,
-                                               **kwargs)
-
-        self.archive, args = self.check_params("archive",
-                                               None,
-                                               False,
-                                               "list",
-                                               ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl", "fullhdwebdl",
-                                                "hdbluray", "fullhdbluray"],
-                                               *args,
-                                               **kwargs)
-
-        self.flatten_folders, args = self.check_params("flatten_folders",
-                                                       bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
-                                                       False,
-                                                       "bool",
-                                                       [],
-                                                       *args,
-                                                       **kwargs)
-
-        self.status, args = self.check_params("status",
-                                              None,
-                                              False,
-                                              "string",
-                                              ["wanted", "skipped", "ignored"],
-                                              *args,
-                                              **kwargs)
-
-        self.lang, args = self.check_params("lang",
-                                            sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE,
-                                            False,
-                                            "string",
-                                            self.valid_languages.keys(),
-                                            *args,
-                                            **kwargs)
-
-        self.subtitles, args = self.check_params("subtitles",
-                                                 bool(sickrage.srCore.srConfig.USE_SUBTITLES),
-                                                 False,
-                                                 "bool",
-                                                 [],
-                                                 *args,
-                                                 **kwargs)
-
-        self.anime, args = self.check_params("anime",
-                                             bool(sickrage.srCore.srConfig.ANIME_DEFAULT),
-                                             False,
-                                             "bool",
-                                             [],
-                                             *args,
-                                             **kwargs)
-
-        self.scene, args = self.check_params("scene",
-                                             bool(sickrage.srCore.srConfig.SCENE_DEFAULT),
-                                             False,
-                                             "bool",
-                                             [],
-                                             *args,
-                                             **kwargs)
-
-        self.future_status, args = self.check_params("future_status",
-                                                     None,
-                                                     False,
-                                                     "string",
-                                                     ["wanted", "skipped", "ignored"],
-                                                     *args,
-                                                     **kwargs)
-
-        self.archive_firstmatch, args = self.check_params("archive_firstmatch",
-                                                          bool(sickrage.srCore.srConfig.ARCHIVE_DEFAULT),
-                                                          False,
-                                                          "bool",
-                                                          [],
-                                                          *args,
-                                                          **kwargs)
-
-        # super, missing, help
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
+        self.valid_languages = srIndexerApi().indexer().languages
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
+        self.initial, args = self.check_params("initial", None, False, "list",
+                                               ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
+                                                "fullhdwebdl", "hdbluray", "fullhdbluray", "unknown"], *args, **kwargs)
+        self.archive, args = self.check_params("archive", None, False, "list",
+                                               ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl", "fullhdwebdl",
+                                                "hdbluray", "fullhdbluray"], *args, **kwargs)
+        self.flatten_folders, args = self.check_params("flatten_folders",
+                                                       bool(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT), False,
+                                                       "bool", [], *args, **kwargs)
+        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args,
+                                              **kwargs)
+        self.lang, args = self.check_params("lang", sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
+                                            self.valid_languages.keys(), *args, **kwargs)
+        self.subtitles, args = self.check_params("subtitles", bool(sickrage.srCore.srConfig.USE_SUBTITLES), False,
+                                                 "bool", [], *args, **kwargs)
+        self.anime, args = self.check_params("anime", bool(sickrage.srCore.srConfig.ANIME_DEFAULT), False, "bool", [],
+                                             *args, **kwargs)
+        self.scene, args = self.check_params("scene", bool(sickrage.srCore.srConfig.SCENE_DEFAULT), False, "bool", [],
+                                             *args, **kwargs)
+        self.future_status, args = self.check_params("future_status", None, False, "string",
+                                                     ["wanted", "skipped", "ignored"], *args, **kwargs)
+        self.archive_firstmatch, args = self.check_params("archive_firstmatch",
+                                                          bool(sickrage.srCore.srConfig.ARCHIVE_DEFAULT), False, "bool",
+                                                          [], *args, **kwargs)
 
     def run(self):
         """ Add a new show to SiCKRAGE """
@@ -2258,11 +2086,8 @@ class CMD_ShowCache(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
@@ -2302,12 +2127,9 @@ class CMD_ShowDelete(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
-        # super, missing, help
         super(CMD_ShowDelete, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Delete a show in SiCKRAGE """
@@ -2336,11 +2158,8 @@ class CMD_ShowGetQuality(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the quality setting of a show """
@@ -2366,11 +2185,8 @@ class CMD_ShowGetPoster(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowGetPoster, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the poster a show """
@@ -2393,11 +2209,8 @@ class CMD_ShowGetBanner(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowGetBanner, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the banner of a show """
@@ -2420,11 +2233,8 @@ class CMD_ShowGetNetworkLogo(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowGetNetworkLogo, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """
@@ -2449,11 +2259,8 @@ class CMD_ShowGetFanArt(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowGetFanArt, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the fan art of a show """
@@ -2477,12 +2284,9 @@ class CMD_ShowPause(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
-        # super, missing, help
         super(CMD_ShowPause, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Pause or unpause a show """
@@ -2497,7 +2301,7 @@ class CMD_ShowPause(ApiCall):
 
         showObj.saveToDB()
 
-        return _responds(RESULT_SUCCESS, msg='%s has been %s' % (show.name, ('resumed', 'paused')[show.paused]))
+        return _responds(RESULT_SUCCESS, msg='%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
 
 
 class CMD_ShowRefresh(ApiCall):
@@ -2513,11 +2317,8 @@ class CMD_ShowRefresh(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
@@ -2547,12 +2348,9 @@ class CMD_ShowSeasonList(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
-        # super, missing, help
         super(CMD_ShowSeasonList, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
 
     def run(self):
         """ Get the list of seasons of a show """
@@ -2563,12 +2361,12 @@ class CMD_ShowSeasonList(ApiCall):
         if self.sort == "asc":
             seasonList = sorted(
                 *[{x['doc']['season'] for x in
-                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
+                   sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
                 key=lambda d: d)
         else:
             seasonList = sorted(
                 *[{x['doc']['season'] for x in
-                 sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
+                   sickrage.srCore.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
                 key=lambda d: d, reverse=True)
 
         return _responds(RESULT_SUCCESS, seasonList)
@@ -2588,12 +2386,9 @@ class CMD_ShowSeasons(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
-        # super, missing, help
         super(CMD_ShowSeasons, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get the list of episodes for one or all seasons of a show """
@@ -2670,10 +2465,8 @@ class CMD_ShowSetQuality(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
+        super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # this for whatever reason removes hdbluray not sdtv... which is just wrong. reverting to previous code.. plus we didnt use the new code everywhere.
         # self.archive, args = self.check_params("archive", None, False, "list", _getQualityMap().values()[1:], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list",
                                                ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
@@ -2682,8 +2475,6 @@ class CMD_ShowSetQuality(ApiCall):
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl",
                                                 "hdbluray", "fullhdbluray"], *args, **kwargs)
-        # super, missing, help
-        super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """
@@ -2735,11 +2526,8 @@ class CMD_ShowStats(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Get episode statistics for a given show """
@@ -2842,11 +2630,8 @@ class CMD_ShowUpdate(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        # optional
-        # super, missing, help
         super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
+        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
 
     def run(self):
         """ Update a show in SiCKRAGE """
@@ -2873,12 +2658,9 @@ class CMD_Shows(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
+        super(CMD_Shows, self).__init__(application, request, *args, **kwargs)
         self.sort, args = self.check_params("sort", "id", False, "string", ["id", "name"], *args, **kwargs)
         self.paused, args = self.check_params("paused", None, False, "bool", [], *args, **kwargs)
-        # super, missing, help
-        super(CMD_Shows, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Get all shows in SiCKRAGE """
@@ -2929,9 +2711,6 @@ class CMD_ShowsStats(ApiCall):
     _help = {"desc": "Get the global shows and episodes statistics"}
 
     def __init__(self, application, request, *args, **kwargs):
-        # required
-        # optional
-        # super, missing, help
         super(CMD_ShowsStats, self).__init__(application, request, *args, **kwargs)
 
     def run(self):

@@ -74,6 +74,7 @@ from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
+from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
 from sickrage.notifiers import srNotifiers
@@ -394,6 +395,7 @@ class WebRoot(WebHandler):
             shows=shows,
             episodes=episodes,
             apikey=apikey,
+            commands=ApiHandler(self.application, self.request).api_calls,
             controller='root',
             action='api_builder'
         )
