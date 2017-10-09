@@ -624,7 +624,8 @@ class CMD_Help(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_Help, self).__init__(application, request, *args, **kwargs)
-        self.subject, args = self.check_params("subject", "help", False, "string", self.api_calls.keys(), args, kwargs)
+        self.subject, args = self.check_params("subject", "help", False, "string", self.api_calls.keys(), *args,
+                                               **kwargs)
 
     def run(self):
         """ Get help about a given command """
@@ -1637,8 +1638,8 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
         self.future_show_paused, args = self.check_params("future_show_paused", None, False, "bool", [], *args,
                                                           **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", None, False, "bool", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], args,
-                                              kwargs)
+        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args,
+                                              **kwargs)
 
     def run(self):
         """ Set SiCKRAGE's user default configuration value """
