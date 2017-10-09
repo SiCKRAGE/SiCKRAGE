@@ -1,6 +1,7 @@
 # Changelog
 
-- * fc737f8 - 2017-10-09: Added option delete to post-process cmd for API 
+- * 256a2e8 - 2017-10-09: Release v9.1.32 
+- * f207793 - 2017-10-09: Added option delete to post-process cmd for API 
 - * bd5e378 - 2017-10-09: Fixed issues with API multi commands 
 - * e4be7cf - 2017-10-09: Fixed issue with API help command 
 - * 68b8996 - 2017-10-08: Fixed API builder 
