@@ -1428,6 +1428,7 @@ jQuery(document).ready(function ($) {
                 $('#command-search').typeahead({
                     source: SICKRAGE.getMeta('commands')
                 });
+
                 $('#command-search').on('change', function () {
                     var command = $(this).typeahead('getActive');
 

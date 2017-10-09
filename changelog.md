@@ -1,6 +1,12 @@
 # Changelog
 
-- * a7bd8da - 2017-10-07: Release v9.1.31 
+- * 256a2e8 - 2017-10-09: Release v9.1.32 
+- * f207793 - 2017-10-09: Added option delete to post-process cmd for API 
+- * bd5e378 - 2017-10-09: Fixed issues with API multi commands 
+- * e4be7cf - 2017-10-09: Fixed issue with API help command 
+- * 68b8996 - 2017-10-08: Fixed API builder 
+- * a455d99 - 2017-10-08: Fixed API cmds 
+- * 12b6e6b - 2017-10-07: Release v9.1.31 
 - * cd9041d - 2017-10-07: Release v9.1.30 
 - * b8786d6 - 2017-10-07: Updated general advanced settings to allow setting of PIP path 
 - * 1b67369 - 2017-10-07: Release v9.1.29 
