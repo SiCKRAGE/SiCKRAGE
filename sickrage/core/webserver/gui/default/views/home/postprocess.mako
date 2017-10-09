@@ -55,7 +55,9 @@
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <input id="is_priority" name="is_priority" type="checkbox" title="">
-                        <span style="line-height: 0; font-size: 12px;"><i>&nbsp;(Check it to replace the file even if it exists at higher quality)</i></span>
+                        <span style="line-height: 0; font-size: 12px;">
+                            <i>&nbsp;(Check it to replace the file even if it exists at higher quality)</i>
+                        </span>
                     </div>
                 </div>
                 <div class="row">
@@ -64,7 +66,20 @@
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <input id="delete_on" name="delete_on" type="checkbox" title="">
-                        <span style="line-height: 0; font-size: 12px;"><i>&nbsp;(Check it to delete files and folders like auto processing)</i></span>
+                        <span style="line-height: 0; font-size: 12px;">
+                            <i>&nbsp;(Check it to delete files and folders like auto processing)</i>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <b>Don't use processing queue</b>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <input id="force_next" name="force_next" type="checkbox" title="">
+                        <span style="line-height: 0; font-size: 12px;">
+                            <i>(Check it to return the result of the process here, but may be slow!)</i>
+                        </span>
                     </div>
                 </div>
                 % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:

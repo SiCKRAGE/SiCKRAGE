@@ -148,15 +148,12 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     result = ProcessResult()
 
-    result.output += logHelper("Processing folder %s" % dirName, sickrage.srCore.srLogger.DEBUG)
-
-    result.output += logHelper("TV_DOWNLOAD_DIR: %s" % sickrage.srCore.srConfig.TV_DOWNLOAD_DIR,
-                               sickrage.srCore.srLogger.DEBUG)
     postpone = False
 
     # if they passed us a real dir then assume it's the one we want
     if os.path.isdir(dirName):
         dirName = os.path.realpath(dirName)
+        result.output += logHelper("Processing folder %s" % dirName, sickrage.srCore.srLogger.DEBUG)
 
     # if the client and SickRage are not on the same machine translate the Dir in a network dir
     elif sickrage.srCore.srConfig.TV_DOWNLOAD_DIR and os.path.isdir(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR) \

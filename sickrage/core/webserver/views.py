@@ -61,7 +61,6 @@ from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.media.util import indexerImage
 from sickrage.core.nameparser import validator
-from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
     MANUAL_SEARCH_HISTORY, ManualSearchQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
@@ -2254,12 +2253,14 @@ class HomePostProcess(Home):
              if k.lower() not in ['proc_dir', 'dir', 'nzbname', 'process_method', 'proc_type'] else v
              ) for k, v in kwargs.items())
 
-        if not pp_options.has_key('proc_dir'):
-            return self.redirect("/home/postprocess/")
+        proc_dir = pp_options.pop("proc_dir", None)
+        quite = pp_options.pop("quiet", None)
 
-        result = processDir(pp_options["proc_dir"], **pp_options)
-        if pp_options.get("quiet", None):
-            return result
+        if not proc_dir: return self.redirect("/home/postprocess/")
+
+        result = sickrage.srCore.POSTPROCESSORQUEUE.put(proc_dir, **pp_options)
+
+        if quite: return result
 
         return self._genericMessage("Postprocessing results", result.replace("\n", "<br>\n"))
 
