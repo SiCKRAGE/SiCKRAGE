@@ -116,7 +116,7 @@ class ApiHandler(RequestHandler):
             'image': self._out_as_image,
         }
 
-        accessMsg = self.request.remote_ip + " - ACCESS GRANTED"
+        accessMsg = "IP:{} - ACCESS GRANTED".format(self.request.remote_ip)
         sickrage.srCore.srLogger.debug(accessMsg)
 
         # set the original call_dispatcher as the local _call_dispatcher
@@ -179,22 +179,28 @@ class ApiHandler(RequestHandler):
             or calls the TVDBShorthandWrapper when the first args element is a number
             or returns an error that there is no such cmd
         """
-        sickrage.srCore.srLogger.debug("params: '" + str(kwargs) + "'")
+        sickrage.srCore.srLogger.debug("all params: '" + str(kwargs) + "'")
 
-        try:
-            cmds = kwargs.pop('cmd', args[0] if len(args) else "").split('|') or []
-        except Exception as e:
-            cmds = []
+        cmds = []
+        if args:
+            cmds, args = args[0], args[1:]
+        cmds = kwargs.pop("cmd", cmds)
 
         outDict = {}
+        if not len(cmds):
+            outDict = CMD_SiCKRAGE(self.application, self.request, *args, **kwargs).run()
+        else:
+            cmds = cmds.split('|')
+
         multiCmds = bool(len(cmds) > 1)
+
         for cmd in cmds:
             curArgs, curKwargs = self.filter_params(cmd, *args, **kwargs)
             cmdIndex = None
             if len(cmd.split("_")) > 1:  # was a index used for this cmd ?
                 cmd, cmdIndex = cmd.split("_")  # this gives us the clear cmd and the index
 
-            sickrage.srCore.srLogger.debug(cmd + ": curKwargs " + str(curKwargs))
+            sickrage.srCore.srLogger.debug(cmd + ": current params " + str(curKwargs))
             if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo',
                                           'show.getposter')):  # skip these cmd while chaining
                 try:
@@ -219,20 +225,18 @@ class ApiHandler(RequestHandler):
                 # note: if multiple same cmds are issued but one has not an index defined it will override all others
                 # or the other way around, this depends on the order of the cmds
                 # this is not a bug
-                if cmdIndex is None:  # do we need a index dict for this cmd ?
-                    outDict[cmd] = curOutDict
-                else:
+                if cmdIndex:  # do we need a index dict for this cmd ?
                     if cmd not in outDict:
                         outDict[cmd] = {}
                     outDict[cmd][cmdIndex] = curOutDict
-
-                outDict = _responds(RESULT_SUCCESS, outDict)
+                else:
+                    outDict[cmd] = curOutDict
             else:
                 outDict = curOutDict
 
-            return outDict
+        if multiCmds: outDict = _responds(RESULT_SUCCESS, outDict)
 
-        return CMD_SiCKRAGE(*args, **kwargs).run()
+        return outDict
 
     def filter_params(self, cmd, *args, **kwargs):
         """ return only params kwargs that are for cmd
