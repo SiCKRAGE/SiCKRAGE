@@ -1,6 +1,7 @@
 # Changelog
 
-- * 28436fd - 2017-10-09: Added PostProcessing queue 
+- * c9057d6 - 2017-10-09: Added option to enable/disable provider RSS caching of shows already added to show list, speeds up searches when enabled 
+- * 7769116 - 2017-10-09: Added PostProcessing queue 
 - * f372ab4 - 2017-10-09: Release v9.1.32 
 - * f207793 - 2017-10-09: Added option delete to post-process cmd for API 
 - * bd5e378 - 2017-10-09: Fixed issues with API multi commands 

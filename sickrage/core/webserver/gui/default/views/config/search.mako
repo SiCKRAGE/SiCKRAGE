@@ -47,7 +47,21 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="enable_rss_cache" id="enable_rss_cache"
                                class="enabler" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENABLE_RSS_CACHE)]}/>
-                        <label for="enable_rss_cache"><p>enables/disables provider RSS cache</p></label>
+                        <label for="enable_rss_cache">
+                            <p>enables/disables provider RSS feed caching</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Enable provider RSS cache for valid shows only</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="enable_rss_cache_valid_shows" id="enable_rss_cache_valid_shows"
+                               class="enabler" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS)]}/>
+                        <label for="enable_rss_cache_valid_shows">
+                            <p>enables/disables caching of shows already added to SiCKRAGE, speeds up searches</p>
+                        </label>
                     </div>
                 </div>
                 <div id="content_download_propers">

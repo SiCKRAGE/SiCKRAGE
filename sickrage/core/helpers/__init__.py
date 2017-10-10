@@ -420,7 +420,7 @@ def findCertainShow(showList, indexerid):
     :return: result list
     """
 
-    if indexerid is None or showList is None or len(showList) == 0:
+    if not indexerid or not showList:
         return None
 
     indexer_ids = [indexerid] if not isinstance(indexerid, list) else indexerid

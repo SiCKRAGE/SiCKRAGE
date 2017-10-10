@@ -3949,7 +3949,8 @@ class ConfigSearch(Config):
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
                    torrent_rpcurl=None, torrent_auth_type=None, ignore_words=None, require_words=None,
-                   ignored_subs_list=None, torrent_trackers=None, enable_rss_cache=None):
+                   ignored_subs_list=None, torrent_trackers=None, enable_rss_cache=None,
+                   enable_rss_cache_valid_shows=None):
 
         results = []
 
@@ -3978,6 +3979,8 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS = sickrage.srCore.srConfig.checkbox_to_value(randomize_providers)
 
         sickrage.srCore.srConfig.ENABLE_RSS_CACHE = sickrage.srCore.srConfig.checkbox_to_value(enable_rss_cache)
+        sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS = sickrage.srCore.srConfig.checkbox_to_value(
+            enable_rss_cache_valid_shows)
 
         sickrage.srCore.srConfig.change_download_propers(download_propers)
 
