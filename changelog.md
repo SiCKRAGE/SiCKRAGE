@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7b3b82a - 2017-10-10: Added ability to manage post-processor queue from WebUI 
+- * 1f2e547 - 2017-10-10: Merged manage searches webui template into manage queues template 
+- * cbed53f - 2017-10-10: Added ability to manage post-processor queue from WebUI 
 - * c904bf9 - 2017-10-09: Added option to enable/disable provider RSS caching of shows already added to show list, speeds up searches when enabled 
 - * 7769116 - 2017-10-09: Added PostProcessing queue 
 - * f372ab4 - 2017-10-09: Release v9.1.32 

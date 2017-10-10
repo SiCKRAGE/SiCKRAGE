@@ -3512,58 +3512,6 @@ class Manage(Home, WebRoot):
         )
 
 
-@Route('/manage/manageSearches(/?.*)')
-class ManageSearches(Manage):
-    def __init__(self, *args, **kwargs):
-        super(ManageSearches, self).__init__(*args, **kwargs)
-
-    def index(self):
-        return self.render(
-            "/manage/searches.mako",
-            backlogPaused=sickrage.srCore.SEARCHQUEUE.is_backlog_paused(),
-            backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
-            dailySearchStatus=sickrage.srCore.SEARCHQUEUE.is_dailysearch_in_progress(),
-            findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
-            searchQueueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
-            title='Manage Searches',
-            header='Manage Searches',
-            topmenu='manage',
-            controller='manage',
-            action='searches'
-        )
-
-    def forceBacklog(self):
-        # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('BACKLOG').func(True):
-            sickrage.srCore.srLogger.info("Backlog search forced")
-            sickrage.srCore.srNotifications.message('Backlog search started')
-
-        return self.redirect("/manage/manageSearches/")
-
-    def forceSearch(self):
-        # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').func(True):
-            sickrage.srCore.srLogger.info("Daily search forced")
-            sickrage.srCore.srNotifications.message('Daily search started')
-
-        return self.redirect("/manage/manageSearches/")
-
-    def forceFindPropers(self):
-        # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('PROPERSEARCHER').func(True):
-            sickrage.srCore.srLogger.info("Find propers search forced")
-            sickrage.srCore.srNotifications.message('Find propers search started')
-
-        return self.redirect("/manage/manageSearches/")
-
-    def pauseBacklog(self, paused=None):
-        if paused == "1":
-            sickrage.srCore.SEARCHQUEUE.pause_backlog()
-        else:
-            sickrage.srCore.SEARCHQUEUE.unpause_backlog()
-
-        return self.redirect("/manage/manageSearches/")
-
 @Route('/manage/manageQueues(/?.*)')
 class ManageQueues(Manage):
     def __init__(self, *args, **kwargs):
@@ -3572,6 +3520,11 @@ class ManageQueues(Manage):
     def index(self):
         return self.render(
             "/manage/queues.mako",
+            backlogPaused=sickrage.srCore.SEARCHQUEUE.is_backlog_paused(),
+            backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
+            dailySearchStatus=sickrage.srCore.SEARCHQUEUE.is_dailysearch_in_progress(),
+            findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
+            searchQueueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
             postProcessorPaused=sickrage.srCore.POSTPROCESSORQUEUE.is_paused,
             postProcessorRunning=sickrage.srCore.POSTPROCESSORQUEUE.is_in_progress,
             postProcessorQueueLength=sickrage.srCore.POSTPROCESSORQUEUE.queue_length,
@@ -3581,6 +3534,38 @@ class ManageQueues(Manage):
             controller='manage',
             action='queues'
         )
+
+    def forceBacklog(self):
+        # force it to run the next time it looks
+        if sickrage.srCore.srScheduler.get_job('BACKLOG').func(True):
+            sickrage.srCore.srLogger.info("Backlog search forced")
+            sickrage.srCore.srNotifications.message('Backlog search started')
+
+        return self.redirect("/manage/manageQueues/")
+
+    def forceSearch(self):
+        # force it to run the next time it looks
+        if sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').func(True):
+            sickrage.srCore.srLogger.info("Daily search forced")
+            sickrage.srCore.srNotifications.message('Daily search started')
+
+        return self.redirect("/manage/manageQueues/")
+
+    def forceFindPropers(self):
+        # force it to run the next time it looks
+        if sickrage.srCore.srScheduler.get_job('PROPERSEARCHER').func(True):
+            sickrage.srCore.srLogger.info("Find propers search forced")
+            sickrage.srCore.srNotifications.message('Find propers search started')
+
+        return self.redirect("/manage/manageQueues/")
+
+    def pauseBacklog(self, paused=None):
+        if paused == "1":
+            sickrage.srCore.SEARCHQUEUE.pause_backlog()
+        else:
+            sickrage.srCore.SEARCHQUEUE.unpause_backlog()
+
+        return self.redirect("/manage/manageQueues/")
 
     def pausePostProcessor(self, paused=None):
         if paused == "1":
