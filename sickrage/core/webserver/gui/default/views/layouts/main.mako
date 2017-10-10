@@ -165,6 +165,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="${srWebRoot}/manage/manageQueues/">
+                                        <i class="menu-icon-manage-searches"></i>&nbsp;Manage Queues
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="${srWebRoot}/manage/episodeStatuses/">
                                         <i class="menu-icon-backlog"></i>&nbsp;Episode Status Management
                                     </a>

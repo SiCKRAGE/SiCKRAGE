@@ -24,6 +24,7 @@
             <h1 class="title">${title}</h1>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <h2 class="header">Scheduler</h2>
@@ -94,6 +95,7 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <h2 class="header">Show Queue</h2>

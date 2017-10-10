@@ -57,19 +57,19 @@
                 <table>
                     <tr>
                         <td>Daily:</td>
-                        <td><i>${queueLength['daily']} pending items</i></td>
+                        <td><i>${searchQueueLength['daily']} pending items</i></td>
                     </tr>
                     <tr>
                         <td>Backlog:</td>
-                        <td><i>${queueLength['backlog']} pending items</i></td>
+                        <td><i>${searchQueueLength['backlog']} pending items</i></td>
                     </tr>
                     <tr>
                         <td>Manual:</td>
-                        <td><i>${queueLength['manual']} pending items</i></td>
+                        <td><i>${searchQueueLength['manual']} pending items</i></td>
                     </tr>
                     <tr>
                         <td>Failed:</td>
-                        <td><i>${queueLength['failed']} pending items</i></td>
+                        <td><i>${searchQueueLength['failed']} pending items</i></td>
                     </tr>
                 </table>
             </div>

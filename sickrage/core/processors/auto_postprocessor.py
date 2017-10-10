@@ -25,6 +25,7 @@ import sickrage
 
 class srPostProcessor(object):
     def __init__(self):
+        self.name = "POSTPROCESSOR"
         self.lock = threading.Lock()
         self.amActive = False
 

@@ -3524,7 +3524,7 @@ class ManageSearches(Manage):
             backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
             dailySearchStatus=sickrage.srCore.SEARCHQUEUE.is_dailysearch_in_progress(),
             findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
-            queueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
+            searchQueueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
             title='Manage Searches',
             header='Manage Searches',
             topmenu='manage',
@@ -3564,6 +3564,31 @@ class ManageSearches(Manage):
 
         return self.redirect("/manage/manageSearches/")
 
+@Route('/manage/manageQueues(/?.*)')
+class ManageQueues(Manage):
+    def __init__(self, *args, **kwargs):
+        super(ManageQueues, self).__init__(*args, **kwargs)
+
+    def index(self):
+        return self.render(
+            "/manage/queues.mako",
+            postProcessorPaused=sickrage.srCore.POSTPROCESSORQUEUE.is_paused,
+            postProcessorRunning=sickrage.srCore.POSTPROCESSORQUEUE.is_in_progress,
+            postProcessorQueueLength=sickrage.srCore.POSTPROCESSORQUEUE.queue_length,
+            title='Manage Queues',
+            header='Manage Queues',
+            topmenu='manage',
+            controller='manage',
+            action='queues'
+        )
+
+    def pausePostProcessor(self, paused=None):
+        if paused == "1":
+            sickrage.srCore.POSTPROCESSORQUEUE.pause()
+        else:
+            sickrage.srCore.POSTPROCESSORQUEUE.unpause()
+
+        return self.redirect("/manage/manageQueues/")
 
 @Route('/history(/?.*)')
 class History(WebHandler):

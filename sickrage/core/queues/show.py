@@ -84,7 +84,7 @@ class srShowQueue(srQueue):
         return self._isBeing(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
-        return [x for _, _, x in self.queue + [(0, 0, self.currentItem)] if x and x.isLoading]
+        return [x for _, _, x in self.queue + [(None, None, self.currentItem)] if x and x.isLoading]
 
     def updateShow(self, show, force=False):
 

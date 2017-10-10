@@ -48,15 +48,22 @@ class srPostProcessorQueue(srQueue):
 
     def find_in_queue(self, dirName, proc_type):
         """
-        Finds any item in the queue with the given directory and mode pair
-        :param directory: directory to be processed by the task
-        :param mode: processing type, auto/manual
-        :return: instance of PostProcessorTask or None
+        Finds any item in the queue with the given dirName and proc_type pair
+        :param dirName: directory to be processed by the task
+        :param proc_type: processing type, auto/manual
+        :return: instance of PostProcessorItem or None
         """
-        for _, _, cur_item in self.queue:
+        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, PostProcessorItem) and cur_item.directory == dirName and cur_item.mode == proc_type:
                 return cur_item
         return None
+
+    @property
+    def is_in_progress(self):
+        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
+            if isinstance(cur_item, PostProcessorItem):
+                return True
+        return False
 
     @property
     def is_paused(self):
@@ -66,13 +73,11 @@ class srPostProcessorQueue(srQueue):
         """
         return self.min_priority == srQueuePriorities.HIGH
 
-    @property
     def pause(self):
         """
         Pause the post processing queue
         """
         self.min_priority = srQueuePriorities.HIGH
-        return True
 
     def unpause(self):
         """
@@ -88,7 +93,7 @@ class srPostProcessorQueue(srQueue):
         """
         length = {'auto': 0, 'manual': 0}
 
-        for _, _, cur_item in self.queue:
+        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, PostProcessorItem):
                 if cur_item.proc_type == 'auto':
                     length['auto'] += 1
@@ -109,7 +114,7 @@ class srPostProcessorQueue(srQueue):
         :param delete_on: delete files and folders after they are processed (always happens with move and auto combination)
         :param failed: mark downloads as failed if they fail to process
         :param proc_type: processing type: auto/manual
-        :param force_next: wait until the current item in the queue is finished, acquire the lock and process this task now, so we can return the result
+        :param force_next: wait until the current item in the queue is finished then process this item next
         :return: string indicating success or failure
         """
 
