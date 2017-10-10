@@ -60,7 +60,7 @@ class synoIndexNotifier(srNotifiers):
                 out, err = p.communicate()
                 sickrage.srCore.srLogger.debug("Script result: " + str(out))
             except OSError as e:
-                sickrage.srCore.srLogger.error("Unable to run synoindex: {}".format(e.message))
+                sickrage.srCore.srLogger.warning("Unable to run synoindex: {}".format(e))
 
     def deleteFolder(self, cur_path):
         self.makeObject('-D', cur_path)
@@ -85,4 +85,4 @@ class synoIndexNotifier(srNotifiers):
                 out, err = p.communicate()
                 sickrage.srCore.srLogger.debug("Script result: " + str(out))
             except OSError as e:
-                sickrage.srCore.srLogger.error("Unable to run synoindex: {}".format(e.message))
+                sickrage.srCore.srLogger.warning("Unable to run synoindex: {}".format(e))

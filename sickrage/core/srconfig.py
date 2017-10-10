@@ -1911,7 +1911,7 @@ class srConfig(object):
         if not self.loaded:
             return
 
-        new_config = ConfigObj(sickrage.CONFIG_FILE, indent_type='  ')
+        new_config = ConfigObj(sickrage.CONFIG_FILE, indent_type='  ', encoding='utf8')
         new_config.clear()
 
         sickrage.srCore.srLogger.debug("Saving all settings to disk")

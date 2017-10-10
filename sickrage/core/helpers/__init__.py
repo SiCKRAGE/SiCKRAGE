@@ -1179,6 +1179,7 @@ def backupSR(backupDir):
 def restoreSR(srcDir, dstDir):
     try:
         filesList = ['sickrage.db',
+                     'sickbeard.db',
                      'failed.db',
                      'cache.db',
                      os.path.basename(sickrage.CONFIG_FILE)]
