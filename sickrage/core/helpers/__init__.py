@@ -420,7 +420,7 @@ def findCertainShow(showList, indexerid):
     :return: result list
     """
 
-    if indexerid is None or showList is None or len(showList) == 0:
+    if not indexerid or not showList:
         return None
 
     indexer_ids = [indexerid] if not isinstance(indexerid, list) else indexerid
@@ -1179,6 +1179,7 @@ def backupSR(backupDir):
 def restoreSR(srcDir, dstDir):
     try:
         filesList = ['sickrage.db',
+                     'sickbeard.db',
                      'failed.db',
                      'cache.db',
                      os.path.basename(sickrage.CONFIG_FILE)]

@@ -61,7 +61,6 @@ from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.media.util import indexerImage
 from sickrage.core.nameparser import validator
-from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
     MANUAL_SEARCH_HISTORY, ManualSearchQueueItem
 from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_exceptions
@@ -2254,12 +2253,14 @@ class HomePostProcess(Home):
              if k.lower() not in ['proc_dir', 'dir', 'nzbname', 'process_method', 'proc_type'] else v
              ) for k, v in kwargs.items())
 
-        if not pp_options.has_key('proc_dir'):
-            return self.redirect("/home/postprocess/")
+        proc_dir = pp_options.pop("proc_dir", None)
+        quite = pp_options.pop("quiet", None)
 
-        result = processDir(pp_options["proc_dir"], **pp_options)
-        if pp_options.get("quiet", None):
-            return result
+        if not proc_dir: return self.redirect("/home/postprocess/")
+
+        result = sickrage.srCore.POSTPROCESSORQUEUE.put(proc_dir, **pp_options)
+
+        if quite: return result
 
         return self._genericMessage("Postprocessing results", result.replace("\n", "<br>\n"))
 
@@ -3511,24 +3512,27 @@ class Manage(Home, WebRoot):
         )
 
 
-@Route('/manage/manageSearches(/?.*)')
-class ManageSearches(Manage):
+@Route('/manage/manageQueues(/?.*)')
+class ManageQueues(Manage):
     def __init__(self, *args, **kwargs):
-        super(ManageSearches, self).__init__(*args, **kwargs)
+        super(ManageQueues, self).__init__(*args, **kwargs)
 
     def index(self):
         return self.render(
-            "/manage/searches.mako",
+            "/manage/queues.mako",
             backlogPaused=sickrage.srCore.SEARCHQUEUE.is_backlog_paused(),
             backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
             dailySearchStatus=sickrage.srCore.SEARCHQUEUE.is_dailysearch_in_progress(),
             findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
-            queueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
-            title='Manage Searches',
-            header='Manage Searches',
+            searchQueueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
+            postProcessorPaused=sickrage.srCore.POSTPROCESSORQUEUE.is_paused,
+            postProcessorRunning=sickrage.srCore.POSTPROCESSORQUEUE.is_in_progress,
+            postProcessorQueueLength=sickrage.srCore.POSTPROCESSORQUEUE.queue_length,
+            title='Manage Queues',
+            header='Manage Queues',
             topmenu='manage',
             controller='manage',
-            action='searches'
+            action='queues'
         )
 
     def forceBacklog(self):
@@ -3537,7 +3541,7 @@ class ManageSearches(Manage):
             sickrage.srCore.srLogger.info("Backlog search forced")
             sickrage.srCore.srNotifications.message('Backlog search started')
 
-        return self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageQueues/")
 
     def forceSearch(self):
         # force it to run the next time it looks
@@ -3545,7 +3549,7 @@ class ManageSearches(Manage):
             sickrage.srCore.srLogger.info("Daily search forced")
             sickrage.srCore.srNotifications.message('Daily search started')
 
-        return self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageQueues/")
 
     def forceFindPropers(self):
         # force it to run the next time it looks
@@ -3553,7 +3557,7 @@ class ManageSearches(Manage):
             sickrage.srCore.srLogger.info("Find propers search forced")
             sickrage.srCore.srNotifications.message('Find propers search started')
 
-        return self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageQueues/")
 
     def pauseBacklog(self, paused=None):
         if paused == "1":
@@ -3561,8 +3565,15 @@ class ManageSearches(Manage):
         else:
             sickrage.srCore.SEARCHQUEUE.unpause_backlog()
 
-        return self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageQueues/")
 
+    def pausePostProcessor(self, paused=None):
+        if paused == "1":
+            sickrage.srCore.POSTPROCESSORQUEUE.pause()
+        else:
+            sickrage.srCore.POSTPROCESSORQUEUE.unpause()
+
+        return self.redirect("/manage/manageQueues/")
 
 @Route('/history(/?.*)')
 class History(WebHandler):
@@ -3948,7 +3959,8 @@ class ConfigSearch(Config):
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
                    torrent_rpcurl=None, torrent_auth_type=None, ignore_words=None, require_words=None,
-                   ignored_subs_list=None, torrent_trackers=None, enable_rss_cache=None):
+                   ignored_subs_list=None, torrent_trackers=None, enable_rss_cache=None,
+                   enable_rss_cache_valid_shows=None):
 
         results = []
 
@@ -3977,6 +3989,8 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS = sickrage.srCore.srConfig.checkbox_to_value(randomize_providers)
 
         sickrage.srCore.srConfig.ENABLE_RSS_CACHE = sickrage.srCore.srConfig.checkbox_to_value(enable_rss_cache)
+        sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS = sickrage.srCore.srConfig.checkbox_to_value(
+            enable_rss_cache_valid_shows)
 
         sickrage.srCore.srConfig.change_download_propers(download_propers)
 

@@ -1,6 +1,12 @@
 # Changelog
 
-- * 256a2e8 - 2017-10-09: Release v9.1.32 
+- * 16f2376 - 2017-10-10: Release v9.1.33 
+- * d9cfc11 - 2017-10-10: Fixed issues with restoring older backup files that may contain sickbeard.db file Fixed issues with saving config when unicode values present Fixed issues with properly displaying synoindex errors 
+- * 54238a1 - 2017-10-10: Merged manage searches webui template into manage queues template 
+- * cbed53f - 2017-10-10: Added ability to manage post-processor queue from WebUI 
+- * c904bf9 - 2017-10-09: Added option to enable/disable provider RSS caching of shows already added to show list, speeds up searches when enabled 
+- * 7769116 - 2017-10-09: Added PostProcessing queue 
+- * f372ab4 - 2017-10-09: Release v9.1.32 
 - * f207793 - 2017-10-09: Added option delete to post-process cmd for API 
 - * bd5e378 - 2017-10-09: Fixed issues with API multi commands 
 - * e4be7cf - 2017-10-09: Fixed issue with API help command 

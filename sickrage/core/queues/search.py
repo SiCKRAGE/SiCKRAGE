@@ -95,14 +95,14 @@ class srSearchQueue(srQueue):
         return False
 
     def is_backlog_in_progress(self):
-        for _, _, cur_item in self.queue + [(0, 0, self.currentItem)]:
+        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
 
         return False
 
     def is_dailysearch_in_progress(self):
-        for _, _, cur_item in self.queue + [(0, 0, self.currentItem)]:
+        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
 
@@ -110,7 +110,7 @@ class srSearchQueue(srQueue):
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for _, _, cur_item in self.queue:
+        for _, _, cur_item in self.queue  + [(None, None, self.currentItem)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):

@@ -18,15 +18,13 @@
 
 from __future__ import unicode_literals
 
-import os.path
 import threading
 
 import sickrage
-from sickrage.core.process_tv import processDir
 
 
 class srPostProcessor(object):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self.name = "POSTPROCESSOR"
         self.lock = threading.Lock()
         self.amActive = False
@@ -38,29 +36,6 @@ class srPostProcessor(object):
         :return: Returns when done without a return state/code
         """
 
-        if self.amActive or sickrage.srCore.srConfig.DEVELOPER:
-            return
-
         self.amActive = True
-
-        # set thread name
-        threading.currentThread().setName(self.name)
-
-        if not os.path.isdir(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
-            sickrage.srCore.srLogger.error(
-                "Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " doesn't exist")
-            self.amActive = False
-            return
-
-        if not os.path.isabs(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR):
-            sickrage.srCore.srLogger.error(
-                "Automatic post-processing attempted but dir " + sickrage.srCore.srConfig.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)")
-            self.amActive = False
-            return
-
-        processDir(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR)
-
+        sickrage.srCore.POSTPROCESSORQUEUE.put(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR, force=force)
         self.amActive = False
-
-    def __del__(self):
-        pass

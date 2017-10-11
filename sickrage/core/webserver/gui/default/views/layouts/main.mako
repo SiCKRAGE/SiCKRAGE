@@ -160,8 +160,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/manage/manageSearches/">
-                                        <i class="menu-icon-manage-searches"></i>&nbsp;Manage Searches
+                                    <a href="${srWebRoot}/manage/manageQueues/">
+                                        <i class="menu-icon-manage-searches"></i>&nbsp;Manage Queues
                                     </a>
                                 </li>
                                 <li>

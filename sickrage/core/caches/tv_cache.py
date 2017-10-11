@@ -182,11 +182,12 @@ class TVCache(object):
 
         # check if we passed in a parsed result or should we try and create one
         if not parse_result:
-            # create showObj from indexer_id if available
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id) if indexer_id else None
-
             try:
-                parse_result = NameParser(showObj=showObj, tryIndexers=True, validate_show=False).parse(name)
+                parse_result = NameParser(
+                    showObj=findCertainShow(sickrage.srCore.SHOWLIST, indexer_id),
+                    tryIndexers=not sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS,
+                    validate_show=sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS
+                ).parse(name)
             except (InvalidShowException, InvalidNameException):
                 pass
 

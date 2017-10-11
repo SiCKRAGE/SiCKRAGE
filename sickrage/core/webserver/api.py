@@ -52,7 +52,6 @@ from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
-from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History
@@ -1204,6 +1203,8 @@ class CMD_PostProcess(ApiCall):
             "delete": {"desc": "Delete processed files and folders"},
             "failed": {"desc": "Mark download as failed"},
             "type": {"desc": "The type of post-process being requested"},
+            "force_next": {"desc": "Waits for the current processing queue item to finish and returns result of this "
+                                   "request"},
         }
     }
 
@@ -1218,6 +1219,7 @@ class CMD_PostProcess(ApiCall):
         self.delete, args = self.check_params("delete", False, False, "bool", [], *args, **kwargs)
         self.failed, args = self.check_params("failed", False, False, "bool", [], *args, **kwargs)
         self.type, args = self.check_params("type", "auto", None, "string", ["auto", "manual"], *args, **kwargs)
+        self.force_next, args = self.check_params("force_next", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Manually post-process the files in the download folder """
@@ -1230,14 +1232,14 @@ class CMD_PostProcess(ApiCall):
         if not self.type:
             self.type = 'manual'
 
-        data = processDir(self.path, process_method=self.process_method, force=self.force_replace,
+        data = sickrage.srCore.POSTPROCESSORQUEUE.put(self.path, process_method=self.process_method, force=self.force_replace,
                           is_priority=self.is_priority, delete_on=self.delete, failed=self.failed,
-                          proc_type=self.type)
+                          proc_type=self.type, force_next=self.force_next)
 
         if not self.return_data:
             data = ""
 
-        return _responds(RESULT_SUCCESS, data=data, msg="Started postprocess for %s" % self.path)
+        return _responds(RESULT_SUCCESS, data=data, msg="Started postprocess for {}".format(self.path))
 
 
 class CMD_SiCKRAGE(ApiCall):

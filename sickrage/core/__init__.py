@@ -50,6 +50,7 @@ from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
+from sickrage.core.queues.postprocessor import srPostProcessorQueue
 from sickrage.core.queues.search import srSearchQueue
 from sickrage.core.queues.show import srShowQueue
 from sickrage.core.searchers.backlog_searcher import srBacklogSearcher
@@ -119,6 +120,7 @@ class Core(object):
         # queues
         self.SHOWQUEUE = srShowQueue()
         self.SEARCHQUEUE = srSearchQueue()
+        self.POSTPROCESSORQUEUE = srPostProcessorQueue()
 
         # updaters
         self.VERSIONUPDATER = srVersionUpdater()
@@ -421,6 +423,7 @@ class Core(object):
         # start queue's
         self.SEARCHQUEUE.start()
         self.SHOWQUEUE.start()
+        self.POSTPROCESSORQUEUE.start()
 
         # start webserver
         self.srWebServer.start()
@@ -443,6 +446,12 @@ class Core(object):
                 self.srLogger.debug("Shutting down search queue")
                 self.SEARCHQUEUE.shutdown()
                 del self.SEARCHQUEUE
+
+            # shutdown post-processor queue
+            if self.POSTPROCESSORQUEUE:
+                self.srLogger.debug("Shutting down post-processor queue")
+                self.POSTPROCESSORQUEUE.shutdown()
+                del self.POSTPROCESSORQUEUE
 
             # log out of ADBA
             if self.ADBA_CONNECTION:
