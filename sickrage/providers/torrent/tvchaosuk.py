@@ -29,12 +29,10 @@ class TVChaosUKProvider(TorrentProvider):
         super(TVChaosUKProvider, self).__init__('TvChaosUK', 'http://tvchaosuk.com', True)
 
         self.urls.update({
-            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
-            'index': '{base_url}/index.php'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/browse.php'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/takelogin.php'.format(**self.urls),
+            'index': '{base_url}/index.php'.format(**self.urls),
+            'search': '{base_url}/browse.php'.format(**self.urls)
         })
-
-        self.supports_backlog = True
 
         self.username = None
         self.password = None
@@ -112,7 +110,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         search_params = {

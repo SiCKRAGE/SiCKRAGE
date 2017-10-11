@@ -34,8 +34,6 @@ class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
         super(MoreThanTVProvider, self).__init__("MoreThanTV", 'http://www.morethan.tv', True)
 
-        self.supports_backlog = True
-
         self._uid = None
         self._hash = None
         self.username = None
@@ -46,19 +44,19 @@ class MoreThanTVProvider(TorrentProvider):
         # self.freeleech = False
 
         self.urls.update({
-            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/login.php'.format(**self.urls),
             'detail': '{base_url}/torrents.php'
-                      '?id=%s'.format(base_url=self.urls['base_url']),
+                      '?id=%s'.format(**self.urls),
             'search': '{base_url}/torrents.php'
                       '?tags_type=1'
                       '&order_by=time'
                       '&order_way=desc'
                       '&action=basic'
                       '&searchsubmit=1'
-                      '&searchstr=%s'.format(base_url=self.urls['base_url']),
+                      '&searchstr=%s'.format(**self.urls),
             'download': '{base_url}/torrents.php'
                         '?action=download'
-                        '&id=%s'.format(base_url=self.urls['base_url'])
+                        '&id=%s'.format(**self.urls)
         })
 
         self.cookies = None
@@ -99,7 +97,7 @@ class MoreThanTVProvider(TorrentProvider):
                 sickrage.srCore.srLogger.warning(
                     "[{}]: Invalid username or password. Check your settings".format(self.name))
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         if not self.login():

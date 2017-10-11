@@ -30,8 +30,6 @@ class NebulanceProvider(TorrentProvider):
 
         super(NebulanceProvider, self).__init__("Nebulance", 'http://nebulance.io', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -70,7 +68,7 @@ class NebulanceProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         if not self.login():

@@ -34,8 +34,6 @@ class HDTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(HDTorrentsProvider, self).__init__("HDTorrents", 'http://hd-torrents.org', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -43,10 +41,10 @@ class HDTorrentsProvider(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/torrents.php?search=%s&active=1&options=0%s'.format(base_url=self.urls['base_url']),
-            'rss': '{base_url}/torrents.php?search=&active=1&options=0%s'.format(base_url=self.urls['base_url']),
-            'home': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/login.php'.format(**self.urls),
+            'search': '{base_url}/torrents.php?search=%s&active=1&options=0%s'.format(**self.urls),
+            'rss': '{base_url}/torrents.php?search=&active=1&options=0%s'.format(**self.urls),
+            'home': '{base_url}/%s'.format(**self.urls)
         })
 
         self.categories = "&category[]=59&category[]=60&category[]=30&category[]=38"
@@ -84,7 +82,7 @@ class HDTorrentsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         if not self.login():

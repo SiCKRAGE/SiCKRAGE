@@ -60,7 +60,7 @@ class GenericProvider(object):
         self.urls = {'base_url': url}
         self.private = private
         self.show = None
-        self.supports_backlog = False
+        self.supports_backlog = True
         self.supports_absolute_numbering = False
         self.anime_only = False
         self.search_mode = 'eponly'
@@ -226,7 +226,7 @@ class GenericProvider(object):
         quality = Quality.sceneQuality(title, anime)
         return quality
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         return []
 
     def _get_season_search_strings(self, episode):
@@ -307,7 +307,7 @@ class GenericProvider(object):
 
             for curString in search_strings:
                 try:
-                    itemList += self.search(curString, search_mode, len(episodes), epObj=epObj)
+                    itemList += self.search(curString, epObj=epObj)
                 except SAXParseException:
                     continue
 
@@ -934,7 +934,6 @@ class NewznabProvider(NZBProvider):
         self.search_fallback = search_fallback
         self.enable_daily = enable_daily
         self.enable_backlog = enable_backlog
-        self.supports_backlog = True
 
         self.catIDs = catIDs
         self.default = default
@@ -1076,7 +1075,7 @@ class NewznabProvider(NZBProvider):
 
         return False
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         if not self.check_auth():

@@ -39,8 +39,6 @@ class BTNProvider(TorrentProvider):
     def __init__(self):
         super(BTNProvider, self).__init__("BTN", 'http://api.broadcasthe.net', True)
 
-        self.supports_backlog = True
-
         self.supports_absolute_numbering = True
 
         self.api_key = None
@@ -62,7 +60,7 @@ class BTNProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
 
         self._check_auth()
 

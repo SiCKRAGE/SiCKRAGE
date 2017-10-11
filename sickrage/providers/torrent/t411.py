@@ -32,8 +32,6 @@ class T411Provider(TorrentProvider):
     def __init__(self):
         super(T411Provider, self).__init__("T411", 'http://www.t411.al', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -43,10 +41,10 @@ class T411Provider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
-            'search': '{base_url}/torrents/search/%s?cid=%s&limit=100'.format(base_url=self.urls['base_url']),
-            'rss': '{base_url}/torrents/top/today'.format(base_url=self.urls['base_url']),
-            'login': '{base_url}/auth'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/torrents/download/%s'.format(base_url=self.urls['base_url'])
+            'search': '{base_url}/torrents/search/%s?cid=%s&limit=100'.format(**self.urls),
+            'rss': '{base_url}/torrents/top/today'.format(**self.urls),
+            'login': '{base_url}/auth'.format(**self.urls),
+            'download': '{base_url}/torrents/download/%s'.format(**self.urls)
         })
 
         self.subcategories = [433, 637, 455, 639]
@@ -80,7 +78,7 @@ class T411Provider(TorrentProvider):
             sickrage.srCore.srLogger.warning("Token not found in authentication response")
             return False
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         if not self.login():

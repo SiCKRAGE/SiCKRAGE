@@ -31,8 +31,6 @@ class SpeedCDProvider(TorrentProvider):
 
         super(SpeedCDProvider, self).__init__("Speedcd", 'http://speed.cd', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -41,10 +39,10 @@ class SpeedCDProvider(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            'login': '{base_url}/take_login.php'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/t/%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/V3/API/API.php'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/download.php?torrent=%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/take_login.php'.format(**self.urls),
+            'detail': '{base_url}/t/%s'.format(**self.urls),
+            'search': '{base_url}/V3/API/API.php'.format(**self.urls),
+            'download': '{base_url}/download.php?torrent=%s'.format(**self.urls)
         })
 
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
@@ -71,7 +69,7 @@ class SpeedCDProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         if not self.login():

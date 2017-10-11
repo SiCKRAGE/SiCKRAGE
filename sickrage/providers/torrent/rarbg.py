@@ -32,8 +32,6 @@ class RarbgProvider(TorrentProvider):
     def __init__(self):
         super(RarbgProvider, self).__init__("Rarbg", 'http://torrentapi.org', False)
 
-        self.supports_backlog = True
-
         self.ratio = None
         self.minseed = None
         self.ranked = None
@@ -43,14 +41,15 @@ class RarbgProvider(TorrentProvider):
         self.tokenExpireDate = None
 
         self.urls.update({
-            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage'.format(
-                base_url=self.urls['base_url']),
-            'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string=%s'.format(
-                base_url=self.urls['base_url']),
-            'search_tvdb': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb=%s&search_string=%s'.format(
-                base_url=self.urls['base_url']),
-            'api_spec': '{base_url}/apidocs_v2.txt'.format(base_url=self.urls['base_url'])
+            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage'.format(**self.urls),
+            'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage'.format(**self.urls),
+            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string=%s'.format(**self.urls),
+            'search_tvdb': '{base_url}/pubapi_v2.php'
+                           '?mode=search'
+                           '&app_id=sickrage'
+                           '&search_tvdb=%s'
+                           '&search_string=%s'.format(**self.urls),
+            'api_spec': '{base_url}/apidocs_v2.txt'.format(**self.urls)
         })
 
         self.urlOptions = {'categories': '&category={categories}',
@@ -87,7 +86,7 @@ class RarbgProvider(TorrentProvider):
 
         return self.token is not None
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         if not self.login():

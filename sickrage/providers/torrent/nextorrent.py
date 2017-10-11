@@ -33,7 +33,6 @@ class NextorrentProvider(TorrentProvider):
 
         super(NextorrentProvider, self).__init__("Nextorrent", 'http://nextorrent.pw', False)
 
-        self.supports_backlog = True
         self.confirmed = True
         self.ratio = None
         self.minseed = None
@@ -42,7 +41,7 @@ class NextorrentProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=15)
 
         self.urls.update({
-            'series': '{base_url}/torrents/series'.format(base_url=self.urls['base_url'])
+            'series': '{base_url}/torrents/series'.format(**self.urls)
         })
 
     def seed_ratio(self):
@@ -56,7 +55,7 @@ class NextorrentProvider(TorrentProvider):
         except Exception:
             pass
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         for mode in search_strings:

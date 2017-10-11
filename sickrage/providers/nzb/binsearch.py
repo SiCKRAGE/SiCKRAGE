@@ -30,6 +30,7 @@ from sickrage.providers import NZBProvider
 class BinSearchProvider(NZBProvider):
     def __init__(self):
         super(BinSearchProvider, self).__init__("BinSearch", 'http://www.binsearch.info', False)
+        self.supports_backlog = False
 
         self.cache = BinSearchCache(self)
 

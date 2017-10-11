@@ -33,8 +33,6 @@ class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(IPTorrentsProvider, self).__init__("IPTorrents", 'https://iptorrents.eu', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -47,8 +45,8 @@ class IPTorrentsProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
-            'login': '{base_url}/take_login.php'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/take_login.php'.format(**self.urls),
+            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(**self.urls)
         })
 
         self.categories = '73=&60='
@@ -96,7 +94,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         freeleech = '&free=on' if self.freeleech else ''

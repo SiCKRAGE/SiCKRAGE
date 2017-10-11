@@ -31,8 +31,6 @@ class PretomeProvider(TorrentProvider):
     def __init__(self):
         super(PretomeProvider, self).__init__("Pretome", 'http://pretome.info', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.pin = None
@@ -41,10 +39,10 @@ class PretomeProvider(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/browse.php?search=%s%s'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/download.php/%s/%s.torrent'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/takelogin.php'.format(**self.urls),
+            'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
+            'search': '{base_url}/browse.php?search=%s%s'.format(**self.urls),
+            'download': '{base_url}/download.php/%s/%s.torrent'.format(**self.urls)
         })
 
         self.categories = "&st=1&cat%5B%5D=7"
@@ -79,7 +77,7 @@ class PretomeProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         if not self.login():

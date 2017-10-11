@@ -32,7 +32,6 @@ class TORRENTZProvider(TorrentProvider):
 
         super(TORRENTZProvider, self).__init__("Torrentz", 'http://torrentz2.eu', False)
 
-        self.supports_backlog = True
         self.confirmed = True
         self.ratio = None
         self.minseed = None
@@ -41,8 +40,8 @@ class TORRENTZProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=15)
 
         self.urls.update({
-            'verified': '{base_url}/feed_verified'.format(base_url=self.urls['base_url']),
-            'feed': '{base_url}/feed'.format(base_url=self.urls['base_url'])
+            'verified': '{base_url}/feed_verified'.format(**self.urls),
+            'feed': '{base_url}/feed'.format(**self.urls)
         })
 
     def seed_ratio(self):
@@ -53,7 +52,7 @@ class TORRENTZProvider(TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return int(match[0]) * 1024 ** 2, int(match[1]), int(match[2])
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         for mode in search_strings:

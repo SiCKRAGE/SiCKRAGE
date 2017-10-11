@@ -61,8 +61,6 @@ class TNTVillageProvider(TorrentProvider):
     def __init__(self):
         super(TNTVillageProvider, self).__init__("TNTVillage", 'http://forum.tntvillage.scambioetico.org', True)
 
-        self.supports_backlog = True
-
         self._uid = None
         self._hash = None
         self.username = None
@@ -96,11 +94,11 @@ class TNTVillageProvider(TorrentProvider):
                               'All': 0}
 
         self.urls.update({
-            'login': '{base_url}/index.php?act=Login&CODE=01'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/index.php?showtopic=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/?act=allreleases&%s'.format(base_url=self.urls['base_url']),
-            'search_page': '{base_url}/?act=allreleases&st=%s&%s'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/index.php?act=Login&CODE=01'.format(**self.urls),
+            'detail': '{base_url}/index.php?showtopic=%s'.format(**self.urls),
+            'search': '{base_url}/?act=allreleases&%s'.format(**self.urls),
+            'search_page': '{base_url}/?act=allreleases&st=%s&%s'.format(**self.urls),
+            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'.format(**self.urls)
         })
 
         self.cookies = None
@@ -279,7 +277,7 @@ class TNTVillageProvider(TorrentProvider):
         if len([x for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', parse_result.indexerid, with_doc=True)
                 if x['doc']['season'] == parse_result.season_number]) == len(parse_result.episode_numbers): return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         self.categories = "cat=" + str(self.cat)

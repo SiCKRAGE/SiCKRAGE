@@ -36,12 +36,10 @@ class XthorProvider(TorrentProvider):
 
         super(XthorProvider, self).__init__("Xthor", "http://xthor.bz", True)
 
-        self.supports_backlog = True
-
         self.cj = cookielib.CookieJar()
 
         self.urls.update({
-            'search': "{base_url}/browse.php?search=%s%s".format(base_url=self.urls['base_url'])
+            'search': "{base_url}/browse.php?search=%s%s".format(**self.urls)
         })
 
         self.categories = "&searchin=title&incldead=0"
@@ -74,7 +72,7 @@ class XthorProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         # check for auth

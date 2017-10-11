@@ -35,8 +35,6 @@ class HDSpaceProvider(TorrentProvider):
     def __init__(self):
         super(HDSpaceProvider, self).__init__("HDSpace", 'http://hd-space.org', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -46,10 +44,9 @@ class HDSpaceProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
-            'login': '{base_url}/index.php?page=login'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(
-                base_url=self.urls['base_url']),
-            'rss': '{base_url}/rss_torrents.php?feed=dl'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/index.php?page=login'.format(**self.urls),
+            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(**self.urls),
+            'rss': '{base_url}/rss_torrents.php?feed=dl'.format(**self.urls)
         })
 
         self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
@@ -87,7 +84,7 @@ class HDSpaceProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         if not self.login():

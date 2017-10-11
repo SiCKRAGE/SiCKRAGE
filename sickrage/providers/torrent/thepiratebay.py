@@ -32,23 +32,21 @@ class ThePirateBayProvider(TorrentProvider):
 
         super(ThePirateBayProvider, self).__init__("ThePirateBay", 'http://pirateproxy.la', False)
 
-        self.supports_backlog = True
-
         self.ratio = None
         self.confirmed = True
         self.minseed = None
         self.minleech = None
 
         self.urls.update({
-            'search': '{base_url}/s/'.format(base_url=self.urls['base_url']),
-            'rss': '{base_url}/tv/latest'.format(base_url=self.urls['base_url'])
+            'search': '{base_url}/s/'.format(**self.urls),
+            'rss': '{base_url}/tv/latest'.format(**self.urls)
         })
 
         self.re_title_url = r'/torrent/(?P<id>\d+)/(?P<title>.*?)".+?(?P<url>magnet.*?)".+?Size (?P<size>[\d\.]*&nbsp;[TGKMiB]{2,3}).+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
         self.cache = TVCache(self, min_time=30)
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         """

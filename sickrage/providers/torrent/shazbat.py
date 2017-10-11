@@ -38,7 +38,7 @@ class ShazbatProvider(TorrentProvider):
         self.cache = ShazbatCache(self, min_time=15)
 
         self.urls.update({
-            'login': '{base_url}/login'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/login'.format(**self.urls)
         })
 
     def _check_auth(self):

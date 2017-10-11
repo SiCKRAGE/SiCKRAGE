@@ -34,16 +34,15 @@ class newpctProvider(TorrentProvider):
     def __init__(self):
         super(newpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
-        self.supports_backlog = True
         self.onlyspasearch = None
 
         self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
-            'search': '{base_url}/index.php'.format(base_url=self.urls['base_url'])
+            'search': '{base_url}/index.php'.format(**self.urls)
         })
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, epObj=None):
         results = []
 
         search_params = {

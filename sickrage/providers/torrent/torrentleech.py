@@ -32,8 +32,6 @@ class TorrentLeechProvider(TorrentProvider):
 
         super(TorrentLeechProvider, self).__init__("TorrentLeech", 'http://torrentleech.org', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -41,11 +39,11 @@ class TorrentLeechProvider(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            'login': '{base_url}/user/account/login/'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/torrent/%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/torrents/browse/index/query/%s/categories/%s'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/%s'.format(base_url=self.urls['base_url']),
-            'index': '{base_url}/torrents/browse/index/categories/%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/user/account/login/'.format(**self.urls),
+            'detail': '{base_url}/torrent/%s'.format(**self.urls),
+            'search': '{base_url}/torrents/browse/index/query/%s/categories/%s'.format(**self.urls),
+            'download': '{base_url}/%s'.format(**self.urls),
+            'index': '{base_url}/torrents/browse/index/categories/%s'.format(**self.urls)
         })
 
         self.categories = "2,7,26,27,32,34,35"
@@ -75,7 +73,7 @@ class TorrentLeechProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, epObj=None):
         results = []
 
         if not self.login():
