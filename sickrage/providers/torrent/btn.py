@@ -115,7 +115,7 @@ class BTNProvider(TorrentProvider):
 
                 (title, url) = self._get_title_and_url(torrent_info)
                 if title and url:
-                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
                     results.append(torrent_info)
 
         # FIXME SORT RESULTS

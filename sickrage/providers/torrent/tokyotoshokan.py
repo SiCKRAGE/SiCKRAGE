@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import traceback
 import urllib
 
 import sickrage
@@ -99,12 +98,12 @@ class TokyoToshokanProvider(TorrentProvider):
                         #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                         #    continue
 
-                        item = title, download_url, size, seeders, leechers
+                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
 
                         results.append(item)
 
-        except Exception as e:
-            sickrage.srCore.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+        except Exception:
+            sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         # FIXME SORTING
         return results

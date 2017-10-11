@@ -19,12 +19,12 @@
 from __future__ import unicode_literals
 
 import time
-import traceback
 
 from requests.auth import AuthBase
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -81,9 +81,7 @@ class T411Provider(TorrentProvider):
             return False
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-
         results = []
-        items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self.login():
             return results
@@ -102,7 +100,8 @@ class T411Provider(TorrentProvider):
                     sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                     try:
-                        data = sickrage.srCore.srWebSession.get(searchURL, auth=T411Auth(self.token), cache=False).json()
+                        data = sickrage.srCore.srWebSession.get(searchURL, auth=T411Auth(self.token),
+                                                                cache=False).json()
                     except Exception:
                         sickrage.srCore.srLogger.debug("No data returned from provider")
                         continue
@@ -147,26 +146,22 @@ class T411Provider(TorrentProvider):
                                         "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                                     continue
 
-                                item = title, download_url, size, seeders, leechers
+                                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                        'leechers': leechers, 'hash': ''}
+
                                 if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug("Found result: %s " % title)
+                                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                                items[mode].append(item)
-
+                                results.append(item)
                             except Exception:
                                 sickrage.srCore.srLogger.debug("Invalid torrent data, skipping result: %s" % torrent)
-                                sickrage.srCore.srLogger.debug(
-                                    "Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                                sickrage.srCore.srLogger.error("Failed parsing provider.")
                                 continue
-
                     except Exception:
-                        sickrage.srCore.srLogger.error(
-                            "Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                        sickrage.srCore.srLogger.error("Failed parsing provider.")
 
-            # For each search mode sort all the items by seeders if available if available
-            items[mode].sort(key=lambda tup: tup[3], reverse=True)
-
-            results += items[mode]
+        # Sort all the items by seeders if available
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

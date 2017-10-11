@@ -1,6 +1,9 @@
 # Changelog
 
-- * 16f2376 - 2017-10-10: Release v9.1.33 
+- * 1616bc4 - 2017-10-11: Release v9.1.34 
+- * 061f090 - 2017-10-11: Configs are now loaded and saved using system encoding to resolve unicode issues 
+- * c2e364f - 2017-10-11: Cleaned up provider code, removed providers that where no longer working 
+- * 819d4dc - 2017-10-10: Release v9.1.33 
 - * d9cfc11 - 2017-10-10: Fixed issues with restoring older backup files that may contain sickbeard.db file Fixed issues with saving config when unicode values present Fixed issues with properly displaying synoindex errors 
 - * 54238a1 - 2017-10-10: Merged manage searches webui template into manage queues template 
 - * cbed53f - 2017-10-10: Added ability to manage post-processor queue from WebUI 

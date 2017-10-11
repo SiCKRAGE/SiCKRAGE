@@ -22,12 +22,11 @@
 from __future__ import unicode_literals
 
 import re
-import traceback
 from urllib import urlencode
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -54,8 +53,6 @@ class newpctProvider(TorrentProvider):
             'idioma_': 1,
             'bus_de_': 'All'
         }
-
-        items = {'Season': [], 'Episode': [], 'RSS': []}
 
         lang_info = '' if not epObj or not epObj.show else epObj.show.lang
 
@@ -116,14 +113,14 @@ class newpctProvider(TorrentProvider):
                                 if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
-                                items[mode].append(item)
+                                results.append(item)
                             except (AttributeError, TypeError):
                                 continue
 
                 except Exception:
-                    sickrage.srCore.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider.")
 
-            results += items[mode]
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 
