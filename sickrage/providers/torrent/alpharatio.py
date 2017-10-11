@@ -19,11 +19,10 @@
 from __future__ import unicode_literals
 
 import re
-import traceback
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -71,9 +70,7 @@ class AlphaRatioProvider(TorrentProvider):
         return True
 
     def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
-
         results = []
-        items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self.login():
             return results
@@ -130,19 +127,18 @@ class AlphaRatioProvider(TorrentProvider):
                                             title, seeders, leechers))
                                 continue
 
-                            item = title, download_url, size, seeders, leechers
+                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                    'leechers': leechers, 'hash': ''}
+
                             if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
+                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                            items[mode].append(item)
-
+                            results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
 
-            # For each search mode sort all the items by seeders if available
-            items[mode].sort(key=lambda tup: tup[3], reverse=True)
-
-            results += items[mode]
+        # Sort all the items by seeders if available
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

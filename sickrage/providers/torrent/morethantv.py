@@ -26,7 +26,7 @@ import requests
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser, convert_size, tryInt
+from sickrage.core.helpers import bs4_parser, convert_size, tryInt, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -101,10 +101,9 @@ class MoreThanTVProvider(TorrentProvider):
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
+
         if not self.login():
             return results
-
-        items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_params.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
@@ -154,22 +153,22 @@ class MoreThanTVProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                            title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: "
+                                        "{} (S:{} L:{})".format(title, seeders, leechers))
                                 continue
 
-                            item = title, download_url, size, seeders, leechers
+                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                    'leechers': leechers, 'hash': ''}
+
                             if mode != 'RSS':
                                 sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                            items[mode].append(item)
+                            results.append(item)
                         except StandardError:
                             continue
 
-            # For each search mode sort all the items by seeders if available
-            items[mode].sort(key=lambda tup: tup[3], reverse=True)
-
-            results += items[mode]
+        # Sort all the items by seeders if available
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

@@ -23,7 +23,7 @@ from urllib import urlencode
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size
+from sickrage.core.helpers import convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -62,8 +62,6 @@ class ThePirateBayProvider(TorrentProvider):
             "page": 0,
             "category": 200
         }
-
-        items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
@@ -109,16 +107,16 @@ class ThePirateBayProvider(TorrentProvider):
                                 "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
                         continue
 
-                    item = title, download_url, size, seeders, leechers
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: %s " % title)
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                    items[mode].append(item)
+                    results.append(item)
 
-            # For each search mode sort all the items by seeders if available
-            items[mode].sort(key=lambda tup: tup[3], reverse=True)
-
-            results += items[mode]
+        # Sort all the items by seeders if available
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

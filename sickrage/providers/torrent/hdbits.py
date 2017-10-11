@@ -23,6 +23,7 @@ import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
 from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -103,7 +104,7 @@ class HDBitsProvider(TorrentProvider):
                 results.append(item)
 
         # sort by number of seeders
-        if results: results.sort(key=lambda x: x['seeders'], reverse=True)
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

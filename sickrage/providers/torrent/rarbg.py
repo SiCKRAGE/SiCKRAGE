@@ -23,7 +23,7 @@ from time import sleep
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size
+from sickrage.core.helpers import convert_size, try_int
 from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
 
@@ -88,11 +88,10 @@ class RarbgProvider(TorrentProvider):
         return self.token is not None
 
     def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-
         results = []
-        if not self.login(): return results
 
-        items = {'Season': [], 'Episode': [], 'RSS': []}
+        if not self.login():
+            return results
 
         if epObj is not None:
             ep_indexerid = epObj.show.indexerid
@@ -168,17 +167,18 @@ class RarbgProvider(TorrentProvider):
                             if not all([title, download_url]):
                                 continue
 
-                            item = title, download_url, size, seeders, leechers
+                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                    'leechers': leechers, 'hash': ''}
+
                             if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: %s " % title)
-                            items[mode].append(item)
+                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                            results.append(item)
                         except Exception:
                             continue
                     break
 
-            # For each search mode sort all the items by seeders
-            items[mode].sort(key=lambda tup: tup[3], reverse=True)
-            results += items[mode]
+        # Sort all the items by seeders
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 
