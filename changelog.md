@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1616bc4 - 2017-10-11: Release v9.1.34 
+- * 41d2abf - 2017-10-11: Release v9.1.35 
+- * 27f5848 - 2017-10-11: Release v9.1.34 
 - * 061f090 - 2017-10-11: Configs are now loaded and saved using system encoding to resolve unicode issues 
 - * c2e364f - 2017-10-11: Cleaned up provider code, removed providers that where no longer working 
 - * 819d4dc - 2017-10-10: Release v9.1.33 
