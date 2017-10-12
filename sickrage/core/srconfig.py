@@ -1436,7 +1436,7 @@ class srConfig(object):
                     "Config file root dir '" + os.path.dirname(sickrage.CONFIG_FILE) + "' must be writeable.")
 
         # load config
-        self.CONFIG_OBJ = ConfigObj(sickrage.CONFIG_FILE)
+        self.CONFIG_OBJ = ConfigObj(sickrage.CONFIG_FILE, encoding='utf8')
 
         # use defaults
         if defaults: self.CONFIG_OBJ.clear()
