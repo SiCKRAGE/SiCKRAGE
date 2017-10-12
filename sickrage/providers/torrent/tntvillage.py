@@ -277,7 +277,7 @@ class TNTVillageProvider(TorrentProvider):
         if len([x for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', parse_result.indexerid, with_doc=True)
                 if x['doc']['season'] == parse_result.season_number]) == len(parse_result.episode_numbers): return True
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         self.categories = "cat=" + str(self.cat)

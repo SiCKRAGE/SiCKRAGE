@@ -81,7 +81,7 @@ class GFTrackerProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -135,7 +135,7 @@ class GFTrackerProvider(TorrentProvider):
 
                                 size = -1
                                 if re.match(r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
-                                    size = convert_size(torrent_size.rstrip())
+                                    size = convert_size(torrent_size.rstrip(), -1)
 
                             except (AttributeError, TypeError):
                                 continue

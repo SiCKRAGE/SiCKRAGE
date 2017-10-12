@@ -42,7 +42,7 @@ class BitCannonProvider(TorrentProvider):
             'trackers': '{base_url}/stats'.format(**self.urls),
         })
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         try:

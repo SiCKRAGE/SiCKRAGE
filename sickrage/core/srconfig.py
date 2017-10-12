@@ -2363,7 +2363,7 @@ class srConfig(object):
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies']
+                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             new_config['Providers'][providerID] = dict(

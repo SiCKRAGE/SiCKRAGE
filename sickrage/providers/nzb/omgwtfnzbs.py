@@ -44,7 +44,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         return True
 
-    def _checkAuthFromData(self, parsed_data, is_XML=True):
+    def _check_auth_from_data(self, parsed_data, is_XML=True):
         if parsed_data is None:
             return self._check_auth()
 
@@ -80,7 +80,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         return size
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self._check_auth():
@@ -99,14 +99,14 @@ class OmgwtfnzbsProvider(NZBProvider):
             for search_string in search_strings[mode]:
                 search_params['search'] = search_string
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string.decode('utf-8')))
+                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
                 data = sickrage.srCore.srWebSession.get(self.urls['api'], params=search_params).json()
                 if not data:
                     sickrage.srCore.srLogger.debug('No data returned from provider')
                     continue
 
-                if not self._checkAuthFromData(data, is_XML=False):
+                if not self._check_auth_from_data(data, is_XML=False):
                     continue
 
                 for item in data:

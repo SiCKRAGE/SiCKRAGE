@@ -77,7 +77,7 @@ class PretomeProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -134,9 +134,7 @@ class PretomeProvider(TorrentProvider):
                                 # Need size for failed downloads handling
                                 if size is None:
                                     if re.match(r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[7].text):
-                                        size = convert_size(cells[7].text)
-                                        if not size:
-                                            size = -1
+                                        size = convert_size(cells[7].text, -1)
 
                             except (AttributeError, TypeError):
                                 continue

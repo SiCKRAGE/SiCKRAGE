@@ -81,7 +81,7 @@ class HoundDawgsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():

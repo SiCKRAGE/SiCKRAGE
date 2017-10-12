@@ -82,7 +82,7 @@ class HDTorrentsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -150,7 +150,7 @@ class HDTorrentsProvider(TorrentProvider):
                             leechers = tryInt(cells[labels.index('L')].get_text(strip=True))
                             torrent_size = cells[labels.index('Size')].get_text()
 
-                            size = convert_size(torrent_size) or -1
+                            size = convert_size(torrent_size, -1)
                             download_url = self.urls['base_url'] + '/' + cells[labels.index('Dl')].a['href']
                         except (AttributeError, TypeError, KeyError, ValueError, IndexError):
                             continue

@@ -86,7 +86,7 @@ class RarbgProvider(TorrentProvider):
 
         return self.token is not None
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -158,7 +158,7 @@ class RarbgProvider(TorrentProvider):
                         try:
                             title = item['title']
                             download_url = item['download']
-                            size = convert_size(item['size'])
+                            size = convert_size(item['size'], -1)
                             seeders = item['seeders']
                             leechers = item['leechers']
                             # pubdate = item['pubdate']

@@ -78,7 +78,7 @@ class T411Provider(TorrentProvider):
             sickrage.srCore.srLogger.warning("Token not found in authentication response")
             return False
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():

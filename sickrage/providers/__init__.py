@@ -88,10 +88,10 @@ class GenericProvider(object):
     def imageName(self):
         return ""
 
-    def check_auth(self):
+    def _check_auth(self):
         return True
 
-    def _doLogin(self):
+    def login(self):
         return True
 
     @classmethod
@@ -154,7 +154,7 @@ class GenericProvider(object):
         """
 
         # check for auth
-        if not self._doLogin:
+        if not self.login():
             return False
 
         urls = self.make_url(result.url)
@@ -226,7 +226,7 @@ class GenericProvider(object):
         quality = Quality.sceneQuality(title, anime)
         return quality
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         return []
 
     def _get_season_search_strings(self, episode):
@@ -261,7 +261,7 @@ class GenericProvider(object):
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
 
-        if not self.check_auth:
+        if not self._check_auth:
             return
 
         self.show = show
@@ -307,7 +307,7 @@ class GenericProvider(object):
 
             for curString in search_strings:
                 try:
-                    itemList += self.search(curString, epObj=epObj)
+                    itemList += self.search(curString, ep_obj=epObj)
                 except SAXParseException:
                     continue
 
@@ -951,7 +951,7 @@ class NewznabProvider(NZBProvider):
         categories = []
         message = ""
 
-        self.check_auth()
+        self._check_auth()
 
         params = {"t": "caps"}
         if self.key:
@@ -1036,21 +1036,19 @@ class NewznabProvider(NZBProvider):
     def _doGeneralSearch(self, search_string):
         return self.search({'q': search_string})
 
-    def check_auth(self):
+    def _check_auth(self):
         if self.private and not len(self.key):
             sickrage.srCore.srLogger.warning('Invalid api key for {}. Check your settings'.format(self.name))
             return False
 
         return True
 
-    def _checkAuthFromData(self, data):
-
+    def _check_auth_from_data(self, data):
         """
-
         :type data: dict
         """
         if all([x in data for x in ['feed', 'entries']]):
-            return self.check_auth()
+            return self._check_auth()
 
         try:
             if int(data['bozo']) == 1:
@@ -1075,10 +1073,10 @@ class NewznabProvider(NZBProvider):
 
         return False
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
-        if not self.check_auth():
+        if not self._check_auth():
             return results
 
         params = {
@@ -1107,7 +1105,7 @@ class NewznabProvider(NZBProvider):
 
             last_search = datetime.datetime.now()
 
-            if not self._checkAuthFromData(data):
+            if not self._check_auth_from_data(data):
                 break
 
             for item in data['entries']:

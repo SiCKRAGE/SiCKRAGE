@@ -47,7 +47,7 @@ class ShazbatProvider(TorrentProvider):
 
         return True
 
-    def _checkAuthFromData(self, data):
+    def _check_auth_from_data(self, data):
         if not self.passkey:
             self._check_auth()
         elif not (data['entries'] and data['feed']):
@@ -68,4 +68,4 @@ class ShazbatCache(tv_cache.TVCache):
         return self.getRSSFeed(rss_url)
 
     def _check_auth(self, data):
-        return self.provider._checkAuthFromData(data)
+        return self.provider._check_auth_from_data(data)

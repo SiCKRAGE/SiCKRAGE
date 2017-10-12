@@ -1635,8 +1635,10 @@ def scrub(obj):
             del obj[i]
 
 
-def convert_size(size, default=0):
-    units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+def convert_size(size, default=0, units=None):
+    if units is None:
+        units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+
     size_regex = re.compile(r'([\d+.]+)\s?({})?'.format('|'.join(units)), re.I)
 
     try:
@@ -1738,3 +1740,17 @@ def is_ip_private(ip):
     priv_20 = re.compile(r"^192\.168\.\d{1,3}.\d{1,3}$")
     priv_16 = re.compile(r"^172.(1[6-9]|2[0-9]|3[0-1]).[0-9]{1,3}.[0-9]{1,3}$")
     return priv_lo.match(ip) or priv_24.match(ip) or priv_20.match(ip) or priv_16.match(ip)
+
+
+def validate_url(value):
+    """
+    Return whether or not given value is a valid URL.
+    :param value: URL address string to validate
+    """
+
+    regex = (
+        r'^[a-z]+://([^/:]+{tld}|([0-9]{{1,3}}\.)'
+        r'{{3}}[0-9]{{1,3}})(:[0-9]+)?(\/.*)?$'
+    )
+
+    return (True, False)[not re.compile(regex.format(tld=r'\.[a-z]{2,10}')).match(value)]

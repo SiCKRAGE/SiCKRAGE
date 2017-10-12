@@ -37,7 +37,7 @@ class CpasbienProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=30)
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         size = -1

@@ -79,7 +79,7 @@ class SCCProvider(TorrentProvider):
         title = r'<title>.+? \| %s</title>' % section
         return re.search(title, text, re.IGNORECASE)
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -125,7 +125,7 @@ class SCCProvider(TorrentProvider):
                             download_url = self.urls['download'] % url['href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
-                            size = convert_size(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
+                            size = convert_size(result.find('td', attrs={'class': 'ttr_size'}).contents[0], -1)
                         except Exception:
                             continue
 

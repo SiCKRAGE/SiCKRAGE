@@ -97,7 +97,7 @@ class MoreThanTVProvider(TorrentProvider):
                 sickrage.srCore.srLogger.warning(
                     "[{}]: Invalid username or password. Check your settings".format(self.name))
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -145,7 +145,7 @@ class MoreThanTVProvider(TorrentProvider):
                             size = -1
                             if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]',
                                         result('td', class_="number_column")[0].text):
-                                size = convert_size(result('td', class_="number_column")[0].text.strip())
+                                size = convert_size(result('td', class_="number_column")[0].text.strip(), -1)
 
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:

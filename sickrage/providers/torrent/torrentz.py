@@ -52,11 +52,11 @@ class TORRENTZProvider(TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return int(match[0]) * 1024 ** 2, int(match[1]), int(match[2])
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         for mode in search_strings:
-            items = []
+
             sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 search_url = self.urls['feed']
@@ -86,7 +86,7 @@ class TORRENTZProvider(TorrentProvider):
 
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title
                         torrent_size, seeders, leechers = self._split_description(item.find('description').text)
-                        size = convert_size(torrent_size) or -1
+                        size = convert_size(torrent_size, -1)
 
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:

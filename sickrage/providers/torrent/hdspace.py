@@ -84,7 +84,7 @@ class HDSpaceProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -140,7 +140,7 @@ class HDSpaceProvider(TorrentProvider):
                         download_url = self.urls['base_url'] + dl_href
                         seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
                         leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
-                        size = convert_size(result)
+                        size = convert_size(result, -1)
 
                         if not all([title, download_url]):
                             continue

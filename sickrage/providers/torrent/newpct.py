@@ -42,7 +42,7 @@ class newpctProvider(TorrentProvider):
             'search': '{base_url}/index.php'.format(**self.urls)
         })
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         search_params = {
@@ -105,7 +105,7 @@ class newpctProvider(TorrentProvider):
                                 leechers = 0
                                 torrent_size = cells[2].get_text(strip=True)
 
-                                size = convert_size(torrent_size) or -1
+                                size = convert_size(torrent_size, -1)
                                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                                         'leechers': leechers, 'hash': ''}
 

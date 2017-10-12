@@ -94,7 +94,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         freeleech = '&free=on' if self.freeleech else ''
@@ -143,7 +143,7 @@ class IPTorrentsProvider(TorrentProvider):
                             try:
                                 title = result.find_all('td')[1].find('a').text
                                 download_url = self.urls['base_url'] + result.find_all('td')[3].find('a')['href']
-                                size = convert_size(result.find_all('td')[5].text)
+                                size = convert_size(result.find_all('td')[5].text, -1)
                                 seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).text)
                                 leechers = int(result.find('td', attrs={'class': 'ac t_leechers'}).text)
                             except (AttributeError, TypeError, KeyError):

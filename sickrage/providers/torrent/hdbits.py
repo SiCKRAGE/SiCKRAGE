@@ -50,7 +50,7 @@ class HDBitsProvider(TorrentProvider):
 
         return True
 
-    def _checkAuthFromData(self, parsedJSON):
+    def _check_auth_from_data(self, parsedJSON):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
@@ -77,7 +77,7 @@ class HDBitsProvider(TorrentProvider):
 
         return title, url
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
 
         # FIXME
         results = []
@@ -91,12 +91,12 @@ class HDBitsProvider(TorrentProvider):
         except Exception:
             return []
 
-        if self._checkAuthFromData(parsedJSON):
+        if self._check_auth_from_data(parsedJSON):
             if parsedJSON and 'data' in parsedJSON:
                 items = parsedJSON['data']
             else:
                 sickrage.srCore.srLogger.error("Resulting JSON from provider isn't correct, not parsing it")
-                items = []
+
 
             for item in items:
                 results.append(item)
@@ -192,7 +192,7 @@ class HDBitsCache(tv_cache.TVCache):
             resp = sickrage.srCore.srWebSession.post(self.provider.urls['rss'],
                                                      data=self.provider._make_post_data_JSON()).json()
 
-            if self.provider._checkAuthFromData(resp):
+            if self.provider._check_auth_from_data(resp):
                 results = resp['data']
         except Exception:
             pass

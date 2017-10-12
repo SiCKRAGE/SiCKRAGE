@@ -55,11 +55,11 @@ class NextorrentProvider(TorrentProvider):
         except Exception:
             pass
 
-    def search(self, search_strings, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         for mode in search_strings:
-            items = []
+
             sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
@@ -93,7 +93,7 @@ class NextorrentProvider(TorrentProvider):
                                         continue
 
                                     # size
-                                    size = convert_size(link.findNext('td').text) or -1
+                                    size = convert_size(link.findNext('td').text, -1)
 
                                     # Filter unseeded torrent
                                     seeders = tryInt(link.find_next('img', alt='seeders').parent.text, 0)

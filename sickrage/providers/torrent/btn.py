@@ -54,13 +54,13 @@ class BTNProvider(TorrentProvider):
 
         return True
 
-    def _checkAuthFromData(self, parsedJSON):
+    def _check_auth_from_data(self, parsedJSON):
         if parsedJSON is None:
             return self._check_auth()
 
         return True
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
 
         self._check_auth()
 
@@ -81,7 +81,7 @@ class BTNProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("No data returned from provider")
             return results
 
-        if self._checkAuthFromData(parsedJSON):
+        if self._check_auth_from_data(parsedJSON):
 
             found_torrents = {}
             if 'torrents' in parsedJSON:

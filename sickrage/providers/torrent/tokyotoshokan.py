@@ -44,7 +44,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=15)
 
-    def search(self, search_strings, age=0, ep_obj=None):  # pylint: disable=too-many-locals
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.show or not self.show.is_anime:
@@ -54,7 +54,7 @@ class TokyoToshokanProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug("Search Mode: {}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {}".format(search_string.decode("utf-8")))
+                    sickrage.srCore.srLogger.debug("Search string: {}".format(search_string))
 
                 search_params = {
                     "terms": search_string,
@@ -65,7 +65,7 @@ class TokyoToshokanProvider(TorrentProvider):
                 if not data:
                     continue
 
-                with bs4_parser(data, 'html5lib') as soup:
+                with bs4_parser(data) as soup:
                     torrent_table = soup.find('table', class_='listing')
                     torrent_rows = torrent_table('tr') if torrent_table else []
 
@@ -83,7 +83,7 @@ class TokyoToshokanProvider(TorrentProvider):
                             download_url = desc_top.find('a')['href']
 
                             desc_bottom = bot.find('td', class_='desc-bot').get_text(strip=True)
-                            size = convert_size(desc_bottom.split('|')[1].strip('Size: ')) or -1
+                            size = convert_size(desc_bottom.split('|')[1].strip('Size: '), -1)
 
                             stats = bot.find('td', class_='stats').get_text(strip=True)
                             sl = re.match(r'S:(?P<seeders>\d+)L:(?P<leechers>\d+)C:(?:\d+)ID:(?:\d+)',

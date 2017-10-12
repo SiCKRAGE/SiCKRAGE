@@ -73,7 +73,7 @@ class TorrentLeechProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -121,7 +121,7 @@ class TorrentLeechProvider(TorrentProvider):
                                 size = -1
                                 if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]',
                                             result('td', class_="listcolumn")[1].text):
-                                    size = convert_size(result('td', class_="listcolumn")[1].text.strip())
+                                    size = convert_size(result('td', class_="listcolumn")[1].text.strip(), -1)
                             except (AttributeError, TypeError):
                                 continue
 

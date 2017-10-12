@@ -85,7 +85,7 @@ class TorrentDayProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
