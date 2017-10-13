@@ -1,6 +1,7 @@
 # Changelog
 
-- * 845a082 - 2017-10-12: Cleaned up more of the provider module code Added torrent provider Abnormal Added torrent provider ArcheTorrent Added torrent provider DanishBits Added torrent provider EliteTorrent Added torrent provider FileList Added torrent provider HD4Free Added torrent provider ImmortalSeed Added torrent provider LimeTorrents Added torrent provider nCore Added torrent provider Norbits Added torrent provider SkyTorrents Added torrent provider Torrent9 Added torrent provider TorrentProject 
+- * 29d8ae0 - 2017-10-12: Fixed typo in RARBG provider 
+- * c0bdad9 - 2017-10-12: Cleaned up more of the provider module code Added torrent provider Abnormal Added torrent provider ArcheTorrent Added torrent provider DanishBits Added torrent provider EliteTorrent Added torrent provider FileList Added torrent provider HD4Free Added torrent provider ImmortalSeed Added torrent provider LimeTorrents Added torrent provider nCore Added torrent provider Norbits Added torrent provider SkyTorrents Added torrent provider Torrent9 Added torrent provider TorrentProject 
 - * a868e4b - 2017-10-11: Release v9.1.35 
 - * 27f5848 - 2017-10-11: Release v9.1.34 
 - * 061f090 - 2017-10-11: Configs are now loaded and saved using system encoding to resolve unicode issues 
