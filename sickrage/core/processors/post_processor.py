@@ -462,7 +462,7 @@ class PostProcessor(object):
                 symlink(cur_file_path, new_file_path)
                 chmodAsParent(cur_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + ex(e),
+                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + e,
                           sickrage.srCore.srLogger.ERROR)
                 raise
 
@@ -1130,7 +1130,7 @@ class PostProcessor(object):
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
                                      sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
                                      sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
-            elif self.process_method == self.METHOD_SYMLINK_REVERSED:
+            elif self.process_method == self.PROCESS_METHOD_SYMLINK_REVERSED:
                 self._symlink(self.file_path, dest_path, new_base_name, sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
                               sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
             else:

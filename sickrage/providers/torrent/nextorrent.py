@@ -33,7 +33,6 @@ class NextorrentProvider(TorrentProvider):
 
         super(NextorrentProvider, self).__init__("Nextorrent", 'http://nextorrent.pw', False)
 
-        self.supports_backlog = True
         self.confirmed = True
         self.ratio = None
         self.minseed = None
@@ -42,7 +41,7 @@ class NextorrentProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=15)
 
         self.urls.update({
-            'series': '{base_url}/torrents/series'.format(base_url=self.urls['base_url'])
+            'series': '{base_url}/torrents/series'.format(**self.urls)
         })
 
     def seed_ratio(self):
@@ -56,11 +55,11 @@ class NextorrentProvider(TorrentProvider):
         except Exception:
             pass
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         for mode in search_strings:
-            items = []
+
             sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
@@ -94,7 +93,7 @@ class NextorrentProvider(TorrentProvider):
                                         continue
 
                                     # size
-                                    size = convert_size(link.findNext('td').text) or -1
+                                    size = convert_size(link.findNext('td').text, -1)
 
                                     # Filter unseeded torrent
                                     seeders = tryInt(link.find_next('img', alt='seeders').parent.text, 0)
@@ -107,7 +106,7 @@ class NextorrentProvider(TorrentProvider):
                                                     title, seeders, leechers))
                                         continue
 
-                                    items += [{
+                                    results += [{
                                         'title': title,
                                         'link': download_url,
                                         'size': size,
@@ -118,8 +117,7 @@ class NextorrentProvider(TorrentProvider):
                                     if mode != 'RSS':
                                         sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-            # Sort all the items by seeders if available
-            items.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
-            results += items
+        # Sort all the items by seeders if available
+        results.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
 
         return results

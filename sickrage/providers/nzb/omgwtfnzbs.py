@@ -18,12 +18,8 @@
 
 from __future__ import unicode_literals
 
-import datetime
-import urllib
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.classes import Proper
 from sickrage.core.helpers.show_names import makeSceneSearchString, \
     makeSceneSeasonSearchString
 from sickrage.providers import NZBProvider
@@ -38,11 +34,9 @@ class OmgwtfnzbsProvider(NZBProvider):
         self.cache = OmgwtfnzbsCache(self, min_time=20)
 
         self.urls.update({
-            'search': 'api.{base_url}/json/?catid=19,20'.format(base_url=self.urls['base_url']),
-            'rss': 'rss.{base_url}/rss-download.php?catid=19,20'.format(base_url=self.urls['base_url'])
+            'api': 'api.{base_url}/json'.format(**self.urls),
+            'rss': 'rss.{base_url}/rss-download.php'.format(**self.urls)
         })
-
-        self.supports_backlog = True
 
     def _check_auth(self):
         if not self.username or not self.api_key:
@@ -50,7 +44,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         return True
 
-    def _checkAuthFromData(self, parsed_data, is_XML=True):
+    def _check_auth_from_data(self, parsed_data, is_XML=True):
         if parsed_data is None:
             return self._check_auth()
 
@@ -86,52 +80,41 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         return size
 
-    def search(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
+
         if not self._check_auth():
             return results
 
-        params = {
+        search_params = {
             'user': self.username,
             'api': self.api_key,
             'eng': 1,
-            'retention': sickrage.srCore.srConfig.USENET_RETENTION,
-            'search': search
+            'catid': '19,20',  # SD,HD
+            'retention': sickrage.srCore.srConfig.USENET_RETENTION
         }
 
-        sickrage.srCore.srLogger.debug("Search url: %s?%s" % (self.urls['search'], urllib.urlencode(params)))
+        for mode in search_strings:
+            sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
+            for search_string in search_strings[mode]:
+                search_params['search'] = search_string
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-        try:
-            parsedJSON = sickrage.srCore.srWebSession.get(self.urls['search'], params=params, cache=False).json()
-        except Exception:
-            return []
-
-        if self._checkAuthFromData(parsedJSON, is_XML=False):
-            for item in parsedJSON:
-                if not self._get_title_and_url(item):
+                data = sickrage.srCore.srWebSession.get(self.urls['api'], params=search_params).json()
+                if not data:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
                     continue
 
-                sickrage.srCore.srLogger.debug("Found result: %s " % item.get('release'))
-                results.append(item)
+                if not self._check_auth_from_data(data, is_XML=False):
+                    continue
 
-        return results
+                for item in data:
+                    if not self._get_title_and_url(item):
+                        continue
 
-    def find_propers(self, search_date=None):
-        search_terms = ['.PROPER.', '.REPACK.']
-        results = []
-
-        for term in search_terms:
-            for item in self.search(term, retention=4):
-                if 'usenetage' in item:
-
-                    title, url = self._get_title_and_url(item)
-                    try:
-                        result_date = datetime.datetime.fromtimestamp(int(item['usenetage']))
-                    except Exception:
-                        result_date = None
-
-                    if result_date:
-                        results.append(Proper(title, url, result_date, self.show))
+                    sickrage.srCore.srLogger.debug('Found result: {}'.format(item.get('release')))
+                    results.append(item)
 
         return results
 
@@ -149,13 +132,14 @@ class OmgwtfnzbsCache(TVCache):
         title = item.get('title', '').replace(' ', '.')
         url = item.get('link', '').replace('&amp;', '&')
 
-        return (title, url)
+        return title, url
 
     def _get_rss_data(self):
-        params = {
+        search_params = {
             'user': self.provider.username,
             'api': self.provider.api_key,
-            'eng': 1
+            'eng': 1,
+            'catid': '19,20'  # SD,HD
         }
 
-        return self.getRSSFeed(self.provider.urls['rss'], params=params)
+        return self.getRSSFeed(self.provider.urls['rss'], params=search_params)

@@ -32,8 +32,6 @@ class TorrentBytesProvider(TorrentProvider):
 
         super(TorrentBytesProvider, self).__init__("TorrentBytes", 'http://www.torrentbytes.net', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -42,10 +40,10 @@ class TorrentBytesProvider(TorrentProvider):
         self.freeleech = False
 
         self.urls.update({
-            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/browse.php?search=%s%s'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/download.php?id=%s&name=%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/takelogin.php'.format(**self.urls),
+            'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
+            'search': '{base_url}/browse.php?search=%s%s'.format(**self.urls),
+            'download': '{base_url}/download.php?id=%s&name=%s'.format(**self.urls)
         })
 
         self.categories = "&c41=1&c33=1&c38=1&c32=1&c37=1"
@@ -73,7 +71,7 @@ class TorrentBytesProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -136,9 +134,7 @@ class TorrentBytesProvider(TorrentProvider):
                                 # Need size for failed downloads handling
                                 if size is None:
                                     if re.match(r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[6].text):
-                                        size = convert_size(cells[6].text)
-                                        if not size:
-                                            size = -1
+                                        size = convert_size(cells[6].text, -1)
 
                             except (AttributeError, TypeError):
                                 continue

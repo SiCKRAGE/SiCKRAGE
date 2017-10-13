@@ -33,8 +33,6 @@ class GFTrackerProvider(TorrentProvider):
     def __init__(self):
         super(GFTrackerProvider, self).__init__("GFTracker", 'http://www.thegft.org', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -42,9 +40,9 @@ class GFTrackerProvider(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            'login': '{base_url}/loginsite.php'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/browse.php?view=%s%s'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/loginsite.php'.format(**self.urls),
+            'search': '{base_url}/browse.php?view=%s%s'.format(**self.urls),
+            'download': '{base_url}/%s'.format(**self.urls)
         })
 
         self.cookies = None
@@ -83,7 +81,7 @@ class GFTrackerProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -136,8 +134,8 @@ class GFTrackerProvider(TorrentProvider):
                                 leechers = int(shares[1])
 
                                 size = -1
-                                if re.match(r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
-                                    size = convert_size(torrent_size.rstrip())
+                                if re.match(r"\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
+                                    size = convert_size(torrent_size.rstrip(), -1)
 
                             except (AttributeError, TypeError):
                                 continue
@@ -149,8 +147,8 @@ class GFTrackerProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: "
+                                        "{} (S:{} L:{})".format(title, seeders, leechers))
                                 continue
 
                             item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
@@ -163,7 +161,7 @@ class GFTrackerProvider(TorrentProvider):
                 except Exception:
                     sickrage.srCore.srLogger.error("Failed parsing provider.")
 
-                    # Sort all the items by seeders if available
+        # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results

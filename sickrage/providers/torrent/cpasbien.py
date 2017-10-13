@@ -28,18 +28,16 @@ class CpasbienProvider(TorrentProvider):
     def __init__(self):
         super(CpasbienProvider, self).__init__("Cpasbien", "http://www.cpasbien.io", False)
 
-        self.supports_backlog = True
-
         self.ratio = None
         self.urls.update({
-            'download': '{base_url}/telechargement/%s'.format(base_url=self.urls['base_url'])
+            'download': '{base_url}/telechargement/%s'.format(**self.urls)
         })
 
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self, min_time=30)
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         size = -1

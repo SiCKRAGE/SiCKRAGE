@@ -60,7 +60,7 @@ class GenericProvider(object):
         self.urls = {'base_url': url}
         self.private = private
         self.show = None
-        self.supports_backlog = False
+        self.supports_backlog = True
         self.supports_absolute_numbering = False
         self.anime_only = False
         self.search_mode = 'eponly'
@@ -88,10 +88,10 @@ class GenericProvider(object):
     def imageName(self):
         return ""
 
-    def check_auth(self):
+    def _check_auth(self):
         return True
 
-    def _doLogin(self):
+    def login(self):
         return True
 
     @classmethod
@@ -109,7 +109,7 @@ class GenericProvider(object):
         return SearchResult(episodes)
 
     def make_url(self, url):
-        urls = []
+        urls = [url]
 
         bt_cache_urls = [
             'https://torrentproject.se/torrent/{torrent_hash}.torrent',
@@ -120,29 +120,24 @@ class GenericProvider(object):
         ]
 
         if url.startswith('magnet'):
+            torrent_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
+
             try:
-                torrent_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
-
-                try:
-                    torrent_name = re.findall('dn=([^&]+)', url)[0]
-                except Exception:
-                    torrent_name = 'NO_DOWNLOAD_NAME'
-
-                if len(torrent_hash) == 32:
-                    torrent_hash = b16encode(b32decode(torrent_hash)).upper()
-
-                if not torrent_hash:
-                    sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
-                    return urls
-
-                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in bt_cache_urls]
+                torrent_name = re.findall('dn=([^&]+)', url)[0]
             except Exception:
-                sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + url)
+                torrent_name = 'NO_DOWNLOAD_NAME'
+
+            if len(torrent_hash) == 32:
+                torrent_hash = b16encode(b32decode(torrent_hash)).upper()
+
+            if not torrent_hash:
+                sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
-        else:
-            urls = [url]
+
+            urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in bt_cache_urls]
 
         random.shuffle(urls)
+
         return urls
 
     def make_filename(self, name):
@@ -154,7 +149,7 @@ class GenericProvider(object):
         """
 
         # check for auth
-        if not self._doLogin:
+        if not self.login():
             return False
 
         urls = self.make_url(result.url)
@@ -226,7 +221,7 @@ class GenericProvider(object):
         quality = Quality.sceneQuality(title, anime)
         return quality
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         return []
 
     def _get_season_search_strings(self, episode):
@@ -261,7 +256,7 @@ class GenericProvider(object):
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
 
-        if not self.check_auth:
+        if not self._check_auth:
             return
 
         self.show = show
@@ -307,7 +302,7 @@ class GenericProvider(object):
 
             for curString in search_strings:
                 try:
-                    itemList += self.search(curString, search_mode, len(episodes), epObj=epObj)
+                    itemList += self.search(curString, ep_obj=epObj)
                 except SAXParseException:
                     continue
 
@@ -495,7 +490,6 @@ class GenericProvider(object):
                 add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
                                       dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
                 return True
-
         return False
 
     @classmethod
@@ -934,7 +928,6 @@ class NewznabProvider(NZBProvider):
         self.search_fallback = search_fallback
         self.enable_daily = enable_daily
         self.enable_backlog = enable_backlog
-        self.supports_backlog = True
 
         self.catIDs = catIDs
         self.default = default
@@ -952,7 +945,7 @@ class NewznabProvider(NZBProvider):
         categories = []
         message = ""
 
-        self.check_auth()
+        self._check_auth()
 
         params = {"t": "caps"}
         if self.key:
@@ -968,7 +961,7 @@ class NewznabProvider(NZBProvider):
                     categories += [{"id": x["@id"], "name": x["@name"]} for x in category["subcat"]]
 
             success = True
-        except Exception as e:
+        except Exception:
             sickrage.srCore.srLogger.debug("[%s] failed to list categories" % self.name)
             message = "[%s] failed to list categories" % self.name
 
@@ -1037,21 +1030,19 @@ class NewznabProvider(NZBProvider):
     def _doGeneralSearch(self, search_string):
         return self.search({'q': search_string})
 
-    def check_auth(self):
+    def _check_auth(self):
         if self.private and not len(self.key):
             sickrage.srCore.srLogger.warning('Invalid api key for {}. Check your settings'.format(self.name))
             return False
 
         return True
 
-    def _checkAuthFromData(self, data):
-
+    def _check_auth_from_data(self, data):
         """
-
         :type data: dict
         """
         if all([x in data for x in ['feed', 'entries']]):
-            return self.check_auth()
+            return self._check_auth()
 
         try:
             if int(data['bozo']) == 1:
@@ -1076,10 +1067,10 @@ class NewznabProvider(NZBProvider):
 
         return False
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
-        if not self.check_auth():
+        if not self._check_auth():
             return results
 
         params = {
@@ -1108,7 +1099,7 @@ class NewznabProvider(NZBProvider):
 
             last_search = datetime.datetime.now()
 
-            if not self._checkAuthFromData(data):
+            if not self._check_auth_from_data(data):
                 break
 
             for item in data['entries']:
@@ -1147,7 +1138,6 @@ class NewznabProvider(NZBProvider):
 
     def find_propers(self, search_date=datetime.datetime.today()):
         results = []
-        dbData = []
 
         for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             for episode in [e['doc'] for e in

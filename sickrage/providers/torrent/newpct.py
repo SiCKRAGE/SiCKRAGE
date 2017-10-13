@@ -34,16 +34,15 @@ class newpctProvider(TorrentProvider):
     def __init__(self):
         super(newpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
-        self.supports_backlog = True
         self.onlyspasearch = None
 
         self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
-            'search': '{base_url}/index.php'.format(base_url=self.urls['base_url'])
+            'search': '{base_url}/index.php'.format(**self.urls)
         })
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         search_params = {
@@ -54,7 +53,7 @@ class newpctProvider(TorrentProvider):
             'bus_de_': 'All'
         }
 
-        lang_info = '' if not epObj or not epObj.show else epObj.show.lang
+        lang_info = '' if not ep_obj or not ep_obj.show else ep_obj.show.lang
 
         for mode in search_strings.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
@@ -106,7 +105,7 @@ class newpctProvider(TorrentProvider):
                                 leechers = 0
                                 torrent_size = cells[2].get_text(strip=True)
 
-                                size = convert_size(torrent_size) or -1
+                                size = convert_size(torrent_size, -1)
                                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                                         'leechers': leechers, 'hash': ''}
 
@@ -155,7 +154,7 @@ class newpctProvider(TorrentProvider):
         title_1080p = re.search(r'1080p', title, flags=re.I)
         title_x264 = re.search(r'x264', title, flags=re.I)
         title_bluray = re.search(r'bluray', title, flags=re.I)
-        title_serie_hd = re.search(r'descargar\-seriehd', title, flags=re.I)
+        title_serie_hd = re.search(r'descargar-seriehd', title, flags=re.I)
         url_hdtv = re.search(r'HDTV', url, flags=re.I)
         url_720p = re.search(r'720p', url, flags=re.I)
         url_1080p = re.search(r'1080p', url, flags=re.I)

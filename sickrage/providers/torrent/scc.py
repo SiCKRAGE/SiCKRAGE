@@ -33,8 +33,6 @@ class SCCProvider(TorrentProvider):
 
         super(SCCProvider, self).__init__("SceneAccess", 'http://sceneaccess.eu', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -44,15 +42,17 @@ class SCCProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
-            'login': '{base_url}/login'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/details?id=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/all?search=%s&method=1&%s'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/login'.format(**self.urls),
+            'detail': '{base_url}/details?id=%s'.format(**self.urls),
+            'search': '{base_url}/all?search=%s&method=1&%s'.format(**self.urls),
+            'download': '{base_url}/%s'.format(**self.urls)
         })
 
-        self.categories = {'sponly': 'c26=26&c44=44&c45=45',
-                           # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
-                           'eponly': 'c27=27&c17=17&c44=44&c45=45&c33=33&c34=34'}  # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
+        self.categories = {
+            'Season': 'c26=26&c44=44&c45=45',  # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
+            'Episode': 'c17=17&c27=27&c33=33&c34=34&c44=44&c45=45',  # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
+            'RSS': 'c17=17&c26=26&c27=27&c33=33&c34=34&c44=44&c45=45'  # Season + Episode
+        }
 
     def login(self):
 
@@ -79,7 +79,7 @@ class SCCProvider(TorrentProvider):
         title = r'<title>.+? \| %s</title>' % section
         return re.search(title, text, re.IGNORECASE)
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -92,7 +92,7 @@ class SCCProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[search_mode])
+                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[mode])
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
@@ -125,7 +125,7 @@ class SCCProvider(TorrentProvider):
                             download_url = self.urls['download'] % url['href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
-                            size = convert_size(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
+                            size = convert_size(result.find('td', attrs={'class': 'ttr_size'}).contents[0], -1)
                         except Exception:
                             continue
 

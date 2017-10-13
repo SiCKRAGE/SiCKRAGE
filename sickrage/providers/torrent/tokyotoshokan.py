@@ -18,11 +18,11 @@
 
 from __future__ import unicode_literals
 
-import urllib
+import re
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import show_names, bs4_parser
+from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.helpers import bs4_parser, try_int, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -31,92 +31,89 @@ class TokyoToshokanProvider(TorrentProvider):
 
         super(TokyoToshokanProvider, self).__init__("TokyoToshokan", 'http://tokyotosho.info', False)
 
-        self.supports_backlog = True
-
         self.supports_absolute_numbering = True
         self.anime_only = True
-        self.ratio = None
 
-        self.cache = TokyoToshokanCache(self, min_time=15)
+        self.minseed = None
+        self.minleech = None
 
-    def seed_ratio(self):
-        return self.ratio
+        self.urls.update({
+            'search': '{base_url}/search.php'.format(**self.urls),
+            'rss': '{base_url}/rss.php'.format(**self.urls)
+        })
 
-    def _get_season_search_strings(self, ep_obj):
-        return [x.replace('.', ' ') for x in show_names.makeSceneSeasonSearchString(self.show, ep_obj)]
+        self.cache = TVCache(self, min_time=15)
 
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return [x.replace('.', ' ') for x in show_names.makeSceneSearchString(self.show, ep_obj)]
-
-    def search(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
-        # FIXME ADD MODE
-        if self.show and not self.show.is_anime:
-            return []
-
-        sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
-
-        params = {
-            "terms": search_string.encode('utf-8'),
-            "type": 1,  # get anime types
-        }
-
-        searchURL = self.urls['base_url'] + '/search.php?' + urllib.urlencode(params)
-        sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
-
-        try:
-            data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
-        except Exception:
-            sickrage.srCore.srLogger.debug("No data returned from provider")
-            return []
-
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
-        try:
-            with bs4_parser(data) as html:
-                torrent_table = html.find('table', attrs={'class': 'listing'})
-                torrent_rows = torrent_table.find_all('tr') if torrent_table else []
-                if torrent_rows:
-                    if torrent_rows[0].find('td', attrs={'class': 'centertext'}):
-                        a = 1
-                    else:
-                        a = 0
 
-                    for top, bottom in zip(torrent_rows[a::2], torrent_rows[a::2]):
-                        title = top.find('td', attrs={'class': 'desc-top'}).text
-                        title.lstrip()
-                        download_url = top.find('td', attrs={'class': 'desc-top'}).find('a')['href']
-                        # FIXME
-                        size = -1
-                        seeders = 1
-                        leechers = 0
+        if not self.show or not self.show.is_anime:
+            return results
+
+        for mode in search_strings:
+            sickrage.srCore.srLogger.debug("Search Mode: {}".format(mode))
+            for search_string in search_strings[mode]:
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: {}".format(search_string))
+
+                search_params = {
+                    "terms": search_string,
+                    "type": 1,  # get anime types
+                }
+
+                data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                if not data:
+                    continue
+
+                with bs4_parser(data) as soup:
+                    torrent_table = soup.find('table', class_='listing')
+                    torrent_rows = torrent_table('tr') if torrent_table else []
+
+                    # Continue only if one Release is found
+                    if len(torrent_rows) < 2:
+                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                        continue
+
+                    a = 1 if len(torrent_rows[0]('td')) < 2 else 0
+
+                    for top, bot in zip(torrent_rows[a::2], torrent_rows[a + 1::2]):
+                        try:
+                            desc_top = top.find('td', class_='desc-top')
+                            title = desc_top.get_text(strip=True)
+                            download_url = desc_top.find('a')['href']
+
+                            desc_bottom = bot.find('td', class_='desc-bot').get_text(strip=True)
+                            size = convert_size(desc_bottom.split('|')[1].strip('Size: '), -1)
+
+                            stats = bot.find('td', class_='stats').get_text(strip=True)
+                            sl = re.match(r'S:(?P<seeders>\d+)L:(?P<leechers>\d+)C:(?:\d+)ID:(?:\d+)',
+                                          stats.replace(' ', ''))
+                            seeders = try_int(sl.group('seeders')) if sl else 0
+                            leechers = try_int(sl.group('leechers')) if sl else 0
+                        except StandardError:
+                            continue
 
                         if not all([title, download_url]):
                             continue
 
                         # Filter unseeded torrent
-                        # if seeders < self.minseed or leechers < self.minleech:
-                        #    if mode != 'RSS':
-                        #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
-                        #    continue
+                        if seeders < self.minseed or leechers < self.minleech:
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} "
+                                    "(S:{} L:{})".format
+                                    (title, seeders, leechers))
+                            continue
 
-                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
+                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                'leechers': leechers, 'hash': ''}
+
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
                         results.append(item)
 
-        except Exception:
-            sickrage.srCore.srLogger.error("Failed parsing provider.")
+        # Sort all the items by seeders if available
+        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
-        # FIXME SORTING
         return results
-
-
-class TokyoToshokanCache(tv_cache.TVCache):
-    def _get_rss_data(self):
-        params = {
-            "filter": '1',
-        }
-
-        url = self.provider.urls['base_url'] + '/rss.php?' + urllib.urlencode(params)
-
-        sickrage.srCore.srLogger.debug("Cache update URL: %s" % url)
-
-        return self.getRSSFeed(url)

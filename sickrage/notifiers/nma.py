@@ -59,7 +59,9 @@ class NMA_Notifier(srNotifiers):
                     self._apikey.append(k)
 
     def delkey(self, key):
-        "Removes a key (unregister ?)"
+        """
+        Removes a key (unregister ?)
+        """
         if type(key) == str:
             if key in self._apikey:
                 self._apikey.remove(key)

@@ -32,7 +32,6 @@ class TORRENTZProvider(TorrentProvider):
 
         super(TORRENTZProvider, self).__init__("Torrentz", 'http://torrentz2.eu', False)
 
-        self.supports_backlog = True
         self.confirmed = True
         self.ratio = None
         self.minseed = None
@@ -41,8 +40,8 @@ class TORRENTZProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=15)
 
         self.urls.update({
-            'verified': '{base_url}/feed_verified'.format(base_url=self.urls['base_url']),
-            'feed': '{base_url}/feed'.format(base_url=self.urls['base_url'])
+            'verified': '{base_url}/feed_verified'.format(**self.urls),
+            'feed': '{base_url}/feed'.format(**self.urls)
         })
 
     def seed_ratio(self):
@@ -53,11 +52,11 @@ class TORRENTZProvider(TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return int(match[0]) * 1024 ** 2, int(match[1]), int(match[2])
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         for mode in search_strings:
-            items = []
+
             sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 search_url = self.urls['feed']
@@ -87,7 +86,7 @@ class TORRENTZProvider(TorrentProvider):
 
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title
                         torrent_size, seeders, leechers = self._split_description(item.find('description').text)
-                        size = convert_size(torrent_size) or -1
+                        size = convert_size(torrent_size, -1)
 
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
@@ -97,7 +96,7 @@ class TORRENTZProvider(TorrentProvider):
                                         title, seeders, leechers))
                             continue
 
-                        items += [{
+                        results += [{
                             'title': title,
                             'link': download_url,
                             'size': size,
@@ -106,8 +105,7 @@ class TORRENTZProvider(TorrentProvider):
                             'hash': t_hash
                         }]
 
-            # Sort all the items by seeders if available
-            items.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
-            results += items
+        # Sort all the items by seeders if available
+        results.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
 
         return results

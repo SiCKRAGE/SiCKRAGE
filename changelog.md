@@ -1,8 +1,15 @@
 # Changelog
 
-- * 41d2abf - 2017-10-11: Release v9.1.35 
+- * 1337903 - 2017-10-13: Release v9.1.36 
+- * 47dc9a4 - 2017-10-13: Misc code cleanup 
+- * e127e2a - 2017-10-12: Fixed some typo&#x27;s 
+- * a4c60fe - 2017-10-12: Fixed small issue with HDBits 
+- * 915f04c - 2017-10-12: Fixed typo in RARBG provider 
+- * c0bdad9 - 2017-10-12: Cleaned up more of the provider module code Added torrent provider Abnormal Added torrent provider ArcheTorrent Added torrent provider DanishBits Added torrent provider EliteTorrent Added torrent provider FileList Added torrent provider HD4Free Added torrent provider ImmortalSeed Added torrent provider LimeTorrents Added torrent provider nCore Added torrent provider Norbits Added torrent provider SkyTorrents Added torrent provider Torrent9 Added torrent provider TorrentProject 
+- * a868e4b - 2017-10-11: Release v9.1.35 
 - * 27f5848 - 2017-10-11: Release v9.1.34 
 - * 061f090 - 2017-10-11: Configs are now loaded and saved using system encoding to resolve unicode issues 
+- * a748503 - 2017-10-11: Cleanup of all provider module code 
 - * c2e364f - 2017-10-11: Cleaned up provider code, removed providers that where no longer working 
 - * 819d4dc - 2017-10-10: Release v9.1.33 
 - * d9cfc11 - 2017-10-10: Fixed issues with restoring older backup files that may contain sickbeard.db file Fixed issues with saving config when unicode values present Fixed issues with properly displaying synoindex errors 

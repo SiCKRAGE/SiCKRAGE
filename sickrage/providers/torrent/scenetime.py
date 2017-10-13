@@ -31,8 +31,6 @@ class SceneTimeProvider(TorrentProvider):
 
         super(SceneTimeProvider, self).__init__("SceneTime", 'http://www.scenetime.com', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -44,10 +42,10 @@ class SceneTimeProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
-            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/browse_API.php'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/takelogin.php'.format(**self.urls),
+            'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
+            'search': '{base_url}/browse_API.php'.format(**self.urls),
+            'download': '{base_url}/download.php/%s/%s'.format(**self.urls)
         })
 
         self.categories = [2, 42, 9, 63, 77, 79, 100, 83]
@@ -77,7 +75,7 @@ class SceneTimeProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():

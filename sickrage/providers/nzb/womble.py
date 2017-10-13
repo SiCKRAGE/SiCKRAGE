@@ -53,5 +53,5 @@ class WombleCache(tv_cache.TVCache):
 
         return True
 
-    def check_auth(self, data):
+    def _check_auth(self, data):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

@@ -30,6 +30,7 @@ from sickrage.providers import NZBProvider
 class BinSearchProvider(NZBProvider):
     def __init__(self):
         super(BinSearchProvider, self).__init__("BinSearch", 'http://www.binsearch.info', False)
+        self.supports_backlog = False
 
         self.cache = BinSearchCache(self)
 
@@ -98,5 +99,5 @@ class BinSearchCache(tv_cache.TVCache):
 
         return True
 
-    def check_auth(self, data):
+    def _check_auth(self, data):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

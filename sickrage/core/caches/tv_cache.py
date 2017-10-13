@@ -51,7 +51,7 @@ class TVCache(object):
         if self.search_params:
             return {'entries': self.provider.search(self.search_params)}
 
-    def check_auth(self, data):
+    def _check_auth(self, data):
         return True
 
     def check_item(self, title, url):
@@ -62,7 +62,7 @@ class TVCache(object):
         if self.should_update():
             try:
                 data = self._get_rss_data()
-                if not self.check_auth(data):
+                if not self._check_auth(data):
                     return False
 
                 # clear cache

@@ -55,7 +55,7 @@ from sickrage.core.exceptions import CantRefreshShowException, \
 from sickrage.core.helpers import argToBool, backupSR, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
-    sanitizeFileName, tryInt, clean_url, try_int
+    sanitizeFileName, tryInt, clean_url, try_int, validate_url
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
@@ -4438,6 +4438,11 @@ class ConfigProviders(Config):
 
                 if hasattr(providerObj, 'cookies'):
                     providerObj.cookies = str(kwargs.get(providerID + '_cookies', '')).strip()
+
+                if hasattr(providerObj, 'custom_url'):
+                    provider_url = str(kwargs.get(providerID + '_custom_url', '')).strip()
+                    if provider_url == '' or validate_url(provider_url):
+                        providerObj.custom_url = provider_url
             except Exception as e:
                 continue
 

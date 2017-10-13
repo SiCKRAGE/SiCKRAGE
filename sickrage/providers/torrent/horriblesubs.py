@@ -36,13 +36,13 @@ class HorribleSubsProvider(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            'search': '{base_url}/lib/search.php'.format(base_url=self.urls['base_url']),
-            'rss': '{base_url}/lib/latest.php'.format(base_url=self.urls['base_url'])
+            'search': '{base_url}/lib/search.php'.format(**self.urls),
+            'rss': '{base_url}/lib/latest.php'.format(**self.urls)
         })
 
         self.cache = TVCache(self, min_time=15)
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         search_params = {

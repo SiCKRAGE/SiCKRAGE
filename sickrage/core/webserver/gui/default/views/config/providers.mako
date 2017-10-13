@@ -5,7 +5,7 @@
     import sickrage
     from sickrage.providers import NZBProvider, TorrentProvider, NewznabProvider, TorrentRssProvider
     from sickrage.providers.torrent import thepiratebay
-    from sickrage.core.helpers import anon_url
+    from sickrage.core.helpers import anon_url, validate_url
 %>
 
 <%block name="tabs">
@@ -86,11 +86,15 @@
                 <ul id="provider_order_list">
                     % for providerID, providerObj in sickrage.srCore.providersDict.sort().items():
                         % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srCore.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.srCore.srConfig.USE_TORRENTS):
+                        <% provider_url = providerObj.urls.get('base_url', '') %>
+                        % if hasattr(providerObj, 'custom_url') and validate_url(providerObj.custom_url):
+                            <% provider_url = providerObj.custom_url %>
+                        % endif
                             <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]}"
                                 id="${providerID}">
                                 <input type="checkbox" id="enable_${providerID}"
                                        class="provider_enabler" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
-                                <a href="${anon_url(providerObj.urls['base_url'])}" class="imgLink"
+                                <a href="${anon_url(provider_url)}" class="imgLink"
                                    rel="noreferrer"
                                    onclick="window.open(this.href, '_blank'); return false;"><img
                                         src="${srWebRoot}/images/providers/${providerObj.imageName}"
@@ -398,6 +402,27 @@
 
                 % for providerID, providerObj in sickrage.srCore.providersDict.all_torrent().items():
                     <div class="providerDiv" id="${providerID}Div">
+                        % if hasattr(providerObj, 'custom_url'):
+                            <div class="row field-pair">
+                                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <label class="component-title">Custom URL:</label>
+                                </div>
+                                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-globe"></span>
+                                        </div>
+                                        <input name="${providerID}_custom_url"
+                                               id="${providerID}_custom_url"
+                                               value="${providerObj.custom_url}"
+                                               title="Provider custom url"
+                                               class="form-control"
+                                               autocapitalize="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                        % endif
+
                         % if hasattr(providerObj, 'api_key'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">

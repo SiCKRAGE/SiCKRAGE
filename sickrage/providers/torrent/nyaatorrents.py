@@ -31,8 +31,6 @@ class NyaaProvider(TorrentProvider):
     def __init__(self):
         super(NyaaProvider, self).__init__("NyaaTorrents", 'http://nyaa.si', False)
 
-        self.supports_backlog = True
-
         self.supports_absolute_numbering = True
         self.anime_only = True
         self.ratio = None
@@ -43,7 +41,7 @@ class NyaaProvider(TorrentProvider):
         self.minleech = 0
         self.confirmed = False
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if self.show and not self.show.is_anime:
@@ -78,7 +76,7 @@ class NyaaProvider(TorrentProvider):
                         continue
 
                     seeders, leechers, size, verified = s.findall(curItem['summary'])[0]
-                    size = convert_size(size)
+                    size = convert_size(size, -1)
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:

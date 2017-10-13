@@ -30,8 +30,6 @@ class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
         super(HoundDawgsProvider, self).__init__("HoundDawgs", 'http://hounddawgs.org', True)
 
-        self.supports_backlog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -41,8 +39,8 @@ class HoundDawgsProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
-            'search': '{base_url}/torrents.php'.format(base_url=self.urls['base_url']),
-            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url'])
+            'search': '{base_url}/torrents.php'.format(**self.urls),
+            'login': '{base_url}/login.php'.format(**self.urls)
         })
 
         self.search_params = {
@@ -83,7 +81,7 @@ class HoundDawgsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():

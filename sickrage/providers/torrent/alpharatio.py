@@ -29,7 +29,6 @@ from sickrage.providers import TorrentProvider
 class AlphaRatioProvider(TorrentProvider):
     def __init__(self):
         super(AlphaRatioProvider, self).__init__("AlphaRatio", 'http://alpharatio.cc', True)
-        self.supports_backlog = True
         self.username = None
         self.password = None
         self.ratio = None
@@ -37,10 +36,10 @@ class AlphaRatioProvider(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
-            'detail': '{base_url}/torrents.php?torrentid=%s'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/login.php'.format(**self.urls),
+            'detail': '{base_url}/torrents.php?torrentid=%s'.format(**self.urls),
+            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(**self.urls),
+            'download': '{base_url}/%s'.format(**self.urls)
         })
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"
@@ -69,7 +68,7 @@ class AlphaRatioProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():

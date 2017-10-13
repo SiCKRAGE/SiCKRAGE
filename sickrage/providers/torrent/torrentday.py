@@ -45,9 +45,9 @@ class TorrentDayProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
         self.urls.update({
-            'login': '{base_url}/t'.format(base_url=self.urls['base_url']),
-            'search': '{base_url}/V3/API/API.php'.format(base_url=self.urls['base_url']),
-            'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
+            'login': '{base_url}/t'.format(**self.urls),
+            'search': '{base_url}/V3/API/API.php'.format(**self.urls),
+            'download': '{base_url}/download.php/%s/%s'.format(**self.urls)
         })
 
         self.categories = {
@@ -85,7 +85,7 @@ class TorrentDayProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -109,7 +109,7 @@ class TorrentDayProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data, cache=False).json()
                     torrents = data['Fs'][0]['Cn']['torrents']
-                except Exception as e:
+                except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 

@@ -19,106 +19,162 @@
 from __future__ import unicode_literals
 
 import re
-from urllib import urlencode
+from urlparse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size, try_int
+from sickrage.core.helpers import convert_size, try_int, validate_url, bs4_parser
 from sickrage.providers import TorrentProvider
 
 
 class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
-
-        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'http://pirateproxy.la', False)
-
-        self.supports_backlog = True
+        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.se', False)
 
         self.ratio = None
         self.confirmed = True
         self.minseed = None
         self.minleech = None
 
+        # URLs
         self.urls.update({
-            'search': '{base_url}/s/'.format(base_url=self.urls['base_url']),
-            'rss': '{base_url}/tv/latest'.format(base_url=self.urls['base_url'])
+            "rss": [
+                "{base_url}/browse/208/0/4/0".format(**self.urls),
+                "{base_url}/browse/205/0/4/0".format(**self.urls)
+            ],
+            "search": "{base_url}/search".format(**self.urls),
         })
 
-        self.re_title_url = r'/torrent/(?P<id>\d+)/(?P<title>.*?)".+?(?P<url>magnet.*?)".+?Size (?P<size>[\d\.]*&nbsp;[TGKMiB]{2,3}).+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
+        self.custom_url = ""
 
-        self.cache = TVCache(self, min_time=30)
+        # Cache
+        self.cache = TVCache(self, min_time=30)  # only poll ThePirateBay every 30 minutes max
 
-    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+        self.magnet_regex = re.compile(
+            r'magnet:\?xt=urn:btih:\w{32,40}(:?&dn=[\w. %+-]+)*(:?&tr=(:?tcp|https?|udp)[\w%. +-]+)*')
+
+    @staticmethod
+    def convert_url(url, params):
+        try:
+            return urljoin(url, '{type}/{q}/{page}/{orderby}/{category}'.format(**params)), {}
+        except Exception:
+            return url.replace('search', 's/'), params
+
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
-        """
-        205 = SD, 208 = HD, 200 = All Videos
-        https://pirateproxy.pl/s/?q=Game of Thrones&type=search&orderby=7&page=0&category=200
-        """
+        # oder_by is 7 in browse for seeders, but 8 in search!
         search_params = {
             "q": "",
             "type": "search",
-            "orderby": 7,
+            "orderby": 8,
             "page": 0,
             "category": 200
         }
 
-        for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+        def process_column_header(th):
+            text = ""
+            if th.a:
+                text = th.a.get_text(strip=True)
+            if not text:
+                text = th.get_text(strip=True)
+            return text
+
+        for mode in search_strings:
+            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+
             for search_string in search_strings[mode]:
+                search_urls = (self.urls["search"], self.urls["rss"])[mode == "RSS"]
+                if not isinstance(search_urls, list):
+                    search_urls = [search_urls]
 
-                search_params.update({'q': search_string.strip()})
+                for search_url in search_urls:
+                    if self.custom_url:
+                        if not validate_url(self.custom_url):
+                            sickrage.srCore.srLogger.warning("Invalid custom url: {0}".format(self.custom_url))
+                            return results
+                        search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
-                if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: " + search_string)
+                    if mode != "RSS":
+                        search_params["q"] = search_string
+                        sickrage.srCore.srLogger.debug("Search string: {}".format(search_string))
 
-                searchURL = self.urls[('search', 'rss')[mode == 'RSS']] + '?' + urlencode(search_params)
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                        # Prevents a 302 redirect, since there is always a 301 from .se to the best mirror having an extra
+                        # redirect is excessive on the provider and spams the debug log unnecessarily
+                        search_url, params = self.convert_url(search_url, search_params)
+                        data = sickrage.srCore.srWebSession.get(search_url, params=params).text
+                    else:
+                        data = sickrage.srCore.srWebSession.get(search_url).text
 
-                try:
-                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
-                except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                matches = re.compile(self.re_title_url, re.DOTALL).finditer(data)
-                for torrent in matches:
-                    title = torrent.group('title')
-                    download_url = torrent.group('url')
-                    size = convert_size(torrent.group('size'))
-                    seeders = int(torrent.group('seeders'))
-                    leechers = int(torrent.group('leechers'))
-
-                    if not all([title, download_url]):
+                    if not data:
+                        sickrage.srCore.srLogger.debug(
+                            "URL did not return data, maybe try a custom url, or a different one")
                         continue
 
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                    title, seeders, leechers))
-                        continue
+                    with bs4_parser(data) as html:
+                        torrent_table = html.find("table", id="searchResult")
+                        torrent_rows = torrent_table("tr") if torrent_table else []
 
-                    # Accept Torrent only from Good People for every Episode Search
-                    if self.confirmed and re.search(r'(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
-                        continue
+                        # Continue only if at least one Release is found
+                        if len(torrent_rows) < 2:
+                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                            continue
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                        labels = [process_column_header(label) for label in torrent_rows[0]("th")]
 
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        # Skip column headers
+                        for result in torrent_rows[1:]:
+                            try:
+                                cells = result("td")
 
-                    results.append(item)
+                                # Funky js on page messing up titles, this fixes that
+                                title = result.find(class_="detLink")['title'].split('Details for ', 1)[-1]
+                                download_url = result.find(title="Download this torrent using magnet")[
+                                                   "href"] + sickrage.srCore.srConfig.TORRENT_TRACKERS
+                                if not self.magnet_regex.match(download_url):
+                                    sickrage.srCore.srLogger.info("Got an invalid magnet: {0}".format(download_url))
+                                    sickrage.srCore.srLogger.debug("Invalid ThePirateBay proxy please try another one")
+                                    continue
+
+                                if not all([title, download_url]):
+                                    continue
+
+                                seeders = try_int(cells[labels.index("SE")].get_text(strip=True))
+                                leechers = try_int(cells[labels.index("LE")].get_text(strip=True))
+
+                                # Filter unseeded torrent
+                                if seeders < self.minseed or leechers < self.minleech:
+                                    if mode != "RSS":
+                                        sickrage.srCore.srLogger.debug(
+                                            "Discarding torrent because it doesn't meet the minimum seeders or "
+                                            "leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
+                                    continue
+
+                                # Accept Torrent only from Good People for every Episode Search
+                                if self.confirmed and not result.find(alt=re.compile(r"VIP|Trusted")):
+                                    if mode != "RSS":
+                                        sickrage.srCore.srLogger.debug(
+                                            "Found result: {0} but that doesn't seem like a trusted result so I'm "
+                                            "ignoring it".format(title))
+                                    continue
+
+                                # Convert size after all possible skip scenarios
+                                torrent_size = re.sub(r".*Size ([\d.]+).+([KMGT]iB).*", r"\1 \2",
+                                                      result.find(class_="detDesc").get_text(strip=True))
+
+                                size = convert_size(torrent_size, -1, ["B", "KIB", "MIB", "GIB"])
+
+                                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                        'leechers': leechers, 'hash': ''}
+
+                                if mode != "RSS":
+                                    sickrage.srCore.srLogger.debug("Found result: {0}".format(title))
+
+                                results.append(item)
+                            except StandardError:
+                                continue
 
         # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
-
-    def seed_ratio(self):
-        return self.ratio

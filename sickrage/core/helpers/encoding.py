@@ -59,9 +59,7 @@ def ek(f):
     """
     Encoding Kludge: Call function with arguments and six.text_type-encode output
 
-    :param function:  Function to call
-    :param args:  Arguments for function
-    :param kwargs:  Arguments for function
+    :param f:  Function to call
     :return: Unicode-converted function output (string, list or tuple, depends on input)
     """
 
