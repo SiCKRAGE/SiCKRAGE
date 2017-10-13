@@ -1,0 +1,40 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version:  sickragetv\n"
+"Report-Msgid-Bugs-To: support@sickrage.ca\n"
+"POT-Creation-Date: 2017-10-13 16:25-0400\n"
+"PO-Revision-Date: 2017-10-13 16:26-0400\n"
+"Last-Translator: echel0n <echel0n@sickrage.ca>\n"
+"Language: vi_VN\n"
+"Language-Team: Vietnamese\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.5.1\n"
+
+#: sickrage/core/webserver/gui/default/views/config/general.mako:346
+msgid "Interface Language:"
+msgstr "Ngôn ngữ giao diện:"
+
+#: sickrage/core/webserver/gui/default/views/config/general.mako:356
+msgid "System Language"
+msgstr "Ngôn ngữ Hệ thống"
+
+#: sickrage/core/webserver/gui/default/views/config/general.mako:367
+msgid "for appearance to take effect, save then refresh your browser"
+msgstr "để xuất hiện có hiệu lực, hãy lưu lại sau đó làm mới trình duyệt của bạn"
+
+#: sickrage/core/webserver/gui/default/views/config/postprocessing.mako:85
+msgid "Symbolic Link Reversed"
+msgstr "Liên kết Biểu tượng Đảo ngược"
+
+#: dist/js/core.js:4178
+msgid "Please fill out the necessary fields above."
+msgstr "Vui lòng điền vào các lĩnh vực cần thiết ở trên."
+
+#: sickrage/core/webserver/views.py:727
+msgid "Success. Connected and authenticated"
+msgstr "Sự thành công. Kết nối và chứng thực"
+

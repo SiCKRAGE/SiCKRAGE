@@ -1,0 +1,40 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version:  sickragetv\n"
+"Report-Msgid-Bugs-To: support@sickrage.ca\n"
+"POT-Creation-Date: 2017-10-13 16:25-0400\n"
+"PO-Revision-Date: 2017-10-13 16:26-0400\n"
+"Last-Translator: echel0n <echel0n@sickrage.ca>\n"
+"Language: ko_KR\n"
+"Language-Team: Korean\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.5.1\n"
+
+#: sickrage/core/webserver/gui/default/views/config/general.mako:346
+msgid "Interface Language:"
+msgstr "인터페이스 언어 :"
+
+#: sickrage/core/webserver/gui/default/views/config/general.mako:356
+msgid "System Language"
+msgstr "시스템 언어"
+
+#: sickrage/core/webserver/gui/default/views/config/general.mako:367
+msgid "for appearance to take effect, save then refresh your browser"
+msgstr "모양을 적용하려면 브라우저를 저장 한 다음 새로 고침하십시오."
+
+#: sickrage/core/webserver/gui/default/views/config/postprocessing.mako:85
+msgid "Symbolic Link Reversed"
+msgstr "반전 된 심볼릭 링크"
+
+#: dist/js/core.js:4178
+msgid "Please fill out the necessary fields above."
+msgstr "위의 필수 입력란을 작성하십시오."
+
+#: sickrage/core/webserver/views.py:727
+msgid "Success. Connected and authenticated"
+msgstr "성공. 연결되고 인증 된"
+

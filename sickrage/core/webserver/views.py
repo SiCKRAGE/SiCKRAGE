@@ -724,7 +724,7 @@ class Home(WebHandler):
         if connection:
             authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)
             if authed:
-                return "Success. Connected and authenticated"
+                return _("Success. Connected and authenticated")
             else:
                 return "Authentication failed. SABnzbd expects '" + accesMsg + "' as authentication method, '" + authMsg + "'"
         else:
@@ -3772,10 +3772,13 @@ class ConfigGeneral(Config):
                     debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None, filter_row=None,
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
-                    git_reset=None, git_username=None, git_password=None, git_autoissues=None,
+                    git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
                     display_all_seasons=None, showupdate_stale=None, notify_on_login=None, **kwargs):
 
         results = []
+
+        # Language
+        sickrage.srCore.srConfig.change_gui_lang(gui_language)
 
         # Debug
         sickrage.srCore.srConfig.DEBUG = sickrage.srCore.srConfig.checkbox_to_value(debug)

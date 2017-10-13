@@ -4,6 +4,8 @@
     import datetime
     import locale
 
+    from tornado._locale_data import LOCALE_NAMES
+
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
@@ -12,6 +14,8 @@
     from sickrage.indexers import srIndexerApi
     from sickrage.metadata import GenericMetadata
 
+    def lang_name(code):
+        return LOCALE_NAMES.get(code, {}).get("name", "Unknown")
 %>
 <%block name="tabs">
     <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Misc</a></li>
@@ -331,16 +335,43 @@
     </div><!-- /tab-pane1 //-->
     <div id="core-tab-pane2" class="tab-pane fade">
         <div class="row tab-pane">
-
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>User Interface</h3>
                 <p>Options for visual appearance.</p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">Interface Language:</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="fa fa-language"></span>
+                                    </div>
+                                    <select id="gui_language" name="gui_language" class="form-control">
+                                        <option value="" ${('', 'selected="selected"')[sickrage.srCore.srConfig.GUI_LANG == ""]}>System Language</option>
+                                        % for lang in sickrage.srCore.LANGUAGES:
+                                            <option value="${lang}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.GUI_LANG == lang]}>${lang_name(lang)}</option>
+                                        % endfor
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="gui_language" class="red-text">
+                                    for appearance to take effect, save then refresh your browser
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Display theme:</label>
                     </div>
@@ -360,10 +391,9 @@
                             </select>
                         </div>
                     </div>
-
                 </div>
-                <div class="row field-pair">
 
+                <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">Show all seasons</label>
                     </div>
@@ -784,7 +814,8 @@
                         <input type="checkbox" name="notify_on_login"
                                id="notify_on_login" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_LOGIN)]}/>
                         <label for="notify_on_login">
-                            send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address
+                            send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP
+                            address
                         </label>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import io
 import os
 import shutil
 
+from babel.messages import frontend as babel
 from setuptools import setup, Command
 
 # Get the version number
@@ -48,11 +49,27 @@ setup(
     zip_safe=False,
     test_suite='tests',
     cmdclass={
-        'clean': CleanCommand
+        'clean': CleanCommand,
+        'compile_catalog': babel.compile_catalog,
+        'extract_messages': babel.extract_messages,
+        'init_catalog': babel.init_catalog,
+        'update_catalog': babel.update_catalog
     },
     entry_points={
         "console_scripts": [
             "sickrage=sickrage:main"
         ]
+    },
+    message_extractors={
+        'sickrage/core/webserver/gui/default': [
+            ('**/views/**.mako', 'mako', {'input_encoding': 'utf-8'})
+        ],
+        'sickrage': [
+            ('**.py', 'python', None)
+        ],
+        'dist': [
+            ('**/js/*.min.js', 'ignore', None),
+            ('**/js/*.js', 'javascript', {'input_encoding': 'utf-8'})
+        ],
     }
 )

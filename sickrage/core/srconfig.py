@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 import base64
 import datetime
+import gettext
 import os
 import os.path
 import pickle
@@ -383,6 +384,7 @@ class srConfig(object):
         self.EMAIL_LIST = None
         self.GUI_NAME = 'default'
         self.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', self.GUI_NAME)
+        self.GUI_LANG = ""
         self.HOME_LAYOUT = None
         self.HISTORY_LAYOUT = None
         self.HISTORY_LIMIT = 0
@@ -513,6 +515,7 @@ class srConfig(object):
                 'coming_eps_display_paused': False,
                 'display_show_specials': True,
                 'gui_name': 'default',
+                'gui_lang': '',
                 'history_limit': '100',
                 'poster_sortdir': 1,
                 'coming_eps_missed_range': 7,
@@ -927,6 +930,17 @@ class srConfig(object):
                 'anime_split_home': False
             }
         }
+
+    def change_gui_lang(self, lang):
+        if lang != self.GUI_LANG:
+            if lang:
+                # Selected language
+                gettext.translation('messages', sickrage.srCore.LOCALE_DIR, languages=[lang], codeset='UTF-8').install(unicode=1, names=["ngettext"])
+            else:
+                # System default language
+                gettext.install('messages', sickrage.srCore.LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
+
+            self.GUI_LANG = lang
 
     def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
         # Check for failed unrar attempt, and remove it
@@ -1564,6 +1578,7 @@ class srConfig(object):
 
         # GUI SETTINGS
         self.GUI_NAME = self.check_setting_str('GUI', 'gui_name')
+        self.GUI_LANG = self.check_setting_str('GUI', 'gui_lang')
         self.THEME_NAME = self.check_setting_str('GUI', 'theme_name')
         self.FANART_BACKGROUND = self.check_setting_bool('GUI', 'fanart_background')
         self.FANART_BACKGROUND_OPACITY = self.check_setting_float('GUI', 'fanart_background_opacity')
@@ -2034,6 +2049,7 @@ class srConfig(object):
             },
             'GUI': {
                 'gui_name': self.GUI_NAME,
+                'gui_lang': self.GUI_LANG,
                 'theme_name': self.THEME_NAME,
                 'home_layout': self.HOME_LAYOUT,
                 'history_layout': self.HISTORY_LAYOUT,

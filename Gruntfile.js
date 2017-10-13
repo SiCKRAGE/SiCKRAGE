@@ -239,6 +239,20 @@ module.exports = function (grunt) {
             },
             all: ['dist/js/core.js']
         },
+        po2json: {
+            messages: {
+                options: {
+                    format: 'jed',
+                    singleFile: true
+                },
+                files: [{
+                    expand: true,
+                    src: 'sickrage/locale/*/LC_MESSAGES/messages.po',
+                    dest: '',
+                    ext: ''
+                }]
+            }
+        },
         changelog: {
             release: {
                 options: {
@@ -262,6 +276,13 @@ module.exports = function (grunt) {
             }
         },
         exec: {
+            // Translations
+            'crowdin_upload': {cmd: 'crowdin-cli-py upload sources'},
+            'crowdin_download': {cmd: 'crowdin-cli-py download'},
+            'babel_extract': {cmd: 'python setup.py extract_messages'},
+            'babel_update': {cmd: 'python setup.py update_catalog'},
+            'babel_compile': {cmd: 'python setup.py compile_catalog'},
+
             // PyPi Commands
             'pypi_publish': {cmd: 'python setup.py sdist bdist_wheel upload clean'},
 
@@ -391,8 +412,9 @@ module.exports = function (grunt) {
 
         grunt.file.write(vFile, newVersion);
 
-        var git_tasks = [
+        var tasks = [
             'default',
+            'update_trans', // Update translations
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_start:' + newVersion,
             'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
@@ -403,6 +425,25 @@ module.exports = function (grunt) {
             'exec:pypi_publish'
         ];
 
-        grunt.task.run(git_tasks);
+        grunt.task.run(tasks);
+    });
+
+    grunt.registerTask('update_trans', 'Update translations', function() {
+        grunt.log.writeln('Updating translations...'.magenta);
+
+        var tasks = [
+            'exec:babel_extract',
+            'exec:babel_update',
+            'exec:babel_compile',
+            'po2json'
+        ];
+
+        if (process.env.CROWDIN_API_KEY) {
+            tasks.splice(1, 0, 'exec:crowdin_upload', 'exec:crowdin_download'); // insert items at index 2
+        } else {
+            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, not syncing with Crowdin.'.bold);
+        }
+
+        grunt.task.run(tasks);
     });
 };
