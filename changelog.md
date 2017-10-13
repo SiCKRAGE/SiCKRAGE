@@ -1,6 +1,7 @@
 # Changelog
 
-- * 311f723 - 2017-10-13: Misc code cleanup 
+- * 1337903 - 2017-10-13: Release v9.1.36 
+- * 47dc9a4 - 2017-10-13: Misc code cleanup 
 - * e127e2a - 2017-10-12: Fixed some typo&#x27;s 
 - * a4c60fe - 2017-10-12: Fixed small issue with HDBits 
 - * 915f04c - 2017-10-12: Fixed typo in RARBG provider 
