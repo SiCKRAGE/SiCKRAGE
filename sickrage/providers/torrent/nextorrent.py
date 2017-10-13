@@ -106,7 +106,7 @@ class NextorrentProvider(TorrentProvider):
                                                     title, seeders, leechers))
                                         continue
 
-                                    items += [{
+                                    results += [{
                                         'title': title,
                                         'link': download_url,
                                         'size': size,
@@ -117,8 +117,7 @@ class NextorrentProvider(TorrentProvider):
                                     if mode != 'RSS':
                                         sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-            # Sort all the items by seeders if available
-            items.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
-            results += items
+        # Sort all the items by seeders if available
+        results.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
 
         return results

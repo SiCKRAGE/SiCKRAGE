@@ -93,8 +93,7 @@ class HDBitsProvider(TorrentProvider):
 
         if self._check_auth_from_data(parsedJSON):
             if parsedJSON and 'data' in parsedJSON:
-                items = parsedJSON['data']
-                for item in items:
+                for item in parsedJSON['data']:
                     results.append(item)
             else:
                 sickrage.srCore.srLogger.error("Resulting JSON from provider isn't correct, not parsing it")

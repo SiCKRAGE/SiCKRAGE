@@ -1130,7 +1130,7 @@ class PostProcessor(object):
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
                                      sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
                                      sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
-            elif self.process_method == self.METHOD_SYMLINK_REVERSED:
+            elif self.process_method == self.PROCESS_METHOD_SYMLINK_REVERSED:
                 self._symlink(self.file_path, dest_path, new_base_name, sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES,
                               sickrage.srCore.srConfig.USE_SUBTITLES and ep_obj.show.subtitles)
             else:
