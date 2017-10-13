@@ -6,7 +6,7 @@
 % if sickrage.srCore.srConfig.USE_SUBTITLES:
     <div class="row field-pair">
         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-            <label class="component-title">Subtitles</label>
+            <label class="component-title">${_('Subtitles')}</label>
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
             <label>
@@ -18,7 +18,7 @@
 % endif
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-        <label class="component-title">Flatten Folders</label>
+        <label class="component-title">${_('Flatten Folders')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
         <label>
@@ -30,7 +30,7 @@
 % if enable_anime_options:
     <div class="row field-pair">
         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-            <label class="component-title">Anime</label>
+            <label class="component-title">${_('Anime')}</label>
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
             <label>
@@ -42,7 +42,7 @@
 % endif
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-        <label class="component-title">Scene Numbering</label>
+        <label class="component-title">${_('Scene Numbering')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
         <label>
@@ -53,7 +53,7 @@
 </div>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-        <label class="component-title">Archive on first match</label>
+        <label class="component-title">${_('Archive on first match')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
         <label>
@@ -64,7 +64,7 @@
 </div>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-        <label class="component-title">Status for previously aired episodes</label>
+        <label class="component-title">${_('Status for previously aired episodes')}</label>
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
@@ -84,7 +84,7 @@
 <br/>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-        <label class="component-title">Status for all future episodes</label>
+        <label class="component-title">${_('Status for all future episodes')}</label>
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
@@ -104,7 +104,7 @@
 <br/>
 <div class="field-pair row">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-        <label class="component-title">Preferred Quality</label>
+        <label class="component-title">${_('Preferred Quality')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
             <%include file="quality_chooser.mako"/>

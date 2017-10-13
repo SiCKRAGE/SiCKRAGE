@@ -29,7 +29,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_kodi"
@@ -41,7 +41,7 @@
                 <div id="content_use_kodi">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Always on</label>
+                            <label class="component-title">${_('Always on')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="kodi_always_on"
@@ -53,7 +53,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="kodi_notify_onsnatch"
@@ -65,7 +65,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="kodi_notify_ondownload"
@@ -77,7 +77,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="kodi_notify_onsubtitledownload"
@@ -89,7 +89,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Update library</label>
+                            <label class="component-title">${_('Update library')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="kodi_update_library"
@@ -101,7 +101,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Full library update</label>
+                            <label class="component-title">${_('Full library update')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="kodi_update_full"
@@ -113,7 +113,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Only update first host</label>
+                            <label class="component-title">${_('Only update first host')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="kodi_update_onlyfirst"
@@ -125,7 +125,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">KODI IP:Port</label>
+                            <label class="component-title">${_('KODI IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -142,7 +142,7 @@
                     <div class="row field-pair">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">KODI username</label>
+                            <label class="component-title">${_('KODI username')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -159,7 +159,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">KODI password</label>
+                            <label class="component-title">${_('KODI password')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -208,7 +208,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
@@ -220,7 +220,7 @@
                 <div id="content_use_plex">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Plex Media Server Auth Token</label>
+                            <label class="component-title">${_('Plex Media Server Auth Token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -252,7 +252,7 @@
                     <div class="row tab-pane">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Server Username</label>
+                                <label class="component-title">${_('Server Username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -268,7 +268,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Server/client password</label>
+                                <label class="component-title">${_('Server/client password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -287,7 +287,7 @@
                     <div class="row tab-pane">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Update server library</label>
+                                <label class="component-title">${_('Update server library')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" class="enabler" name="plex_update_library"
@@ -300,7 +300,7 @@
                         <div id="content_plex_update_library">
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Plex Media Server IP:Port</label>
+                                    <label class="component-title">${_('Plex Media Server IP:Port')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -347,7 +347,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
@@ -359,7 +359,7 @@
                 <div id="content_use_plex_client">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="plex_notify_onsnatch"
@@ -370,7 +370,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="plex_notify_ondownload"
@@ -382,7 +382,7 @@
                     <div class="row field-pair">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="plex_notify_onsubtitledownload"
@@ -393,7 +393,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Plex Client IP:Port</label>
+                            <label class="component-title">${_('Plex Client IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -411,7 +411,7 @@
                         <div class="row field-pair">
 
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Server Username</label>
+                                <label class="component-title">${_('Server Username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -427,7 +427,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Client Password</label>
+                                <label class="component-title">${_('Client Password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -470,7 +470,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_emby"
@@ -483,7 +483,7 @@
                 <div id="content_use_emby">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Emby IP:Port</label>
+                            <label class="component-title">${_('Emby IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -499,7 +499,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Emby API Key</label>
+                            <label class="component-title">${_('Emby API Key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -543,7 +543,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmj"
@@ -555,7 +555,7 @@
                 <div id="content_use_nmj">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Popcorn IP address</label>
+                            <label class="component-title">${_('Popcorn IP address')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -571,7 +571,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Get settings</label>
+                            <label class="component-title">${_('Get settings')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input class="btn btn-inline" type="button" value="Get Settings"
@@ -583,7 +583,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">NMJ database</label>
+                            <label class="component-title">${_('NMJ database')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -600,7 +600,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">NMJ mount url</label>
+                            <label class="component-title">${_('NMJ mount url')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -644,7 +644,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmjv2"
@@ -657,7 +657,7 @@
                     <div class="row field-pair">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Popcorn IP address</label>
+                            <label class="component-title">${_('Popcorn IP address')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -673,7 +673,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Database location</label>
+                            <label class="component-title">${_('Database location')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -698,7 +698,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Database instance</label>
+                            <label class="component-title">${_('Database instance')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -722,7 +722,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Find database</label>
+                            <label class="component-title">${_('Find database')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="button" class="btn btn-inline" value="Find Database"
@@ -734,7 +734,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">NMJv2 database</label>
+                            <label class="component-title">${_('NMJv2 database')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -779,7 +779,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_synoindex"
@@ -814,7 +814,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_synologynotifier"
@@ -828,7 +828,7 @@
                 <div id="content_use_synologynotifier">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="synologynotifier_notify_onsnatch"
@@ -839,7 +839,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="synologynotifier_notify_ondownload"
@@ -850,7 +850,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="synologynotifier_notify_onsubtitledownload"
@@ -883,7 +883,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pytivo"
@@ -899,7 +899,7 @@
                     <div class="row field-pair">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">pyTivo IP:Port</label>
+                            <label class="component-title">${_('pyTivo IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -916,7 +916,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">pyTivo share name</label>
+                            <label class="component-title">${_('pyTivo share name')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -934,7 +934,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Tivo name</label>
+                            <label class="component-title">${_('Tivo name')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -972,7 +972,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_growl"
@@ -984,7 +984,7 @@
                 <div id="content_use_growl">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="growl_notify_onsnatch"
@@ -995,7 +995,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="growl_notify_ondownload"
@@ -1006,7 +1006,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="growl_notify_onsubtitledownload"
@@ -1017,7 +1017,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Growl IP:Port</label>
+                            <label class="component-title">${_('Growl IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1033,7 +1033,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Growl password</label>
+                            <label class="component-title">${_('Growl password')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1081,7 +1081,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_prowl"
@@ -1093,7 +1093,7 @@
                 <div id="content_use_prowl">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="prowl_notify_onsnatch"
@@ -1104,7 +1104,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="prowl_notify_ondownload"
@@ -1115,7 +1115,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="prowl_notify_onsubtitledownload"
@@ -1126,7 +1126,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Prowl API key:</label>
+                            <label class="component-title">${_('Prowl API key:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1145,7 +1145,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Prowl priority:</label>
+                            <label class="component-title">${_('Prowl priority:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1205,7 +1205,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_libnotify"
@@ -1217,7 +1217,7 @@
                 <div id="content_use_libnotify">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="libnotify_notify_onsnatch"
@@ -1228,7 +1228,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="libnotify_notify_ondownload"
@@ -1239,7 +1239,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="libnotify_notify_onsubtitledownload"
@@ -1276,7 +1276,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushover"
@@ -1288,7 +1288,7 @@
                 <div id="content_use_pushover">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushover_notify_onsnatch"
@@ -1299,7 +1299,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushover_notify_ondownload"
@@ -1310,7 +1310,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushover_notify_onsubtitledownload"
@@ -1322,7 +1322,7 @@
                     <div class="row field-pair">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Pushover key</label>
+                            <label class="component-title">${_('Pushover key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1339,7 +1339,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Pushover API key</label>
+                            <label class="component-title">${_('Pushover API key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1361,7 +1361,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Pushover devices</label>
+                            <label class="component-title">${_('Pushover devices')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1378,7 +1378,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Pushover notification sound</label>
+                            <label class="component-title">${_('Pushover notification sound')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1481,7 +1481,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_boxcar2"
@@ -1493,7 +1493,7 @@
                 <div id="content_use_boxcar2">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="boxcar2_notify_onsnatch"
@@ -1504,7 +1504,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="boxcar2_notify_ondownload"
@@ -1515,7 +1515,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="boxcar2_notify_onsubtitledownload"
@@ -1526,7 +1526,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Boxcar2 access token</label>
+                            <label class="component-title">${_('Boxcar2 access token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1569,7 +1569,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_nma"
@@ -1581,7 +1581,7 @@
                 <div id="content_use_nma">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="nma_notify_onsnatch"
@@ -1591,7 +1591,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="nma_notify_ondownload"
@@ -1602,7 +1602,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="nma_notify_onsubtitledownload"
@@ -1613,7 +1613,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">NMA API key:</label>
+                            <label class="component-title">${_('NMA API key:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1629,7 +1629,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">NMA priority:</label>
+                            <label class="component-title">${_('NMA priority:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1690,7 +1690,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushalot"
@@ -1702,7 +1702,7 @@
                 <div id="content_use_pushalot">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushalot_notify_onsnatch"
@@ -1713,7 +1713,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushalot_notify_ondownload"
@@ -1724,7 +1724,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushalot_notify_onsubtitledownload"
@@ -1735,7 +1735,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Pushalot authorization token</label>
+                            <label class="component-title">${_('Pushalot authorization token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1781,7 +1781,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushbullet"
@@ -1793,7 +1793,7 @@
                 <div id="content_use_pushbullet">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushbullet_notify_onsnatch"
@@ -1804,7 +1804,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushbullet_notify_ondownload"
@@ -1815,7 +1815,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="pushbullet_notify_onsubtitledownload"
@@ -1826,7 +1826,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Pushbullet API key</label>
+                            <label class="component-title">${_('Pushbullet API key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1843,7 +1843,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Pushbullet devices</label>
+                            <label class="component-title">${_('Pushbullet devices')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -1898,7 +1898,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_freemobile"
@@ -1910,7 +1910,7 @@
                 <div id="content_use_freemobile">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="freemobile_notify_onsnatch"
@@ -1920,7 +1920,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="freemobile_notify_ondownload"
@@ -1931,7 +1931,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="freemobile_notify_onsubtitledownload"
@@ -1942,7 +1942,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Free Mobile customer ID</label>
+                            <label class="component-title">${_('Free Mobile customer ID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1959,7 +1959,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Free Mobile API Key</label>
+                            <label class="component-title">${_('Free Mobile API Key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2003,7 +2003,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_telegram"
@@ -2015,7 +2015,7 @@
                 <div id="content_use_telegram">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="telegram_notify_onsnatch"
@@ -2027,7 +2027,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="telegram_notify_ondownload"
@@ -2039,7 +2039,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="telegram_notify_onsubtitledownload"
@@ -2051,7 +2051,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">User/Group ID</label>
+                            <label class="component-title">${_('User/Group ID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -2087,7 +2087,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Bot API Key</label>
+                            <label class="component-title">${_('Bot API Key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -2146,7 +2146,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_twilio"
@@ -2158,7 +2158,7 @@
                 <div id="content_use_twilio">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twilio_notify_onsnatch"
@@ -2170,7 +2170,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twilio_notify_ondownload"
@@ -2182,7 +2182,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twilio_notify_onsubtitledownload"
@@ -2195,7 +2195,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Twilio Account SID</label>
+                            <label class="component-title">${_('Twilio Account SID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -2224,7 +2224,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Twilio Auth Token</label>
+                            <label class="component-title">${_('Twilio Auth Token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2242,7 +2242,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Twilio Phone SID</label>
+                            <label class="component-title">${_('Twilio Phone SID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -2271,7 +2271,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Your phone number</label>
+                            <label class="component-title">${_('Your phone number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -2330,7 +2330,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_twitter"
@@ -2345,7 +2345,7 @@
                 <div id="content_use_twitter">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twitter_notify_onsnatch"
@@ -2356,7 +2356,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twitter_notify_ondownload"
@@ -2367,7 +2367,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twitter_notify_onsubtitledownload"
@@ -2378,7 +2378,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Send direct message</label>
+                            <label class="component-title">${_('Send direct message')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="twitter_usedm"
@@ -2389,7 +2389,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Send DM to</label>
+                            <label class="component-title">${_('Send DM to')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2406,7 +2406,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Step One</label>
+                            <label class="component-title">${_('Step One')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -2425,7 +2425,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Step Two</label>
+                            <label class="component-title">${_('Step Two')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2473,7 +2473,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_trakt"
@@ -2485,7 +2485,7 @@
                 <div id="content_use_trakt">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Trakt username</label>
+                            <label class="component-title">${_('Trakt username')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2504,7 +2504,7 @@
                     % if not sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN:
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Trakt PIN</label>
+                                <label class="component-title">${_('Trakt PIN')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -2525,7 +2525,7 @@
                     <input type="button" class="btn hide" value="Authorize SiCKRAGE" id="authTrakt"/>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">API Timeout</label>
+                            <label class="component-title">${_('API Timeout')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2546,7 +2546,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Default indexer</label>
+                            <label class="component-title">${_('Default indexer')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2564,7 +2564,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Sync libraries</label>
+                            <label class="component-title">${_('Sync libraries')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" class="enabler" name="trakt_sync"
@@ -2576,7 +2576,7 @@
                     <div id="content_trakt_sync">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Remove Episodes From Collection</label>
+                                <label class="component-title">${_('Remove Episodes From Collection')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="trakt_sync_remove"
@@ -2589,7 +2589,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Sync watchlist</label>
+                            <label class="component-title">${_('Sync watchlist')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" class="enabler" name="trakt_sync_watchlist"
@@ -2605,7 +2605,7 @@
                     <div id="content_trakt_sync_watchlist">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Watchlist add method</label>
+                                <label class="component-title">${_('Watchlist add method')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -2632,7 +2632,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Remove episode</label>
+                                <label class="component-title">${_('Remove episode')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="trakt_remove_watchlist"
@@ -2643,7 +2643,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Remove series</label>
+                                <label class="component-title">${_('Remove series')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="trakt_remove_serieslist"
@@ -2654,7 +2654,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Remove watched show:</label>
+                                <label class="component-title">${_('Remove watched show:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="trakt_remove_show_from_sickrage"
@@ -2665,7 +2665,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Start paused</label>
+                                <label class="component-title">${_('Start paused')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="trakt_start_paused"
@@ -2677,7 +2677,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Trakt blackList name</label>
+                            <label class="component-title">${_('Trakt blackList name')}</label>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <div class="input-group input350">
@@ -2723,7 +2723,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_email"
@@ -2735,7 +2735,7 @@
                 <div id="content_use_email">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="email_notify_onsnatch"
@@ -2746,7 +2746,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="email_notify_ondownload"
@@ -2757,7 +2757,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="email_notify_onsubtitledownload"
@@ -2768,7 +2768,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">SMTP host</label>
+                            <label class="component-title">${_('SMTP host')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2784,7 +2784,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">SMTP port</label>
+                            <label class="component-title">${_('SMTP port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2800,7 +2800,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">SMTP from</label>
+                            <label class="component-title">${_('SMTP from')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2816,7 +2816,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Use TLS</label>
+                            <label class="component-title">${_('Use TLS')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="email_tls"
@@ -2826,7 +2826,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">SMTP user</label>
+                            <label class="component-title">${_('SMTP user')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2842,7 +2842,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">SMTP password</label>
+                            <label class="component-title">${_('SMTP password')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2859,7 +2859,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Global email list</label>
+                            <label class="component-title">${_('Global email list')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -2877,7 +2877,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Show notification list</label>
+                            <label class="component-title">${_('Show notification list')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -2951,7 +2951,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_slack"
@@ -2963,7 +2963,7 @@
                 <div id="content_use_slack">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="slack_notify_onsnatch"
@@ -2974,7 +2974,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="slack_notify_ondownload"
@@ -2986,7 +2986,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="slack_notify_onsubtitledownload"
@@ -2998,7 +2998,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Slack Incoming Webhook</label>
+                            <label class="component-title">${_('Slack Incoming Webhook')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -3044,7 +3044,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable</label>
+                        <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_discord"
@@ -3056,7 +3056,7 @@
                 <div id="content_use_discord">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on snatch</label>
+                            <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="discord_notify_onsnatch"
@@ -3068,7 +3068,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on download</label>
+                            <label class="component-title">${_('Notify on download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="discord_notify_ondownload"
@@ -3081,7 +3081,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Notify on subtitle download</label>
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="discord_notify_onsubtitledownload"
@@ -3094,7 +3094,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Discord Incoming Webhook</label>
+                            <label class="component-title">${_('Discord Incoming Webhook')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -3118,7 +3118,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Discord Bot Name</label>
+                            <label class="component-title">${_('Discord Bot Name')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -3142,7 +3142,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Discord Avatar URL</label>
+                            <label class="component-title">${_('Discord Avatar URL')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -3166,7 +3166,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Discord TTS</label>
+                            <label class="component-title">${_('Discord TTS')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="discord_tts"

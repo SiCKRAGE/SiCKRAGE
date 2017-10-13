@@ -24,7 +24,7 @@
                     % if qsize:
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${renderQualityPill(qtype)}</label>
+                                <label class="component-title">${_('${renderQualityPill(qtype)}')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">

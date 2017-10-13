@@ -129,7 +129,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Configure provider:</label>
+                        <label class="component-title">${_('Configure provider:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -152,7 +152,7 @@
                         % if not providerObj.default:
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">URL:</label>
+                                    <label class="component-title">${_('URL:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -172,7 +172,7 @@
                         % if providerObj.private:
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">API key:</label>
+                                    <label class="component-title">${_('API key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -194,7 +194,7 @@
                         % if hasattr(providerObj, 'enable_daily'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable daily searches</label>
+                                    <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_daily"
@@ -209,7 +209,7 @@
                         % if hasattr(providerObj, 'enable_backlog'):
                             <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable backlog searches</label>
+                                    <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_backlog"
@@ -224,7 +224,7 @@
                         % if hasattr(providerObj, 'search_fallback'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Search mode fallback</label>
+                                    <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_search_fallback"
@@ -243,7 +243,7 @@
                         % if hasattr(providerObj, 'search_mode'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Season search mode</label>
+                                    <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="row">
@@ -279,7 +279,7 @@
                         % if hasattr(providerObj, 'username'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Username:</label>
+                                    <label class="component-title">${_('Username:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -298,7 +298,7 @@
                         % if hasattr(providerObj, 'api_key'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">API key:</label>
+                                    <label class="component-title">${_('API key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -318,7 +318,7 @@
                         % if hasattr(providerObj, 'enable_daily'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable daily searches</label>
+                                    <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_daily"
@@ -333,7 +333,7 @@
                         % if hasattr(providerObj, 'enable_backlog'):
                             <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable backlog searches</label>
+                                    <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_backlog"
@@ -348,7 +348,7 @@
                         % if hasattr(providerObj, 'search_fallback'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Search mode fallback</label>
+                                    <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_search_fallback"
@@ -368,7 +368,7 @@
                         % if hasattr(providerObj, 'search_mode'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Season search mode</label>
+                                    <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="row">
@@ -405,7 +405,7 @@
                         % if hasattr(providerObj, 'custom_url'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Custom URL:</label>
+                                    <label class="component-title">${_('Custom URL:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -426,7 +426,7 @@
                         % if hasattr(providerObj, 'api_key'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Api key:</label>
+                                    <label class="component-title">${_('Api key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -447,7 +447,7 @@
                         % if hasattr(providerObj, 'digest'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Digest:</label>
+                                    <label class="component-title">${_('Digest:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -467,7 +467,7 @@
                         % if hasattr(providerObj, 'hash'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Hash:</label>
+                                    <label class="component-title">${_('Hash:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -487,7 +487,7 @@
                         % if hasattr(providerObj, 'username'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Username:</label>
+                                    <label class="component-title">${_('Username:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -508,7 +508,7 @@
                         % if hasattr(providerObj, 'password'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Password:</label>
+                                    <label class="component-title">${_('Password:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -527,7 +527,7 @@
                         % if hasattr(providerObj, 'passkey'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Passkey:</label>
+                                    <label class="component-title">${_('Passkey:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -548,7 +548,7 @@
                         % if getattr(providerObj, 'enable_cookies', False):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Cookies:</label>
+                                    <label class="component-title">${_('Cookies:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -569,7 +569,7 @@
                         % if hasattr(providerObj, 'pin'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Pin:</label>
+                                    <label class="component-title">${_('Pin:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -590,7 +590,7 @@
                         % if hasattr(providerObj, 'ratio'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Seed ratio:</label>
+                                    <label class="component-title">${_('Seed ratio:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -610,7 +610,7 @@
                         % if hasattr(providerObj, 'minseed'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Minimum seeders:</label>
+                                    <label class="component-title">${_('Minimum seeders:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -630,7 +630,7 @@
                         % if hasattr(providerObj, 'minleech'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Minimum leechers:</label>
+                                    <label class="component-title">${_('Minimum leechers:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -650,7 +650,7 @@
                         % if hasattr(providerObj, 'confirmed'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Confirmed download</label>
+                                    <label class="component-title">${_('Confirmed download')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_confirmed"
@@ -665,7 +665,7 @@
                         % if hasattr(providerObj, 'ranked'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Ranked torrents</label>
+                                    <label class="component-title">${_('Ranked torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_ranked"
@@ -680,7 +680,7 @@
                         % if hasattr(providerObj, 'engrelease'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">English torrents</label>
+                                    <label class="component-title">${_('English torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_engrelease"
@@ -695,7 +695,7 @@
                         % if hasattr(providerObj, 'onlyspasearch'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">For Spanish torrents</label>
+                                    <label class="component-title">${_('For Spanish torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_onlyspasearch"
@@ -711,7 +711,7 @@
                         % if hasattr(providerObj, 'sorting'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Sort results by</label>
+                                    <label class="component-title">${_('Sort results by')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -733,7 +733,7 @@
                         % if hasattr(providerObj, 'freeleech'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Freeleech</label>
+                                    <label class="component-title">${_('Freeleech')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_freeleech"
@@ -748,7 +748,7 @@
                         % if hasattr(providerObj, 'enable_daily'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable daily searches</label>
+                                    <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_daily"
@@ -763,7 +763,7 @@
                         % if hasattr(providerObj, 'reject_m2ts'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Reject Blu-ray M2TS releases</label>
+                                    <label class="component-title">${_('Reject Blu-ray M2TS releases')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_reject_m2ts"
@@ -778,7 +778,7 @@
                         % if hasattr(providerObj, 'enable_backlog'):
                             <div class="row field-pair ${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable backlog searches</label>
+                                    <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_backlog"
@@ -793,7 +793,7 @@
                         % if hasattr(providerObj, 'search_fallback'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Search mode fallback</label>
+                                    <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_search_fallback"
@@ -811,7 +811,7 @@
                         % if hasattr(providerObj, 'search_mode'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Season search mode</label>
+                                    <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="row">
@@ -844,7 +844,7 @@
                         % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Category:</label>
+                                    <label class="component-title">${_('Category:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -866,7 +866,7 @@
                         % if hasattr(providerObj, 'subtitle') and providerID == 'tntvillage':
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Subtitled</label>
+                                    <label class="component-title">${_('Subtitled')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_subtitle"
@@ -900,7 +900,7 @@
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Select provider:</label>
+                            <label class="component-title">${_('Select provider:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -917,7 +917,7 @@
                     <div class="newznabProviderDiv" id="addNewznab">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Provider name:</label>
+                                <label class="component-title">${_('Provider name:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -930,7 +930,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Site URL:</label>
+                                <label class="component-title">${_('Site URL:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -944,7 +944,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">API key:</label>
+                                <label class="component-title">${_('API key:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -959,7 +959,7 @@
 
                         <div class="row field-pair" id="newznabcapdiv">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Newznab search categories:</label>
+                                <label class="component-title">${_('Newznab search categories:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="row">
@@ -1021,7 +1021,7 @@
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Select provider:</label>
+                            <label class="component-title">${_('Select provider:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1038,7 +1038,7 @@
                     <div class="torrentRssProviderDiv" id="addTorrentRss">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Provider name:</label>
+                                <label class="component-title">${_('Provider name:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -1053,7 +1053,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">RSS URL:</label>
+                                <label class="component-title">${_('RSS URL:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -1067,7 +1067,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Cookies:</label>
+                                <label class="component-title">${_('Cookies:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -1081,7 +1081,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Search element:</label>
+                                <label class="component-title">${_('Search element:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">

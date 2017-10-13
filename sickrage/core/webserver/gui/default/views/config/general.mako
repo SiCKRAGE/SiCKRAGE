@@ -38,7 +38,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Default Indexer Language</label>
+                        <label class="component-title">${_('Default Indexer Language')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -55,7 +55,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Launch browser</label>
+                        <label class="component-title">${_('Launch browser')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="launch_browser"
@@ -65,7 +65,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Initial page</label>
+                        <label class="component-title">${_('Initial page')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -94,7 +94,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Daily show updates start time</label>
+                        <label class="component-title">${_('Daily show updates start time')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -117,7 +117,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Daily show updates stale shows</label>
+                        <label class="component-title">${_('Daily show updates stale shows')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="showupdate_stale"
@@ -130,7 +130,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Send to trash for actions</label>
+                        <label class="component-title">${_('Send to trash for actions')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="trash_remove_show"
@@ -151,7 +151,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Number of Log files saved</label>
+                        <label class="component-title">${_('Number of Log files saved')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -171,7 +171,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Size of Log files saved</label>
+                        <label class="component-title">${_('Size of Log files saved')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -191,7 +191,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Default indexer for adding shows</label>
+                        <label class="component-title">${_('Default indexer for adding shows')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -216,7 +216,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Show indexer timeout</label>
+                        <label class="component-title">${_('Show indexer timeout')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -238,7 +238,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Show root directories</label>
+                        <label class="component-title">${_('Show root directories')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <%include file="../includes/root_dirs.mako"/>
@@ -263,7 +263,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Check software updates</label>
+                        <label class="component-title">${_('Check software updates')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="version_notify"
@@ -278,7 +278,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Automatically update</label>
+                        <label class="component-title">${_('Automatically update')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="auto_update"
@@ -292,7 +292,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Check the server every*</label>
+                        <label class="component-title">${_('Check the server every*')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -313,7 +313,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Notify on software update</label>
+                        <label class="component-title">${_('Notify on software update')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="notify_on_update"
@@ -343,7 +343,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Interface Language:</label>
+                        <label class="component-title">${_('Interface Language:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -373,7 +373,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Display theme:</label>
+                        <label class="component-title">${_('Display theme:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -395,7 +395,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Show all seasons</label>
+                        <label class="component-title">${_('Show all seasons')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="display_all_seasons"
@@ -409,7 +409,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Sort with "The", "A", "An"</label>
+                        <label class="component-title">${_('Sort with "The", "A", "An"')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="sort_article"
@@ -422,7 +422,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Filter Row</label>
+                        <label class="component-title">${_('Filter Row')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="filter_row"
@@ -435,7 +435,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Missed episodes range</label>
+                        <label class="component-title">${_('Missed episodes range')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -454,7 +454,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Display fuzzy dates</label>
+                        <label class="component-title">${_('Display fuzzy dates')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="fuzzy_dating"
@@ -468,7 +468,7 @@
                 </div>
                 <div class="row field-pair show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Trim zero padding</label>
+                        <label class="component-title">${_('Trim zero padding')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="trim_zero"
@@ -481,7 +481,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Date style:</label>
+                        <label class="component-title">${_('Date style:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <select class="form-control ${(' metadataDiv', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
@@ -511,7 +511,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Time style:</label>
+                        <label class="component-title">${_('Time style:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -530,7 +530,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Timezone:</label>
+                        <label class="component-title">${_('Timezone:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="radio" name="timezone_display" id="local"
@@ -553,7 +553,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Download url</label>
+                        <label class="component-title">${_('Download url')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -570,7 +570,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Show fanart in the background</label>
+                        <label class="component-title">${_('Show fanart in the background')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="fanart_background"
@@ -584,7 +584,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Fanart transparency</label>
+                        <label class="component-title">${_('Fanart transparency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -618,7 +618,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">API key</label>
+                        <label class="component-title">${_('API key')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -651,7 +651,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">HTTP logs</label>
+                        <label class="component-title">${_('HTTP logs')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="web_log"
@@ -663,7 +663,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">HTTP username</label>
+                        <label class="component-title">${_('HTTP username')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -682,7 +682,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">HTTP password</label>
+                        <label class="component-title">${_('HTTP password')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -701,7 +701,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">HTTP port</label>
+                        <label class="component-title">${_('HTTP port')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -720,7 +720,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Listen on IPv6</label>
+                        <label class="component-title">${_('Listen on IPv6')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="web_ipv6"
@@ -733,7 +733,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable HTTPS</label>
+                        <label class="component-title">${_('Enable HTTPS')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="enable_https" class="enabler"
@@ -748,7 +748,7 @@
                     <div class="row field-pair">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">HTTPS certificate</label>
+                            <label class="component-title">${_('HTTPS certificate')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -772,7 +772,7 @@
                     <div class="row field-pair">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">HTTPS key</label>
+                            <label class="component-title">${_('HTTPS key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
@@ -794,7 +794,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Reverse proxy headers</label>
+                        <label class="component-title">${_('Reverse proxy headers')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="handle_reverse_proxy"
@@ -808,7 +808,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Notify on login</label>
+                        <label class="component-title">${_('Notify on login')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="notify_on_login"
@@ -842,7 +842,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">CPU throttling:</label>
+                        <label class="component-title">${_('CPU throttling:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -861,7 +861,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Anonymous redirect</label>
+                        <label class="component-title">${_('Anonymous redirect')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -879,7 +879,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable debug</label>
+                        <label class="component-title">${_('Enable debug')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="debug"
@@ -892,7 +892,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Verify SSL Certs</label>
+                        <label class="component-title">${_('Verify SSL Certs')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="ssl_verify"
@@ -907,7 +907,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">No Restart</label>
+                        <label class="component-title">${_('No Restart')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="no_restart"
@@ -924,7 +924,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Encrypt settings</label>
+                        <label class="component-title">${_('Encrypt settings')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="encryption_version"
@@ -939,7 +939,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Unprotected calendar</label>
+                        <label class="component-title">${_('Unprotected calendar')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="calendar_unprotected"
@@ -956,7 +956,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Google Calendar Icons</label>
+                        <label class="component-title">${_('Google Calendar Icons')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="calendar_icons"
@@ -971,7 +971,7 @@
 
                 <div class="row field-pair" style="display: none">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Link Google Account</label>
+                        <label class="component-title">${_('Link Google Account')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input class="btn btn-inline" type="button" id="google_link" value="Link">
@@ -985,7 +985,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Proxy host</label>
+                        <label class="component-title">${_('Proxy host')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -1002,7 +1002,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Use proxy for indexers</label>
+                        <label class="component-title">${_('Use proxy for indexers')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="proxy_indexers"
@@ -1016,7 +1016,7 @@
                 <div class="row field-pair">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Skip Remove Detection</label>
+                        <label class="component-title">${_('Skip Remove Detection')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="skip_removed_files"
@@ -1031,7 +1031,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Default deleted episode status:</label>
+                        <label class="component-title">${_('Default deleted episode status:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -1074,7 +1074,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">PIP executable path</label>
+                        <label class="component-title">${_('PIP executable path')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -1111,7 +1111,7 @@
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Git Branch(s):</label>
+                            <label class="component-title">${_('Git Branch(s):')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1155,7 +1155,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">GIT executable path</label>
+                            <label class="component-title">${_('GIT executable path')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1174,7 +1174,7 @@
                     <div class="row field-pair" hidden>
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Git reset</label>
+                            <label class="component-title">${_('Git reset')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="git_reset"
@@ -1190,7 +1190,7 @@
                     <div class="row field-pair" hidden>
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Git auto-issues submit</label>
+                            <label class="component-title">${_('Git auto-issues submit')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="git_autoissues"

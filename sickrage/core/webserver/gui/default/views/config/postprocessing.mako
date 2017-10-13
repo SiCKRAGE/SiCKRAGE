@@ -27,7 +27,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enabled</label>
+                        <label class="component-title">${_('Enabled')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="process_automatically"
@@ -41,7 +41,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Post Processing Dir</label>
+                        <label class="component-title">${_('Post Processing Dir')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -71,7 +71,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Processing Method:</label>
+                        <label class="component-title">${_('Processing Method:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -103,7 +103,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Auto Post-Processing Frequency</label>
+                        <label class="component-title">${_('Auto Post-Processing Frequency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -123,7 +123,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Postpone post processing</label>
+                        <label class="component-title">${_('Postpone post processing')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="postpone_if_sync_files"
@@ -135,7 +135,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Sync File Extensions to Ignore</label>
+                        <label class="component-title">${_('Sync File Extensions to Ignore')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -152,7 +152,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Rename Episodes</label>
+                        <label class="component-title">${_('Rename Episodes')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename episode using the Episode
                         <input type="checkbox" name="rename_episodes"
@@ -164,7 +164,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Create missing show directories</label>
+                        <label class="component-title">${_('Create missing show directories')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Create missing show directories
                         <input type="checkbox" name="create_missing_show_dirs"
@@ -176,7 +176,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Add shows without directory</label>
+                        <label class="component-title">${_('Add shows without directory')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Add shows without creating a
                         <input type="checkbox" name="add_shows_wo_dir"
@@ -188,7 +188,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Move Associated Files</label>
+                        <label class="component-title">${_('Move Associated Files')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Move srr/srt/sfv/etc files with the
                         <input type="checkbox" name="move_associated_files"
@@ -200,7 +200,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Rename .nfo file</label>
+                        <label class="component-title">${_('Rename .nfo file')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename the original .nfo file to
                         <input type="checkbox" name="nfo_rename"
@@ -212,7 +212,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Change File Date</label>
+                        <label class="component-title">${_('Change File Date')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="airdate_episodes"
@@ -225,7 +225,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Timezone for File Date:</label>
+                        <label class="component-title">${_('Timezone for File Date:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -244,7 +244,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Unpack</label>
+                        <label class="component-title">${_('Unpack')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input id="unpack" type="checkbox"
@@ -257,7 +257,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Delete RAR contents</label>
+                        <label class="component-title">${_('Delete RAR contents')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="del_rar_contents"
@@ -269,7 +269,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Don't delete empty folders</label>
+                        <label class="component-title">${_('Don\'t delete empty folders')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="no_delete"
@@ -282,7 +282,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Use Failed Downloads</label>
+                        <label class="component-title">${_('Use Failed Downloads')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input id="use_failed_downloads" type="checkbox" class="enabler"
@@ -293,7 +293,7 @@
                 <div id="content_use_failed_downloads">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Delete Failed</label>
+                            <label class="component-title">${_('Delete Failed')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input id="delete_failed" type="checkbox"
@@ -307,7 +307,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Extra Scripts</label>
+                        <label class="component-title">${_('Extra Scripts')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -342,7 +342,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Name Pattern:</label>
+                        <label class="component-title">${_('Name Pattern:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -369,7 +369,7 @@
                 <div id="naming_custom">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title"></label>
+                            <label class="component-title">${_('')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -535,7 +535,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Multi-Episode Style:</label>
+                        <label class="component-title">${_('Multi-Episode Style:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -576,7 +576,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Strip Show Year</label>
+                        <label class="component-title">${_('Strip Show Year')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" id="naming_strip_year"
@@ -590,7 +590,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Custom Air-By-Date</label>
+                        <label class="component-title">${_('Custom Air-By-Date')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_abd"
@@ -604,7 +604,7 @@
                 <div id="content_naming_custom_abd">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Air-by-date Name Pattern:</label>
+                            <label class="component-title">${_('Air-by-date Name Pattern:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -631,7 +631,7 @@
                     <div id="naming_abd_custom">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title"></label>
+                                <label class="component-title">${_('')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -796,7 +796,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Custom Sports</label>
+                        <label class="component-title">${_('Custom Sports')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_sports"
@@ -810,7 +810,7 @@
                 <div id="content_naming_custom_sports">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Sports Name Pattern:</label>
+                            <label class="component-title">${_('Sports Name Pattern:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -837,7 +837,7 @@
                     <div id="naming_sports_custom">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title"></label>
+                                <label class="component-title">${_('')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -1006,7 +1006,7 @@
                 <!-- naming_anime_custom -->
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Custom Anime</label>
+                        <label class="component-title">${_('Custom Anime')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_anime"
@@ -1020,7 +1020,7 @@
                 <div id="content_naming_custom_anime">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Anime Name Pattern:</label>
+                            <label class="component-title">${_('Anime Name Pattern:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1197,7 +1197,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Multi-Episode Style:</label>
+                            <label class="component-title">${_('Multi-Episode Style:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1239,7 +1239,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Add Absolute Number</label>
+                            <label class="component-title">${_('Add Absolute Number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="radio" name="naming_anime" id="naming_anime"
@@ -1253,7 +1253,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Only Absolute Number</label>
+                            <label class="component-title">${_('Only Absolute Number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="radio" name="naming_anime" id="naming_anime_only"
@@ -1267,7 +1267,7 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">No Absolute Number</label>
+                            <label class="component-title">${_('No Absolute Number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="radio" name="naming_anime" id="naming_anime_none"
@@ -1303,7 +1303,7 @@
                 <% m_dict = sickrage.srCore.metadataProvidersDict %>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Metadata Type:</label>
+                        <label class="component-title">${_('Metadata Type:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -1325,7 +1325,7 @@
 
                 <div class="field-pair row">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Select Metadata</label>
+                        <label class="component-title">${_('Select Metadata')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         % for (cur_id, cur_generator) in m_dict.items():

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 97ae9f4 - 2017-10-13: Adding in i18n support for multi-language webui 
+- * d3cf972 - 2017-10-13: Surrounded titles with gettext underscore 
+- * 0a45996 - 2017-10-13: Adding in i18n support for multi-language webui 
 - * 7d2ff8a - 2017-10-13: Release v9.1.36 
 - * 47dc9a4 - 2017-10-13: Misc code cleanup 
 - * e127e2a - 2017-10-12: Fixed some typo&#x27;s 

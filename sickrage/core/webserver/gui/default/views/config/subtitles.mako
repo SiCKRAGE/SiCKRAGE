@@ -27,7 +27,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enabled</label>
+                        <label class="component-title">${_('Enabled')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox"
@@ -40,7 +40,7 @@
                 <div id="content_use_subtitles">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Subtitle Languages</label>
+                            <label class="component-title">${_('Subtitle Languages')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -57,7 +57,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Subtitles History</label>
+                            <label class="component-title">${_('Subtitles History')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="subtitles_history"
@@ -67,7 +67,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Subtitles Multi-Language</label>
+                            <label class="component-title">${_('Subtitles Multi-Language')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="subtitles_multi"
@@ -77,7 +77,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Embedded Subtitles</label>
+                            <label class="component-title">${_('Embedded Subtitles')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="embedded_subtitles_all"
@@ -90,7 +90,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Hearing Impaired Subtitles</label>
+                            <label class="component-title">${_('Hearing Impaired Subtitles')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="subtitles_hearing_impaired"
@@ -101,7 +101,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Subtitle Directory</label>
+                            <label class="component-title">${_('Subtitle Directory')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -121,7 +121,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Subtitle Find Frequency</label>
+                            <label class="component-title">${_('Subtitle Find Frequency')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -141,7 +141,7 @@
                     </div>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Extra Scripts</label>
+                            <label class="component-title">${_('Extra Scripts')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -254,7 +254,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${curService['name'].capitalize()} User Name</label>
+                                <label class="component-title">${curService['name'].capitalize()} ${_('User Name')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -271,7 +271,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${curService['name'].capitalize()} Password</label>
+                                <label class="component-title">${curService['name'].capitalize()} ${_('Password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">

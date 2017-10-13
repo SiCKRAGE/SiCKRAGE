@@ -38,7 +38,7 @@
                                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Show Location</label>
+                                            <label class="component-title">${_('Show Location')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="hidden" name="show" value="${show.indexerid}"/>
@@ -58,7 +58,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Preferred Quality</label>
+                                            <label class="component-title">${_('Preferred Quality')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <% qualities = Quality.splitQuality(int(show.quality)) %>
@@ -70,7 +70,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Default Episode Status</label>
+                                            <label class="component-title">${_('Default Episode Status')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
@@ -92,7 +92,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Info Language</label>
+                                            <label class="component-title">${_('Info Language')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <% languages = srIndexerApi().indexer().languages.keys() %>
@@ -111,7 +111,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Archive on first match</label>
+                                            <label class="component-title">${_('Archive on first match')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="archive_firstmatch"
@@ -125,7 +125,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Subtitles</label>
+                                            <label class="component-title">${_('Subtitles')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="subtitles"
@@ -138,7 +138,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Subtitle metdata</label>
+                                            <label class="component-title">${_('Subtitle metdata')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="subtitles_sr_metadata"
@@ -152,7 +152,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Paused</label><br/>
+                                            <label class="component-title">${_('Paused')}</label><br/>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="paused"
@@ -174,7 +174,7 @@
                                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Air by date</label>
+                                            <label class="component-title">${_('Air by date')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="airbydate"
@@ -188,7 +188,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Sports</label>
+                                            <label class="component-title">${_('Sports')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="sports"
@@ -203,7 +203,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">DVD Order</label>
+                                            <label class="component-title">${_('DVD Order')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="dvdorder"
@@ -217,7 +217,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Anime</label>
+                                            <label class="component-title">${_('Anime')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="anime"
@@ -235,7 +235,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Season folders</label>
+                                            <label class="component-title">${_('Season folders')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="season_folders"
@@ -248,7 +248,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Scene Numbering</label>
+                                            <label class="component-title">${_('Scene Numbering')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="scene"
@@ -271,7 +271,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Ignored Words</label>
+                                            <label class="component-title">${_('Ignored Words')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
@@ -294,7 +294,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Required Words</label>
+                                            <label class="component-title">${_('Required Words')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
@@ -314,7 +314,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Scene Exception</label>
+                                            <label class="component-title">${_('Scene Exception')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">

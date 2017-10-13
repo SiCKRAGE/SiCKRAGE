@@ -18,7 +18,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Randomize Providers</label>
+                        <label class="component-title">${_('Randomize Providers')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="randomize_providers" id="randomize_providers"
@@ -30,7 +30,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Download propers</label>
+                        <label class="component-title">${_('Download propers')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="download_propers" id="download_propers"
@@ -42,7 +42,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable provider RSS cache</label>
+                        <label class="component-title">${_('Enable provider RSS cache')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="enable_rss_cache" id="enable_rss_cache"
@@ -54,7 +54,7 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enable provider RSS cache for valid shows only</label>
+                        <label class="component-title">${_('Enable provider RSS cache for valid shows only')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="enable_rss_cache_valid_shows" id="enable_rss_cache_valid_shows"
@@ -67,7 +67,7 @@
                 <div id="content_download_propers">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Check propers every:</label>
+                            <label class="component-title">${_('Check propers every:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -88,7 +88,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Backlog search frequency</label>
+                        <label class="component-title">${_('Backlog search frequency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -107,7 +107,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Daily search frequency</label>
+                        <label class="component-title">${_('Daily search frequency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -128,7 +128,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Usenet retention</label>
+                        <label class="component-title">${_('Usenet retention')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -148,7 +148,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Torrent Trackers</label>
+                        <label class="component-title">${_('Torrent Trackers')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -166,7 +166,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Ignore words</label>
+                        <label class="component-title">${_('Ignore words')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -184,7 +184,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Require words</label>
+                        <label class="component-title">${_('Require words')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -202,7 +202,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Ignore language names in subbed results</label>
+                        <label class="component-title">${_('Ignore language names in subbed results')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -220,7 +220,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Allow high priority</label>
+                        <label class="component-title">${_('Allow high priority')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="allow_high_priority"
@@ -233,7 +233,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Failed Downloads Handling</label>
+                        <label class="component-title">${_('Failed Downloads Handling')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input id="use_failed_downloads" type="checkbox" class="enabler"
@@ -246,7 +246,7 @@
                 <div id="content_use_failed_downloads">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Delete Failed</label>
+                            <label class="component-title">${_('Delete Failed')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input id="delete_failed" type="checkbox"
@@ -278,7 +278,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enabled</label>
+                        <label class="component-title">${_('Enabled')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="use_nzbs" class="enabler" title="Enable NZB searches"
@@ -290,7 +290,7 @@
                 <div id="content_use_nzbs">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Send .nzb files to:</label>
+                            <label class="component-title">${_('Send .nzb files to:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -310,7 +310,7 @@
                     <div id="blackhole_settings">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Black hole folder location</label>
+                                <label class="component-title">${_('Black hole folder location')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -327,7 +327,7 @@
                     <div id="sabnzbd_settings">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">SABnzbd server URL</label>
+                                <label class="component-title">${_('SABnzbd server URL')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -344,7 +344,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">SABnzbd username</label>
+                                <label class="component-title">${_('SABnzbd username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -362,7 +362,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">SABnzbd password</label>
+                                <label class="component-title">${_('SABnzbd password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -380,7 +380,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">SABnzbd API key</label>
+                                <label class="component-title">${_('SABnzbd API key')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -398,7 +398,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use SABnzbd category</label>
+                                <label class="component-title">${_('Use SABnzbd category')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -416,7 +416,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use SABnzbd category (backlog episodes)</label>
+                                <label class="component-title">${_('Use SABnzbd category (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -434,7 +434,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use SABnzbd category for anime</label>
+                                <label class="component-title">${_('Use SABnzbd category for anime')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -453,7 +453,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use SABnzbd category for anime (backlog episodes)</label>
+                                <label class="component-title">${_('Use SABnzbd category for anime (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -473,7 +473,7 @@
                         % if sickrage.srCore.srConfig.ALLOW_HIGH_PRIORITY == True:
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Use forced priority</label>
+                                    <label class="component-title">${_('Use forced priority')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="sab_forced" class="enabler"
@@ -487,7 +487,7 @@
                     <div id="nzbget_settings">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Connect using HTTPS</label>
+                                <label class="component-title">${_('Connect using HTTPS')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input id="nzbget_use_https" type="checkbox" class="enabler"
@@ -498,7 +498,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">NZBget host:port</label>
+                                <label class="component-title">${_('NZBget host:port')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -517,7 +517,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">NZBget username</label>
+                                <label class="component-title">${_('NZBget username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -535,7 +535,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">NZBget password</label>
+                                <label class="component-title">${_('NZBget password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -553,7 +553,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use NZBget category</label>
+                                <label class="component-title">${_('Use NZBget category')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -571,7 +571,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use NZBget category (backlog episodes)</label>
+                                <label class="component-title">${_('Use NZBget category (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -589,7 +589,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use NZBget category for anime</label>
+                                <label class="component-title">${_('Use NZBget category for anime')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -607,7 +607,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Use NZBget category for anime (backlog episodes)</label>
+                                <label class="component-title">${_('Use NZBget category for anime (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -626,7 +626,7 @@
 
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">NZBget priority</label>
+                                <label class="component-title">${_('NZBget priority')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -690,7 +690,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Enabled</label>
+                        <label class="component-title">${_('Enabled')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="use_torrents" class="enabler"
@@ -702,7 +702,7 @@
                 <div id="content_use_torrents">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Send .torrent files to:</label>
+                            <label class="component-title">${_('Send .torrent files to:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -723,7 +723,7 @@
                     <div id="options_torrent_blackhole">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Black hole folder location</label>
+                                <label class="component-title">${_('Black hole folder location')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -786,7 +786,7 @@
 
                         <div class="row field-pair" id="torrent_auth_type_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">HTTP Authentication</label>
+                                <label class="component-title">${_('HTTP Authentication')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -807,7 +807,7 @@
 
                         <div class="row field-pair" id="torrent_verify_cert_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Verify certificate</label>
+                                <label class="component-title">${_('Verify certificate')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="torrent_verify_cert" class="enabler"
@@ -859,7 +859,7 @@
 
                         <div class="row field-pair" id="torrent_label_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Add label to torrent</label>
+                                <label class="component-title">${_('Add label to torrent')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -877,7 +877,7 @@
 
                         <div class="row field-pair" id="torrent_label_anime_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Add label to torrent</label>
+                                <label class="component-title">${_('Add label to torrent')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -895,7 +895,7 @@
 
                         <div class="row field-pair" id="torrent_path_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Downloaded files location</label>
+                                <label class="component-title">${_('Downloaded files location')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -934,7 +934,7 @@
 
                         <div class="row field-pair" id="torrent_paused_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Start torrent paused</label>
+                                <label class="component-title">${_('Start torrent paused')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="torrent_paused" class="enabler"
@@ -947,7 +947,7 @@
 
                         <div class="row field-pair" id="torrent_high_bandwidth_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Allow high bandwidth</label>
+                                <label class="component-title">${_('Allow high bandwidth')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <input type="checkbox" name="torrent_high_bandwidth" class="enabler"
