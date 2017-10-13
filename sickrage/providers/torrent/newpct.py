@@ -53,7 +53,7 @@ class newpctProvider(TorrentProvider):
             'bus_de_': 'All'
         }
 
-        lang_info = '' if not epObj or not epObj.show else epObj.show.lang
+        lang_info = '' if not ep_obj or not ep_obj.show else ep_obj.show.lang
 
         for mode in search_strings.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)

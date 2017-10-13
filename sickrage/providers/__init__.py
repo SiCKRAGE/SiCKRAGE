@@ -967,7 +967,7 @@ class NewznabProvider(NZBProvider):
                     categories += [{"id": x["@id"], "name": x["@name"]} for x in category["subcat"]]
 
             success = True
-        except Exception as e:
+        except Exception:
             sickrage.srCore.srLogger.debug("[%s] failed to list categories" % self.name)
             message = "[%s] failed to list categories" % self.name
 

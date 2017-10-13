@@ -86,17 +86,6 @@ class FileListProvider(TorrentProvider):
             "cat": 0
         }
 
-        # Units
-        units = ["B", "KB", "MB", "GB", "TB", "PB"]
-
-        def process_column_header(td):
-            result = ""
-            if td.a and td.a.img:
-                result = td.a.img.get("title", td.a.get_text(strip=True))
-            if not result:
-                result = td.get_text(strip=True)
-            return result
-
         for mode in search_strings:
             sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
 
