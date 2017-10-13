@@ -109,7 +109,7 @@ class TorrentDayProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data, cache=False).json()
                     torrents = data['Fs'][0]['Cn']['torrents']
-                except Exception as e:
+                except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
 

@@ -119,7 +119,7 @@ class TorrentLeechProvider(TorrentProvider):
                                 leechers = tryInt(result.find('td', attrs={'class': 'leechers'}).text, 0)
 
                                 size = -1
-                                if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]',
+                                if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',
                                             result('td', class_="listcolumn")[1].text):
                                     size = convert_size(result('td', class_="listcolumn")[1].text.strip(), -1)
                             except (AttributeError, TypeError):

@@ -134,7 +134,7 @@ class GFTrackerProvider(TorrentProvider):
                                 leechers = int(shares[1])
 
                                 size = -1
-                                if re.match(r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
+                                if re.match(r"\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
                                     size = convert_size(torrent_size.rstrip(), -1)
 
                             except (AttributeError, TypeError):

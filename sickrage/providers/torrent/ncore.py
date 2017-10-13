@@ -86,7 +86,7 @@ class NcoreProvider(TorrentProvider):
                     sickrage.srCore.srLogger.debug("Search string: {0}".format(search_string))
 
                 try:
-                    parsed_json = sickrage.srCore.srWebSession.get(self.urls['search'] % (search_string)).json()
+                    parsed_json = sickrage.srCore.srWebSession.get(self.urls['search'] % search_string).json()
                 except ValueError:
                     continue
 

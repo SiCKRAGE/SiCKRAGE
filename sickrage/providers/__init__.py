@@ -109,7 +109,7 @@ class GenericProvider(object):
         return SearchResult(episodes)
 
     def make_url(self, url):
-        urls = []
+        urls = [url]
 
         bt_cache_urls = [
             'https://torrentproject.se/torrent/{torrent_hash}.torrent',
@@ -120,29 +120,24 @@ class GenericProvider(object):
         ]
 
         if url.startswith('magnet'):
+            torrent_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
+
             try:
-                torrent_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
-
-                try:
-                    torrent_name = re.findall('dn=([^&]+)', url)[0]
-                except Exception:
-                    torrent_name = 'NO_DOWNLOAD_NAME'
-
-                if len(torrent_hash) == 32:
-                    torrent_hash = b16encode(b32decode(torrent_hash)).upper()
-
-                if not torrent_hash:
-                    sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
-                    return urls
-
-                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in bt_cache_urls]
+                torrent_name = re.findall('dn=([^&]+)', url)[0]
             except Exception:
-                sickrage.srCore.srLogger.error("Unable to extract torrent hash or name from magnet: " + url)
+                torrent_name = 'NO_DOWNLOAD_NAME'
+
+            if len(torrent_hash) == 32:
+                torrent_hash = b16encode(b32decode(torrent_hash)).upper()
+
+            if not torrent_hash:
+                sickrage.srCore.srLogger.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
-        else:
-            urls = [url]
+
+            urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in bt_cache_urls]
 
         random.shuffle(urls)
+
         return urls
 
     def make_filename(self, name):
@@ -495,7 +490,6 @@ class GenericProvider(object):
                 add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
                                       dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
                 return True
-
         return False
 
     @classmethod
@@ -1144,7 +1138,6 @@ class NewznabProvider(NZBProvider):
 
     def find_propers(self, search_date=datetime.datetime.today()):
         results = []
-        dbData = []
 
         for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
             for episode in [e['doc'] for e in

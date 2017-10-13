@@ -154,7 +154,7 @@ class newpctProvider(TorrentProvider):
         title_1080p = re.search(r'1080p', title, flags=re.I)
         title_x264 = re.search(r'x264', title, flags=re.I)
         title_bluray = re.search(r'bluray', title, flags=re.I)
-        title_serie_hd = re.search(r'descargar\-seriehd', title, flags=re.I)
+        title_serie_hd = re.search(r'descargar-seriehd', title, flags=re.I)
         url_hdtv = re.search(r'HDTV', url, flags=re.I)
         url_720p = re.search(r'720p', url, flags=re.I)
         url_1080p = re.search(r'1080p', url, flags=re.I)

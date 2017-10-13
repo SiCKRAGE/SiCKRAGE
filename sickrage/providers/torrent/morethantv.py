@@ -143,7 +143,7 @@ class MoreThanTVProvider(TorrentProvider):
                             leechers = tryInt(result('td', class_="number_column")[2].text, 0)
 
                             size = -1
-                            if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]',
+                            if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',
                                         result('td', class_="number_column")[0].text):
                                 size = convert_size(result('td', class_="number_column")[0].text.strip(), -1)
 
