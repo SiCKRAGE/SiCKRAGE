@@ -28,6 +28,7 @@ import urllib
 
 import dateutil.tz
 import markdown2
+import tornado.locale
 from CodernityDB.database import RecordNotFound
 from adba import aniDBAbstracter
 from concurrent.futures import ThreadPoolExecutor
@@ -97,6 +98,9 @@ class BaseHandler(RequestHandler):
             encoding_errors='replace',
             future_imports=['unicode_literals']
         )
+
+    def get_user_locale(self):
+        return tornado.locale.get(sickrage.srCore.srConfig.GUI_LANG)
 
     def prepare(self):
         if not self.request.full_url().startswith(sickrage.srCore.srConfig.WEB_ROOT):
@@ -174,7 +178,7 @@ class BaseHandler(RequestHandler):
             'srStartTime': self.startTime,
             'makoStartTime': time.time(),
             'application': self.application,
-            'request': self.request
+            'request': self.request,
         }
 
         template_kwargs.update(self.get_template_namespace())
@@ -724,11 +728,11 @@ class Home(WebHandler):
         if connection:
             authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)
             if authed:
-                return _("Success. Connected and authenticated")
+                return _('Success. Connected and authenticated')
             else:
-                return "Authentication failed. SABnzbd expects '" + accesMsg + "' as authentication method, '" + authMsg + "'"
+                return _('Authentication failed. SABnzbd expects ') + accesMsg + _(' as authentication method, ') + authMsg
         else:
-            return "Unable to connect to host"
+            return _('Unable to connect to host')
 
     @staticmethod
     def testTorrent(torrent_method=None, host=None, username=None, password=None):
@@ -746,18 +750,18 @@ class Home(WebHandler):
 
         result, message = sickrage.srCore.notifiersDict['freemobile'].test_notify(freemobile_id, freemobile_apikey)
         if result:
-            return "SMS sent successfully"
+            return _('SMS sent successfully')
         else:
-            return "Problem sending SMS: " + message
+            return _('Problem sending SMS: ') + message
 
     @staticmethod
     def testTelegram(telegram_id=None, telegram_apikey=None):
 
         result, message = sickrage.srCore.notifiersDict['telegram'].test_notify(telegram_id, telegram_apikey)
         if result:
-            return "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
+            return _('Telegram notification succeeded. Check your Telegram clients to make sure it worked')
         else:
-            return "Error sending Telegram notification: {message}".format(message=message)
+            return _('Error sending Telegram notification: {message}').format(message=message)
 
     @staticmethod
     def testGrowl(host=None, password=None):
@@ -769,39 +773,39 @@ class Home(WebHandler):
         if password is None or password == '':
             pw_append = ''
         else:
-            pw_append = " with password: " + password
+            pw_append = _(' with password: ') + password
 
         if result:
-            return "Registered and Tested growl successfully " + urllib.unquote_plus(host) + pw_append
+            return _('Registered and Tested growl successfully ') + urllib.unquote_plus(host) + pw_append
         else:
-            return "Registration and Testing of growl failed " + urllib.unquote_plus(host) + pw_append
+            return _('Registration and Testing of growl failed ') + urllib.unquote_plus(host) + pw_append
 
     @staticmethod
     def testProwl(prowl_api=None, prowl_priority=0):
 
         result = sickrage.srCore.notifiersDict['prowl'].test_notify(prowl_api, prowl_priority)
         if result:
-            return "Test prowl notice sent successfully"
+            return _('Test prowl notice sent successfully')
         else:
-            return "Test prowl notice failed"
+            return _('Test prowl notice failed')
 
     @staticmethod
     def testBoxcar2(accesstoken=None):
 
         result = sickrage.srCore.notifiersDict['boxcar2'].test_notify(accesstoken)
         if result:
-            return "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
+            return _('Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked')
         else:
-            return "Error sending Boxcar2 notification"
+            return _('Error sending Boxcar2 notification')
 
     @staticmethod
     def testPushover(userKey=None, apiKey=None):
 
         result = sickrage.srCore.notifiersDict['pushover'].test_notify(userKey, apiKey)
         if result:
-            return "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
+            return _('Pushover notification succeeded. Check your Pushover clients to make sure it worked')
         else:
-            return "Error sending Pushover notification"
+            return _('Error sending Pushover notification')
 
     @staticmethod
     def twitterStep1():
@@ -813,54 +817,54 @@ class Home(WebHandler):
         result = sickrage.srCore.notifiersDict['twitter']._get_credentials(key)
         sickrage.srCore.srLogger.info("result: " + str(result))
         if result:
-            return "Key verification successful"
+            return _('Key verification successful')
         else:
-            return "Unable to verify key"
+            return _('Unable to verify key')
 
     @staticmethod
     def testTwitter():
 
         result = sickrage.srCore.notifiersDict['twitter'].test_notify()
         if result:
-            return "Tweet successful, check your twitter to make sure it worked"
+            return _('Tweet successful, check your twitter to make sure it worked')
         else:
-            return "Error sending tweet"
+            return _('Error sending tweet')
 
     @staticmethod
     def testTwilio(account_sid=None, auth_token=None, phone_sid=None, to_number=None):
         if not sickrage.srCore.notifiersDict['twilio'].account_regex.match(account_sid):
-            return 'Please enter a valid account sid'
+            return _('Please enter a valid account sid')
 
         if not sickrage.srCore.notifiersDict['twilio'].auth_regex.match(auth_token):
-            return 'Please enter a valid auth token'
+            return _('Please enter a valid auth token')
 
         if not sickrage.srCore.notifiersDict['twilio'].phone_regex.match(phone_sid):
-            return 'Please enter a valid phone sid'
+            return _('Please enter a valid phone sid')
 
         if not sickrage.srCore.notifiersDict['twilio'].number_regex.match(to_number):
-            return 'Please format the phone number as "+1-###-###-####"'
+            return _('Please format the phone number as "+1-###-###-####"')
 
         result = sickrage.srCore.notifiersDict['twilio'].test_notify()
         if result:
-            return 'Authorization successful and number ownership verified'
+            return _('Authorization successful and number ownership verified')
         else:
-            return 'Error sending sms'
+            return _('Error sending sms')
 
     @staticmethod
     def testSlack():
         result = sickrage.srCore.notifiersDict['slack'].test_notify()
         if result:
-            return "Slack message successful"
+            return _('Slack message successful')
         else:
-            return "Slack message failed"
+            return _('Slack message failed')
 
     @staticmethod
     def testDiscord():
         result = sickrage.srCore.notifiersDict['discord'].test_notify()
         if result:
-            return "Discord message successful"
+            return _('Discord message successful')
         else:
-            return "Discord message failed"
+            return _('Discord message failed')
 
     @staticmethod
     def testKODI(host=None, username=None, password=None):
@@ -871,9 +875,9 @@ class Home(WebHandler):
             curResult = sickrage.srCore.notifiersDict['kodi'].test_notify(urllib.unquote_plus(curHost), username,
                                                                           password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
-                finalResult += "Test KODI notice sent successfully to " + urllib.unquote_plus(curHost)
+                finalResult += _('Test KODI notice sent successfully to ') + urllib.unquote_plus(curHost)
             else:
-                finalResult += "Test KODI notice failed to " + urllib.unquote_plus(curHost)
+                finalResult += _('Test KODI notice failed to ') + urllib.unquote_plus(curHost)
             finalResult += "<br>\n"
 
         return finalResult
@@ -890,12 +894,12 @@ class Home(WebHandler):
                                                                               username,
                                                                               password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
-                finalResult += 'Successful test notice sent to Plex client ... ' + urllib.unquote_plus(curHost)
+                finalResult += _('Successful test notice sent to Plex client ... ') + urllib.unquote_plus(curHost)
             else:
-                finalResult += 'Test failed for Plex client ... ' + urllib.unquote_plus(curHost)
+                finalResult += _('Test failed for Plex client ... ') + urllib.unquote_plus(curHost)
             finalResult += '<br>' + '\n'
 
-        sickrage.srCore.srNotifications.message('Tested Plex client(s): ', urllib.unquote_plus(host.replace(',', ', ')))
+        sickrage.srCore.srNotifications.message(_('Tested Plex client(s): '), urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -911,72 +915,71 @@ class Home(WebHandler):
                                                                           password,
                                                                           plex_server_token)
         if curResult is None:
-            finalResult += 'Successful test of Plex server(s) ... ' + urllib.unquote_plus(host.replace(',', ', '))
+            finalResult += _('Successful test of Plex server(s) ... ') + \
+                           urllib.unquote_plus(host.replace(',', ', '))
         elif curResult is False:
-            finalResult += 'Test failed, No Plex Media Server host specified'
+            finalResult += _('Test failed, No Plex Media Server host specified')
         else:
-            finalResult += 'Test failed for Plex server(s) ... ' + urllib.unquote_plus(
-                str(curResult).replace(',', ', '))
+            finalResult += _('Test failed for Plex server(s) ... ') + \
+                           urllib.unquote_plus(str(curResult).replace(',', ', '))
         finalResult += '<br>' + '\n'
 
-        sickrage.srCore.srNotifications.message('Tested Plex Media Server host(s): ',
+        sickrage.srCore.srNotifications.message(_('Tested Plex Media Server host(s): '),
                                                 urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
     @staticmethod
     def testLibnotify():
-
         if sickrage.srCore.notifiersDict['libnotify'].notifier.test_notify():
-            return "Tried sending desktop notification via libnotify"
+            return _('Tried sending desktop notification via libnotify')
         else:
             return sickrage.srCore.notifiersDict['libnotify'].diagnose()
 
     @staticmethod
     def testEMBY(host=None, emby_apikey=None):
-
         host = sickrage.srCore.srConfig.clean_host(host)
         result = sickrage.srCore.notifiersDict['emby'].test_notify(urllib.unquote_plus(host), emby_apikey)
         if result:
-            return "Test notice sent successfully to " + urllib.unquote_plus(host)
+            return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
         else:
-            return "Test notice failed to " + urllib.unquote_plus(host)
+            return _('Test notice failed to ') + urllib.unquote_plus(host)
 
     @staticmethod
     def testNMJ(host=None, database=None, mount=None):
-
         host = sickrage.srCore.srConfig.clean_host(host)
         result = sickrage.srCore.notifiersDict['nmj'].test_notify(urllib.unquote_plus(host), database, mount)
         if result:
-            return "Successfully started the scan update"
+            return _('Successfully started the scan update')
         else:
-            return "Test failed to start the scan update"
+            return _('Test failed to start the scan update')
 
     @staticmethod
     def settingsNMJ(host=None):
-
         host = sickrage.srCore.srConfig.clean_host(host)
         result = sickrage.srCore.notifiersDict['nmj'].notify_settings(urllib.unquote_plus(host))
         if result:
-            return '{"message": "Got settings from %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
+            return '{"message": "%(message)s %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
+                "message": _('Got settings from'),
                 "host": host, "database": sickrage.srCore.srConfig.NMJ_DATABASE,
-                "mount": sickrage.srCore.srConfig.NMJ_MOUNT}
+                "mount": sickrage.srCore.srConfig.NMJ_MOUNT
+            }
         else:
-            return '{"message": "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)", "database": "", "mount": ""}'
+            message = _('Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for '
+                        'detailed info)')
+            return '{"message": {}, "database": "", "mount": ""}'.format(message)
 
     @staticmethod
     def testNMJv2(host=None):
-
         host = sickrage.srCore.srConfig.clean_host(host)
         result = sickrage.srCore.notifiersDict['nmjv2'].test_notify(urllib.unquote_plus(host))
         if result:
-            return "Test notice sent successfully to " + urllib.unquote_plus(host)
+            return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
         else:
-            return "Test notice failed to " + urllib.unquote_plus(host)
+            return _('Test notice failed to ') + urllib.unquote_plus(host)
 
     @staticmethod
     def settingsNMJv2(host=None, dbloc=None, instance=None):
-
         host = sickrage.srCore.srConfig.clean_host(host)
         result = sickrage.srCore.notifiersDict['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
                                                                         instance)
@@ -990,8 +993,8 @@ class Home(WebHandler):
     @staticmethod
     def getTraktToken(trakt_pin=None):
         if srTraktAPI().authenticate(trakt_pin):
-            return "Trakt Authorized"
-        return "Trakt Not Authorized!"
+            return _('Trakt Authorized')
+        return _('Trakt Not Authorized!')
 
     @staticmethod
     def testTrakt(username=None, blacklist_name=None):
@@ -1023,34 +1026,34 @@ class Home(WebHandler):
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
         host = sickrage.srCore.srConfig.clean_host(host)
         if sickrage.srCore.notifiersDict['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
-            return 'Test email sent successfully! Check inbox.'
+            return _('Test email sent successfully! Check inbox.')
         else:
-            return 'ERROR: %s' % sickrage.srCore.notifiersDict['email'].last_err
+            return _('ERROR: %s') % sickrage.srCore.notifiersDict['email'].last_err
 
     @staticmethod
     def testNMA(nma_api=None, nma_priority=0):
 
         result = sickrage.srCore.notifiersDict['nma'].test_notify(nma_api, nma_priority)
         if result:
-            return "Test NMA notice sent successfully"
+            return _('Test NMA notice sent successfully')
         else:
-            return "Test NMA notice failed"
+            return _('Test NMA notice failed')
 
     @staticmethod
     def testPushalot(authorizationToken=None):
         result = sickrage.srCore.notifiersDict['pushalot'].test_notify(authorizationToken)
         if result:
-            return "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
+            return _('Pushalot notification succeeded. Check your Pushalot clients to make sure it worked')
         else:
-            return "Error sending Pushalot notification"
+            return _('Error sending Pushalot notification')
 
     @staticmethod
     def testPushbullet(api=None):
         result = sickrage.srCore.notifiersDict['pushbullet'].test_notify(api)
         if result:
-            return "Pushbullet notification succeeded. Check your device to make sure it worked"
+            return _('Pushbullet notification succeeded. Check your device to make sure it worked')
         else:
-            return "Error sending Pushbullet notification"
+            return _('Error sending Pushbullet notification')
 
     @staticmethod
     def getPushbulletDevices(api=None):
@@ -1058,7 +1061,7 @@ class Home(WebHandler):
         if result:
             return result
         else:
-            return "Error getting Pushbullet devices"
+            return _('Error getting Pushbullet devices')
 
     def status(self):
         tvdirFree = getDiskSpaceUsage(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR)
@@ -2322,7 +2325,7 @@ class HomeAddShows(Home):
 
     def massAddTable(self, rootDir=None):
         if not rootDir:
-            return "No folders selected."
+            return _('No folders selected.')
         elif not isinstance(rootDir, list):
             root_dirs = [rootDir]
         else:
@@ -2569,7 +2572,7 @@ class HomeAddShows(Home):
             sickrage.srCore.srNotifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
         else:
             sickrage.srCore.srLogger.error("There was an error creating the show, no root directory setting found")
-            return "No root directories setup, please go back and add one."
+            return _('No root directories setup, please go back and add one.')
 
         # done adding show
         return self.redirect('/home/')
@@ -2617,9 +2620,9 @@ class HomeAddShows(Home):
         if (whichSeries and rootDir) or (whichSeries and fullShowPath and len(series_pieces) > 1):
             if len(series_pieces) < 6:
                 sickrage.srCore.srLogger.error(
-                    "Unable to add show due to show selection. Not anough arguments: %s" % (repr(series_pieces)))
+                    _('Unable to add show due to show selection. Not anough arguments: %s') % (repr(series_pieces)))
                 sickrage.srCore.srNotifications.error(
-                    "Unknown error. Unable to add show due to problem with show selection.")
+                    _('Unknown error. Unable to add show due to problem with show selection.'))
                 return self.redirect('/home/addShows/existingShows/')
 
             indexer = int(series_pieces[1])
@@ -2653,8 +2656,8 @@ class HomeAddShows(Home):
             dir_exists = makeDir(show_dir)
             if not dir_exists:
                 sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
-                sickrage.srCore.srNotifications.error("Unable to add show",
-                                                      "Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.srCore.srNotifications.error(_("Unable to add show"),
+                                                      _("Unable to create the folder " + show_dir + ", can't add the show"))
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")
             else:
@@ -3575,6 +3578,7 @@ class ManageQueues(Manage):
 
         return self.redirect("/manage/manageQueues/")
 
+
 @Route('/history(/?.*)')
 class History(WebHandler):
     def __init__(self, *args, **kwargs):
@@ -3901,11 +3905,11 @@ class ConfigBackupRestore(Config):
 
         if backupDir:
             if backupSR(backupDir):
-                finalResult += "Backup SUCCESSFUL"
+                finalResult += _("Backup SUCCESSFUL")
             else:
-                finalResult += "Backup FAILED!"
+                finalResult += _("Backup FAILED!")
         else:
-            finalResult += "You need to choose a folder to save your backup to first!"
+            finalResult += _("You need to choose a folder to save your backup to first!")
 
         finalResult += "<br>\n"
 
@@ -3913,7 +3917,6 @@ class ConfigBackupRestore(Config):
 
     @staticmethod
     def restore(backupFile=None):
-
         finalResult = ''
 
         if backupFile:
@@ -3921,12 +3924,12 @@ class ConfigBackupRestore(Config):
             target_dir = os.path.join(sickrage.DATA_DIR, 'restore')
 
             if restoreConfigZip(source, target_dir):
-                finalResult += "Successfully extracted restore files to " + target_dir
-                finalResult += "<br>Restart sickrage to complete the restore."
+                finalResult += _("Successfully extracted restore files to " + target_dir)
+                finalResult += _("<br>Restart sickrage to complete the restore.")
             else:
-                finalResult += "Restore FAILED"
+                finalResult += _("Restore FAILED")
         else:
-            finalResult += "You need to select a backup file to restore!"
+            finalResult += _("You need to select a backup file to restore!")
 
         finalResult += "<br>\n"
 
@@ -4193,7 +4196,7 @@ class ConfigPostProcessing(Config):
     @staticmethod
     def isNamingValid(pattern=None, multi=None, abd=False, sports=False, anime_type=None):
         if pattern is None:
-            return "invalid"
+            return _('invalid')
 
         if multi is not None:
             multi = int(multi)
@@ -4219,11 +4222,11 @@ class ConfigPostProcessing(Config):
             require_season_folders = validator.check_force_season_folders(pattern, multi, anime_type)
 
         if is_valid and not require_season_folders:
-            return "valid"
+            return _('valid')
         elif is_valid and require_season_folders:
-            return "seasonfolders"
+            return _('seasonfolders')
         else:
-            return "invalid"
+            return _('invalid')
 
     @staticmethod
     def isRarSupported():

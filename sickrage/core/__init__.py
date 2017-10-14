@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import gettext
 import os
 import platform
 import re
@@ -34,9 +33,9 @@ import urlparse
 import uuid
 
 import adba
+import tornado.locale
 from apscheduler.schedulers.background import BackgroundScheduler
 from fake_useragent import UserAgent
-from tornado.locale import load_gettext_translations
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
@@ -156,6 +155,9 @@ class Core(object):
 
         self.LANGUAGES = [language for language in os.listdir(self.LOCALE_DIR) if '_' in language]
 
+        # load languages
+        tornado.locale.load_gettext_translations(self.LOCALE_DIR, 'messages')
+
         # patch modules with encoding kludge
         patch_modules()
 
@@ -188,14 +190,7 @@ class Core(object):
         self.srConfig.load()
 
         # set language
-        if self.srConfig.GUI_LANG:
-            gettext.translation('messages', self.LOCALE_DIR, languages=[self.srConfig.GUI_LANG],
-                                codeset='UTF-8').install(unicode=1, names=["ngettext"])
-        else:
-            gettext.install('messages', self.LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
-
-        # load language
-        load_gettext_translations(self.LOCALE_DIR, 'messages')
+        self.srConfig.change_gui_lang(self.srConfig.GUI_LANG)
 
         # set socket timeout
         socket.setdefaulttimeout(self.srConfig.SOCKET_TIMEOUT)

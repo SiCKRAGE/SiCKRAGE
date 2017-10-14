@@ -439,7 +439,7 @@ module.exports = function (grunt) {
         ];
 
         if (process.env.CROWDIN_API_KEY) {
-            tasks.splice(1, 0, 'exec:crowdin_upload', 'exec:crowdin_download'); // insert items at index 2
+            tasks.splice(2, 0, 'exec:crowdin_upload', 'exec:crowdin_download'); // insert items at index 2
         } else {
             grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, not syncing with Crowdin.'.bold);
         }

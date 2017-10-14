@@ -932,15 +932,15 @@ class srConfig(object):
         }
 
     def change_gui_lang(self, lang):
-        if lang != self.GUI_LANG:
-            if lang:
-                # Selected language
-                gettext.translation('messages', sickrage.srCore.LOCALE_DIR, languages=[lang], codeset='UTF-8').install(unicode=1, names=["ngettext"])
-            else:
-                # System default language
-                gettext.install('messages', sickrage.srCore.LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
+        if lang:
+            # Selected language
+            gt = gettext.translation('messages', sickrage.srCore.LOCALE_DIR, languages=[lang], codeset='UTF-8')
+            gt.install(unicode=True, names=["ngettext"])
+        else:
+            # System default language
+            gettext.install('messages', sickrage.srCore.LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
 
-            self.GUI_LANG = lang
+        self.GUI_LANG = lang
 
     def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
         # Check for failed unrar attempt, and remove it

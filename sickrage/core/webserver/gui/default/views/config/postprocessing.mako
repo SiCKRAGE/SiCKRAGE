@@ -12,17 +12,17 @@
 
 <%block name="tabs">
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Post-Processing</a></li>
-        <li><a data-toggle="tab" href="#core-tab-pane2">Episode Naming</a></li>
-        <li><a data-toggle="tab" href="#core-tab-pane3">Metadata</a></li>
+        <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Post-Processing')}</a></li>
+        <li><a data-toggle="tab" href="#core-tab-pane2">${_('Episode Naming')}</a></li>
+        <li><a data-toggle="tab" href="#core-tab-pane3">${_('Metadata')}</a></li>
     </ul>
 </%block>
 <%block name="pages">
     <div id="core-tab-pane1" class="tab-pane fade in active">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Post-Processing</h3>
-                <p>Settings that dictate how SickRage should process completed downloads.</p>
+                <h3>${_('Post-Processing')}</h3>
+                <p>${_('Settings that dictate how SickRage should process completed downloads.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
@@ -33,9 +33,9 @@
                         <input type="checkbox" name="process_automatically"
                                id="process_automatically" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROCESS_AUTOMATICALLY)]}/>
                         <label for="process_automatically">
-                            Enable the automatic post processor to scan and process any files in your <i>Post Processing
-                            Dir</i>?<br>
-                            <b>NOTE:</b> Do not use if you use an external PostProcessing script
+                            ${_('Enable the automatic post processor to scan and process any files in your')}
+                            <i>${_('Post Processing Dir')}</i>?<br>
+                            <b>${_('NOTE:')}</b> ${_('Do not use if you use an external PostProcessing script')}
                         </label>
                     </div>
                 </div>
@@ -60,10 +60,9 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="tv_download_dir">
-                                    The folder where your download client puts the completed TV downloads.<br/>
-                                    <b>NOTE:</b> Please use seperate downloading and completed folders in your download
-                                    client if
-                                    possible.
+                                    ${_('The folder where your download client puts the completed TV downloads.')}<br/>
+                                    <b>${_('NOTE')}
+                                        :</b> ${_('Please use seperate downloading and completed folders in your download client if possible.')}
                                 </label>
                             </div>
                         </div>
@@ -82,7 +81,7 @@
                                     </div>
                                     <select name="process_method" id="process_method" class="form-control"
                                             title="Processing method">
-                                        <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link", 'symlink_reversed' : _('Symbolic Link Reversed')} %>
+                                        <% process_method_text = {'copy': _("Copy"), 'move': _("Move"), 'hardlink': _("Hard Link"), 'symlink' : _("Symbolic Link"), 'symlink_reversed' : _('Symbolic Link Reversed')} %>
                                         % for curAction in process_method_text:
                                             <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
                                         % endfor
@@ -93,9 +92,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="process_method">
-                                    What method should be used to put files into the library?<br/>
-                                    <b>NOTE:</b> If you keep seeding torrents after they finish, please avoid the 'move'
-                                    processing method to prevent errors.
+                                    ${_('What method should be used to put files into the library?')}<br/>
+                                    <b>${_('NOTE:')}</b> ${_('If you keep seeding torrents after they finish, please avoid the \'move\' processing method to prevent errors.')}
                                 </label>
                             </div>
                         </div>
@@ -129,7 +127,7 @@
                         <input type="checkbox" name="postpone_if_sync_files"
                                id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.POSTPONE_IF_SYNC_FILES)]}/>
                         <label for="postpone_if_sync_files">
-                            Wait to process a folder if sync files are present.
+                            ${_('Wait to process a folder if sync files are present.')}
                         </label>
                     </div>
                 </div>
@@ -154,11 +152,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Rename Episodes')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename episode using the Episode
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Rename episode using the Episode')}
                         <input type="checkbox" name="rename_episodes"
                                id="rename_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.RENAME_EPISODES)]}/>
                         <label for="rename_episodes">
-                            Naming settings?
+                            ${_('Naming settings?')}
                         </label>
                     </div>
                 </div>
@@ -166,11 +164,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Create missing show directories')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Create missing show directories
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Create missing show directories')}
                         <input type="checkbox" name="create_missing_show_dirs"
                                id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS)]}/>
                         <label for="create_missing_show_dirs">
-                            when they get deleted
+                            ${_('when they get deleted')}
                         </label>
                     </div>
                 </div>
@@ -178,11 +176,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Add shows without directory')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Add shows without creating a
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Add shows without creating a')}
                         <input type="checkbox" name="add_shows_wo_dir"
                                id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR)]}/>
                         <label for="add_shows_wo_dir">
-                            directory (not recommended)
+                            ${_('directory (not recommended)')}
                         </label>
                     </div>
                 </div>
@@ -190,11 +188,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Move Associated Files')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Move srr/srt/sfv/etc files with the
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Move srr/srt/sfv/etc files with the')}
                         <input type="checkbox" name="move_associated_files"
                                id="move_associated_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES)]}/>
                         <label for="move_associated_files">
-                            episode when processed?
+                            ${_('episode when processed?')}
                         </label>
                     </div>
                 </div>
@@ -202,11 +200,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Rename .nfo file')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">Rename the original .nfo file to
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Rename the original .nfo file to')}
                         <input type="checkbox" name="nfo_rename"
                                id="nfo_rename" ${('', 'checked')[bool(sickrage.srCore.srConfig.NFO_RENAME)]}/>
                         <label for="nfo_rename">
-                            .nfo-orig to avoid conflicts?
+                            ${_('.nfo-orig to avoid conflicts?')}
                         </label>
                     </div>
                 </div>
@@ -218,8 +216,8 @@
                         <input type="checkbox" name="airdate_episodes"
                                id="airdate_episodes" ${('', 'checked')[bool(sickrage.srCore.srConfig.AIRDATE_EPISODES)]}/>
                         <label for="airdate_episodes">
-                            Set last modified filedate to the date that the episode aired?<br/>
-                            <b>NOTE:</b> Some systems may ignore this feature.
+                            ${_('Set last modified filedate to the date that the episode aired?')}<br/>
+                            <b>${_('NOTE:')}</b> ${_('Some systems may ignore this feature.')}
                         </label>
                     </div>
                 </div>
@@ -250,8 +248,8 @@
                         <input id="unpack" type="checkbox"
                                name="unpack" ${('', 'checked')[bool(sickrage.srCore.srConfig.UNPACK)]} />
                         <label for="unpack">
-                            Unpack any TV releases in your <i>TV Download Dir</i>?<br/>
-                            <b>NOTE:</b> Only working with RAR archive
+                            ${_('Unpack any TV releases in your')} <i>${_('TV Download Dir')}</i>?<br/>
+                            <b>${_('NOTE:')}</b> ${_('Only working with RAR archive')}
                         </label>
                     </div>
                 </div>
@@ -263,7 +261,7 @@
                         <input type="checkbox" name="del_rar_contents"
                                id="del_rar_contents" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELRARCONTENTS)]}/>
                         <label for="del_rar_contents">
-                            Delete content of RAR files, even if Process Method not set to move?
+                            ${_('Delete content of RAR files, even if Process Method not set to move?')}
                         </label>
                     </div>
                 </div>
@@ -275,8 +273,8 @@
                         <input type="checkbox" name="no_delete"
                                id="no_delete" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_DELETE)]}/>
                         <label for="no_delete">
-                            Leave empty folders when Post Processing?<br/>
-                            <b>NOTE:</b> Can be overridden using manual Post Processing
+                            ${_('Leave empty folders when Post Processing?')}<br/>
+                            <b>${_('NOTE:')}</b> ${_('Can be overridden using manual Post Processing')}
                         </label>
                     </div>
                 </div>
@@ -287,7 +285,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input id="use_failed_downloads" type="checkbox" class="enabler"
                                name="use_failed_downloads" ${('', 'checked')[bool(sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS)]}/>
-                        <label for="use_failed_downloads">Use Failed Download Handling?</label>
+                        <label for="use_failed_downloads">${_('Use Failed Download Handling?')}</label>
                     </div>
                 </div>
                 <div id="content_use_failed_downloads">
@@ -299,8 +297,8 @@
                             <input id="delete_failed" type="checkbox"
                                    name="delete_failed" ${('', 'checked')[bool(sickrage.srCore.srConfig.DELETE_FAILED)]}/>
                             <label for="delete_failed">
-                                Delete files left over from a failed download?<br/>
-                                <b>NOTE:</b> This only works if Use Failed Downloads is enabled.
+                                ${_('Delete files left over from a failed download?')}<br/>
+                                <b>${_('NOTE:')}</b> ${_('This only works if Use Failed Downloads is enabled.')}
                             </label>
                         </div>
                     </div>
@@ -318,10 +316,10 @@
                                    value="${'|'.join(sickrage.srCore.srConfig.EXTRA_SCRIPTS)}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
-                        <label for="extra_scripts">See <a
+                        <label for="extra_scripts">${_('See')} <a
                                 href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts">
-                            <span style="color: red; "><b>Wiki</b></span> </a> for script arguments description and
-                            usage.</label>
+                            <span style="color: red; "><b>${_('Wiki')}</b></span></a> ${_('for script arguments description and usage.')}
+                        </label>
                     </div>
                 </div>
                 <div class="row">
@@ -335,8 +333,8 @@
     <div id="core-tab-pane2" class="tab-pane fade">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Episode Naming</h3>
-                <p>How SickRage will name and sort your episodes.</p>
+                <h3>${_('Episode Naming')}</h3>
+                <p>${_('How SickRage will name and sort your episodes.')}</p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
@@ -368,9 +366,7 @@
 
                 <div id="naming_custom">
                     <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('')}</label>
-                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
                                 <div class="input-group-addon">
@@ -383,8 +379,7 @@
                                        class="form-control"/>
                             </div>
                             <label for="naming_pattern">
-                                <b>NOTE:</b> Don't forget to add quality pattern. Otherwise after post-processing the
-                                episode will have UNKNOWN quality
+                                <b>${_('NOTE:')}</b> ${_('Don\'t forget to add quality pattern. Otherwise after post-processing the episode will have UNKNOWN quality')}
                             </label>
                         </div>
                     </div>
@@ -393,36 +388,36 @@
                         <table class="Key">
                             <thead>
                             <tr>
-                                <th class="align-right">Meaning</th>
-                                <th>Pattern</th>
-                                <th width="60%">Result</th>
+                                <th class="align-right">${_('Meaning')}</th>
+                                <th>${_('Pattern')}</th>
+                                <th width="60%">${_('Result')}</th>
                             </tr>
                             </thead>
                             <tfoot>
                             <tr>
                                 <th colspan="3">
-                                    Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                    ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
                                 </th>
                             </tr>
                             </tfoot>
                             <tbody>
                             <tr>
-                                <td class="align-right"><b>Show Name:</b></td>
+                                <td class="align-right"><b>${_('Show Name:')}</b></td>
                                 <td>%SN</td>
-                                <td>Show Name</td>
+                                <td>${_('Show Name')}</td>
                             </tr>
                             <tr class="even">
                                 <td>&nbsp;</td>
                                 <td>%S.N</td>
-                                <td>Show.Name</td>
+                                <td>${_('Show.Name')}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>%S_N</td>
-                                <td>Show_Name</td>
+                                <td>${_('Show_Name')}</td>
                             </tr>
                             <tr class="even">
-                                <td class="align-right"><b>Season Number:</b></td>
+                                <td class="align-right"><b>${_('Season Number:')}</b></td>
                                 <td>%S</td>
                                 <td>2</td>
                             </tr>
@@ -432,7 +427,7 @@
                                 <td>02</td>
                             </tr>
                             <tr class="even">
-                                <td class="align-right"><b>XEM Season Number:</b></td>
+                                <td class="align-right"><b>${_('XEM Season Number:')}</b></td>
                                 <td>%XMS</td>
                                 <td>2</td>
                             </tr>
@@ -442,7 +437,7 @@
                                 <td>02</td>
                             </tr>
                             <tr class="even">
-                                <td class="align-right"><b>Episode Number:</b></td>
+                                <td class="align-right"><b>${_('Episode Number:')}</b></td>
                                 <td>%E</td>
                                 <td>3</td>
                             </tr>
@@ -452,7 +447,7 @@
                                 <td>03</td>
                             </tr>
                             <tr class="even">
-                                <td class="align-right"><b>XEM Episode Number:</b></td>
+                                <td class="align-right"><b>${_('XEM Episode Number:')}</b></td>
                                 <td>%XME</td>
                                 <td>3</td>
                             </tr>
@@ -462,29 +457,29 @@
                                 <td>03</td>
                             </tr>
                             <tr class="even">
-                                <td class="align-right"><b>Episode Name:</b></td>
+                                <td class="align-right"><b>${_('Episode Name:')}</b></td>
                                 <td>%EN</td>
-                                <td>Episode Name</td>
+                                <td>${_('Episode Name')}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>%E.N</td>
-                                <td>Episode.Name</td>
+                                <td>${_('Episode.Name')}</td>
                             </tr>
                             <tr class="even">
                                 <td>&nbsp;</td>
                                 <td>%E_N</td>
-                                <td>Episode_Name</td>
+                                <td>${_('Episode_Name')}</td>
                             </tr>
                             <tr>
-                                <td class="align-right"><b>Quality:</b></td>
+                                <td class="align-right"><b>${_('Quality:')}</b></td>
                                 <td>%QN</td>
-                                <td>720p BluRay</td>
+                                <td>${_('720p BluRay')}</td>
                             </tr>
                             <tr class="even">
                                 <td>&nbsp;</td>
                                 <td>%Q.N</td>
-                                <td>720p.BluRay</td>
+                                <td>${_('720p.BluRay')}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -492,40 +487,45 @@
                                 <td>720p_BluRay</td>
                             </tr>
                             <tr>
-                                <td class="align-right"><b>Scene Quality:</b></td>
+                                <td class="align-right"><b>${_('Scene Quality:')}</b></td>
                                 <td>%SQN</td>
-                                <td>720p HDTV x264</td>
+                                <td>${_('720p HDTV x264')}</td>
                             </tr>
                             <tr class="even">
                                 <td>&nbsp;</td>
                                 <td>%SQ.N</td>
-                                <td>720p.HDTV.x264</td>
+                                <td>${_('720p.HDTV.x264')}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
                                 <td>%SQ_N</td>
-                                <td>720p_HDTV_x264</td>
+                                <td>${_('720p_HDTV_x264')}</td>
                             </tr>
                             <tr class="even">
-                                <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                           title="Multi-EP style is ignored"></i> <b>Release
-                                    Name:</b></td>
+                                <td class="align-right">
+                                    <i class="glyphicon glyphicon-info-sign" title="Multi-EP style is ignored"></i>
+                                    <b>${_('Release Name:')}</b>
+                                </td>
                                 <td>%RN</td>
-                                <td>Show.Name.S02E03.HDTV.XviD-RLSGROUP</td>
+                                <td>${_('Show.Name.S02E03.HDTV.XviD-RLSGROUP')}</td>
                             </tr>
                             <tr>
-                                <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                           title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
-                                    <b>Release Group:</b></td>
+                                <td class="align-right">
+                                    <i class="glyphicon glyphicon-info-sign"
+                                       title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                    <b>${_('Release Group:')}</b>
+                                </td>
                                 <td>%RG</td>
                                 <td>RLSGROUP</td>
                             </tr>
                             <tr class="even">
-                                <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                           title="If episode is proper/repack add 'proper' to name."></i>
-                                    <b>Release Type:</b></td>
+                                <td class="align-right">
+                                    <i class="glyphicon glyphicon-info-sign"
+                                       title="If episode is proper/repack add 'proper' to name."></i>
+                                    <b>${_('Release Type:')}</b>
+                                </td>
                                 <td>%RT</td>
-                                <td>PROPER</td>
+                                <td>${_('PROPER')}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -555,7 +555,7 @@
                 <div id="naming_example_div">
                     <div class="row">
                         <div class="col-md-12">
-                            <h3>Single-EP Sample:</h3>
+                            <h3>${_('Single-EP Sample:')}</h3>
                             <div class="example">
                                 <span class="jumbo" id="naming_example">&nbsp;</span>
                             </div>
@@ -566,7 +566,7 @@
                 <div id="naming_example_multi_div">
                     <div class="row">
                         <div class="col-md-12">
-                            <h3>Multi-EP sample:</h3>
+                            <h3>${_('Multi-EP sample:')}</h3>
                             <div class="example">
                                 <span class="jumbo" id="naming_example_multi">&nbsp;</span>
                             </div>
@@ -582,8 +582,8 @@
                         <input type="checkbox" id="naming_strip_year"
                                name="naming_strip_year" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_STRIP_YEAR)]}/>
                         <label for="naming_strip_year">
-                            Remove the TV show's year when renaming the file?<br/>
-                            <b>NOTE:</b> Only applies to shows that have year inside parentheses
+                            ${_('Remove the TV show\'s year when renaming the file?')}<br/>
+                            <b>${_('NOTE:')}</b> ${_('Only applies to shows that have year inside parentheses')}
                         </label>
                     </div>
                 </div>
@@ -630,9 +630,7 @@
 
                     <div id="naming_abd_custom">
                         <div class="row field-pair">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('')}</label>
-                            </div>
+                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
                                     <div class="input-group-addon">
@@ -836,9 +834,7 @@
 
                     <div id="naming_sports_custom">
                         <div class="row field-pair">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('')}</label>
-                            </div>
+                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
                                     <div class="input-group-addon">

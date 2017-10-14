@@ -3,8 +3,7 @@
 <%!
     import datetime
     import locale
-
-    from tornado._locale_data import LOCALE_NAMES
+    import tornado.locale
 
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
@@ -13,9 +12,6 @@
     from sickrage.core.helpers import anon_url
     from sickrage.indexers import srIndexerApi
     from sickrage.metadata import GenericMetadata
-
-    def lang_name(code):
-        return LOCALE_NAMES.get(code, {}).get("name", "Unknown")
 %>
 <%block name="tabs">
     <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Misc</a></li>
@@ -31,7 +27,7 @@
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Misc</h3>
-                <p>Startup options. Indexer options. Log and show file locations.</p>
+                <p>${_('Startup options. Indexer options. Log and show file locations.')}</p>
                 <p><b>Some options may require a manual restart to take effect.</b></p>
             </div>
 
@@ -256,7 +252,7 @@
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>Updates</h3>
-                <p>Options for software updates.</p>
+                <p>${_('Options for software updates.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
@@ -336,14 +332,14 @@
     <div id="core-tab-pane2" class="tab-pane fade">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>User Interface</h3>
-                <p>Options for visual appearance.</p>
+                <h3>${_('User Interface')}</h3>
+                <p>${_('Options for visual appearance.')}</p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Interface Language:')}</label>
+                        <label class="component-title">${_('Interface Language')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -353,9 +349,11 @@
                                         <span class="fa fa-language"></span>
                                     </div>
                                     <select id="gui_language" name="gui_language" class="form-control">
-                                        <option value="" ${('', 'selected="selected"')[sickrage.srCore.srConfig.GUI_LANG == ""]}>System Language</option>
+                                        <option value="" ${('', 'selected="selected"')[sickrage.srCore.srConfig.GUI_LANG == ""]}>
+                                            System Language
+                                        </option>
                                         % for lang in sickrage.srCore.LANGUAGES:
-                                            <option value="${lang}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.GUI_LANG == lang]}>${lang_name(lang)}</option>
+                                            <option value="${lang}" ${('', 'selected')[sickrage.srCore.srConfig.GUI_LANG == lang]}>${tornado.locale.get(lang).name}</option>
                                         % endfor
                                     </select>
                                 </div>
@@ -364,7 +362,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="gui_language" class="red-text">
-                                    for appearance to take effect, save then refresh your browser
+                                    ${_('for appearance to take effect, save then refresh your browser')}
                                 </label>
                             </div>
                         </div>
@@ -373,7 +371,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Display theme:')}</label>
+                        <label class="component-title">${_('Display theme')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -401,7 +399,7 @@
                         <input type="checkbox" name="display_all_seasons"
                                id="display_all_seasons" ${('', 'checked')[bool(sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS)]}>
                         <label for="display_all_seasons">
-                            on the show summary page
+                            ${_('on the show summary page')}
                         </label>
                     </div>
 
@@ -414,8 +412,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="sort_article"
                                id="sort_article" ${('', 'checked')[bool(sickrage.srCore.srConfig.SORT_ARTICLE)]}/>
-                        <label for="sort_article">include articles ("The", "A", "An") when sorting show
-                            lists</label>
+                        <label for="sort_article">
+                            ${_('include articles ("The", "A", "An") when sorting show lists')}
+                        </label>
                     </div>
 
                 </div>
@@ -428,7 +427,7 @@
                         <input type="checkbox" name="filter_row"
                                id="filter_row" ${('', 'checked')[bool(sickrage.srCore.srConfig.FILTER_ROW)]}/>
                         <label for="filter_row">
-                            Add a filter row to the show display on the home page
+                            ${_('Add a filter row to the show display on the home page')}
                         </label>
                     </div>
 
@@ -460,9 +459,9 @@
                         <input type="checkbox" name="fuzzy_dating"
                                id="fuzzy_dating"
                                class="viewIf datePresets" ${('', 'checked')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}/>
-                        <label
-                                for="fuzzy_dating">move absolute dates into tooltips and display e.g. "Last
-                            Thu", "On Tue"</label>
+                        <label for="fuzzy_dating">
+                            ${_('move absolute dates into tooltips and display e.g. "Last Thu", "On Tue"')}
+                        </label>
                     </div>
 
                 </div>
@@ -474,14 +473,14 @@
                         <input type="checkbox" name="trim_zero"
                                id="trim_zero" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRIM_ZERO)]}/>
                         <label for="trim_zero">
-                            remove the leading number "0" shown on hour of day, and date of month
+                            ${_('remove the leading number "0" shown on hour of day, and date of month')}
                         </label>
                     </div>
                 </div>
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Date style:')}</label>
+                        <label class="component-title">${_('Date style')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <select class="form-control ${(' metadataDiv', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
@@ -499,7 +498,7 @@
                                     id="date_presets${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                     name="date_preset${('_na', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
                                 <option value="%x" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == '%x']}>
-                                    Use System Default
+                                    ${_('Use System Default')}
                                 </option>
                                 % for cur_preset in date_presets:
                                     <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
@@ -511,7 +510,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Time style:')}</label>
+                        <label class="component-title">${_('Time style')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -530,22 +529,21 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Timezone:')}</label>
+                        <label class="component-title">${_('Timezone')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="radio" name="timezone_display" id="local"
                                value="local" ${('', 'checked')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "local"]} />
-                        <label for="local">Local</label>
+                        <label for="local">${_('Local')}</label>
                         <br/>
                         <input type="radio" name="timezone_display" id="network"
                                value="network" ${('', 'checked')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "network"]} />
-                        <label for="network">Network</label>
+                        <label for="network">${_('Network')}</label>
                         <div class="row">
                             <div class="col-md-12">
-                                display dates and times in either your timezone or the shows network
-                                timezone<br/>
-                                <b>Note:</b> Use local timezone to start searching for episodes minutes after
-                                show ends (depends on your dailysearch frequency)
+                                ${_('display dates and times in either your timezone or the shows network timezone')}
+                                <br/>
+                                <b>${_('NOTE:')}</b> ${_('Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)')}
                             </div>
                         </div>
                     </div>
@@ -577,7 +575,7 @@
 
                                id="fanart_background" ${('', 'checked')[bool(sickrage.srCore.srConfig.FANART_BACKGROUND)]}>
                         <label for="fanart_background">
-                            on the show summary page
+                            ${_('on the show summary page')}
                         </label>
                     </div>
                 </div>
@@ -609,10 +607,9 @@
 
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Web Interface</h3>
-                <p>It is recommended that you enable a username and password to secure SickRage from
-                    being tampered with remotely.</p>
-                <p><b>These options require a manual restart to take effect.</b></p>
+                <h3>${_('Web Interface')}</h3>
+                <p>${_('It is recommended that you enable a username and password to secure SickRage from being tampered with remotely.')}</p>
+                <p><b>${_('These options require a manual restart to take effect.')}</b></p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
@@ -640,8 +637,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="api_key">
-                                    used to give 3rd party programs limited access to SiCKRAGE you can try all the
-                                    features of the API <a href="${srWebRoot}/apibuilder/">here</a>
+                                    ${_('used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API')}
+                                    <a href="${srWebRoot}/apibuilder/">${_('here')}</a>
                                 </label>
                             </div>
                         </div>
@@ -656,12 +653,11 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="web_log"
                                id="web_log" ${('', 'checked')[bool(sickrage.srCore.srConfig.WEB_LOG)]}/>
-                        <label for="web_log">enable logs from the internal Tornado web server</label>
+                        <label for="web_log">${_('enable logs from the internal Tornado web server')}</label>
                     </div>
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('HTTP username')}</label>
                     </div>
@@ -725,7 +721,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="web_ipv6"
                                id="web_ipv6" ${('', 'checked')[bool(sickrage.srCore.srConfig.WEB_IPV6)]}/>
-                        <label for="web_ipv6">attempt binding to any available IPv6 address</label>
+                        <label for="web_ipv6">${_('attempt binding to any available IPv6 address')}</label>
                     </div>
 
                 </div>
@@ -739,7 +735,7 @@
                         <input type="checkbox" name="enable_https" class="enabler"
                                id="enable_https" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENABLE_HTTPS)]}/>
                         <label for="enable_https">
-                            enable access to the web interface using a HTTPS address
+                            ${_('enable access to the web interface using a HTTPS address')}
                         </label>
                     </div>
 
@@ -762,7 +758,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <label for="https_cert">
-                                        file name or path to HTTPS certificate
+                                        ${_('file name or path to HTTPS certificate')}
                                     </label>
                                 </div>
                             </div>
@@ -784,7 +780,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label for="https_key">file name or path to HTTPS key</label>
+                                    <label for="https_key">${_('file name or path to HTTPS key')}</label>
                                 </div>
                             </div>
                         </div>
@@ -800,8 +796,8 @@
                         <input type="checkbox" name="handle_reverse_proxy"
                                id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY)]}/>
                         <label for="handle_reverse_proxy">
-                            accept the following reverse proxy headers (advanced)...<br>
-                            (X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)
+                            ${_('accept the following reverse proxy headers (advanced)...')}<br/>
+                            ${_('(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)')}
                         </label>
                     </div>
                 </div>
@@ -814,8 +810,7 @@
                         <input type="checkbox" name="notify_on_login"
                                id="notify_on_login" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_LOGIN)]}/>
                         <label for="notify_on_login">
-                            send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP
-                            address
+                            ${_('send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address')}
                         </label>
                     </div>
                 </div>
@@ -825,8 +820,6 @@
                         <input type="submit" class="btn config_submitter" value="Save Changes"/>
                     </div>
                 </div>
-
-
             </fieldset>
 
         </div><!-- /tab-pane2 //-->
@@ -836,13 +829,13 @@
         <div class="row tab-pane">
 
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Advanced Settings</h3>
+                <h3>${_('Advanced Settings')}</h3>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('CPU throttling:')}</label>
+                        <label class="component-title">${_('CPU throttling')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -885,7 +878,7 @@
                         <input type="checkbox" name="debug"
                                id="debug" ${('', 'checked')[bool(sickrage.srCore.srConfig.DEBUG)]}/>
                         <label for="debug">
-                            Enable debug logs
+                            ${_('Enable debug logs')}
                         </label>
                     </div>
                 </div>
@@ -898,7 +891,7 @@
                         <input type="checkbox" name="ssl_verify"
                                id="ssl_verify" ${('', 'checked')[bool(sickrage.srCore.srConfig.SSL_VERIFY)]}/>
                         <label for="ssl_verify">
-                            Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)
+                            ${_('Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)')}
                         </label>
                     </div>
 
@@ -914,7 +907,7 @@
                                title="Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)"
                                id="no_restart" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_RESTART)]}/>
                         <label for="no_restart">
-                            Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own).
+                            ${_('Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own).')}
                         </label>
                     </div>
 
@@ -930,7 +923,7 @@
                         <input type="checkbox" name="encryption_version"
                                id="encryption_version" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENCRYPTION_VERSION)]}/>
                         <label for="encryption_version">
-                            in the <code>${sickrage.CONFIG_FILE}</code> file.
+                            ${_('in the')} <code>${sickrage.CONFIG_FILE}</code> ${_('file.')}
                         </label>
                     </div>
 
@@ -945,8 +938,7 @@
                         <input type="checkbox" name="calendar_unprotected"
                                id="calendar_unprotected" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_UNPROTECTED)]}/>
                         <label for="calendar_unprotected">
-                            allow subscribing to the calendar without user and password.
-                            Some services like Google Calendar only work this way
+                            ${_('allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way')}
                         </label>
                     </div>
 
@@ -962,7 +954,7 @@
                         <input type="checkbox" name="calendar_icons"
                                id="calendar_icons" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_ICONS)]}/>
                         <label for="calendar_icons">
-                            show an icon next to exported calendar events in Google Calendar.
+                            ${_('show an icon next to exported calendar events in Google Calendar.')}
                         </label>
                     </div>
 
@@ -976,8 +968,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input class="btn btn-inline" type="button" id="google_link" value="Link">
                         <label for="google_link">
-                            link your google account to SiCKRAGE for advanced feature usage such as
-                            settings/database storage
+                            ${_('link your google account to SiCKRAGE for advanced feature usage such as settings/database storage')}
                         </label>
                     </div>
 
@@ -1008,7 +999,7 @@
                         <input type="checkbox" name="proxy_indexers"
                                id="proxy_indexers" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROXY_INDEXERS)]}/>
                         <label for="proxy_indexers">
-                            use proxy host for connecting to indexers (thetvdb)
+                            ${_('use proxy host for connecting to indexers (thetvdb)')}
                         </label>
                     </div>
                 </div>
@@ -1022,8 +1013,8 @@
                         <input type="checkbox" name="skip_removed_files"
                                id="skip_removed_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.SKIP_REMOVED_FILES)]}/>
                         <label for="skip_removed_files">
-                            Skip detection of removed files. If disable it will set default deleted status<br/>
-                            <b>NOTE:</b> This may mean SickRage misses renames as well
+                            ${_('Skip detection of removed files. If disable it will set default deleted status')}<br/>
+                            <b>${_('NOTE:')}</b> ${_('This may mean SickRage misses renames as well')}
                         </label>
                     </div>
 
@@ -1031,7 +1022,7 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Default deleted episode status:')}</label>
+                        <label class="component-title">${_('Default deleted episode status')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -1063,9 +1054,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label for="ep_default_deleted_status">
-                                    Define the status to be set for media file that has been deleted.<br/>
-                                    <b>NOTE:</b> Archived option will keep previous downloaded quality<br/>
-                                    Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)
+                                    ${_('Define the status to be set for media file that has been deleted.')}
+                                    <br/>
+                                    <b>${_('NOTE:')}</b> ${_('Archived option will keep previous downloaded quality')}
+                                    <br/>
+                                    ${_('Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)')}
                                 </label>
                             </div>
                         </div>
@@ -1106,12 +1099,12 @@
 
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                    <h3>Git Settings</h3>
+                    <h3>${_('Git Settings')}</h3>
                 </div>
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('Git Branch(s):')}</label>
+                            <label class="component-title">${_('Git Branch(s)')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1139,12 +1132,12 @@
                                         <input class="btn btn-inline" style="margin-left: 6px;"
                                                type="button"
                                                id="branchCheckout" value="Checkout Branch" disabled>
-                                        <label for="branchCheckout">Error: No branches found.</label>>
+                                        <label for="branchCheckout">${_('Error: No branches found.')}</label>>
                                     % else:
                                         <input class="btn btn-inline" style="margin-left: 6px;"
                                                type="button"
                                                id="branchCheckout" value="Checkout Branch">
-                                        <label for="branchCheckout">select branch to use (restart required)</label>
+                                        <label for="branchCheckout">${_('select branch to use (restart required)')}</label>
                                     % endif
                                 </div>
                             </div>
@@ -1180,15 +1173,13 @@
                             <input type="checkbox" name="git_reset"
                                    id="git_reset" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_RESET)]}/>
                             <label for="git_reset">
-                                removes untracked files and performs a hard reset on git branch
-                                automatically to help resolve update issues
+                                ${_('removes untracked files and performs a hard reset on git branch automatically to help resolve update issues')}
                             </label>
                         </div>
 
                     </div>
 
                     <div class="row field-pair" hidden>
-
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Git auto-issues submit')}</label>
                         </div>
@@ -1197,8 +1188,7 @@
                                    id="git_autoissues" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_AUTOISSUES)]}
                                    disabled="disabled"/>
                             <label for="git_autoissues">
-                                automatically submit bug/issue reports to our issue tracker when errors are
-                                logged
+                                ${_('automatically submit bug/issue reports to our issue tracker when errors are logged')}
                             </label>
                         </div>
 

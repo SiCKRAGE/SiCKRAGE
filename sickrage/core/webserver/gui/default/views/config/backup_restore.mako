@@ -7,8 +7,8 @@
 <%block name="pages">
     <div id="core-tab-pane1" class="tab-pane fade in active clearfix">
         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-            <h3>Backup</h3>
-            <p><b>Backup your main database file and config</b></p>
+            <h3>${_('Backup')}</h3>
+            <p><b>${_('Backup your main database file and config')}</b></p>
         </div>
 
         <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
@@ -34,8 +34,8 @@
 
     <div id="core-tab-pane2" class="tab-pane fade clearfix">
         <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-            <h3>Restore</h3>
-            <p><b>Restore your main database file and config</b></p>
+            <h3>${_('Restore')}</h3>
+            <p><b>${_('Restore your main database file and config')}</b></p>
         </div>
         <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row field-pair">
