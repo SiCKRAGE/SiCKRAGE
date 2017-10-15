@@ -1,6 +1,7 @@
 # Changelog
 
-- * b5f38da - 2017-10-14: Converted more templates to i18n 
+- * 0ff5514 - 2017-10-15: Converted headers and titles to i18n 
+- * 2abfe11 - 2017-10-14: Converted more templates to i18n 
 - * 939e18f - 2017-10-14: Extracted more gettext messages 
 - * d078c67 - 2017-10-13: Surrounded titles with gettext underscore 
 - * 0a45996 - 2017-10-13: Adding in i18n support for multi-language webui 

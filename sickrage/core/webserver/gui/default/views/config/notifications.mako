@@ -598,7 +598,7 @@
                                 <input name="nmj_database" id="nmj_database"
                                        value="${sickrage.srCore.srConfig.NMJ_DATABASE}"
                                        class="form-control"
-                                       placeholder="${_('automatically filled via the 'Get Settings'')}"
+                                       placeholder="${_('automatically filled via the Get Settings')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srCore.srConfig.NMJ_DATABASE == True]}/>
                             </div>
                         </div>
@@ -615,7 +615,7 @@
                                 <input name="nmj_mount" id="nmj_mount"
                                        value="${sickrage.srCore.srConfig.NMJ_MOUNT}"
                                        class="form-control"
-                                       placeholder="${_('automatically filled via the 'Get Settings'')}"
+                                       placeholder="${_('automatically filled via the Get Settings')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srCore.srConfig.NMJ_MOUNT == True]}/>
                             </div>
                         </div>
@@ -749,7 +749,7 @@
                                 <input name="nmjv2_database" id="nmjv2_database"
                                        value="${sickrage.srCore.srConfig.NMJv2_DATABASE}"
                                        class="form-control"
-                                       placeholder="${_('automatically filled via the 'Find Database'')}"
+                                       placeholder="${_('automatically filled via the Find Database')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srCore.srConfig.NMJv2_DATABASE == True]}/>
                             </div>
                         </div>

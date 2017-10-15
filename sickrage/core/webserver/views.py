@@ -116,8 +116,8 @@ class BaseHandler(RequestHandler):
             if url[:3] != 'api':
                 return self.finish(self.render(
                     '/errors/404.mako',
-                    title='HTTP Error 404',
-                    header='HTTP Error 404')
+                    title=_('HTTP Error 404'),
+                    header=_('HTTP Error 404'))
                 )
             else:
                 self.write('Wrong API key used')
@@ -187,8 +187,8 @@ class BaseHandler(RequestHandler):
         try:
             return self.mako_lookup.get_template(template_name).render_unicode(**template_kwargs)
         except Exception:
-            kwargs['title'] = 'HTTP Error 500'
-            kwargs['header'] = 'HTTP Error 500'
+            kwargs['title'] = _('HTTP Error 500')
+            kwargs['header'] = _('HTTP Error 500')
             kwargs['backtrace'] = RichTraceback()
             template_kwargs.update(kwargs)
             return self.mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
@@ -303,7 +303,7 @@ class CalendarHandler(BaseHandler):
         ical += 'VERSION:2.0\r\n'
         ical += 'X-WR-CALNAME:SiCKRAGE\r\n'
         ical += 'X-WR-CALDESC:SiCKRAGE\r\n'
-        ical += 'PRODID://Sick-Beard Upcoming Episodes//\r\n'
+        ical += 'PRODID://SiCKRAGE Upcoming Episodes//\r\n'
 
         # Limit dates
         past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
@@ -389,12 +389,12 @@ class WebRoot(WebHandler):
         if len(sickrage.srCore.srConfig.API_KEY) == 32:
             apikey = sickrage.srCore.srConfig.API_KEY
         else:
-            apikey = 'API Key not generated'
+            apikey = _('API Key not generated')
 
         return self.render(
             'api_builder.mako',
-            title='API Builder',
-            header='API Builder',
+            title=_('API Builder'),
+            header=_('API Builder'),
             shows=shows,
             episodes=episodes,
             apikey=apikey,
@@ -464,8 +464,7 @@ class WebRoot(WebHandler):
             sort = 'date'
 
         if sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar':
-            sort \
-                = 'date'
+            sort = 'date'
 
         sickrage.srCore.srConfig.COMING_EPS_SORT = sort
 
@@ -492,8 +491,8 @@ class WebRoot(WebHandler):
             today=today,
             results=results,
             layout=layout,
-            title='Schedule',
-            header='Schedule',
+            title=_('Schedule'),
+            header=_('Schedule'),
             topmenu='schedule',
             controller='root',
             action='schedule'
@@ -593,22 +592,22 @@ class Home(WebHandler):
     @staticmethod
     def _getEpisode(show, season=None, episode=None, absolute=None):
         if show is None:
-            return "Invalid show parameters"
+            return _("Invalid show parameters")
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if showObj is None:
-            return "Invalid show paramaters"
+            return _("Invalid show paramaters")
 
         if absolute:
             epObj = showObj.getEpisode(absolute_number=int(absolute))
         elif season and episode:
             epObj = showObj.getEpisode(int(season), int(episode))
         else:
-            return "Invalid paramaters"
+            return _("Invalid paramaters")
 
         if epObj is None:
-            return "Episode couldn't be retrieved"
+            return _("Episode couldn't be retrieved")
 
         return epObj
 
@@ -687,7 +686,7 @@ class Home(WebHandler):
 
     def is_alive(self, *args, **kwargs):
         if not all([kwargs.get('srcallback'), kwargs.get('_')]):
-            return "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
+            return _("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string.")
 
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'text/javascript')
@@ -730,7 +729,8 @@ class Home(WebHandler):
             if authed:
                 return _('Success. Connected and authenticated')
             else:
-                return _('Authentication failed. SABnzbd expects ') + accesMsg + _(' as authentication method, ') + authMsg
+                return _('Authentication failed. SABnzbd expects ') + accesMsg + _(
+                    ' as authentication method, ') + authMsg
         else:
             return _('Unable to connect to host')
 
@@ -899,7 +899,8 @@ class Home(WebHandler):
                 finalResult += _('Test failed for Plex client ... ') + urllib.unquote_plus(curHost)
             finalResult += '<br>' + '\n'
 
-        sickrage.srCore.srNotifications.message(_('Tested Plex client(s): '), urllib.unquote_plus(host.replace(',', ', ')))
+        sickrage.srCore.srNotifications.message(_('Tested Plex client(s): '),
+                                                urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -1020,7 +1021,7 @@ class Home(WebHandler):
             dbData['notify_list'] = emails
             sickrage.srCore.mainDB.db.update(dbData)
         except RecordNotFound:
-            return 'ERROR'
+            return _('ERROR')
 
     @staticmethod
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
@@ -1078,8 +1079,8 @@ class Home(WebHandler):
 
         return self.render(
             "/home/status.mako",
-            title='Status',
-            header='Status',
+            title=_('Status'),
+            header=_('Status'),
             topmenu='system',
             tvdirFree=tvdirFree,
             rootDir=rootDir,
@@ -1135,12 +1136,12 @@ class Home(WebHandler):
 
     def branchCheckout(self, branch):
         if branch and sickrage.srCore.VERSIONUPDATER.updater.current_branch != branch:
-            sickrage.srCore.srNotifications.message('Checking out branch: ', branch)
+            sickrage.srCore.srNotifications.message(_('Checking out branch: '), branch)
             if sickrage.srCore.VERSIONUPDATER.updater.checkout_branch(branch):
-                sickrage.srCore.srNotifications.message('Branch checkout successful, restarting: ', branch)
+                sickrage.srCore.srNotifications.message(_('Branch checkout successful, restarting: '), branch)
                 return self.restart(sickrage.srCore.PID)
         else:
-            sickrage.srCore.srNotifications.message('Already on branch: ', branch)
+            sickrage.srCore.srNotifications.message(_('Already on branch: '), branch)
 
         return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
@@ -1161,7 +1162,7 @@ class Home(WebHandler):
         seasonResults = list({x['season'] for x in episodeResults})
 
         submenu = [
-            {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
+            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
 
         showLoc = showObj.location
 
@@ -1191,30 +1192,30 @@ class Home(WebHandler):
         if not sickrage.srCore.SHOWQUEUE.isBeingAdded(showObj):
             if not sickrage.srCore.SHOWQUEUE.isBeingUpdated(showObj):
                 if showObj.paused:
-                    submenu.append({'title': 'Resume', 'path': '/home/togglePause?show=%d' % showObj.indexerid,
+                    submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
                                     'icon': 'ui-icon ui-icon-play'})
                 else:
-                    submenu.append({'title': 'Pause', 'path': '/home/togglePause?show=%d' % showObj.indexerid,
+                    submenu.append({'title': _('Pause'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
                                     'icon': 'ui-icon ui-icon-pause'})
 
-                submenu.append({'title': 'Remove', 'path': '/home/deleteShow?show=%d' % showObj.indexerid,
+                submenu.append({'title': _('Remove'), 'path': '/home/deleteShow?show=%d' % showObj.indexerid,
                                 'class': 'removeshow', 'confirm': True, 'icon': 'ui-icon ui-icon-trash'})
-                submenu.append({'title': 'Re-scan files', 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
+                submenu.append({'title': _('Re-scan files'), 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-refresh'})
-                submenu.append({'title': 'Full Update',
+                submenu.append({'title': _('Full Update'),
                                 'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-transfer-e-w'})
-                submenu.append({'title': 'Update show in KODI', 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
+                submenu.append({'title': _('Update show in KODI'), 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
                                 'requires': self.haveKODI(), 'icon': 'submenu-icon-kodi'})
-                submenu.append({'title': 'Update show in Emby', 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
+                submenu.append({'title': _('Update show in Emby'), 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
                                 'requires': self.haveEMBY(), 'icon': 'ui-icon ui-icon-refresh'})
-                submenu.append({'title': 'Preview Rename', 'path': '/home/testRename?show=%d' % showObj.indexerid,
+                submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-tag'})
 
                 if sickrage.srCore.srConfig.USE_SUBTITLES and not sickrage.srCore.SHOWQUEUE.isBeingSubtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
-                        {'title': 'Download Subtitles', 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
+                        {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
                          'icon': 'ui-icon ui-icon-comment'})
 
         epCounts = {}
@@ -1355,8 +1356,8 @@ class Home(WebHandler):
                     groups=groups,
                     whitelist=whitelist,
                     blacklist=blacklist,
-                    title='Edit Show',
-                    header='Edit Show',
+                    title=_('Edit Show'),
+                    header=_('Edit Show'),
                     controller='home',
                     action="edit_show"
                 )
@@ -1366,8 +1367,8 @@ class Home(WebHandler):
                     show=showObj,
                     quality=showObj.quality,
                     scene_exceptions=scene_exceptions,
-                    title='Edit Show',
-                    header='Edit Show',
+                    title=_('Edit Show'),
+                    header=_('Edit Show'),
                     controller='home',
                     action="edit_show"
                 )
@@ -1538,7 +1539,7 @@ class Home(WebHandler):
         showObj.saveToDB()
 
         sickrage.srCore.srNotifications.message(
-            '%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
+            _('%s has been %s') % (showObj.name, (_('resumed'), _('paused'))[showObj.paused]))
 
         return self.redirect("/home/displayShow?show=%i" % showObj.indexerid)
 
@@ -1554,11 +1555,11 @@ class Home(WebHandler):
         try:
             sickrage.srCore.SHOWQUEUE.removeShow(showObj, bool(full))
             sickrage.srCore.srNotifications.message(
-                '%s has been %s %s' %
+                _('%s has been %s %s') %
                 (
                     showObj.name,
-                    ('deleted', 'trashed')[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)],
-                    ('(media untouched)', '(with all related media)')[bool(full)]
+                    (_('deleted'), _('trashed'))[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)],
+                    (_('(media untouched)'), _('(with all related media)'))[bool(full)]
                 )
             )
         except CantRemoveShowException as e:
@@ -1639,9 +1640,9 @@ class Home(WebHandler):
             host = sickrage.srCore.srConfig.KODI_HOST
 
         if sickrage.srCore.notifiersDict['kodi'].update_library(showName=showName):
-            sickrage.srCore.srNotifications.message("Library update command sent to KODI host(s): " + host)
+            sickrage.srCore.srNotifications.message(_("Library update command sent to KODI host(s): ") + host)
         else:
-            sickrage.srCore.srNotifications.error("Unable to contact one or more KODI host(s): " + host)
+            sickrage.srCore.srNotifications.error(_("Unable to contact one or more KODI host(s): ") + host)
 
         if showObj:
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
@@ -1651,10 +1652,11 @@ class Home(WebHandler):
     def updatePLEX(self):
         if None is sickrage.srCore.notifiersDict['plex'].update_library():
             sickrage.srCore.srNotifications.message(
-                "Library update command sent to Plex Media Server host: " + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
+                _(
+                    "Library update command sent to Plex Media Server host: ") + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
         else:
             sickrage.srCore.srNotifications.error(
-                "Unable to contact Plex Media Server host: " + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
+                _("Unable to contact Plex Media Server host: ") + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
         return self.redirect('/home/')
 
     def updateEMBY(self, show=None):
@@ -1665,9 +1667,10 @@ class Home(WebHandler):
 
         if sickrage.srCore.notifiersDict['emby'].update_library(showObj):
             sickrage.srCore.srNotifications.message(
-                "Library update command sent to Emby host: " + sickrage.srCore.srConfig.EMBY_HOST)
+                _("Library update command sent to Emby host: ") + sickrage.srCore.srConfig.EMBY_HOST)
         else:
-            sickrage.srCore.srNotifications.error("Unable to contact Emby host: " + sickrage.srCore.srConfig.EMBY_HOST)
+            sickrage.srCore.srNotifications.error(
+                _("Unable to contact Emby host: ") + sickrage.srCore.srConfig.EMBY_HOST)
 
         if showObj:
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
@@ -1677,7 +1680,7 @@ class Home(WebHandler):
     def syncTrakt(self):
         if sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER').func():
             sickrage.srCore.srLogger.info("Syncing Trakt with SiCKRAGE")
-            sickrage.srCore.srNotifications.message('Syncing Trakt with SiCKRAGE')
+            sickrage.srCore.srNotifications.message(_('Syncing Trakt with SiCKRAGE'))
 
         return self.redirect("/home/")
 
@@ -1848,7 +1851,7 @@ class Home(WebHandler):
             msg += "</ul>"
 
             if segments:
-                sickrage.srCore.srNotifications.message("Backlog started", msg)
+                sickrage.srCore.srNotifications.message(_("Backlog started"), msg)
         elif int(status) == WANTED and showObj.paused:
             sickrage.srCore.srLogger.info(
                 "Some episodes were set to wanted, but " + showObj.name + " is paused. Not adding to Backlog until show is unpaused")
@@ -1867,7 +1870,7 @@ class Home(WebHandler):
             msg += "</ul>"
 
             if segments:
-                sickrage.srCore.srNotifications.message("Retry Search started", msg)
+                sickrage.srCore.srNotifications.message(_("Retry Search started"), msg)
 
         if direct:
             return json_encode({'result': 'success'})
@@ -1911,15 +1914,15 @@ class Home(WebHandler):
             ep_obj_rename_list.reverse()
 
         submenu = [
-            {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
+            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
 
         return self.render(
             "/home/test_renaming.mako",
             submenu=submenu,
             ep_obj_list=ep_obj_rename_list,
             show=showObj,
-            title='Preview Rename',
-            header='Preview Rename',
+            title=_('Preview Rename'),
+            header=_('Preview Rename'),
             controller='home',
             action="test_renaming"
         )
@@ -2242,8 +2245,8 @@ class HomePostProcess(Home):
     def index(self):
         return self.render(
             "/home/postprocess.mako",
-            title='Post Processing',
-            header='Post Processing',
+            title=_('Post Processing'),
+            header=_('Post Processing'),
             topmenu='home',
             controller='home',
             action='postprocess'
@@ -2276,8 +2279,8 @@ class HomeAddShows(Home):
     def index(self):
         return self.render(
             "/home/add_shows.mako",
-            title='Add Shows',
-            header='Add Shows',
+            title=_('Add Shows'),
+            header=_('Add Shows'),
             topmenu='home',
             controller='home',
             action='add_shows'
@@ -2462,8 +2465,8 @@ class HomeAddShows(Home):
             whitelist=[],
             blacklist=[],
             groups=[],
-            title='New Show',
-            header='New Show',
+            title=_('New Show'),
+            header=_('New Show'),
             topmenu='home',
             controller='home',
             action="new_show"
@@ -2527,8 +2530,8 @@ class HomeAddShows(Home):
         return self.render("/home/add_existing_shows.mako",
                            enable_anime_options=False,
                            quality=sickrage.srCore.srConfig.QUALITY_DEFAULT,
-                           title='Existing Show',
-                           header='Existing Show',
+                           title=_('Existing Show'),
+                           header=_('Existing Show'),
                            topmenu="home",
                            controller='home',
                            action="add_existing_shows")
@@ -2569,7 +2572,7 @@ class HomeAddShows(Home):
                                               default_status_after=sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER,
                                               archive=sickrage.srCore.srConfig.ARCHIVE_DEFAULT)
 
-            sickrage.srCore.srNotifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
+            sickrage.srCore.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
             sickrage.srCore.srLogger.error("There was an error creating the show, no root directory setting found")
             return _('No root directories setup, please go back and add one.')
@@ -2657,7 +2660,8 @@ class HomeAddShows(Home):
             if not dir_exists:
                 sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
                 sickrage.srCore.srNotifications.error(_("Unable to add show"),
-                                                      _("Unable to create the folder " + show_dir + ", can't add the show"))
+                                                      _(
+                                                          "Unable to create the folder " + show_dir + ", can't add the show"))
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")
             else:
@@ -2707,7 +2711,7 @@ class HomeAddShows(Home):
                                           default_status_after=int(defaultStatusAfter),
                                           archive=archive)
 
-        sickrage.srCore.srNotifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
+        sickrage.srCore.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
         return finishAddShow()
 
@@ -2782,9 +2786,9 @@ class HomeAddShows(Home):
                 num_added += 1
 
         if num_added:
-            sickrage.srCore.srNotifications.message("Shows Added",
-                                                    "Automatically added " + str(
-                                                        num_added) + " from their existing metadata files")
+            sickrage.srCore.srNotifications.message(_("Shows Added"),
+                                                    _("Automatically added ") + str(
+                                                        num_added) + _(" from their existing metadata files"))
 
         # if we're done then go home
         if not dirs_only:
@@ -2972,8 +2976,8 @@ class Manage(Home, WebRoot):
             show_names=show_names,
             ep_counts=ep_counts,
             sorted_show_ids=sorted_show_ids,
-            title='Missing Subtitles',
-            header='Missing Subtitles',
+            title=_('Missing Subtitles'),
+            header=_('Missing Subtitles'),
             topmenu='manage',
             controller='manage',
             action='subtitles_missed'
@@ -3055,8 +3059,8 @@ class Manage(Home, WebRoot):
             showCounts=showCounts,
             showCats=showCats,
             showResults=showResults,
-            title='Backlog Overview',
-            header='Backlog Overview',
+            title=_('Backlog Overview'),
+            header=_('Backlog Overview'),
             topmenu='manage',
             controller='manage',
             action='backlog_overview'
@@ -3205,8 +3209,8 @@ class Manage(Home, WebRoot):
             sports_value=sports_value,
             air_by_date_value=air_by_date_value,
             root_dir_list=root_dir_list,
-            title='Mass Edit',
-            header='Mass Edit',
+            title=_('Mass Edit'),
+            header=_('Mass Edit'),
             topmenu='manage',
             controller='manage',
             action='mass_edit'
@@ -3415,39 +3419,39 @@ class Manage(Home, WebRoot):
                 subtitles.append(showObj.name)
 
         if errors:
-            sickrage.srCore.srNotifications.error("Errors encountered",
+            sickrage.srCore.srNotifications.error(_("Errors encountered"),
                                                   '<br >\n'.join(errors))
 
         messageDetail = ""
 
         if updates:
-            messageDetail += "<br><b>Updates</b><br><ul><li>"
+            messageDetail += _("<br><b>Updates</b><br><ul><li>")
             messageDetail += "</li><li>".join(updates)
             messageDetail += "</li></ul>"
 
         if refreshes:
-            messageDetail += "<br><b>Refreshes</b><br><ul><li>"
+            messageDetail += _("<br><b>Refreshes</b><br><ul><li>")
             messageDetail += "</li><li>".join(refreshes)
             messageDetail += "</li></ul>"
 
         if renames:
-            messageDetail += "<br><b>Renames</b><br><ul><li>"
+            messageDetail += _("<br><b>Renames</b><br><ul><li>")
             messageDetail += "</li><li>".join(renames)
             messageDetail += "</li></ul>"
 
         if subtitles:
-            messageDetail += "<br><b>Subtitles</b><br><ul><li>"
+            messageDetail += _("<br><b>Subtitles</b><br><ul><li>")
             messageDetail += "</li><li>".join(subtitles)
             messageDetail += "</li></ul>"
 
         if updates + refreshes + renames + subtitles:
-            sickrage.srCore.srNotifications.message("The following actions were queued:",
+            sickrage.srCore.srNotifications.message(_("The following actions were queued:"),
                                                     messageDetail)
 
         return self.render(
             '/manage/mass_update.mako',
-            title='Mass Update',
-            header='Mass Update',
+            title=_('Mass Update'),
+            header=_('Mass Update'),
             topmenu='manage',
             controller='manage',
             action='mass_update'
@@ -3478,8 +3482,8 @@ class Manage(Home, WebRoot):
             "/manage/torrents.mako",
             webui_url=webui_url,
             info_download_station=info_download_station,
-            title='Manage Torrents',
-            header='Manage Torrents',
+            title=_('Manage Torrents'),
+            header=_('Manage Torrents'),
             topmenu='manage',
             controller='manage',
             action='torrents'
@@ -3507,8 +3511,8 @@ class Manage(Home, WebRoot):
             "/manage/failed_downloads.mako",
             limit=int(limit),
             failedResults=dbData,
-            title='Failed Downloads',
-            header='Failed Downloads',
+            title=_('Failed Downloads'),
+            header=_('Failed Downloads'),
             topmenu='manage',
             controller='manage',
             action='failed_downloads'
@@ -3531,8 +3535,8 @@ class ManageQueues(Manage):
             postProcessorPaused=sickrage.srCore.POSTPROCESSORQUEUE.is_paused,
             postProcessorRunning=sickrage.srCore.POSTPROCESSORQUEUE.is_in_progress,
             postProcessorQueueLength=sickrage.srCore.POSTPROCESSORQUEUE.queue_length,
-            title='Manage Queues',
-            header='Manage Queues',
+            title=_('Manage Queues'),
+            header=_('Manage Queues'),
             topmenu='manage',
             controller='manage',
             action='queues'
@@ -3542,7 +3546,7 @@ class ManageQueues(Manage):
         # force it to run the next time it looks
         if sickrage.srCore.srScheduler.get_job('BACKLOG').func(True):
             sickrage.srCore.srLogger.info("Backlog search forced")
-            sickrage.srCore.srNotifications.message('Backlog search started')
+            sickrage.srCore.srNotifications.message(_('Backlog search started'))
 
         return self.redirect("/manage/manageQueues/")
 
@@ -3550,7 +3554,7 @@ class ManageQueues(Manage):
         # force it to run the next time it looks
         if sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').func(True):
             sickrage.srCore.srLogger.info("Daily search forced")
-            sickrage.srCore.srNotifications.message('Daily search started')
+            sickrage.srCore.srNotifications.message(_('Daily search started'))
 
         return self.redirect("/manage/manageQueues/")
 
@@ -3558,7 +3562,7 @@ class ManageQueues(Manage):
         # force it to run the next time it looks
         if sickrage.srCore.srScheduler.get_job('PROPERSEARCHER').func(True):
             sickrage.srCore.srLogger.info("Find propers search forced")
-            sickrage.srCore.srNotifications.message('Find propers search started')
+            sickrage.srCore.srNotifications.message(_('Find propers search started'))
 
         return self.redirect("/manage/manageQueues/")
 
@@ -3639,9 +3643,9 @@ class History(WebHandler):
                 history['actions'].sort(key=lambda d: d['time'], reverse=True)
 
         submenu = [
-            {'title': 'Clear History', 'path': '/history/clearHistory', 'icon': 'ui-icon ui-icon-trash',
+            {'title': _('Clear History'), 'path': '/history/clearHistory', 'icon': 'ui-icon ui-icon-trash',
              'class': 'clearhistory', 'confirm': True},
-            {'title': 'Trim History', 'path': '/history/trimHistory', 'icon': 'ui-icon ui-icon-trash',
+            {'title': _('Trim History'), 'path': '/history/trimHistory', 'icon': 'ui-icon ui-icon-trash',
              'class': 'trimhistory', 'confirm': True},
         ]
 
@@ -3651,8 +3655,8 @@ class History(WebHandler):
             compactResults=compact,
             limit=limit,
             submenu=submenu,
-            title='History',
-            header='History',
+            title=_('History'),
+            header=_('History'),
             topmenu="history",
             controller='root',
             action='history'
@@ -3661,14 +3665,14 @@ class History(WebHandler):
     def clearHistory(self):
         self.historyTool.clear()
 
-        sickrage.srCore.srNotifications.message('History cleared')
+        sickrage.srCore.srNotifications.message(_('History cleared'))
 
         return self.redirect("/history/")
 
     def trimHistory(self):
         self.historyTool.trim()
 
-        sickrage.srCore.srNotifications.message('Removed history entries older than 30 days')
+        sickrage.srCore.srNotifications.message(_('Removed history entries older than 30 days'))
 
         return self.redirect("/history/")
 
@@ -3681,15 +3685,15 @@ class Config(WebHandler):
     @staticmethod
     def ConfigMenu():
         menu = [
-            {'title': 'General', 'path': '/config/general/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': 'Backup/Restore', 'path': '/config/backuprestore/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': 'Search Clients', 'path': '/config/search/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': 'Search Providers', 'path': '/config/providers/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': 'Subtitles Settings', 'path': '/config/subtitles/', 'icon': 'ui-icon ui-icon-comment'},
-            {'title': 'Quality Settings', 'path': '/config/qualitySettings/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': 'Post Processing', 'path': '/config/postProcessing/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': 'Notifications', 'path': '/config/notifications/', 'icon': 'ui-icon ui-icon-note'},
-            {'title': 'Anime', 'path': '/config/anime/', 'icon': 'submenu-icon-anime'},
+            {'title': _('General'), 'path': '/config/general/', 'icon': 'ui-icon ui-icon-gear'},
+            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'ui-icon ui-icon-gear'},
+            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'ui-icon ui-icon-search'},
+            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'ui-icon ui-icon-search'},
+            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'ui-icon ui-icon-comment'},
+            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'ui-icon ui-icon-folder-open'},
+            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'ui-icon ui-icon-folder-open'},
+            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'ui-icon ui-icon-note'},
+            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'submenu-icon-anime'},
         ]
 
         return menu
@@ -3698,8 +3702,8 @@ class Config(WebHandler):
         return self.render(
             "/config/index.mako",
             submenu=self.ConfigMenu(),
-            title='Configuration',
-            header='Configuration',
+            title=_('Configuration'),
+            header=_('Configuration'),
             topmenu="config",
             controller='config',
             action='index'
@@ -3707,7 +3711,7 @@ class Config(WebHandler):
 
     def reset(self):
         sickrage.srCore.srConfig.load(True)
-        sickrage.srCore.srNotifications.message('Configuration Reset to Defaults', os.path.join(sickrage.CONFIG_FILE))
+        sickrage.srCore.srNotifications.message(_('Configuration Reset to Defaults'), os.path.join(sickrage.CONFIG_FILE))
         return self.redirect("/config/general")
 
 
@@ -3719,8 +3723,8 @@ class ConfigGeneral(Config):
     def index(self):
         return self.render(
             "/config/general.mako",
-            title='Config - General',
-            header='General Configuration',
+            title=_('Config - General'),
+            header=_('General Configuration'),
             topmenu='config',
             submenu=self.ConfigMenu(),
             controller='config',
@@ -3876,9 +3880,9 @@ class ConfigGeneral(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('[GENERAL] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message(_('[GENERAL] Configuration Saved'), os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/general/")
 
@@ -3892,8 +3896,8 @@ class ConfigBackupRestore(Config):
         return self.render(
             "/config/backup_restore.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Backup/Restore',
-            header='Backup/Restore',
+            title=_('Config - Backup/Restore'),
+            header=_('Backup/Restore'),
             topmenu='config',
             controller='config',
             action='backup_restore'
@@ -3945,8 +3949,8 @@ class ConfigSearch(Config):
         return self.render(
             "/config/search.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Episode Search',
-            header='Search Clients',
+            title=_('Config - Episode Search'),
+            header=_('Search Clients'),
             topmenu='config',
             controller='config',
             action='search'
@@ -4045,9 +4049,9 @@ class ConfigSearch(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('[SEARCH] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message(_('[SEARCH] Configuration Saved'), os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/search/")
 
@@ -4061,8 +4065,8 @@ class ConfigPostProcessing(Config):
         return self.render(
             "/config/postprocessing.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Post Processing',
-            header='Post Processing',
+            title=_('Config - Post Processing'),
+            header=_('Post Processing'),
             topmenu='config',
             controller='config',
             action='postprocessing'
@@ -4171,9 +4175,9 @@ class ConfigPostProcessing(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.warning(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('[POST-PROCESSING] Configuration Saved',
+            sickrage.srCore.srNotifications.message(_('[POST-PROCESSING] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/postProcessing/")
@@ -4252,8 +4256,8 @@ class ConfigProviders(Config):
         return self.render(
             "/config/providers.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Providers',
-            header='Search Providers',
+            title=_('Config - Providers'),
+            header=_('Search Providers'),
             topmenu='config',
             controller='config',
             action='providers'
@@ -4457,9 +4461,9 @@ class ConfigProviders(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('[PROVIDERS] Configuration Saved',
+            sickrage.srCore.srNotifications.message(_('[PROVIDERS] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/providers/")
@@ -4474,8 +4478,8 @@ class ConfigNotifications(Config):
         return self.render(
             "/config/notifications.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Notifications',
-            header='Notifications',
+            title=_('Config - Notifications'),
+            header=_('Notifications'),
             topmenu='config',
             controller='config',
             action='notifications'
@@ -4784,9 +4788,9 @@ class ConfigNotifications(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('[NOTIFICATIONS] Configuration Saved',
+            sickrage.srCore.srNotifications.message(_('[NOTIFICATIONS] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/notifications/")
@@ -4801,8 +4805,8 @@ class ConfigSubtitles(Config):
         return self.render(
             "/config/subtitles.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Subtitles',
-            header='Subtitles',
+            title=_('Config - Subtitles'),
+            header=_('Subtitles'),
             topmenu='config',
             controller='config',
             action='subtitles'
@@ -4865,9 +4869,9 @@ class ConfigSubtitles(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('[SUBTITLES] Configuration Saved',
+            sickrage.srCore.srNotifications.message(_('[SUBTITLES] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/subtitles/")
@@ -4882,8 +4886,8 @@ class ConfigAnime(Config):
         return self.render(
             "/config/anime.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Anime',
-            header='Anime',
+            title=_('Config - Anime'),
+            header=_('Anime'),
             topmenu='config',
             controller='config',
             action='anime'
@@ -4904,9 +4908,9 @@ class ConfigAnime(Config):
 
         if len(results) > 0:
             [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error('Error(s) Saving Configuration', '<br>\n'.join(results))
+            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message('[ANIME] Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message(_('[ANIME] Configuration Saved'), os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
 
@@ -4920,8 +4924,8 @@ class ConfigQualitySettings(Config):
         return self.render(
             "/config/quality_settings.mako",
             submenu=self.ConfigMenu(),
-            title='Config - Quality Settings',
-            header='Quality Settings',
+            title=_('Config - Quality Settings'),
+            header=_('Quality Settings'),
             topmenu='config',
             controller='config',
             action='quality_settings'
@@ -4932,7 +4936,7 @@ class ConfigQualitySettings(Config):
 
         sickrage.srCore.srConfig.save()
 
-        sickrage.srCore.srNotifications.message('[QUALITY SETTINGS] Configuration Saved',
+        sickrage.srCore.srNotifications.message(_('[QUALITY SETTINGS] Configuration Saved'),
                                                 os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/qualitySettings/")
@@ -4945,10 +4949,10 @@ class Logs(WebHandler):
 
     def LogsMenu(self, level):
         menu = [
-            {'title': 'Clear Errors', 'path': '/logs/clearerrors/',
+            {'title': _('Clear Errors'), 'path': '/logs/clearerrors/',
              'requires': self.haveErrors() and level == sickrage.srCore.srLogger.ERROR,
              'icon': 'ui-icon ui-icon-trash'},
-            {'title': 'Clear Warnings', 'path': '/logs/clearerrors/?level=' + str(sickrage.srCore.srLogger.WARNING),
+            {'title': _('Clear Warnings'), 'path': '/logs/clearerrors/?level=' + str(sickrage.srCore.srLogger.WARNING),
              'requires': self.haveWarnings() and level == sickrage.srCore.srLogger.WARNING,
              'icon': 'ui-icon ui-icon-trash'},
         ]
