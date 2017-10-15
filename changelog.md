@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6e9d79b - 2017-10-15: Optimized placement of gettext installation code 
+- * 2819854 - 2017-10-15: Fixed issues with setting minimum seeders and leechers 
+- * 7b9275f - 2017-10-15: Optimized placement of gettext installation code 
 - * 76cca85 - 2017-10-15: Converted more strings to i18n 
 - * 104ae0a - 2017-10-15: Converted headers and titles to i18n 
 - * 2abfe11 - 2017-10-14: Converted more templates to i18n 

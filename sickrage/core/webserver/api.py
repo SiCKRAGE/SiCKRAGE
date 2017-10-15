@@ -47,7 +47,7 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
     timeFormat
 from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
-    pretty_filesize, sanitizeFileName, srdatetime, tryInt, readFileBuffered, overall_stats
+    pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, overall_stats
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
@@ -742,7 +742,7 @@ class CMD_Episode(ApiCall):
             episode["location"] = ""
 
         # convert stuff to human form
-        if tryInt(episode['airdate'], 1) > 693595:  # 1900
+        if try_int(episode['airdate'], 1) > 693595:  # 1900
             episode['airdate'] = srdatetime.srDateTime.srfdate(srdatetime.srDateTime.convert_to_setting(
                 tz_updater.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network)),
                 d_preset=dateFormat)
@@ -1805,7 +1805,7 @@ class CMD_Show(ApiCall):
             showDict["network"] = ""
         showDict["status"] = showObj.status
 
-        if tryInt(showObj.next_aired, 1) > 693595:
+        if try_int(showObj.next_aired, 1) > 693595:
             dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                 tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']))
             showDict['airs'] = srdatetime.srDateTime.srftime(dtEpisodeAirs, t_preset=timeFormat).lstrip('0').replace(
@@ -2415,7 +2415,7 @@ class CMD_ShowSeasons(ApiCall):
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)
 
-                if tryInt(row['airdate'], 1) > 693595:  # 1900
+                if try_int(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                         tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network))
                     row['airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
@@ -2447,7 +2447,7 @@ class CMD_ShowSeasons(ApiCall):
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)
-                if tryInt(row['airdate'], 1) > 693595:  # 1900
+                if try_int(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                         tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network))
                     row['airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
@@ -2697,7 +2697,7 @@ class CMD_Shows(ApiCall):
                 "subtitles": (0, 1)[curShow.subtitles],
             }
 
-            if tryInt(curShow.next_aired, 1) > 693595:  # 1900
+            if try_int(curShow.next_aired, 1) > 693595:  # 1900
                 dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                     tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']))
                 showDict['next_ep_airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)

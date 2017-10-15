@@ -24,7 +24,7 @@ from urlparse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, tryInt
+from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -96,8 +96,8 @@ class NextorrentProvider(TorrentProvider):
                                     size = convert_size(link.findNext('td').text, -1)
 
                                     # Filter unseeded torrent
-                                    seeders = tryInt(link.find_next('img', alt='seeders').parent.text, 0)
-                                    leechers = tryInt(link.find_next('img', alt='leechers').parent.text, 0)
+                                    seeders = try_int(link.find_next('img', alt='seeders').parent.text, 0)
+                                    leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
 
                                     if seeders < self.minseed or leechers < self.minleech:
                                         if mode != 'RSS':

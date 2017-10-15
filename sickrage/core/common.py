@@ -41,6 +41,15 @@ cpu_presets = {
     'LOW': 0.01
 }
 
+countryList = {'Australia': 'AU',
+               'Canada': 'CA',
+               'USA': 'US'
+               }
+
+dateFormat = '%Y-%m-%d'
+dateTimeFormat = '%Y-%m-%d %H:%M:%S'
+timeFormat = '%A %I:%M %p'
+
 ### Other constants
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
@@ -172,12 +181,12 @@ class Quality(object):
                        ANYWEBDL: "any-hd",
                        ANYBLURAY: "any-hd"}
 
-    statusPrefixes = {DOWNLOADED: "Downloaded",
-                      SNATCHED: "Snatched",
-                      SNATCHED_PROPER: "Snatched (Proper)",
-                      FAILED: "Failed",
-                      SNATCHED_BEST: "Snatched (Best)",
-                      ARCHIVED: "Archived"}
+    statusPrefixes = {DOWNLOADED: _("Downloaded"),
+                      SNATCHED: _("Snatched"),
+                      SNATCHED_PROPER: _("Snatched (Proper)"),
+                      FAILED: _("Failed"),
+                      SNATCHED_BEST: _("Snatched (Best)"),
+                      ARCHIVED: _("Archived")}
 
     @staticmethod
     def _getStatusStrings(status):
@@ -583,18 +592,18 @@ class StatusStrings(UserDict):
             pass  # ...suppress the ValueError and do nothing, the key does not exist
 
 
-statusStrings = StatusStrings({UNKNOWN: "Unknown",
-                               UNAIRED: "Unaired",
-                               SNATCHED: "Snatched",
-                               DOWNLOADED: "Downloaded",
-                               SKIPPED: "Skipped",
-                               SNATCHED_PROPER: "Snatched (Proper)",
-                               WANTED: "Wanted",
-                               ARCHIVED: "Archived",
-                               IGNORED: "Ignored",
-                               SUBTITLED: "Subtitled",
-                               FAILED: "Failed",
-                               SNATCHED_BEST: "Snatched (Best)"})
+statusStrings = StatusStrings({UNKNOWN: _("Unknown"),
+                               UNAIRED: _("Unaired"),
+                               SNATCHED: _("Snatched"),
+                               DOWNLOADED: _("Downloaded"),
+                               SKIPPED: _("Skipped"),
+                               SNATCHED_PROPER: _("Snatched (Proper)"),
+                               WANTED: _("Wanted"),
+                               ARCHIVED: _("Archived"),
+                               IGNORED: _("Ignored"),
+                               SUBTITLED: _("Subtitled"),
+                               FAILED: _("Failed"),
+                               SNATCHED_BEST: _("Snatched (Best)")})
 
 
 class Overview(object):
@@ -613,20 +622,6 @@ class Overview(object):
                        GOOD: "good",
                        UNAIRED: "unaired",
                        SNATCHED: "snatched"}
-
-
-# Get our xml namespaces correct for lxml
-XML_NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-             'xsd': 'http://www.w3.org/2001/XMLSchema'}
-
-countryList = {'Australia': 'AU',
-               'Canada': 'CA',
-               'USA': 'US'
-               }
-
-dateFormat = '%Y-%m-%d'
-dateTimeFormat = '%Y-%m-%d %H:%M:%S'
-timeFormat = '%A %I:%M %p'
 
 
 def get_quality_string(quality):

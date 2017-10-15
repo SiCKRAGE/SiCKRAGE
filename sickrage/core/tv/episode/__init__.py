@@ -30,7 +30,7 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateT
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
+from sickrage.core.helpers import isMediaFile, try_int, replaceExtension, \
     touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
     safe_getattr, make_dirs, moveFile, delete_empty_folders
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
@@ -399,21 +399,21 @@ class TVEpisode(object):
             self._subtitles_searchcount = dbData[0].get("subtitles_searchcount", self.subtitles_searchcount)
             self._subtitles_lastsearch = dbData[0].get("subtitles_lastsearch", self.subtitles_lastsearch)
             self._airdate = datetime.date.fromordinal(int(dbData[0].get("airdate", self.airdate)))
-            self._status = tryInt(dbData[0]["status"], self.status)
+            self._status = try_int(dbData[0]["status"], self.status)
             self.location = dbData[0].get("location", self.location)
-            self._file_size = tryInt(dbData[0]["file_size"], self.file_size)
-            self._indexerid = tryInt(dbData[0]["indexerid"], self.indexerid)
-            self._indexer = tryInt(dbData[0]["indexer"], self.indexer)
+            self._file_size = try_int(dbData[0]["file_size"], self.file_size)
+            self._indexerid = try_int(dbData[0]["indexerid"], self.indexerid)
+            self._indexer = try_int(dbData[0]["indexer"], self.indexer)
             self._release_name = dbData[0].get("release_name", self.release_name)
             self._release_group = dbData[0].get("release_group", self.release_group)
-            self._is_proper = tryInt(dbData[0]["is_proper"], self.is_proper)
-            self._version = tryInt(dbData[0]["version"], self.version)
+            self._is_proper = try_int(dbData[0]["is_proper"], self.is_proper)
+            self._version = try_int(dbData[0]["version"], self.version)
 
             xem_refresh(self.show.indexerid, self.show.indexer)
 
-            self.scene_season = tryInt(dbData[0]["scene_season"], self.scene_season)
-            self.scene_episode = tryInt(dbData[0]["scene_episode"], self.scene_episode)
-            self.scene_absolute_number = tryInt(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
+            self.scene_season = try_int(dbData[0]["scene_season"], self.scene_season)
+            self.scene_episode = try_int(dbData[0]["scene_episode"], self.scene_episode)
+            self.scene_absolute_number = try_int(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
 
             if self.scene_absolute_number == 0:
                 self.scene_absolute_number = get_scene_absolute_numbering(
@@ -493,7 +493,7 @@ class TVEpisode(object):
         else:
             sickrage.srCore.srLogger.debug("{}: The absolute_number for S{:02d}E{:02d} is: {}".format(
                 self.show.indexerid, season or 0, episode or 0, myEp["absolutenumber"]))
-            self.absolute_number = tryInt(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
+            self.absolute_number = try_int(safe_getattr(myEp, 'absolutenumber'), self.absolute_number)
 
         self.season = season
         self.episode = episode
@@ -528,7 +528,7 @@ class TVEpisode(object):
             return False
 
         # early conversion to int so that episode doesn't get marked dirty
-        self.indexerid = tryInt(safe_getattr(myEp, 'id'), self.indexerid)
+        self.indexerid = try_int(safe_getattr(myEp, 'id'), self.indexerid)
         if self.indexerid is None:
             sickrage.srCore.srLogger.error("Failed to retrieve ID from " + srIndexerApi(self.indexer).name)
             if self.indexerid != -1:
@@ -630,8 +630,8 @@ class TVEpisode(object):
                         raise NoNFOException("Error in NFO format (missing episode title or airdate)")
 
                     self.name = epDetails.findtext('title')
-                    self.episode = tryInt(epDetails.findtext('episode'))
-                    self.season = tryInt(epDetails.findtext('season'))
+                    self.episode = try_int(epDetails.findtext('episode'))
+                    self.season = try_int(epDetails.findtext('season'))
 
                     xem_refresh(self.show.indexerid, self.show.indexer)
 

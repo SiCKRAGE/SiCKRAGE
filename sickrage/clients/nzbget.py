@@ -26,7 +26,7 @@ from datetime import date, timedelta
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.helpers import tryInt
+from sickrage.core.helpers import try_int
 
 
 class NZBGet(object):
@@ -111,7 +111,7 @@ class NZBGet(object):
         try:
             # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
             nzbget_version_str = nzbGetRPC.version()
-            nzbget_version = tryInt(nzbget_version_str[:nzbget_version_str.find(".")])
+            nzbget_version = try_int(nzbget_version_str[:nzbget_version_str.find(".")])
             if nzbget_version == 0:
                 if nzbcontent64 is not None:
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)

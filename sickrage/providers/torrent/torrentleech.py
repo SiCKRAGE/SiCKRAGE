@@ -23,7 +23,7 @@ import urllib
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, tryInt, convert_size, try_int
+from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -115,8 +115,8 @@ class TorrentLeechProvider(TorrentProvider):
                                 url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = link.string
                                 download_url = url['href']
-                                seeders = tryInt(result.find('td', attrs={'class': 'seeders'}).text, 0)
-                                leechers = tryInt(result.find('td', attrs={'class': 'leechers'}).text, 0)
+                                seeders = try_int(result.find('td', attrs={'class': 'seeders'}).text, 0)
+                                leechers = try_int(result.find('td', attrs={'class': 'leechers'}).text, 0)
 
                                 size = -1
                                 if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',

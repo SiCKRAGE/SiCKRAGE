@@ -26,7 +26,7 @@ import requests
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, tryInt, try_int
+from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -146,8 +146,8 @@ class HDTorrentsProvider(TorrentProvider):
                                 continue
 
                             title = cells[labels.index('Filename')].a.get_text(strip=True)
-                            seeders = tryInt(cells[labels.index('S')].get_text(strip=True))
-                            leechers = tryInt(cells[labels.index('L')].get_text(strip=True))
+                            seeders = try_int(cells[labels.index('S')].get_text(strip=True))
+                            leechers = try_int(cells[labels.index('L')].get_text(strip=True))
                             torrent_size = cells[labels.index('Size')].get_text()
 
                             size = convert_size(torrent_size, -1)
