@@ -7,7 +7,7 @@
     from sickrage.core.traktapi import srTraktAPI
     from sickrage.core.helpers import anon_url
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
+    from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
     from sickrage.indexers import srIndexerApi
 %>
 <%block name="tabs">

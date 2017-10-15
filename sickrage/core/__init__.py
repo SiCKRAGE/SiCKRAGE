@@ -33,7 +33,6 @@ import urlparse
 import uuid
 
 import adba
-import tornado.locale
 from apscheduler.schedulers.background import BackgroundScheduler
 from fake_useragent import UserAgent
 
@@ -151,12 +150,7 @@ class Core(object):
 
         self.SYS_ENCODING = get_sys_encoding()
 
-        self.LOCALE_DIR = os.path.join(sickrage.PROG_DIR, 'locale')
-
-        self.LANGUAGES = [language for language in os.listdir(self.LOCALE_DIR) if '_' in language]
-
-        # load languages
-        tornado.locale.load_gettext_translations(self.LOCALE_DIR, 'messages')
+        self.LANGUAGES = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
 
         # patch modules with encoding kludge
         patch_modules()

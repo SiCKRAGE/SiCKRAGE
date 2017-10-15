@@ -1,6 +1,7 @@
 # Changelog
 
-- * ac62434 - 2017-10-15: Converted more strings to i18n 
+- * 6e9d79b - 2017-10-15: Optimized placement of gettext installation code 
+- * 76cca85 - 2017-10-15: Converted more strings to i18n 
 - * 104ae0a - 2017-10-15: Converted headers and titles to i18n 
 - * 2abfe11 - 2017-10-14: Converted more templates to i18n 
 - * 939e18f - 2017-10-14: Extracted more gettext messages 

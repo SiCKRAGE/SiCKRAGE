@@ -66,9 +66,12 @@ NAMING_LIMITED_EXTEND = 8
 NAMING_SEPARATED_REPEAT = 16
 NAMING_LIMITED_EXTEND_E_PREFIXED = 32
 
-multiEpStrings = {NAMING_REPEAT: "Repeat", NAMING_SEPARATED_REPEAT: "Repeat (Separated)", NAMING_DUPLICATE: "Duplicate",
-                  NAMING_EXTEND: "Extend", NAMING_LIMITED_EXTEND: "Extend (Limited)",
-                  NAMING_LIMITED_EXTEND_E_PREFIXED: "Extend (Limited, E-prefixed)"}
+multiEpStrings = {NAMING_REPEAT: _("Repeat"),
+                  NAMING_SEPARATED_REPEAT: _("Repeat (Separated)"),
+                  NAMING_DUPLICATE: _("Duplicate"),
+                  NAMING_EXTEND: _("Extend"),
+                  NAMING_LIMITED_EXTEND: _("Extend (Limited)"),
+                  NAMING_LIMITED_EXTEND_E_PREFIXED: _("Extend (Limited, E-prefixed)")}
 
 
 # pylint: disable=W0232
@@ -280,8 +283,9 @@ class Quality(object):
 
             return ret
 
-        if (check_name([r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
-                       all)
+        if (check_name(
+                [r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
+                all)
             and not check_name([r"(720|1080)[pi]"], all)
             and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDTV
