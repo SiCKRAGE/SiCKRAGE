@@ -64,14 +64,14 @@ class srVersionUpdater(object):
                     return
 
                 sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
-                sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
+                sickrage.srCore.srNotifications.message(_('New update found for SiCKRAGE, starting auto-updater'))
                 if self.update():
                     sickrage.srCore.srLogger.info("Update was successful!")
-                    sickrage.srCore.srNotifications.message('Update was successful')
+                    sickrage.srCore.srNotifications.message(_('Update was successful'))
                     sickrage.srCore.shutdown(restart=True)
                 else:
                     sickrage.srCore.srLogger.info("Update failed!")
-                    sickrage.srCore.srNotifications.message('Update failed!')
+                    sickrage.srCore.srNotifications.message(_('Update failed!'))
         finally:
             self.amActive = False
 
@@ -79,7 +79,7 @@ class srVersionUpdater(object):
         if self.safe_to_update():
             # Do a system backup before update
             sickrage.srCore.srLogger.info("Config backup in progress...")
-            sickrage.srCore.srNotifications.message('Backup', 'Config backup in progress...')
+            sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup in progress...'))
             try:
                 backupDir = os.path.join(sickrage.DATA_DIR, 'backup')
                 if not os.path.isdir(backupDir):
@@ -87,15 +87,15 @@ class srVersionUpdater(object):
 
                 if self._keeplatestbackup(backupDir) and backupSR(backupDir):
                     sickrage.srCore.srLogger.info("Config backup successful, updating...")
-                    sickrage.srCore.srNotifications.message('Backup', 'Config backup successful, updating...')
+                    sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup successful, updating...'))
                     return True
                 else:
                     sickrage.srCore.srLogger.error("Config backup failed, aborting update")
-                    sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
+                    sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup failed, aborting update'))
                     return False
             except Exception as e:
                 sickrage.srCore.srLogger.error('Update: Config backup failed. Error: %s' % e)
-                sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
+                sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup failed, aborting update'))
                 return False
 
     @staticmethod

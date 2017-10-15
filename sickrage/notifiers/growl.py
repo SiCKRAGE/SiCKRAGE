@@ -24,8 +24,6 @@ import gntp
 import gntp.core
 
 import sickrage
-from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
 
 
@@ -43,20 +41,20 @@ class GrowlNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.GROWL_NOTIFY_ONSNATCH:
-            self._sendGrowl(notifyStrings[NOTIFY_SNATCH], ep_name)
+            self._sendGrowl(self.notifyStrings[self.NOTIFY_SNATCH], ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.GROWL_NOTIFY_ONDOWNLOAD:
-            self._sendGrowl(notifyStrings[NOTIFY_DOWNLOAD], ep_name)
+            self._sendGrowl(self.notifyStrings[self.NOTIFY_DOWNLOAD], ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendGrowl(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
+            self._sendGrowl(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_GROWL:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendGrowl(title, update_text + new_version)
 
     def _send_growl(self, options, message=None):
@@ -178,9 +176,9 @@ class GrowlNotifier(srNotifiers):
         register.add_header('Application-Icon', self.sr_logo_url)
 
         register.add_notification('Test', True)
-        register.add_notification(notifyStrings[NOTIFY_SNATCH], True)
-        register.add_notification(notifyStrings[NOTIFY_DOWNLOAD], True)
-        register.add_notification(notifyStrings[NOTIFY_GIT_UPDATE], True)
+        register.add_notification(self.notifyStrings[self.NOTIFY_SNATCH], True)
+        register.add_notification(self.notifyStrings[self.NOTIFY_DOWNLOAD], True)
+        register.add_notification(self.notifyStrings[self.NOTIFY_GIT_UPDATE], True)
 
         if opts['password']:
             register.set_password(opts['password'])

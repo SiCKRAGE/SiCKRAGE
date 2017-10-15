@@ -967,7 +967,7 @@ class CMD_SubtitleSearch(ApiCall):
             status = 'No subtitles downloaded'
             response = _responds(RESULT_FAILURE, msg='Unable to find subtitles')
 
-        sickrage.srCore.srNotifications.message('Subtitles Search', status)
+        sickrage.srCore.srNotifications.message(_('Subtitles Search'), status)
 
         return response
 

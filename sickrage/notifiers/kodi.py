@@ -28,9 +28,6 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_SNATCH, NOTIFY_SUBTITLE_DOWNLOAD, \
-    notifyStrings
 from sickrage.notifiers import srNotifiers
 
 
@@ -523,20 +520,20 @@ class KODINotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.KODI_NOTIFY_ONSNATCH:
-            self._notify_kodi(ep_name, notifyStrings[NOTIFY_SNATCH])
+            self._notify_kodi(ep_name, self.notifyStrings[self.NOTIFY_SNATCH])
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.KODI_NOTIFY_ONDOWNLOAD:
-            self._notify_kodi(ep_name, notifyStrings[NOTIFY_DOWNLOAD])
+            self._notify_kodi(ep_name, self.notifyStrings[self.NOTIFY_DOWNLOAD])
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notify_kodi(ep_name + ": " + lang, notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD])
+            self._notify_kodi(ep_name + ": " + lang, self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD])
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_KODI:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_kodi(update_text + new_version, title)
 
     def test_notify(self, host, username, password):

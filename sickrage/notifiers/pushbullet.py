@@ -23,9 +23,6 @@ import traceback
 from urlparse import urljoin
 
 import sickrage
-from sickrage.core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_SNATCH, NOTIFY_SUBTITLE_DOWNLOAD, \
-    notifyStrings
 from sickrage.notifiers import srNotifiers
 
 
@@ -58,24 +55,24 @@ class PushbulletNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSNATCH:
-            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_SNATCH] + " : " + ep_name,
+            self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_SNATCH] + " : " + ep_name,
                                  message=ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_DOWNLOAD] + " : " + ep_name,
+            self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD] + " : " + ep_name,
                                  message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushbullet(pushbullet_api=None,
-                                 event=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
+                                 event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_PUSHBULLET:
-            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_GIT_UPDATE],
-                                 message=notifyStrings[NOTIFY_GIT_UPDATE_TEXT] + new_version)
+            self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_GIT_UPDATE],
+                                 message=self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT] + new_version)
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None, force=False):
         if not (sickrage.srCore.srConfig.USE_PUSHBULLET or force):

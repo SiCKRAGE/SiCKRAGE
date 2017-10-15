@@ -25,8 +25,6 @@ from urllib import urlencode
 from requests.exceptions import SSLError
 
 import sickrage
-from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
 
 
@@ -41,23 +39,23 @@ class ProwlNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.PROWL_NOTIFY_ONSNATCH:
-            self._sendProwl(prowl_api=None, prowl_priority=None, event=notifyStrings[NOTIFY_SNATCH],
+            self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_SNATCH],
                             message=ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.PROWL_NOTIFY_ONDOWNLOAD:
-            self._sendProwl(prowl_api=None, prowl_priority=None, event=notifyStrings[NOTIFY_DOWNLOAD],
+            self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                             message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendProwl(prowl_api=None, prowl_priority=None,
-                            event=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
+                            event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_PROWL:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=title, message=update_text + new_version)
 

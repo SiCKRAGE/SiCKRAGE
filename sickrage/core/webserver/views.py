@@ -53,10 +53,10 @@ from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
     NoNFOException, CantRemoveShowException
-from sickrage.core.helpers import argToBool, backupSR, check_url, \
-    chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, makeDir, readFileBuffered, \
+from sickrage.core.helpers import argToBool, backupSR, chmodAsParent, findCertainShow, generateApiKey, \
+    getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
-    sanitizeFileName, tryInt, clean_url, try_int, validate_url
+    sanitizeFileName, tryInt, clean_url, try_int, validate_url, torrent_webui_url
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
@@ -177,6 +177,7 @@ class BaseHandler(RequestHandler):
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
             'makoStartTime': time.time(),
+            'torrent_webui_url': torrent_webui_url(),
             'application': self.application,
             'request': self.request,
         }
@@ -1092,14 +1093,14 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
-        self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
+        self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
         sickrage.srCore.shutdown()
 
     def restart(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
-        self._genericMessage("Restarting", "SiCKRAGE is restarting")
+        self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
         sickrage.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.srCore.shutdown, restart=True)
 
         return self.render(
@@ -1118,7 +1119,7 @@ class Home(WebHandler):
 
         # check for new app updates
         if not sickrage.srCore.VERSIONUPDATER.check_for_new_version(True):
-            sickrage.srCore.srNotifications.message('No new updates!')
+            sickrage.srCore.srNotifications.message(_('No new updates!'))
 
         return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
@@ -1130,8 +1131,8 @@ class Home(WebHandler):
             sickrage.srCore.NEWEST_VERSION_STRING = None
             return self.restart(pid)
         else:
-            self._genericMessage("Update Failed",
-                                 "Update wasn't successful, not restarting. Check your log for more information.")
+            self._genericMessage(_("Update Failed"),
+                                 _("Update wasn't successful, not restarting. Check your log for more information."))
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def branchCheckout(self, branch):
@@ -1148,12 +1149,12 @@ class Home(WebHandler):
     def displayShow(self, show=None):
 
         if show is None:
-            return self._genericMessage("Error", "Invalid show ID")
+            return self._genericMessage(_("Error"), _("Invalid show ID"))
         else:
             showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
             if showObj is None:
-                return self._genericMessage("Error", "Show not in show list")
+                return self._genericMessage(_("Error"), _("Show not in show list"))
 
         episodeResults = sorted(
             [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
@@ -1162,32 +1163,33 @@ class Home(WebHandler):
         seasonResults = list({x['season'] for x in episodeResults})
 
         submenu = [
-            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
+            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid,
+             'icon': 'ui-icon ui-icon-pencil'}]
 
         showLoc = showObj.location
 
         show_message = ''
 
         if sickrage.srCore.SHOWQUEUE.isBeingAdded(showObj):
-            show_message = 'This show is in the process of being downloaded - the info below is incomplete.'
+            show_message = _('This show is in the process of being downloaded - the info below is incomplete.')
 
         elif sickrage.srCore.SHOWQUEUE.isBeingUpdated(showObj):
-            show_message = 'The information on this page is in the process of being updated.'
+            show_message = _('The information on this page is in the process of being updated.')
 
         elif sickrage.srCore.SHOWQUEUE.isBeingRefreshed(showObj):
-            show_message = 'The episodes below are currently being refreshed from disk'
+            show_message = _('The episodes below are currently being refreshed from disk')
 
         elif sickrage.srCore.SHOWQUEUE.isBeingSubtitled(showObj):
-            show_message = 'Currently downloading subtitles for this show'
+            show_message = _('Currently downloading subtitles for this show')
 
         elif sickrage.srCore.SHOWQUEUE.isInRefreshQueue(showObj):
-            show_message = 'This show is queued to be refreshed.'
+            show_message = _('This show is queued to be refreshed.')
 
         elif sickrage.srCore.SHOWQUEUE.isInUpdateQueue(showObj):
-            show_message = 'This show is queued and awaiting an update.'
+            show_message = _('This show is queued and awaiting an update.')
 
         elif sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(showObj):
-            show_message = 'This show is queued and awaiting subtitles download.'
+            show_message = _('This show is queued and awaiting subtitles download.')
 
         if not sickrage.srCore.SHOWQUEUE.isBeingAdded(showObj):
             if not sickrage.srCore.SHOWQUEUE.isBeingUpdated(showObj):
@@ -1205,10 +1207,12 @@ class Home(WebHandler):
                 submenu.append({'title': _('Full Update'),
                                 'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-transfer-e-w'})
-                submenu.append({'title': _('Update show in KODI'), 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
-                                'requires': self.haveKODI(), 'icon': 'submenu-icon-kodi'})
-                submenu.append({'title': _('Update show in Emby'), 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
-                                'requires': self.haveEMBY(), 'icon': 'ui-icon ui-icon-refresh'})
+                submenu.append(
+                    {'title': _('Update show in KODI'), 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
+                     'requires': self.haveKODI(), 'icon': 'submenu-icon-kodi'})
+                submenu.append(
+                    {'title': _('Update show in Emby'), 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
+                     'requires': self.haveEMBY(), 'icon': 'ui-icon ui-icon-refresh'})
                 submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-tag'})
 
@@ -1311,20 +1315,20 @@ class Home(WebHandler):
 
         anidb_failed = False
         if show is None:
-            errString = "Invalid show ID: " + str(show)
+            errString = _("Invalid show ID: ") + str(show)
             if directCall:
                 return [errString]
             else:
-                return self._genericMessage("Error", errString)
+                return self._genericMessage(_("Error"), errString)
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if not showObj:
-            errString = "Unable to find the specified show: " + str(show)
+            errString = _("Unable to find the specified show: ") + str(show)
             if directCall:
                 return [errString]
             else:
-                return self._genericMessage("Error", errString)
+                return self._genericMessage(_("Error"), errString)
 
         showObj.exceptions = get_scene_exceptions(showObj.indexerid)
 
@@ -1340,7 +1344,7 @@ class Home(WebHandler):
                         groups = anime.get_groups()
                     except Exception as e:
                         anidb_failed = True
-                        sickrage.srCore.srNotifications.error('Unable to retreive Fansub Groups from AniDB.')
+                        sickrage.srCore.srNotifications.error(_('Unable to retreive Fansub Groups from AniDB.'))
                         sickrage.srCore.srLogger.debug(
                             'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(str(e)))
 
@@ -1450,7 +1454,7 @@ class Home(WebHandler):
                 try:
                     sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
                 except CantRefreshShowException as e:
-                    errors.append("Unable to refresh this show: {}".format(e.message))
+                    errors.append(_("Unable to refresh this show: {}").format(e.message))
 
             showObj.paused = paused
             showObj.scene = scene
@@ -1481,13 +1485,13 @@ class Home(WebHandler):
                         try:
                             sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
                         except CantRefreshShowException as e:
-                            errors.append("Unable to refresh this show:{}".format(e.message))
+                            errors.append(_("Unable to refresh this show:{}").format(e.message))
                             # grab updated info from TVDB
                             # showObj.loadEpisodesFromIndexer()
                             # rescan the episodes in the new folder
                     except NoNFOException:
                         errors.append(
-                            "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE." % location)
+                            _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE.") % location)
 
             # save it to the DB
             showObj.saveToDB()
@@ -1498,41 +1502,40 @@ class Home(WebHandler):
                 sickrage.srCore.SHOWQUEUE.updateShow(showObj, True)
                 time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
-                errors.append("Unable to update show: {0}".format(str(e)))
+                errors.append(_("Unable to update show: {0}").format(str(e)))
 
         if do_update_exceptions:
             try:
-                update_scene_exceptions(showObj.indexerid,
-                                        exceptions_list)  # @UndefinedVdexerid)
+                update_scene_exceptions(showObj.indexerid, exceptions_list)
                 time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
-                errors.append("Unable to force an update on scene exceptions of the show.")
+                errors.append(_("Unable to force an update on scene exceptions of the show."))
 
         if do_update_scene_numbering:
             try:
                 xem_refresh(showObj.indexerid, showObj.indexer)
                 time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
-                errors.append("Unable to force an update on scene numbering of the show.")
+                errors.append(_("Unable to force an update on scene numbering of the show."))
 
         if directCall:
             return map(str, errors)
 
         if len(errors) > 0:
             sickrage.srCore.srNotifications.error(
-                '%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
+                _('%d error%s while saving changes:') % (len(errors), "" if len(errors) == 1 else "s"),
                 '<ul>' + '\n'.join(['<li>%s</li>' % error for error in map(str, errors)]) + "</ul>")
 
         return self.redirect("/home/displayShow?show=" + show)
 
     def togglePause(self, show=None):
         if show is None:
-            return self._genericMessage("Error", "Invalid show ID")
+            return self._genericMessage(_("Error"), _("Invalid show ID"))
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if showObj is None:
-            return self._genericMessage("Error", "Unable to find the specified show")
+            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         showObj.paused = not showObj.paused
 
@@ -1545,12 +1548,12 @@ class Home(WebHandler):
 
     def deleteShow(self, show=None, full=0):
         if show is None:
-            return self._genericMessage("Error", "Invalid show ID")
+            return self._genericMessage(_("Error"), _("Invalid show ID"))
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if showObj is None:
-            return self._genericMessage("Error", "Unable to find the specified show")
+            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
             sickrage.srCore.SHOWQUEUE.removeShow(showObj, bool(full))
@@ -1563,7 +1566,7 @@ class Home(WebHandler):
                 )
             )
         except CantRemoveShowException as e:
-            sickrage.srCore.srNotifications.error('Unable to delete this show.', e.message)
+            sickrage.srCore.srNotifications.error(_('Unable to delete this show.'), e.message)
 
         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
@@ -1572,17 +1575,17 @@ class Home(WebHandler):
 
     def refreshShow(self, show=None):
         if show is None:
-            return self._genericMessage("Error", "Invalid show ID")
+            return self._genericMessage(_("Error"), _("Invalid show ID"))
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if showObj is None:
-            return self._genericMessage("Error", "Unable to find the specified show")
+            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
             sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
         except CantRefreshShowException as e:
-            sickrage.srCore.srNotifications.error('Unable to refresh this show.', e.message)
+            sickrage.srCore.srNotifications.error(_('Unable to refresh this show.'), e.message)
 
         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
@@ -1590,18 +1593,18 @@ class Home(WebHandler):
 
     def updateShow(self, show=None, force=0):
         if show is None:
-            return self._genericMessage("Error", "Invalid show ID")
+            return self._genericMessage(_("Error"), _("Invalid show ID"))
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if showObj is None:
-            return self._genericMessage("Error", "Unable to find the specified show")
+            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # force the update
         try:
             sickrage.srCore.SHOWQUEUE.updateShow(showObj, bool(force))
         except CantUpdateShowException as e:
-            sickrage.srCore.srNotifications.error("Unable to update this show.", e.message)
+            sickrage.srCore.srNotifications.error(_("Unable to update this show."), e.message)
 
         # just give it some time
         time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
@@ -1611,12 +1614,12 @@ class Home(WebHandler):
     def subtitleShow(self, show=None):
 
         if show is None:
-            return self._genericMessage("Error", "Invalid show ID")
+            return self._genericMessage(_("Error"), _("Invalid show ID"))
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if showObj is None:
-            return self._genericMessage("Error", "Unable to find the specified show")
+            return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # search and download subtitles
         sickrage.srCore.SHOWQUEUE.downloadSubtitles(showObj)
@@ -1652,11 +1655,12 @@ class Home(WebHandler):
     def updatePLEX(self):
         if None is sickrage.srCore.notifiersDict['plex'].update_library():
             sickrage.srCore.srNotifications.message(
-                _(
-                    "Library update command sent to Plex Media Server host: ") + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
+                _("Library update command sent to Plex Media Server host: ") +
+                sickrage.srCore.srConfig.PLEX_SERVER_HOST)
         else:
             sickrage.srCore.srNotifications.error(
-                _("Unable to contact Plex Media Server host: ") + sickrage.srCore.srConfig.PLEX_SERVER_HOST)
+                _("Unable to contact Plex Media Server host: ") +
+                sickrage.srCore.srConfig.PLEX_SERVER_HOST)
         return self.redirect('/home/')
 
     def updateEMBY(self, show=None):
@@ -1686,21 +1690,21 @@ class Home(WebHandler):
 
     def deleteEpisode(self, show=None, eps=None, direct=False):
         if not all([show, eps]):
-            errMsg = "You must specify a show and at least one episode"
+            errMsg = _("You must specify a show and at least one episode")
             if direct:
-                sickrage.srCore.srNotifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
-                return self._genericMessage("Error", errMsg)
+                return self._genericMessage(_("Error"), errMsg)
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
         if not showObj:
-            errMsg = "Error", "Show not in show list"
+            errMsg = _("Error", "Show not in show list")
             if direct:
-                sickrage.srCore.srNotifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
-                return self._genericMessage("Error", errMsg)
+                return self._genericMessage(_("Error"), errMsg)
 
         if eps:
             for curEp in eps.split('|'):
@@ -1719,7 +1723,7 @@ class Home(WebHandler):
 
                 epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
                 if not epObj:
-                    return self._genericMessage("Error", "Episode couldn't be retrieved")
+                    return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
                 with epObj.lock:
                     try:
@@ -1735,30 +1739,30 @@ class Home(WebHandler):
     def setStatus(self, show=None, eps=None, status=None, direct=False):
 
         if not all([show, eps, status]):
-            errMsg = "You must specify a show and at least one episode"
+            errMsg = _("You must specify a show and at least one episode")
             if direct:
-                sickrage.srCore.srNotifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
-                return self._genericMessage("Error", errMsg)
+                return self._genericMessage(_("Error"), errMsg)
 
         if not statusStrings.has_key(int(status)):
-            errMsg = "Invalid status"
+            errMsg = _("Invalid status")
             if direct:
-                sickrage.srCore.srNotifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
-                return self._genericMessage("Error", errMsg)
+                return self._genericMessage(_("Error"), errMsg)
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if not showObj:
-            errMsg = "Error", "Show not in show list"
+            errMsg = _("Error", "Show not in show list")
             if direct:
-                sickrage.srCore.srNotifications.error('Error', errMsg)
+                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
-                return self._genericMessage("Error", errMsg)
+                return self._genericMessage(_("Error"), errMsg)
 
         segments = {}
         trakt_data = []
@@ -1781,7 +1785,7 @@ class Home(WebHandler):
                 epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
 
                 if not epObj:
-                    return self._genericMessage("Error", "Episode couldn't be retrieved")
+                    return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
                 if int(status) in [WANTED, FAILED]:
                     # figure out what episodes are wanted so we can backlog them
@@ -1838,13 +1842,13 @@ class Home(WebHandler):
                                                                             update="remove")
 
         if int(status) == WANTED and not showObj.paused:
-            msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br>"
+            msg = _("Backlog was automatically started for the following seasons of ") + "<b>" + showObj.name + "</b>:<br>"
             msg += '<ul>'
 
             for season, segment in segments.items():
                 sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))
 
-                msg += "<li>Season " + str(season) + "</li>"
+                msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.srCore.srLogger.info("Sending backlog for " + showObj.name + " season " + str(
                     season) + " because some eps were set to wanted")
 
@@ -1857,13 +1861,13 @@ class Home(WebHandler):
                 "Some episodes were set to wanted, but " + showObj.name + " is paused. Not adding to Backlog until show is unpaused")
 
         if int(status) == FAILED:
-            msg = "Retrying Search was automatically started for the following season of <b>" + showObj.name + "</b>:<br>"
+            msg = _("Retrying Search was automatically started for the following season of ") + "<b>" + showObj.name + "</b>:<br>"
             msg += '<ul>'
 
             for season, segment in segments.items():
                 sickrage.srCore.SEARCHQUEUE.put(FailedQueueItem(showObj, segment))
 
-                msg += "<li>Season " + str(season) + "</li>"
+                msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.srCore.srLogger.info("Retrying Search for " + showObj.name + " season " + str(
                     season) + " because some eps were set to failed")
 
@@ -1880,15 +1884,15 @@ class Home(WebHandler):
     def testRename(self, show=None):
 
         if show is None:
-            return self._genericMessage("Error", "You must specify a show")
+            return self._genericMessage(_("Error"), _("You must specify a show"))
 
         showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if showObj is None:
-            return self._genericMessage("Error", "Show not in show list")
+            return self._genericMessage(_("Error"), _("Show not in show list"))
 
         if not os.path.isdir(showObj.location):
-            return self._genericMessage("Error", "Can't rename episodes when the show dir is missing.")
+            return self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
 
         ep_obj_rename_list = []
 
@@ -1914,7 +1918,8 @@ class Home(WebHandler):
             ep_obj_rename_list.reverse()
 
         submenu = [
-            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
+            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid,
+             'icon': 'ui-icon ui-icon-pencil'}]
 
         return self.render(
             "/home/test_renaming.mako",
@@ -1929,17 +1934,17 @@ class Home(WebHandler):
 
     def doRename(self, show=None, eps=None):
         if show is None or eps is None:
-            errMsg = "You must specify a show and at least one episode"
-            return self._genericMessage("Error", errMsg)
+            errMsg = _("You must specify a show and at least one episode")
+            return self._genericMessage(_("Error"), errMsg)
 
         show_obj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
         if show_obj is None:
-            errMsg = "Error", "Show not in show list"
-            return self._genericMessage("Error", errMsg)
+            errMsg = _("Show not in show list")
+            return self._genericMessage(_("Error"), errMsg)
 
         if not os.path.isdir(show_obj.location):
-            return self._genericMessage("Error", "Can't rename episodes when the show dir is missing.")
+            return self._genericMessage(_("Error"), _("Can't rename episodes when the show dir is missing."))
 
         if eps is None:
             return self.redirect("/home/displayShow?show=" + show)
@@ -2078,9 +2083,9 @@ class Home(WebHandler):
 
             if newSubtitles:
                 newLangs = [sickrage.subtitles.name_from_code(newSub) for newSub in newSubtitles]
-                status = 'New subtitles downloaded: %s' % ', '.join([newLang for newLang in newLangs])
+                status = _('New subtitles downloaded: %s') % ', '.join([newLang for newLang in newLangs])
             else:
-                status = 'No subtitles downloaded'
+                status = _('No subtitles downloaded')
 
             sickrage.srCore.srNotifications.message(ep_obj.show.name, status)
             return json_encode({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
@@ -2219,11 +2224,11 @@ class changelog(WebHandler):
             changes = sickrage.srCore.srWebSession.get(sickrage.srCore.srConfig.CHANGES_URL).text
         except Exception:
             sickrage.srCore.srLogger.debug('Could not load changes from repo, giving a link!')
-            changes = 'Could not load changes from the repo. [Click here for CHANGES.md]({})'.format(
+            changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(
                 sickrage.srCore.srConfig.CHANGES_URL)
 
         data = markdown2.markdown(
-            changes if changes else "The was a problem connecting to github, please refresh and try again",
+            changes if changes else _("The was a problem connecting to github, please refresh and try again"),
             extras=['header-ids'])
 
         return self.render(
@@ -2268,7 +2273,7 @@ class HomePostProcess(Home):
 
         if quite: return result
 
-        return self._genericMessage("Postprocessing results", result.replace("\n", "<br>\n"))
+        return self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))
 
 
 @Route('/home/addShows(/?.*)')
@@ -2623,7 +2628,7 @@ class HomeAddShows(Home):
         if (whichSeries and rootDir) or (whichSeries and fullShowPath and len(series_pieces) > 1):
             if len(series_pieces) < 6:
                 sickrage.srCore.srLogger.error(
-                    _('Unable to add show due to show selection. Not anough arguments: %s') % (repr(series_pieces)))
+                    'Unable to add show due to show selection. Not anough arguments: %s' % (repr(series_pieces)))
                 sickrage.srCore.srNotifications.error(
                     _('Unknown error. Unable to add show due to problem with show selection.'))
                 return self.redirect('/home/addShows/existingShows/')
@@ -2648,7 +2653,7 @@ class HomeAddShows(Home):
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
         if os.path.isdir(show_dir) and not fullShowPath:
-            sickrage.srCore.srNotifications.error("Unable to add show", "Folder " + show_dir + " exists already")
+            sickrage.srCore.srNotifications.error(_("Unable to add show"), _("Folder ") + show_dir + _(" exists already"))
             return self.redirect('/home/addShows/existingShows/')
 
         # don't create show dir if config says not to
@@ -2660,8 +2665,9 @@ class HomeAddShows(Home):
             if not dir_exists:
                 sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
                 sickrage.srCore.srNotifications.error(_("Unable to add show"),
-                                                      _(
-                                                          "Unable to create the folder " + show_dir + ", can't add the show"))
+                                                      _("Unable to create the folder " +
+                                                        show_dir + ", can't add the show"))
+
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")
             else:
@@ -3326,7 +3332,7 @@ class Manage(Home, WebRoot):
 
         if len(errors) > 0:
             sickrage.srCore.srNotifications.error(
-                '%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
+                _('%d error%s while saving changes:') % (len(errors), "" if len(errors) == 1 else "s"),
                 " ".join(errors))
 
         return self.redirect("/manage/")
@@ -3400,7 +3406,7 @@ class Manage(Home, WebRoot):
                     sickrage.srCore.SHOWQUEUE.updateShow(showObj, True)
                     updates.append(showObj.name)
                 except CantUpdateShowException as e:
-                    errors.append("Unable to update show: {0}".format(str(e)))
+                    errors.append(_("Unable to update show: {0}").format(str(e)))
 
             # don't bother refreshing shows that were updated anyway
             if curShowID in toRefresh and curShowID not in toUpdate:
@@ -3408,7 +3414,7 @@ class Manage(Home, WebRoot):
                     sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
                     refreshes.append(showObj.name)
                 except CantRefreshShowException as e:
-                    errors.append("Unable to refresh show " + showObj.name + ": {}".format(e.message))
+                    errors.append(_("Unable to refresh show ") + showObj.name + ": {}".format(e.message))
 
             if curShowID in toRename:
                 sickrage.srCore.SHOWQUEUE.renameShowEpisodes(showObj)
@@ -3455,38 +3461,6 @@ class Manage(Home, WebRoot):
             topmenu='manage',
             controller='manage',
             action='mass_update'
-        )
-
-    def manageTorrents(self):
-        info_download_station = ''
-
-        webui_url = sickrage.srCore.srConfig.TORRENT_HOST
-        if re.search('localhost', sickrage.srCore.srConfig.TORRENT_HOST):
-            webui_url = re.sub('localhost', sickrage.srCore.srConfig.WEB_HOST, sickrage.srCore.srConfig.TORRENT_HOST)
-
-        if sickrage.srCore.srConfig.TORRENT_METHOD == 'utorrent':
-            webui_url = '/'.join(s.strip('/') for s in (webui_url, 'gui/'))
-        if sickrage.srCore.srConfig.TORRENT_METHOD == 'download_station':
-            if check_url(webui_url + 'download/'):
-                webui_url += 'download/'
-            else:
-                info_download_station = '<p>To have a better experience please set the Download Station alias as <code>download</code>, you can check this setting in the Synology DSM <b>Control Panel</b> > <b>Application Portal</b>. Make sure you allow DSM to be embedded with iFrames too in <b>Control Panel</b> > <b>DSM Settings</b> > <b>Security</b>.<br>'
-
-        if not sickrage.srCore.srConfig.TORRENT_PASSWORD == "" and not sickrage.srCore.srConfig.TORRENT_USERNAME == "":
-            webui_url = re.sub('://',
-                               '://' + str(sickrage.srCore.srConfig.TORRENT_USERNAME) + ':' + str(
-                                   sickrage.srCore.srConfig.TORRENT_PASSWORD) + '@',
-                               webui_url)
-
-        return self.render(
-            "/manage/torrents.mako",
-            webui_url=webui_url,
-            info_download_station=info_download_station,
-            title=_('Manage Torrents'),
-            header=_('Manage Torrents'),
-            topmenu='manage',
-            controller='manage',
-            action='torrents'
         )
 
     def failedDownloads(self, limit=100, toRemove=None):
@@ -3711,7 +3685,8 @@ class Config(WebHandler):
 
     def reset(self):
         sickrage.srCore.srConfig.load(True)
-        sickrage.srCore.srNotifications.message(_('Configuration Reset to Defaults'), os.path.join(sickrage.CONFIG_FILE))
+        sickrage.srCore.srNotifications.message(_('Configuration Reset to Defaults'),
+                                                os.path.join(sickrage.CONFIG_FILE))
         return self.redirect("/config/general")
 
 
@@ -3882,7 +3857,8 @@ class ConfigGeneral(Config):
             [sickrage.srCore.srLogger.error(x) for x in results]
             sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[GENERAL] Configuration Saved'), os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message(_('[GENERAL] Configuration Saved'),
+                                                    os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/general/")
 
@@ -3975,10 +3951,10 @@ class ConfigSearch(Config):
         results = []
 
         if not sickrage.srCore.srConfig.change_nzb_dir(nzb_dir):
-            results += ["Unable to create directory " + os.path.normpath(nzb_dir) + ", dir not changed."]
+            results += [_("Unable to create directory ") + os.path.normpath(nzb_dir) + _(", dir not changed.")]
 
         if not sickrage.srCore.srConfig.change_torrent_dir(torrent_dir):
-            results += ["Unable to create directory " + os.path.normpath(torrent_dir) + ", dir not changed."]
+            results += [_("Unable to create directory ") + os.path.normpath(torrent_dir) + _(", dir not changed.")]
 
         sickrage.srCore.srConfig.change_daily_searcher_freq(dailysearch_frequency)
 
@@ -4051,7 +4027,8 @@ class ConfigSearch(Config):
             [sickrage.srCore.srLogger.error(x) for x in results]
             sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[SEARCH] Configuration Saved'), os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message(_('[SEARCH] Configuration Saved'),
+                                                    os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/search/")
 
@@ -4092,7 +4069,7 @@ class ConfigPostProcessing(Config):
         results = []
 
         if not sickrage.srCore.srConfig.change_tv_download_dir(tv_download_dir):
-            results += ["Unable to create directory " + os.path.normpath(tv_download_dir) + ", dir not changed."]
+            results += [_("Unable to create directory ") + os.path.normpath(tv_download_dir) + _(", dir not changed.")]
 
         sickrage.srCore.srConfig.change_autopostprocessor_freq(autopostprocessor_frequency)
         sickrage.srCore.srConfig.change_process_automatically(process_automatically)
@@ -4102,7 +4079,7 @@ class ConfigPostProcessing(Config):
                 sickrage.srCore.srConfig.UNPACK = sickrage.srCore.srConfig.checkbox_to_value(unpack)
             else:
                 sickrage.srCore.srConfig.UNPACK = 0
-                results.append("Unpacking Not Supported, disabling unpack setting")
+                results.append(_("Unpacking Not Supported, disabling unpack setting"))
         else:
             sickrage.srCore.srConfig.UNPACK = sickrage.srCore.srConfig.checkbox_to_value(unpack)
         sickrage.srCore.srConfig.NO_DELETE = sickrage.srCore.srConfig.checkbox_to_value(no_delete)
@@ -4136,9 +4113,9 @@ class ConfigPostProcessing(Config):
             sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS = validator.check_force_season_folders()
         else:
             if int(naming_anime) in [1, 2]:
-                results.append("You tried saving an invalid anime naming config, not saving your naming settings")
+                results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
             else:
-                results.append("You tried saving an invalid naming config, not saving your naming settings")
+                results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
         if self.isNamingValid(naming_anime_pattern, naming_anime_multi_ep, anime_type=naming_anime) != "invalid":
             sickrage.srCore.srConfig.NAMING_ANIME_PATTERN = naming_anime_pattern
@@ -4147,21 +4124,21 @@ class ConfigPostProcessing(Config):
             sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS = validator.check_force_season_folders()
         else:
             if int(naming_anime) in [1, 2]:
-                results.append("You tried saving an invalid anime naming config, not saving your naming settings")
+                results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
             else:
-                results.append("You tried saving an invalid naming config, not saving your naming settings")
+                results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
         if self.isNamingValid(naming_abd_pattern, None, abd=True) != "invalid":
             sickrage.srCore.srConfig.NAMING_ABD_PATTERN = naming_abd_pattern
         else:
             results.append(
-                "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings")
+                _("You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"))
 
         if self.isNamingValid(naming_sports_pattern, None, sports=True) != "invalid":
             sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN = naming_sports_pattern
         else:
             results.append(
-                "You tried saving an invalid sports naming config, not saving your sports settings")
+                _("You tried saving an invalid sports naming config, not saving your sports settings"))
 
         sickrage.srCore.metadataProvidersDict['kodi'].set_config(kodi_data)
         sickrage.srCore.metadataProvidersDict['kodi_12plus'].set_config(kodi_12plus_data)
@@ -4296,11 +4273,11 @@ class ConfigProviders(Config):
         tv_categories = []
 
         if not name:
-            error += "\nNo Provider Name specified"
+            error += _("\nNo Provider Name specified")
         if not url:
-            error += "\nNo Provider Url specified"
+            error += _("\nNo Provider Url specified")
         if not key:
-            error += "\nNo Provider Api key specified"
+            error += _("\nNo Provider Api key specified")
 
         if not error:
             tempProvider = NewznabProvider(name, url, True, key)
@@ -4910,7 +4887,8 @@ class ConfigAnime(Config):
             [sickrage.srCore.srLogger.error(x) for x in results]
             sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[ANIME] Configuration Saved'), os.path.join(sickrage.CONFIG_FILE))
+            sickrage.srCore.srNotifications.message(_('[ANIME] Configuration Saved'),
+                                                    os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
 
@@ -4991,6 +4969,25 @@ class Logs(WebHandler):
         return self.redirect("/logs/viewlog/")
 
     def viewlog(self, minLevel=None, logFilter='', logSearch='', maxLines=500):
+        logNameFilters = {
+            '': 'No Filter',
+            'DAILYSEARCHER': _('Daily Searcher'),
+            'BACKLOG': _('Backlog'),
+            'SHOWUPDATER': _('Show Updater'),
+            'VERSIONUPDATER': _('Check Version'),
+            'SHOWQUEUE': _('Show Queue'),
+            'SEARCHQUEUE': _('Search Queue'),
+            'FINDPROPERS': _('Find Propers'),
+            'POSTPROCESSOR': _('Postprocessor'),
+            'SUBTITLESEARCHER': _('Find Subtitles'),
+            'TRAKTSEARCHER': _('Trakt Checker'),
+            'EVENT': _('Event'),
+            'ERROR': _('Error'),
+            'TORNADO': _('Tornado'),
+            'Thread': _('Thread'),
+            'MAIN': _('Main'),
+        }
+
         minLevel = minLevel or sickrage.srCore.srLogger.INFO
 
         logFiles = [sickrage.srCore.srConfig.LOG_FILE] + ["{}.{}".format(sickrage.srCore.srConfig.LOG_FILE, x) for x in
@@ -5025,7 +5022,7 @@ class Logs(WebHandler):
             topmenu="system",
             logLines="\n".join(logRegex.findall("\n".join(data))),
             minLevel=int(minLevel),
-            logNameFilters=sickrage.srCore.srLogger.logNameFilters,
+            logNameFilters=logNameFilters,
             logFilter=logFilter,
             logSearch=logSearch,
             controller='logs',

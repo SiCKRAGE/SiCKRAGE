@@ -25,8 +25,6 @@ from ssl import SSLError
 from urllib import urlencode
 
 import sickrage
-from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
 
 
@@ -42,25 +40,25 @@ class PushalotNotifier(srNotifiers):
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSNATCH:
             self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
-                               event=notifyStrings[NOTIFY_SNATCH],
+                               event=self.notifyStrings[self.NOTIFY_SNATCH],
                                message=ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONDOWNLOAD:
             self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
-                               event=notifyStrings[NOTIFY_DOWNLOAD],
+                               event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                                message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
-                               event=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD],
+                               event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD],
                                message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_PUSHALOT:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
                                event=title,
                                message=update_text + new_version)

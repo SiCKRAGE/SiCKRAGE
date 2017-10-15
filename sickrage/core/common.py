@@ -45,25 +45,6 @@ cpu_presets = {
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
 
-### Notification Types
-NOTIFY_SNATCH = 1
-NOTIFY_DOWNLOAD = 2
-NOTIFY_SUBTITLE_DOWNLOAD = 3
-NOTIFY_GIT_UPDATE = 4
-NOTIFY_GIT_UPDATE_TEXT = 5
-NOTIFY_LOGIN = 6
-NOTIFY_LOGIN_TEXT = 7
-
-notifyStrings = {
-    NOTIFY_SNATCH: "Started Download",
-    NOTIFY_DOWNLOAD: "Download Finished",
-    NOTIFY_SUBTITLE_DOWNLOAD: "Subtitle Download Finished",
-    NOTIFY_GIT_UPDATE: "SiCKRAGE Updated",
-    NOTIFY_GIT_UPDATE_TEXT: "SiCKRAGE Updated To Commit#: ",
-    NOTIFY_LOGIN: "SiCKRAGE new login",
-    NOTIFY_LOGIN_TEXT: "New login from IP: {0}. http://geomaplookup.net/?ip={0}"
-}
-
 ### Episode statuses
 UNKNOWN = -1  # should never happen
 UNAIRED = 1  # episodes that haven't aired yet

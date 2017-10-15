@@ -196,8 +196,8 @@ class ManualSearchQueueItem(srQueueItem):
 
             else:
                 sickrage.srCore.srNotifications.message(
-                    'No downloads were found',
-                    "Couldn't find a download for <i>%s</i>" % self.segment.prettyName()
+                    _('No downloads were found'),
+                    _("Couldn't find a download for <i>%s</i>") % self.segment.prettyName()
                 )
 
                 sickrage.srCore.srLogger.info("Unable to find a download for: [" + self.segment.prettyName() + "]")

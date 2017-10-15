@@ -62,25 +62,6 @@ class srLogger(logging.getLoggerClass()):
             'DB': 5
         }
 
-        self.logNameFilters = {
-            '': 'No Filter',
-            'DAILYSEARCHER': _('Daily Searcher'),
-            'BACKLOG': _('Backlog'),
-            'SHOWUPDATER': _('Show Updater'),
-            'VERSIONUPDATER': _('Check Version'),
-            'SHOWQUEUE': _('Show Queue'),
-            'SEARCHQUEUE': _('Search Queue'),
-            'FINDPROPERS': _('Find Propers'),
-            'POSTPROCESSOR': _('Postprocessor'),
-            'SUBTITLESEARCHER': _('Find Subtitles'),
-            'TRAKTSEARCHER': _('Trakt Checker'),
-            'EVENT': _('Event'),
-            'ERROR': _('Error'),
-            'TORNADO': _('Tornado'),
-            'Thread': _('Thread'),
-            'MAIN': _('Main'),
-        }
-
         # list of allowed loggers
         self.allowedLoggers = ['sickrage',
                                'tornado.general',

@@ -196,9 +196,9 @@
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
+                                % if torrent_webui_url:
                                     <li>
-                                        <a href="${srWebRoot}/manage/manageTorrents/">
+                                        <a href="${torrent_webui_url}" target="_blank">
                                             <i class="menu-icon-bittorrent"></i>&nbsp;${_('Manage Torrents')}
                                         </a>
                                     </li>

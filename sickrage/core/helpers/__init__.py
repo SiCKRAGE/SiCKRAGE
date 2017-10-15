@@ -46,6 +46,7 @@ import zipfile
 from contextlib import contextmanager
 
 import rarfile
+import requests
 import six
 from bs4 import BeautifulSoup
 
@@ -1754,3 +1755,29 @@ def validate_url(value):
     )
 
     return (True, False)[not re.compile(regex.format(tld=r'\.[a-z]{2,10}')).match(value)]
+
+
+def torrent_webui_url():
+    if not sickrage.srCore.srConfig.USE_TORRENTS or \
+            not sickrage.srCore.srConfig.TORRENT_HOST.lower().startswith('http') or \
+                    sickrage.srCore.srConfig.TORRENT_METHOD == 'blackhole' or sickrage.srCore.srConfig.ENABLE_HTTPS and \
+            not sickrage.srCore.srConfig.TORRENT_HOST.lower().startswith('https'):
+        return ''
+
+    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.srCore.srConfig.WEB_HOST or get_lan_ip(),
+                            sickrage.srCore.srConfig.TORRENT_HOST or '', re.I)
+
+    def test_exists(url):
+        try:
+            h = requests.head(url)
+            return h.status_code != 404
+        except (requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout):
+            return False
+
+    if sickrage.srCore.srConfig.TORRENT_METHOD == 'utorrent':
+        torrent_ui_url = '/'.join(s.strip('/') for s in (torrent_ui_url, 'gui/'))
+    elif sickrage.srCore.srConfig.TORRENT_METHOD == 'download_station':
+        if test_exists(urlparse.urljoin(torrent_ui_url, 'download/')):
+            torrent_ui_url = urlparse.urljoin(torrent_ui_url, 'download/')
+
+    return ('', torrent_ui_url)[test_exists(torrent_ui_url)]

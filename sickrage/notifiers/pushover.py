@@ -26,8 +26,6 @@ import urllib
 import urllib2
 
 import sickrage
-from sickrage.core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
-    notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD
 from sickrage.notifiers import srNotifiers
 
 API_URL = "https://api.pushover.net/1/messages.json"
@@ -137,22 +135,31 @@ class PushoverNotifier(srNotifiers):
         sickrage.srCore.srLogger.info("Pushover notification successful.")
         return True
 
-    def _notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
+    def _notify_snatch(self, ep_name, title=None):
+        if not title:
+            title = self.notifyStrings[self.NOTIFY_SNATCH]
+
         if sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSNATCH:
             self._notifyPushover(title, ep_name)
 
-    def _notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
+    def _notify_download(self, ep_name, title=None):
+        if not title:
+            title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
+
         if sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONDOWNLOAD:
             self._notifyPushover(title, ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
+    def _notify_subtitle_download(self, ep_name, lang, title=None):
+        if not title:
+            title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
+
         if sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_PUSHOVER:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notifyPushover(title, update_text + new_version)
 
     def _notifyPushover(self, title, message, sound=None, userKey=None, apiKey=None, force=False):

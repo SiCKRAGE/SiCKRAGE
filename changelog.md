@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0ff5514 - 2017-10-15: Converted headers and titles to i18n 
+- * ac62434 - 2017-10-15: Converted more strings to i18n 
+- * 104ae0a - 2017-10-15: Converted headers and titles to i18n 
 - * 2abfe11 - 2017-10-14: Converted more templates to i18n 
 - * 939e18f - 2017-10-14: Extracted more gettext messages 
 - * d078c67 - 2017-10-13: Surrounded titles with gettext underscore 
