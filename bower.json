@@ -33,7 +33,8 @@
     "bookmarkscroll": "http://dynamicdrive.com/dynamicindex5/bookmarkscroll.js",
     "scrollup": "~2.4.1",
     "qtip2": "git://github.com/qTip2/qTip2.git#v3.0.3",
-    "components-font-awesome": "^4.7.0"
+    "components-font-awesome": "^4.7.0",
+    "jsgettext": "~0.8.1"
   },
   "resolutions": {
     "jquery": "~3.2.1",

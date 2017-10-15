@@ -1,4 +1,7 @@
 jQuery(document).ready(function ($) {
+    // jsGettext
+    var gt = new Gettext().gettext;
+
     // SiCKRAGE Core Namespace Object
     var SICKRAGE = {
         xhrPool: [],
@@ -288,18 +291,18 @@ jQuery(document).ready(function ($) {
                 };
 
                 $('a.shutdown').confirm({
-                    title: 'Shutdown',
-                    content: 'Are you sure you want to shutdown SiCKRAGE ?'
+                    title: gt('Shutdown'),
+                    content: gt('Are you sure you want to shutdown SiCKRAGE ?')
                 });
 
                 $('a.restart').confirm({
-                    title: 'Restart',
-                    content: 'Are you sure you want to restart SiCKRAGE ?'
+                    title: gt('Restart'),
+                    content: gt('Are you sure you want to restart SiCKRAGE ?')
                 });
 
                 $('a.submiterrors').confirm({
-                    title: 'Submit Errors',
-                    content: 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>'
+                    title: gt('Submit Errors'),
+                    content: gt('Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>')
                 });
 
                 $('#removeW').click(function () {
@@ -433,8 +436,8 @@ jQuery(document).ready(function ($) {
                         var rSearchTerm = '';
                         if (ep.searchstatus.toLowerCase() === 'searching') {
                             //el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
-                            img.prop('title', 'Searching');
-                            img.prop('alt', 'Searching');
+                            img.prop('title', gt('Searching'));
+                            img.prop('alt', 'searching');
                             img.prop('src', SICKRAGE.srWebRoot + '/images/' + loadingImage);
                             SICKRAGE.ajax_search.disableLink(el);
                             // Update Status and Quality
@@ -443,14 +446,14 @@ jQuery(document).ready(function ($) {
 
                         } else if (ep.searchstatus.toLowerCase() === 'queued') {
                             //el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
-                            img.prop('title', 'Queued');
+                            img.prop('title', gt('Queued'));
                             img.prop('alt', 'queued');
                             img.prop('src', SICKRAGE.srWebRoot + '/images/' + queuedImage);
                             SICKRAGE.ajax_search.disableLink(el);
                             htmlContent = ep.searchstatus;
                         } else if (ep.searchstatus.toLowerCase() === 'finished') {
                             //el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
-                            img.prop('title', 'Searching');
+                            img.prop('title', gt('Searching'));
                             img.prop('alt', 'searching');
                             img.parent().prop('class', 'epRetry');
                             img.prop('src', SICKRAGE.srWebRoot + '/images/' + searchImage);
@@ -469,16 +472,16 @@ jQuery(document).ready(function ($) {
                     var imageCompleteEpisodes = elementCompleteEpisodes.children('img');
                     if (elementCompleteEpisodes) {
                         if (ep.searchstatus.toLowerCase() === 'searching') {
-                            imageCompleteEpisodes.prop('title', 'Searching');
-                            imageCompleteEpisodes.prop('alt', 'Searching');
+                            imageCompleteEpisodes.prop('title', gt('Searching'));
+                            imageCompleteEpisodes.prop('alt', 'searching');
                             imageCompleteEpisodes.prop('src', SICKRAGE.srWebRoot + '/images/' + loadingImage);
                             SICKRAGE.ajax_search.disableLink(elementCompleteEpisodes);
                         } else if (ep.searchstatus.toLowerCase() === 'queued') {
-                            imageCompleteEpisodes.prop('title', 'Queued');
+                            imageCompleteEpisodes.prop('title', gt('Queued'));
                             imageCompleteEpisodes.prop('alt', 'queued');
                             imageCompleteEpisodes.prop('src', SICKRAGE.srWebRoot + '/images/' + queuedImage);
                         } else if (ep.searchstatus.toLowerCase() === 'finished') {
-                            imageCompleteEpisodes.prop('title', 'Manual Search');
+                            imageCompleteEpisodes.prop('title', gt('Manual Search'));
                             imageCompleteEpisodes.prop('alt', '[search]');
                             imageCompleteEpisodes.prop('src', SICKRAGE.srWebRoot + '/images/' + searchImage);
                             if (ep.overview.toLowerCase() === 'snatched') {
@@ -501,7 +504,7 @@ jQuery(document).ready(function ($) {
 
                 // Create var for img under anchor and set options for the loading gif
                 var img = SICKRAGE.ajax_search.selectedEpisode.children('img');
-                img.prop('title', 'loading');
+                img.prop('title', gt('loading'));
                 img.prop('alt', '');
                 img.prop('src', SICKRAGE.srWebRoot + '/images/' + options.loadingImage);
 
@@ -638,7 +641,7 @@ jQuery(document).ready(function ($) {
                     subtitlesSearchLink.append($("<img/>").attr({
                         "src": SICKRAGE.srWebRoot + "/images/loading16.gif",
                         "alt": "",
-                        "title": "loading"
+                        "title": gt("loading")
                     }));
                     $.getJSON($(this).attr('href'), function (data) {
                         if (data.result.toLowerCase() !== "failure" && data.result.toLowerCase() !== "no subtitles downloaded") {
@@ -684,7 +687,7 @@ jQuery(document).ready(function ($) {
                     subtitlesMergeLink.append($("<img/>").attr({
                         "src": SICKRAGE.srWebRoot + "/images/loading16.gif",
                         "alt": "",
-                        "title": "loading"
+                        "title": gt("loading")
                     }));
                     $.getJSON($(this).attr('href'), function () {
                         // don't allow other merges
@@ -698,7 +701,7 @@ jQuery(document).ready(function ($) {
 
         browser: {
             defaults: {
-                title: 'Choose Directory',
+                title: gt('Choose Directory'),
                 url: '/browser/',
                 autocompleteURL: '/browser/complete',
                 includeFiles: 0,
@@ -812,7 +815,7 @@ jQuery(document).ready(function ($) {
 
                 SICKRAGE.browser.fileBrowserDialog.dialog('option', 'buttons', [
                     {
-                        text: "Ok",
+                        text: gt("Ok"),
                         "class": "btn",
                         click: function () {
                             // store the browsed path to the associated text field
@@ -821,7 +824,7 @@ jQuery(document).ready(function ($) {
                         }
                     },
                     {
-                        text: "Cancel",
+                        text: gt("Cancel"),
                         "class": "btn",
                         click: function () {
                             $(this).dialog("close");
@@ -1311,13 +1314,13 @@ jQuery(document).ready(function ($) {
                 });
 
                 $('a.clearhistory').confirm({
-                    title: 'Clear History',
-                    content: 'Are you sure you want to clear all download history ?'
+                    title: gt('Clear History'),
+                    content: gt('Are you sure you want to clear all download history ?')
                 });
 
                 $('a.trimhistory').confirm({
-                    title: 'Trim History',
-                    content: 'Are you sure you want to trim all download history older than 30 days ?'
+                    title: gt('Trim History'),
+                    content: gt('Are you sure you want to trim all download history older than 30 days ?')
                 });
             },
 
@@ -1460,12 +1463,12 @@ jQuery(document).ready(function ($) {
                     url: SICKRAGE.srWebRoot + '/google/get_user_code',
                     type: 'POST',
                     success: function (data) {
-                        var loginDialog = '<center><h1>' + data.user_code + '</h1><br/>From any computer, please visit <a href="' + data.verification_url + '" target="_blank">' + data.verification_url + '</a> and enter the code</center>';
+                        var loginDialog = gt('<center><h1>' + data.user_code + '</h1><br/>From any computer, please visit <a href="' + data.verification_url + '" target="_blank">' + data.verification_url + '</a> and enter the code</center>');
                         $('#login-dialog').dialog({
                             modal: true,
                             draggable: false,
                             width: '25%',
-                            title: 'Link SiCKRAGE'
+                            title: gt('Link SiCKRAGE')
                         }).html(loginDialog);
                         SICKRAGE.google.poll_auth(data, new Date().getTime() + new Date(data.user_code_expiry).getTime() * 1000, data.interval);
                     }
@@ -2007,11 +2010,11 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.ajax_search.init();
 
                     $("a.removeshow").confirm({
-                        title: "Remove Show",
-                        content: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
-                        '</span> from the database?<br><br>' +
-                        '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
-                        '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>',
+                        title: gt("Remove Show"),
+                        content: gt('Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
+                            '</span> from the database?<br><br>' +
+                            '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
+                            '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>'),
                         confirm: function () {
                             location.href = this.$target.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
                         }
@@ -2047,7 +2050,7 @@ jQuery(document).ready(function ($) {
                             if (data.errorMessage) {
                                 alert(data.errorMessage);
                             } else {
-                                alert('Update failed.');
+                                alert(gt('Update failed.'));
                             }
                         }
                     });
@@ -2078,7 +2081,7 @@ jQuery(document).ready(function ($) {
                                 if (data.errorMessage) {
                                     alert(data.errorMessage);
                                 } else {
-                                    alert('Update failed.');
+                                    alert(gt('Update failed.'));
                                 }
                             }
                         });
@@ -2089,7 +2092,7 @@ jQuery(document).ready(function ($) {
                 init: function () {
                     var allExceptions = [];
 
-                    $('#location').fileBrowser({title: 'Select Show Location'});
+                    $('#location').fileBrowser({title: gt('Select Show Location')});
 
                     $('#submit').click(function () {
                         var allExceptions = [];
@@ -2229,7 +2232,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
-                    $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" /> loading folders...');
+                    $('#tableDiv').html(gt('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" /> loading folders...'));
                     $.get(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
                         $("#addRootDirTable").tablesorter({
@@ -2298,7 +2301,7 @@ jQuery(document).ready(function ($) {
 
             postprocess: function () {
                 $('#episodeDir').fileBrowser({
-                    title: 'Select Unprocessed Episode Folder',
+                    title: gt('Select Unprocessed Episode Folder'),
                     key: 'postprocessPath'
                 });
             },
@@ -2577,15 +2580,15 @@ jQuery(document).ready(function ($) {
                         timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
                         dataType: 'json',
                         error: function () {
-                            $('#messages').empty().html('search timed out, try increasing timeout for indexer');
+                            $('#messages').empty().html(gt('search timed out, try increasing timeout for indexer'));
                         },
                         success: function (data) {
                             var firstResult = true;
-                            var resultStr = '<legend class="legend">Search Results:</legend>\n';
+                            var resultStr = gt('<legend class="legend">Search Results:</legend>\n');
                             var checked = '';
 
                             if (data.results.length === 0) {
-                                resultStr += '<b>No results found, try a different search or language.</b>';
+                                resultStr += gt('<b>No results found, try a different search or language.</b>');
                             } else {
                                 $.each(data.results, function (index, obj) {
                                     if (firstResult) {
@@ -2604,9 +2607,9 @@ jQuery(document).ready(function ($) {
                                         var startDate = new Date(obj[5]);
                                         var today = new Date();
                                         if (startDate > today) {
-                                            resultStr += ' (will debut on ' + obj[5] + ')';
+                                            resultStr += gt(' (will debut on ' + obj[5] + ')');
                                         } else {
-                                            resultStr += ' (started on ' + obj[5] + ')';
+                                            resultStr += gt(' (started on ' + obj[5] + ')');
                                         }
                                     }
 
@@ -2651,10 +2654,15 @@ jQuery(document).ready(function ($) {
 
                     $(this).attr('disabled', true);
                     new PNotify({
-                        title: 'Saved Defaults',
-                        text: 'Your "add show" defaults have been set to your current selections.',
-                        shadow: false
-                    });
+                        title: gt('Saved Defaults'),
+                        text
+                :
+                    gt('Your "add show" defaults have been set to your current selections.'),
+                        shadow
+                :
+                    false
+                })
+                    ;
                 });
 
                 $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #archive').change(function () {
@@ -2708,7 +2716,7 @@ jQuery(document).ready(function ($) {
                     beforeSubmit: function () {
                         $('.config_submitter .config_submitter_refresh').each(function () {
                             $(this).attr("disabled", "disabled");
-                            $(this).after('<span>' + SICKRAGE.loadingHTML + ' Saving...</span>');
+                            $(this).after(gt('<span>' + SICKRAGE.loadingHTML + ' Saving...</span>'));
                             $(this).hide();
                         });
                     },
@@ -2749,8 +2757,8 @@ jQuery(document).ready(function ($) {
                 $('#config-tabs a[href="' + hash + '"]').tab('show');
 
                 $('a.resetConfig').confirm({
-                    title: 'Reset Config to Defaults',
-                    content: 'Are you sure you want to reset config to defaults?'
+                    title: gt('Reset Config to Defaults'),
+                    content: gt('Are you sure you want to reset config to defaults?')
                 });
             },
 
@@ -2830,9 +2838,9 @@ jQuery(document).ready(function ($) {
                 });
 
                 if (localStorage.getItem('google_token_type') === null || localStorage.getItem('google_access_token') === null) {
-                    $('#google_link').prop('value', 'Link');
+                    $('#google_link').prop('value', gt('Link'));
                 } else {
-                    $('#google_link').prop('value', 'Unlink');
+                    $('#google_link').prop('value', gt('Unlink'));
                 }
             },
 
@@ -2873,7 +2881,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
-                    $('#subtitles_dir').fileBrowser({title: 'Select Subtitles Download Directory'});
+                    $('#subtitles_dir').fileBrowser({title: gt('Select Subtitles Download Directory')});
 
                     $('#editAService').change(function () {
                         SICKRAGE.config.subtitles.showHideServices();
@@ -2988,9 +2996,9 @@ jQuery(document).ready(function ($) {
                     SICKRAGE.config.search.rtorrentScgi();
                     $('#torrent_host').change(SICKRAGE.config.search.rtorrentScgi);
 
-                    $('#nzb_dir').fileBrowser({title: 'Select .nzb blackhole/watch location'});
-                    $('#torrent_dir').fileBrowser({title: 'Select .torrent blackhole/watch location'});
-                    $('#torrent_path').fileBrowser({title: 'Select .torrent download location'});
+                    $('#nzb_dir').fileBrowser({title: gt('Select .nzb blackhole/watch location')});
+                    $('#torrent_dir').fileBrowser({title: gt('Select .torrent blackhole/watch location')});
+                    $('#torrent_path').fileBrowser({title: gt('Select .torrent download location')});
                 },
 
                 toggleTorrentTitle: function () {
@@ -3057,18 +3065,18 @@ jQuery(document).ready(function ($) {
                         if (selectedProvider.toLowerCase() === 'utorrent') {
                             client = 'uTorrent';
                             $('#torrent_path_option').hide();
-                            $('#torrent_seed_time_label').text('Minimum seeding time is');
+                            $('#torrent_seed_time_label').text(gt('Minimum seeding time is'));
                             $('#torrent_seed_time_option').show();
-                            $('#host_desc_torrent').text('URL to your uTorrent client (e.g. http://localhost:8000)');
+                            $('#host_desc_torrent').text(gt('URL to your uTorrent client (e.g. http://localhost:8000)'));
                         } else if (selectedProvider.toLowerCase() === 'transmission') {
                             client = 'Transmission';
-                            $('#torrent_seed_time_label').text('Stop seeding when inactive for');
+                            $('#torrent_seed_time_label').text(gt('Stop seeding when inactive for'));
                             $('#torrent_seed_time_option').show();
                             $('#torrent_high_bandwidth_option').show();
                             $('#torrent_label_option').hide();
                             $('#torrent_label_anime_option').hide();
                             $('#torrent_rpcurl_option').show();
-                            $('#host_desc_torrent').text('URL to your Transmission client (e.g. http://localhost:9091)');
+                            $('#host_desc_torrent').text(gt('URL to your Transmission client (e.g. http://localhost:9091)'));
                         } else if (selectedProvider.toLowerCase() === 'deluge') {
                             client = 'Deluge';
                             $('#torrent_verify_cert_option').show();
@@ -3078,7 +3086,7 @@ jQuery(document).ready(function ($) {
                             $('#label_anime_warning_deluge').show();
                             $('#torrent_username_option').hide();
                             $('#torrent_username').prop('value', '');
-                            $('#host_desc_torrent').text('URL to your Deluge client (e.g. http://localhost:8112)');
+                            $('#host_desc_torrent').text(gt('URL to your Deluge client (e.g. http://localhost:8112)'));
                         } else if (selectedProvider.toLowerCase() === 'deluged') {
                             client = 'Deluge';
                             $('#torrent_verify_cert_option').hide();
@@ -3087,19 +3095,19 @@ jQuery(document).ready(function ($) {
                             $('#label_warning_deluge').show();
                             $('#label_anime_warning_deluge').show();
                             $('#torrent_username_option').show();
-                            $('#host_desc_torrent').text('IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)');
+                            $('#host_desc_torrent').text(gt('IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)'));
                         } else if (selectedProvider.toLowerCase() === 'download_station') {
                             client = 'Synology DS';
                             $('#torrent_label_option').hide();
                             $('#torrent_label_anime_option').hide();
                             $('#torrent_paused_option').hide();
                             $('#torrent_path_option').find('.fileBrowser').hide();
-                            $('#host_desc_torrent').text('URL to your Synology DS client (e.g. http://localhost:5000)');
+                            $('#host_desc_torrent').text(gt('URL to your Synology DS client (e.g. http://localhost:5000)'));
                             $('#path_synology').show();
                         } else if (selectedProvider.toLowerCase() === 'rtorrent') {
                             client = 'rTorrent';
                             $('#torrent_paused_option').hide();
-                            $('#host_desc_torrent').html('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)');
+                            $('#host_desc_torrent').html(gt('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)'));
                             $('#torrent_verify_cert_option').show();
                             $('#torrent_verify_deluge').hide();
                             $('#torrent_verify_rtorrent').show();
@@ -3109,7 +3117,7 @@ jQuery(document).ready(function ($) {
                             $('#torrent_path_option').hide();
                             $('#label_warning_qbittorrent').show();
                             $('#label_anime_warning_qbittorrent').show();
-                            $('#host_desc_torrent').text('URL to your qbittorrent client (e.g. http://localhost:8080)');
+                            $('#host_desc_torrent').text(gt('URL to your qbittorrent client (e.g. http://localhost:8080)'));
                         } else if (selectedProvider.toLowerCase() === 'mlnet') {
                             client = 'mlnet';
                             $('#torrent_path_option').hide();
@@ -3119,7 +3127,7 @@ jQuery(document).ready(function ($) {
                             $('#torrent_verify_rtorrent').hide();
                             $('#torrent_label_anime_option').hide();
                             $('#torrent_paused_option').hide();
-                            $('#host_desc_torrent').text('URL to your MLDonkey (e.g. http://localhost:4080)');
+                            $('#host_desc_torrent').text(gt('URL to your MLDonkey (e.g. http://localhost:4080)'));
                         } else if (selectedProvider.toLowerCase() === 'putio') {
                             client = 'putio';
                             $('#torrent_path_option').hide();
@@ -3130,7 +3138,7 @@ jQuery(document).ready(function ($) {
                             $('#torrent_label_anime_option').hide();
                             $('#torrent_paused_option').hide();
                             $('#torrent_host_option').hide();
-                            $('#host_desc_torrent').text('URL to your putio client (e.g. http://localhost:8080)');
+                            $('#host_desc_torrent').text(gt('URL to your putio client (e.g. http://localhost:8080)'));
                         }
                         $('#host_title').text(client + host);
                         $('#username_title').text(client + username);
@@ -3327,7 +3335,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
-                    $('#tv_download_dir').fileBrowser({title: 'Select TV Download Directory'});
+                    $('#tv_download_dir').fileBrowser({title: gt('Select TV Download Directory')});
                 },
 
                 typewatch: function () {
@@ -3342,7 +3350,7 @@ jQuery(document).ready(function ($) {
                     $.get(SICKRAGE.srWebRoot + '/config/postProcessing/isRarSupported', function (data) {
                         if (data !== "supported") {
                             $('#unpack').qtip('option', {
-                                'content.text': 'Unrar Executable not found.',
+                                'content.text': gt('Unrar Executable not found.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#unpack').qtip('toggle', true);
@@ -3388,21 +3396,21 @@ jQuery(document).ready(function ($) {
                     }, function (data) {
                         if (data === "invalid") {
                             $('#naming_pattern').qtip('option', {
-                                'content.text': 'This pattern is invalid.',
+                                'content.text': gt('This pattern is invalid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_pattern').qtip('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
                             $('#naming_pattern').qtip('option', {
-                                'content.text': 'This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.',
+                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_pattern').qtip('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFFFDD');
                         } else {
                             $('#naming_pattern').qtip('option', {
-                                'content.text': 'This pattern is valid.',
+                                'content.text': gt('This pattern is valid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-green'
                             });
                             $('#naming_pattern').qtip('toggle', false);
@@ -3432,21 +3440,21 @@ jQuery(document).ready(function ($) {
                     }, function (data) {
                         if (data === "invalid") {
                             $('#naming_abd_pattern').qtip('option', {
-                                'content.text': 'This pattern is invalid.',
+                                'content.text': gt('This pattern is invalid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_abd_pattern').qtip('toggle', true);
                             $('#naming_abd_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
                             $('#naming_abd_pattern').qtip('option', {
-                                'content.text': 'This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.',
+                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_abd_pattern').qtip('toggle', true);
                             $('#naming_abd_pattern').css('background-color', '#FFFFDD');
                         } else {
                             $('#naming_abd_pattern').qtip('option', {
-                                'content.text': 'This pattern is valid.',
+                                'content.text': gt('This pattern is valid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-green'
                             });
                             $('#naming_abd_pattern').qtip('toggle', false);
@@ -3476,21 +3484,21 @@ jQuery(document).ready(function ($) {
                     }, function (data) {
                         if (data === "invalid") {
                             $('#naming_sports_pattern').qtip('option', {
-                                'content.text': 'This pattern is invalid.',
+                                'content.text': gt('This pattern is invalid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_sports_pattern').qtip('toggle', true);
                             $('#naming_sports_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
                             $('#naming_sports_pattern').qtip('option', {
-                                'content.text': 'This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.',
+                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_sports_pattern').qtip('toggle', true);
                             $('#naming_sports_pattern').css('background-color', '#FFFFDD');
                         } else {
                             $('#naming_sports_pattern').qtip('option', {
-                                'content.text': 'This pattern is valid.',
+                                'content.text': gt('This pattern is valid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-green'
                             });
                             $('#naming_sports_pattern').qtip('toggle', false);
@@ -3536,21 +3544,21 @@ jQuery(document).ready(function ($) {
                     }, function (data) {
                         if (data === "invalid") {
                             $('#naming_pattern').qtip('option', {
-                                'content.text': 'This pattern is invalid.',
+                                'content.text': gt('This pattern is invalid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_pattern').qtip('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
                             $('#naming_pattern').qtip('option', {
-                                'content.text': 'This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.',
+                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-red'
                             });
                             $('#naming_pattern').qtip('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFFFDD');
                         } else {
                             $('#naming_pattern').qtip('option', {
-                                'content.text': 'This pattern is valid.',
+                                'content.text': gt('This pattern is valid.'),
                                 'style.classes': 'qtip-rounded qtip-shadow qtip-green'
                             });
                             $('#naming_pattern').qtip('toggle', false);
@@ -3684,7 +3692,7 @@ jQuery(document).ready(function ($) {
                         var growl_host = $.trim($('#growl_host').val());
                         var growl_password = $.trim($('#growl_password').val());
                         if (!growl_host) {
-                            $('#testGrowl-result').html('Please fill out the necessary fields above.');
+                            $('#testGrowl-result').html(gt('Please fill out the necessary fields above.'));
                             $('#growl_host').addClass('warning');
                             return;
                         }
@@ -3702,7 +3710,7 @@ jQuery(document).ready(function ($) {
                         var prowl_api = $.trim($('#prowl_api').val());
                         var prowl_priority = $('#prowl_priority').val();
                         if (!prowl_api) {
-                            $('#testProwl-result').html('Please fill out the necessary fields above.');
+                            $('#testProwl-result').html(gt('Please fill out the necessary fields above.'));
                             $('#prowl_api').addClass('warning');
                             return;
                         }
@@ -3723,7 +3731,7 @@ jQuery(document).ready(function ($) {
                         var kodi_username = $.trim($('#kodi_username').val());
                         var kodi_password = $.trim($('#kodi_password').val());
                         if (!kodi_host) {
-                            $('#testKODI-result').html('Please fill out the necessary fields above.');
+                            $('#testKODI-result').html(gt('Please fill out the necessary fields above.'));
                             $('#kodi_host').addClass('warning');
                             return;
                         }
@@ -3745,7 +3753,7 @@ jQuery(document).ready(function ($) {
                         var plex_client_username = $.trim($('#plex_client_username').val());
                         var plex_client_password = $.trim($('#plex_client_password').val());
                         if (!plex_host) {
-                            $('#testPMC-result').html('Please fill out the necessary fields above.');
+                            $('#testPMC-result').html(gt('Please fill out the necessary fields above.'));
                             $('#plex_host').addClass('warning');
                             return;
                         }
@@ -3768,7 +3776,7 @@ jQuery(document).ready(function ($) {
                         var plex_password = $.trim($('#plex_password').val());
                         var plex_server_token = $.trim($('#plex_server_token').val());
                         if (!plex_server_host) {
-                            $('#testPMS-result').html('Please fill out the necessary fields above.');
+                            $('#testPMS-result').html(gt('Please fill out the necessary fields above.'));
                             $('#plex_server_host').addClass('warning');
                             return;
                         }
@@ -3790,7 +3798,7 @@ jQuery(document).ready(function ($) {
                         var emby_host = $('#emby_host').val();
                         var emby_apikey = $('#emby_apikey').val();
                         if (!emby_host || !emby_apikey) {
-                            $('#testEMBY-result').html('Please fill out the necessary fields above.');
+                            $('#testEMBY-result').html(gt('Please fill out the necessary fields above.'));
                             if (!emby_host) {
                                 $('#emby_host').addClass('warning');
                             } else {
@@ -3818,7 +3826,7 @@ jQuery(document).ready(function ($) {
                     $('#testBoxcar2').click(function () {
                         var boxcar2_accesstoken = $.trim($('#boxcar2_accesstoken').val());
                         if (!boxcar2_accesstoken) {
-                            $('#testBoxcar2-result').html('Please fill out the necessary fields above.');
+                            $('#testBoxcar2-result').html(gt('Please fill out the necessary fields above.'));
                             $('#boxcar2_accesstoken').addClass('warning');
                             return;
                         }
@@ -3835,7 +3843,7 @@ jQuery(document).ready(function ($) {
                         var pushover_userkey = $('#pushover_userkey').val();
                         var pushover_apikey = $('#pushover_apikey').val();
                         if (!pushover_userkey || !pushover_apikey) {
-                            $('#testPushover-result').html('Please fill out the necessary fields above.');
+                            $('#testPushover-result').html(gt('Please fill out the necessary fields above.'));
                             if (!pushover_userkey) {
                                 $('#pushover_userkey').addClass('warning');
                             } else {
@@ -3872,14 +3880,14 @@ jQuery(document).ready(function ($) {
                         $.get(SICKRAGE.srWebRoot + '/home/twitterStep1', function (data) {
                             window.open(data);
                         }).done(function () {
-                            $('#testTwitter-result').html('<b>Step1:</b> Confirm Authorization');
+                            $('#testTwitter-result').html(gt('<b>Step1:</b> Confirm Authorization'));
                         });
                     });
 
                     $('#twitterStep2').click(function () {
                         var twitter_key = $.trim($('#twitter_key').val());
                         if (!twitter_key) {
-                            $('#testTwitter-result').html('Please fill out the necessary fields above.');
+                            $('#testTwitter-result').html(gt('Please fill out the necessary fields above.'));
                             $('#twitter_key').addClass('warning');
                             return;
                         }
@@ -3929,7 +3937,7 @@ jQuery(document).ready(function ($) {
 
                     $('#settingsNMJ').click(function () {
                         if (!$('#nmj_host').val()) {
-                            alert('Please fill in the Popcorn IP address');
+                            alert(gt('Please fill in the Popcorn IP address'));
                             $('#nmj_host').focus();
                             return;
                         }
@@ -3964,7 +3972,7 @@ jQuery(document).ready(function ($) {
                         var nmj_database = $('#nmj_database').val();
                         var nmj_mount = $('#nmj_mount').val();
                         if (!nmj_host) {
-                            $('#testNMJ-result').html('Please fill out the necessary fields above.');
+                            $('#testNMJ-result').html(gt('Please fill out the necessary fields above.'));
                             $('#nmj_host').addClass('warning');
                             return;
                         }
@@ -3983,7 +3991,7 @@ jQuery(document).ready(function ($) {
 
                     $('#settingsNMJv2').click(function () {
                         if (!$('#nmjv2_host').val()) {
-                            alert('Please fill in the Popcorn IP address');
+                            alert(gt('Please fill in the Popcorn IP address'));
                             $('#nmjv2_host').focus();
                             return;
                         }
@@ -4022,7 +4030,7 @@ jQuery(document).ready(function ($) {
                     $('#testNMJv2').click(function () {
                         var nmjv2_host = $.trim($('#nmjv2_host').val());
                         if (!nmjv2_host) {
-                            $('#testNMJv2-result').html('Please fill out the necessary fields above.');
+                            $('#testNMJv2-result').html(gt('Please fill out the necessary fields above.'));
                             $('#nmjv2_host').addClass('warning');
                             return;
                         }
@@ -4039,7 +4047,7 @@ jQuery(document).ready(function ($) {
                         var freemobile_id = $.trim($('#freemobile_id').val());
                         var freemobile_apikey = $.trim($('#freemobile_apikey').val());
                         if (!freemobile_id || !freemobile_apikey) {
-                            $('#testFreeMobile-result').html('Please fill out the necessary fields above.');
+                            $('#testFreeMobile-result').html(gt('Please fill out the necessary fields above.'));
                             if (!freemobile_id) {
                                 $('#freemobile_id').addClass('warning');
                             } else {
@@ -4069,7 +4077,7 @@ jQuery(document).ready(function ($) {
                         telegram.id = $.trim($('#telegram_id').val());
                         telegram.apikey = $.trim($('#telegram_apikey').val());
                         if (!telegram.id || !telegram.apikey) {
-                            $('#testTelegram-result').html(_('Please fill out the necessary fields above.'));
+                            $('#testTelegram-result').html(gt('Please fill out the necessary fields above.'));
                             if (!telegram.id) {
                                 $('#telegram_id').addClass('warning');
                             } else {
@@ -4126,7 +4134,7 @@ jQuery(document).ready(function ($) {
                         var trakt_username = $.trim($('#trakt_username').val());
                         var trakt_trending_blacklist = $.trim($('#trakt_blacklist_name').val());
                         if (!trakt_username) {
-                            $('#testTrakt-result').html('Please fill out the necessary fields above.');
+                            $('#testTrakt-result').html(gt('Please fill out the necessary fields above.'));
                             if (!trakt_username) {
                                 $('#trakt_username').addClass('warning');
                             } else {
@@ -4136,7 +4144,7 @@ jQuery(document).ready(function ($) {
                         }
 
                         if (/\s/g.test(trakt_trending_blacklist)) {
-                            $('#testTrakt-result').html('Check blacklist name; the value need to be a trakt slug');
+                            $('#testTrakt-result').html(gt('Check blacklist name; the value need to be a trakt slug'));
                             $('#trakt_blacklist_name').addClass('warning');
                             return;
                         }
@@ -4168,20 +4176,20 @@ jQuery(document).ready(function ($) {
                         pwd = $('#email_password').val();
                         err = '';
                         if (host === null) {
-                            err += '<li style="color: red;">You must specify an SMTP hostname!</li>';
+                            err += gt('<li style="color: red;">You must specify an SMTP hostname!</li>');
                         }
                         if (port === null) {
-                            err += '<li style="color: red;">You must specify an SMTP port!</li>';
+                            err += gt('<li style="color: red;">You must specify an SMTP port!</li>');
                         } else if (port.match(/^\d+$/) === null || parseInt(port, 10) > 65535) {
-                            err += '<li style="color: red;">SMTP port must be between 0 and 65535!</li>';
+                            err += gt('<li style="color: red;">SMTP port must be between 0 and 65535!</li>');
                         }
                         if (err.length > 0) {
                             err = '<ol>' + err + '</ol>';
                             status.html(err);
                         } else {
-                            to = prompt('Enter an email address to send the test to:', null);
+                            to = prompt(gt('Enter an email address to send the test to:'), null);
                             if (to === null || to.length === 0 || to.match(/.*@.*/) === null) {
-                                status.html('<p style="color: red;">You must provide a recipient email address!</p>');
+                                status.html(gt('<p style="color: red;">You must provide a recipient email address!</p>'));
                             } else {
                                 $.get(SICKRAGE.srWebRoot + '/home/testEmail', {
                                     host: host,
@@ -4202,7 +4210,7 @@ jQuery(document).ready(function ($) {
                         var nma_api = $.trim($('#nma_api').val());
                         var nma_priority = $('#nma_priority').val();
                         if (!nma_api) {
-                            $('#testNMA-result').html('Please fill out the necessary fields above.');
+                            $('#testNMA-result').html(gt('Please fill out the necessary fields above.'));
                             $('#nma_api').addClass('warning');
                             return;
                         }
@@ -4221,7 +4229,7 @@ jQuery(document).ready(function ($) {
                     $('#testPushalot').click(function () {
                         var pushalot_authorizationtoken = $.trim($('#pushalot_authorizationtoken').val());
                         if (!pushalot_authorizationtoken) {
-                            $('#testPushalot-result').html('Please fill out the necessary fields above.');
+                            $('#testPushalot-result').html(gt('Please fill out the necessary fields above.'));
                             $('#pushalot_authorizationtoken').addClass('warning');
                             return;
                         }
@@ -4237,7 +4245,7 @@ jQuery(document).ready(function ($) {
                     $('#testPushbullet').click(function () {
                         var pushbullet_api = $.trim($('#pushbullet_api').val());
                         if (!pushbullet_api) {
-                            $('#testPushbullet-result').html('Please fill out the necessary fields above.');
+                            $('#testPushbullet-result').html(gt('Please fill out the necessary fields above.'));
                             $('#pushbullet_api').addClass('warning');
                             return;
                         }
@@ -4251,7 +4259,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#getPushbulletDevices').click(function () {
-                        SICKRAGE.config.notifications.get_pushbullet_devices("Device list updated. Please choose a device to push to.");
+                        SICKRAGE.config.notifications.get_pushbullet_devices(gt("Device list updated. Please choose a device to push to."));
                     });
 
                     // we have to call this function on dom ready to create the devices select
@@ -4308,7 +4316,7 @@ jQuery(document).ready(function ($) {
                     var pushbullet_api = $("#pushbullet_api").val();
 
                     if (!pushbullet_api) {
-                        $('#testPushbullet-result').html("You didn't supply a Pushbullet api key");
+                        $('#testPushbullet-result').html(gt("You didn't supply a Pushbullet api key"));
                         $("#pushbullet_api").focus();
                         return false;
                     }
@@ -4338,7 +4346,7 @@ jQuery(document).ready(function ($) {
 
                     $("#pushbullet_device_list").change(function () {
                         $("#pushbullet_device").val($("#pushbullet_device_list").val());
-                        $('#testPushbullet-result').html("Don't forget to save your new pushbullet settings.");
+                        $('#testPushbullet-result').html(gt('Don\'t forget to save your new pushbullet settings.'));
                     });
                 },
 
@@ -4404,12 +4412,12 @@ jQuery(document).ready(function ($) {
                 });
 
                 $('#backupDir').fileBrowser({
-                    title: 'Select backup folder to save to',
+                    title: gt('Select backup folder to save to'),
                     key: 'backupPath'
                 });
 
                 $('#backupFile').fileBrowser({
-                    title: 'Select backup files to restore',
+                    title: gt('Select backup files to restore'),
                     key: 'backupFile',
                     includeFiles: 1
                 });
@@ -4945,7 +4953,7 @@ jQuery(document).ready(function ($) {
                             $('#editAProvider').append($('<option>').prop('value', provider).text($.trim($('#' + provider).text()).replace(/\s\*$/, '').replace(/\s\*\*$/, '')));
                         }
                     } else {
-                        document.getElementsByClassName('component-desc')[0].innerHTML = "No providers available to configure.";
+                        document.getElementsByClassName('component-desc')[0].innerHTML = gt("No providers available to configure.");
                     }
 
                     SICKRAGE.config.providers.showHideProviders();
@@ -5153,7 +5161,7 @@ jQuery(document).ready(function ($) {
                         return;
                     }
 
-                    $.bootbox.confirm("You have selected to delete " + checkArr.length + " show(s).  Are you sure you wish to continue? All files will be removed from your system.", function (result) {
+                    $.bootbox.confirm(gt("You have selected to delete " + checkArr.length + " show(s).  Are you sure you wish to continue? All files will be removed from your system."), function (result) {
                         if (result) {
                             window.location.href = 'massUpdate?toDelete=' + checkArr.join('|');
                         }
@@ -5221,7 +5229,7 @@ jQuery(document).ready(function ($) {
                     $('.delete_root_dir').click(function () {
                         var curIndex = SICKRAGE.manage.mass_edit.findDirIndex($(this).attr('id'));
                         $('#new_root_dir_' + curIndex).val(null);
-                        $('#display_new_root_dir_' + curIndex).html('<b>DELETED</b>');
+                        $('#display_new_root_dir_' + curIndex).html(gt('<b>DELETED</b>'));
                     });
                 },
 
@@ -5414,9 +5422,18 @@ jQuery(document).ready(function ($) {
                 controller = body.getAttribute("data-controller"),
                 action = body.getAttribute("data-action");
 
+            this.init_gettext();
             this.exec("common");
             this.exec(controller);
             this.exec(controller, action);
+        },
+
+        init_gettext: function () {
+            $.getJSON(SICKRAGE.srWebRoot + '/messages.json', function (data) {
+                if (data !== undefined) {
+                    gt = new Gettext(data.messages).gettext;
+                }
+            });
         },
 
         exec: function (controller, action) {

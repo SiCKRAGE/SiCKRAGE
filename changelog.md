@@ -1,6 +1,7 @@
 # Changelog
 
-- * ae0aded - 2017-10-15: Added more i18n support for strings 
+- * 9aa88b1 - 2017-10-15: Added Gettext translation features to core javascript code 
+- * 2a12ed2 - 2017-10-15: Added more i18n support for strings 
 - * c1ab882 - 2017-10-15: Fixed issues with setting minimum seeders and leechers 
 - * 7b9275f - 2017-10-15: Optimized placement of gettext installation code 
 - * 76cca85 - 2017-10-15: Converted more strings to i18n 

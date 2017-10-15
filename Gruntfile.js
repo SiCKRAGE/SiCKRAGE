@@ -433,14 +433,14 @@ module.exports = function (grunt) {
 
         var tasks = [
             'exec:babel_extract',
-            'exec:babel_update',
             'exec:babel_compile',
             'po2json'
         ];
 
         if (process.env.CROWDIN_API_KEY) {
-            tasks.splice(2, 0, 'exec:crowdin_upload', 'exec:crowdin_download'); // insert items at index 2
+            tasks.splice(1, 0, 'exec:crowdin_upload', 'exec:crowdin_download'); // insert items at index 1
         } else {
+            tasks.splice(1, 0, 'exec:babel_update'); // insert item at index 1
             grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, not syncing with Crowdin.'.bold);
         }
 
