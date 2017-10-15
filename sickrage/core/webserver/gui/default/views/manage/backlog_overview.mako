@@ -20,8 +20,8 @@
     <div class="row">
         <div class="col-lg-8 col-md-7 col-sm-6 col-xs-12 pull-right">
             <div class="pull-right">
-                <span class="pull-right listing-key wanted">Wanted: <b>${totalWanted}</b></span>
-                <span class="pull-right listing-key qual">Low Quality: <b>${totalQual}</b></span>
+                <span class="pull-right listing-key wanted">${_('Wanted:')} <b>${totalWanted}</b></span>
+                <span class="pull-right listing-key qual">${_('Low Quality:')} <b>${totalQual}</b></span>
             </div>
         </div>
         <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
@@ -35,7 +35,7 @@
                 <div class="input-group-addon">
                     <span class="fa fa-binoculars"></span>
                 </div>
-                <select id="pickShow" class="form-control" title="Choose show">
+                <select id="pickShow" class="form-control" title="${_('Choose show')}">
                     % for curShow in sorted(sickrage.srCore.SHOWLIST, key=lambda x: x.name):
                         % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] != 0:
                             <option value="${curShow.indexerid}">${curShow.name}</option>
@@ -59,25 +59,26 @@
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
                                     </h2>
                                     <div class="pull-right">
-                                        <span class="listing-key wanted">Wanted: <b>${showCounts[curShow.indexerid][Overview.WANTED]}</b></span>
-                                        <span class="listing-key qual">Low Quality: <b>${showCounts[curShow.indexerid][Overview.QUAL]}</b></span>
+                                        <span class="listing-key wanted">${_('Wanted:')}
+                                            <b>${showCounts[curShow.indexerid][Overview.WANTED]}</b></span>
+                                        <span class="listing-key qual">${_('Low Quality:')}
+                                            <b>${showCounts[curShow.indexerid][Overview.QUAL]}</b></span>
                                         <a class="btn btn-inline forceBacklog"
                                            href="${srWebRoot}/manage/backlogShow?indexer_id=${curShow.indexerid}"><i
-                                                class="icon-play-circle icon-white"></i> Force Backlog</a>
+                                                class="icon-play-circle icon-white"></i> ${_('Force Backlog')}</a>
                                     </div>
                                 </td>
                             </tr>
 
                             <tr class="seasoncols">
-                                <th>Episode</th>
-                                <th>Name</th>
-                                <th class="nowrap">Airdate</th>
+                                <th>${_('Episode')}</th>
+                                <th>${_('Name')}</th>
+                                <th class="nowrap">${_('Airdate')}</th>
                             </tr>
 
                         % for curResult in showResults[curShow.indexerid]:
                             <% whichStr = str(curResult['season']) + 'x' + str(curResult['episode']) %>
                             <% overview = showCats[curShow.indexerid][whichStr] %>
-
                             % if overview in (Overview.QUAL, Overview.WANTED):
                                 <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.indexerid][whichStr]]}">
                                     <td class="tableleft" align="center">${whichStr}</td>

@@ -15,14 +15,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2>
-                        None of your episodes have status ${statusStrings[int(whichStatus)]}
+                        ${_('None of your episodes have status')} ${statusStrings[int(whichStatus)]}
                     </h2>
                 </div>
             </div>
         % endif
 
         <form action="${srWebRoot}/manage/episodeStatuses">
-            <label for="whichStatus">Manage episodes with status</label>
+            <label for="whichStatus">${_('Manage episodes with status')}</label>
             <div class="input-group input350">
                 <select name="whichStatus" id="whichStatus" class="form-control">
                     % for curStatus in [SKIPPED, SNATCHED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED:
@@ -32,7 +32,7 @@
                     % endfor
                 </select>
                 <div class="input-group-addon">
-                    <input class="button" type="submit" value="Manage"/>
+                    <input class="button" type="submit" value="${_('Manage')}"/>
                 </div>
             </div>
         </form>
@@ -43,7 +43,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2>
-                        Shows containing ${statusStrings[int(whichStatus)]} episodes
+                        ${_('Shows containing')} ${statusStrings[int(whichStatus)]} ${_('episodes')}
                     </h2>
                 </div>
             </div>
@@ -61,7 +61,7 @@
 
                     <input type="hidden" id="row_class" value="${row_class}"/>
 
-                    <label for="newStatus">Set checked shows/episodes to</label>
+                    <label for="newStatus">${_('Set checked shows/episodes to')}</label>
                     <div class="input-group input350">
                         <select name="newStatus" id="newStatus" class="form-control">
                             <%
@@ -81,7 +81,7 @@
                             % endfor
                         </select>
                         <div class="input-group-addon">
-                            <input class="button" type="submit" value="Go"/>
+                            <input class="button" type="submit" value="${_('Go')}"/>
                         </div>
                     </div>
                 </div>
@@ -89,8 +89,8 @@
             <br/>
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-xs selectAllShows">Select All</button>
-                    <button class="btn btn-xs unselectAllShows">Clear All</button>
+                    <button class="btn btn-xs selectAllShows">${_('Select All')}</button>
+                    <button class="btn btn-xs unselectAllShows">${_('Clear All')}</button>
                 </div>
             </div>
             <div class="row">
@@ -109,7 +109,8 @@
                                     </a>
                                     (${ep_counts[cur_indexer_id]}) <input type="button"
                                                                           class="pull-right get_more_eps btn"
-                                                                          id="${cur_indexer_id}" value="Expand"/>
+                                                                          id="${cur_indexer_id}"
+                                                                          value="${_('Expand')}"/>
                                 </th>
                             </tr>
                         % endfor

@@ -9,13 +9,13 @@
             <div class="col-lg-8 col-md-7 col-sm-7 col-xs-12 pull-right">
                 <div class="pull-right">
                     <label>
-                        <span>Sort By:</span>
+                        <span>${_('Sort By:')}</span>
                         <select id="showsort" class="form-control form-control-inline input-sm" title="Show Sort">
-                            <option value="name">Name</option>
+                            <option value="name">${_('Name')}</option>
                             <option value="original" selected="selected">Original</option>
-                            <option value="votes">Votes</option>
-                            <option value="rating">% Rating</option>
-                            <option value="rating_votes">% Rating > Votes</option>
+                            <option value="votes">${_('Votes')}</option>
+                            <option value="rating">${_('% Rating')}</option>
+                            <option value="rating_votes">${_('% Rating > Votes')}</option>
                         </select>
                         &nbsp;
                     </label>
@@ -23,8 +23,8 @@
                         <span>Sort Order:</span>
                         <select id="showsortdirection" class="form-control form-control-inline input-sm"
                                 title="Show Sort Direction">
-                            <option value="asc" selected="selected">Asc</option>
-                            <option value="desc">Desc</option>
+                            <option value="asc" selected="selected">${_('Asc')}</option>
+                            <option value="desc">${_('Desc')}</option>
                         </select>
                     </label>
                 </div>
@@ -39,8 +39,8 @@
                 <div id="container">
                     % if not popular_shows:
                         <div class="trakt_show" style="width:100%; margin-top:20px">
-                            <p class="red-text">Fetching of IMDB Data failed. Are you online?
-                                <strong>Exception:</strong>
+                            <p class="red-text">
+                                ${_('Fetching of IMDB Data failed. Are you online?')} <strong>${_('Exception:')}</strong>
                             <p>${imdb_exception}</p>
                         </div>
                     % else:
@@ -78,7 +78,7 @@
                                             <i>${cur_votes}</i>
                                             <div class="traktShowTitleIcons">
                                                 <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${cur_result['imdb_tt']}&showName=${cur_result['name']}"
-                                                   class="btn btn-xs" data-no-redirect>Add Show</a>
+                                                   class="btn btn-xs" data-no-redirect>${_('Add Show')}</a>
                                             </div>
                                         </div>
                                     </div>

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6bd7005 - 2017-10-14: Extracted more gettext messages 
+- * b5f38da - 2017-10-14: Converted more templates to i18n 
+- * 939e18f - 2017-10-14: Extracted more gettext messages 
 - * d078c67 - 2017-10-13: Surrounded titles with gettext underscore 
 - * 0a45996 - 2017-10-13: Adding in i18n support for multi-language webui 
 - * 7d2ff8a - 2017-10-13: Release v9.1.36 

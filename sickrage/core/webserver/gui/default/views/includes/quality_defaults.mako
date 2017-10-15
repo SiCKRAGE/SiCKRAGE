@@ -8,13 +8,13 @@
         # Build a string of quality names to use as title attribute
         if showTitle:
             iQuality, pQuality = Quality.splitQuality(quality)
-            title = 'Initial Quality:\n'
+            title = _('Initial Quality:') + '\n'
             if iQuality:
                 for curQual in iQuality:
                     title += "  " + Quality.qualityStrings[curQual] + "\n"
             else:
                 title += "  None\n"
-            title += "\nPreferred Quality:\n"
+            title += "\n" + _("Preferred Quality:") + "\n"
             if pQuality:
                 for curQual in pQuality:
                     title += "  " + Quality.qualityStrings[curQual] + "\n"
@@ -41,11 +41,11 @@
             cssClass = Quality.cssClassStrings[quality]
             qualityString = Quality.qualityStrings[quality]
         else:
-            cssClass = "Custom"
-            qualityString = "Custom"
+            cssClass = _("Custom")
+            qualityString = _("Custom")
 
         if overrideClass is None:
-            cssClass = "quality " + cssClass
+            cssClass = _("quality ") + cssClass
         else:
             cssClass = overrideClass
     %>

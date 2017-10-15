@@ -133,7 +133,7 @@
                                 </div>
                                 <input name="kodi_host" id="kodi_host"
                                        value="${sickrage.srCore.srConfig.KODI_HOST}"
-                                       placeholder="ex. 192.168.1.100:8080, 192.168.1.101:8080"
+                                       placeholder="${_('ex. 192.168.1.100:8080, 192.168.1.101:8080')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -151,7 +151,7 @@
                                 <input name="kodi_username" id="kodi_username"
                                        value="${sickrage.srCore.srConfig.KODI_USERNAME}"
                                        class="form-control"
-                                       placeholder="blank = no authentication"
+                                       placeholder="${_('blank = no authentication')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -168,7 +168,7 @@
                                 <input type="password" name="kodi_password" id="kodi_password"
                                        value="${sickrage.srCore.srConfig.KODI_PASSWORD}"
                                        class="form-control"
-                                       placeholder="blank = no authentication"
+                                       placeholder="${_('blank = no authentication')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -181,8 +181,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test KODI" id="testKODI"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test KODI')}" id="testKODI"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -259,7 +259,7 @@
                                     </div>
                                     <input name="plex_username" id="plex_username"
                                            value="${sickrage.srCore.srConfig.PLEX_USERNAME}"
-                                           placeholder="blank = no authentication"
+                                           placeholder="${_('blank = no authentication')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
@@ -275,7 +275,7 @@
                                     </div>
                                     <input type="password" name="plex_password" id="plex_password"
                                            value="${sickrage.srCore.srConfig.PLEX_PASSWORD}"
-                                           placeholder="blank = no authentication"
+                                           placeholder="${_('blank = no authentication')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
@@ -307,7 +307,7 @@
                                         </div>
                                         <input name="plex_server_host"
                                                id="plex_server_host"
-                                               placeholder="ex. 192.168.1.1:32400, 192.168.1.2:32400"
+                                               placeholder="${_('ex. 192.168.1.1:32400, 192.168.1.2:32400')}"
                                                value="${re.sub(r'\b,\b', ', ', sickrage.srCore.srConfig.PLEX_SERVER_HOST)}"
                                                class="form-control"
                                                autocapitalize="off"/>
@@ -318,15 +318,15 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="testNotification" id="testPMS-result">
-                                        ${_('Click below to test Plex server(s)')}
+                                        ${_('Click below to test Plex servers')}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn" type="button" value="Test Plex Server" id="testPMS"/>
-                                    <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                                    <input class="btn" type="button" value="${_('Test Plex Server')}" id="testPMS"/>
+                                    <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                                 </div>
                             </div>
                         </div>
@@ -405,7 +405,7 @@
                                 </div>
                                 <input name="plex_host" id="plex_host"
                                        value="${sickrage.srCore.srConfig.PLEX_HOST}"
-                                       placeholder="ex. 192.168.1.100:3000, 192.168.1.101:3000"
+                                       placeholder="${_('ex. 192.168.1.100:3000, 192.168.1.101:3000')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -423,7 +423,7 @@
                                     </div>
                                     <input name="plex_client_username" id="plex_client_username"
                                            value="${sickrage.srCore.srConfig.PLEX_CLIENT_USERNAME}"
-                                           placeholder="blank = no authentication"
+                                           placeholder="${_('blank = no authentication')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
@@ -439,7 +439,7 @@
                                     </div>
                                     <input type="password" name="plex_client_password" id="plex_client_password"
                                            value="${sickrage.srCore.srConfig.PLEX_CLIENT_PASSWORD}"
-                                           placeholder="blank = no authentication"
+                                           placeholder="${_('blank = no authentication')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
@@ -453,8 +453,8 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <input class="btn" type="button" value="Test Plex Client" id="testPMC"/>
-                                <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                                <input class="btn" type="button" value="${_('Test Plex Client')}" id="testPMC"/>
+                                <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                             </div>
                         </div>
                     </div>
@@ -496,7 +496,7 @@
                                 </div>
                                 <input name="emby_host" id="emby_host"
                                        value="${sickrage.srCore.srConfig.EMBY_HOST}"
-                                       placeholder="ex. 192.168.1.100:8096"
+                                       placeholder="${_('ex. 192.168.1.100:8096')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -525,8 +525,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Emby" id="testEMBY"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Emby')}" id="testEMBY"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -569,7 +569,7 @@
                                 </div>
                                 <input name="nmj_host" id="nmj_host"
                                        value="${sickrage.srCore.srConfig.NMJ_HOST}"
-                                       placeholder="ex. 192.168.1.100"
+                                       placeholder="${_('ex. 192.168.1.100')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -579,7 +579,7 @@
                             <label class="component-title">${_('Get settings')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input class="btn btn-inline" type="button" value="Get Settings"
+                            <input class="btn btn-inline" type="button" value="${_('Get Settings')}"
                                    id="settingsNMJ"/>
                             <label for="settingsNMJ">
                                 ${_('the Popcorn Hour device must be powered on and NMJ running.')}
@@ -598,7 +598,7 @@
                                 <input name="nmj_database" id="nmj_database"
                                        value="${sickrage.srCore.srConfig.NMJ_DATABASE}"
                                        class="form-control"
-                                       placeholder="automatically filled via the 'Get Settings'"
+                                       placeholder="${_('automatically filled via the 'Get Settings'')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srCore.srConfig.NMJ_DATABASE == True]}/>
                             </div>
                         </div>
@@ -615,7 +615,7 @@
                                 <input name="nmj_mount" id="nmj_mount"
                                        value="${sickrage.srCore.srConfig.NMJ_MOUNT}"
                                        class="form-control"
-                                       placeholder="automatically filled via the 'Get Settings'"
+                                       placeholder="${_('automatically filled via the 'Get Settings'')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srCore.srConfig.NMJ_MOUNT == True]}/>
                             </div>
                         </div>
@@ -628,8 +628,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test NMJ" id="testNMJ"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test NMJ')}" id="testNMJ"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_nmj //-->
@@ -671,7 +671,7 @@
                                 </div>
                                 <input name="nmjv2_host" id="nmjv2_host"
                                        value="${sickrage.srCore.srConfig.NMJv2_HOST}"
-                                       placeholder="ex. 192.168.1.100"
+                                       placeholder="${_('ex. 192.168.1.100')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -730,7 +730,7 @@
                             <label class="component-title">${_('Find database')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="button" class="btn btn-inline" value="Find Database"
+                            <input type="button" class="btn btn-inline" value="${_('Find Database')}"
                                    id="settingsNMJv2"/>
                             <label for="settingsNMJv2">
                                 ${_('the Popcorn Hour device must be powered on.')}
@@ -749,7 +749,7 @@
                                 <input name="nmjv2_database" id="nmjv2_database"
                                        value="${sickrage.srCore.srConfig.NMJv2_DATABASE}"
                                        class="form-control"
-                                       placeholder="automatically filled via the 'Find Database'"
+                                       placeholder="${_('automatically filled via the 'Find Database'')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srCore.srConfig.NMJv2_DATABASE == True]}/>
                             </div>
                         </div>
@@ -761,8 +761,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test NMJv2" id="testNMJv2"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test NMJv2')}" id="testNMJv2"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_nmjv2 //-->
@@ -798,7 +798,7 @@
                 <div id="content_use_synoindex">
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_synoindex //-->
@@ -868,7 +868,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div>
@@ -914,7 +914,7 @@
                                 <input name="pytivo_host" id="pytivo_host"
                                        value="${sickrage.srCore.srConfig.PYTIVO_HOST}"
                                        class="form-control"
-                                       placeholder="ex. 192.168.1.1:9032"
+                                       placeholder="${_('ex. 192.168.1.1:9032')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -953,13 +953,13 @@
                                        autocapitalize="off"/>
                             </div>
                             <label for="pytivo_tivo_name">
-                                ${_('(Messages &amp; Settings > Account &amp; System Information > System Information > DVR name)')}
+                                ${_('(Messages and Settings > Account and System Information > System Information > DVR name)')}
                             </label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_pytivo //-->
@@ -1038,7 +1038,7 @@
                                 </div>
                                 <input name="growl_host" id="growl_host"
                                        value="${sickrage.srCore.srConfig.GROWL_HOST}"
-                                       placeholder="ex. 192.168.1.100:23053"
+                                       placeholder="${_('ex. 192.168.1.100:23053')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -1055,7 +1055,7 @@
                                 <input type="password" name="growl_password" id="growl_password"
                                        value="${sickrage.srCore.srConfig.GROWL_PASSWORD}"
                                        class="form-control"
-                                       placeholder="blank = no authentication"
+                                       placeholder="${_('blank = no authentication')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -1070,8 +1070,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Register Growl" id="testGrowl"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Register Growl')}" id="testGrowl"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1154,7 +1154,7 @@
                                        class="form-control" autocapitalize="off"/>
                             </div>
                             <label for="prowl_api">
-                                ${_('get your key at')}:
+                                ${_('get your key at:')}
                                 <a href="${anon_url('https://www.prowlapp.com/api_settings.php')}" rel="noreferrer"
                                    onclick="window.open(this.href, '_blank'); return false;">https://www.prowlapp.com/api_settings.php</a>
                             </label>
@@ -1170,19 +1170,19 @@
                                     <span class="fa fa-exclamation"></span>
                                 </div>
                                 <select id="prowl_priority" name="prowl_priority" class="form-control ">
-                                    <option value="-2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-2']}>
+                                    <option value="-2" ${('', 'selected')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-2']}>
                                         Very Low
                                     </option>
-                                    <option value="-1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-1']}>
+                                    <option value="-1" ${('', 'selected')[sickrage.srCore.srConfig.PROWL_PRIORITY == '-1']}>
                                         Moderate
                                     </option>
-                                    <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '0']}>
+                                    <option value="0" ${('', 'selected')[sickrage.srCore.srConfig.PROWL_PRIORITY == '0']}>
                                         Normal
                                     </option>
-                                    <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '1']}>
+                                    <option value="1" ${('', 'selected')[sickrage.srCore.srConfig.PROWL_PRIORITY == '1']}>
                                         High
                                     </option>
-                                    <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROWL_PRIORITY == '2']}>
+                                    <option value="2" ${('', 'selected')[sickrage.srCore.srConfig.PROWL_PRIORITY == '2']}>
                                         Emergency
                                     </option>
                                 </select>
@@ -1200,8 +1200,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Prowl" id="testProwl"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Prowl')}" id="testProwl"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1280,8 +1280,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Libnotify" id="testLibnotify"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Libnotify')}" id="testLibnotify"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_libnotify //-->
@@ -1361,7 +1361,7 @@
                                 <input name="pushover_userkey" id="pushover_userkey"
                                        value="${sickrage.srCore.srConfig.PUSHOVER_USERKEY}"
                                        class="form-control"
-                                       placeholder="user key of your Pushover account"
+                                       placeholder="${_('user key of your Pushover account')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -1398,7 +1398,7 @@
                                 </div>
                                 <input name="pushover_device" id="pushover_device"
                                        value="${sickrage.srCore.srConfig.PUSHOVER_DEVICE}"
-                                       placeholder="ex. device1,device2"
+                                       placeholder="${_('ex. device1,device2')}"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
@@ -1414,73 +1414,73 @@
                                     <span class="glyphicon glyphicon-music"></span>
                                 </div>
                                 <select id="pushover_sound" name="pushover_sound" class="form-control ">
-                                    <option value="pushover" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pushover']}>
+                                    <option value="pushover" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pushover']}>
                                         ${_('Pushover')}
                                     </option>
-                                    <option value="bike" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bike']}>
+                                    <option value="bike" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bike']}>
                                         ${_('Bike')}
                                     </option>
-                                    <option value="bugle" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bugle']}>
+                                    <option value="bugle" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'bugle']}>
                                         ${_('Bugle')}
                                     </option>
-                                    <option value="cashregister" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cashregister']}>
+                                    <option value="cashregister" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cashregister']}>
                                         ${_('Cash Register')}
                                     </option>
-                                    <option value="classical" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'classical']}>
+                                    <option value="classical" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'classical']}>
                                         ${_('Classical')}
                                     </option>
-                                    <option value="cosmic" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cosmic']}>
+                                    <option value="cosmic" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'cosmic']}>
                                         ${_('Cosmic')}
                                     </option>
-                                    <option value="falling" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'falling']}>
+                                    <option value="falling" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'falling']}>
                                         ${_('Falling')}
                                     </option>
-                                    <option value="gamelan" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'gamelan']}>
+                                    <option value="gamelan" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'gamelan']}>
                                         ${_('Gamelan')}
                                     </option>
-                                    <option value="incoming" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'incoming']}>
+                                    <option value="incoming" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'incoming']}>
                                         ${_('Incoming')}
                                     </option>
-                                    <option value="intermission" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'intermission']}>
+                                    <option value="intermission" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'intermission']}>
                                         ${_('Intermission')}
                                     </option>
-                                    <option value="magic" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'magic']}>
+                                    <option value="magic" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'magic']}>
                                         ${_('Magic')}
                                     </option>
-                                    <option value="mechanical" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'mechanical']}>
+                                    <option value="mechanical" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'mechanical']}>
                                         ${_('Mechanical')}
                                     </option>
-                                    <option value="pianobar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pianobar']}>
+                                    <option value="pianobar" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'pianobar']}>
                                         ${_('Piano Bar')}
                                     </option>
-                                    <option value="siren" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'siren']}>
+                                    <option value="siren" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'siren']}>
                                         ${_('Siren')}
                                     </option>
-                                    <option value="spacealarm" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'spacealarm']}>
+                                    <option value="spacealarm" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'spacealarm']}>
                                         ${_('Space Alarm')}
                                     </option>
-                                    <option value="tugboat" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'tugboat']}>
+                                    <option value="tugboat" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'tugboat']}>
                                         ${_('Tug Boat')}
                                     </option>
-                                    <option value="alien" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'alien']}>
+                                    <option value="alien" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'alien']}>
                                         ${_('Alien Alarm (long)')}
                                     </option>
-                                    <option value="climb" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'climb']}>
+                                    <option value="climb" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'climb']}>
                                         ${_('Climb (long)')}
                                     </option>
-                                    <option value="persistent" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'persistent']}>
+                                    <option value="persistent" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'persistent']}>
                                         ${_('Persistent (long)')}
                                     </option>
-                                    <option value="echo" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'echo']}>
+                                    <option value="echo" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'echo']}>
                                         ${_('Pushover Echo (long)')}
                                     </option>
-                                    <option value="updown" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'updown']}>
+                                    <option value="updown" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'updown']}>
                                         ${_('Up Down (long)')}
                                     </option>
-                                    <option value="none" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'none']}>
+                                    <option value="none" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'none']}>
                                         ${_('None (silent)')}
                                     </option>
-                                    <option value="default" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'default']}>
+                                    <option value="default" ${('', 'selected')[sickrage.srCore.srConfig.PUSHOVER_SOUND == 'default']}>
                                         ${_('Device specific')}
                                     </option>
                                 </select>
@@ -1491,8 +1491,8 @@
                         </div>
                     </div>
                     <div class="testNotification" id="testPushover-result">Click below to test.</div>
-                    <input class="btn" type="button" value="Test Pushover" id="testPushover"/>
-                    <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                    <input class="btn" type="button" value="${_('Test Pushover')}" id="testPushover"/>
+                    <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                 </div><!-- /content_use_pushover //-->
 
             </fieldset>
@@ -1568,7 +1568,7 @@
                                 </div>
                                 <input name="boxcar2_accesstoken" id="boxcar2_accesstoken"
                                        value="${sickrage.srCore.srConfig.BOXCAR2_ACCESSTOKEN}"
-                                       placeholder="access token for your Boxcar2 account"
+                                       placeholder="${_('access token for your Boxcar2 account')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -1581,8 +1581,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Boxcar2" id="testBoxcar2"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Boxcar2')}" id="testBoxcar2"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1660,7 +1660,7 @@
                                 </div>
                                 <input name="nma_api" id="nma_api"
                                        value="${sickrage.srCore.srConfig.NMA_API}"
-                                       placeholder="ex. key1,key2 (max 5)"
+                                       placeholder="${_('ex. key1,key2 (max 5)')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -1675,19 +1675,19 @@
                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                                 </div>
                                 <select id="nma_priority" name="nma_priority" class="form-control ">
-                                    <option value="-2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '-2']}>
+                                    <option value="-2" ${('', 'selected')[sickrage.srCore.srConfig.NMA_PRIORITY == '-2']}>
                                         ${_('Very Low')}
                                     </option>
-                                    <option value="-1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '-1']}>
+                                    <option value="-1" ${('', 'selected')[sickrage.srCore.srConfig.NMA_PRIORITY == '-1']}>
                                         ${_('Moderate')}
                                     </option>
-                                    <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '0']}>
+                                    <option value="0" ${('', 'selected')[sickrage.srCore.srConfig.NMA_PRIORITY == '0']}>
                                         ${_('Normal')}
                                     </option>
-                                    <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '1']}>
+                                    <option value="1" ${('', 'selected')[sickrage.srCore.srConfig.NMA_PRIORITY == '1']}>
                                         ${_('High')}
                                     </option>
-                                    <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NMA_PRIORITY == '2']}>
+                                    <option value="2" ${('', 'selected')[sickrage.srCore.srConfig.NMA_PRIORITY == '2']}>
                                         ${_('Emergency')}
                                     </option>
                                 </select>
@@ -1705,8 +1705,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test NMA" id="testNMA"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test NMA')}" id="testNMA"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1786,7 +1786,7 @@
                                 <input name="pushalot_authorizationtoken"
                                        id="pushalot_authorizationtoken"
                                        value="${sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN}"
-                                       placeholder="authorization token of your Pushalot account."
+                                       placeholder="${_('authorization token of your Pushalot account.')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -1799,8 +1799,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="button" class="btn" value="Test Pushalot" id="testPushalot"/>
-                            <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                            <input type="button" class="btn" value="${_('Test Pushalot')}" id="testPushalot"/>
+                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1880,7 +1880,7 @@
                                 <input name="pushbullet_api" id="pushbullet_api"
                                        value="${sickrage.srCore.srConfig.PUSHBULLET_API}"
                                        class="form-control"
-                                       placeholder="API key of your Pushbullet account"
+                                       placeholder="${_('API key of your Pushbullet account')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -1907,7 +1907,7 @@
                                 <div class="col-md-12">
                                     <input type="hidden" id="pushbullet_device"
                                            value="${sickrage.srCore.srConfig.PUSHBULLET_DEVICE}">
-                                    <input type="button" class="btn btn-inline" value="Update device list"
+                                    <input type="button" class="btn btn-inline" value="${_('Update device list')}"
                                            id="getPushbulletDevices"/>
                                 </div>
                             </div>
@@ -1921,8 +1921,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="button" class="btn" value="Test Pushbullet" id="testPushbullet"/>
-                            <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                            <input type="button" class="btn" value="${_('Test Pushbullet')}" id="testPushbullet"/>
+                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -2001,7 +2001,7 @@
                                 <input name="freemobile_id" id="freemobile_id"
                                        value="${sickrage.srCore.srConfig.FREEMOBILE_ID}"
                                        class="form-control"
-                                       placeholder="ex. 12345678"
+                                       placeholder="${_('ex. 12345678')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -2018,7 +2018,7 @@
                                 <input name="freemobile_apikey" id="freemobile_apikey"
                                        value="${sickrage.srCore.srConfig.FREEMOBILE_APIKEY}"
                                        class="form-control"
-                                       placeholder="enter yourt API key"
+                                       placeholder="${_('enter yourt API key')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -2033,8 +2033,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test SMS" id="testFreeMobile"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test SMS')}" id="testFreeMobile"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_freemobile //-->
@@ -2114,7 +2114,7 @@
                                         <input name="telegram_id" id="telegram_id"
                                                value="${sickrage.srCore.srConfig.TELEGRAM_ID}"
                                                class="form-control"
-                                               placeholder="ex. 12345678"
+                                               placeholder="${_('ex. 12345678')}"
                                                autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -2150,7 +2150,7 @@
                                         <input name="telegram_apikey" id="telegram_apikey"
                                                value="${sickrage.srCore.srConfig.TELEGRAM_APIKEY}"
                                                class="form-control"
-                                               placeholder="enter yourt API key"
+                                               placeholder="${_('enter yourt API key')}"
                                                autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -2175,8 +2175,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Telegram" id="testTelegram"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Telegram')}" id="testTelegram"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_telegram //-->
@@ -2259,7 +2259,7 @@
                                         <input name="twilio_account_sid" id="twilio_account_sid"
                                                value="${sickrage.srCore.srConfig.TWILIO_ACCOUNT_SID}"
                                                class="form-control"
-                                               placeholder="ex. 12345678"
+                                               placeholder="${_('ex. 12345678')}"
                                                autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -2286,7 +2286,7 @@
                                 <input name="twilio_auth_token" id="twilio_auth_token"
                                        value="${sickrage.srCore.srConfig.TWILIO_AUTH_TOKEN}"
                                        class="form-control"
-                                       placeholder="enter your auth token"
+                                       placeholder="${_('enter your auth token')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -2306,7 +2306,7 @@
                                         <input name="twilio_phone_sid" id="twilio_phone_sid"
                                                value="${sickrage.srCore.srConfig.TWILIO_PHONE_SID}"
                                                class="form-control"
-                                               placeholder="ex. 12345678"
+                                               placeholder="${_('ex. 12345678')}"
                                                autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -2335,7 +2335,7 @@
                                         <input name="twilio_to_number" id="twilio_to_number"
                                                value="${sickrage.srCore.srConfig.TWILIO_TO_NUMBER}"
                                                class="form-control"
-                                               placeholder="ex. +1-###-###-####"
+                                               placeholder="${_('ex. +1-###-###-####')}"
                                                autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -2360,8 +2360,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Twilio" id="testTwilio"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Twilio')}" id="testTwilio"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_twilio //-->
@@ -2454,7 +2454,7 @@
                                 <input name="twitter_dmto" id="twitter_dmto"
                                        value="${sickrage.srCore.srConfig.TWITTER_DMTO}"
                                        class="form-control"
-                                       placeholder="Twitter account to send messages to"
+                                       placeholder="${_('Twitter account to send messages to')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -2466,7 +2466,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn" type="button" value="Request Authorization" id="twitterStep1"/>
+                                    <input class="btn" type="button" value="${_('Request Authorization')}" id="twitterStep1"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -2489,7 +2489,7 @@
                                 </div>
                                 <input id="twitter_key" value=""
                                        class="form-control"
-                                       placeholder="Enter the key Twitter gave you"
+                                       placeholder="${_('Enter the key Twitter gave you')}"
                                        autocapitalize="off"/>
                                 <div class="input-group-addon">
                                     <input class="button" type="button" value="Verify Key" id="twitterStep2"/>
@@ -2505,8 +2505,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Twitter" id="testTwitter"/>
-                            <input type="submit" class="config_submitter btn" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Twitter')}" id="testTwitter"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -2551,7 +2551,7 @@
                                 <input name="trakt_username" id="trakt_username"
                                        value="${sickrage.srCore.srConfig.TRAKT_USERNAME}"
                                        class="form-control"
-                                       placeholder="username"
+                                       placeholder="${_('username')}"
                                        autocapitalize="off"/>
                             </div>
                         </div>
@@ -2568,7 +2568,7 @@
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input name="trakt_pin" id="trakt_pin" value=""
-                                           placeholder="authorization PIN code"
+                                           placeholder="${_('authorization PIN code')}"
                                            class="form-control" autocapitalize="off"/>
                                     <div class="input-group-addon">
                                         <a href="#" id="TraktGetPin">Get PIN</a>
@@ -2578,7 +2578,7 @@
                             </div>
                         </div>
                     % endif
-                    <input type="button" class="btn hide" value="Authorize SiCKRAGE" id="authTrakt"/>
+                    <input type="button" class="btn hide" value="${_('Authorize SiCKRAGE')}" id="authTrakt"/>
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('API Timeout')}</label>
@@ -2612,7 +2612,7 @@
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
                                         class="form-control " title="Default Indexer">
                                     % for indexer in srIndexerApi().indexers:
-                                        <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                                        <option value="${indexer}" ${('', 'selected')[sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
                                     % endfor
                                 </select>
                             </div>
@@ -2670,13 +2670,13 @@
                                     </div>
                                     <select id="trakt_method_add" name="trakt_method_add"
                                             class="form-control ">
-                                        <option value="0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 0]}>
+                                        <option value="0" ${('', 'selected')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 0]}>
                                             ${_('Skip All')}
                                         </option>
-                                        <option value="1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 1]}>
+                                        <option value="1" ${('', 'selected')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 1]}>
                                             ${_('Download Pilot Only')}
                                         </option>
-                                        <option value="2" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 2]}>
+                                        <option value="2" ${('', 'selected')[sickrage.srCore.srConfig.TRAKT_METHOD_ADD == 2]}>
                                             ${_('Get whole show')}
                                         </option>
                                     </select>
@@ -2761,8 +2761,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="button" class="btn" value="Test Trakt" id="testTrakt"/>
-                            <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                            <input type="button" class="btn" value="${_('Test Trakt')}" id="testTrakt"/>
+                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -2841,7 +2841,7 @@
                                 </div>
                                 <input name="email_host" id="email_host"
                                        value="${sickrage.srCore.srConfig.EMAIL_HOST}"
-                                       placeholder="SMTP server address"
+                                       placeholder="${_('SMTP server address')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -2857,7 +2857,7 @@
                                 </div>
                                 <input name="email_port" id="email_port"
                                        value="${sickrage.srCore.srConfig.EMAIL_PORT}"
-                                       placeholder="SMTP server port number"
+                                       placeholder="${_('SMTP server port number')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -2873,7 +2873,7 @@
                                 </div>
                                 <input name="email_from" id="email_from"
                                        value="${sickrage.srCore.srConfig.EMAIL_FROM}"
-                                       placeholder="sender email address"
+                                       placeholder="${_('sender email address')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -2901,7 +2901,7 @@
                                 </div>
                                 <input name="email_user" id="email_user"
                                        value="${sickrage.srCore.srConfig.EMAIL_USER}"
-                                       placeholder="optional"
+                                       placeholder="${_('optional')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -2917,7 +2917,7 @@
                                 </div>
                                 <input type="password" name="email_password" id="email_password"
                                        value="${sickrage.srCore.srConfig.EMAIL_PASSWORD}"
-                                       placeholder="optional"
+                                       placeholder="${_('optional')}"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
@@ -2972,13 +2972,13 @@
                                                autocapitalize="off"/>
                                     </div>
                                     <label for="email_show_list">
-                                        ${_('configure per-show notifications here by entering email address(es), separated by commas, after selecting a show in the drop-down box. Be sure to activate the Save for this show button below after each entry.')}
+                                        ${_('configure per-show notifications here by entering email addresses, separated by commas, after selecting a show in the drop-down box. Be sure to activate the Save for this show button below after each entry.')}
                                     </label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input id="email_show_save" class="btn" type="button" value="Save for this show"/>
+                                    <input id="email_show_save" class="btn" type="button" value="${_('Save for this show')}"/>
                                 </div>
                             </div>
                         </div>
@@ -2992,8 +2992,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Email" id="testEmail"/>
-                            <input class="btn config_submitter" type="submit" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Email')}" id="testEmail"/>
+                            <input class="btn config_submitter" type="submit" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_email //-->
@@ -3073,7 +3073,7 @@
                                 </div>
                                 <input name="slack_webhook" id="slack_webhook"
                                        value="${sickrage.srCore.srConfig.SLACK_WEBHOOK}"
-                                       placeholder="Slack webhook"
+                                       placeholder="${_('Slack webhook')}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
@@ -3087,8 +3087,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Slack" id="testSlack"/>
-                            <input class="btn config_submitter" type="submit" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Slack')}" id="testSlack"/>
+                            <input class="btn config_submitter" type="submit" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_slack //-->
@@ -3173,7 +3173,7 @@
                                         </div>
                                         <input name="discord_webhook" id="discord_webhook"
                                                value="${sickrage.srCore.srConfig.DISCORD_WEBHOOK}"
-                                               placeholder="Discord webhook"
+                                               placeholder="${_('Discord webhook')}"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -3197,7 +3197,7 @@
                                         </div>
                                         <input name="discord_name" id="discord_name"
                                                value="${sickrage.srCore.srConfig.DISCORD_NAME}"
-                                               placeholder="Discord Bot Name"
+                                               placeholder="${_('Discord Bot Name')}"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -3221,7 +3221,7 @@
                                         </div>
                                         <input name="discord_avatar_url" id="discord_avatar_url"
                                                value="${sickrage.srCore.srConfig.DISCORD_AVATAR_URL}"
-                                               placeholder="Discord Avatar URL"
+                                               placeholder="${_('Discord Avatar URL')}"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -3252,8 +3252,8 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="Test Discord" id="testDiscord"/>
-                            <input class="btn config_submitter" type="submit" value="Save Changes"/>
+                            <input class="btn" type="button" value="${_('Test Discord')}" id="testDiscord"/>
+                            <input class="btn config_submitter" type="submit" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_discord //-->

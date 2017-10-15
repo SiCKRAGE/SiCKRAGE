@@ -14,9 +14,9 @@
     from sickrage.metadata import GenericMetadata
 %>
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Misc</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">Interface</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane3">Advanced Settings</a></li>
+    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Misc')}</a></li>
+    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Interface')}</a></li>
+    <li><a data-toggle="tab" href="#core-tab-pane3">${_('Advanced Settings')}</a></li>
 </%block>
 <%block name="pages">
     <% indexer = 0 %>
@@ -26,9 +26,9 @@
     <div id="core-tab-pane1" class="tab-pane fade in active">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Misc</h3>
+                <h3>${_('Misc')}</h3>
                 <p>${_('Startup options. Indexer options. Log and show file locations.')}</p>
-                <p><b>Some options may require a manual restart to take effect.</b></p>
+                <p><b>${_('Some options may require a manual restart to take effect.')}</b></p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
@@ -43,7 +43,7 @@
                             </div>
                             <select name="indexerDefaultLang" id="indexerDefaultLang"
                                     class="form-control form-control-inline bfh-languages"
-                                    title="for adding shows and metadata providers"
+                                    title="${_('for adding shows and metadata providers')}"
                                     data-language=${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(srIndexerApi().indexer().languages.keys())}">
                             </select>
                         </div>
@@ -56,7 +56,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="launch_browser"
                                id="launch_browser" ${('', 'checked')[bool(sickrage.srCore.srConfig.LAUNCH_BROWSER)]}/>
-                        <label for="launch_browser">open the SickRage home page on startup</label>
+                        <label for="launch_browser">${_('open the SickRage home page on startup')}</label>
                     </div>
                 </div>
                 <div class="row field-pair">
@@ -69,18 +69,18 @@
                                 <span class="fa fa-book"></span>
                             </div>
                             <select id="default_page" name="default_page" class="form-control"
-                                    title="when launching SickRage interface">
-                                <option value="home" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'home']}>
-                                    Shows
+                                    title="${_('when launching SickRage interface')}">
+                                <option value="home" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'home']}>
+                                    ${_('Shows')}
                                 </option>
-                                <option value="schedule" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'schedule']}>
-                                    Schedule
+                                <option value="schedule" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'schedule']}>
+                                    ${_('Schedule')}
                                 </option>
-                                <option value="history" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'history']}>
-                                    History
+                                <option value="history" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'history']}>
+                                    ${_('History')}
                                 </option>
-                                <option value="IRC" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'IRC']}>
-                                    IRC
+                                <option value="IRC" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'IRC']}>
+                                    ${_('IRC')}
                                 </option>
                             </select>
                         </div>
@@ -105,8 +105,8 @@
                             </div>
                         </div>
                         <label for="showupdate_hour">
-                            with information such as next air dates, show ended, etc.<br/>
-                            Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)
+                            ${_('with information such as next air dates, show ended, etc.')}<br/>
+                            ${_('Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)')}
                         </label>
                     </div>
                 </div>
@@ -118,9 +118,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="showupdate_stale"
                                id="showupdate_stale" ${('', 'checked')[bool(sickrage.srCore.srConfig.SHOWUPDATE_STALE)]}/>
-                        <label for="showupdate_stale">should ended shows last updated less then 90 days get
-                            updated and refreshed
-                            automatically ?</label>
+                        <label for="showupdate_stale">
+                            ${_('should ended shows last updated less then 90 days get updated and refreshed automatically ?')}
+                        </label>
                     </div>
                 </div>
 
@@ -131,15 +131,15 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="trash_remove_show"
                                id="trash_remove_show" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)]}/>
-                        <label for="trash_remove_show">when using show "Remove" and delete files</label>
+                        <label for="trash_remove_show">${_('when using show "Remove" and delete files')}</label>
                         <br/>
                         <input type="checkbox" name="trash_rotate_logs"
                                id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRASH_ROTATE_LOGS)]}/>
                         <label for="trash_rotate_logs">
-                            on scheduled deletes of the oldest log files
+                            ${_('on scheduled deletes of the oldest log files')}
                         </label>
                         <label>
-                            <pre>selected actions use trash (recycle bin) instead of the default permanent delete</pre>
+                            <pre>${_('selected actions use trash (recycle bin) instead of the default permanent delete')}</pre>
                         </label>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                             </div>
                             <input name="log_nr" id="log_nr"
                                    value="${sickrage.srCore.srConfig.LOG_NR}"
-                                   placeholder="default = 5"
+                                   placeholder="${_('default = 5')}"
                                    title="number of log files saved when rotating logs (REQUIRES RESTART)"
                                    class="form-control"/>
                         </div>
@@ -176,7 +176,7 @@
                             </div>
                             <input name="log_size" id="log_size"
                                    value="${sickrage.srCore.srConfig.LOG_SIZE}"
-                                   placeholder="default = 1048576 (1MB)"
+                                   placeholder="${_('default = 1048576 (1MB)')}"
                                    title="maximum size of a log file saved (REQUIRES RESTART)"
                                    class="form-control"/>
                         </div>
@@ -197,11 +197,11 @@
                             <select id="indexer_default" name="indexer_default"
                                     title="default indexer selection when adding new shows"
                                     class="form-control">
-                                <option value="0" ${('', 'selected="selected"')[indexer == 0]}>All
-                                    Indexers
+                                <option value="0" ${('', 'selected')[indexer == 0]}>
+                                    ${_('All Indexers')}
                                 </option>
                                 % for indexer in srIndexerApi().indexers:
-                                    <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                                    <option value="${indexer}" ${('', 'selected')[sickrage.srCore.srConfig.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
                                 % endfor
                             </select>
                         </div>
@@ -221,7 +221,7 @@
                             </div>
                             <input name="indexer_timeout" id="indexer_timeout"
                                    value="${sickrage.srCore.srConfig.INDEXER_TIMEOUT}"
-                                   placeholder="default = 10"
+                                   placeholder="${_('default = 10')}"
                                    title="seconds of inactivity when finding new shows"
                                    class="form-control"/>
                             <div class="input-group-addon">
@@ -242,7 +242,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -251,7 +251,7 @@
 
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Updates</h3>
+                <h3>${_('Updates')}</h3>
                 <p>${_('Options for software updates.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
@@ -265,8 +265,8 @@
                         <input type="checkbox" name="version_notify"
                                id="version_notify" ${('', 'checked')[bool(sickrage.srCore.srConfig.VERSION_NOTIFY)]}/>
                         <label for="version_notify">
-                            and display notifications when updates are available. Checks are run on startup
-                            and at the frequency set below*
+                            ${_('and display notifications when updates are available. Checks are run on startup and at '
+                            'the frequency set below*')}
                         </label>
                     </div>
 
@@ -280,8 +280,8 @@
                         <input type="checkbox" name="auto_update"
                                id="auto_update" ${('', 'checked')[bool(sickrage.srCore.srConfig.AUTO_UPDATE)]}/>
                         <label for="auto_update">
-                            fetch and install software updates.Updates are run on startupand in the
-                            background at the frequency setbelow*
+                            ${_('fetch and install software updates.Updates are run on startupand in the background at '
+                            'the frequency setbelow*')}
                         </label>
                     </div>
                 </div>
@@ -297,7 +297,7 @@
                             </div>
                             <input name="update_frequency" id="update_frequency"
                                    value="${sickrage.srCore.srConfig.VERSION_UPDATER_FREQ}"
-                                   placeholder="default = 12 (hours)"
+                                   placeholder="${_('default = 12 (hours)')}"
                                    title="hours between software updates"
                                    class="form-control"/>
                             <div class="input-group-addon">
@@ -314,14 +314,15 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="notify_on_update"
                                id="notify_on_update" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_UPDATE)]}/>
-                        <label for="notify_on_update">send a message to all enabled notifiers when SickRage
-                            has been updated</label>
+                        <label for="notify_on_update">
+                            ${_('send a message to all enabled notifiers when SickRage has been updated')}
+                        </label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -349,8 +350,8 @@
                                         <span class="fa fa-language"></span>
                                     </div>
                                     <select id="gui_language" name="gui_language" class="form-control">
-                                        <option value="" ${('', 'selected="selected"')[sickrage.srCore.srConfig.GUI_LANG == ""]}>
-                                            System Language
+                                        <option value="" ${('', 'selected')[sickrage.srCore.srConfig.GUI_LANG == ""]}>
+                                            ${_('System Language')}
                                         </option>
                                         % for lang in sickrage.srCore.LANGUAGES:
                                             <option value="${lang}" ${('', 'selected')[sickrage.srCore.srConfig.GUI_LANG == lang]}>${tornado.locale.get(lang).name}</option>
@@ -380,11 +381,11 @@
                             </div>
                             <select id="theme_name" name="theme_name" class="form-control"
                                     title="for appearance to take effect, save then refresh your browser">
-                                <option value="dark" ${('', 'selected="selected"')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}>
-                                    Dark
+                                <option value="dark" ${('', 'selected')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}>
+                                    ${_('Dark')}
                                 </option>
-                                <option value="light" ${('', 'selected="selected"')[sickrage.srCore.srConfig.THEME_NAME == 'light']}>
-                                    Light
+                                <option value="light" ${('', 'selected')[sickrage.srCore.srConfig.THEME_NAME == 'light']}>
+                                    ${_('Light')}
                                 </option>
                             </select>
                         </div>
@@ -444,7 +445,7 @@
                             <input type="number" step="1" min="7" name="coming_eps_missed_range"
                                    id="coming_eps_missed_range"
                                    value="${sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE}"
-                                   placeholder="# of days"
+                                   placeholder="${_('# of days')}"
                                    title="Set the range in days of the missed episodes in the Schedule page"
                                    class="form-control"/>
                         </div>
@@ -487,7 +488,7 @@
                                 id="date_presets${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                 name="date_preset${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
                             % for cur_preset in date_presets:
-                                <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srCore.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
+                                <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srCore.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
                             % endfor
                         </select>
                         <div class="input-group input350">
@@ -497,11 +498,11 @@
                             <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                     id="date_presets${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
                                     name="date_preset${('_na', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
-                                <option value="%x" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == '%x']}>
+                                <option value="%x" ${('', 'selected')[sickrage.srCore.srConfig.DATE_PRESET == '%x']}>
                                     ${_('Use System Default')}
                                 </option>
                                 % for cur_preset in date_presets:
-                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -520,7 +521,7 @@
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
                                 % for cur_preset in time_presets:
-                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -599,7 +600,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -669,7 +670,7 @@
                             <input name="web_username" id="web_username"
                                    value="${sickrage.srCore.srConfig.WEB_USERNAME}"
                                    title="WebUI username"
-                                   placeholder="blank = no authentication"
+                                   placeholder="${_('blank = no authentication')}"
                                    class="form-control"
                                    autocapitalize="off"/>
                         </div>
@@ -688,7 +689,7 @@
                             <input type="password" name="web_password" id="web_password"
                                    value="${sickrage.srCore.srConfig.WEB_PASSWORD}"
                                    title="WebUI password"
-                                   placeholder="blank = no authentication"
+                                   placeholder="${_('blank = no authentication')}"
                                    class="form-control"
                                    autocapitalize="off"/>
                         </div>
@@ -706,7 +707,7 @@
                             </div>
                             <input name="web_port" id="web_port"
                                    value="${sickrage.srCore.srConfig.WEB_PORT}"
-                                   placeholder="8081"
+                                   placeholder="${_('8081')}"
                                    title="web port to browse and access WebUI"
                                    class="form-control"/>
                         </div>
@@ -817,7 +818,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -845,7 +846,7 @@
                             <select id="cpu_presets" name="cpu_preset" class="form-control"
                                     title="Normal (default). High is lower and Low is higher CPU use">
                                 % for cur_preset in cpu_presets:
-                                    <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
                                 % endfor
                             </select>
                         </div>
@@ -966,7 +967,7 @@
                         <label class="component-title">${_('Link Google Account')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input class="btn btn-inline" type="button" id="google_link" value="Link">
+                        <input class="btn btn-inline" type="button" id="google_link" value="${_('Link')}">
                         <label for="google_link">
                             ${_('link your google account to SiCKRAGE for advanced feature usage such as settings/database storage')}
                         </label>
@@ -1035,14 +1036,14 @@
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status"
                                                 class="form-control">
                                             % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
-                                                <option value="${defStatus}" ${('', 'selected="selected"')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
+                                                <option value="${defStatus}" ${('', 'selected')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
                                             % endfor
                                         </select>
                                     % else:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status"
                                                 class="form-control" disabled="disabled">
                                             % for defStatus in [SKIPPED, IGNORED]:
-                                                <option value="${defStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
+                                                <option value="${defStatus}" ${('', 'selected')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
                                             % endfor
                                         </select>
                                         <input type="hidden" name="ep_default_deleted_status"
@@ -1076,7 +1077,7 @@
                             </div>
                             <input id="pip_path" name="pip_path"
                                    value="${sickrage.srCore.srConfig.PIP_PATH}"
-                                   placeholder="ex: /path/to/pip"
+                                   placeholder="${_('ex: /path/to/pip')}"
                                    title="only needed if OS is unable to locate pip from env"
                                    class="form-control" autocapitalize="off"/>
                         </div>
@@ -1085,7 +1086,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -1104,7 +1105,7 @@
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('Git Branch(s)')}</label>
+                            <label class="component-title">${_('Git Branches')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1117,9 +1118,9 @@
                                     % if git_branch:
                                         % for cur_branch in git_branch:
                                             % if sickrage.srCore.srConfig.DEVELOPER:
-                                                <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                             % elif cur_branch in ['master', 'develop']:
-                                                <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                             % endif
                                         % endfor
                                     % endif
@@ -1157,7 +1158,7 @@
                                 </div>
                                 <input id="git_path" name="git_path"
                                        value="${sickrage.srCore.srConfig.GIT_PATH}"
-                                       placeholder="ex: /path/to/git"
+                                       placeholder="${_('ex: /path/to/git')}"
                                        title="only needed if OS is unable to locate git from env"
                                        class="form-control" autocapitalize="off"/>
                             </div>
@@ -1196,7 +1197,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 

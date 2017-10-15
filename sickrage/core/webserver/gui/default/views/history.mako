@@ -15,28 +15,28 @@
     <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
     <div class="row">
         <div class="col-xs-12 text-center">
-            <label for="history_limit" class="badge">Limit:
+            <label for="history_limit" class="badge">${_('Limit:')}
                 <select name="history_limit" id="history_limit" class="form-control form-control-inline input-sm">
-                    <option value="10" ${('', 'selected="selected"')[limit == 10]}>10</option>
-                    <option value="25" ${('', 'selected="selected"')[limit == 25]}>25</option>
-                    <option value="50" ${('', 'selected="selected"')[limit == 50]}>50</option>
-                    <option value="100" ${('', 'selected="selected"')[limit == 100]}>100</option>
-                    <option value="250" ${('', 'selected="selected"')[limit == 250]}>250</option>
-                    <option value="500" ${('', 'selected="selected"')[limit == 500]}>500</option>
-                    <option value="750" ${('', 'selected="selected"')[limit == 750]}>750</option>
-                    <option value="1000" ${('', 'selected="selected"')[limit == 1000]}>1000</option>
-                    <option value="0"   ${('', 'selected="selected"')[limit == 0  ]}>All</option>
+                    <option value="10" ${('', 'selected')[limit == 10]}>10</option>
+                    <option value="25" ${('', 'selected')[limit == 25]}>25</option>
+                    <option value="50" ${('', 'selected')[limit == 50]}>50</option>
+                    <option value="100" ${('', 'selected')[limit == 100]}>100</option>
+                    <option value="250" ${('', 'selected')[limit == 250]}>250</option>
+                    <option value="500" ${('', 'selected')[limit == 500]}>500</option>
+                    <option value="750" ${('', 'selected')[limit == 750]}>750</option>
+                    <option value="1000" ${('', 'selected')[limit == 1000]}>1000</option>
+                    <option value="0"   ${('', 'selected')[limit == 0  ]}>${_('All')}</option>
                 </select>
             </label>
 
-            <label for="HistoryLayout" class="badge">Layout:
+            <label for="HistoryLayout" class="badge">${_('Layout:')}
                 <select name="HistoryLayout" class="form-control form-control-inline input-sm"
                         onchange="location = this.options[this.selectedIndex].value;">
-                    <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
-                        Compact
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
+                        ${_('Compact')}
                     </option>
-                    <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
-                        Detailed
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
+                        ${_('Detailed')}
                     </option>
                 </select>
             </label>
@@ -50,11 +50,11 @@
                            cellpadding="0">
                         <thead>
                         <tr>
-                            <th class="nowrap">Time</th>
-                            <th>Episode</th>
-                            <th>Action</th>
-                            <th>Provider</th>
-                            <th>Quality</th>
+                            <th class="nowrap">${_('Time')}</th>
+                            <th>${_('Episode')}</th>
+                            <th>${_('Action')}</th>
+                            <th>${_('Provider')}</th>
+                            <th>${_('Quality')}</th>
                         </tr>
                         </thead>
 
@@ -76,7 +76,7 @@
                                     <td class="tvShow" width="35%">
                                         <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">
                                             ${hItem["show_name"]}
-                                            - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}
+                                            - ${"S{:02d}".format(int(hItem["season"]))}${"E{:02d}".format(int(hItem["episode"]))} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}
                                         </a>
                                     </td>
                                     <td align="center" ${('', 'class="subtitles_column"')[curStatus == SUBTITLED]}>
@@ -127,14 +127,14 @@
                            cellpadding="0">
                         <thead>
                         <tr>
-                            <th class="nowrap">Time</th>
-                            <th>Episode</th>
-                            <th>Snatched</th>
-                            <th>Downloaded</th>
+                            <th class="nowrap">${_('Time')}</th>
+                            <th>${_('Episode')}</th>
+                            <th>${_('Snatched')}</th>
+                            <th>${_('Downloaded')}</th>
                             % if sickrage.srCore.srConfig.USE_SUBTITLES:
-                                <th>Subtitled</th>
+                                <th>${_('Subtitled')}</th>
                             % endif
-                            <th>Quality</th>
+                            <th>${_('Quality')}</th>
                         </tr>
                         </thead>
 
@@ -156,7 +156,7 @@
                                         <span>
                                             <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#season-${hItem["season"]}">
                                                 ${hItem["show_name"]}
-                                                - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])}${('', ' <span class="quality Proper">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}
+                                                - ${"S{:02d}".format(int(hItem["season"]))}${"E{:02d}".format(int(hItem["episode"]))}${('', ' <span class="quality Proper">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}
                                             </a>
                                         </span>
                                     </td>
@@ -176,7 +176,7 @@
                                                     <img src="${srWebRoot}/images/providers/missing.png" width="16"
                                                          height="16"
                                                          style="vertical-align:middle;" alt="missing provider"
-                                                         title="missing provider"/>
+                                                         title="${_('missing provider')}"/>
                                                 % endif
                                             % endif
                                         % endfor

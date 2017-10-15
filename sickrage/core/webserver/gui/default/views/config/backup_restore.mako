@@ -1,8 +1,8 @@
 <%inherit file="../layouts/config.mako"/>
 <%def name='formaction()'><% return 'backuprestore' %></%def>
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Backup</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">Restore</a></li>
+    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Backup')}</a></li>
+    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Restore')}</a></li>
 </%block>
 <%block name="pages">
     <div id="core-tab-pane1" class="tab-pane fade in active clearfix">
@@ -16,10 +16,10 @@
                 <div class="col-md-12 component-desc">
                     <div class="input-group input350">
                         <input name="backupDir" id="backupDir" class="form-control"
-                               placeholder="Select the folder you wish to save your backup file to"
+                               placeholder="${_('Select the folder you wish to save your backup file to')}"
                                autocapitalize="off"/>
                         <div class="input-group-addon">
-                            <a href="#" class="fa fa-download" title="Backup" id="Backup"></a>
+                            <a href="#" class="fa fa-download" title="${_('Backup')}" id="Backup"></a>
                         </div>
                     </div>
                 </div>
@@ -42,10 +42,10 @@
                 <div class="col-md-12 component-desc">
                     <div class="input-group input350">
                         <input name="backupFile" id="backupFile"
-                               placeholder="Select the backup file you wish to restore"
+                               placeholder="${_('Select the backup file you wish to restore')}"
                                class="form-control" autocapitalize="off"/>
                         <div class="input-group-addon">
-                            <a href="#" class="fa fa-upload" title="Restore" id="Restore"></a>
+                            <a href="#" class="fa fa-upload" title="${_('Restore')}" id="Restore"></a>
                         </div>
                     </div>
                 </div>

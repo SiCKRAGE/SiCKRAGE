@@ -21,7 +21,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Version')}:
+                            <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Version:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${sickrage.srCore.VERSIONUPDATER.updater.version}
@@ -30,7 +30,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-type"></i> ${_('SR Type')}:
+                            <i class="icons-sickrage icons-sickrage-type"></i> ${_('SR Type:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${sickrage.srCore.VERSIONUPDATER.updater.type}
@@ -40,7 +40,7 @@
                     % if sr_user:
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                <i class="icons-sickrage icons-sickrage-user"></i> ${_('SR User')}:
+                                <i class="icons-sickrage icons-sickrage-user"></i> ${_('SR User:')}
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                                 ${sr_user}
@@ -50,14 +50,14 @@
                     % endif
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
-                                class="icons-sickrage icons-sickrage-locale"></i> ${_('SR Locale')}:
+                                class="icons-sickrage icons-sickrage-locale"></i> ${_('SR Locale:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.srCore.SYS_ENCODING}</div>
                     </div>
                     <br/>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-cfg"></i> ${_('SR Config')}:
+                            <i class="icons-sickrage icons-sickrage-cfg"></i> ${_('SR Config:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${sickrage.CONFIG_FILE}
@@ -66,7 +66,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-cache"></i> ${_('SR Cache Dir')}:
+                            <i class="icons-sickrage icons-sickrage-cache"></i> ${_('SR Cache Dir:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${sickrage.CACHE_DIR}
@@ -75,7 +75,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-log"></i> ${_('SR Log Dir')}:
+                            <i class="icons-sickrage icons-sickrage-log"></i> ${_('SR Log Dir:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${sickrage.srCore.srConfig.LOG_DIR}
@@ -84,7 +84,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-console"></i> ${_('SR Arguments')}:
+                            <i class="icons-sickrage icons-sickrage-console"></i> ${_('SR Arguments:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${sys.argv[1:]}
@@ -94,7 +94,7 @@
                     % if sickrage.srCore.srConfig.WEB_ROOT:
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                ${_('SR Web Root')}:
+                                ${_('SR Web Root:')}
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                                 ${sickrage.srCore.srConfig.WEB_ROOT}
@@ -104,7 +104,7 @@
                     % endif
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-tornado"></i> ${_('Tornado Version')}:
+                            <i class="icons-sickrage icons-sickrage-tornado"></i> ${_('Tornado Version:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${tornado.version}
@@ -113,7 +113,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                            <i class="icons-sickrage icons-sickrage-python"></i> ${_('Python Version')}:
+                            <i class="icons-sickrage icons-sickrage-python"></i> ${_('Python Version:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                             ${sys.version}

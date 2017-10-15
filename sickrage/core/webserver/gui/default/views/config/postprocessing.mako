@@ -83,7 +83,7 @@
                                             title="Processing method">
                                         <% process_method_text = {'copy': _("Copy"), 'move': _("Move"), 'hardlink': _("Hard Link"), 'symlink' : _("Symbolic Link"), 'symlink_reversed' : _('Symbolic Link Reversed')} %>
                                         % for curAction in process_method_text:
-                                            <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                                            <option value="${curAction}" ${('', 'selected')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
                                         % endfor
                                     </select>
                                 </div>
@@ -142,7 +142,7 @@
                             </div>
                             <input name="sync_files" id="sync_files"
                                    value="${sickrage.srCore.srConfig.SYNC_FILES}"
-                                   placeholder="ext1,ext2"
+                                   placeholder="${_('ext1,ext2')}"
                                    title="comma separated list of extensions SiCKRAGE ignores when Post Processing"
                                    class="form-control" autocapitalize="off"/>
                         </div>
@@ -234,7 +234,7 @@
                                     title="What timezone should be used to change File Date?"
                                     class="form-control">
                                 % for curTimezone in ('local','network'):
-                                    <option value="${curTimezone}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
+                                    <option value="${curTimezone}" ${('', 'selected')[sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
                                 % endfor
                             </select>
                         </div>
@@ -324,7 +324,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -354,9 +354,9 @@
                                 % if cur_preset == sickrage.srCore.srConfig.NAMING_PATTERN:
                                     <% is_custom = False %>
                                 % endif
-                                    <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                    <option id="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                 % endfor
-                                <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected="selected"')[bool(is_custom)]}>
+                                <option id="${sickrage.srCore.srConfig.NAMING_PATTERN}" ${('', 'selected')[bool(is_custom)]}>
                                     Custom...
                                 </option>
                             </select>
@@ -474,12 +474,12 @@
                             <tr>
                                 <td class="align-right"><b>${_('Quality:')}</b></td>
                                 <td>%QN</td>
-                                <td>${_('720p BluRay')}</td>
+                                <td>720p BluRay</td>
                             </tr>
                             <tr class="even">
                                 <td>&nbsp;</td>
                                 <td>%Q.N</td>
-                                <td>${_('720p.BluRay')}</td>
+                                <td>720p.BluRay</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -525,7 +525,7 @@
                                     <b>${_('Release Type:')}</b>
                                 </td>
                                 <td>%RT</td>
-                                <td>${_('PROPER')}</td>
+                                <td>PROPER</td>
                             </tr>
                             </tbody>
                         </table>
@@ -545,7 +545,7 @@
                             <select id="naming_multi_ep" name="naming_multi_ep" class="form-control"
                                     title="Choose a Multi-Episode Style">
                                 % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
-                                    <option value="${cur_multi_ep[0]}" ${('', 'selected="selected"')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
+                                    <option value="${cur_multi_ep[0]}" ${('', 'selected')[cur_multi_ep[0] == sickrage.srCore.srConfig.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
                                 % endfor
                             </select>
                         </div>
@@ -596,7 +596,7 @@
                         <input type="checkbox" class="enabler" id="naming_custom_abd"
                                name="naming_custom_abd" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ABD)]}/>
                         <label for="naming_custom_abd">
-                            Name Air-By-Date shows differently than regular shows?
+                            ${_('Name Air-By-Date shows differently than regular shows?')}
                         </label>
                     </div>
                 </div>
@@ -618,9 +618,9 @@
                                     % if cur_preset == sickrage.srCore.srConfig.NAMING_ABD_PATTERN:
                                         <% is_abd_custom = False %>
                                     % endif
-                                        <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_ABD_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                        <option id="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.NAMING_ABD_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                     % endfor
-                                    <option id="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}" ${('', 'selected="selected"')[bool(is_abd_custom)]}>
+                                    <option id="${sickrage.srCore.srConfig.NAMING_ABD_PATTERN}" ${('', 'selected')[bool(is_abd_custom)]}>
                                         Custom...
                                     </option>
                                 </select>
@@ -650,36 +650,36 @@
                             <table class="Key">
                                 <thead>
                                 <tr>
-                                    <th class="align-right">Meaning</th>
-                                    <th>Pattern</th>
-                                    <th width="60%">Result</th>
+                                    <th class="align-right">${_('Meaning')}</th>
+                                    <th>${_('Pattern')}</th>
+                                    <th width="60%">${_('Result')}</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
                                     <th colspan="3">
-                                        Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                        ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
                                     </th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
                                 <tr>
-                                    <td class="align-right"><b>Show Name:</b></td>
+                                    <td class="align-right"><b>${_('Show Name:')}</b></td>
                                     <td>%SN</td>
-                                    <td>Show Name</td>
+                                    <td>${_('Show Name')}</td>
                                 </tr>
                                 <tr class="even">
                                     <td>&nbsp;</td>
                                     <td>%S.N</td>
-                                    <td>Show.Name</td>
+                                    <td>${_('Show.Name')}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%S_N</td>
-                                    <td>Show_Name</td>
+                                    <td>${_('Show_Name')}</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Regular Air Date:</b></td>
+                                    <td class="align-right"><b>${_('Regular Air Date:')}</b></td>
                                     <td>%AD</td>
                                     <td>2010 03 09</td>
                                 </tr>
@@ -699,22 +699,22 @@
                                     <td>2010-03-09</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Episode Name:</b></td>
+                                    <td class="align-right"><b>${_('Episode Name:')}</b></td>
                                     <td>%EN</td>
-                                    <td>Episode Name</td>
+                                    <td>${_('Episode Name')}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%E.N</td>
-                                    <td>Episode.Name</td>
+                                    <td>${_('Episode.Name')}</td>
                                 </tr>
                                 <tr class="even">
                                     <td>&nbsp;</td>
                                     <td>%E_N</td>
-                                    <td>Episode_Name</td>
+                                    <td>${_('Episode_Name')}</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><b>Quality:</b></td>
+                                    <td class="align-right"><b>${_('Quality:')}</b></td>
                                     <td>%QN</td>
                                     <td>720p BluRay</td>
                                 </tr>
@@ -729,12 +729,12 @@
                                     <td>720p_BluRay</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Year:</b></td>
+                                    <td class="align-right"><b>${_('Year:')}</b></td>
                                     <td>%Y</td>
                                     <td>2010</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><b>Month:</b></td>
+                                    <td class="align-right"><b>${_('Month:')}</b></td>
                                     <td>%M</td>
                                     <td>3</td>
                                 </tr>
@@ -744,7 +744,7 @@
                                     <td>03</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><b>Day:</b></td>
+                                    <td class="align-right"><b>${_('Day:')}</b></td>
                                     <td>%D</td>
                                     <td>9</td>
                                 </tr>
@@ -754,23 +754,29 @@
                                     <td>09</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="Multi-EP style is ignored"></i> <b>Release
-                                        Name:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="Multi-EP style is ignored"></i>
+                                        <b>${_('Release Name:')}</b>
+                                    </td>
                                     <td>%RN</td>
-                                    <td>Show.Name.2010.03.09.HDTV.XviD-RLSGROUP</td>
+                                    <td>${_('Show.Name.2010.03.09.HDTV.XviD-RLSGROUP')}</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
-                                        <b>Release Group:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                        <b>${_('Release Group:')}</b>
+                                    </td>
                                     <td>%RG</td>
                                     <td>RLSGROUP</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="If episode is proper/repack add 'proper' to name."></i>
-                                        <b>Release Type:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="If episode is proper/repack add 'proper' to name."></i>
+                                        <b>${_('Release Type:')}</b>
+                                    </td>
                                     <td>%RT</td>
                                     <td>PROPER</td>
                                 </tr>
@@ -783,7 +789,7 @@
                     <div id="naming_abd_example_div">
                         <div class="row">
                             <div class="col-md-12">
-                                <h3>Air-by-date Sample:</h3>
+                                <h3>${_('Air-by-date Sample:')}</h3>
                                 <div class="example">
                                     <span class="jumbo" id="naming_abd_example">&nbsp;</span>
                                 </div>
@@ -800,7 +806,7 @@
                         <input type="checkbox" class="enabler" id="naming_custom_sports"
                                name="naming_custom_sports" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_SPORTS)]}/>
                         <label for="naming_custom_sports">
-                            Name Sports shows differently than regular shows?
+                            ${_('Name Sports shows differently than regular shows?')}
                         </label>
                     </div>
                 </div>
@@ -822,10 +828,10 @@
                                     % if cur_preset == sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN:
                                         <% is_sports_custom = False %>
                                     % endif
-                                        <option id="${cur_preset}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                        <option id="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                     % endfor
-                                    <option id="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}" ${('', 'selected="selected"')[bool(is_sports_custom)]}>
-                                        Custom...
+                                    <option id="${sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN}" ${('', 'selected')[bool(is_sports_custom)]}>
+                                        ${_('Custom...')}
                                     </option>
                                 </select>
                             </div>
@@ -854,71 +860,71 @@
                             <table class="Key">
                                 <thead>
                                 <tr>
-                                    <th class="align-right">Meaning</th>
-                                    <th>Pattern</th>
-                                    <th width="60%">Result</th>
+                                    <th class="align-right">${_('Meaning')}</th>
+                                    <th>${_('Pattern')}</th>
+                                    <th width="60%">${_('Result')}</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
                                     <th colspan="3">
-                                        Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                        ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
                                     </th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
                                 <tr>
-                                    <td class="align-right"><b>Show Name:</b></td>
+                                    <td class="align-right"><b>${_('Show Name:')}</b></td>
                                     <td>%SN</td>
-                                    <td>Show Name</td>
+                                    <td>${_('Show Name')}</td>
                                 </tr>
                                 <tr class="even">
                                     <td>&nbsp;</td>
                                     <td>%S.N</td>
-                                    <td>Show.Name</td>
+                                    <td>${_('Show.Name')}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%S_N</td>
-                                    <td>Show_Name</td>
+                                    <td>${_('Show_Name')}</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Sports Air Date:</b></td>
+                                    <td class="align-right"><b>${_('Sports Air Date:')}</b></td>
                                     <td>%AD</td>
-                                    <td>9 Mar 2011</td>
+                                    <td>9 ${_('Mar')} 2011</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%A.D</td>
-                                    <td>9.Mar.2011</td>
+                                    <td>9.${_('Mar')}.2011</td>
                                 </tr>
                                 <tr class="even">
                                     <td>&nbsp;</td>
                                     <td>%A_D</td>
-                                    <td>9_Mar_2011</td>
+                                    <td>9_${_('Mar')}_2011</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%A-D</td>
-                                    <td>9-Mar-2011</td>
+                                    <td>9-${_('Mar')}-2011</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Episode Name:</b></td>
+                                    <td class="align-right"><b>${_('Episode Name:')}</b></td>
                                     <td>%EN</td>
-                                    <td>Episode Name</td>
+                                    <td>${_('Episode Name')}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%E.N</td>
-                                    <td>Episode.Name</td>
+                                    <td>${_('Episode.Name')}</td>
                                 </tr>
                                 <tr class="even">
                                     <td>&nbsp;</td>
                                     <td>%E_N</td>
-                                    <td>Episode_Name</td>
+                                    <td>${_('Episode_Name')}</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><b>Quality:</b></td>
+                                    <td class="align-right"><b>${_('Quality:')}</b></td>
                                     <td>%QN</td>
                                     <td>720p BluRay</td>
                                 </tr>
@@ -933,12 +939,12 @@
                                     <td>720p_BluRay</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Year:</b></td>
+                                    <td class="align-right"><b>${_('Year:')}</b></td>
                                     <td>%Y</td>
                                     <td>2010</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><b>Month:</b></td>
+                                    <td class="align-right"><b>${_('Month:')}</b></td>
                                     <td>%M</td>
                                     <td>3</td>
                                 </tr>
@@ -948,7 +954,7 @@
                                     <td>03</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><b>Day:</b></td>
+                                    <td class="align-right"><b>${_('Day:')}</b></td>
                                     <td>%D</td>
                                     <td>9</td>
                                 </tr>
@@ -958,16 +964,20 @@
                                     <td>09</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="Multi-EP style is ignored"></i> <b>Release
-                                        Name:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="Multi-EP style is ignored"></i>
+                                        <b>${_('Release Name:')}</b>
+                                    </td>
                                     <td>%RN</td>
-                                    <td>Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP</td>
+                                    <td>${_('Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP')}</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
-                                        <b>Release Group:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                        <b>${_('Release Group:')}</b>
+                                    </td>
                                     <td>%RG</td>
                                     <td>RLSGROUP</td>
                                 </tr>
@@ -975,9 +985,8 @@
                                     <td class="align-right">
                                         <i class="glyphicon glyphicon-info-sign"
                                            title="If episode is proper/repack add 'proper' to name.">
-
                                         </i>
-                                        <b>Release Type:</b></td>
+                                        <b>${_('Release Type:')}</b></td>
                                     <td>%RT</td>
                                     <td>PROPER</td>
                                 </tr>
@@ -990,7 +999,7 @@
                     <div id="naming_sports_example_div">
                         <div class="row">
                             <div class="col-md-12">
-                                <h3>Sports Sample:</h3>
+                                <h3>${_('Sports Sample:')}</h3>
                                 <div class="example">
                                     <span class="jumbo" id="naming_sports_example">&nbsp;</span>
                                 </div>
@@ -1008,7 +1017,7 @@
                         <input type="checkbox" class="enabler" id="naming_custom_anime"
                                name="naming_custom_anime" ${('', 'checked')[bool(sickrage.srCore.srConfig.NAMING_CUSTOM_ANIME)]}/>
                         <label for="naming_custom_anime">
-                            Name Anime shows differently than regular shows?
+                            ${_('Name Anime shows differently than regular shows?')}
                         </label>
                     </div>
                 </div>
@@ -1030,10 +1039,10 @@
                                     % if cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN:
                                         <% is_anime_custom = False %>
                                     % endif
-                                        <option id="${cur_preset}" ${('', 'selected="selected"')[cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                        <option id="${cur_preset}" ${('', 'selected')[cur_preset == sickrage.srCore.srConfig.NAMING_ANIME_PATTERN]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                     % endfor
-                                    <option id="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}" ${('', 'selected="selected"')[bool(is_anime_custom)]}>
-                                        Custom...
+                                    <option id="${sickrage.srCore.srConfig.NAMING_ANIME_PATTERN}" ${('', 'selected')[bool(is_anime_custom)]}>
+                                        ${_('Custom...')}
                                     </option>
                                 </select>
                             </div>
@@ -1066,36 +1075,36 @@
                             <table class="Key">
                                 <thead>
                                 <tr>
-                                    <th class="align-right">Meaning</th>
-                                    <th>Pattern</th>
-                                    <th width="60%">Result</th>
+                                    <th class="align-right">${_('Meaning')}</th>
+                                    <th>${_('Pattern')}</th>
+                                    <th width="60%">${_('Result')}</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
                                 <tr>
                                     <th colspan="3">
-                                        Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)
+                                        ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
                                     </th>
                                 </tr>
                                 </tfoot>
                                 <tbody>
                                 <tr>
-                                    <td class="align-right"><b>Show Name:</b></td>
+                                    <td class="align-right"><b>${_('Show Name:')}</b></td>
                                     <td>%SN</td>
-                                    <td>Show Name</td>
+                                    <td>${_('Show Name')}</td>
                                 </tr>
                                 <tr class="even">
                                     <td>&nbsp;</td>
                                     <td>%S.N</td>
-                                    <td>Show.Name</td>
+                                    <td>${_('Show.Name')}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%S_N</td>
-                                    <td>Show_Name</td>
+                                    <td>${_('Show_Name')}</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Season Number:</b></td>
+                                    <td class="align-right"><b>${_('Season Number:')}</b></td>
                                     <td>%S</td>
                                     <td>2</td>
                                 </tr>
@@ -1105,7 +1114,7 @@
                                     <td>02</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>XEM Season Number:</b></td>
+                                    <td class="align-right"><b>${_('XEM Season Number:')}</b></td>
                                     <td>%XMS</td>
                                     <td>2</td>
                                 </tr>
@@ -1115,7 +1124,7 @@
                                     <td>02</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Episode Number:</b></td>
+                                    <td class="align-right"><b>${_('Episode Number:')}</b></td>
                                     <td>%E</td>
                                     <td>3</td>
                                 </tr>
@@ -1125,7 +1134,7 @@
                                     <td>03</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>XEM Episode Number:</b></td>
+                                    <td class="align-right"><b>${_('XEM Episode Number:')}</b></td>
                                     <td>%XME</td>
                                     <td>3</td>
                                 </tr>
@@ -1135,22 +1144,22 @@
                                     <td>03</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><b>Episode Name:</b></td>
+                                    <td class="align-right"><b>${_('Episode Name:')}</b></td>
                                     <td>%EN</td>
-                                    <td>Episode Name</td>
+                                    <td>${_('Episode Name')}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
                                     <td>%E.N</td>
-                                    <td>Episode.Name</td>
+                                    <td>${_('Episode.Name')}</td>
                                 </tr>
                                 <tr class="even">
                                     <td>&nbsp;</td>
                                     <td>%E_N</td>
-                                    <td>Episode_Name</td>
+                                    <td>${_('Episode_Name')}</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><b>Quality:</b></td>
+                                    <td class="align-right"><b>${_('Quality:')}</b></td>
                                     <td>%QN</td>
                                     <td>720p BluRay</td>
                                 </tr>
@@ -1165,23 +1174,29 @@
                                     <td>720p_BluRay</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="Multi-EP style is ignored"></i> <b>Release
-                                        Name:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="Multi-EP style is ignored"></i>
+                                        <b>${_('Release Name:')}</b>
+                                    </td>
                                     <td>%RN</td>
-                                    <td>Show.Name.S02E03.HDTV.XviD-RLSGROUP</td>
+                                    <td>${_('Show.Name.S02E03.HDTV.XviD-RLSGROUP')}</td>
                                 </tr>
                                 <tr>
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
-                                        <b>Release Group:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
+                                        <b>${_('Release Group:')}</b>
+                                    </td>
                                     <td>%RG</td>
                                     <td>RLSGROUP</td>
                                 </tr>
                                 <tr class="even">
-                                    <td class="align-right"><i class="glyphicon glyphicon-info-sign"
-                                                               title="If episode is proper/repack add 'proper' to name."></i>
-                                        <b>Release Type:</b></td>
+                                    <td class="align-right">
+                                        <i class="glyphicon glyphicon-info-sign"
+                                           title="If episode is proper/repack add 'proper' to name."></i>
+                                        <b>${_('Release Type:')}</b>
+                                    </td>
                                     <td>%RT</td>
                                     <td>PROPER</td>
                                 </tr>
@@ -1214,7 +1229,7 @@
                     <div id="naming_example_anime_div">
                         <div class="row">
                             <div class="col-md-12">
-                                <h3>Single-EP Anime Sample:</h3>
+                                <h3>${_('Single-EP Anime Sample:')}</h3>
                                 <div class="example">
                                     <span class="jumbo" id="naming_example_anime">&nbsp;</span>
                                 </div>
@@ -1225,7 +1240,7 @@
                     <div id="naming_example_multi_anime_div">
                         <div class="row">
                             <div class="col-md-12">
-                                <h3>Multi-EP Anime sample:</h3>
+                                <h3>${_('Multi-EP Anime sample:')}</h3>
                                 <div class="example">
                                     <span class="jumbo" id="naming_example_multi_anime">&nbsp;</span>
                                 </div>
@@ -1241,8 +1256,8 @@
                             <input type="radio" name="naming_anime" id="naming_anime"
                                    value="1" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 1]}/>
                             <label for="naming_anime">
-                                Add the absolute number to the season/episode format?<br/>
-                                <b>NOTE:</b> Only applies to animes. (eg. S15E45 - 310 vs S15E45)
+                                ${_('Add the absolute number to the season/episode format?')}<br/>
+                                <b>${_('NOTE:')}</b> ${_('Only applies to animes. (eg. S15E45 - 310 vs S15E45)')}
                             </label>
                         </div>
                     </div>
@@ -1255,8 +1270,8 @@
                             <input type="radio" name="naming_anime" id="naming_anime_only"
                                    value="2" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 2]}/>
                             <label for="naming_anime_only">
-                                Replace season/episode format with absolute number<br/>
-                                <b>NOTE:</b> Only applies to animes.
+                                ${_('Replace season/episode format with absolute number')}<br/>
+                                <b>${_('NOTE:')}</b> ${_('Only applies to animes.')}
                             </label>
                         </div>
                     </div>
@@ -1269,8 +1284,8 @@
                             <input type="radio" name="naming_anime" id="naming_anime_none"
                                    value="3" ${('', 'checked')[sickrage.srCore.srConfig.NAMING_ANIME == 3]}/>
                             <label for="naming_anime_none">
-                                Dont include the absolute number<br/>
-                                <b>NOTE:</b> Only applies to animes.
+                                ${_('Dont include the absolute number')}<br/>
+                                <b>${_('NOTE:')}</b> ${_('Only applies to animes.')}
                             </label>
                         </div>
                     </div>
@@ -1279,7 +1294,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -1289,10 +1304,8 @@
     <div id="core-tab-pane3" class="tab-pane fade">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Metadata</h3>
-                <p>The data associated to the data. These are files associated to a TV show in the form of
-                    images
-                    and text that, when supported, will enhance the viewing experience.</p>
+                <h3>${_('Metadata')}</h3>
+                <p>${_('The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience.')}</p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
@@ -1313,8 +1326,8 @@
                             </select>
                         </div>
                         <label for="metadataType">
-                            Toggle the metadata options that you wish to be created.<br/>
-                            <b>Multiple targets may be used.</b>
+                            ${_('Toggle the metadata options that you wish to be created.')}<br/>
+                            <b>${_('Multiple targets may be used.')}</b>
                         </label>
                     </div>
                 </div>
@@ -1328,82 +1341,95 @@
                             <div class="metadataDiv" id="${cur_id}">
                                 <div class="metadata_options_wrapper input350">
                                     <div class="metadata_options">
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>
                                         <label for="${cur_id}_show_metadata">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>
-                                            &nbsp;Show Metadata
-                                            <br/>
-                                            &nbsp;<span
-                                                id="${cur_id}_eg_show_metadata">${cur_generator.eg_show_metadata}</span>
+                                            ${_('Show Metadata')}<br/>
+                                            <span id="${cur_id}_eg_show_metadata">
+                                                ${cur_generator.eg_show_metadata}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>
                                         <label for="${cur_id}_episode_metadata">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>
-                                            &nbsp;Episode Metadata
-                                            <br/>
-                                            &nbsp;<span
-                                                id="${cur_id}_eg_episode_metadata">${cur_generator.eg_episode_metadata}</span>
+                                            ${_('Episode Metadata')}<br/>
+                                            <span id="${cur_id}_eg_episode_metadata">
+                                                ${cur_generator.eg_episode_metadata}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>
                                         <label for="${cur_id}_fanart">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>
-                                            &nbsp;Show Fanart
-                                            <br/>
-                                            &nbsp;<span id="${cur_id}_eg_fanart">${cur_generator.eg_fanart}</span>
+                                            ${_('Show Fanart')}<br/>
+                                            <span id="${cur_id}_eg_fanart">
+                                                ${cur_generator.eg_fanart}
+                                            </span>
                                         </label>
+
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>
                                         <label for="${cur_id}_poster">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>
-                                            &nbsp;Show Poster
-                                            <br/>
-                                            &nbsp;<span id="${cur_id}_eg_poster">${cur_generator.eg_poster}</span>
+                                            ${_('Show Poster')}<br/>
+                                            <span id="${cur_id}_eg_poster">
+                                                ${cur_generator.eg_poster}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>
                                         <label for="${cur_id}_banner">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>
-                                            &nbsp;Show Banner
-                                            <br/>
-                                            &nbsp;<span id="${cur_id}_eg_banner">${cur_generator.eg_banner}</span>
+                                            ${_('Show Banner')}<br/>
+                                            <span id="${cur_id}_eg_banner">
+                                                ${cur_generator.eg_banner}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>
                                         <label for="${cur_id}_episode_thumbnails">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>
-                                            &nbsp;Episode Thumbnails
-                                            <br/>
-                                            &nbsp;<span
-                                                id="${cur_id}_eg_episode_thumbnails">${cur_generator.eg_episode_thumbnails}</span>
+                                            ${_('Episode Thumbnails')}<br/>
+                                            <span id="${cur_id}_eg_episode_thumbnails">
+                                                ${cur_generator.eg_episode_thumbnails}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>
                                         <label for="${cur_id}_season_posters">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>
-                                            &nbsp;Season Posters
-                                            <br/>
-                                            &nbsp;<span
-                                                id="${cur_id}_eg_season_posters">${cur_generator.eg_season_posters}</span>
+                                            ${_('Season Posters')}<br/>
+                                            <span id="${cur_id}_eg_season_posters">
+                                                ${cur_generator.eg_season_posters}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>
                                         <label for="${cur_id}_season_banners">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>
-                                            &nbsp;Season Banners
-                                            <br/>
-                                            &nbsp;<span
-                                                id="${cur_id}_eg_season_banners">${cur_generator.eg_season_banners}</span>
+                                            ${_('Season Banners')}<br/>
+                                            <span id="${cur_id}_eg_season_banners">
+                                                ${cur_generator.eg_season_banners}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>
                                         <label for="${cur_id}_season_all_poster">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>
-                                            &nbsp;Season All Poster
-                                            <br/>
-                                            &nbsp;<span
-                                                id="${cur_id}_eg_season_all_poster">${cur_generator.eg_season_all_poster}</span>
+                                            ${_('Season All Poster')}<br/>
+                                            <span id="${cur_id}_eg_season_all_poster">
+                                                ${cur_generator.eg_season_all_poster}
+                                            </span>
                                         </label>
+
+                                        <input type="checkbox" class="metadata_checkbox"
+                                               id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>
                                         <label for="${cur_id}_season_all_banner">
-                                            <input type="checkbox" class="metadata_checkbox"
-                                                   id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>
-                                            &nbsp;Season All Banner
-                                            <br/>
-                                            &nbsp;<span
-                                                id="${cur_id}_eg_season_all_banner">${cur_generator.eg_season_all_banner}</span>
+                                            ${_('Season All Banner')}<br/>
+                                            <span id="${cur_id}_eg_season_all_banner">
+                                                ${cur_generator.eg_season_all_banner}
+                                            </span>
                                         </label>
                                     </div>
                                 </div>

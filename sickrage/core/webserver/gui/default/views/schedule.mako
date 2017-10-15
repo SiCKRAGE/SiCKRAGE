@@ -22,13 +22,13 @@
                 <label for="sortby" class="badge" style="background-color: #333333;">Sort By:
                     <select id="sortby" name="sort" class="form-control form-control-inline input-sm"
                             onchange="location = this.options[this.selectedIndex].value;">
-                        <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'date']} >
+                        <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'date']} >
                             Date
                         </option>
-                        <option value="${srWebRoot}/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'network']} >
+                        <option value="${srWebRoot}/setScheduleSort/?sort=network" ${('', 'selected')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'network']} >
                             Network
                         </option>
-                        <option value="${srWebRoot}/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'show']} >
+                        <option value="${srWebRoot}/setScheduleSort/?sort=show" ${('', 'selected')[sickrage.srCore.srConfig.COMING_EPS_SORT == 'show']} >
                             Show
                         </option>
                     </select>
@@ -38,10 +38,10 @@
             <label for="viewpaused" class="badge" style="background-color: #333333;">View Paused:
                 <select id="viewpaused" name="viewpaused" class="form-control form-control-inline input-sm"
                         onchange="location = this.options[this.selectedIndex].value;">
-                    <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
+                    <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected')[not bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                         Hidden
                     </option>
-                    <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
+                    <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected')[bool(sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                         Shown
                     </option>
                 </select>
@@ -50,16 +50,16 @@
             <label for="layout" class="badge" style="background-color: #333333;">Layout:
                 <select id="layout" name="layout" class="form-control form-control-inline input-sm"
                         onchange="location = this.options[this.selectedIndex].value;">
-                    <option value="${srWebRoot}/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'poster']} >
+                    <option value="${srWebRoot}/setScheduleLayout/?layout=poster" ${('', 'selected')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'poster']} >
                         Poster
                     </option>
-                    <option value="${srWebRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
+                    <option value="${srWebRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
                         Calendar
                     </option>
-                    <option value="${srWebRoot}/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'banner']} >
+                    <option value="${srWebRoot}/setScheduleLayout/?layout=banner" ${('', 'selected')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'banner']} >
                         Banner
                     </option>
-                    <option value="${srWebRoot}/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'list']} >
+                    <option value="${srWebRoot}/setScheduleLayout/?layout=list" ${('', 'selected')[sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'list']} >
                         List
                     </option>
                 </select>
@@ -195,8 +195,8 @@
                                     </td>
 
                                     <td align="center">
-                                        <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&amp;season=${cur_result['season']}&amp;episode=${cur_result['episode']}"
-                                           title="Manual Search"
+                                        <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
+                                           title="${_('Manual Search')}"
                                            id="forceUpdate-${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"
                                            class="forceUpdate epSearch">
                                             <img alt="[search]" height="16" width="16"
@@ -367,7 +367,7 @@
                                                         alt="${srIndexerApi(cur_indexer).name}" height="16" width="16"
                                                         src="${srWebRoot}/images/${srIndexerApi(cur_indexer).config['icon']}"/></a>
                                     <span><a
-                                            href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&amp;season=${cur_result['season']}&amp;episode=${cur_result['episode']}"
+                                            href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
                                             title="Manual Search" id="forceUpdate-${cur_result['showid']}"
                                             class="epSearch forceUpdate"><img alt="[search]" height="16" width="16"
                                                                               src="${srWebRoot}/images/search16.png"
@@ -397,7 +397,7 @@
                                                     <span class="title" style="vertical-align:middle;">Plot:</span>
                                                     <img class="ep_summaryTrigger" src="${srWebRoot}/images/plus.png"
                                                          height="16" width="16" alt=""
-                                                         title="Toggle Summary"/>
+                                                         title="${_('Toggle Summary')}"/>
                                                     <div class="ep_summary">${cur_result['description']}</div>
                                                 % else:
                                                     <span class="title ep_summaryTriggerNone"

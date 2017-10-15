@@ -20,7 +20,7 @@
                     <span class="glyphicon glyphicon-folder-open"></span>
                 </div>
                 <select name="rootDir" id="rootDirs" size="6" class="form-control"
-                        title="Root Directories">
+                        title="${_('Root Directories')}">
                     % for cur_dir in backend_dirs:
                         <option value="${cur_dir}">${cur_dir}</option>
                     % endfor
@@ -32,10 +32,10 @@
 <div class="row">
     <div class="col-md-12">
         <div id="rootDirsControls" class="rootdir-controls">
-            <input class="btn btn-inline pull-left" type="button" id="addRootDir" value="New"/>
-            <input class="btn btn-inline pull-left" type="button" id="editRootDir" value="Edit"/>
-            <input class="btn btn-inline pull-left" type="button" id="deleteRootDir" value="Delete"/>
-            <input class="btn btn-inline pull-left" type="button" id="defaultRootDir" value="Set as Default *"/>
+            <input class="btn btn-inline pull-left" type="button" id="addRootDir" value="${_('New')}"/>
+            <input class="btn btn-inline pull-left" type="button" id="editRootDir" value="${_('Edit')}"/>
+            <input class="btn btn-inline pull-left" type="button" id="deleteRootDir" value="${_('Delete')}"/>
+            <input class="btn btn-inline pull-left" type="button" id="defaultRootDir" value="${_('Set as Default *')}"/>
         </div>
         <input type="text" style="display: none" id="rootDirText" autocapitalize="off" title=""/>
     </div>

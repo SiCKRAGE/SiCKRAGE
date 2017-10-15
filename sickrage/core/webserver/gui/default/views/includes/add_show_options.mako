@@ -75,7 +75,7 @@
             <select name="defaultStatus" id="statusSelect" class="form-control"
                     title="Status for previously aired episodes">
                 % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
+                    <option value="${curStatus}" ${('', 'selected')[sickrage.srCore.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
                 % endfor
             </select>
         </div>
@@ -95,7 +95,7 @@
             <select name="defaultStatusAfter" id="statusSelectAfter" title="Status for future episodes"
                     class="form-control">
                 % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
+                    <option value="${curStatus}" ${('', 'selected')[sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
                 % endfor
             </select>
         </div>
@@ -114,12 +114,12 @@
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <label class="component-title">
-            <input class="btn btn-inline" type="button" id="saveDefaultsButton" value="Save As Defaults"
+            <input class="btn btn-inline" type="button" id="saveDefaultsButton" value="${_('Save As Defaults')}"
                    disabled/>
         </label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <label>Use current values as the defaults</label>
+        <label>${_('Use current values as the defaults')}</label>
     </div>
 </div>
 

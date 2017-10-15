@@ -8,9 +8,9 @@
     <thead>
     <tr>
         <th class="col-checkbox"><input type="checkbox" id="checkAll" checked=checked></th>
-        <th>Directory</th>
-        <th width="20%">Show Name (tvshow.nfo)
-        <th width="20%">Indexer</th>
+        <th>${_('Directory')}</th>
+        <th width="20%">${_('Show Name (tvshow.nfo)')}</th>
+        <th width="20%">${_('Indexer')}</th>
     </tr>
     </thead>
     <tbody>
@@ -44,7 +44,7 @@
                     <td align="center">
                         <select name="indexer">
                             % for curIndexer in srIndexerApi().indexers.items():
-                                <option value="${curIndexer[0]}" ${('', 'selected="selected"')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>
+                                <option value="${curIndexer[0]}" ${('', 'selected')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>
                             % endfor
                         </select>
                     </td>

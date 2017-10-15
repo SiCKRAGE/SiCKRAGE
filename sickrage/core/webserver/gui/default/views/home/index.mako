@@ -16,73 +16,73 @@
     <div class="row">
         <div class="col-xs-12 text-center">
             % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
-                <label for="popover" class="badge">Select Columns:
+                <label for="popover" class="badge">${_('Select Columns:')}
                     <button id="popover" type="button" class="form-control form-control-inline input-sm"><b
                             class="caret"></b></button>
                 </label>
             % endif
 
             % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
-                <label for="filterShowName" class="badge">Filter By:
+                <label for="filterShowName" class="badge">${_('Filter By:')}
                     <input id="filterShowName" class="form-control form-control-inline input-sm" type="search"
-                           placeholder="Filter Show Name">
+                           placeholder="${_('Filter Show Name')}">
                 </label>
 
-                <label for="postersort" class="badge">Sort By:
+                <label for="postersort" class="badge">${_('Sort By:')}
                     <select id="postersort" class="form-control form-control-inline input-sm">
                         <option value="name"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTBY == 'name']}>
-                            Name
+                                data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.srCore.srConfig.POSTER_SORTBY == 'name']}>
+                            ${_('Name')}
                         </option>
                         <option value="date"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTBY == 'date']}>
-                            Next Episode
+                                data-sort="${srWebRoot}/setPosterSortBy/?sort=date" ${('', 'selected')[sickrage.srCore.srConfig.POSTER_SORTBY == 'date']}>
+                            ${_('Next Episode')}
                         </option>
                         <option value="network"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTBY == 'network']}>
-                            Network
+                                data-sort="${srWebRoot}/setPosterSortBy/?sort=network" ${('', 'selected')[sickrage.srCore.srConfig.POSTER_SORTBY == 'network']}>
+                            ${_('Network')}
                         </option>
                         <option value="progress"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=progress" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTBY == 'progress']}>
-                            Progress
+                                data-sort="${srWebRoot}/setPosterSortBy/?sort=progress" ${('', 'selected')[sickrage.srCore.srConfig.POSTER_SORTBY == 'progress']}>
+                            ${_('Progress')}
                         </option>
                     </select>
                 </label>
 
-                <label for="postersortdirection" class="badge">Sort Order:
+                <label for="postersortdirection" class="badge">${_('Sort Order:')}
                     <select id="postersortdirection" class="form-control form-control-inline input-sm">
                         <option value="true"
-                                data-sort="${srWebRoot}/setPosterSortDir/?direction=1" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTDIR == 1]}>
-                            Asc
+                                data-sort="${srWebRoot}/setPosterSortDir/?direction=1" ${('', 'selected')[sickrage.srCore.srConfig.POSTER_SORTDIR == 1]}>
+                            ${_('Asc')}
                         </option>
                         <option value="false"
-                                data-sort="${srWebRoot}/setPosterSortDir/?direction=0" ${('', 'selected="selected"')[sickrage.srCore.srConfig.POSTER_SORTDIR == 0]}>
-                            Desc
+                                data-sort="${srWebRoot}/setPosterSortDir/?direction=0" ${('', 'selected')[sickrage.srCore.srConfig.POSTER_SORTDIR == 0]}>
+                            ${_('Desc')}
                         </option>
                     </select>
                 </label>
             % endif
 
-            <label for="layout" class="badge">Layout:
+            <label for="layout" class="badge">${_('Layout:')}
                 <select id="layout" name="layout" class="form-control form-control-inline input-sm"
                         onchange="location = this.options[this.selectedIndex].value;">
-                    <option value="${srWebRoot}/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}>
-                        Poster
+                    <option value="${srWebRoot}/setHomeLayout/?layout=poster" ${('', 'selected')[sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}>
+                        ${_('Poster')}
                     </option>
-                    <option value="${srWebRoot}/setHomeLayout/?layout=small" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'small']}>
-                        Small Poster
+                    <option value="${srWebRoot}/setHomeLayout/?layout=small" ${('', 'selected')[sickrage.srCore.srConfig.HOME_LAYOUT == 'small']}>
+                        ${_('Small Poster')}
                     </option>
-                    <option value="${srWebRoot}/setHomeLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'banner']}>
-                        Banner
+                    <option value="${srWebRoot}/setHomeLayout/?layout=banner" ${('', 'selected')[sickrage.srCore.srConfig.HOME_LAYOUT == 'banner']}>
+                        ${_('Banner')}
                     </option>
-                    <option value="${srWebRoot}/setHomeLayout/?layout=simple" ${('', 'selected="selected"')[sickrage.srCore.srConfig.HOME_LAYOUT == 'simple']}>
-                        Simple
+                    <option value="${srWebRoot}/setHomeLayout/?layout=simple" ${('', 'selected')[sickrage.srCore.srConfig.HOME_LAYOUT == 'simple']}>
+                        ${_('Simple')}
                     </option>
                 </select>
             </label>
 
             % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
-                <label for="posterSizeSlider" class="badge">Poster Size:
+                <label for="posterSizeSlider" class="badge">${_('Poster Size:')}
                     <div style="width: 100px; display: inline-block; margin-left: 7px;" id="posterSizeSlider"></div>
                 </label>
             % endif
@@ -93,7 +93,7 @@
         <% curListType = curShowlist[0] %>
         <% myShowList = list(curShowlist[1]) %>
         % if curListType == "Anime":
-            <h1 class="header">Anime List</h1>
+            <h1 class="header">${_('Anime List')}</h1>
         % endif
         % if sickrage.srCore.srConfig.HOME_LAYOUT == 'poster':
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.srCore.srConfig.HOME_LAYOUT == 'poster']}"
@@ -106,7 +106,7 @@
                                 <img alt="" title="${curLoadingShow.show_name}" class="show-image"
                                      style="border-bottom: 1px solid #111;" src="${srWebRoot}/images/poster.png"/>
                                 <div class="show-details">
-                                    <div class="show-add">Loading... (${curLoadingShow.show_name})</div>
+                                    <div class="show-add">${_('Loading...')} (${curLoadingShow.show_name})</div>
                                 </div>
                             </div>
                         % endif
@@ -124,9 +124,9 @@
 
                         if display_status:
                             if re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
-                                display_status = 'Continuing'
+                                display_status = _('Continuing')
                             elif re.search(r'(?i)(?:nded)', curShow.status):
-                                display_status = 'Ended'
+                                display_status = _('Ended')
 
                         if curShow.indexerid in show_stat:
                             cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
@@ -145,16 +145,16 @@
 
                         if cur_total != 0:
                             download_stat = str(cur_downloaded)
-                            download_stat_tip = "Downloaded: " + str(cur_downloaded)
+                            download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
                             if cur_snatched > 0:
                                 download_stat = download_stat
-                                download_stat_tip = download_stat_tip + "&#013;" + "Snatched: " + str(cur_snatched)
+                                download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
 
                             download_stat = download_stat + " / " + str(cur_total)
-                            download_stat_tip = download_stat_tip + "&#013;" + "Total: " + str(cur_total)
+                            download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
                         else:
                             download_stat = '?'
-                            download_stat_tip = "no data"
+                            download_stat_tip = _("no data")
 
                         nom = cur_downloaded
                         den = cur_total
@@ -199,7 +199,7 @@
                                     try:
                                         out = srdatetime.srDateTime.srfdate(ldatetime)
                                     except ValueError:
-                                        out = 'Invalid date'
+                                        out = _('Invalid date')
                                     pass
                                 %>
                                 ${out}
@@ -209,7 +209,7 @@
                                 <%
                                     if display_status:
                                         if 'nded' not in display_status and 1 == int(curShow.paused):
-                                            output_html = 'Paused'
+                                            output_html = _('Paused')
                                         elif display_status:
                                             output_html = display_status
                                 %>
@@ -235,11 +235,11 @@
                                                          title="${curShow.network}"/>
                                                 </span>
                                                 % else:
-                                                    <span title="No Network">
+                                                    <span title="${_('No Network')}">
                                                     <img class="show-network-image"
                                                          src="${srWebRoot}/images/network/nonetwork.png"
-                                                         alt="No Network"
-                                                         title="No Network"/>
+                                                         alt="${_('No Network')}"
+                                                         title="${_('No Network')}"/>
                                                 </span>
                                                 % endif
                                             % else:
@@ -263,22 +263,22 @@
                        cellpadding="0">
                     <thead>
                     <tr>
-                        <th class="nowrap">Next Ep</th>
-                        <th class="nowrap">Prev Ep</th>
-                        <th>Show</th>
-                        <th>Network</th>
-                        <th>Quality</th>
-                        <th>Downloads</th>
-                        <th>Size</th>
-                        <th>Active</th>
-                        <th>Status</th>
+                        <th class="nowrap">${_('Next Ep')}</th>
+                        <th class="nowrap">${_('Prev Ep')}</th>
+                        <th>${_('Show')}</th>
+                        <th>${_('Network')}</th>
+                        <th>${_('Quality')}</th>
+                        <th>${_('Downloads')}</th>
+                        <th>${_('Size')}</th>
+                        <th>${_('Active')}</th>
+                        <th>${_('Status')}</th>
                     </tr>
                     </thead>
 
                     <tfoot>
                     <tr>
                         <th rowspan="1" colspan="1" align="center"><a
-                                href="${srWebRoot}/home/addShows/">Add ${('Show', 'Anime')[curListType == 'Anime']}</a>
+                                href="${srWebRoot}/home/addShows/">${_('Add')} ${(_('Show'), _('Anime'))[curListType == 'Anime']}</a>
                         </th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
@@ -296,11 +296,11 @@
                             % for curLoadingShow in sickrage.srCore.SHOWQUEUE.loadingShowList:
                                 % if not curLoadingShow.show or curLoadingShow.show not in sickrage.srCore.SHOWLIST:
                                     <tr>
-                                        <td align="center">(loading)</td>
+                                        <td align="center">(${_('loading')})</td>
                                         <td></td>
                                         <td>
                                             % if curLoadingShow.show is None:
-                                                <span title="">Loading... (${curLoadingShow.show_name})</span>
+                                                <span title="">${_('Loading...')} (${curLoadingShow.show_name})</span>
                                             % else:
                                                 <a data-fancybox
                                                    href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
@@ -349,16 +349,16 @@
 
                                 if cur_total != 0:
                                     download_stat = str(cur_downloaded)
-                                    download_stat_tip = "Downloaded: " + str(cur_downloaded)
+                                    download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
                                     if cur_snatched > 0:
                                         download_stat = download_stat + "+" + str(cur_snatched)
-                                        download_stat_tip = download_stat_tip + "&#013;" + "Snatched: " + str(cur_snatched)
+                                        download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
 
                                     download_stat = download_stat + " / " + str(cur_total)
-                                    download_stat_tip = download_stat_tip + "&#013;" + "Total: " + str(cur_total)
+                                    download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
                                 else:
                                     download_stat = '?'
-                                    download_stat_tip = "no data"
+                                    download_stat_tip = _("no data")
 
                                 nom = cur_downloaded
                                 den = cur_total
@@ -437,7 +437,7 @@
                                         % else:
                                             <span title="No Network"><img id="network" width="54" height="27"
                                                                           src="${srWebRoot}/images/network/nonetwork.png"
-                                                                          alt="No Network" title="No Network"/></span>
+                                                                          alt="${_('No Network')}" title="${_('No Network')}"/></span>
                                             <span class="visible-print-inline">No Network</span>
                                         % endif
                                     </td>
@@ -456,7 +456,6 @@
                                          data-progress-percentage="${progressbar_percent}"
                                          data-progress-text="${download_stat}"
                                          data-progress-tip="${download_stat_tip}"></div>
-                                    ## <span class="visible-print-inline">${download_stat}</span>
                                 </td>
 
                                 <td align="center" data-show-size="${show_size}">${pretty_filesize(show_size)}</td>
@@ -464,14 +463,14 @@
                                 <td align="center">
                                     <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
                                     <img src="${srWebRoot}/images/${('no16.png', 'yes16.png')[bool(paused)]}"
-                                         alt="${('No', 'Yes')[bool(paused)]}" width="16" height="16"/>
+                                         alt="${(_('No'), _('Yes'))[bool(paused)]}" width="16" height="16"/>
                                 </td>
 
                                 <td align="center">
                                     % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
-                                        Continuing
+                                        ${_('Continuing')}
                                     % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):
-                                        Ended
+                                        ${_('Ended')}
                                     % else:
                                         ${curShow.status}
                                     % endif

@@ -6,15 +6,15 @@
 %>
 
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">AnimeDB Settings</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Look &amp; Feel')}</a></li>
+    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('AnimeDB Settings')}</a></li>
+    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Look and Feel')}</a></li>
 </%block>
 
 <%block name="pages">
     <div id="core-tab-pane1" class="tab-pane fade in active">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <img class="notifier-icon" src="${srWebRoot}/images/anidb24.png" alt="AniDB" title="AniDB"
+                <img class="notifier-icon" src="${srWebRoot}/images/anidb24.png" alt="AniDB" title="${_('AniDB')}"
                      width="24" height="24"/>
                 <h3><a href="${anon_url('http://anidb.info')}"
                        onclick="window.open(this.href, '_blank'); return false;">AniDB</a></h3>
@@ -47,7 +47,7 @@
                                 </div>
                                 <input type="text" name="anidb_username" id="anidb_username"
                                        value="${sickrage.srCore.srConfig.ANIDB_USERNAME}"
-                                       title="AniDB username"
+                                       title="${_('AniDB username')}"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
@@ -64,7 +64,7 @@
                                 </div>
                                 <input type="password" name="anidb_password" id="anidb_password"
                                        value="${sickrage.srCore.srConfig.ANIDB_PASSWORD}"
-                                       title="AniDB password"
+                                       title="${_('AniDB password')}"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -112,7 +112,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
