@@ -1,6 +1,7 @@
 # Changelog
 
-- * 28ecc7b - 2017-10-16: Added a force restart button to error pages incase of webui issues 
+- * 39b358b - 2017-10-16: Fixed typo in main template 
+- * 1868b12 - 2017-10-16: Added a force restart button to error pages incase of webui issues 
 - * a3fd581 - 2017-10-16: Fixed issues with json gettext 
 - * 51e2aae - 2017-10-16: Finish i18n feature code 
 - * 7866282 - 2017-10-15: Added Gettext translation features to core javascript code 
