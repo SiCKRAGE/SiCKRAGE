@@ -276,8 +276,9 @@ module.exports = function (grunt) {
         },
         exec: {
             // Translations
-            'crowdin_upload': {cmd: 'crowdin-cli-py upload sources'},
-            'crowdin_download': {cmd: 'crowdin-cli-py download'},
+            'crowdin_upload_sources': {cmd: 'crowdin-cli-py upload sources'},
+            'crowdin_upload_translations': {cmd: 'crowdin-cli-py upload translations'},
+            'crowdin_download_translations': {cmd: 'crowdin-cli-py download'},
             'babel_extract': {cmd: 'python setup.py extract_messages'},
             'babel_update': {cmd: 'python setup.py update_catalog'},
             'babel_compile': {cmd: 'python setup.py compile_catalog'},
@@ -432,7 +433,7 @@ module.exports = function (grunt) {
 
         var tasks = [
             'exec:babel_extract',
-            'exec:crowdin_upload'
+            'exec:crowdin_upload_sources'
         ];
 
         if (process.env.CROWDIN_API_KEY) {
@@ -446,7 +447,7 @@ module.exports = function (grunt) {
         grunt.log.writeln('Downloading and compiling translations from Crowdin...'.magenta);
 
         var tasks = [
-            'exec:crowdin_download',
+            'exec:crowdin_download_translations',
             'exec:babel_compile',
             'po2json'
         ];

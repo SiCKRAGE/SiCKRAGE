@@ -382,8 +382,6 @@ class WebRoot(WebHandler):
             with io.open(locale_file, 'r') as f:
                 return f.read()
 
-        self.set_status(204)
-
     def apibuilder(self):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.srCore.srConfig.SORT_ARTICLE]
@@ -1115,7 +1113,7 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.srCore.PID) and not force:
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
-        # clear current user
+        # clear current user to disable header and footer
         self.current_user = None
 
         if not force: self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
