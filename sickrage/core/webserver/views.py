@@ -375,7 +375,6 @@ class WebRoot(WebHandler):
 
     def messages_json(self):
         """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.json """
-
         locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.srCore.srConfig.GUI_LANG, 'LC_MESSAGES/messages.json')
         if os.path.isfile(locale_file):
             self.set_header('Content-Type', 'application/json')

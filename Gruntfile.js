@@ -414,7 +414,7 @@ module.exports = function (grunt) {
 
         var tasks = [
             'default',
-            'update_trans', // Update translations
+            'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_start:' + newVersion,
             'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
