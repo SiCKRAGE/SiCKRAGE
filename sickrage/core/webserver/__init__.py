@@ -23,6 +23,7 @@ import shutil
 import socket
 import threading
 
+import tornado.locale
 from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
@@ -58,6 +59,9 @@ class srWebServer(threading.Thread):
 
     def run(self):
         self.started = True
+
+        # load languages for tornado web server
+        tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
 
         # clear mako cache folder
         mako_cache = os.path.join(sickrage.CACHE_DIR, 'mako')

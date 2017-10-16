@@ -150,6 +150,8 @@ class Core(object):
 
         self.SYS_ENCODING = get_sys_encoding()
 
+        self.LANGUAGES = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
+
         # patch modules with encoding kludge
         patch_modules()
 
@@ -180,6 +182,9 @@ class Core(object):
 
         # load config
         self.srConfig.load()
+
+        # set language
+        self.srConfig.change_gui_lang(self.srConfig.GUI_LANG)
 
         # set socket timeout
         socket.setdefaulttimeout(self.srConfig.SOCKET_TIMEOUT)

@@ -24,8 +24,6 @@ import requests
 import six
 
 import sickrage
-from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE, NOTIFY_LOGIN_TEXT, NOTIFY_LOGIN
 from sickrage.notifiers import srNotifiers
 
 
@@ -36,26 +34,26 @@ class SlackNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.SLACK_NOTIFY_ONSNATCH:
-            self._notify_slack(notifyStrings[NOTIFY_SNATCH] + ': ' + ep_name)
+            self._notify_slack(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.SLACK_NOTIFY_ONDOWNLOAD:
-            self._notify_slack(notifyStrings[NOTIFY_DOWNLOAD] + ': ' + ep_name)
+            self._notify_slack(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notify_slack(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
+            self._notify_slack(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_SLACK:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_slack(title + " - " + update_text + new_version)
 
     def _notify_login(self, ipaddress=""):
         if sickrage.srCore.srConfig.USE_SLACK:
-            update_text = notifyStrings[NOTIFY_LOGIN_TEXT]
-            title = notifyStrings[NOTIFY_LOGIN]
+            update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
+            title = self.notifyStrings[self.NOTIFY_LOGIN]
             self._notify_slack(title + " - " + update_text.format(ipaddress))
 
     def test_notify(self):

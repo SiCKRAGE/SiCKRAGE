@@ -16,8 +16,8 @@
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
-                                    <input class="form-control" title="Username" name="username" type="text"
-                                           placeholder="Username" autocomplete="off"/>
+                                    <input class="form-control" title="${_('Username')}" name="username" type="text"
+                                           placeholder="${_('Username')}" autocomplete="off"/>
                                 </div>
                             </div>
                         </div>
@@ -29,8 +29,8 @@
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
-                                    <input class="form-control" title="Password" name="password" type="password"
-                                           placeholder="Password" autocomplete="off"/>
+                                    <input class="form-control" title="${_('Password')}" name="password" type="password"
+                                           placeholder="${_('Password')}" autocomplete="off"/>
                                 </div>
                             </div>
                         </div>
@@ -38,10 +38,10 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="remember_me pull-left" title="for 30 days">
+                                <label class="remember_me pull-left" title="${_('for 30 days')}">
                                     <input class="inlay" id="remember_me" name="remember_me" type="checkbox" value="1" checked="checked"/>&nbsp;Remember me
                                 </label>
-                                <input class="btn btn-default pull-right" name="submit" type="submit" value="Login"/>
+                                <input class="btn btn-default pull-right" name="submit" type="submit" value="${_('Login')}"/>
                             </div>
                         </div>
                     </div>

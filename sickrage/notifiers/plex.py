@@ -25,9 +25,6 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
-    NOTIFY_GIT_UPDATE
-from sickrage.core.common import notifyStrings
 from sickrage.notifiers import srNotifiers
 
 
@@ -139,20 +136,20 @@ class PLEXNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.PLEX_NOTIFY_ONSNATCH:
-            self._notify_pmc(ep_name, notifyStrings[NOTIFY_SNATCH])
+            self._notify_pmc(ep_name, self.notifyStrings[self.NOTIFY_SNATCH])
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.PLEX_NOTIFY_ONDOWNLOAD:
-            self._notify_pmc(ep_name, notifyStrings[NOTIFY_DOWNLOAD])
+            self._notify_pmc(ep_name, self.notifyStrings[self.NOTIFY_DOWNLOAD])
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notify_pmc(ep_name + ': ' + lang, notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD])
+            self._notify_pmc(ep_name + ': ' + lang, self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD])
 
     def _notify_version_update(self, new_version='??'):
         if sickrage.srCore.srConfig.USE_PLEX:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             if update_text and title and new_version:
                 self._notify_pmc(update_text + new_version, title)
 

@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals, with_statement
 
 import argparse
 import atexit
+import gettext
 import io
 import os
 import site
@@ -45,6 +46,7 @@ io_loop = None
 
 MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(os.path.dirname(__file__)))))
 PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
+LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 
@@ -72,6 +74,8 @@ if not (LIBS_DIR in sys.path):
     site.addsitedir(LIBS_DIR)
     sys.path.extend(remainder)
 
+# set system default language
+gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
 
 class Daemon(object):
     """

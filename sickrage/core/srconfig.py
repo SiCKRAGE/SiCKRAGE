@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 import base64
 import datetime
+import gettext
 import os
 import os.path
 import pickle
@@ -30,14 +31,13 @@ import uuid
 from itertools import izip, cycle
 
 import rarfile
-import six
 from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, autoType, get_lan_ip, extractZip, \
-    try_int
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, auto_type, get_lan_ip, extractZip, \
+    try_int, checkbox_to_value
 
 
 class srConfig(object):
@@ -383,6 +383,7 @@ class srConfig(object):
         self.EMAIL_LIST = None
         self.GUI_NAME = 'default'
         self.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', self.GUI_NAME)
+        self.GUI_LANG = ""
         self.HOME_LAYOUT = None
         self.HISTORY_LAYOUT = None
         self.HISTORY_LIMIT = 0
@@ -513,6 +514,7 @@ class srConfig(object):
                 'coming_eps_display_paused': False,
                 'display_show_specials': True,
                 'gui_name': 'default',
+                'gui_lang': '',
                 'history_limit': '100',
                 'poster_sortdir': 1,
                 'coming_eps_missed_range': 7,
@@ -928,6 +930,17 @@ class srConfig(object):
             }
         }
 
+    def change_gui_lang(self, lang):
+        if lang:
+            # Selected language
+            gt = gettext.translation('messages', sickrage.LOCALE_DIR, languages=[lang], codeset='UTF-8')
+            gt.install(unicode=True, names=["ngettext"])
+        else:
+            # System default language
+            gettext.install('messages', sickrage.LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
+
+        self.GUI_LANG = lang
+
     def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
         # Check for failed unrar attempt, and remove it
         # Must be done before unrar is ever called or the self-extractor opens and locks startup
@@ -1207,7 +1220,7 @@ class srConfig(object):
 
         :param version_notify: New frequency
         """
-        self.VERSION_NOTIFY = self.checkbox_to_value(version_notify)
+        self.VERSION_NOTIFY = checkbox_to_value(version_notify)
         if not self.VERSION_NOTIFY:
             sickrage.srCore.NEWEST_VERSION_STRING = None
 
@@ -1218,7 +1231,7 @@ class srConfig(object):
 
         :param download_propers: New desired state
         """
-        self.DOWNLOAD_PROPERS = self.checkbox_to_value(download_propers)
+        self.DOWNLOAD_PROPERS = checkbox_to_value(download_propers)
         job = sickrage.srCore.srScheduler.get_job('PROPERSEARCHER')
         (job.pause, job.resume)[self.DOWNLOAD_PROPERS]()
 
@@ -1229,7 +1242,7 @@ class srConfig(object):
 
         :param use_trakt: New desired state
         """
-        self.USE_TRAKT = self.checkbox_to_value(use_trakt)
+        self.USE_TRAKT = checkbox_to_value(use_trakt)
         job = sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER')
         (job.pause, job.resume)[self.USE_TRAKT]()
 
@@ -1240,7 +1253,7 @@ class srConfig(object):
 
         :param use_subtitles: New desired state
         """
-        self.USE_SUBTITLES = self.checkbox_to_value(use_subtitles)
+        self.USE_SUBTITLES = checkbox_to_value(use_subtitles)
         job = sickrage.srCore.srScheduler.get_job('SUBTITLESEARCHER')
         (job.pause, job.resume)[self.USE_SUBTITLES]()
 
@@ -1251,90 +1264,9 @@ class srConfig(object):
 
         :param process_automatically: New desired state
         """
-        self.PROCESS_AUTOMATICALLY = self.checkbox_to_value(process_automatically)
+        self.PROCESS_AUTOMATICALLY = checkbox_to_value(process_automatically)
         job = sickrage.srCore.srScheduler.get_job('POSTPROCESSOR')
         (job.pause, job.resume)[self.PROCESS_AUTOMATICALLY]()
-
-    def checkbox_to_value(self, option, value_on=True, value_off=False):
-        """
-        Turns checkbox option 'on' or 'true' to value_on (1)
-        any other value returns value_off (0)
-        """
-
-        if isinstance(option, list):
-            option = option[-1]
-        if isinstance(option, six.string_types):
-            option = six.text_type(option).strip().lower()
-
-        if option in (True, 'on', 'true', value_on) or try_int(option) > 0:
-            return value_on
-
-        return value_off
-
-    def clean_host(self, host, default_port=None):
-        """
-        Returns host or host:port or empty string from a given url or host
-        If no port is found and default_port is given use host:default_port
-        """
-
-        host = host.strip()
-
-        if host:
-
-            match_host_port = re.search(r'(?:http.*://)?(?P<host>[^:/]+).?(?P<port>[0-9]*).*', host)
-
-            cleaned_host = match_host_port.group('host')
-            cleaned_port = match_host_port.group('port')
-
-            if cleaned_host:
-
-                if cleaned_port:
-                    host = cleaned_host + ':' + cleaned_port
-
-                elif default_port:
-                    host = cleaned_host + ':' + str(default_port)
-
-                else:
-                    host = cleaned_host
-
-            else:
-                host = ''
-
-        return host
-
-    def clean_hosts(self, hosts, default_port=None):
-        """
-        Returns list of cleaned hosts by Config.clean_host
-
-        :param hosts: list of hosts
-        :param default_port: default port to use
-        :return: list of cleaned hosts
-        """
-        cleaned_hosts = []
-
-        for cur_host in [x.strip() for x in hosts.split(",")]:
-            if cur_host:
-                cleaned_host = self.clean_host(cur_host, default_port)
-                if cleaned_host:
-                    cleaned_hosts.append(cleaned_host)
-
-        if cleaned_hosts:
-            cleaned_hosts = ",".join(cleaned_hosts)
-
-        else:
-            cleaned_hosts = ''
-
-        return cleaned_hosts
-
-    def to_int(self, val, default=0):
-        """ Return int value of val or default on error """
-
-        try:
-            val = int(val)
-        except Exception:
-            val = default
-
-        return val
 
     ################################################################################
     # check_setting_int                                                            #
@@ -1414,7 +1346,7 @@ class srConfig(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = self.checkbox_to_value(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
+            my_val = checkbox_to_value(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
         except Exception:
             my_val = bool(def_val)
 
@@ -1564,6 +1496,7 @@ class srConfig(object):
 
         # GUI SETTINGS
         self.GUI_NAME = self.check_setting_str('GUI', 'gui_name')
+        self.GUI_LANG = self.check_setting_str('GUI', 'gui_lang')
         self.THEME_NAME = self.check_setting_str('GUI', 'theme_name')
         self.FANART_BACKGROUND = self.check_setting_bool('GUI', 'fanart_background')
         self.FANART_BACKGROUND_OPACITY = self.check_setting_float('GUI', 'fanart_background_opacity')
@@ -1887,9 +1820,9 @@ class srConfig(object):
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             providerSettings = self.check_setting_str('Providers', providerID, '') or {}
             for k, v in providerSettings.items():
-                providerSettings[k] = autoType(v)
+                providerSettings[k] = auto_type(v)
 
-            [providerObj.__dict__.update({x: providerSettings[x]}) for x in
+            [setattr(providerObj, x, providerSettings[x]) for x in
              set(providerObj.__dict__).intersection(providerSettings)]
 
         # order providers
@@ -2034,6 +1967,7 @@ class srConfig(object):
             },
             'GUI': {
                 'gui_name': self.GUI_NAME,
+                'gui_lang': self.GUI_LANG,
                 'theme_name': self.THEME_NAME,
                 'home_layout': self.HOME_LAYOUT,
                 'history_layout': self.HISTORY_LAYOUT,
@@ -2366,8 +2300,8 @@ class srConfig(object):
                          'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
-            new_config['Providers'][providerID] = dict(
-                [(x, providerObj.__dict__[x]) for x in provider_keys if hasattr(providerObj, x)])
+            provider_settings = dict([(x, getattr(providerObj, x)) for x in provider_keys if hasattr(providerObj, x)])
+            new_config['Providers'][providerID] = provider_settings
 
         for metadataProviderID, metadataProviderObj in sickrage.srCore.metadataProvidersDict.items():
             new_config['MetadataProviders'][metadataProviderID] = metadataProviderObj.get_config()

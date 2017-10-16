@@ -27,7 +27,7 @@ from xml.etree.ElementTree import ElementTree, SubElement
 import fanart
 
 import sickrage
-from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension, tryInt
+from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension, try_int
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.metadata.helpers import getShowImage
@@ -837,7 +837,7 @@ class GenericMetadata(object):
 
             indexer_id_text = showXML.findtext('tvdbid') or showXML.findtext('id')
             if indexer_id_text:
-                indexer_id = tryInt(indexer_id_text, None)
+                indexer_id = try_int(indexer_id_text, None)
                 if indexer_id is None or indexer_id < 1:
                     sickrage.srCore.srLogger.debug(
                         "Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file")

@@ -23,22 +23,22 @@
 
                 <form action="editShow" method="post">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Main</a></li>
-                        <li><a data-toggle="tab" href="#core-tab-pane2">Format</a></li>
-                        <li><a data-toggle="tab" href="#core-tab-pane3">Advanced</a></li>
+                        <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Main')}</a></li>
+                        <li><a data-toggle="tab" href="#core-tab-pane2">${_('Format')}</a></li>
+                        <li><a data-toggle="tab" href="#core-tab-pane3">${_('Advanced')}</a></li>
                     </ul>
 
                     <div class="tab-content">
                         <div id="core-tab-pane1" class="tab-pane fade in active">
                             <div class="row tab-pane">
                                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                                    <h3>Main Settings</h3>
+                                    <h3>${_('Main Settings')}</h3>
                                 </div>
 
                                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Show Location</label>
+                                            <label class="component-title">${_('Show Location')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="hidden" name="show" value="${show.indexerid}"/>
@@ -58,7 +58,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Preferred Quality</label>
+                                            <label class="component-title">${_('Preferred Quality')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <% qualities = Quality.splitQuality(int(show.quality)) %>
@@ -70,7 +70,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Default Episode Status</label>
+                                            <label class="component-title">${_('Default Episode Status')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
@@ -81,7 +81,7 @@
                                                         title="This will set the status for future episodes."
                                                         class="form-control">
                                                     % for curStatus in [WANTED, SKIPPED, IGNORED]:
-                                                        <option value="${curStatus}" ${('', 'selected="selected"')[curStatus == show.default_ep_status]}>${statusStrings[curStatus]}</option>
+                                                        <option value="${curStatus}" ${('', 'selected')[curStatus == show.default_ep_status]}>${statusStrings[curStatus]}</option>
                                                     % endfor
                                                 </select>
                                             </div>
@@ -92,7 +92,7 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Info Language</label>
+                                            <label class="component-title">${_('Info Language')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <% languages = srIndexerApi().indexer().languages.keys() %>
@@ -111,54 +111,54 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Archive on first match</label>
+                                            <label class="component-title">${_('Archive on first match')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="archive_firstmatch"
                                                    name="archive_firstmatch" ${('', 'checked')[show.archive_firstmatch == 1]} />
                                             <label for="archive_firstmatch">
-                                                archive episode after the first best match is found from your archive
-                                                quality list
+                                                ${_('archive episode after the first best match is found from your '
+                                                'archive quality list')}
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Subtitles</label>
+                                            <label class="component-title">${_('Subtitles')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="subtitles"
                                                    name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.srCore.srConfig.USE_SUBTITLES])]}${('disabled="disabled"', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/>
                                             <label for="subtitles">
-                                                search for subtitles
+                                                ${_('search for subtitles')}
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Subtitle metdata</label>
+                                            <label class="component-title">${_('Subtitle metdata')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="subtitles_sr_metadata"
                                                    name="subtitles_sr_metadata" ${('', 'checked')[show.subtitles_sr_metadata == 1]} />
                                             <label for="subtitles_sr_metadata">
-                                                use SiCKRAGE metadata when searching for subtitle, this will override
-                                                the auto-discovered metadata
+                                                ${_('use SiCKRAGE metadata when searching for subtitle, this will '
+                                                'override the auto-discovered metadata')}
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Paused</label><br/>
+                                            <label class="component-title">${_('Paused')}</label><br/>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="paused"
                                                    name="paused" ${('', 'checked')[show.paused == 1]} />
                                             <label for="paused">
-                                                pause this show (SiCKRAGE will not download episodes)
+                                                ${_('pause this show (SiCKRAGE will not download episodes)')}
                                             </label>
                                         </div>
                                     </div>
@@ -168,63 +168,67 @@
                         <div id="core-tab-pane2" class="tab-pane fade">
                             <div class="row tab-pane">
                                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                                    <h3>Format Settings</h3>
+                                    <h3>${_('Format Settings')}</h3>
                                 </div>
 
                                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Air by date</label>
+                                            <label class="component-title">${_('Air by date')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="airbydate"
                                                    name="air_by_date" ${('', 'checked')[show.air_by_date == 1]} />
                                             <label for="airbydate">
-                                                check if the show is released as Show.03.02.2010 rather than Show.S02E03
-                                                <pre>In case of an air date conflict between regular and special episodes, the later will be ignored.</pre>
+                                                ${_('check if the show is released as Show.03.02.2010 rather than Show.S02E03')}
+                                                <br>
+                                                <pre>${_('In case of an air date conflict between regular and special '
+                                                'episodes, the later will be ignored.')}</pre>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Sports</label>
+                                            <label class="component-title">${_('Sports')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="sports"
                                                    name="sports" ${('', 'checked')[show.sports == 1]}/>
                                             <label for="sports">
-                                                check if the show is a sporting or MMA event released as Show.03.02.2010
-                                                rather than Show.S02E03
-                                                <pre>In case of an air date conflict between regular and special episodes, the later will be ignored.</pre>
+                                                ${_('check if the show is a sporting or MMA event released as '
+                                                'Show.03.02.2010 rather than Show.S02E03')}<br>
+                                                <pre>${_('In case of an air date conflict between regular and special '
+                                                'episodes, the later will be ignored.')}</pre>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">DVD Order</label>
+                                            <label class="component-title">${_('DVD Order')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="dvdorder"
                                                    name="dvdorder" ${('', 'checked')[show.dvdorder == 1]} />
                                             <label for="dvdorder">
-                                                use the DVD order instead of the air order<br>
-                                                <pre> A "Force Full Update" is necessary, and if you have existing episodes you need to sort them manually.</pre>
+                                                ${_('use the DVD order instead of the air order')}<br>
+                                                <pre>${_('A "Force Full Update" is necessary, and if you have existing '
+                                                'episodes you need to sort them manually.')}</pre>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Anime</label>
+                                            <label class="component-title">${_('Anime')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="anime"
                                                    name="anime" ${('', 'checked')[show.is_anime == 1]}>
                                             <label for="anime">
-                                                check if the show is Anime and episodes are released as Show.265 rather
-                                                than Show.S02E03
+                                                ${_('check if the show is Anime and episodes are released as Show.265 '
+                                                'rather than Show.S02E03')}
                                             </label>
                                             <br/>
                                             % if show.is_anime:
@@ -235,26 +239,26 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Season folders</label>
+                                            <label class="component-title">${_('Season folders')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="season_folders"
                                                    name="flatten_folders" ${('checked', '')[show.flatten_folders == 1 and not sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}/>
                                             <label for="season_folders">
-                                                group episodes by season folder (uncheck to store in a single folder)
+                                                ${_('group episodes by season folder (uncheck to store in a single folder)')}
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Scene Numbering</label>
+                                            <label class="component-title">${_('Scene Numbering')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="scene"
                                                    name="scene" ${('', 'checked')[show.scene == 1]} />
                                             <label for="scene">
-                                                search by scene numbering (uncheck to search by indexer numbering)
+                                                ${_('search by scene numbering (uncheck to search by indexer numbering)')}
                                             </label>
                                         </div>
                                     </div>
@@ -265,13 +269,13 @@
                         <div id="core-tab-pane3" class="tab-pane fade">
                             <div class="row tab-pane">
                                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                                    <h3>Advanced Settings</h3>
+                                    <h3>${_('Advanced Settings')}</h3>
                                 </div>
                                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Ignored Words</label>
+                                            <label class="component-title">${_('Ignored Words')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
@@ -280,21 +284,18 @@
                                                 </div>
                                                 <input type="text" id="rls_ignore_words" name="rls_ignore_words"
                                                        value="${show.rls_ignore_words}"
-                                                       placeholder="ex. word1,word2,word3"
+                                                       placeholder="${_('ex. word1,word2,word3')}"
                                                        class="form-control "/>
                                             </div>
                                             <label for="rls_ignore_words">
-                                                <p>
-                                                    Search results with one or more words from this list will be
-                                                    ignored.
-                                                </p>
+                                                <p>${_('Search results with one or more words from this list will be ignored.')}</p>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Required Words</label>
+                                            <label class="component-title">${_('Required Words')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
@@ -302,19 +303,19 @@
                                                     <span class="fa fa-file-word-o"></span>
                                                 </div>
                                                 <input type="text" id="rls_require_words" name="rls_require_words"
-                                                       placeholder="ex. word1,word2,word3"
+                                                       placeholder="${_('ex. word1,word2,word3')}"
                                                        value="${show.rls_require_words}"
                                                        class="form-control "/>
                                             </div>
                                             <label for="rls_require_words">
-                                                <p>Search results with no words from this list will be ignored.</p>
+                                                <p>${_('Search results with no words from this list will be ignored.')}</p>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">Scene Exception</label>
+                                            <label class="component-title">${_('Scene Exception')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <div class="input-group input350">
@@ -347,9 +348,8 @@
                                             </div>
 
                                             <label for="exceptions_list">
-                                                This will affect episode search on NZB and torrent
-                                                providers. This list overrides the original name; it doesn't append
-                                                to it.
+                                                ${_('This will affect episode search on NZB and torrent providers. '
+                                                'This list overrides the original name it doesn\'t append to it.')}
                                             </label>
                                         </div>
                                     </div>
@@ -359,7 +359,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input id="submit" type="submit" value="Save Changes"
+                            <input id="submit" type="submit" value="${_('Save Changes')}"
                                    class="btn pull-left config_submitter button">
                         </div>
                     </div>

@@ -41,28 +41,18 @@ cpu_presets = {
     'LOW': 0.01
 }
 
+countryList = {'Australia': 'AU',
+               'Canada': 'CA',
+               'USA': 'US'
+               }
+
+dateFormat = '%Y-%m-%d'
+dateTimeFormat = '%Y-%m-%d %H:%M:%S'
+timeFormat = '%A %I:%M %p'
+
 ### Other constants
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
-
-### Notification Types
-NOTIFY_SNATCH = 1
-NOTIFY_DOWNLOAD = 2
-NOTIFY_SUBTITLE_DOWNLOAD = 3
-NOTIFY_GIT_UPDATE = 4
-NOTIFY_GIT_UPDATE_TEXT = 5
-NOTIFY_LOGIN = 6
-NOTIFY_LOGIN_TEXT = 7
-
-notifyStrings = {
-    NOTIFY_SNATCH: "Started Download",
-    NOTIFY_DOWNLOAD: "Download Finished",
-    NOTIFY_SUBTITLE_DOWNLOAD: "Subtitle Download Finished",
-    NOTIFY_GIT_UPDATE: "SiCKRAGE Updated",
-    NOTIFY_GIT_UPDATE_TEXT: "SiCKRAGE Updated To Commit#: ",
-    NOTIFY_LOGIN: "SiCKRAGE new login",
-    NOTIFY_LOGIN_TEXT: "New login from IP: {0}. http://geomaplookup.net/?ip={0}"
-}
 
 ### Episode statuses
 UNKNOWN = -1  # should never happen
@@ -85,9 +75,12 @@ NAMING_LIMITED_EXTEND = 8
 NAMING_SEPARATED_REPEAT = 16
 NAMING_LIMITED_EXTEND_E_PREFIXED = 32
 
-multiEpStrings = {NAMING_REPEAT: "Repeat", NAMING_SEPARATED_REPEAT: "Repeat (Separated)", NAMING_DUPLICATE: "Duplicate",
-                  NAMING_EXTEND: "Extend", NAMING_LIMITED_EXTEND: "Extend (Limited)",
-                  NAMING_LIMITED_EXTEND_E_PREFIXED: "Extend (Limited, E-prefixed)"}
+multiEpStrings = {NAMING_REPEAT: _("Repeat"),
+                  NAMING_SEPARATED_REPEAT: _("Repeat (Separated)"),
+                  NAMING_DUPLICATE: _("Duplicate"),
+                  NAMING_EXTEND: _("Extend"),
+                  NAMING_LIMITED_EXTEND: _("Extend (Limited)"),
+                  NAMING_LIMITED_EXTEND_E_PREFIXED: _("Extend (Limited, E-prefixed)")}
 
 
 # pylint: disable=W0232
@@ -188,12 +181,12 @@ class Quality(object):
                        ANYWEBDL: "any-hd",
                        ANYBLURAY: "any-hd"}
 
-    statusPrefixes = {DOWNLOADED: "Downloaded",
-                      SNATCHED: "Snatched",
-                      SNATCHED_PROPER: "Snatched (Proper)",
-                      FAILED: "Failed",
-                      SNATCHED_BEST: "Snatched (Best)",
-                      ARCHIVED: "Archived"}
+    statusPrefixes = {DOWNLOADED: _("Downloaded"),
+                      SNATCHED: _("Snatched"),
+                      SNATCHED_PROPER: _("Snatched (Proper)"),
+                      FAILED: _("Failed"),
+                      SNATCHED_BEST: _("Snatched (Best)"),
+                      ARCHIVED: _("Archived")}
 
     @staticmethod
     def _getStatusStrings(status):
@@ -299,8 +292,9 @@ class Quality(object):
 
             return ret
 
-        if (check_name([r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
-                       all)
+        if (check_name(
+                [r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
+                all)
             and not check_name([r"(720|1080)[pi]"], all)
             and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDTV
@@ -598,18 +592,18 @@ class StatusStrings(UserDict):
             pass  # ...suppress the ValueError and do nothing, the key does not exist
 
 
-statusStrings = StatusStrings({UNKNOWN: "Unknown",
-                               UNAIRED: "Unaired",
-                               SNATCHED: "Snatched",
-                               DOWNLOADED: "Downloaded",
-                               SKIPPED: "Skipped",
-                               SNATCHED_PROPER: "Snatched (Proper)",
-                               WANTED: "Wanted",
-                               ARCHIVED: "Archived",
-                               IGNORED: "Ignored",
-                               SUBTITLED: "Subtitled",
-                               FAILED: "Failed",
-                               SNATCHED_BEST: "Snatched (Best)"})
+statusStrings = StatusStrings({UNKNOWN: _("Unknown"),
+                               UNAIRED: _("Unaired"),
+                               SNATCHED: _("Snatched"),
+                               DOWNLOADED: _("Downloaded"),
+                               SKIPPED: _("Skipped"),
+                               SNATCHED_PROPER: _("Snatched (Proper)"),
+                               WANTED: _("Wanted"),
+                               ARCHIVED: _("Archived"),
+                               IGNORED: _("Ignored"),
+                               SUBTITLED: _("Subtitled"),
+                               FAILED: _("Failed"),
+                               SNATCHED_BEST: _("Snatched (Best)")})
 
 
 class Overview(object):
@@ -628,20 +622,6 @@ class Overview(object):
                        GOOD: "good",
                        UNAIRED: "unaired",
                        SNATCHED: "snatched"}
-
-
-# Get our xml namespaces correct for lxml
-XML_NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-             'xsd': 'http://www.w3.org/2001/XMLSchema'}
-
-countryList = {'Australia': 'AU',
-               'Canada': 'CA',
-               'USA': 'US'
-               }
-
-dateFormat = '%Y-%m-%d'
-dateTimeFormat = '%Y-%m-%d %H:%M:%S'
-timeFormat = '%A %I:%M %p'
 
 
 def get_quality_string(quality):

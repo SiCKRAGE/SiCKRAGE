@@ -21,16 +21,16 @@
         <div class="col-md-12">
             <div class="btn-group navbar-btn" data-toggle="buttons">
                 <label class="btn btn-primary">
-                    <input autocomplete="off" id="option-profile" type="checkbox"/> Profile
+                    <input autocomplete="off" id="option-profile" type="checkbox"/> ${_('Profile')}
                 </label>
                 <label class="btn btn-primary">
-                    <input autocomplete="off" id="option-jsonp" type="checkbox"/> JSONP
+                    <input autocomplete="off" id="option-jsonp" type="checkbox"/> ${_('JSONP')}
                 </label>
             </div>
 
             <form class="navbar-form navbar-right">
                 <div class="form-group">
-                    <input autocomplete="off" class="form-control" id="command-search" placeholder="Command name"
+                    <input autocomplete="off" class="form-control" id="command-search" placeholder="${_('Command name')}"
                            type="search"/>
                 </div>
             </form>
@@ -61,18 +61,18 @@
                         % if help['data']['optionalParameters'] or help['data']['requiredParameters']:
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h4>Parameters</h4>
+                                    <h4>${_('Parameters')}</h4>
 
                                     <div class="horizontal-scroll">
                                         <table class="tablesorter">
                                             <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Required</th>
-                                                <th>Description</th>
-                                                <th>Type</th>
-                                                <th>Default value</th>
-                                                <th>Allowed values</th>
+                                                <th>${_('Name')}</th>
+                                                <th>${_('Required')}</th>
+                                                <th>${_('Description')}</th>
+                                                <th>${_('Type')}</th>
+                                                <th>${_('Default value')}</th>
+                                                <th>${_('Allowed values')}</th>
                                             </tr>
                                             </thead>
                                             ${display_parameters_doc(help['data']['requiredParameters'], True)}
@@ -84,9 +84,10 @@
                         % endif
                         <div class="row">
                             <div class="col-md-12">
-                                <h4>Playground</h4>
+                                <h4>${_('Playground')}</h4>
                                 <span>
-                                    URL: <kbd id="command-${command_id}-base-url">/api/${apikey}/?cmd=${command}</kbd>
+                                    ${_('URL:')} <kbd id="command-${command_id}-base-url">/api/${apikey}
+                                    /?cmd=${command}</kbd>
                                 </span>
                             </div>
                         </div>
@@ -94,7 +95,7 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label>Required parameters</label>
+                                    <label>${_('Required parameters')}</label>
                                     ${display_parameters_playground(help['data']['requiredParameters'], True, command_id)}
                                 </div>
                             </div>
@@ -103,7 +104,7 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label>Optional parameters</label>
+                                    <label>${_('Optional parameters')}</label>
                                     ${display_parameters_playground(help['data']['optionalParameters'], False, command_id)}
                                 </div>
                             </div>
@@ -115,7 +116,7 @@
                                         data-base-url="command-${command_id}-base-url"
                                         data-target="#command-${command_id}-response"
                                         data-time="#command-${command_id}-time" data-url="#command-${command_id}-url">
-                                    Call API
+                                    ${_('Call API')}
                                 </button>
                             </div>
                         </div>
@@ -123,12 +124,12 @@
                         <div class="result-wrapper hidden">
                             <div class="clearfix">
                                 <span class="pull-left">
-                                    Response: <strong id="command-${command_id}-time"></strong><br>
-                                    URL: <kbd id="command-${command_id}-url"></kbd>
+                                    ${_('Response:')} <strong id="command-${command_id}-time"></strong><br>
+                                    ${_('URL:')} <kbd id="command-${command_id}-url"></kbd>
                                 </span>
                                 <span class="pull-right">
                                     <button class="btn btn-default" data-action="clear-result"
-                                            data-target="#command-${command_id}-response">Clear</button>
+                                            data-target="#command-${command_id}-response">${_('Clear')}</button>
                                 </span>
                             </div>
 
@@ -155,9 +156,9 @@
                 </td>
                 <td class="text-center">
                     % if required:
-                        <span class="glyphicon glyphicon-ok text-success" title="Yes"></span>
+                        <span class="glyphicon glyphicon-ok text-success" title="${_('Yes')}"></span>
                     % else:
-                        <span class="glyphicon glyphicon-remove text-muted" title="No"></span>
+                        <span class="glyphicon glyphicon-remove text-muted" title="${_('No')}"></span>
                     % endif
                 </td>
                 <td>${parameter_help.get('desc', '')}</td>
@@ -184,8 +185,8 @@
                     <option>${parameter}</option>
 
                     % if allowed_values == [0, 1]:
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>
+                        <option value="0">${_('No')}</option>
+                        <option value="1">${_('Yes')}</option>
                     % else:
                         % for allowed_value in allowed_values:
                             <option value="${allowed_value}">${allowed_value}</option>
@@ -204,13 +205,13 @@
             % if 'season' in parameters:
                 <select class="form-control hidden" name="season" data-action="update-episodes"
                         data-command="${command}">
-                    <option>season</option>
+                    <option>${_('season')}</option>
                 </select>
             % endif
 
             % if 'episode' in parameters:
                 <select class="form-control hidden" name="episode" data-command="${command}">
-                    <option>episode</option>
+                    <option>${_('episode')}</option>
                 </select>
             % endif
             % elif parameter == 'tvdbid':

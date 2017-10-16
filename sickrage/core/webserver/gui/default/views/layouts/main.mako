@@ -19,7 +19,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SickRage - ${title}</title>
+    <title>${_('SiCKRAGE')} - ${title}</title>
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -80,6 +80,10 @@
     <link rel="icon" type="image/png" sizes="16x16" href="${srWebRoot}/images/ico/favicon-16x16.png">
     <link rel="manifest" href="${srWebRoot}/images/ico/manifest.json">
 
+    % if sickrage.srCore.srConfig.GUI_LANG:
+        <link rel="gettext" type="application/json" href="${srWebRoot}/messages.json">
+    % endif
+
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
     <link rel="stylesheet" type="text/css"
@@ -93,7 +97,7 @@
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                             data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
+                        <span class="sr-only">${_('Toggle navigation')}</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -109,23 +113,22 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
                             <a href="${srWebRoot}/home/" class="dropdown-toggle" aria-haspopup="true"
-                               data-toggle="dropdown"
-                               data-hover="dropdown"><span>Shows</span>
+                               data-toggle="dropdown" data-hover="dropdown"><span>${_('Shows')}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="${srWebRoot}/home/">
-                                        <i class="menu-icon-home"></i>&nbsp;Show List
+                                        <i class="menu-icon-home"></i>&nbsp;${_('Show List')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/home/addShows/">
-                                        <i class="menu-icon-addshow"></i>&nbsp;Add Shows
+                                        <i class="menu-icon-addshow"></i>&nbsp;${_('Add Shows')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/home/postprocess/">
-                                        <i class="menu-icon-postprocess"></i>&nbsp;Manual Post-Processing
+                                        <i class="menu-icon-postprocess"></i>&nbsp;${_('Manual Post-Processing')}
                                     </a>
                                 </li>
                                 % if sickrage.srCore.srConfig.SHOWS_RECENT:
@@ -151,70 +154,70 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="${srWebRoot}/manage/">
-                                        <i class="menu-icon-manage"></i>&nbsp;Mass Update
+                                        <i class="menu-icon-manage"></i>&nbsp;${_('Mass Update')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/manage/backlogOverview/">
-                                        <i class="menu-icon-backlog-view"></i>&nbsp;Backlog Overview
+                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Backlog Overview')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/manage/manageQueues/">
-                                        <i class="menu-icon-manage-searches"></i>&nbsp;Manage Queues
+                                        <i class="menu-icon-manage-searches"></i>&nbsp;${_('Manage Queues')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/manage/episodeStatuses/">
-                                        <i class="menu-icon-backlog"></i>&nbsp;Episode Status Management
+                                        <i class="menu-icon-backlog"></i>&nbsp;${_('Episode Status Management')}
                                     </a>
                                 </li>
                                 % if sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_OAUTH_TOKEN != "":
                                     <li>
                                         <a href="${srWebRoot}/home/syncTrakt/">
-                                            <i class="menu-icon-backlog-view"></i>&nbsp;Sync Trakt
+                                            <i class="menu-icon-backlog-view"></i>&nbsp;${_('Sync Trakt')}
                                         </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_SERVER_HOST != "":
                                     <li>
                                         <a href="${srWebRoot}/home/updatePLEX/">
-                                            <i class="menu-icon-backlog-view"></i>&nbsp;Update PLEX
+                                            <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update PLEX')}
                                         </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_HOST != "":
                                     <li>
                                         <a href="${srWebRoot}/home/updateKODI/">
-                                            <i class="menu-icon-kodi"></i>&nbsp;Update KODI
+                                            <i class="menu-icon-kodi"></i>&nbsp;${_('Update KODI')}
                                         </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_EMBY and sickrage.srCore.srConfig.EMBY_HOST != "" and sickrage.srCore.srConfig.EMBY_APIKEY != "":
                                     <li>
                                         <a href="${srWebRoot}/home/updateEMBY/">
-                                            <i class="menu-icon-backlog-view"></i>&nbsp;Update Emby
+                                            <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update Emby')}
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
+                                % if torrent_webui_url:
                                     <li>
-                                        <a href="${srWebRoot}/manage/manageTorrents/">
-                                            <i class="menu-icon-bittorrent"></i>&nbsp;Manage Torrents
+                                        <a href="${torrent_webui_url}" target="_blank">
+                                            <i class="menu-icon-bittorrent"></i>&nbsp;${_('Manage Torrents')}
                                         </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
                                     <li>
                                         <a href="${srWebRoot}/manage/failedDownloads/">
-                                            <i class="menu-icon-failed-download"></i>&nbsp;Failed Downloads
+                                            <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
                                         </a>
                                     </li>
                                 % endif
                                 % if sickrage.srCore.srConfig.USE_SUBTITLES:
                                     <li>
                                         <a href="${srWebRoot}/manage/subtitleMissed/">
-                                            <i class="menu-icon-backlog"></i>&nbsp;Missed Subtitle Management
+                                            <i class="menu-icon-backlog"></i>&nbsp;${_('Missed Subtitle Management')}
                                         </a>
                                     </li>
                                 % endif
@@ -223,68 +226,68 @@
                         </li>
 
                         <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
-                            <a href="${srWebRoot}/schedule/">Schedule</a>
+                            <a href="${srWebRoot}/schedule/">${_('Schedule')}</a>
                         </li>
 
                         <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
-                            <a href="${srWebRoot}/history/">History</a>
+                            <a href="${srWebRoot}/history/">${_('History')}</a>
                         </li>
 
                         <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
                             <a href="${srWebRoot}/config/" class="dropdown-toggle" aria-haspopup="true"
                                data-toggle="dropdown"
-                               data-hover="dropdown"><span class="visible-xs">Config</span><img
+                               data-hover="dropdown"><span class="visible-xs">${_('Config')}</span><img
                                     src="${srWebRoot}/images/menu/system18.png" class="navbaricon hidden-xs"/>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="${srWebRoot}/config/">
-                                        <i class="fa fa-info"></i>&nbsp;Help &amp; Info
+                                        <i class="fa fa-info"></i>&nbsp;${_('Help and Info')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/general/">
-                                        <i class="fa fa-cogs"></i>&nbsp;General
+                                        <i class="fa fa-cogs"></i>&nbsp;${_('General')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/backuprestore/">
-                                        <i class="fa fa-upload"></i>&nbsp;Backup &amp; Restore
+                                        <i class="fa fa-upload"></i>&nbsp;${_('Backup and Restore')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/search/">
-                                        <i class="fa fa-binoculars"></i>&nbsp;Search Clients
+                                        <i class="fa fa-binoculars"></i>&nbsp;${_('Search Clients')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/providers/">
-                                        <i class="fa fa-share-alt"></i>&nbsp;Search Providers
+                                        <i class="fa fa-share-alt"></i>&nbsp;${_('Search Providers')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/subtitles/">
-                                        <i class="fa fa-cc"></i>&nbsp;Subtitles Settings
+                                        <i class="fa fa-cc"></i>&nbsp;${_('Subtitles Settings')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/qualitySettings/">
-                                        <i class="fa fa-wrench"></i>&nbsp;Quality Settings
+                                        <i class="fa fa-wrench"></i>&nbsp;${_('Quality Settings')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/postProcessing/">
-                                        <i class="fa fa-refresh"></i>&nbsp;Post Processing
+                                        <i class="fa fa-refresh"></i>&nbsp;${_('Post Processing')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/notifications/">
-                                        <i class="fa fa-bell"></i>&nbsp;Notifications
+                                        <i class="fa fa-bell"></i>&nbsp;${_('Notifications')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/config/anime/">
-                                        <i class="fa fa-eye"></i>&nbsp;Anime
+                                        <i class="fa fa-eye"></i>&nbsp;${_('Anime')}
                                     </a>
                                 </li>
                             </ul>
@@ -294,47 +297,47 @@
                         <%
                             numCombined = numErrors + numWarnings
                             if numCombined:
-                                                if numErrors:
-                                                    toolsBadgeClass = ' btn-danger'
-                                                elif numWarnings:
-                                                    toolsBadgeClass = ' btn-warning'
-                                                else:
-                                                    toolsBadgeClass = ''
+                                if numErrors:
+                                    toolsBadgeClass = ' btn-danger'
+                                elif numWarnings:
+                                    toolsBadgeClass = ' btn-warning'
+                                else:
+                                    toolsBadgeClass = ''
 
-                                                toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
+                                toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
                             else:
-                                                toolsBadge = ''
+                                toolsBadge = ''
                         %>
 
                         <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
                             <a href="${srWebRoot}/home/status/" class="dropdown-toggle" aria-haspopup="true"
                                data-toggle="dropdown"
-                               data-hover="dropdown"><span class="visible-xs">Tools</span><img
+                               data-hover="dropdown"><span class="visible-xs">${_('Tools')}</span><img
                                     src="${srWebRoot}/images/menu/system18-2.png"
                                     class="navbaricon hidden-xs"/>${toolsBadge}
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <a href="${srWebRoot}/IRC/">
-                                        <i class="fa fa-hashtag"></i>&nbsp;IRC
+                                        <i class="fa fa-hashtag"></i>&nbsp;${_('IRC')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/changes/">
-                                        <i class="fa fa-globe"></i>&nbsp;Changelog
+                                        <i class="fa fa-globe"></i>&nbsp;${_('Changelog')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
                                        onclick="window.open('${sickrage.srCore.srConfig.ANON_REDIRECT}' + this.href); return false;">
-                                        <i class="fa fa-money"></i>&nbsp;Donate
+                                        <i class="fa fa-money"></i>&nbsp;${_('Donate')}
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 %if numErrors:
                                     <li>
                                         <a href="${srWebRoot}/logs/">
-                                            <i class="fa fa-exclamation-circle"></i>&nbsp;View Errors
+                                            <i class="fa fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
                                             <span class="badge btn-danger">${numErrors}</span>
                                         </a>
                                     </li>
@@ -342,43 +345,43 @@
                                 %if numWarnings:
                                     <li>
                                         <a href="${srWebRoot}/logs/?level=${sickrage.srCore.srLogger.WARNING}">
-                                            <i class="fa fa-exclamation-triangle"></i>&nbsp;View Warnings
+                                            <i class="fa fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
                                             <span class="badge btn-warning">${numWarnings}</span>
                                         </a>
                                     </li>
                                 %endif
                                 <li>
                                     <a href="${srWebRoot}/logs/viewlog/">
-                                        <i class="fa fa-file-text-o"></i>&nbsp;View Log
+                                        <i class="fa fa-file-text-o"></i>&nbsp;${_('View Log')}
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
                                     <a href="${srWebRoot}/home/updateCheck?pid=${srPID}">
-                                        <i class="fa fa-check-square"></i>&nbsp;Check For Updates
+                                        <i class="fa fa-check-square"></i>&nbsp;${_('Check For Updates')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/home/restart/?pid=${srPID}" class="confirm restart">
-                                        <i class="fa fa-repeat"></i>&nbsp;Restart
+                                        <i class="fa fa-repeat"></i>&nbsp;${_('Restart')}
                                     </a>
                                 </li>
                                 <li>
                                     <a href="${srWebRoot}/home/shutdown/?pid=${srPID}" class="confirm shutdown">
-                                        <i class="fa fa-power-off"></i>&nbsp;Shutdown
+                                        <i class="fa fa-power-off"></i>&nbsp;${_('Shutdown')}
                                     </a>
                                 </li>
                                 % if current_user != True:
                                     <li>
                                         <a href="${srWebRoot}/logout" class="confirm logout">
-                                            <i class="fa fa-sign-out"></i>&nbsp;Logout
+                                            <i class="fa fa-sign-out"></i>&nbsp;${_('Logout')}
                                         </a>
                                     </li>
                                 % endif
                                 <li class="divider"></li>
                                 <li>
                                     <a href="${srWebRoot}/home/status/">
-                                        <i class="fa fa-server"></i>&nbsp;Server Status
+                                        <i class="fa fa-server"></i>&nbsp;${_('Server Status')}
                                     </a>
                                 </li>
                             </ul>
@@ -437,7 +440,7 @@
         </div>
     </div>
 
-    % if current_user and srFooter:
+    % if current_user:
         <div class="row">
             <div class="footer text-center clearfix col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
                 <%
@@ -449,35 +452,44 @@
                     ep_percentage = '' if ep_total == 0 else '(<span class="footer-highlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
                 %>
                 <div>
-                    <span class="footer-highlight">${stats['shows']['total']}</span> Shows (<span
-                        class="footer-highlight">${stats['shows']['active']}</span> Active)
+                    <span class="footer-highlight">${stats['shows']['total']}</span> ${_('Shows')} (<span
+                        class="footer-highlight">${stats['shows']['active']}</span> ${_('Active')})
                     | <span class="footer-highlight">${ep_downloaded}</span>
 
                     % if ep_snatched:
-                        <span class="footer-highlight"><a
-                                href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a></span>
-                        Snatched
+                        <span class="footer-highlight">
+                            <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
+                        </span>
+                    ${_('Snatched')}
                     % endif
 
-                    &nbsp;/&nbsp;<span class="footer-highlight">${ep_total}</span> Episodes Downloaded ${ep_percentage}
-                    &nbsp;/&nbsp;<span class="footer-highlight">${total_size}</span> Overall Downloaded
-                    | Daily Search: <span
+                    &nbsp;/&nbsp;<span
+                        class="footer-highlight">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
+                    &nbsp;/&nbsp;<span class="footer-highlight">${total_size}</span> ${_('Overall Downloaded')}
+                    | ${_('Daily Search:')} <span
                         class="footer-highlight">${str(sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
-                    | Backlog Search: <span
+                    | ${_('Backlog Search:')} <span
                         class="footer-highlight">${str(sickrage.srCore.srScheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
                 </div>
 
                 <div>
                     % if has_resource_module:
-                        Memory used: <span
-                            class="footer-highlight">${pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
-                        |
+                    ${_('Memory used:')}
+                        <span class="footer-highlight">
+                            ${pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}
+                        </span> |
                     % endif
-                    Load time: <span class="footer-highlight">${"%.4f" % (time() - srStartTime)}s</span> / Mako:
-                    <span
-                            class="footer-highlight">${"%.4f" % (time() - makoStartTime)}s</span> |
-                    Now: <span
-                        class="footer-highlight">${str(datetime.datetime.now(tz_updater.sr_timezone)).split('.')[0]}</span>
+                    ${_('Load time:')}
+                    <span class="footer-highlight">
+                        ${"{:10.4f}".format(time() - srStartTime)}s
+                    </span> / Mako:
+                    <span class="footer-highlight">
+                        ${"{:10.4f}".format(time() - makoStartTime)}s
+                    </span> |
+                    ${_('Now:')}
+                    <span class="footer-highlight">
+                        ${str(datetime.datetime.now(tz_updater.sr_timezone)).split('.')[0]}
+                    </span>
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@
                 <input type="hidden" id="type" name="proc_type" value="manual">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <b>Enter the folder containing the episode</b>
+                        <b>${_('Enter the folder containing the episode')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <div class="input-group input350">
@@ -24,7 +24,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <b>Process Method to be used:</b>
+                        <b>${_('Process Method to be used:')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <div class="input-group input350">
@@ -33,9 +33,9 @@
                             </div>
                             <select name="process_method" id="process_method" title="Choose post-processing method"
                                     class="form-control form-control-inline input-sm">
-                                <% process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link",'symlink_reversed' : "Symbolic Link Reversed"} %>
+                                <% process_method_text = {'copy': _("Copy"), 'move': _("Move"), 'hardlink': _("Hard Link"), 'symlink' : _("Symbolic Link"),'symlink_reversed' : _("Symbolic Link Reversed")} %>
                                 % for curAction in process_method_text:
-                                    <option value="${curAction}" ${('', 'selected="selected"')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                                    <option value="${curAction}" ${('', 'selected')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
                                 % endfor
                             </select>
                         </div>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <b>Force already Post Processed Dir/Files:</b>
+                        <b>${_('Force already Post Processed Dir/Files:')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <input id="force" name="force" type="checkbox" title="">
@@ -51,41 +51,41 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <b>Mark Dir/Files as priority download:</b>
+                        <b>${_('Mark Dir/Files as priority download:')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <input id="is_priority" name="is_priority" type="checkbox" title="">
                         <span style="line-height: 0; font-size: 12px;">
-                            <i>&nbsp;(Check it to replace the file even if it exists at higher quality)</i>
+                            <i>${_('(Check it to replace the file even if it exists at higher quality)')}</i>
                         </span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <b>Delete files and folders:</b>
+                        <b>${_('Delete files and folders:')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <input id="delete_on" name="delete_on" type="checkbox" title="">
                         <span style="line-height: 0; font-size: 12px;">
-                            <i>&nbsp;(Check it to delete files and folders like auto processing)</i>
+                            <i>${_('(Check it to delete files and folders like auto processing)')}</i>
                         </span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <b>Don't use processing queue</b>
+                        <b>${_('Don\'t use processing queue:')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <input id="force_next" name="force_next" type="checkbox" title="">
                         <span style="line-height: 0; font-size: 12px;">
-                            <i>(Check it to return the result of the process here, but may be slow!)</i>
+                            <i>${_('(Check it to return the result of the process here, but may be slow!)')}</i>
                         </span>
                     </div>
                 </div>
                 % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <b>Mark download as failed:</b>
+                            <b>${_('Mark download as failed:')}</b>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <input id="failed" name="failed" type="checkbox" title="">
@@ -94,7 +94,7 @@
                 % endif
                 <div class="row">
                     <div class="col-md-12">
-                        <input id="submit" class="btn" type="submit" value="Process"/>
+                        <input id="submit" class="btn" type="submit" value="${_('Process')}"/>
                     </div>
                 </div>
             </form>

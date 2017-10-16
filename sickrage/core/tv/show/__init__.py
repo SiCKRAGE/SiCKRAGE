@@ -40,7 +40,7 @@ from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, 
     UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
 from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from sickrage.core.helpers import list_media_files, isMediaFile, update_anime_support, findCertainShow, tryInt, \
+from sickrage.core.helpers import list_media_files, isMediaFile, update_anime_support, findCertainShow, try_int, \
     safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import srIndexerApi
@@ -62,7 +62,7 @@ class TVShow(object):
         self._classification = 'Scripted'
         self._runtime = 0
         self._imdb_info = {}
-        self._quality = tryInt(sickrage.srCore.srConfig.QUALITY_DEFAULT, UNKNOWN)
+        self._quality = try_int(sickrage.srCore.srConfig.QUALITY_DEFAULT, UNKNOWN)
         self._flatten_folders = int(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT)
         self._status = "Unknown"
         self._airs = ""
@@ -928,7 +928,7 @@ class TVShow(object):
             sickrage.srCore.srLogger.info(str(self.indexerid) + ": Unable to find the show in the database")
             return False
 
-        self._indexer = tryInt(dbData[0]["indexer"], self.indexer)
+        self._indexer = try_int(dbData[0]["indexer"], self.indexer)
         self._name = dbData[0].get("show_name", self.name)
         self._network = dbData[0].get("network", self.network)
         self._genre = dbData[0].get("genre", self.genre)
@@ -937,24 +937,24 @@ class TVShow(object):
         self._runtime = dbData[0].get("runtime", self.runtime)
         self._status = dbData[0].get("status", self.status)
         self._airs = dbData[0].get("airs", self.airs)
-        self._startyear = tryInt(dbData[0]["startyear"], self.startyear)
-        self._air_by_date = tryInt(dbData[0]["air_by_date"], self.air_by_date)
-        self._anime = tryInt(dbData[0]["anime"], self.anime)
-        self._sports = tryInt(dbData[0]["sports"], self.sports)
-        self._scene = tryInt(dbData[0]["scene"], self.scene)
-        self._subtitles = tryInt(dbData[0]["subtitles"], self.subtitles)
+        self._startyear = try_int(dbData[0]["startyear"], self.startyear)
+        self._air_by_date = try_int(dbData[0]["air_by_date"], self.air_by_date)
+        self._anime = try_int(dbData[0]["anime"], self.anime)
+        self._sports = try_int(dbData[0]["sports"], self.sports)
+        self._scene = try_int(dbData[0]["scene"], self.scene)
+        self._subtitles = try_int(dbData[0]["subtitles"], self.subtitles)
         self._subtitles_sr_metadata = dbData[0].get("subtitles_sr_metadata", self.subtitles_sr_metadata)
-        self._dvdorder = tryInt(dbData[0]["dvdorder"], self.dvdorder)
-        self._archive_firstmatch = tryInt(dbData[0]["archive_firstmatch"], self.archive_firstmatch)
-        self._quality = tryInt(dbData[0]["quality"], self.quality)
-        self._flatten_folders = tryInt(dbData[0]["flatten_folders"], self.flatten_folders)
-        self._paused = tryInt(dbData[0]["paused"], self.paused)
+        self._dvdorder = try_int(dbData[0]["dvdorder"], self.dvdorder)
+        self._archive_firstmatch = try_int(dbData[0]["archive_firstmatch"], self.archive_firstmatch)
+        self._quality = try_int(dbData[0]["quality"], self.quality)
+        self._flatten_folders = try_int(dbData[0]["flatten_folders"], self.flatten_folders)
+        self._paused = try_int(dbData[0]["paused"], self.paused)
         self._lang = dbData[0].get("lang", self.lang)
         self._last_update = dbData[0].get("last_update", self.last_update)
         self._last_refresh = dbData[0].get("last_refresh", self.last_refresh)
         self._rls_ignore_words = dbData[0].get("rls_ignore_words", self.rls_ignore_words)
         self._rls_require_words = dbData[0].get("rls_require_words", self.rls_require_words)
-        self._default_ep_status = tryInt(dbData[0]["default_ep_status"], self.default_ep_status)
+        self._default_ep_status = try_int(dbData[0]["default_ep_status"], self.default_ep_status)
         self._imdbid = dbData[0].get("imdb_id", self.imdbid)
         self._location = dbData[0].get("location", self.location)
 
@@ -1025,7 +1025,7 @@ class TVShow(object):
                 pass
 
             try:
-                self.startyear = tryInt(
+                self.startyear = try_int(
                     str(safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)).split('-')[0])
             except:
                 pass

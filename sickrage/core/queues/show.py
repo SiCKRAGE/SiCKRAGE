@@ -280,8 +280,9 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.srCore.srLogger.error(
                     "Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir,
                                                                                                            index_name))
-                sickrage.srCore.srNotifications.error("Unable to add show",
-                                                      "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language".format(
+                sickrage.srCore.srNotifications.error(_("Unable to add show"),
+                                                      _(
+                                                          "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language").format(
                                                           self.showDir, index_name))
                 return self._finishEarly()
 
@@ -289,9 +290,11 @@ class QueueItemAdd(ShowQueueItem):
             if not len(s):
                 sickrage.srCore.srLogger.error("Show " + str(s['seriesname']) + " is on " + str(
                     srIndexerApi(self.indexer).name) + " but contains no season/episode data.")
-                sickrage.srCore.srNotifications.error("Unable to add show",
-                                                      "Show " + str(s['seriesname']) + " is on " + str(srIndexerApi(
-                                                          self.indexer).name) + " but contains no season/episode data.")
+                sickrage.srCore.srNotifications.error(_("Unable to add show"),
+                                                      _("Show ") + str(s['seriesname']) + _(" is on ") + str(
+                                                          srIndexerApi(
+                                                              self.indexer).name) + _(
+                                                          " but contains no season/episode data."))
                 return self._finishEarly()
         except Exception as e:
             sickrage.srCore.srLogger.error(
@@ -299,9 +302,9 @@ class QueueItemAdd(ShowQueueItem):
                                                                                         e.message))
 
             sickrage.srCore.srNotifications.error(
-                "Unable to add show",
-                "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again.".format(
-                    self.showDir, index_name, self.indexer_id)
+                _("Unable to add show"),
+                _("Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding "
+                  "manually again.").format(self.showDir, index_name, self.indexer_id)
             )
 
             if sickrage.srCore.srConfig.USE_TRAKT:
@@ -363,17 +366,17 @@ class QueueItemAdd(ShowQueueItem):
                     self.indexer).name + ": {}".format(e.message))
             if self.show:
                 sickrage.srCore.srNotifications.error(
-                    "Unable to add " + str(self.show.name) + " due to an error with " + srIndexerApi(
+                    _("Unable to add ") + str(self.show.name) + _(" due to an error with ") + srIndexerApi(
                         self.indexer).name + "")
             else:
                 sickrage.srCore.srNotifications.error(
-                    "Unable to add show due to an error with " + srIndexerApi(self.indexer).name + "")
+                    _("Unable to add show due to an error with ") + srIndexerApi(self.indexer).name + "")
             return self._finishEarly()
 
         except MultipleShowObjectsException:
             sickrage.srCore.srLogger.warning("The show in " + self.showDir + " is already in your show list, skipping")
-            sickrage.srCore.srNotifications.error('Show skipped',
-                                                  "The show in " + self.showDir + " is already in your show list")
+            sickrage.srCore.srNotifications.error(_('Show skipped'),
+                                                  _("The show in ") + self.showDir + _(" is already in your show list"))
             return self._finishEarly()
 
         except Exception as e:

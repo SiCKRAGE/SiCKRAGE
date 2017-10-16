@@ -62,9 +62,9 @@
                     % endif
                         <span class="h2footer pull-right">
                             % if season_special:
-                                Display Specials:
-                                    <a class="inner"
-                                       href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS)]}</a>
+                            ${_('Display Specials:')}
+                                <a class="inner"
+                                   href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS)]}</a>
                             % endif
                         </span>
                         <div class="h2footer pull-right">
@@ -79,17 +79,17 @@
                                         % endfor
                                     </select>
                                 % else:
-                                    Season:
-                                % for seasonNum in seasonResults:
-                                    % if int(seasonNum) == 0:
-                                        <a href="#season-${seasonNum}">Specials</a>
-                                    % else:
-                                        <a href="#season-${seasonNum}">${str(seasonNum)}</a>
-                                    % endif
-                                    % if seasonNum != seasonResults[-1]:
-                                        <span class="separator">|</span>
-                                    % endif
-                                % endfor
+                                    ${_('Season:')}
+                                    % for seasonNum in seasonResults:
+                                        % if int(seasonNum) == 0:
+                                            <a href="#season-${seasonNum}">Specials</a>
+                                        % else:
+                                            <a href="#season-${seasonNum}">${str(seasonNum)}</a>
+                                        % endif
+                                        % if seasonNum != seasonResults[-1]:
+                                            <span class="separator">|</span>
+                                        % endif
+                                    % endfor
                                 % endif
                             </span>
                         </div>
@@ -113,7 +113,6 @@
                          style="background-image:linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%),
                                  url(${srWebRoot}${showImage(show.indexerid, 'banner').url});
                                  background-size: 100% 100%;">
-
                         % if show.overview:
                             <div class="row">
                                 <div class="col-xs-12">
@@ -127,7 +126,7 @@
                             <div class="col-xs-12 col-md-8">
                                 <table class="pull-left">
                                     <tr>
-                                        <td class="showLegend">Rating:</td>
+                                        <td class="showLegend">${_('Rating:')}</td>
                                         <td>
                                             % if 'rating' in show.imdb_info:
                                             <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
@@ -138,7 +137,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Quality:</td>
+                                        <td class="showLegend">${_('Quality:')}</td>
                                         <td>
                                             <% anyQualities, bestQualities = Quality.splitQuality(int(show.quality)) %>
                                             % if show.quality in qualityPresets:
@@ -154,50 +153,50 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Show Status:</td>
+                                        <td class="showLegend">${_('Show Status:')}</td>
                                         <td>${show.status}</td>
                                     </tr>
                                     % if show.network and show.airs:
                                         <tr>
-                                            <td class="showLegend">Originally Airs:</td>
+                                            <td class="showLegend">${_('Originally Airs:')}</td>
                                             <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font> ", "")[tz_updater.test_timeformat(show.airs)]}
                                                 on ${show.network}</td>
                                         </tr>
                                     % elif show.network:
                                         <tr>
-                                            <td class="showLegend">Originally Airs:</td>
+                                            <td class="showLegend">${_('Originally Airs:')}</td>
                                             <td>${show.network}</td>
                                         </tr>
                                     % elif show.airs:
                                         <tr>
-                                            <td class="showLegend">Originally Airs:</td>
+                                            <td class="showLegend">${_('Originally Airs:')}</td>
                                             <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font>", "")[tz_updater.test_timeformat(show.airs)]}</td>
                                         </tr>
                                     % endif
                                     <tr>
-                                        <td class="showLegend">Start Year:</td>
+                                        <td class="showLegend">${_('Start Year:')}</td>
                                         <td>
                                             <span>${show.startyear}</span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Runtime:</td>
+                                        <td class="showLegend">${_('Runtime:')}</td>
                                         <td>
-                                            <span>${show.runtime} minutes</span>
+                                            <span>${show.runtime} ${_('minutes')}</span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Info Sites:</td>
+                                        <td class="showLegend">${_('Info Sites:')}</td>
                                         <td>
                                             % if show.imdbid:
                                                 <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}"
                                                    rel="noreferrer"
                                                    onclick="window.open(this.href, '_blank'); return false;"
-                                                   title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]"
-                                                                                                         height="16"
-                                                                                                         width="16"
-                                                                                                         src="${srWebRoot}/images/imdb.png"
-                                                                                                         style="margin-top: -1px; vertical-align:middle;"/></a>
+                                                   title="http://www.imdb.com/title/${show.imdbid}">
+                                                    <img alt="[imdb]" height="16" width="16"
+                                                         src="${srWebRoot}/images/imdb.png"
+                                                         style="margin-top: -1px; vertical-align:middle;"/>
+                                                </a>
                                             % endif
                                             <a href="${anon_url(srIndexerApi(show.indexer).config['show_url'], show.indexerid)}"
                                                onclick="window.open(this.href, '_blank'); return false;"
@@ -209,17 +208,18 @@
                                                 <a href="${anon_url('http://thexem.de/search?q=', show.name)}"
                                                    rel="noreferrer"
                                                    onclick="window.open(this.href, '_blank'); return false;"
-                                                   title="http://thexem.de/search?q-${show.name}"><img alt="[xem]"
-                                                                                                       height="16"
-                                                                                                       width="16"
-                                                                                                       src="${srWebRoot}/images/xem.png"
-                                                                                                       style="margin-top: -1px; vertical-align:middle;"/></a>
+                                                   title="http://thexem.de/search?q-${show.name}">
+                                                    <img alt="[xem]"
+                                                         height="16"
+                                                         width="16"
+                                                         src="${srWebRoot}/images/xem.png"
+                                                         style="margin-top: -1px; vertical-align:middle;"/></a>
                                             % endif
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td class="showLegend">Genre:</td>
+                                        <td class="showLegend">${_('Genre:')}</td>
                                         <td>
                                             <ul class="tags">
                                                 % if not show.imdbid and show.genre:
@@ -244,52 +244,55 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Default EP Status:</td>
+                                        <td class="showLegend">${_('Default EP Status:')}</td>
                                         <td>${statusStrings[show.default_ep_status]}</td>
                                     </tr>
                                     % if os.path.isdir(showLoc):
                                         <tr>
-                                            <td class="showLegend">Location:</td>
+                                            <td class="showLegend">${_('Location:')}</td>
                                             <td>${showLoc}</td>
                                         </tr>
                                     % else:
                                         <tr>
-                                            <td class="showLegend"><span style="color: red;">Location: </span></td>
-                                            <td><span style="color: red;">${showLoc}</span> (Missing)</td>
+                                            <td class="showLegend"><span style="color: red;">${_('Location:')} </span>
+                                            </td>
+                                            <td><span style="color: red;">${showLoc}</span> (${_('Missing')})</td>
                                         </tr>
                                     % endif
                                     % if os.path.isdir(showLoc):
                                         <tr>
-                                            <td class="showLegend">Size:</td>
+                                            <td class="showLegend">${_('Size:')}</td>
                                             <td>${pretty_filesize(get_size(showLoc.encode('utf-8')))}</td>
                                         </tr>
                                     % endif
                                     <tr>
-                                        <td class="showLegend">Scene Name:</td>
+                                        <td class="showLegend">${_('Scene Name:')}</td>
                                         <td>${(show.name, " | ".join(show.exceptions))[show.exceptions != 0]}</td>
                                     </tr>
                                     % if show.rls_require_words:
                                         <tr>
-                                            <td class="showLegend">Required Words:</td>
+                                            <td class="showLegend">${_('Required Words:')}</td>
                                             <td>${show.rls_require_words}</td>
                                         </tr>
                                     % endif
                                     % if show.rls_ignore_words:
                                         <tr>
-                                            <td class="showLegend">Ignored Words:</td>
+                                            <td class="showLegend">${_('Ignored Words:')}</td>
                                             <td>${show.rls_ignore_words}</td>
                                         </tr>
                                     % endif
                                     % if bwl and bwl.whitelist:
                                         <tr>
-                                            <td class="showLegend">Wanted Group${("", "s")[len(bwl.whitelist) > 1]}:
+                                            <td class="showLegend">${_('Wanted Group')}${("", "s")[len(bwl.whitelist) > 1]}
+                                                :
                                             </td>
                                             <td>${', '.join(bwl.whitelist)}</td>
                                         </tr>
                                     % endif
                                     % if bwl and bwl.blacklist:
                                         <tr>
-                                            <td class="showLegend">Unwanted Group${("", "s")[len(bwl.blacklist) > 1]}:
+                                            <td class="showLegend">${_('Unwanted Group')}${("", "s")[len(bwl.blacklist) > 1]}
+                                                :
                                             </td>
                                             <td>${', '.join(bwl.blacklist)}</td>
                                         </tr>
@@ -301,7 +304,7 @@
                                 <table class="pull-xs-left pull-md-right">
                                     <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
                                     <tr>
-                                        <td class="showLegend">Info Language:</td>
+                                        <td class="showLegend">${_('Info Language:')}</td>
                                         <td><img src="${srWebRoot}/images/subtitles/flags/${info_flag}.png" width="16"
                                                  height="11"
                                                  alt="${show.lang}" title="${show.lang}"
@@ -310,7 +313,7 @@
                                     </tr>
                                     % if sickrage.srCore.srConfig.USE_SUBTITLES:
                                         <tr>
-                                            <td class="showLegend">Subtitles:</td>
+                                            <td class="showLegend">${_('Subtitles:')}</td>
                                             <td><img
                                                     src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
                                                     alt="${("N", "Y")[bool(show.subtitles)]}" width="16" height="16"/>
@@ -318,7 +321,7 @@
                                         </tr>
                                     % endif
                                     <tr>
-                                        <td class="showLegend">Subtitles Metadata:</td>
+                                        <td class="showLegend">${_('Subtitles Metadata:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles_sr_metadata)]}"
                                                 alt="${("N", "Y")[bool(show.subtitles_sr_metadata)]}" width="16"
@@ -326,51 +329,51 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Season Folders:</td>
+                                        <td class="showLegend">${_('Season Folders:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
                                                 alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
                                                 width="16" height="16"/></td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Paused:</td>
+                                        <td class="showLegend">${_('Paused:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.paused)]}"
                                                 alt="${("N", "Y")[bool(show.paused)]}" width="16" height="16"/></td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Air-by-Date:</td>
+                                        <td class="showLegend">${_('Air-by-Date:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.air_by_date)]}"
                                                 alt="${("N", "Y")[bool(show.air_by_date)]}" width="16" height="16"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Sports:</td>
+                                        <td class="showLegend">${_('Sports:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_sports)]}"
                                                 alt="${("N", "Y")[bool(show.is_sports)]}" width="16" height="16"/></td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Anime:</td>
+                                        <td class="showLegend">${_('Anime:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_anime)]}"
                                                 alt="${("N", "Y")[bool(show.is_anime)]}" width="16" height="16"/></td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">DVD Order:</td>
+                                        <td class="showLegend">${_('DVD Order:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.dvdorder)]}"
                                                 alt="${("N", "Y")[bool(show.dvdorder)]}" width="16" height="16"/></td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Scene Numbering:</td>
+                                        <td class="showLegend">${_('Scene Numbering:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.scene)]}"
                                                 alt="${("N", "Y")[bool(show.scene)]}" width="16" height="16"/></td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">Archive First Match:</td>
+                                        <td class="showLegend">${_('Archive First Match:')}</td>
                                         <td><img
                                                 src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.archive_firstmatch)]}"
                                                 alt="${("N", "Y")[bool(show.archive_firstmatch)]}" width="16"
@@ -415,42 +418,42 @@
                             <label class="pull-right" for="wanted" style="padding-bottom: 5px;">
                             <span class="wanted">
                                 <input type="checkbox" id="wanted" checked/>
-                                Wanted: <b>${epCounts[Overview.WANTED]}</b>
+                                ${_('Wanted:')} <b>${epCounts[Overview.WANTED]}</b>
                             </span>
                             </label>
                             <label class="pull-right" for="qual" style="padding-bottom: 5px;">
                             <span class="qual">
                                 <input type="checkbox" id="qual" checked/>
-                                Low Quality: <b>${epCounts[Overview.QUAL]}</b>
+                                ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
                             </span>
                             </label>
                             <label class="pull-right" for="good" style="padding-bottom: 5px;">
                             <span class="good">
                                 <input type="checkbox" id="good" checked/>
-                                Downloaded: <b>${epCounts[Overview.GOOD]}</b>
+                                ${_('Downloaded:')} <b>${epCounts[Overview.GOOD]}</b>
                             </span>
                             </label>
                             <label class="pull-right" for="skipped" style="padding-bottom: 5px;">
                             <span class="skipped">
                             <input type="checkbox" id="skipped" checked/>
-                                Skipped: <b>${epCounts[Overview.SKIPPED]}</b>
+                                ${_('Skipped:')} <b>${epCounts[Overview.SKIPPED]}</b>
                             </span>
                             </label>
                             <label class="pull-right" for="snatched" style="padding-bottom: 5px;">
                             <span class="snatched"><input type="checkbox" id="snatched" checked/>
-                                Snatched: <b>${epCounts[Overview.SNATCHED]}</b>
+                                ${_('Snatched:')} <b>${epCounts[Overview.SNATCHED]}</b>
                             </span>
                             </label>
                         </div>
                         <div class="pull-right">
                             <button class="btn seriesCheck pull-right">
-                                Select Filtered Episodes
+                                ${_('Select Filtered Episodes')}
                             </button>
                             <button class="btn clearAll pull-right">
-                                Clear All
+                                ${_('Clear All')}
                             </button>
                             <button class="btn pull-right" id="popover" type="button">
-                                Select Columns <b class="caret"></b>
+                                ${_('Select Columns')} <b class="caret"></b>
                             </button>
                         </div>
                     </div>
@@ -520,12 +523,13 @@
                                 <button id="showseason-${epResult['season']}" type="button"
                                         class="btn btn-xs pull-right" data-toggle="collapse"
                                         data-target="#collapseSeason-${epResult['season']}" aria-expanded="true">
-                                    Hide Episodes
+                                    ${_('Hide Episodes')}
                                 </button>
                             %else:
                                 <button id="showseason-${epResult['season']}" type="button"
                                         class="btn btn-xs pull-right" data-toggle="collapse"
-                                        data-target="#collapseSeason-${epResult['season']}">Show Episodes
+                                        data-target="#collapseSeason-${epResult['season']}">
+                                    ${_('Show Episodes')}
                                 </button>
                             %endif
                         % endif
@@ -539,25 +543,19 @@
                             <input type="checkbox" id="${int(epResult["season"])}" class="seasonCheck"/>
                         </label>
                     </th>
-                    <th data-sorter="false" class="col-metadata">NFO</th>
-                    <th data-sorter="false" class="col-metadata">TBN</th>
-                    <th data-sorter="false" class="col-ep">Episode</th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>
-                        Absolute
-                    </th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>
-                        Scene
-                    </th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>
-                        Scene Absolute
-                    </th>
-                    <th data-sorter="false" class="col-name">Name</th>
-                    <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
-                    <th data-sorter="false" class="col-airdate">Airdate</th>
-                    <th data-sorter="false" class="col-ep">Download</th>
-                    <th data-sorter="false" class="col-ep">Subtitles</th>
-                    <th data-sorter="false" class="col-status">Status</th>
-                    <th data-sorter="false" class="col-search">Search</th>
+                    <th data-sorter="false" class="col-metadata">${_('NFO')}</th>
+                    <th data-sorter="false" class="col-metadata">${_('TBN')}</th>
+                    <th data-sorter="false" class="col-ep">${_('Episode')}</th>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>${_('Absolute')} </th>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>${_('Scene')}</th>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>${_('Scene Absolute')}</th>
+                    <th data-sorter="false" class="col-name">${_('Name')}</th>
+                    <th data-sorter="false" class="col-ep columnSelector-false">${_('Size')}</th>
+                    <th data-sorter="false" class="col-airdate">${_('Airdate')}</th>
+                    <th data-sorter="false" class="col-ep">${_('Download')}</th>
+                    <th data-sorter="false" class="col-ep">${_('Subtitles')}</th>
+                    <th data-sorter="false" class="col-status">${_('Status')}</th>
+                    <th data-sorter="false" class="col-search">${_('Search')}</th>
                 </tr>
                 </thead>
             <% curSeason = int(epResult["season"]) %>
@@ -581,14 +579,14 @@
                         % endif
                     </td>
 
-                    <td align="center"><img
-                            src="${srWebRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
-                            alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/>
+                    <td align="center">
+                        <img src="${srWebRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
+                             alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/>
                     </td>
 
-                    <td align="center"><img
-                            src="${srWebRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
-                            alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/>
+                    <td align="center">
+                        <img src="${srWebRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
+                             alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/>
                     </td>
 
                     <td align="center">
@@ -597,7 +595,7 @@
                             if epLoc != '' and epLoc is not None:
                                                 text = '<span title="' + epLoc + '" class="addQTip badge">' + text + "</span>"
                         %>
-                                    ${text}
+                        ${text}
                     </td>
 
                     <td align="center">${epResult["absolute_number"]}</td>
@@ -664,7 +662,7 @@
                             <time datetime="${airDate.isoformat()}"
                                   class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
                         % else:
-                            Never
+                            ${_('Never')}
                         % endif
                     </td>
 
@@ -677,7 +675,7 @@
                                                     filename = filename.replace(rootDir, "")
                             filename = sickrage.srCore.srConfig.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
                         %>
-                            <div style="text-align: center;"><a href="${filename}">Download</a></div>
+                            <div style="text-align: center;"><a href="${filename}">${_('Download')}</a></div>
                         % endif
                     </td>
 
@@ -711,24 +709,26 @@
                                 <a class="epRetry"
                                    id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                    name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                                   href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                        src="${srWebRoot}/images/search16.png" height="16" alt="retry"
-                                        title="Retry Download"/></a>
+                                   href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
+                                    <img src="${srWebRoot}/images/search16.png" height="16" alt="retry"
+                                         title="${_('Retry Download')}"/>
+                                </a>
                             % else:
                                 <a class="epSearch"
                                    id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                    name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                                   href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                        src="${srWebRoot}/images/search16.png" width="16" height="16" alt="search"
-                                        title="Manual Search"/></a>
+                                   href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
+                                    <img src="${srWebRoot}/images/search16.png" width="16" height="16" alt="search"
+                                         title="${_('Manual Search')}"/>
+                                </a>
                             % endif
                         % endif
                         % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
                             <a class="epSubtitlesSearch"
-                               href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img
-                                    src="${srWebRoot}/images/closed_captioning.png" height="16"
-                                    alt="search subtitles"
-                                    title="Search Subtitles"/></a>
+                               href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
+                                <img src="${srWebRoot}/images/closed_captioning.png" height="16" alt="search subtitles"
+                                     title="${_('Search Subtitles')}"/>
+                            </a>
                         % endif
                     </td>
                 </tr>

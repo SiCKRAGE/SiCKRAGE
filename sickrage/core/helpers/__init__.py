@@ -46,6 +46,7 @@ import zipfile
 from contextlib import contextmanager
 
 import rarfile
+import requests
 import six
 from bs4 import BeautifulSoup
 
@@ -86,11 +87,11 @@ def safe_getattr(object, name, default=None):
         return default
 
 
-def try_int(value, default_value=0):
+def try_int(value, default=0):
     try:
         return int(value)
-    except (ValueError, TypeError):
-        return default_value
+    except Exception:
+        return default
 
 
 def readFileBuffered(filename, reverse=False):
@@ -131,8 +132,8 @@ def argToBool(x):
     return bool(x)
 
 
-def autoType(s):
-    for fn in (argToBool, int, float):
+def auto_type(s):
+    for fn in (int, float, argToBool):
         try:
             return fn(s)
         except ValueError:
@@ -927,22 +928,6 @@ def create_https_certificates(ssl_cert, ssl_key):
             return False
 
     return True
-
-
-def tryInt(s, s_default=0):
-    """
-    Try to convert to int, if it fails, the default will be returned
-
-    :param s: Value to attempt to convert to int
-    :param s_default: Default value to return on failure (defaults to 0)
-    :return: integer, or default value on failure
-    """
-
-    try:
-        return int(s)
-    except Exception:
-        return s_default
-
 
 def md5_for_file(filename):
     """
@@ -1754,3 +1739,103 @@ def validate_url(value):
     )
 
     return (True, False)[not re.compile(regex.format(tld=r'\.[a-z]{2,10}')).match(value)]
+
+
+def torrent_webui_url():
+    if not sickrage.srCore.srConfig.USE_TORRENTS or \
+            not sickrage.srCore.srConfig.TORRENT_HOST.lower().startswith('http') or \
+                    sickrage.srCore.srConfig.TORRENT_METHOD == 'blackhole' or sickrage.srCore.srConfig.ENABLE_HTTPS and \
+            not sickrage.srCore.srConfig.TORRENT_HOST.lower().startswith('https'):
+        return ''
+
+    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.srCore.srConfig.WEB_HOST or get_lan_ip(),
+                            sickrage.srCore.srConfig.TORRENT_HOST or '', re.I)
+
+    def test_exists(url):
+        try:
+            h = requests.head(url)
+            return h.status_code != 404
+        except (requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout):
+            return False
+
+    if sickrage.srCore.srConfig.TORRENT_METHOD == 'utorrent':
+        torrent_ui_url = '/'.join(s.strip('/') for s in (torrent_ui_url, 'gui/'))
+    elif sickrage.srCore.srConfig.TORRENT_METHOD == 'download_station':
+        if test_exists(urlparse.urljoin(torrent_ui_url, 'download/')):
+            torrent_ui_url = urlparse.urljoin(torrent_ui_url, 'download/')
+
+    return ('', torrent_ui_url)[test_exists(torrent_ui_url)]
+
+
+def checkbox_to_value(option, value_on=True, value_off=False):
+    """
+    Turns checkbox option 'on' or 'true' to value_on (1)
+    any other value returns value_off (0)
+    """
+
+    if isinstance(option, list):
+        option = option[-1]
+    if isinstance(option, six.string_types):
+        option = six.text_type(option).strip().lower()
+
+    if option in (True, 'on', 'true', value_on) or try_int(option) > 0:
+        return value_on
+
+    return value_off
+
+
+def clean_host(host, default_port=None):
+    """
+    Returns host or host:port or empty string from a given url or host
+    If no port is found and default_port is given use host:default_port
+    """
+
+    host = host.strip()
+
+    if host:
+
+        match_host_port = re.search(r'(?:http.*://)?(?P<host>[^:/]+).?(?P<port>[0-9]*).*', host)
+
+        cleaned_host = match_host_port.group('host')
+        cleaned_port = match_host_port.group('port')
+
+        if cleaned_host:
+
+            if cleaned_port:
+                host = cleaned_host + ':' + cleaned_port
+
+            elif default_port:
+                host = cleaned_host + ':' + str(default_port)
+
+            else:
+                host = cleaned_host
+
+        else:
+            host = ''
+
+    return host
+
+
+def clean_hosts(hosts, default_port=None):
+    """
+    Returns list of cleaned hosts by Config.clean_host
+
+    :param hosts: list of hosts
+    :param default_port: default port to use
+    :return: list of cleaned hosts
+    """
+    cleaned_hosts = []
+
+    for cur_host in [x.strip() for x in hosts.split(",")]:
+        if cur_host:
+            cleaned_host = clean_host(cur_host, default_port)
+            if cleaned_host:
+                cleaned_hosts.append(cleaned_host)
+
+    if cleaned_hosts:
+        cleaned_hosts = ",".join(cleaned_hosts)
+
+    else:
+        cleaned_hosts = ''
+
+    return cleaned_hosts

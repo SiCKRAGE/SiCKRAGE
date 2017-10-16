@@ -11,7 +11,7 @@
 <%block name="content">
     <div class="row">
         <div class="col-xs-12 text-center">
-            <label for="limit" class="badge">Limit:
+            <label for="limit" class="badge">${_('Limit:')}
                 <select name="limit" id="limit" class="form-control form-control-inline input-sm">
                     <option value="100" ${('', 'selected')[limit == 100]}>100</option>
                     <option value="250" ${('', 'selected')[limit == 250]}>250</option>
@@ -30,18 +30,18 @@
                 <table id="failedTable" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
                     <thead>
                     <tr>
-                        <th class="nowrap" width="75%" style="text-align: left;">Release</th>
-                        <th width="10%">Size</th>
-                        <th width="14%">Provider</th>
-                        <th width="1%">Remove<br>
-                            <input type="checkbox" class="bulkCheck" id="removeCheck" title="Remove failed release"/>
+                        <th class="nowrap" width="75%" style="text-align: left;">${_('Release')}</th>
+                        <th width="10%">${_('Size')}</th>
+                        <th width="14%">${_('Provider')}</th>
+                        <th width="1%">${_('Remove')}<br>
+                            <input type="checkbox" class="bulkCheck" id="removeCheck" title="${_('Remove failed release')}"/>
                         </th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
                         <td rowspan="1" colspan="4">
-                            <input type="button" class="btn pull-right" value="Submit" id="submitMassRemove">
+                            <input type="button" class="btn pull-right" value="${_('Submit')}" id="submitMassRemove">
                         </td>
                     </tr>
                     </tfoot>
@@ -66,8 +66,8 @@
                                              title="${provider.name}"/>
                                     % else:
                                         <img src="${srWebRoot}/images/providers/missing.png" width="16" height="16"
-                                             alt="missing provider"
-                                             title="missing provider"/>
+                                             alt="${_('missing provider')}"
+                                             title="${_('missing provider')}"/>
                                     % endif
                                 </td>
                                 <td align="center">${curRemove}</td>

@@ -59,6 +59,25 @@ class srNotifiers(object):
     def __init__(self):
         self.name = "Generic"
 
+        ### Notification Types
+        self.NOTIFY_SNATCH = 1
+        self.NOTIFY_DOWNLOAD = 2
+        self.NOTIFY_SUBTITLE_DOWNLOAD = 3
+        self.NOTIFY_GIT_UPDATE = 4
+        self.NOTIFY_GIT_UPDATE_TEXT = 5
+        self.NOTIFY_LOGIN = 6
+        self.NOTIFY_LOGIN_TEXT = 7
+
+        self.notifyStrings = {
+            self.NOTIFY_SNATCH: _("Started Download"),
+            self.NOTIFY_DOWNLOAD: _("Download Finished"),
+            self.NOTIFY_SUBTITLE_DOWNLOAD: _("Subtitle Download Finished"),
+            self.NOTIFY_GIT_UPDATE: _("SiCKRAGE Updated"),
+            self.NOTIFY_GIT_UPDATE_TEXT: _("SiCKRAGE Updated To Commit#:"),
+            self.NOTIFY_LOGIN: _("SiCKRAGE new login"),
+            self.NOTIFY_LOGIN_TEXT: _("New login from IP: {0}. http://geomaplookup.net/?ip={0}")
+        }
+
     @property
     def id(self):
         return str(re.sub(r"[^\w\d_]", "_", str(re.sub(r"[+]", "plus", self.name))).lower())

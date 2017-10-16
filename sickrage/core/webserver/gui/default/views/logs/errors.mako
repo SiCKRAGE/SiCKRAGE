@@ -7,10 +7,10 @@
     <%
         if logLevel == sickrage.srCore.srLogger.logLevels['WARNING']:
             errors = WarningViewer.errors
-            title = 'WARNING logs'
+            title = _('WARNING logs')
         else:
             errors = ErrorViewer.errors
-            title = 'ERROR logs'
+            title = _('ERROR logs')
     %>
     <div class="row">
         <div class="col-md-12">
@@ -27,7 +27,7 @@
                             ${curError.time} ${curError.message}
                         % endfor
                     % else:
-                        There are no events to display.
+                        ${_('There are no events to display.')}
                     % endif
                 </pre>
             </div>

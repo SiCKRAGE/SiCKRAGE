@@ -26,7 +26,7 @@ import requests
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser, convert_size, tryInt, try_int
+from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -139,8 +139,8 @@ class MoreThanTVProvider(TorrentProvider):
                             if not all([title, download_url]):
                                 continue
 
-                            seeders = tryInt(result('td', class_="number_column")[1].text, 0)
-                            leechers = tryInt(result('td', class_="number_column")[2].text, 0)
+                            seeders = try_int(result('td', class_="number_column")[1].text, 0)
+                            leechers = try_int(result('td', class_="number_column")[2].text, 0)
 
                             size = -1
                             if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',

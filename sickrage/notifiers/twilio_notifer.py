@@ -24,8 +24,6 @@ from twilio.base.exceptions import TwilioRestException
 from twilio.rest import TwilioRestClient
 
 import sickrage
-from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_LOGIN_TEXT, NOTIFY_LOGIN
 from sickrage.notifiers import srNotifiers
 
 
@@ -50,25 +48,25 @@ class TwilioNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSNATCH:
-            self._notifyTwilio(notifyStrings[NOTIFY_SNATCH] + ': ' + ep_name)
+            self._notifyTwilio(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.TWILIO_NOTIFY_ONDOWNLOAD:
-            self._notifyTwilio(notifyStrings[NOTIFY_DOWNLOAD] + ': ' + ep_name)
+            self._notifyTwilio(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notifyTwilio(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ': ' + lang)
+            self._notifyTwilio(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ': ' + lang)
 
     def _notify_git_update(self, new_version):
         if sickrage.srCore.srConfig.USE_TWILIO:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             self._notifyTwilio(update_text + new_version)
 
     def _notify_login(self, ipaddress=""):
         if sickrage.srCore.srConfig.USE_TWILIO:
-            update_text = notifyStrings[NOTIFY_LOGIN_TEXT]
-            title = notifyStrings[NOTIFY_LOGIN]
+            update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
+            title = self.notifyStrings[self.NOTIFY_LOGIN]
             self._notifyTwilio(title + " - " + update_text.format(ipaddress))
 
     def test_notify(self):

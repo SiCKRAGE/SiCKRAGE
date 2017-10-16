@@ -23,8 +23,6 @@ from __future__ import unicode_literals
 import urllib2
 
 import sickrage
-from sickrage.core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
-    notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD
 from sickrage.notifiers import srNotifiers
 
 
@@ -90,22 +88,31 @@ class FreeMobileNotifier(srNotifiers):
         sickrage.srCore.srLogger.info(message)
         return True, message
 
-    def _notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
+    def _notify_snatch(self, ep_name, title=None):
+        if not title:
+            title = self.notifyStrings[self.NOTIFY_SNATCH]
+
         if sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSNATCH:
             self._notifyFreeMobile(title, ep_name)
 
-    def _notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
+    def _notify_download(self, ep_name, title=None):
+        if not title:
+            title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
+
         if sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD:
             self._notifyFreeMobile(title, ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
+    def _notify_subtitle_download(self, ep_name, lang, title=None):
+        if not title:
+            title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
+
         if sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyFreeMobile(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_FREEMOBILE:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notifyFreeMobile(title, update_text + new_version)
 
     def _notifyFreeMobile(self, title, message, id=None, apiKey=None, force=False):

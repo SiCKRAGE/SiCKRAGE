@@ -1,6 +1,27 @@
 # Changelog
 
-- * 1337903 - 2017-10-13: Release v9.1.36 
+- * 8536c01 - 2017-10-16: Release v9.1.38 
+- * 8b8eab5 - 2017-10-16: Fixed issue with JS gettext and using system default language selection 
+- * 372b24e - 2017-10-16: Fixed &#x27;No Content&#x27; error and added more translated languages 
+- * 73cd8ca - 2017-10-16: Restart clears current user but does NOT clear cookies, prevents issues with restart page 
+- * d8302b2 - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
+- * 7927b8c - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
+- * 4f214c4 - 2017-10-16: Disabled header for restart page 
+- * 892d3ce - 2017-10-16: Fixed typo in main template 
+- * 1868b12 - 2017-10-16: Added a force restart button to error pages incase of webui issues 
+- * a3fd581 - 2017-10-16: Fixed issues with json gettext 
+- * 51e2aae - 2017-10-16: Finish i18n feature code 
+- * 7866282 - 2017-10-15: Added Gettext translation features to core javascript code 
+- * 2a12ed2 - 2017-10-15: Added more i18n support for strings 
+- * c1ab882 - 2017-10-15: Fixed issues with setting minimum seeders and leechers 
+- * 7b9275f - 2017-10-15: Optimized placement of gettext installation code 
+- * 76cca85 - 2017-10-15: Converted more strings to i18n 
+- * 104ae0a - 2017-10-15: Converted headers and titles to i18n 
+- * 2abfe11 - 2017-10-14: Converted more templates to i18n 
+- * 939e18f - 2017-10-14: Extracted more gettext messages 
+- * d078c67 - 2017-10-13: Surrounded titles with gettext underscore 
+- * 0a45996 - 2017-10-13: Adding in i18n support for multi-language webui 
+- * 7d2ff8a - 2017-10-13: Release v9.1.36 
 - * 47dc9a4 - 2017-10-13: Misc code cleanup 
 - * e127e2a - 2017-10-12: Fixed some typo&#x27;s 
 - * a4c60fe - 2017-10-12: Fixed small issue with HDBits 

@@ -149,7 +149,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
         FailedHistory.logSnatch(result)
 
-    sickrage.srCore.srNotifications.message('Episode snatched', result.name)
+    sickrage.srCore.srNotifications.message(_('Episode snatched'), result.name)
 
     History.logSnatch(result)
 

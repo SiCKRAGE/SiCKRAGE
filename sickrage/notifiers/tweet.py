@@ -24,8 +24,6 @@ import oauth2
 import twitter
 
 import sickrage
-from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
-    NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
 from sickrage.notifiers import srNotifiers
 
 
@@ -44,20 +42,20 @@ class TwitterNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.TWITTER_NOTIFY_ONSNATCH:
-            self._notifyTwitter(notifyStrings[NOTIFY_SNATCH] + ': ' + ep_name)
+            self._notifyTwitter(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.TWITTER_NOTIFY_ONDOWNLOAD:
-            self._notifyTwitter(notifyStrings[NOTIFY_DOWNLOAD] + ': ' + ep_name)
+            self._notifyTwitter(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notifyTwitter(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
+            self._notifyTwitter(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_TWITTER:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notifyTwitter(title + " - " + update_text + new_version)
 
     def test_notify(self):

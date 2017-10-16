@@ -26,7 +26,7 @@ from CodernityDB.database import RecordNotFound
 from dateutil import tz
 
 import sickrage
-from sickrage.core.helpers import tryInt
+from sickrage.core.helpers import try_int
 
 network_dict = {}
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
@@ -137,8 +137,8 @@ def parse_date_time(d, t, network, dateOnly=False):
     m = 0
 
     if parsed_time:
-        hr = tryInt(parsed_time.group('hour'))
-        m = tryInt(parsed_time.group('minute'))
+        hr = try_int(parsed_time.group('hour'))
+        m = try_int(parsed_time.group('minute'))
 
         ap = parsed_time.group('meridiem')
         ap = ap[0].lower() if ap else ''
@@ -151,7 +151,7 @@ def parse_date_time(d, t, network, dateOnly=False):
         hr = hr if 0 <= hr <= 23 else 0
         m = m if 0 <= m <= 59 else 0
 
-    result = datetime.fromordinal(max(tryInt(d), 1))
+    result = datetime.fromordinal(max(try_int(d), 1))
 
     return result.replace(hour=hr, minute=m, tzinfo=network_tz) if not dateOnly else result.replace(tzinfo=network_tz)
 

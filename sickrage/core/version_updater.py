@@ -64,14 +64,14 @@ class srVersionUpdater(object):
                     return
 
                 sickrage.srCore.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
-                sickrage.srCore.srNotifications.message('New update found for SiCKRAGE, starting auto-updater')
+                sickrage.srCore.srNotifications.message(_('New update found for SiCKRAGE, starting auto-updater'))
                 if self.update():
                     sickrage.srCore.srLogger.info("Update was successful!")
-                    sickrage.srCore.srNotifications.message('Update was successful')
+                    sickrage.srCore.srNotifications.message(_('Update was successful'))
                     sickrage.srCore.shutdown(restart=True)
                 else:
                     sickrage.srCore.srLogger.info("Update failed!")
-                    sickrage.srCore.srNotifications.message('Update failed!')
+                    sickrage.srCore.srNotifications.message(_('Update failed!'))
         finally:
             self.amActive = False
 
@@ -79,7 +79,7 @@ class srVersionUpdater(object):
         if self.safe_to_update():
             # Do a system backup before update
             sickrage.srCore.srLogger.info("Config backup in progress...")
-            sickrage.srCore.srNotifications.message('Backup', 'Config backup in progress...')
+            sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup in progress...'))
             try:
                 backupDir = os.path.join(sickrage.DATA_DIR, 'backup')
                 if not os.path.isdir(backupDir):
@@ -87,15 +87,15 @@ class srVersionUpdater(object):
 
                 if self._keeplatestbackup(backupDir) and backupSR(backupDir):
                     sickrage.srCore.srLogger.info("Config backup successful, updating...")
-                    sickrage.srCore.srNotifications.message('Backup', 'Config backup successful, updating...')
+                    sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup successful, updating...'))
                     return True
                 else:
                     sickrage.srCore.srLogger.error("Config backup failed, aborting update")
-                    sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
+                    sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup failed, aborting update'))
                     return False
             except Exception as e:
                 sickrage.srCore.srLogger.error('Update: Config backup failed. Error: %s' % e)
-                sickrage.srCore.srNotifications.message('Backup', 'Config backup failed, aborting update')
+                sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup failed, aborting update'))
                 return False
 
     @staticmethod
@@ -230,8 +230,9 @@ class UpdateManager(object):
                     sickrage.srCore.srLogger.debug("Not using: " + cur_git)
 
         # Still haven't found a working git
-        error_message = 'Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your ' \
-                        'config.ini OR delete your .git folder and run from source to enable updates. '
+        error_message = _('Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your '
+                          'config.ini OR delete your .git folder and run from source to enable updates.')
+
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
         return None
@@ -276,7 +277,7 @@ class UpdateManager(object):
                     sickrage.srCore.srLogger.debug("Not using: " + cur_pip)
 
         # Still haven't found a working git
-        error_message = 'Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini'
+        error_message = _('Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini')
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
         return None
@@ -400,8 +401,9 @@ class GitUpdateManager(UpdateManager):
 
     @staticmethod
     def _git_error():
-        error_message = 'Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your ' \
-                        'config.ini OR delete your .git folder and run from source to enable updates. '
+        error_message = _('Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your '
+                          'config.ini OR delete your .git folder and run from source to enable updates. ')
+
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
     def _find_installed_version(self):
@@ -444,8 +446,10 @@ class GitUpdateManager(UpdateManager):
         sickrage.srCore.NEWEST_VERSION_STRING = None
 
         if self.version != self.get_newest_version:
-            newest_text = 'There is a newer version available, version {}'.format(self.get_newest_version)
-            newest_text += " &mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
+            newest_text = _(
+                'There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>').format(
+                self.get_newest_version, self.get_update_url())
+
             sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
     def need_update(self):
@@ -585,13 +589,12 @@ class SourceUpdateManager(UpdateManager):
         if not self.version:
             sickrage.srCore.srLogger.debug("Unknown current version number, don't know if we should update or not")
 
-            newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before " \
-                          "then current version is not set. "
-            newest_text += " &mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
-
+            newest_text = _("Unknown current version number: If yo've never used the SiCKRAGE upgrade system before "
+                            "then current version is not set. &mdash; "
+                            "<a href=\"{}\">Update Now</a>").format(self.get_update_url())
         else:
-            newest_text = 'There is a newer version available, version {}'.format(self.get_newest_version)
-            newest_text += " &mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
+            newest_text = _("There is a newer version available, version {} &mdash; "
+                            "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
 
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
@@ -699,7 +702,7 @@ class PipUpdateManager(UpdateManager):
 
     @staticmethod
     def _pip_error():
-        error_message = 'Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini.'
+        error_message = _('Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini.')
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
     def _find_installed_version(self):
@@ -739,14 +742,10 @@ class PipUpdateManager(UpdateManager):
 
         if not self.version:
             sickrage.srCore.srLogger.debug("Unknown current version number, don't know if we should update or not")
-
-            newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before " \
-                          "then current version is not set. "
-            newest_text += " &mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
             return
         else:
-            newest_text = "New SiCKRAGE update found on PyPy servers, version {}".format(self.get_newest_version)
-            newest_text += " &mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
+            newest_text = _("New SiCKRAGE update found on PyPy servers, version {} &mdash; "
+                            "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
 
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 

@@ -9,16 +9,17 @@
 <%block name="content">
     <%
         schedulerList = {
-        'Daily Search': 'DAILYSEARCHER',
-        'Backlog': 'BACKLOGSEARCHER',
-        'Show Update': 'SHOWUPDATER',
-        'Version Check': 'VERSIONUPDATER',
-        'Proper Finder': 'PROPERSEARCHER',
-        'Post Process': 'AUTOPOSTPROCESSOR',
-        'Subtitles Finder': 'SUBTITLESEARCHER',
-        'Trakt Checker': 'TRAKTSEARCHER',
+        _('Daily Search'): 'DAILYSEARCHER',
+        _('Backlog'): 'BACKLOGSEARCHER',
+        _('Show Update'): 'SHOWUPDATER',
+        _('Version Check'): 'VERSIONUPDATER',
+        _('Proper Finder'): 'PROPERSEARCHER',
+        _('Post Process'): 'AUTOPOSTPROCESSOR',
+        _('Subtitles Finder'): 'SUBTITLESEARCHER',
+        _('Trakt Checker'): 'TRAKTSEARCHER',
     }
     %>
+
     <div class="row">
         <div class="col-md-12">
             <h1 class="title">${title}</h1>
@@ -27,16 +28,16 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h2 class="header">Scheduler</h2>
+            <h2 class="header">${_('Scheduler')}</h2>
             <div class="horizontal-scroll">
                 <table id="schedulerStatusTable" class="tablesorter" width="100%">
                     <thead>
                     <tr>
-                        <th>Scheduler</th>
-                        <th>Enabled</th>
-                        <th>Active</th>
-                        <th>Cycle Time</th>
-                        <th>Next Run</th>
+                        <th>${_('Scheduled Job')}</th>
+                        <th>${_('Enabled')}</th>
+                        <th>${_('Active')}</th>
+                        <th>${_('Cycle Time')}</th>
+                        <th>${_('Next Run')}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -47,16 +48,16 @@
                             <tr>
                                 <td>${schedulerName}</td>
                                 % if enabled:
-                                    <td align="center" style="background-color:green">YES</td>
+                                    <td align="center" style="background-color:green">${_('YES')}</td>
                                 % else:
-                                    <td align="center" style="background-color:red">NO</td>
+                                    <td align="center" style="background-color:red">${_('NO')}</td>
                                 % endif
                                 % if scheduler == 'BACKLOGSEARCHER':
                                     <% searchQueue = getattr(sickrage.srCore, 'SEARCHQUEUE') %>
                                     <% BLSinProgress = searchQueue.is_backlog_in_progress() %>
                                     <% del searchQueue %>
                                     % if BLSinProgress:
-                                        <td align="center">True</td>
+                                        <td align="center">${_('True')}</td>
                                     % else:
                                     % try:
                                         <td align="center">${service.amActive}</td>
@@ -98,16 +99,16 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h2 class="header">Show Queue</h2>
+            <h2 class="header">${_('Show Queue')}</h2>
             <table id="queueStatusTable" class="tablesorter" width="100%">
                 <thead>
                 <tr>
-                    <th>Show ID</th>
-                    <th>Show Name</th>
-                    <th>In Progress</th>
-                    <th>Priority</th>
-                    <th>Added</th>
-                    <th>Queue Type</th>
+                    <th>${_('Show ID')}</th>
+                    <th>${_('Show Name')}</th>
+                    <th>${_('In Progress')}</th>
+                    <th>${_('Priority')}</th>
+                    <th>${_('Added')}</th>
+                    <th>${_('Queue Type')}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -131,13 +132,13 @@
                         % endtry
                             <td>${sickrage.srCore.SHOWQUEUE.currentItem.is_alive()}</td>
                             % if sickrage.srCore.SHOWQUEUE.currentItem.priority == 10:
-                                <td>LOW</td>
+                                <td>${_('LOW')}</td>
                             % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 20:
-                                <td>NORMAL</td>
+                                <td>${_('NORMAL')}</td>
                             % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 30:
-                                <td>HIGH</td>
+                                <td>${_('HIGH')}</td>
                             % else:
-                                <td>showQueue.currentItem.priority</td>
+                                <td>${sickrage.srCore.SHOWQUEUE.currentItem.priority}</td>
                             % endif
                             <td>${sickrage.srCore.SHOWQUEUE.currentItem.added.strftime(dateTimeFormat)}</td>
                             <td>${ShowQueueActions.names[sickrage.srCore.SHOWQUEUE.currentItem.action_id]}</td>
@@ -163,11 +164,11 @@
                         % endtry
                             <td>${item.is_alive()}</td>
                             % if item.priority == 10:
-                                <td>LOW</td>
+                                <td>${_('LOW')}</td>
                             % elif item.priority == 20:
-                                <td>NORMAL</td>
+                                <td>${_('NORMAL')}</td>
                             % elif item.priority == 30:
-                                <td>HIGH</td>
+                                <td>${_('HIGH')}</td>
                             % else:
                                 <td>${item.priority}</td>
                             % endif
@@ -182,35 +183,35 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h2 class="header">Disk Space</h2>
+            <h2 class="header">${_('Disk Space')}</h2>
             <table id="DFStatusTable" class="tablesorter" width="50%">
                 <thead>
                 <tr>
-                    <th>Type</th>
-                    <th>Location</th>
-                    <th>Free space</th>
+                    <th>${_('Type')}</th>
+                    <th>${_('Location')}</th>
+                    <th>${_('Free space')}</th>
                 </tr>
                 </thead>
                 <tbody>
                     % if sickrage.srCore.srConfig.TV_DOWNLOAD_DIR:
                         <tr>
-                            <td>TV Download Directory</td>
+                            <td>${_('TV Download Directory')}</td>
                             <td>${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}</td>
                             % if tvdirFree is not False:
                                 <td align="middle">${tvdirFree}</td>
                             % else:
-                                <td align="middle"><i>Missing</i></td>
+                                <td align="middle"><i>${_('Missing')}</i></td>
                             % endif
                         </tr>
                     % endif
                 <tr>
-                    <td rowspan=${len(rootDir)}>Media Root Directories</td>
+                    <td rowspan=${len(rootDir)}>${_('Media Root Directories')}</td>
                     % for cur_dir in rootDir:
                         <td>${cur_dir}</td>
                     % if rootDir[cur_dir] is not False:
                         <td align="middle">${rootDir[cur_dir]}</td>
                     % else:
-                        <td align="middle"><i>Missing</i></td>
+                        <td align="middle"><i>${_('Missing')}</i></td>
                     % endif
                     </tr>
                     % endfor
@@ -218,5 +219,4 @@
             </table>
         </div>
     </div>
-
 </%block>

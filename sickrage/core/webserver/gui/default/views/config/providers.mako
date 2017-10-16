@@ -9,13 +9,13 @@
 %>
 
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Provider Priorities</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">Provider Options</a></li>
+    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Provider Priorities')}</a></li>
+    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Provider Options')}</a></li>
     % if sickrage.srCore.srConfig.USE_NZBS:
-        <li><a data-toggle="tab" href="#core-tab-pane3">Custom Newznab Providers</a></li>
+        <li><a data-toggle="tab" href="#core-tab-pane3">${_('Custom Newznab Providers')}</a></li>
     % endif
     % if sickrage.srCore.srConfig.USE_TORRENTS:
-        <li><a data-toggle="tab" href="#core-tab-pane4">Custom Torrent Providers</a></li>
+        <li><a data-toggle="tab" href="#core-tab-pane4">${_('Custom Torrent Providers')}</a></li>
     % endif
 </%block>
 
@@ -60,14 +60,16 @@
     <div id="core-tab-pane1" class="tab-pane fade in active">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Provider Priorities</h3>
-                <p>Check off and drag the providers into the order you want them to be used.</p>
-                <p>At least one provider is required but two are recommended.</p>
+                <h3>${_('Provider Priorities')}</h3>
+                <p>${_('Check off and drag the providers into the order you want them to be used.')}</p>
+                <p>${_('At least one provider is required but two are recommended.')}</p>
 
                 % if not sickrage.srCore.srConfig.USE_NZBS or not sickrage.srCore.srConfig.USE_TORRENTS:
                     <blockquote style="margin: 20px 0;">
-                        NZB/Torrent providers can be toggled in <b><a href="${srWebRoot}/config/search">Search
-                        Clients</a></b>
+                        ${_('NZB/Torrent providers can be toggled in')}
+                        <b>
+                            <a href="${srWebRoot}/config/search">${_('Search Clients')}</a>
+                        </b>
                     </blockquote>
                 % else:
                     <br>
@@ -75,9 +77,8 @@
 
                 <div>
                     <p class="note">
-                        <span class="yellow-text fa fa-exclamation-circle"></span> Provider does not support backlog
-                        searches
-                        at this time.
+                        <span class="yellow-text fa fa-exclamation-circle"></span>
+                        ${_('Provider does not support backlog searches at this time.')}
                     </p>
                 </div>
             </div>
@@ -113,7 +114,7 @@
                 </ul>
                 <input type="hidden" name="provider_order" id="provider_order"
                        value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.srCore.providersDict.all().items()])}"/>
-                <br><input type="submit" class="btn config_submitter" value="Save Changes"/><br>
+                <br><input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
             </fieldset>
         </div>
     </div><!-- /tab-pane1 //-->
@@ -121,15 +122,15 @@
     <div id="core-tab-pane2" class="tab-pane fade">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>Provider Options</h3>
-                <p>Configure individual provider settings here.</p>
-                <p>Check with provider's website on how to obtain an API key if needed.</p>
+                <h3>${_('Provider Options')}</h3>
+                <p>${_('Configure individual provider settings here.')}</p>
+                <p>${_('Check with provider\'s website on how to obtain an API key if needed.')}</p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">Configure provider:</label>
+                        <label class="component-title">${_('Configure provider:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
@@ -152,7 +153,7 @@
                         % if not providerObj.default:
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">URL:</label>
+                                    <label class="component-title">${_('URL:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -172,7 +173,7 @@
                         % if providerObj.private:
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">API key:</label>
+                                    <label class="component-title">${_('API key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -194,13 +195,13 @@
                         % if hasattr(providerObj, 'enable_daily'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable daily searches</label>
+                                    <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_daily"
                                            id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                     <label for="${providerID}_enable_daily">
-                                        <p>enable provider to perform daily searches.</p>
+                                        <p>${_('enable provider to perform daily searches.')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -209,13 +210,13 @@
                         % if hasattr(providerObj, 'enable_backlog'):
                             <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable backlog searches</label>
+                                    <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_backlog"
                                            id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                     <label for="${providerID}_enable_backlog">
-                                        <p>enable provider to perform backlog searches.</p>
+                                        <p>${_('enable provider to perform backlog searches.')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -224,16 +225,16 @@
                         % if hasattr(providerObj, 'search_fallback'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Search mode fallback</label>
+                                    <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_search_fallback"
                                            id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                     <label for="${providerID}_search_fallback">
                                         <p>
-                                            when searching for a complete season depending on search mode you may
-                                            return no results, this helps by restarting the search using the
-                                            opposite search mode.
+                                            ${_('when searching for a complete season depending on search mode you may '
+                                            'return no results, this helps by restarting the search using the opposite '
+                                            'search mode.')}
                                         </p>
                                     </label>
                                 </div>
@@ -243,7 +244,7 @@
                         % if hasattr(providerObj, 'search_mode'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Season search mode</label>
+                                    <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="row">
@@ -251,7 +252,9 @@
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_sponly"
                                                    value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
-                                            <label for="${providerID}_search_mode_sponly">season packs only.</label>
+                                            <label for="${providerID}_search_mode_sponly">
+                                                ${_('season packs only.')}
+                                            </label>
                                         </div>
                                     </div>
                                     <br/>
@@ -260,13 +263,15 @@
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_eponly"
                                                    value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
-                                            <label for="${providerID}_search_mode_eponly">episodes only.</label>
+                                            <label for="${providerID}_search_mode_eponly">
+                                                ${_('episodes only.')}
+                                            </label>
                                         </div>
                                     </div>
                                     <p>
-                                        when searching for complete seasons you can choose to have it look
-                                        for season packs only, or choose to have it build a complete season
-                                        from just single episodes.
+                                        ${_('when searching for complete seasons you can choose to have it look for '
+                                        'season packs only, or choose to have it build a complete season from just '
+                                        'single episodes.')}
                                     </p>
                                 </div>
                             </div>
@@ -279,7 +284,7 @@
                         % if hasattr(providerObj, 'username'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Username:</label>
+                                    <label class="component-title">${_('Username:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -298,7 +303,7 @@
                         % if hasattr(providerObj, 'api_key'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">API key:</label>
+                                    <label class="component-title">${_('API key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -318,13 +323,13 @@
                         % if hasattr(providerObj, 'enable_daily'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable daily searches</label>
+                                    <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_daily"
                                            id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                     <label for="${providerID}_enable_daily">
-                                        <p>enable provider to perform daily searches.</p>
+                                        <p>${_('enable provider to perform daily searches.')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -333,13 +338,13 @@
                         % if hasattr(providerObj, 'enable_backlog'):
                             <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable backlog searches</label>
+                                    <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_backlog"
                                            id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                     <label for="${providerID}_enable_backlog">
-                                        <p>enable provider to perform backlog searches.</p>
+                                        <p>${_('enable provider to perform backlog searches.')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -348,17 +353,16 @@
                         % if hasattr(providerObj, 'search_fallback'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Search mode fallback</label>
+                                    <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_search_fallback"
                                            id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                     <label for="${providerID}_search_fallback">
                                         <p>
-                                            when searching for a complete season depending on search mode you may return
-                                            no
-                                            results, this helps by restarting the search using the opposite
-                                            search mode.
+                                            ${_('when searching for a complete season depending on search mode you may '
+                                            'return no results, this helps by restarting the search using the opposite '
+                                            'search mode.')}
                                         </p>
                                     </label>
                                 </div>
@@ -368,7 +372,7 @@
                         % if hasattr(providerObj, 'search_mode'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Season search mode</label>
+                                    <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="row">
@@ -376,7 +380,9 @@
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_eponly"
                                                    value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
-                                            <label for="${providerID}_search_mode_eponly">episodes only.</label>
+                                            <label for="${providerID}_search_mode_eponly">
+                                                ${_('episodes only.')}
+                                            </label>
                                         </div>
                                     </div>
 
@@ -385,14 +391,16 @@
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_sponly"
                                                    value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
-                                            <label for="${providerID}_search_mode_sponly">season packs only.</label>
+                                            <label for="${providerID}_search_mode_sponly">
+                                                ${_('season packs only.')}
+                                            </label>
                                         </div>
                                     </div>
 
                                     <p>
-                                        when searching for complete seasons you can choose to have it look for season
-                                        packs only, or choose to have it build a complete season from just single
-                                        episodes.
+                                        ${_('when searching for complete seasons you can choose to have it look for '
+                                        'season packs only, or choose to have it build a complete season from just '
+                                        'single episodes.')}
                                     </p>
                                 </div>
                             </div>
@@ -405,7 +413,7 @@
                         % if hasattr(providerObj, 'custom_url'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Custom URL:</label>
+                                    <label class="component-title">${_('Custom URL:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -426,7 +434,7 @@
                         % if hasattr(providerObj, 'api_key'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Api key:</label>
+                                    <label class="component-title">${_('Api key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -447,7 +455,7 @@
                         % if hasattr(providerObj, 'digest'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Digest:</label>
+                                    <label class="component-title">${_('Digest:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -467,7 +475,7 @@
                         % if hasattr(providerObj, 'hash'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Hash:</label>
+                                    <label class="component-title">${_('Hash:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -487,7 +495,7 @@
                         % if hasattr(providerObj, 'username'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Username:</label>
+                                    <label class="component-title">${_('Username:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -508,7 +516,7 @@
                         % if hasattr(providerObj, 'password'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Password:</label>
+                                    <label class="component-title">${_('Password:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -527,7 +535,7 @@
                         % if hasattr(providerObj, 'passkey'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Passkey:</label>
+                                    <label class="component-title">${_('Passkey:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -548,7 +556,7 @@
                         % if getattr(providerObj, 'enable_cookies', False):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Cookies:</label>
+                                    <label class="component-title">${_('Cookies:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -558,7 +566,7 @@
                                         <input name="${providerID}_cookies"
                                                id="${providerID}_cookies"
                                                value="${providerObj.cookies}"
-                                               placeholder="ex. uid=xx;pass=yy"
+                                               placeholder="${_('ex. uid=xx;pass=yy')}"
                                                class="form-control"
                                                autocapitalize="off" autocomplete="no"/>
                                     </div>
@@ -569,7 +577,7 @@
                         % if hasattr(providerObj, 'pin'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Pin:</label>
+                                    <label class="component-title">${_('Pin:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -590,7 +598,7 @@
                         % if hasattr(providerObj, 'ratio'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Seed ratio:</label>
+                                    <label class="component-title">${_('Seed ratio:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -610,7 +618,7 @@
                         % if hasattr(providerObj, 'minseed'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Minimum seeders:</label>
+                                    <label class="component-title">${_('Minimum seeders:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -630,7 +638,7 @@
                         % if hasattr(providerObj, 'minleech'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Minimum leechers:</label>
+                                    <label class="component-title">${_('Minimum leechers:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -650,13 +658,13 @@
                         % if hasattr(providerObj, 'confirmed'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Confirmed download</label>
+                                    <label class="component-title">${_('Confirmed download')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_confirmed"
                                            id="${providerID}_confirmed" ${('', 'checked')[bool(providerObj.confirmed)]}/>
                                     <label for="${providerID}_confirmed">
-                                        <p>only download torrents from trusted or verified uploaders ?</p>
+                                        <p>${_('only download torrents from trusted or verified uploaders?')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -665,13 +673,13 @@
                         % if hasattr(providerObj, 'ranked'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Ranked torrents</label>
+                                    <label class="component-title">${_('Ranked torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_ranked"
                                            id="${providerID}_ranked" ${('', 'checked')[bool(providerObj.ranked)]} />
                                     <label for="${providerID}_ranked">
-                                        <p>only download ranked torrents (internal releases)</p>
+                                        <p>${_('only download ranked torrents (internal releases)')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -680,13 +688,13 @@
                         % if hasattr(providerObj, 'engrelease'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">English torrents</label>
+                                    <label class="component-title">${_('English torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_engrelease"
                                            id="${providerID}_engrelease" ${('', 'checked')[bool(providerObj.engrelease)]} />
                                     <label for="${providerID}_engrelease">
-                                        <p>only download english torrents ,or torrents containing english subtitles</p>
+                                        <p>${_('only download english torrents ,or torrents containing english subtitles')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -695,14 +703,16 @@
                         % if hasattr(providerObj, 'onlyspasearch'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">For Spanish torrents</label>
+                                    <label class="component-title">${_('For Spanish torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_onlyspasearch"
                                            id="${providerID}_onlyspasearch" ${('', 'checked')[bool(providerObj.onlyspasearch)]} />
                                     <label for="${providerID}_onlyspasearch">
-                                        <p>ONLY search on this provider if show info is defined as "Spanish"
-                                            (avoid provider's use for VOS shows)</p>
+                                        <p>
+                                            ${_('ONLY search on this provider if show info is defined as "Spanish" '
+                                            '(avoid provider\'s use for VOS shows)')}
+                                        </p>
                                     </label>
                                 </div>
                             </div>
@@ -711,7 +721,7 @@
                         % if hasattr(providerObj, 'sorting'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Sort results by</label>
+                                    <label class="component-title">${_('Sort results by')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -722,7 +732,7 @@
                                                 title="Sort search results"
                                                 class="form-control">
                                             % for curAction in ('last', 'seeders', 'leechers'):
-                                                <option value="${curAction}" ${('', 'selected="selected"')[curAction == providerObj.sorting]}>${curAction}</option>
+                                                <option value="${curAction}" ${('', 'selected')[curAction == providerObj.sorting]}>${curAction}</option>
                                             % endfor
                                         </select>
                                     </div>
@@ -733,13 +743,13 @@
                         % if hasattr(providerObj, 'freeleech'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Freeleech</label>
+                                    <label class="component-title">${_('Freeleech')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_freeleech"
                                            id="${providerID}_freeleech" ${('', 'checked')[bool(providerObj.freeleech)]}/>
                                     <label for="${providerID}_freeleech">
-                                        <p>only download <b>[FreeLeech]</b> torrents.</p>
+                                        <p>${_('only download')} <b>[${_('FreeLeech')}]</b> ${_('torrents.')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -748,13 +758,13 @@
                         % if hasattr(providerObj, 'enable_daily'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable daily searches</label>
+                                    <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_daily"
                                            id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                     <label for="${providerID}_enable_daily">
-                                        <p>enable provider to perform daily searches.</p>
+                                        <p>${_('enable provider to perform daily searches.')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -763,13 +773,13 @@
                         % if hasattr(providerObj, 'reject_m2ts'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Reject Blu-ray M2TS releases</label>
+                                    <label class="component-title">${_('Reject Blu-ray M2TS releases')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_reject_m2ts"
                                            id="${providerID}_reject_m2ts" ${('', 'checked')[bool(providerObj.reject_m2ts)]}/>
                                     <label for="${providerID}_reject_m2ts">
-                                        <p>enable to ignore Blu-ray MPEG-2 Transport Stream container releases</p>
+                                        <p>${_('enable to ignore Blu-ray MPEG-2 Transport Stream container releases')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -778,13 +788,13 @@
                         % if hasattr(providerObj, 'enable_backlog'):
                             <div class="row field-pair ${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Enable backlog searches</label>
+                                    <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_enable_backlog"
                                            id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                     <label for="${providerID}_enable_backlog">
-                                        <p>enable provider to perform backlog searches.</p>
+                                        <p>${_('enable provider to perform backlog searches.')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -793,16 +803,17 @@
                         % if hasattr(providerObj, 'search_fallback'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Search mode fallback</label>
+                                    <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_search_fallback"
                                            id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                     <label for="${providerID}_search_fallback">
-                                        <p>when searching for a complete season depending on search mode you may return
-                                            no
-                                            results, this helps by restarting the search using the opposite
-                                            search mode.</p>
+                                        <p>
+                                            ${_('when searching for a complete season depending on search mode you may '
+                                            'return no results, this helps by restarting the search using the opposite '
+                                            'search mode.')}
+                                        </p>
                                     </label>
                                 </div>
                             </div>
@@ -811,7 +822,7 @@
                         % if hasattr(providerObj, 'search_mode'):
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Season search mode</label>
+                                    <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="row">
@@ -819,7 +830,9 @@
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_sponly"
                                                    value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
-                                            <label for="${providerID}_search_mode_sponly">season packs only.</label>
+                                            <label for="${providerID}_search_mode_sponly">
+                                                ${_('season packs only.')}
+                                            </label>
                                         </div>
                                     </div>
 
@@ -828,14 +841,16 @@
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_eponly"
                                                    value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
-                                            <label for="${providerID}_search_mode_eponly">episodes only.</label>
+                                            <label for="${providerID}_search_mode_eponly">
+                                                ${_('episodes only.')}
+                                            </label>
                                         </div>
                                     </div>
 
                                     <p>
-                                        when searching for complete seasons you can choose to have it look for season
-                                        packs only, or choose to have it build a complete season from just single
-                                        episodes.
+                                        ${_('when searching for complete seasons you can choose to have it look for '
+                                        'season packs only, or choose to have it build a complete season from just '
+                                        'single episodes.')}
                                     </p>
                                 </div>
                             </div>
@@ -844,7 +859,7 @@
                         % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Category:</label>
+                                    <label class="component-title">${_('Category:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group input350">
@@ -855,7 +870,7 @@
                                                 title="Provider category"
                                                 class="form-control">
                                             % for i in providerObj.category_dict.keys():
-                                                <option value="${providerObj.category_dict[i]}" ${('', 'selected="selected"')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
+                                                <option value="${providerObj.category_dict[i]}" ${('', 'selected')[providerObj.category_dict[i] == providerObj.cat]}>${i}</option>
                                             % endfor
                                         </select>
                                     </div>
@@ -866,13 +881,13 @@
                         % if hasattr(providerObj, 'subtitle') and providerID == 'tntvillage':
                             <div class="row field-pair">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">Subtitled</label>
+                                    <label class="component-title">${_('Subtitled')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <input type="checkbox" name="${providerID}_subtitle"
                                            id="${providerID}_subtitle" ${('', 'checked')[bool(providerObj.subtitle)]}/>
                                     <label for="${providerID}_subtitle">
-                                        <p>select torrent with Italian subtitle</p>
+                                        <p>${_('select torrent with Italian subtitle')}</p>
                                     </label>
                                 </div>
                             </div>
@@ -882,7 +897,7 @@
                 <!-- end div for editing providers -->
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="Save Changes"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -893,14 +908,19 @@
         <div id="core-tab-pane3" class="tab-pane fade">
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                    <h3>Configure Custom<br>Newznab Providers</h3>
-                    <p>Add and setup or remove custom Newznab providers.</p>
+                    <h3>
+                        ${_('Configure Custom')}<br/>
+                        ${_('Newznab Providers')}
+                    </h3>
+                    <p>
+                        ${_('Add and setup or remove custom Newznab providers.')}
+                    </p>
                 </div>
 
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Select provider:</label>
+                            <label class="component-title">${_('Select provider:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -908,7 +928,7 @@
                                     <span class="glyphicon glyphicon-search"></span>
                                 </div>
                                 <select id="editANewznabProvider" class="form-control" title="Choose provider">
-                                    <option value="addNewznab">-- add new provider --</option>
+                                    <option value="addNewznab">-- ${_('add new provider')} --</option>
                                 </select>
                             </div>
                         </div>
@@ -917,7 +937,7 @@
                     <div class="newznabProviderDiv" id="addNewznab">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Provider name:</label>
+                                <label class="component-title">${_('Provider name:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -930,7 +950,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Site URL:</label>
+                                <label class="component-title">${_('Site URL:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -944,7 +964,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">API key:</label>
+                                <label class="component-title">${_('API key:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -959,7 +979,7 @@
 
                         <div class="row field-pair" id="newznabcapdiv">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Newznab search categories:</label>
+                                <label class="component-title">${_('Newznab search categories:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="row">
@@ -969,10 +989,9 @@
                                         <select id="newznab_cat" multiple="multiple" title="Newznab categories"
                                                 style="min-width:10em;"></select>
                                         <p>
-                                            (select your Newznab categories on the left, and click the "update
-                                            categories"
-                                            button to
-                                            use them for searching.) <b>don't forget to to save the form!</b>
+                                            ${_('(select your Newznab categories on the left, and click the "update '
+                                            'categories" button to use them for searching.)')}
+                                            <b>${_('don\'t forget to to save the form!')}</b>
                                         </p>
                                     </div>
                                 </div>
@@ -982,7 +1001,7 @@
                                         <input class="btn newznab_cat_update"
                                                type="button"
                                                id="newznab_cat_update"
-                                               value="Update Categories"/>
+                                               value=${_('Update Categories')}/>
                                     </div>
                                 </div>
                             </div>
@@ -991,8 +1010,7 @@
                         <div id="newznab_add_div">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn newznab_save" type="button" id="newznab_add"
-                                           value="Add"/>
+                                    <input class="btn newznab_save" type="button" id="newznab_add" value=${_('Add')}/>
                                 </div>
                             </div>
                         </div>
@@ -1000,7 +1018,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <input class="btn btn-danger newznab_delete" type="button"
-                                           id="newznab_delete" value="Delete"/>
+                                           id="newznab_delete" value=${_('Delete')}/>
                                 </div>
                             </div>
                         </div>
@@ -1014,14 +1032,14 @@
         <div id="core-tab-pane4" class="tab-pane fade">
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                    <h3>Configure Custom Torrent Providers</h3>
-                    <p>Add and setup or remove custom RSS providers.</p>
+                    <h3>${_('Configure Custom Torrent Providers')}</h3>
+                    <p>${_('Add and setup or remove custom RSS providers.')}</p>
                 </div>
 
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">Select provider:</label>
+                            <label class="component-title">${_('Select provider:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
@@ -1029,7 +1047,7 @@
                                     <span class="glyphicon glyphicon-search"></span>
                                 </div>
                                 <select id="editATorrentRssProvider" class="form-control" title="Choose provider">
-                                    <option value="addTorrentRss">-- add new provider --</option>
+                                    <option value="addTorrentRss">-- ${_('add new provider')} --</option>
                                 </select>
                             </div>
                         </div>
@@ -1038,7 +1056,7 @@
                     <div class="torrentRssProviderDiv" id="addTorrentRss">
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Provider name:</label>
+                                <label class="component-title">${_('Provider name:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -1053,7 +1071,7 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">RSS URL:</label>
+                                <label class="component-title">${_('RSS URL:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
@@ -1067,28 +1085,28 @@
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Cookies:</label>
+                                <label class="component-title">${_('Cookies:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-certificate"></span>
                                     </div>
-                                    <input id="torrentrss_cookies" placeholder="ex. uid=xx;pass=yy"
+                                    <input id="torrentrss_cookies" placeholder="${_('ex. uid=xx;pass=yy')}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
                         </div>
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">Search element:</label>
+                                <label class="component-title">${_('Search element:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-search"></span>
                                     </div>
-                                    <input id="torrentrss_titleTAG" placeholder="ex. title"
+                                    <input id="torrentrss_titleTAG" placeholder="${_('ex. title')}"
                                            class="form-control" value="title"
                                            autocapitalize="off"/>
                                 </div>

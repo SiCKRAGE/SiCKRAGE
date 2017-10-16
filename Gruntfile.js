@@ -239,6 +239,19 @@ module.exports = function (grunt) {
             },
             all: ['dist/js/core.js']
         },
+        po2json: {
+            messages: {
+                options: {
+                    singleFile: true
+                },
+                files: [{
+                    expand: true,
+                    src: 'sickrage/locale/*/LC_MESSAGES/messages.po',
+                    dest: '',
+                    ext: ''
+                }]
+            }
+        },
         changelog: {
             release: {
                 options: {
@@ -262,6 +275,14 @@ module.exports = function (grunt) {
             }
         },
         exec: {
+            // Translations
+            'crowdin_upload_sources': {cmd: 'crowdin-cli-py upload sources'},
+            'crowdin_upload_translations': {cmd: 'crowdin-cli-py upload translations'},
+            'crowdin_download_translations': {cmd: 'crowdin-cli-py download'},
+            'babel_extract': {cmd: 'python setup.py extract_messages'},
+            'babel_update': {cmd: 'python setup.py update_catalog'},
+            'babel_compile': {cmd: 'python setup.py compile_catalog'},
+
             // PyPi Commands
             'pypi_publish': {cmd: 'python setup.py sdist bdist_wheel upload clean'},
 
@@ -391,8 +412,9 @@ module.exports = function (grunt) {
 
         grunt.file.write(vFile, newVersion);
 
-        var git_tasks = [
+        var tasks = [
             'default',
+            'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_start:' + newVersion,
             'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
@@ -403,6 +425,52 @@ module.exports = function (grunt) {
             'exec:pypi_publish'
         ];
 
-        grunt.task.run(git_tasks);
+        grunt.task.run(tasks);
+    });
+
+    grunt.registerTask('upload_trans', 'Upload translations', function() {
+        grunt.log.writeln('Extracting and uploading translations to Crowdin...'.magenta);
+
+        var tasks = [
+            'exec:babel_extract',
+            'exec:crowdin_upload_sources'
+        ];
+
+        if (process.env.CROWDIN_API_KEY) {
+            grunt.task.run(tasks);
+        } else {
+            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task'.bold);
+        }
+    });
+
+    grunt.registerTask('download_trans', 'Download translations', function() {
+        grunt.log.writeln('Downloading and compiling translations from Crowdin...'.magenta);
+
+        var tasks = [
+            'exec:crowdin_download_translations',
+            'exec:babel_compile',
+            'po2json'
+        ];
+
+        if (process.env.CROWDIN_API_KEY) {
+            grunt.task.run(tasks);
+        } else {
+            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task.'.bold);
+        }
+    });
+
+    grunt.registerTask('sync_trans', 'Sync translations with Crowdin', function() {
+        grunt.log.writeln('Syncing translations with Crowdin...'.magenta);
+
+        var tasks = [
+            'upload_trans',
+            'download_trans'
+        ];
+
+        if (process.env.CROWDIN_API_KEY) {
+            grunt.task.run(tasks);
+        } else {
+            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task.'.bold);
+        }
     });
 };

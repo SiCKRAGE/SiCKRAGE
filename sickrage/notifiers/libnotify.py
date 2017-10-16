@@ -22,9 +22,6 @@ import cgi
 import os
 
 import sickrage
-from sickrage.core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
-    NOTIFY_GIT_UPDATE
-from sickrage.core.common import notifyStrings
 from sickrage.notifiers import srNotifiers
 
 
@@ -97,20 +94,20 @@ class LibnotifyNotifier(srNotifiers):
 
     def _notify_snatch(self, ep_name):
         if sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONSNATCH:
-            self._notify(notifyStrings[NOTIFY_SNATCH], ep_name)
+            self._notify(self.notifyStrings[self.NOTIFY_SNATCH], ep_name)
 
     def _notify_download(self, ep_name):
         if sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONDOWNLOAD:
-            self._notify(notifyStrings[NOTIFY_DOWNLOAD], ep_name)
+            self._notify(self.notifyStrings[self.NOTIFY_DOWNLOAD], ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
         if sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notify(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
+            self._notify(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
         if sickrage.srCore.srConfig.USE_LIBNOTIFY:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify(title, update_text + new_version)
 
     def test_notify(self):

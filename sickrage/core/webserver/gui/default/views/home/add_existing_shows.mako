@@ -12,7 +12,7 @@
         <div class="col-md-12">
             <div id="newShowPortal">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">Add Existing Show</a></li>
+                    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Add Existing Show')}</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="core-tab-pane1" class="tab-pane fade in active">
@@ -22,8 +22,8 @@
 
                                 <div id="tabs">
                                     <ul>
-                                        <li><a href="#tabs-1">Manage Directories</a></li>
-                                        <li><a href="#tabs-2">Customize Options</a></li>
+                                        <li><a href="#tabs-1">${_('Manage Directories')}</a></li>
+                                        <li><a href="#tabs-2">${_('Customize Options')}</a></li>
                                     </ul>
                                     <div id="tabs-1" class="existingtabs">
                                             <%include file="../includes/root_dirs.mako"/>
@@ -36,10 +36,11 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p>SiCKRAGE can add existing shows, using the current options, by using locally
-                                            stored NFO/XML metadata to eliminate user interaction. If you would rather
-                                            have SickRage prompt you to customize each show, then use the checkbox
-                                            below.
+                                        <p>
+                                            ${_('SiCKRAGE can add existing shows, using the current options, by using '
+                                            'locally stored NFO/XML metadata to eliminate user interaction. If you '
+                                            'would rather have SickRage prompt you to customize each show, then use '
+                                            'the checkbox below.')}
                                         </p>
                                     </div>
                                 </div>
@@ -49,7 +50,7 @@
                                         <p>
                                             <input type="checkbox" name="promptForSettings" id="promptForSettings"/>
                                             <label for="promptForSettings">
-                                                Prompt me to set settings for each show
+                                                ${_('Prompt me to set settings for each show')}
                                             </label>
                                         </p>
                                     </div>
@@ -59,8 +60,8 @@
                                     <div class="col-md-12">
                                         <p>
                                             <b>
-                                                Displaying folders within these directories which aren't already added
-                                                to SiCKRAGE:
+                                                ${_('Displaying folders within these directories which aren\'t already '
+                                                'added to SiCKRAGE:')}
                                             </b>
                                         </p>
                                     </div>
@@ -79,7 +80,7 @@
                                 <br/>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <input class="btn btn-primary" type="button" value="Submit"
+                                        <input class="btn btn-primary" type="button" value="${_('Submit')}"
                                                id="submitShowDirs"/>
                                     </div>
                                 </div>
