@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5757064 - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
+- * a271d79 - 2017-10-16: Restart clears current user but does NOT clear cookies, prevents issues with restart page 
+- * d8302b2 - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
 - * 7927b8c - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
 - * 4f214c4 - 2017-10-16: Disabled header for restart page 
 - * 892d3ce - 2017-10-16: Fixed typo in main template 

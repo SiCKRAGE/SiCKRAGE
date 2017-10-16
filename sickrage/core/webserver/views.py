@@ -1116,7 +1116,6 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
         # clear current user
-        self.clear_cookie("user")
         self.current_user = None
 
         if not force: self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
