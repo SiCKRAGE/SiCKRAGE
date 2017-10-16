@@ -177,6 +177,7 @@ class BaseHandler(RequestHandler):
             'srThemeName': sickrage.srCore.srConfig.THEME_NAME,
             'srDefaultPage': sickrage.srCore.srConfig.DEFAULT_PAGE,
             'srWebRoot': sickrage.srCore.srConfig.WEB_ROOT,
+            'srHeader': True,
             'srFooter': True,
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
@@ -1126,6 +1127,7 @@ class Home(WebHandler):
             topmenu="system",
             controller='home',
             action="restart",
+            srHeader=False,
             srFooter=False
         ) if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
 

@@ -88,7 +88,7 @@
     <%block name="css" />
 </head>
 <body data-controller="${controller}" data-action="${action}">
-    % if current_user:
+    % if current_user and srHeader:
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
