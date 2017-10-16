@@ -133,18 +133,21 @@ class BaseHandler(RequestHandler):
 
             self.set_header('Content-Type', 'text/html')
             self.write("""<html>
-                                 <title>{}</title>
+                                 <title>{error}</title>
                                  <body>
+                                    <button onclick="window.location='{webroot}/logs/';">View Log(Errors)</button>
+                                    <button onclick="window.location='{webroot}/home/restart?force=1';">Restart SiCKRAGE</button>
                                     <h2>Error</h2>
-                                    <p>{}</p>
+                                    <p>{error}</p>
                                     <h2>Traceback</h2>
-                                    <p>{}</p>
+                                    <p>{traceback}</p>
                                     <h2>Request Info</h2>
-                                    <p>{}</p>
-                                    <button onclick="window.location='{}/logs/';">View Log(Errors)</button>
+                                    <p>{request}</p>
                                  </body>
-                               </html>""".format(error, error, trace_info, request_info,
-                                                 sickrage.srCore.srConfig.WEB_ROOT))
+                               </html>""".format(error=error,
+                                                 traceback=trace_info,
+                                                 request=request_info,
+                                                 webroot=sickrage.srCore.srConfig.WEB_ROOT))
 
     def redirect(self, url, permanent=False, status=None):
         if not url.startswith(sickrage.srCore.srConfig.WEB_ROOT):
@@ -1109,11 +1112,11 @@ class Home(WebHandler):
         self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
         sickrage.srCore.shutdown()
 
-    def restart(self, pid=None):
-        if str(pid) != str(sickrage.srCore.PID):
+    def restart(self, pid=None, force=False):
+        if str(pid) != str(sickrage.srCore.PID) and not force:
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
-        self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
+        if not force: self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
         sickrage.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.srCore.shutdown, restart=True)
 
         return self.render(
@@ -1124,7 +1127,7 @@ class Home(WebHandler):
             controller='home',
             action="restart",
             srFooter=False
-        )
+        ) if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):

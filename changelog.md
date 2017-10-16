@@ -1,6 +1,7 @@
 # Changelog
 
-- * 609d6bb - 2017-10-16: Fixed issues with json gettext 
+- * 28ecc7b - 2017-10-16: Added a force restart button to error pages incase of webui issues 
+- * a3fd581 - 2017-10-16: Fixed issues with json gettext 
 - * 51e2aae - 2017-10-16: Finish i18n feature code 
 - * 7866282 - 2017-10-15: Added Gettext translation features to core javascript code 
 - * 2a12ed2 - 2017-10-15: Added more i18n support for strings 

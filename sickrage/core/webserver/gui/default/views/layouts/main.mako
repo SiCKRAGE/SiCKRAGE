@@ -197,7 +197,7 @@
                                         </a>
                                     </li>
                                 % endif
-                                % if torrent_webui_url:
+                                % if torret_webui_url:
                                     <li>
                                         <a href="${torrent_webui_url}" target="_blank">
                                             <i class="menu-icon-bittorrent"></i>&nbsp;${_('Manage Torrents')}
