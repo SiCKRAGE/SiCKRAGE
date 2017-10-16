@@ -1,6 +1,7 @@
 # Changelog
 
-- * d91cbab - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
+- * 5757064 - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
+- * 7927b8c - 2017-10-16: Clears current user on restarts to disable header and footers and force re-login 
 - * 4f214c4 - 2017-10-16: Disabled header for restart page 
 - * 892d3ce - 2017-10-16: Fixed typo in main template 
 - * 1868b12 - 2017-10-16: Added a force restart button to error pages incase of webui issues 
