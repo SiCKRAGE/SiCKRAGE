@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9df66c2 - 2017-10-16: Finish i18n feature code 
+- * 609d6bb - 2017-10-16: Fixed issues with json gettext 
+- * 51e2aae - 2017-10-16: Finish i18n feature code 
 - * 7866282 - 2017-10-15: Added Gettext translation features to core javascript code 
 - * 2a12ed2 - 2017-10-15: Added more i18n support for strings 
 - * c1ab882 - 2017-10-15: Fixed issues with setting minimum seeders and leechers 

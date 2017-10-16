@@ -80,6 +80,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="${srWebRoot}/images/ico/favicon-16x16.png">
     <link rel="manifest" href="${srWebRoot}/images/ico/manifest.json">
 
+    <link rel="gettext" type="application/json" href="${srWebRoot}/messages.json">
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
     <link rel="stylesheet" type="text/css"

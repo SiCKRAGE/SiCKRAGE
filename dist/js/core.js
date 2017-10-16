@@ -1,8 +1,8 @@
 jQuery(document).ready(function ($) {
-    // jsGettext
-    var gt = new Gettext().gettext;
+    var gt = function (msgid) {
+        return new Gettext().gettext(msgid);
+    };
 
-    // SiCKRAGE Core Namespace Object
     var SICKRAGE = {
         xhrPool: [],
 
@@ -1072,8 +1072,6 @@ jQuery(document).ready(function ($) {
             },
 
             setDefault: function (which, force) {
-                console.log('setting default to ' + which);
-
                 if (which !== undefined && !which.length) {
                     return;
                 }
@@ -2011,10 +2009,7 @@ jQuery(document).ready(function ($) {
 
                     $("a.removeshow").confirm({
                         title: gt("Remove Show"),
-                        content: gt('Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') +
-                            '</span> from the database?<br><br>' +
-                            '<input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;' +
-                            '<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>'),
+                        content: gt('Are you sure you want to remove <span class="footerhighlight">') + $('#showtitle').data('showname') + gt('</span> from the database?<br><br><input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>'),
                         confirm: function () {
                             location.href = this.$target.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
                         }
@@ -2655,13 +2650,11 @@ jQuery(document).ready(function ($) {
                     $(this).attr('disabled', true);
                     new PNotify({
                         title: gt('Saved Defaults'),
-                        text
-                :
-                    gt('Your "add show" defaults have been set to your current selections.'),
-                        shadow
-                :
-                    false
-                })
+                        text:
+                            gt('Your "add show" defaults have been set to your current selections.'),
+                        shadow:
+                            false
+                    })
                     ;
                 });
 
@@ -5422,18 +5415,9 @@ jQuery(document).ready(function ($) {
                 controller = body.getAttribute("data-controller"),
                 action = body.getAttribute("data-action");
 
-            this.init_gettext();
             this.exec("common");
             this.exec(controller);
             this.exec(controller, action);
-        },
-
-        init_gettext: function () {
-            $.getJSON(SICKRAGE.srWebRoot + '/messages.json', function (data) {
-                if (data !== undefined) {
-                    gt = new Gettext(data.messages).gettext;
-                }
-            });
         },
 
         exec: function (controller, action) {

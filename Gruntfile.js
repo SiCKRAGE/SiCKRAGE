@@ -242,7 +242,6 @@ module.exports = function (grunt) {
         po2json: {
             messages: {
                 options: {
-                    format: 'jed',
                     singleFile: true
                 },
                 files: [{
@@ -441,8 +440,6 @@ module.exports = function (grunt) {
         } else {
             grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task'.bold);
         }
-
-        grunt.task.run(tasks);
     });
 
     grunt.registerTask('download_trans', 'Download translations', function() {
