@@ -177,8 +177,6 @@ class BaseHandler(RequestHandler):
             'srThemeName': sickrage.srCore.srConfig.THEME_NAME,
             'srDefaultPage': sickrage.srCore.srConfig.DEFAULT_PAGE,
             'srWebRoot': sickrage.srCore.srConfig.WEB_ROOT,
-            'srHeader': True,
-            'srFooter': True,
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
@@ -1117,6 +1115,9 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.srCore.PID) and not force:
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
+        # clear current user
+        self.current_user = None
+
         if not force: self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
         sickrage.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.srCore.shutdown, restart=True)
 
@@ -1127,8 +1128,6 @@ class Home(WebHandler):
             topmenu="system",
             controller='home',
             action="restart",
-            srHeader=False,
-            srFooter=False
         ) if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
 
     def updateCheck(self, pid=None):
