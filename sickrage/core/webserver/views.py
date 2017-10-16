@@ -1537,8 +1537,9 @@ class Home(WebHandler):
 
         if len(errors) > 0:
             sickrage.srCore.srNotifications.error(
-                _('%d error%s while saving changes:') % (len(errors), "" if len(errors) == 1 else "s"),
-                '<ul>' + '\n'.join(['<li>%s</li>' % error for error in map(str, errors)]) + "</ul>")
+                _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
+                                                                               plural="" if len(errors) == 1 else "s"),
+                '<ul>' + '\n'.join(['<li>{0}</li>'.format(error) for error in errors]) + "</ul>")
 
         return self.redirect("/home/displayShow?show=" + show)
 
@@ -3349,7 +3350,8 @@ class Manage(Home, WebRoot):
 
         if len(errors) > 0:
             sickrage.srCore.srNotifications.error(
-                _('%d error%s while saving changes:') % (len(errors), "" if len(errors) == 1 else "s"),
+                _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
+                                                                               plural="" if len(errors) == 1 else "s"),
                 " ".join(errors))
 
         return self.redirect("/manage/")
@@ -4385,7 +4387,7 @@ class ConfigProviders(Config):
                 }
 
                 # update provider object
-                [setattr(providerObj, k, v) for k,v in providerSettings.items() if hasattr(providerObj, k)]
+                [setattr(providerObj, k, v) for k, v in providerSettings.items() if hasattr(providerObj, k)]
             except Exception as e:
                 continue
 

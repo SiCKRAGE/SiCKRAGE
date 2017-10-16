@@ -7,7 +7,7 @@
 
 <%block name="tabs">
     <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('AnimeDB Settings')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Look and Feel')}</a></li>
+    <li><a data-toggle="tab" href="#core-tab-pane2">${_('User Interface')}</a></li>
 </%block>
 
 <%block name="pages">
@@ -47,7 +47,7 @@
                                 </div>
                                 <input type="text" name="anidb_username" id="anidb_username"
                                        value="${sickrage.srCore.srConfig.ANIDB_USERNAME}"
-                                       title="${_('AniDB username')}"
+                                       title="${_('AniDB Username')}"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
@@ -64,7 +64,7 @@
                                 </div>
                                 <input type="password" name="anidb_password" id="anidb_password"
                                        value="${sickrage.srCore.srConfig.ANIDB_PASSWORD}"
-                                       title="${_('AniDB password')}"
+                                       title="${_('AniDB Password')}"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
@@ -95,7 +95,7 @@
     <div id="core-tab-pane2" class="tab-pane fade">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                <h3>${_('Look and Feel')}</h3>
+                <h3>${_('User Interface')}</h3>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">

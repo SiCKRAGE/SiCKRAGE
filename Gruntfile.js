@@ -428,22 +428,51 @@ module.exports = function (grunt) {
         grunt.task.run(tasks);
     });
 
-    grunt.registerTask('update_trans', 'Update translations', function() {
-        grunt.log.writeln('Updating translations...'.magenta);
+    grunt.registerTask('upload_trans', 'Upload translations', function() {
+        grunt.log.writeln('Extracting and uploading translations to Crowdin...'.magenta);
 
         var tasks = [
             'exec:babel_extract',
+            'exec:crowdin_upload'
+        ];
+
+        if (process.env.CROWDIN_API_KEY) {
+            grunt.task.run(tasks);
+        } else {
+            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task'.bold);
+        }
+
+        grunt.task.run(tasks);
+    });
+
+    grunt.registerTask('download_trans', 'Download translations', function() {
+        grunt.log.writeln('Downloading and compiling translations from Crowdin...'.magenta);
+
+        var tasks = [
+            'exec:crowdin_download',
             'exec:babel_compile',
             'po2json'
         ];
 
         if (process.env.CROWDIN_API_KEY) {
-            tasks.splice(1, 0, 'exec:crowdin_upload', 'exec:crowdin_download'); // insert items at index 1
+            grunt.task.run(tasks);
         } else {
-            tasks.splice(1, 0, 'exec:babel_update'); // insert item at index 1
-            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, not syncing with Crowdin.'.bold);
+            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task.'.bold);
         }
+    });
 
-        grunt.task.run(tasks);
+    grunt.registerTask('sync_trans', 'Sync translations with Crowdin', function() {
+        grunt.log.writeln('Syncing translations with Crowdin...'.magenta);
+
+        var tasks = [
+            'upload_trans',
+            'download_trans'
+        ];
+
+        if (process.env.CROWDIN_API_KEY) {
+            grunt.task.run(tasks);
+        } else {
+            grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task.'.bold);
+        }
     });
 };
