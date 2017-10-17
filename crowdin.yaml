@@ -4,5 +4,5 @@ base_url: https://api.crowdin.com
 base_path: .
 files:
   -
-    source: sickrage/locale/messages.pot
-    translation: sickrage/locale/%locale_with_underscore%/LC_MESSAGES/messages.po
+    source: /sickrage/locale/messages.pot
+    translation: /sickrage/locale/%locale_with_underscore%/LC_MESSAGES/messages.po
