@@ -69,6 +69,7 @@ class GenericProvider(object):
         self.enable_backlog = False
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
+        self.search_separator = ' '
 
         # cookies
         self.enable_cookies = False
@@ -245,7 +246,7 @@ class GenericProvider(object):
 
         return [search_string]
 
-    def _get_episode_search_strings(self, episode, add_string='', search_separator=' '):
+    def _get_episode_search_strings(self, episode, add_string=''):
         """
         Get episode search strings.
         """
@@ -257,7 +258,7 @@ class GenericProvider(object):
         }
 
         for show_name in allPossibleShowNames(episode.show, episode.scene_season):
-            episode_string = show_name + search_separator
+            episode_string = show_name + self.search_separator
             episode_string_fallback = None
 
             if episode.show.air_by_date:
@@ -283,9 +284,9 @@ class GenericProvider(object):
                 }
 
             if add_string:
-                episode_string += search_separator + add_string
+                episode_string += self.search_separator + add_string
                 if episode_string_fallback:
-                    episode_string_fallback += search_separator + add_string
+                    episode_string_fallback += self.search_separator + add_string
 
             search_string['Episode'].append(episode_string.strip())
             if episode_string_fallback:

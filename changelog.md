@@ -1,6 +1,7 @@
 # Changelog
 
-- * d79c29c - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
+- * 7f4c026 - 2017-10-17: Added Anizb Newznab provider 
+- * f45988b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
 - * 7aac26b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
 - * 6384aab - 2017-10-17: Release v9.1.39 
 - * f50a313 - 2017-10-17: Fixed issue with gettext underscore being replaced when using underscore as throwaway variable 
