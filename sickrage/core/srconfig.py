@@ -70,10 +70,9 @@ class srConfig(object):
         self.NAMING_SEP_TYPE = (" - ", " ")
         self.NAMING_SEP_TYPE_TEXT = (" - ", "space")
 
-        self.LOG_DIR = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'logs'))
-        self.LOG_FILE = os.path.abspath(os.path.join(self.LOG_DIR, 'sickrage.log'))
         self.LOG_SIZE = 1048576
         self.LOG_NR = 5
+
         self.VERSION_NOTIFY = True
         self.AUTO_UPDATE = True
         self.NOTIFY_ON_UPDATE = True
@@ -381,9 +380,9 @@ class srConfig(object):
         self.EMAIL_PASSWORD = None
         self.EMAIL_FROM = None
         self.EMAIL_LIST = None
-        self.GUI_NAME = 'default'
-        self.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', self.GUI_NAME)
         self.GUI_LANG = ""
+        self.GUI_STATIC_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'static')
+        self.GUI_VIEWS_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'views')
         self.HOME_LAYOUT = None
         self.HISTORY_LAYOUT = None
         self.HISTORY_LIMIT = 0
@@ -513,7 +512,6 @@ class srConfig(object):
             'GUI': {
                 'coming_eps_display_paused': False,
                 'display_show_specials': True,
-                'gui_name': 'default',
                 'gui_lang': '',
                 'history_limit': '100',
                 'poster_sortdir': 1,
@@ -1495,7 +1493,6 @@ class srConfig(object):
         self.RANDOM_USER_AGENT = self.check_setting_bool('General', 'random_user_agent')
 
         # GUI SETTINGS
-        self.GUI_NAME = self.check_setting_str('GUI', 'gui_name')
         self.GUI_LANG = self.check_setting_str('GUI', 'gui_lang')
         self.THEME_NAME = self.check_setting_str('GUI', 'theme_name')
         self.FANART_BACKGROUND = self.check_setting_bool('GUI', 'fanart_background')
@@ -1966,7 +1963,6 @@ class srConfig(object):
                 'random_user_agent': int(self.RANDOM_USER_AGENT),
             },
             'GUI': {
-                'gui_name': self.GUI_NAME,
                 'gui_lang': self.GUI_LANG,
                 'theme_name': self.THEME_NAME,
                 'home_layout': self.HOME_LAYOUT,
@@ -2445,9 +2441,8 @@ class ConfigMigrator(srConfig):
         self.CONFIG_OBJ['General']['encryption_version'] = 2
         return self.CONFIG_OBJ
 
-    # Migration v9: Rename gui template name from slick to default
+    # Migration v9: Dummy migration to sync backup number with config version number
     def _migrate_v9(self):
-        self.CONFIG_OBJ['GUI']['gui_name'] = 'default'
         return self.CONFIG_OBJ
 
     # Migration v10: Metadata upgrade to add enabled attribute

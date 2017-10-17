@@ -192,7 +192,7 @@ class Core(object):
         # setup logger settings
         self.srLogger.logSize = self.srConfig.LOG_SIZE
         self.srLogger.logNr = self.srConfig.LOG_NR
-        self.srLogger.logFile = self.srConfig.LOG_FILE
+        self.srLogger.logFile = os.path.join(sickrage.DATA_DIR, 'logs', 'sickrage.log')
         self.srLogger.debugLogging = self.srConfig.DEBUG
         self.srLogger.consoleLogging = not sickrage.QUITE
 

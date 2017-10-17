@@ -1,6 +1,7 @@
 # Changelog
 
-- * 71d4cf6 - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
+- * d79c29c - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
+- * 7aac26b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
 - * 6384aab - 2017-10-17: Release v9.1.39 
 - * f50a313 - 2017-10-17: Fixed issue with gettext underscore being replaced when using underscore as throwaway variable 
 - * 1da0430 - 2017-10-17: Fixed issue #90 - iptorrents provider needs update 
