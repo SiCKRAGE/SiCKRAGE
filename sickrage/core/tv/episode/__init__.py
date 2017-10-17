@@ -1057,7 +1057,7 @@ class TVEpisode(object):
                 return ''
             return parse_result.release_group
 
-        _, epQual = Quality.splitCompositeStatus(self.status)
+        __, epQual = Quality.splitCompositeStatus(self.status)
 
         if sickrage.srCore.srConfig.NAMING_STRIP_YEAR:
             show_name = re.sub(r"\(\d+\)$", "", self.show.name).rstrip()

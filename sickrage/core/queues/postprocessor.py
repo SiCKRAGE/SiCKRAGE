@@ -53,14 +53,14 @@ class srPostProcessorQueue(srQueue):
         :param proc_type: processing type, auto/manual
         :return: instance of PostProcessorItem or None
         """
-        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, PostProcessorItem) and cur_item.directory == dirName and cur_item.mode == proc_type:
                 return cur_item
         return None
 
     @property
     def is_in_progress(self):
-        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, PostProcessorItem):
                 return True
         return False
@@ -93,7 +93,7 @@ class srPostProcessorQueue(srQueue):
         """
         length = {'auto': 0, 'manual': 0}
 
-        for _, _, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, PostProcessorItem):
                 if cur_item.proc_type == 'auto':
                     length['auto'] += 1

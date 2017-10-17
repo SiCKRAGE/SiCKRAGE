@@ -58,7 +58,7 @@ class Episode(Video):
         :rtype: :class:`~python:dict`
         """
 
-        _, number = self.pk
+        __, number = self.pk
 
         return {
             'number': number

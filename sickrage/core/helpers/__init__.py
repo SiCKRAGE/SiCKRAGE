@@ -929,6 +929,7 @@ def create_https_certificates(ssl_cert, ssl_key):
 
     return True
 
+
 def md5_for_file(filename):
     """
     Generate an md5 hash for a file
@@ -1242,7 +1243,7 @@ def get_size(start_path='.'):
     total_size = 0
 
     try:
-        for dirpath, _, filenames in os.walk(start_path):
+        for dirpath, __, filenames in os.walk(start_path):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 try:
@@ -1324,7 +1325,7 @@ def verify_freespace(src, dest, oldfile=None):
         import sys
 
         def disk_usage(path):
-            _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), ctypes.c_ulonglong()
+            __, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), ctypes.c_ulonglong()
             if sys.version_info >= (3,) or isinstance(path, unicode):
                 fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
             else:
@@ -1451,18 +1452,20 @@ def getFreeSpace(directories):
         size = None
         if os.path.isdir(folder):
             if os.name == 'nt':
-                _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
-                                 ctypes.c_ulonglong()
+                __, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), ctypes.c_ulonglong()
+
                 if sys.version_info >= (3,) or isinstance(folder, unicode):
-                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW  # @UndefinedVariable
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
                 else:
-                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA  # @UndefinedVariable
-                ret = fun(folder, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
-                if ret == 0:
-                    raise ctypes.WinError()
+                    fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA
+
+                ret = fun(folder, ctypes.byref(__), ctypes.byref(total), ctypes.byref(free))
+                if ret == 0: raise ctypes.WinError()
+
                 return [total.value, free.value]
             else:
                 s = os.statvfs(folder)
+
                 size = [s.f_blocks * s.f_frsize / (1024 * 1024), (s.f_bavail * s.f_frsize) / (1024 * 1024)]
 
         if single: return size
@@ -1483,7 +1486,7 @@ def restoreVersionedFile(backup_file, version):
 
     numTries = 0
 
-    new_file, _ = os.path.splitext(backup_file)
+    new_file, __ = os.path.splitext(backup_file)
     restore_file = '{}.v{}'.format(new_file, version)
 
     if not os.path.isfile(new_file):

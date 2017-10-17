@@ -144,7 +144,7 @@
                             <td>${ShowQueueActions.names[sickrage.srCore.SHOWQUEUE.currentItem.action_id]}</td>
                         </tr>
                     % endif
-                    % for _, _, item in sickrage.srCore.SHOWQUEUE.queue:
+                    % for __, __, item in sickrage.srCore.SHOWQUEUE.queue:
                         <tr>
                         % try:
                             <% showindexerid = item.show.indexerid %>

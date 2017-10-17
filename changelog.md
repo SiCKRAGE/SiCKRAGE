@@ -1,6 +1,9 @@
 # Changelog
 
-- * 8536c01 - 2017-10-16: Release v9.1.38 
+- * fc1af8b - 2017-10-17: Release v9.1.39 
+- * f50a313 - 2017-10-17: Fixed issue with gettext underscore being replaced when using underscore as throwaway variable 
+- * 1da0430 - 2017-10-17: Fixed issue #90 - iptorrents provider needs update 
+- * 8a3d08a - 2017-10-16: Release v9.1.38 
 - * 8b8eab5 - 2017-10-16: Fixed issue with JS gettext and using system default language selection 
 - * 372b24e - 2017-10-16: Fixed &#x27;No Content&#x27; error and added more translated languages 
 - * 73cd8ca - 2017-10-16: Restart clears current user but does NOT clear cookies, prevents issues with restart page 

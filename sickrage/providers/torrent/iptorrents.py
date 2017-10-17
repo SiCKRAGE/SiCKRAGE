@@ -131,7 +131,7 @@ class IPTorrentsProvider(TorrentProvider):
                             sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
-                        torrent_table = html.find('table', attrs={'class': 'torrents'})
+                        torrent_table = html.find('table', id='torrents')
                         torrents = torrent_table.find_all('tr') if torrent_table else []
 
                         # Continue only if one Release is found

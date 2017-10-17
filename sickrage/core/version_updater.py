@@ -197,7 +197,7 @@ class UpdateManager(object):
         main_git = sickrage.srCore.srConfig.GIT_PATH or 'git'
 
         sickrage.srCore.srLogger.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
-        _, _, exit_status = self._git_cmd(main_git, test_cmd)
+        __, __, exit_status = self._git_cmd(main_git, test_cmd)
 
         if exit_status == 0:
             sickrage.srCore.srLogger.debug("Using: " + main_git)
@@ -221,7 +221,7 @@ class UpdateManager(object):
 
             for cur_git in alternative_git:
                 sickrage.srCore.srLogger.debug("Checking if we can use git commands: " + cur_git + ' ' + test_cmd)
-                _, _, exit_status = self._git_cmd(cur_git, test_cmd)
+                __, __, exit_status = self._git_cmd(cur_git, test_cmd)
 
                 if exit_status == 0:
                     sickrage.srCore.srLogger.debug("Using: " + cur_git)
@@ -244,7 +244,7 @@ class UpdateManager(object):
         main_pip = sickrage.srCore.srConfig.PIP_PATH or 'pip'
 
         sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
-        _, _, exit_status = self._pip_cmd(main_pip, test_cmd)
+        __, __, exit_status = self._pip_cmd(main_pip, test_cmd)
 
         if exit_status == 0:
             sickrage.srCore.srLogger.debug("Using: " + main_pip)
@@ -268,7 +268,7 @@ class UpdateManager(object):
 
             for cur_pip in alternative_pip:
                 sickrage.srCore.srLogger.debug("Checking if we can use pip commands: " + cur_pip + ' ' + test_cmd)
-                _, _, exit_status = self._pip_cmd(cur_pip, test_cmd)
+                __, __, exit_status = self._pip_cmd(cur_pip, test_cmd)
 
                 if exit_status == 0:
                     sickrage.srCore.srLogger.debug("Using: " + cur_pip)
@@ -379,7 +379,7 @@ class UpdateManager(object):
             return github.Github(user_agent="SiCKRAGE")
 
     def install_requirements(self):
-        _, _, exit_status = self._pip_cmd(self._pip_path,
+        __, __, exit_status = self._pip_cmd(self._pip_path,
                                           'install --no-cache-dir --user -r {}'.format(sickrage.REQS_FILE))
         if not exit_status == 0:
             sickrage.srCore.srLogger.warning(
@@ -415,7 +415,7 @@ class GitUpdateManager(UpdateManager):
         Returns: True for success or False for failure
         """
 
-        output, _, exit_status = self._git_cmd(self._git_path, 'rev-parse HEAD')
+        output, __, exit_status = self._git_cmd(self._git_path, 'rev-parse HEAD')
         if exit_status == 0 and output:
             cur_commit_hash = output.strip()
             if not re.match('^[a-z0-9]+$', cur_commit_hash):
@@ -430,13 +430,13 @@ class GitUpdateManager(UpdateManager):
         """
 
         # get all new info from server
-        output, _, exit_status = self._git_cmd(self._git_path, 'remote update')
+        output, __, exit_status = self._git_cmd(self._git_path, 'remote update')
         if not exit_status == 0:
             sickrage.srCore.srLogger.warning("Unable to contact server, can't check for update")
             return
 
         # get latest commit_hash from remote
-        output, _, exit_status = self._git_cmd(self._git_path, 'rev-parse --verify --quiet "@{upstream}"')
+        output, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --verify --quiet "@{upstream}"')
         if exit_status == 0 and output:
             return output.strip()
 
@@ -470,7 +470,7 @@ class GitUpdateManager(UpdateManager):
             # self.clean() # This is removing user data and backups
             self.reset()
 
-        _, _, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
+        __, __, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
                                                                                  self.current_branch))
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from GIT servers")
@@ -485,7 +485,7 @@ class GitUpdateManager(UpdateManager):
         Calls git clean to remove all untracked files. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._git_cmd(self._git_path, 'clean -df ""')
+        __, __, exit_status = self._git_cmd(self._git_path, 'clean -df ""')
         return (False, True)[exit_status == 0]
 
     def reset(self):
@@ -493,7 +493,7 @@ class GitUpdateManager(UpdateManager):
         Calls git reset --hard to perform a hard reset. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._git_cmd(self._git_path, 'reset --hard')
+        __, __, exit_status = self._git_cmd(self._git_path, 'reset --hard')
         return (False, True)[exit_status == 0]
 
     def fetch(self):
@@ -501,10 +501,10 @@ class GitUpdateManager(UpdateManager):
         Calls git fetch to fetch all remote branches
         on the call's success.
         """
-        _, _, exit_status = self._git_cmd(self._git_path,
+        __, __, exit_status = self._git_cmd(self._git_path,
                                           'config remote.origin.fetch %s' % '+refs/heads/*:refs/remotes/origin/*')
         if exit_status == 0:
-            _, _, exit_status = self._git_cmd(self._git_path, 'fetch --all')
+            __, __, exit_status = self._git_cmd(self._git_path, 'fetch --all')
         return (False, True)[exit_status == 0]
 
     def checkout_branch(self, branch):
@@ -518,7 +518,7 @@ class GitUpdateManager(UpdateManager):
             # fetch all branches
             self.fetch()
 
-            _, _, exit_status = self._git_cmd(self._git_path, 'checkout -f ' + branch)
+            __, __, exit_status = self._git_cmd(self._git_path, 'checkout -f ' + branch)
             if exit_status == 0:
                 self.install_requirements()
                 return True
@@ -526,7 +526,7 @@ class GitUpdateManager(UpdateManager):
         return False
 
     def get_remote_url(self):
-        url, _, exit_status = self._git_cmd(self._git_path,
+        url, __, exit_status = self._git_cmd(self._git_path,
                                             'remote get-url {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         return ("", url)[exit_status == 0 and url is not None]
 
@@ -537,12 +537,12 @@ class GitUpdateManager(UpdateManager):
 
     @property
     def current_branch(self):
-        branch, _, exit_status = self._git_cmd(self._git_path, 'rev-parse --abbrev-ref HEAD')
+        branch, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --abbrev-ref HEAD')
         return ("", branch)[exit_status == 0 and branch is not None]
 
     @property
     def remote_branches(self):
-        branches, _, exit_status = self._git_cmd(self._git_path,
+        branches, __, exit_status = self._git_cmd(self._git_path,
                                                  'ls-remote --heads {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
@@ -651,7 +651,7 @@ class SourceUpdateManager(UpdateManager):
 
             # walk temp folder and move files to main folder
             sickrage.srCore.srLogger.info("Moving files from " + content_dir + " to " + sickrage.PROG_DIR)
-            for dirname, _, filenames in os.walk(content_dir):
+            for dirname, __, filenames in os.walk(content_dir):
                 dirname = dirname[len(content_dir) + 1:]
                 for curfile in filenames:
                     old_path = os.path.join(content_dir, dirname, curfile)
@@ -706,7 +706,7 @@ class PipUpdateManager(UpdateManager):
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
     def _find_installed_version(self):
-        out, _, exit_status = self._pip_cmd(self._pip_path, 'show sickrage')
+        out, __, exit_status = self._pip_cmd(self._pip_path, 'show sickrage')
         if exit_status == 0:
             return out.split('\n')[1].split()[1]
         return ""
@@ -753,7 +753,7 @@ class PipUpdateManager(UpdateManager):
         """
         Performs pip upgrade
         """
-        _, _, exit_status = self._pip_cmd(self._pip_path, 'install -U --no-cache-dir sickrage')
+        __, __, exit_status = self._pip_cmd(self._pip_path, 'install -U --no-cache-dir sickrage')
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from PyPi servers")
             srNotifiers.notify_version_update(self.get_newest_version)

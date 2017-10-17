@@ -126,7 +126,7 @@ class HttpClient(object):
             try:
                 response = self.session.send(request, timeout=timeout)
             except socket.gaierror as e:
-                code, _ = e
+                code, __ = e
 
                 if code != 8:
                     raise e
