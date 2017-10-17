@@ -128,7 +128,7 @@ class srTraktSearcher(object):
                 sickrage.srCore.srLogger.debug("No shows found in your library, aborting library update")
                 return
 
-            traktShow = [x for _, x in library.items() if
+            traktShow = [x for __, x in library.items() if
                          int(indexerid) == int(x.ids[srIndexerApi(indexer).trakt_id])]
         except Exception as e:
             sickrage.srCore.srLogger.warning(

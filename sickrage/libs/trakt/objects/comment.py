@@ -102,7 +102,7 @@ class Comment(object):
         if self.pk is None:
             return None
 
-        _, sid = self.pk
+        __, sid = self.pk
 
         return sid
 

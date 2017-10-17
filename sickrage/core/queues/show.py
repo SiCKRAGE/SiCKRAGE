@@ -51,7 +51,7 @@ class srShowQueue(srQueue):
         if not show:
             return False
 
-        return show.indexerid in [x.show.indexerid if x.show else 0 for _, _, x in self.queue if x.action_id in actions]
+        return show.indexerid in [x.show.indexerid if x.show else 0 for __, __, x in self.queue if x.action_id in actions]
 
     def _isBeing(self, show, actions):
         return self.currentItem is not None and show == self.currentItem.show and self.currentItem.action_id in actions
@@ -84,7 +84,7 @@ class srShowQueue(srQueue):
         return self._isBeing(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
-        return [x for _, _, x in self.queue + [(None, None, self.currentItem)] if x and x.isLoading]
+        return [x for __, __, x in self.queue + [(None, None, self.currentItem)] if x and x.isLoading]
 
     def updateShow(self, show, force=False):
 
@@ -153,7 +153,7 @@ class srShowQueue(srQueue):
             raise CantRemoveShowException("{} is already queued to be removed".format(show))
 
         # remove other queued actions for this show.
-        for _, _, x in self.queue:
+        for __, __, x in self.queue:
             if x and x.show and x != self.currentItem and show.indexerid == x.show.indexerid:
                 self.queue.remove(x)
 

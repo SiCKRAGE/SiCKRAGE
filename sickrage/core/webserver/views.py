@@ -754,7 +754,7 @@ class Home(WebHandler):
 
         client = getClientIstance(torrent_method)
 
-        _, accesMsg = client(host, username, password).testAuthentication()
+        __, accesMsg = client(host, username, password).testAuthentication()
 
         return accesMsg
 
@@ -2082,7 +2082,7 @@ class Home(WebHandler):
         # return the correct json value
 
         # Find the quality class for the episode
-        _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+        __, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
         if ep_quality in Quality.cssClassStrings:
             quality_class = Quality.cssClassStrings[ep_quality]
         else:

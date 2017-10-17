@@ -60,7 +60,7 @@ class srWebServer(threading.Thread):
     def run(self):
         self.started = True
 
-        # load languages for tornado web server
+        # load languages
         tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
 
         # clear mako cache folder

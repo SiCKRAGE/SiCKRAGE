@@ -77,7 +77,7 @@ class srQueue(threading.Thread):
         return self._queue.queue
 
     def get(self, *args, **kwargs):
-        _, _, item = self._queue.get(*args, **kwargs)
+        __, __, item = self._queue.get(*args, **kwargs)
         return item
 
     def put(self, item, *args, **kwargs):

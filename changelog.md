@@ -1,6 +1,7 @@
 # Changelog
 
-- * 932733f - 2017-10-17: Fixed issue #90 - iptorrents provider needs update 
+- * 177e1bc - 2017-10-17: Fixed issue with gettext underscore being replaced when using underscore as throwaway variable 
+- * 1da0430 - 2017-10-17: Fixed issue #90 - iptorrents provider needs update 
 - * 8a3d08a - 2017-10-16: Release v9.1.38 
 - * 8b8eab5 - 2017-10-16: Fixed issue with JS gettext and using system default language selection 
 - * 372b24e - 2017-10-16: Fixed &#x27;No Content&#x27; error and added more translated languages 

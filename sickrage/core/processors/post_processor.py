@@ -171,7 +171,7 @@ class PostProcessor(object):
 
         def recursive_glob(treeroot, pattern):
             results = []
-            for base, _, files in os.walk(treeroot):
+            for base, __, files in os.walk(treeroot):
                 goodfiles = fnmatch.filter(files, pattern)
                 results.extend(os.path.join(base, f) for f in goodfiles)
             return results
@@ -775,7 +775,7 @@ class PostProcessor(object):
 
         # if there is a quality available in the status then we don't need to bother guessing from the filename
         if ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
-            _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+            __, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                     "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
@@ -805,7 +805,7 @@ class PostProcessor(object):
 
         # Try getting quality from the episode (snatched) status
         if ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
-            _, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+            __, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                     "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
@@ -845,7 +845,7 @@ class PostProcessor(object):
             try:
                 p = subprocess.Popen(script_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
-                out, _ = p.communicate()
+                out, __ = p.communicate()
                 self._log("Script result: " + str(out), sickrage.srCore.srLogger.DEBUG)
 
             except OSError as e:
@@ -867,7 +867,7 @@ class PostProcessor(object):
         if self.is_priority:
             return True
 
-        _, old_ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+        __, old_ep_quality = Quality.splitCompositeStatus(ep_obj.status)
 
         # if SR downloaded this on purpose we likely have a priority download
         if self.in_history or ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
@@ -945,7 +945,7 @@ class PostProcessor(object):
 
         # retrieve/create the corresponding TVEpisode objects
         ep_obj = self._get_ep_obj(show, season, episodes)
-        _, old_ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+        __, old_ep_quality = Quality.splitCompositeStatus(ep_obj.status)
 
         # get the quality of the episode we're processing
         if quality and not Quality.qualityStrings[quality] == 'Unknown':

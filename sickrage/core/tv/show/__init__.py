@@ -1241,7 +1241,7 @@ class TVShow(object):
                         if curEp.location and curEp.status in Quality.DOWNLOADED:
 
                             if sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == ARCHIVED:
-                                _, oldQuality = Quality.splitCompositeStatus(curEp.status)
+                                __, oldQuality = Quality.splitCompositeStatus(curEp.status)
                                 new_status = Quality.compositeStatus(ARCHIVED, oldQuality)
                             else:
                                 new_status = sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS
@@ -1467,7 +1467,7 @@ class TVShow(object):
             return Overview.GOOD
         elif epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.FAILED + Quality.SNATCHED_BEST:
 
-            _, bestQualities = Quality.splitQuality(self.quality)
+            __, bestQualities = Quality.splitQuality(self.quality)
             if bestQualities:
                 maxBestQuality = max(bestQualities)
                 minBestQuality = min(bestQualities)

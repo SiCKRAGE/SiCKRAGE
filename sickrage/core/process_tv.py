@@ -232,7 +232,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         result.result = True
 
-        for processPath, _, fileList in os.walk(os.path.join(path, curDir), topdown=False):
+        for processPath, __, fileList in os.walk(os.path.join(path, curDir), topdown=False):
 
             if not validateDir(path, processPath, nzbNameOriginal, failed, result):
                 continue
@@ -355,7 +355,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     # Get the videofile list for the next checks
     allFiles = []
     allDirs = []
-    for _, processdir, fileList in os.walk(os.path.join(path, dirName), topdown=False):
+    for __, processdir, fileList in os.walk(os.path.join(path, dirName), topdown=False):
         allDirs += processdir
         allFiles += fileList
 

@@ -92,7 +92,7 @@ class Mapper(object):
     @classmethod
     def construct(cls, client, media, item, keys=None, **kwargs):
         if keys is None:
-            _, keys = cls.get_ids(media, item)
+            __, keys = cls.get_ids(media, item)
 
         if media == 'movie':
             return Movie._construct(client, keys, item, **kwargs)
