@@ -6,7 +6,7 @@ module.exports = function (grunt) {
             bower_components: 'bower_components',
             //sass: [
             //    '.sass-cache',
-            //    'sickrage/core/webserver/gui/default/scss/'
+            //    'sickrage/core/webserver/static/scss/'
             //],
             options: {
                 force: true
@@ -88,7 +88,7 @@ module.exports = function (grunt) {
         googlefonts: {
             build: {
                 options: {
-                    fontPath: 'sickrage/core/webserver/gui/default/fonts/',
+                    fontPath: 'sickrage/core/webserver/static/fonts/',
                     cssFile: 'dist/css/fonts.css',
                     httpPath: '../fonts/',
                     formats: {
@@ -132,7 +132,7 @@ module.exports = function (grunt) {
                     flatten: true,
                     cwd: 'bower_components/bootstrap/fonts/',
                     src: ['**/*.{eot,svg,ttf,woff,woff2}'],
-                    dest: 'sickrage/core/webserver/gui/default/fonts/'
+                    dest: 'sickrage/core/webserver/static/fonts/'
                 }]
             },
             fontawesome: {
@@ -141,7 +141,7 @@ module.exports = function (grunt) {
                     flatten: true,
                     cwd: 'bower_components/components-font-awesome/fonts/',
                     src: ['**/*.{eot,svg,ttf,woff,woff2}'],
-                    dest: 'sickrage/core/webserver/gui/default/fonts/'
+                    dest: 'sickrage/core/webserver/static/fonts/'
                 }]
             }
         },
@@ -152,7 +152,7 @@ module.exports = function (grunt) {
                     flatten: true,
                     cwd: 'bower_components/jquery-ui/themes/',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/gui/default/images/'
+                    dest: 'sickrage/core/webserver/static/images/'
                 }]
             },
             tablesorter: {
@@ -161,7 +161,7 @@ module.exports = function (grunt) {
                     flatten: true,
                     cwd: 'bower_components/jquery.tablesorter/dist/css/images/',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/gui/default/images/tablesorter/'
+                    dest: 'sickrage/core/webserver/static/images/tablesorter/'
                 }]
             },
             boostrap_formhelpers: {
@@ -170,14 +170,14 @@ module.exports = function (grunt) {
                     flatten: true,
                     cwd: 'bower_components/bootstrap-formhelpers/img/',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/gui/default/images/bootstrap-formhelpers/'
+                    dest: 'sickrage/core/webserver/static/images/bootstrap-formhelpers/'
                 }]
             }
         },
         sprite: {
             icons_sickrage: {
                 src: 'dist/images/icons/sickrage/*.png',
-                dest: 'sickrage/core/webserver/gui/default/images/icons-sickrage.png',
+                dest: 'sickrage/core/webserver/static/images/icons-sickrage.png',
                 destCss: 'dist/css/icons-sickrage.css',
                 imgPath: '../images/icons-sickrage.png',
                 cssTemplate: 'dist/css/icons-sickrage.css.handlebars',
@@ -187,19 +187,19 @@ module.exports = function (grunt) {
         uglify: {
             bower: {
                 files: {
-                    'sickrage/core/webserver/gui/default/js/bower.min.js': ['dist/js/bower.js']
+                    'sickrage/core/webserver/static/js/bower.min.js': ['dist/js/bower.js']
                 }
             },
             core: {
                 files: {
-                    'sickrage/core/webserver/gui/default/js/core.min.js': ['dist/js/core.js']
+                    'sickrage/core/webserver/static/js/core.min.js': ['dist/js/core.js']
                 }
             }
         },
         sass: {
             core: {
                 files: {
-                    'sickrage/core/webserver/gui/default/scss/core.scss': [
+                    'sickrage/core/webserver/static/scss/core.scss': [
                         'dist/css/core.css',
                         'dist/css/fonts.css',
                         'dist/css/icons-sickrage.css'
@@ -214,20 +214,20 @@ module.exports = function (grunt) {
             },
             bower: {
                 files: {
-                    'sickrage/core/webserver/gui/default/css/bower.min.css': ['dist/css/bower.css']
+                    'sickrage/core/webserver/static/css/bower.min.css': ['dist/css/bower.css']
                 }
             },
             core: {
                 files: {
-                    'sickrage/core/webserver/gui/default/css/core.min.css': [
+                    'sickrage/core/webserver/static/css/core.min.css': [
                         'dist/css/core.css',
                         'dist/css/fonts.css',
                         'dist/css/icons-sickrage.css'
                     ],
-                    'sickrage/core/webserver/gui/default/css/themes/dark.min.css': [
+                    'sickrage/core/webserver/static/css/themes/dark.min.css': [
                         'dist/css/themes/dark.css'
                     ],
-                    'sickrage/core/webserver/gui/default/css/themes/light.min.css': [
+                    'sickrage/core/webserver/static/css/themes/light.min.css': [
                         'dist/css/themes/light.css'
                     ]
                 }
