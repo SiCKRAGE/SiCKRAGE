@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2017-10-16 13:20-0400\n"
-"PO-Revision-Date: 2017-10-16 13:20-0400\n"
+"PO-Revision-Date: 2017-10-17 03:59-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -75,7 +75,7 @@ msgstr "URL:"
 
 #: sickrage/core/webserver/gui/default/views/api_builder.mako:98
 msgid "Required parameters"
-msgstr "Vereiste parameters"
+msgstr "Verplicht parameters"
 
 #: sickrage/core/webserver/gui/default/views/api_builder.mako:107
 msgid "Optional parameters"
@@ -87,11 +87,11 @@ msgstr "Oproep API"
 
 #: sickrage/core/webserver/gui/default/views/api_builder.mako:127
 msgid "Response:"
-msgstr "Reactie:"
+msgstr "Antwoord:"
 
 #: sickrage/core/webserver/gui/default/views/api_builder.mako:132
 msgid "Clear"
-msgstr "Duidelijk"
+msgstr "Leegmaken"
 
 #: sickrage/core/webserver/gui/default/views/api_builder.mako:159
 #: sickrage/core/webserver/gui/default/views/api_builder.mako:189
@@ -123,7 +123,7 @@ msgstr "Ja"
 #: sickrage/core/webserver/gui/default/views/manage/mass_edit.mako:229
 #: sickrage/core/webserver/gui/default/views/manage/mass_edit.mako:244
 msgid "No"
-msgstr "No"
+msgstr "Nee"
 
 #: sickrage/core/webserver/gui/default/views/api_builder.mako:208
 msgid "season"
@@ -141,7 +141,7 @@ msgstr "Limiet:"
 
 #: sickrage/core/webserver/gui/default/views/history.mako:28
 msgid "All"
-msgstr "Alle"
+msgstr "Alles"
 
 #: sickrage/core/webserver/gui/default/views/history.mako:32
 #: sickrage/core/webserver/gui/default/views/home/index.mako:66
@@ -189,7 +189,7 @@ msgstr "Kwaliteit"
 #: sickrage/core/webserver/gui/default/views/history.mako:132
 #: sickrage/core/webserver/gui/default/views/layouts/main.mako:463
 msgid "Snatched"
-msgstr "Griste"
+msgstr "Gepakt"
 
 #: sickrage/core/common.py:184 sickrage/core/common.py:598
 #: sickrage/core/webserver/gui/default/views/history.mako:133
@@ -247,7 +247,7 @@ msgstr "AnimeDB instellingen"
 #: sickrage/core/webserver/gui/default/views/config/anime.mako:98
 #: sickrage/core/webserver/gui/default/views/config/general.mako:336
 msgid "User Interface"
-msgstr "User Interface"
+msgstr "Gebruiks interface"
 
 #: sickrage/core/webserver/gui/default/views/config/anime.mako:17
 msgid "AniDB"
