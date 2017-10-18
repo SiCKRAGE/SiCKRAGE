@@ -329,7 +329,7 @@ class GenericClient(object):
                 r_code = self._add_torrent_file(result)
 
             if not r_code:
-                sickrage.srCore.srLogger.error(self.name + ': Unable to send Torrent')
+                sickrage.srCore.srLogger.warning(self.name + ': Unable to send Torrent')
                 return False
 
             if not self._set_torrent_pause(result):
