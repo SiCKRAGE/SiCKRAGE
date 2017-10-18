@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-17 20:08-0400\n"
-"PO-Revision-Date: 2017-10-17 20:09-0400\n"
+"POT-Creation-Date: 2017-10-17 23:18-0400\n"
+"PO-Revision-Date: 2017-10-17 23:18-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -3614,7 +3614,7 @@ msgstr "(حدد الفئات الخاصة بك نيوزناب على الجان�
 
 #: sickrage/core/webserver/views/config/providers.mako:994
 msgid "Don't forget to save changes!"
-msgstr ""
+msgstr "لا تنسى حفظ التغييرات!"
 
 #: sickrage/core/webserver/views/config/providers.mako:1004
 msgid "Update Categories"
@@ -5260,8 +5260,6 @@ msgid "Choosing No will ignore any releases with the same episode quality as the
 msgstr "اختيار لا سيتم تجاهل أي الإصدارات بنفس جودة الحلقة واحدة انتزع تحميلها حاليا."
 
 #: sickrage/core/webserver/views/includes/quality_chooser.mako:26
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:44
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:45
 #: sickrage/core/webserver/views/manage/mass_edit.mako:90
 msgid "Custom"
 msgstr "مخصص"
@@ -5291,10 +5289,6 @@ msgstr "النوعية الأولى:"
 #: sickrage/core/webserver/views/includes/quality_defaults.mako:17
 msgid "Preferred Quality:"
 msgstr "الجودة المفضلة:"
-
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:48
-msgid "quality "
-msgstr "جودة "
 
 #: sickrage/core/webserver/views/includes/root_dirs.mako:23
 #: sickrage/core/webserver/views/manage/mass_edit.mako:52
@@ -5884,11 +5878,11 @@ msgstr "النسخ الاحتياطي الملف Config فشل، إحباط ال
 
 #: sickrage/core/version_updater.py:233
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
-msgstr ""
+msgstr "غير قادر على العثور على جهاز بوابة القابل للتنفيذ--مجموعة المسار الخاص بك بوابة من إعدادات-> العامة-> أو خيارات متقدمة حذف المجلد.git الخاص بك وتشغيل من مصدر لتمكين التحديثات."
 
 #: sickrage/core/version_updater.py:280
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
-msgstr ""
+msgstr "غير قادر على العثور على النقطة الخاصة بك القابل للتنفيذ--تعيين مسار النقطة الخاصة بك من إعدادات-> العامة-> خيارات متقدمة"
 
 #: sickrage/core/version_updater.py:442 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"

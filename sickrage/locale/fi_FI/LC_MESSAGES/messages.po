@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-17 20:08-0400\n"
-"PO-Revision-Date: 2017-10-17 20:09-0400\n"
+"POT-Creation-Date: 2017-10-17 23:18-0400\n"
+"PO-Revision-Date: 2017-10-17 23:19-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -3614,7 +3614,7 @@ msgstr "(Valitse Newznab luokkia vasemmalla ja valitsemalla ”Päivitä luokat�
 
 #: sickrage/core/webserver/views/config/providers.mako:994
 msgid "Don't forget to save changes!"
-msgstr ""
+msgstr "Älä unohda tallentaa muutokset!"
 
 #: sickrage/core/webserver/views/config/providers.mako:1004
 msgid "Update Categories"
@@ -5260,8 +5260,6 @@ msgid "Choosing No will ignore any releases with the same episode quality as the
 msgstr "Jos valitset ei ei ota huomioon mitään tällä hetkellä ladata/nappasi yhden jakson laadultaan julkaisut."
 
 #: sickrage/core/webserver/views/includes/quality_chooser.mako:26
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:44
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:45
 #: sickrage/core/webserver/views/manage/mass_edit.mako:90
 msgid "Custom"
 msgstr "Custom"
@@ -5291,10 +5289,6 @@ msgstr "Alkuperäinen laatu:"
 #: sickrage/core/webserver/views/includes/quality_defaults.mako:17
 msgid "Preferred Quality:"
 msgstr "Ensisijainen laatu:"
-
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:48
-msgid "quality "
-msgstr "laatu "
 
 #: sickrage/core/webserver/views/includes/root_dirs.mako:23
 #: sickrage/core/webserver/views/manage/mass_edit.mako:52
@@ -5884,11 +5878,11 @@ msgstr "Config Varmuuskopiointi epäonnistui, keskeytetään päivitys"
 
 #: sickrage/core/version_updater.py:233
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
-msgstr ""
+msgstr "Ei löydy sinun git executable - Set path git asetukset-> yleinen-> Lisäasetukset tai poista .git kansio ja suoritettavaksi lähteestä päivitysten."
 
 #: sickrage/core/version_updater.py:280
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
-msgstr ""
+msgstr "Voi löytää teidän pip executable - pip-polun määrittäminen asetukset-> yleinen-> Lisäasetukset"
 
 #: sickrage/core/version_updater.py:442 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"

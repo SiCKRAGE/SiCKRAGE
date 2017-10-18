@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-17 20:08-0400\n"
-"PO-Revision-Date: 2017-10-17 20:09-0400\n"
+"POT-Creation-Date: 2017-10-17 23:18-0400\n"
+"PO-Revision-Date: 2017-10-17 23:19-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -3614,7 +3614,7 @@ msgstr "(왼쪽에 Newznab 범주를 선택 하 고 검색을 위해 그들을 �
 
 #: sickrage/core/webserver/views/config/providers.mako:994
 msgid "Don't forget to save changes!"
-msgstr ""
+msgstr "변경 내용을 저장 하는 것을 잊지 마세요!"
 
 #: sickrage/core/webserver/views/config/providers.mako:1004
 msgid "Update Categories"
@@ -5260,8 +5260,6 @@ msgid "Choosing No will ignore any releases with the same episode quality as the
 msgstr "아니오를 선택 하면 현재 다운로드 납치 하는 것과 동일한 에피소드 품질로 모든 자료 무시 됩니다."
 
 #: sickrage/core/webserver/views/includes/quality_chooser.mako:26
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:44
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:45
 #: sickrage/core/webserver/views/manage/mass_edit.mako:90
 msgid "Custom"
 msgstr "사용자 정의"
@@ -5291,10 +5289,6 @@ msgstr "초기 품질:"
 #: sickrage/core/webserver/views/includes/quality_defaults.mako:17
 msgid "Preferred Quality:"
 msgstr "기본 품질:"
-
-#: sickrage/core/webserver/views/includes/quality_defaults.mako:48
-msgid "quality "
-msgstr "품질 "
 
 #: sickrage/core/webserver/views/includes/root_dirs.mako:23
 #: sickrage/core/webserver/views/manage/mass_edit.mako:52
@@ -5884,11 +5878,11 @@ msgstr "구성 백업 실패, 업데이트 중단"
 
 #: sickrage/core/version_updater.py:233
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
-msgstr ""
+msgstr "일반 고급 또는->-> 설정에서 git 경로 찾을 수 없습니다 당신의 자식 실행-설정.git 폴더를 삭제 하 고 업데이트를 원본에서 실행."
 
 #: sickrage/core/version_updater.py:280
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
-msgstr ""
+msgstr "찾을 수 없습니다 당신의 핍 실행-설정 핍 경로 설정에서-> 일반 고급->"
 
 #: sickrage/core/version_updater.py:442 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"

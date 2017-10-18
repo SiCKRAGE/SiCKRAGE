@@ -41,11 +41,11 @@
             cssClass = Quality.cssClassStrings[quality]
             qualityString = Quality.qualityStrings[quality]
         else:
-            cssClass = _("Custom")
-            qualityString = _("Custom")
+            cssClass = "Custom"
+            qualityString = "Custom"
 
         if overrideClass is None:
-            cssClass = _("quality ") + cssClass
+            cssClass = "quality " + cssClass
         else:
             cssClass = overrideClass
     %>

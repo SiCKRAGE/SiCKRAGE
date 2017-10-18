@@ -1,4 +1,4 @@
-<%inherit file="/sickrage/core/webserver/views/layouts/main.mako"/>
+<%inherit file="./layouts/main.mako"/>
 
 <%!
     from collections import OrderedDict
