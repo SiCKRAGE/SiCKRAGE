@@ -1,4 +1,4 @@
-<%inherit file="/sickrage/core/webserver/views/layouts/main.mako"/>
+<%inherit file="./layouts/main.mako"/>
 <%!
     import re
     import time
@@ -10,7 +10,7 @@
     from sickrage.indexers import srIndexerApi
 %>
 <%block name="content">
-    <%namespace file="/sickrage/core/webserver/views/includes/quality_defaults.mako" import="renderQualityPill"/>
+    <%namespace file="./includes/quality_defaults.mako" import="renderQualityPill"/>
     <div class="row">
         <div class="col-md-12 text-center">
             % if layout == 'list':
