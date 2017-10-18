@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-17 23:36-0400\n"
-"PO-Revision-Date: 2017-10-17 23:36-0400\n"
+"POT-Creation-Date: 2017-10-18 11:16-0400\n"
+"PO-Revision-Date: 2017-10-18 11:17-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -1309,7 +1309,7 @@ msgstr "SR 캐시 디렉토리:"
 
 #: sickrage/core/webserver/views/config/index.mako:78
 msgid "SR Log File:"
-msgstr ""
+msgstr "SR 로그 파일:"
 
 #: sickrage/core/webserver/views/config/index.mako:87
 msgid "SR Arguments:"
@@ -4027,7 +4027,6 @@ msgid "Client password"
 msgstr "클라이언트 암호"
 
 #: sickrage/core/webserver/views/config/search.mako:870
-#: sickrage/core/webserver/views/config/search.mako:888
 msgid "Add label to torrent"
 msgstr "토런트에 레이블 추가"
 
@@ -4035,6 +4034,10 @@ msgstr "토런트에 레이블 추가"
 #: sickrage/core/webserver/views/config/search.mako:897
 msgid "blank spaces are not allowed"
 msgstr "공백이 허용 되지 않습니다."
+
+#: sickrage/core/webserver/views/config/search.mako:888
+msgid "Add anime label to torrent"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/search.mako:906
 msgid "Downloaded files location"
