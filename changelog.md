@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2151554 - 2017-10-18: Fixed source url for login page logo 
+- * 469faee - 2017-10-18: Fixed source url for login page logo 
+- * d41ddae - 2017-10-18: Fixed source url for login page logo 
 - * ccdac84 - 2017-10-18: Fixed issue #69 - Torrent snatched but not added to qBittorrent 
 - * 44b2225 - 2017-10-18: Refactored qBittorent 
 - * 59f9fbc - 2017-10-17: Release v9.1.44 
