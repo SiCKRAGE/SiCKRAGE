@@ -1,6 +1,7 @@
 # Changelog
 
-- * b9d4111 - 2017-10-17: Fixed TemplateLookupException issues 
+- * d250a08 - 2017-10-17: Release v9.1.43 
+- * e62bc4e - 2017-10-17: Fixed TemplateLookupException issues 
 - * f915a35 - 2017-10-17: Release v9.1.42 
 - * 177461d - 2017-10-17: Fixed NyaaTorrents provider Refactored more provider code 
 - * 5563b94 - 2017-10-17: Fixed attribute error for postprocessing queue 
