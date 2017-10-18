@@ -1,6 +1,7 @@
 # Changelog
 
-- * 98a5062 - 2017-10-17: Release v9.1.40 
+- * 46ee39d - 2017-10-17: Fixed attribute error for postprocessing queue 
+- * fea50e2 - 2017-10-17: Release v9.1.40 
 - * 94e71c8 - 2017-10-17: Fixed issue #88 - Show are truncated when show set in different language 
 - * e6e0237 - 2017-10-17: Added Anizb Newznab provider 
 - * f45988b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
