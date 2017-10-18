@@ -32,14 +32,6 @@ class T411Provider(TorrentProvider):
     def __init__(self):
         super(T411Provider, self).__init__("T411", 'http://www.t411.al', True)
 
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.token = None
-        self.tokenLastUpdate = None
-
-        self.cache = TVCache(self, min_time=10)
-
         self.urls.update({
             'search': '{base_url}/torrents/search/%s?cid=%s&limit=100'.format(**self.urls),
             'rss': '{base_url}/torrents/top/today'.format(**self.urls),
@@ -47,11 +39,19 @@ class T411Provider(TorrentProvider):
             'download': '{base_url}/torrents/download/%s'.format(**self.urls)
         })
 
+        self.username = None
+        self.password = None
+
+        self.token = None
+        self.tokenLastUpdate = None
+
         self.subcategories = [433, 637, 455, 639]
 
         self.minseed = 0
         self.minleech = 0
         self.confirmed = False
+
+        self.cache = TVCache(self, min_time=10)
 
     def login(self):
 
@@ -163,8 +163,6 @@ class T411Provider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio
 
 
 class T411Auth(AuthBase):

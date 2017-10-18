@@ -33,14 +33,13 @@ class BitCannonProvider(TorrentProvider):
 
         self.minseed = None
         self.minleech = None
-        self.ratio = 0
-
-        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'search': '{base_url}/search/'.format(**self.urls),
             'trackers': '{base_url}/stats'.format(**self.urls),
         })
+
+        self.cache = TVCache(self, min_time=20)
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
@@ -104,5 +103,3 @@ class BitCannonProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

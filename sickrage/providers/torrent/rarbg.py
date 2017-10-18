@@ -32,14 +32,6 @@ class RarbgProvider(TorrentProvider):
     def __init__(self):
         super(RarbgProvider, self).__init__("Rarbg", 'http://torrentapi.org', False)
 
-        self.ratio = None
-        self.minseed = None
-        self.ranked = None
-        self.sorting = None
-        self.minleech = None
-        self.token = None
-        self.tokenExpireDate = None
-
         self.urls.update({
             'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage'.format(**self.urls),
             'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage'.format(**self.urls),
@@ -51,6 +43,13 @@ class RarbgProvider(TorrentProvider):
                            '&search_string=%s'.format(**self.urls),
             'api_spec': '{base_url}/apidocs_v2.txt'.format(**self.urls)
         })
+
+        self.minseed = None
+        self.ranked = None
+        self.sorting = None
+        self.minleech = None
+        self.token = None
+        self.tokenExpireDate = None
 
         self.urlOptions = {'categories': '&category={categories}',
                            'seeders': '&min_seeders={min_seeders}',
@@ -181,5 +180,3 @@ class RarbgProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

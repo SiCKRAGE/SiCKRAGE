@@ -34,15 +34,6 @@ class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
         super(MoreThanTVProvider, self).__init__("MoreThanTV", 'http://www.morethan.tv', True)
 
-        self._uid = None
-        self._hash = None
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-        # self.freeleech = False
-
         self.urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'detail': '{base_url}/torrents.php'
@@ -58,6 +49,14 @@ class MoreThanTVProvider(TorrentProvider):
                         '?action=download'
                         '&id=%s'.format(**self.urls)
         })
+
+        self._uid = None
+        self._hash = None
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
 
         self.cookies = None
 
@@ -169,6 +168,3 @@ class MoreThanTVProvider(TorrentProvider):
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
-
-    def seed_ratio(self):
-        return self.ratio

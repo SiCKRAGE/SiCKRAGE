@@ -33,23 +33,23 @@ class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(IPTorrentsProvider, self).__init__("IPTorrents", 'https://iptorrents.eu', True)
 
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.freeleech = False
-        self.minseed = None
-        self.minleech = None
-
-        self.enable_cookies = True
-
-        self.cache = TVCache(self, min_time=10)
-
         self.urls.update({
             'login': '{base_url}/take_login.php'.format(**self.urls),
             'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(**self.urls)
         })
 
+        self.username = None
+        self.password = None
+
+        self.freeleech = False
+        self.enable_cookies = True
+
+        self.minseed = None
+        self.minleech = None
+
         self.categories = '73=&60='
+
+        self.cache = TVCache(self, min_time=10)
 
     def _check_auth(self):
         if not self.username or not self.password:
@@ -175,5 +175,3 @@ class IPTorrentsProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

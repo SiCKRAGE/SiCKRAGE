@@ -33,15 +33,15 @@ class Torrent9Provider(TorrentProvider):
     def __init__(self):
         super(Torrent9Provider, self).__init__('Torrent9', 'http://www.torrent9.biz', False)
 
-        self.minseed = None
-        self.minleech = None
-
-        self.proper_strings = ['PROPER', 'REPACK']
-
         self.urls.update({
             'search': '{base_url}/search_torrent'.format(**self.urls),
             'rss': '{base_url}/torrents_series.html,trie-date-d'.format(**self.urls)
         })
+
+        self.minseed = None
+        self.minleech = None
+
+        self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self)
 

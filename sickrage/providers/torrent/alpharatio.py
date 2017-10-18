@@ -31,7 +31,7 @@ class AlphaRatioProvider(TorrentProvider):
         super(AlphaRatioProvider, self).__init__("AlphaRatio", 'http://alpharatio.cc', True)
         self.username = None
         self.password = None
-        self.ratio = None
+
         self.minseed = None
         self.minleech = None
 
@@ -140,6 +140,3 @@ class AlphaRatioProvider(TorrentProvider):
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
-
-    def seed_ratio(self):
-        return self.ratio

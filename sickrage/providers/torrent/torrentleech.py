@@ -29,14 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
-
         super(TorrentLeechProvider, self).__init__("TorrentLeech", 'http://torrentleech.org', True)
-
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
 
         self.urls.update({
             'login': '{base_url}/user/account/login/'.format(**self.urls),
@@ -45,6 +38,12 @@ class TorrentLeechProvider(TorrentProvider):
             'download': '{base_url}/%s'.format(**self.urls),
             'index': '{base_url}/torrents/browse/index/categories/%s'.format(**self.urls)
         })
+
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
 
         self.categories = "2,7,26,27,32,34,35"
 
@@ -149,5 +148,3 @@ class TorrentLeechProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

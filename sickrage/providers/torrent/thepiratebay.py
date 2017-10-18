@@ -31,12 +31,6 @@ class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
         super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.se', False)
 
-        self.ratio = None
-        self.confirmed = True
-        self.minseed = None
-        self.minleech = None
-
-        # URLs
         self.urls.update({
             "rss": [
                 "{base_url}/browse/208/0/4/0".format(**self.urls),
@@ -45,13 +39,16 @@ class ThePirateBayProvider(TorrentProvider):
             "search": "{base_url}/search".format(**self.urls),
         })
 
-        self.custom_url = ""
+        self.confirmed = True
+        self.minseed = None
+        self.minleech = None
 
-        # Cache
-        self.cache = TVCache(self, min_time=30)  # only poll ThePirateBay every 30 minutes max
+        self.custom_url = ""
 
         self.magnet_regex = re.compile(
             r'magnet:\?xt=urn:btih:\w{32,40}(:?&dn=[\w. %+-]+)*(:?&tr=(:?tcp|https?|udp)[\w%. +-]+)*')
+
+        self.cache = TVCache(self, min_time=30)  # only poll ThePirateBay every 30 minutes max
 
     @staticmethod
     def convert_url(url, params):

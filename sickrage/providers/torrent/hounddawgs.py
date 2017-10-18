@@ -30,18 +30,16 @@ class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
         super(HoundDawgsProvider, self).__init__("HoundDawgs", 'http://hounddawgs.org', True)
 
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-
-        self.cache = TVCache(self, min_time=20)
-
         self.urls.update({
             'search': '{base_url}/torrents.php'.format(**self.urls),
             'login': '{base_url}/login.php'.format(**self.urls)
         })
+
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
 
         self.search_params = {
             "filter_cat[85]": 1,
@@ -58,6 +56,8 @@ class HoundDawgsProvider(TorrentProvider):
             "searchimdb": '',
             "searchtags": ''
         }
+
+        self.cache = TVCache(self, min_time=20)
 
     def login(self):
 
@@ -172,5 +172,3 @@ class HoundDawgsProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

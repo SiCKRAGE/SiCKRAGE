@@ -28,7 +28,6 @@ class CpasbienProvider(TorrentProvider):
     def __init__(self):
         super(CpasbienProvider, self).__init__("Cpasbien", "http://www.cpasbien.io", False)
 
-        self.ratio = None
         self.urls.update({
             'download': '{base_url}/telechargement/%s'.format(**self.urls)
         })
@@ -115,5 +114,3 @@ class CpasbienProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

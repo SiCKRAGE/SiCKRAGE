@@ -31,17 +31,16 @@ class HDBitsProvider(TorrentProvider):
     def __init__(self):
         super(HDBitsProvider, self).__init__("HDBits", 'https://hdbits.org', True)
 
-        self.username = None
-        self.passkey = None
-        self.ratio = None
-
-        self.cache = HDBitsCache(self, min_time=15)
-
         self.urls.update({
             'search': '{base_url}/api/torrents'.format(**self.urls),
             'rss': '{base_url}/api/torrents'.format(**self.urls),
             'download': '{base_url}/download.php'.format(**self.urls)
         })
+
+        self.username = None
+        self.passkey = None
+
+        self.cache = HDBitsCache(self, min_time=15)
 
     def _check_auth(self):
 
@@ -177,8 +176,6 @@ class HDBitsProvider(TorrentProvider):
 
         return json.dumps(post_data)
 
-    def seed_ratio(self):
-        return self.ratio
 
 
 class HDBitsCache(tv_cache.TVCache):

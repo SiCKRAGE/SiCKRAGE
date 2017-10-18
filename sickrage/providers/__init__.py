@@ -88,6 +88,10 @@ class GenericProvider(object):
     def imageName(self):
         return ""
 
+    @property
+    def seed_ratio(self):
+        return ''
+
     def _check_auth(self):
         return True
 
@@ -534,13 +538,6 @@ class GenericProvider(object):
         return [Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time']), self.show) for x in
                 results]
 
-    def seed_ratio(self):
-        """
-        Provider should override this value if custom seed ratio enabled
-        It should return the value of the provider seed ratio
-        """
-        return ''
-
     def add_cookies_from_ui(self):
         """
         Adds the cookies configured from UI to the providers requests session
@@ -616,6 +613,14 @@ class TorrentProvider(GenericProvider):
                 os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images', 'providers', self.id + '.png')):
             return self.id + '.png'
         return self.type + '.png'
+
+    @property
+    def seed_ratio(self):
+        """
+        Provider should override this value if custom seed ratio enabled
+        It should return the value of the provider seed ratio
+        """
+        return self.ratio
 
     def getResult(self, episodes):
         """
@@ -711,9 +716,6 @@ class TorrentProvider(GenericProvider):
                             results.append(Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
-
-    def seed_ratio(self):
-        return self.ratio
 
     @classmethod
     def getProviders(cls):

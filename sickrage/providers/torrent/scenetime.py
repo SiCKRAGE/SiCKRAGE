@@ -28,18 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class SceneTimeProvider(TorrentProvider):
     def __init__(self):
-
         super(SceneTimeProvider, self).__init__("SceneTime", 'http://www.scenetime.com', True)
-
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-
-        self.enable_cookies = True
-
-        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
@@ -48,7 +37,17 @@ class SceneTimeProvider(TorrentProvider):
             'download': '{base_url}/download.php/%s/%s'.format(**self.urls)
         })
 
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
+
+        self.enable_cookies = True
+
         self.categories = [2, 42, 9, 63, 77, 79, 100, 83]
+
+        self.cache = TVCache(self, min_time=20)
 
     def login(self):
         cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)
@@ -159,5 +158,3 @@ class SceneTimeProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

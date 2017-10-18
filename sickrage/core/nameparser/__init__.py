@@ -499,8 +499,8 @@ class NameParser(object):
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
         if not final_result.show and self.validate_show:
-            raise InvalidShowException(
-                "Unable to match {} to a show in your database. Parser result: {}".format(name, str(final_result)))
+            raise InvalidShowException("Unable to match {result.original_name} to a show in your database. "
+                                       "Parser result: {result}".format(result=final_result))
 
         # if there's no useful info in it then raise an exception
         if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
