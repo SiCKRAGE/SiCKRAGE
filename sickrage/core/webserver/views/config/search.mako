@@ -885,7 +885,7 @@
 
                         <div class="row field-pair" id="torrent_label_anime_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('Add label to torrent')}</label>
+                                <label class="component-title">${_('Add anime label to torrent')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group input350">

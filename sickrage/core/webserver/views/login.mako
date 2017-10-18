@@ -6,7 +6,7 @@
                 <form action="" method="post">
                     <div class="row">
                         <div class="col-md-12" align="center">
-                            <img src="../static/images/login.png" />
+                            <img src="${srWebRoot}/images/login.png" />
                         </div>
                     </div>
                     <div class="row">
