@@ -29,15 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class TorrentBytesProvider(TorrentProvider):
     def __init__(self):
-
         super(TorrentBytesProvider, self).__init__("TorrentBytes", 'http://www.torrentbytes.net', True)
-
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-        self.freeleech = False
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
@@ -45,6 +37,13 @@ class TorrentBytesProvider(TorrentProvider):
             'search': '{base_url}/browse.php?search=%s%s'.format(**self.urls),
             'download': '{base_url}/download.php?id=%s&name=%s'.format(**self.urls)
         })
+
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
+        self.freeleech = False
 
         self.categories = "&c41=1&c33=1&c38=1&c32=1&c37=1"
 
@@ -165,5 +164,3 @@ class TorrentBytesProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

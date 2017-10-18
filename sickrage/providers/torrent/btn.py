@@ -40,10 +40,7 @@ class BTNProvider(TorrentProvider):
         super(BTNProvider, self).__init__("BTN", 'http://api.broadcasthe.net', True)
 
         self.supports_absolute_numbering = True
-
         self.api_key = None
-        self.ratio = None
-
         self.reject_m2ts = False
 
         self.cache = BTNCache(self, min_time=15)
@@ -263,8 +260,6 @@ class BTNProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio
 
 
 class BTNCache(tv_cache.TVCache):

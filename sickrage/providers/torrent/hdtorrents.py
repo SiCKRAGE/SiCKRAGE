@@ -34,18 +34,18 @@ class HDTorrentsProvider(TorrentProvider):
     def __init__(self):
         super(HDTorrentsProvider, self).__init__("HDTorrents", 'http://hd-torrents.org', True)
 
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-
         self.urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
             'search': '{base_url}/torrents.php?search=%s&active=1&options=0%s'.format(**self.urls),
             'rss': '{base_url}/torrents.php?search=&active=1&options=0%s'.format(**self.urls),
             'home': '{base_url}/%s'.format(**self.urls)
         })
+
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
 
         self.categories = "&category[]=59&category[]=60&category[]=30&category[]=38"
         self.proper_strings = ['PROPER', 'REPACK']
@@ -179,5 +179,3 @@ class HDTorrentsProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

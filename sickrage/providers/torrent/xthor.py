@@ -33,20 +33,18 @@ from sickrage.providers import TorrentProvider
 
 class XthorProvider(TorrentProvider):
     def __init__(self):
-
         super(XthorProvider, self).__init__("Xthor", "http://xthor.bz", True)
-
-        self.cj = cookielib.CookieJar()
 
         self.urls.update({
             'search': "{base_url}/browse.php?search=%s%s".format(**self.urls)
         })
 
+        self.cj = cookielib.CookieJar()
+
         self.categories = "&searchin=title&incldead=0"
 
         self.username = None
         self.password = None
-        self.ratio = None
 
         self.cache = TVCache(self, min_time=10)
 
@@ -132,5 +130,3 @@ class XthorProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

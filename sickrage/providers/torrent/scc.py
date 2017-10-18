@@ -30,16 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class SCCProvider(TorrentProvider):
     def __init__(self):
-
         super(SCCProvider, self).__init__("SceneAccess", 'http://sceneaccess.eu', True)
-
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-
-        self.cache = TVCache(self, min_time=20)
 
         self.urls.update({
             'login': '{base_url}/login'.format(**self.urls),
@@ -48,11 +39,19 @@ class SCCProvider(TorrentProvider):
             'download': '{base_url}/%s'.format(**self.urls)
         })
 
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
+
         self.categories = {
             'Season': 'c26=26&c44=44&c45=45',  # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
             'Episode': 'c17=17&c27=27&c33=33&c34=34&c44=44&c45=45',  # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
             'RSS': 'c17=17&c26=26&c27=27&c33=33&c34=34&c44=44&c45=45'  # Season + Episode
         }
+
+        self.cache = TVCache(self, min_time=20)
 
     def login(self):
 
@@ -153,5 +152,3 @@ class SCCProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

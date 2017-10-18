@@ -30,8 +30,13 @@ from sickrage.providers import TorrentProvider
 
 class TorrentDayProvider(TorrentProvider):
     def __init__(self):
-
         super(TorrentDayProvider, self).__init__("TorrentDay", 'https://www.torrentday.com', True)
+
+        self.urls.update({
+            'login': '{base_url}/t'.format(**self.urls),
+            'search': '{base_url}/V3/API/API.php'.format(**self.urls),
+            'download': '{base_url}/download.php/%s/%s'.format(**self.urls)
+        })
 
         self.username = None
         self.password = None
@@ -42,19 +47,13 @@ class TorrentDayProvider(TorrentProvider):
 
         self.enable_cookies = True
 
-        self.cache = TVCache(self, min_time=10)
-
-        self.urls.update({
-            'login': '{base_url}/t'.format(**self.urls),
-            'search': '{base_url}/V3/API/API.php'.format(**self.urls),
-            'download': '{base_url}/download.php/%s/%s'.format(**self.urls)
-        })
-
         self.categories = {
             'Season': {'c14': 1},
             'Episode': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c34': 1},
             'RSS': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c34': 1, 'c14': 1}
         }
+
+        self.cache = TVCache(self, min_time=10)
 
     def login(self):
         cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)

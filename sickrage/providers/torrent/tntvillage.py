@@ -61,11 +61,19 @@ class TNTVillageProvider(TorrentProvider):
     def __init__(self):
         super(TNTVillageProvider, self).__init__("TNTVillage", 'http://forum.tntvillage.scambioetico.org', True)
 
+        self.urls.update({
+            'login': '{base_url}/index.php?act=Login&CODE=01'.format(**self.urls),
+            'detail': '{base_url}/index.php?showtopic=%s'.format(**self.urls),
+            'search': '{base_url}/?act=allreleases&%s'.format(**self.urls),
+            'search_page': '{base_url}/?act=allreleases&st=%s&%s'.format(**self.urls),
+            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'.format(**self.urls)
+        })
+
         self._uid = None
         self._hash = None
         self.username = None
         self.password = None
-        self.ratio = None
+
         self.cat = None
         self.engrelease = None
         self.page = 10
@@ -92,14 +100,6 @@ class TNTVillageProvider(TorrentProvider):
                               'Programmi e Film TV': 1,
                               'Documentari': 14,
                               'All': 0}
-
-        self.urls.update({
-            'login': '{base_url}/index.php?act=Login&CODE=01'.format(**self.urls),
-            'detail': '{base_url}/index.php?showtopic=%s'.format(**self.urls),
-            'search': '{base_url}/?act=allreleases&%s'.format(**self.urls),
-            'search_page': '{base_url}/?act=allreleases&st=%s&%s'.format(**self.urls),
-            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'.format(**self.urls)
-        })
 
         self.cookies = None
 
@@ -411,5 +411,3 @@ class TNTVillageProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

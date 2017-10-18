@@ -31,19 +31,19 @@ class PretomeProvider(TorrentProvider):
     def __init__(self):
         super(PretomeProvider, self).__init__("Pretome", 'http://pretome.info', True)
 
-        self.username = None
-        self.password = None
-        self.pin = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
             'detail': '{base_url}/details.php?id=%s'.format(**self.urls),
             'search': '{base_url}/browse.php?search=%s%s'.format(**self.urls),
             'download': '{base_url}/download.php/%s/%s.torrent'.format(**self.urls)
         })
+
+        self.username = None
+        self.password = None
+        self.pin = None
+
+        self.minseed = None
+        self.minleech = None
 
         self.categories = "&st=1&cat%5B%5D=7"
 
@@ -164,6 +164,3 @@ class PretomeProvider(TorrentProvider):
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
-
-    def seed_ratio(self):
-        return self.ratio

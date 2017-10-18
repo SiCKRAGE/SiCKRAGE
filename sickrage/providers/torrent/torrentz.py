@@ -31,21 +31,18 @@ class TORRENTZProvider(TorrentProvider):
     def __init__(self):
 
         super(TORRENTZProvider, self).__init__("Torrentz", 'http://torrentz2.eu', False)
-
         self.confirmed = True
-        self.ratio = None
+
         self.minseed = None
         self.minleech = None
-
-        self.cache = TVCache(self, min_time=15)
 
         self.urls.update({
             'verified': '{base_url}/feed_verified'.format(**self.urls),
             'feed': '{base_url}/feed'.format(**self.urls)
         })
 
-    def seed_ratio(self):
-        return self.ratio
+        self.cache = TVCache(self, min_time=15)
+
 
     @staticmethod
     def _split_description(description):

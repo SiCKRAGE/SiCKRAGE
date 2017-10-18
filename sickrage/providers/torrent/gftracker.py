@@ -33,17 +33,17 @@ class GFTrackerProvider(TorrentProvider):
     def __init__(self):
         super(GFTrackerProvider, self).__init__("GFTracker", 'http://www.thegft.org', True)
 
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-
         self.urls.update({
             'login': '{base_url}/loginsite.php'.format(**self.urls),
             'search': '{base_url}/browse.php?view=%s%s'.format(**self.urls),
             'download': '{base_url}/%s'.format(**self.urls)
         })
+
+        self.username = None
+        self.password = None
+
+        self.minseed = None
+        self.minleech = None
 
         self.cookies = None
 
@@ -165,6 +165,3 @@ class GFTrackerProvider(TorrentProvider):
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
-
-    def seed_ratio(self):
-        return self.ratio

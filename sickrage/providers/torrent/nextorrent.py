@@ -30,22 +30,18 @@ from sickrage.providers import TorrentProvider
 
 class NextorrentProvider(TorrentProvider):
     def __init__(self):
-
         super(NextorrentProvider, self).__init__("Nextorrent", 'http://nextorrent.pw', False)
-
-        self.confirmed = True
-        self.ratio = None
-        self.minseed = None
-        self.minleech = None
-
-        self.cache = TVCache(self, min_time=15)
 
         self.urls.update({
             'series': '{base_url}/torrents/series'.format(**self.urls)
         })
 
-    def seed_ratio(self):
-        return self.ratio
+        self.confirmed = True
+
+        self.minseed = None
+        self.minleech = None
+
+        self.cache = TVCache(self, min_time=15)
 
     def get_download_url(self, url):
         try:

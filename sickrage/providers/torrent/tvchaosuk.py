@@ -36,7 +36,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         self.username = None
         self.password = None
-        self.ratio = None
+
         self.minseed = None
         self.minleech = None
 
@@ -189,5 +189,3 @@ class TVChaosUKProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

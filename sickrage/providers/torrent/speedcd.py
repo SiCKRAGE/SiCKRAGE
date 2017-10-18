@@ -28,15 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class SpeedCDProvider(TorrentProvider):
     def __init__(self):
-
         super(SpeedCDProvider, self).__init__("Speedcd", 'http://speed.cd', True)
-
-        self.username = None
-        self.password = None
-        self.ratio = None
-        self.freeleech = False
-        self.minseed = None
-        self.minleech = None
 
         self.urls.update({
             'login': '{base_url}/take_login.php'.format(**self.urls),
@@ -44,6 +36,13 @@ class SpeedCDProvider(TorrentProvider):
             'search': '{base_url}/V3/API/API.php'.format(**self.urls),
             'download': '{base_url}/download.php?torrent=%s'.format(**self.urls)
         })
+
+        self.username = None
+        self.password = None
+
+        self.freeleech = False
+        self.minseed = None
+        self.minleech = None
 
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
 
@@ -128,5 +127,3 @@ class SpeedCDProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio

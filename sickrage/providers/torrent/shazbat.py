@@ -26,20 +26,17 @@ from sickrage.providers import TorrentProvider
 
 class ShazbatProvider(TorrentProvider):
     def __init__(self):
-
         super(ShazbatProvider, self).__init__("Shazbat.tv", 'http://www.shazbat.tv', True)
-
-        self.supports_backlog = False
-
-        self.passkey = None
-        self.ratio = None
-        self.options = None
-
-        self.cache = ShazbatCache(self, min_time=15)
 
         self.urls.update({
             'login': '{base_url}/login'.format(**self.urls)
         })
+
+        self.supports_backlog = False
+        self.passkey = None
+        self.options = None
+
+        self.cache = ShazbatCache(self, min_time=15)
 
     def _check_auth(self):
         if not self.passkey:
@@ -56,8 +53,6 @@ class ShazbatProvider(TorrentProvider):
 
         return True
 
-    def seed_ratio(self):
-        return self.ratio
 
 
 class ShazbatCache(tv_cache.TVCache):

@@ -18,9 +18,6 @@
 
 from __future__ import unicode_literals
 
-import re
-import urllib
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import convert_size, try_int
@@ -33,76 +30,104 @@ class NyaaProvider(TorrentProvider):
 
         self.supports_absolute_numbering = True
         self.anime_only = True
-        self.ratio = None
-
-        self.cache = TVCache(self, min_time=15)
 
         self.minseed = 0
         self.minleech = 0
         self.confirmed = False
 
+        self.cache = TVCache(self, min_time=20)
+
     def search(self, search_strings, age=0, ep_obj=None):
+        """
+        Search a provider and parse the results.
+
+        :param search_strings: A dict with mode (key) and the search value (value)
+        :param age: Not used
+        :param ep_obj: Not used
+        :returns: A list of search results (structure)
+        """
         results = []
 
-        if self.show and not self.show.is_anime:
-            return results
+        # Search Params
+        search_params = {
+            'page': 'rss',
+            'c': '1_0',  # All Anime
+            'f': 0,  # No filter
+            'q': '',
+        }
 
-        for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+        for mode in search_strings:
+            sickrage.srCore.srLogger.debug('Search mode: {}'.format(mode))
+
+            if self.confirmed:
+                search_params['f'] = 2  # Trusted only
+                sickrage.srCore.srLogger.debug('Searching only confirmed torrents')
+
             for search_string in search_strings[mode]:
+
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
+                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
+                    search_params['q'] = search_string
 
-                params = {
-                    "page": 'rss',
-                    "cats": '1_0',  # All anime
-                    "sort": 2,  # Sort Descending By Seeders
-                    "order": 1
-                }
-                if mode != 'RSS':
-                    params["term"] = search_string.encode('utf-8')
+                data = self.cache.getRSSFeed(self.urls['base_url'], params=search_params)
+                if not data:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
+                    continue
+                if not data.get('entries'):
+                    sickrage.srCore.srLogger.debug('Data returned from provider does not contain any {0}torrents',
+                                                   'confirmed ' if self.confirmed else '')
+                    continue
 
-                searchURL = self.urls['base_url'] + '?' + urllib.urlencode(params)
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
-
-                summary_regex = ur"(\d+) seeder\(s\), (\d+) leecher\(s\), \d+ download\(s\) - (\d+.?\d* [KMGT]iB)(.*)"
-                s = re.compile(summary_regex, re.DOTALL)
-
-                results = []
-                for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
-                    title = curItem['title']
-                    download_url = curItem['link']
-                    if not all([title, download_url]):
-                        continue
-
-                    seeders, leechers, size, verified = s.findall(curItem['summary'])[0]
-                    size = convert_size(size, -1)
-
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                    title, seeders, leechers))
-                        continue
-
-                    if self.confirmed and not verified and mode != 'RSS':
-                        sickrage.srCore.srLogger.debug(
-                            "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
-                        continue
-
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
-
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                    results.append(item)
+                results += self.parse(data['entries'], mode)
 
         # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio
+    def parse(self, data, mode):
+        """
+        Parse search results for items.
+
+        :param data: The raw response from a search
+        :param mode: The current mode used to search, e.g. RSS
+
+        :return: A list of items found
+        """
+
+        results = []
+
+        for item in data:
+            try:
+                title = item['title']
+                download_url = item['link']
+                if not all([title, download_url]):
+                    continue
+
+                seeders = try_int(item['nyaa_seeders'])
+                leechers = try_int(item['nyaa_leechers'])
+
+                # Filter unseeded torrent
+                if seeders < min(self.minseed, 1):
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the "
+                                                       "minimum seeders: {}. Seeders: {}".format(title, seeders))
+                    continue
+
+                size = convert_size(item['nyaa_size'], -1, units=['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
+
+                item = {
+                    'title': title,
+                    'link': download_url,
+                    'size': size,
+                    'seeders': seeders,
+                    'leechers': leechers
+                }
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+
+                results.append(item)
+            except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+                sickrage.srCore.srLogger.error('Failed parsing provider')
+
+        return results

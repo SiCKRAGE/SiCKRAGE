@@ -27,12 +27,11 @@ from sickrage.providers import TorrentProvider
 
 class NebulanceProvider(TorrentProvider):
     def __init__(self):
-
         super(NebulanceProvider, self).__init__("Nebulance", 'http://nebulance.io', True)
 
         self.username = None
         self.password = None
-        self.ratio = None
+
         self.minseed = None
         self.minleech = None
 
@@ -152,5 +151,3 @@ class NebulanceProvider(TorrentProvider):
 
         return results
 
-    def seed_ratio(self):
-        return self.ratio
