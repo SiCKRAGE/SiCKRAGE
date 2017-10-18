@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-17 23:18-0400\n"
-"PO-Revision-Date: 2017-10-17 23:19-0400\n"
+"POT-Creation-Date: 2017-10-17 23:36-0400\n"
+"PO-Revision-Date: 2017-10-17 23:37-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -1308,8 +1308,8 @@ msgid "SR Cache Dir:"
 msgstr "SR кэш реж:"
 
 #: sickrage/core/webserver/views/config/index.mako:78
-msgid "SR Log Dir:"
-msgstr "Dir SR журнала:"
+msgid "SR Log File:"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:87
 msgid "SR Arguments:"
