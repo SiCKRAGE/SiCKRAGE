@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7f4c026 - 2017-10-17: Added Anizb Newznab provider 
+- * a0fa354 - 2017-10-17: Fixed issue #88 - Show are truncated when show set in different language 
+- * e6e0237 - 2017-10-17: Added Anizb Newznab provider 
 - * f45988b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
 - * 7aac26b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
 - * 6384aab - 2017-10-17: Release v9.1.39 
