@@ -1,6 +1,7 @@
 # Changelog
 
-- * d250a08 - 2017-10-17: Release v9.1.43 
+- * 963f9e7 - 2017-10-17: Fixed issue with log_dir attrib missing 
+- * 25f71bf - 2017-10-17: Release v9.1.43 
 - * e62bc4e - 2017-10-17: Fixed TemplateLookupException issues 
 - * f915a35 - 2017-10-17: Release v9.1.42 
 - * 177461d - 2017-10-17: Fixed NyaaTorrents provider Refactored more provider code 
