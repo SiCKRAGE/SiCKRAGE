@@ -78,7 +78,6 @@ class qbittorrentAPI(GenericClient):
                 label_key.lower(): label.replace(' ', '_'),
             }
             return self._request(method='post', data=data, cookies=sickrage.srCore.srWebSession.cookies)
-
         return True
 
     def _add_torrent_uri(self, result):

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5f1de4d - 2017-10-18: Refactored qBittorent 
+- * 998041e - 2017-10-18: Fixed issue #69 - Torrent snatched but not added to qBittorrent 
+- * 44b2225 - 2017-10-18: Refactored qBittorent 
 - * 59f9fbc - 2017-10-17: Release v9.1.44 
 - * 08fdbad - 2017-10-17: Fixed issue with log_dir attrib missing 
 - * 25f71bf - 2017-10-17: Release v9.1.43 
