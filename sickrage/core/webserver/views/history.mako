@@ -1,4 +1,4 @@
-<%inherit file="/layouts/main.mako"/>
+<%inherit file="/sickrage/core/webserver/views/layouts/main.mako"/>
 <%!
     import os.path
     import datetime
@@ -12,7 +12,7 @@
     from sickrage.core.tv.show.history import History
 %>
 <%block name="content">
-    <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
+    <%namespace file="/sickrage/core/webserver/views/includes/quality_defaults.mako" import="renderQualityPill"/>
     <div class="row">
         <div class="col-xs-12 text-center">
             <label for="history_limit" class="badge">${_('Limit:')}

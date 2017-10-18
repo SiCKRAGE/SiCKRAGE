@@ -972,7 +972,7 @@
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
                                     <input id="newznab_key" class="form-control" title="Provider API key"
-                                           autocapitalize="off"/>
+                                           placeholder="if not required type 0" autocapitalize="off"/>
                                 </div>
                             </div>
                         </div>
@@ -990,8 +990,8 @@
                                                 style="min-width:10em;"></select>
                                         <p>
                                             ${_('(select your Newznab categories on the left, and click the "update '
-                                            'categories" button to use them for searching.)')}
-                                            <b>${_('don\'t forget to to save the form!')}</b>
+                                            'categories" button to use them for searching.)')}<br/>
+                                            <b>${_('Don\'t forget to save changes!')}</b>
                                         </p>
                                     </div>
                                 </div>
@@ -1010,15 +1010,15 @@
                         <div id="newznab_add_div">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn newznab_save" type="button" id="newznab_add" value=${_('Add')}/>
+                                    <input class="btn newznab_save" type="button" id="newznab_add" value=${_('Add')}>
                                 </div>
                             </div>
                         </div>
                         <div id="newznab_update_div" style="display: none;">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-danger newznab_delete" type="button"
-                                           id="newznab_delete" value=${_('Delete')}/>
+                                    <input class="btn btn-danger newznab_delete" type="button" id="newznab_delete"
+                                           value=${_('Delete')}>
                                 </div>
                             </div>
                         </div>

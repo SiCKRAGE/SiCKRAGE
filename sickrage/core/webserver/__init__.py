@@ -128,27 +128,27 @@ class srWebServer(threading.Thread):
 
                 # favicon
                 (r'%s/(favicon\.ico)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images/ico/favicon.ico')}),
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images/ico/favicon.ico')}),
 
                 # images
                 (r'%s/images/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticImageHandler,
-                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images')}),
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images')}),
 
                 # css
                 (r'%s/css/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'css')}),
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'css')}),
 
                 # scss
                 (r'%s/scss/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'scss')}),
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'scss')}),
 
                 # fonts
                 (r'%s/fonts/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'fonts')}),
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'fonts')}),
 
                 # javascript
                 (r'%s/js/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'js')}),
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'js')}),
 
                 # videos
                 (r'%s/videos/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,

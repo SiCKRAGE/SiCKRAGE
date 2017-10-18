@@ -1,6 +1,11 @@
 # Changelog
 
-- * fc1af8b - 2017-10-17: Release v9.1.39 
+- * 98a5062 - 2017-10-17: Release v9.1.40 
+- * 94e71c8 - 2017-10-17: Fixed issue #88 - Show are truncated when show set in different language 
+- * e6e0237 - 2017-10-17: Added Anizb Newznab provider 
+- * f45988b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
+- * 7aac26b - 2017-10-17: Refactored Newznab provider code Refactored locations of static files and mako templates 
+- * 6384aab - 2017-10-17: Release v9.1.39 
 - * f50a313 - 2017-10-17: Fixed issue with gettext underscore being replaced when using underscore as throwaway variable 
 - * 1da0430 - 2017-10-17: Fixed issue #90 - iptorrents provider needs update 
 - * 8a3d08a - 2017-10-16: Release v9.1.38 

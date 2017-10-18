@@ -230,8 +230,8 @@ class UpdateManager(object):
                     sickrage.srCore.srLogger.debug("Not using: " + cur_git)
 
         # Still haven't found a working git
-        error_message = _('Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your '
-                          'config.ini OR delete your .git folder and run from source to enable updates.')
+        error_message = _('Unable to find your git executable - Set your git path from Settings->General->Advanced OR '
+                          'delete your .git folder and run from source to enable updates.')
 
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
@@ -277,7 +277,7 @@ class UpdateManager(object):
                     sickrage.srCore.srLogger.debug("Not using: " + cur_pip)
 
         # Still haven't found a working git
-        error_message = _('Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini')
+        error_message = _('Unable to find your pip executable - Set your pip path from Settings->General->Advanced')
         sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
         return None
@@ -398,13 +398,6 @@ class GitUpdateManager(UpdateManager):
     @property
     def get_newest_version(self):
         return self._check_for_new_version() or self.version
-
-    @staticmethod
-    def _git_error():
-        error_message = _('Unable to find your git executable - Shutdown SiCKRAGE and EITHER set git_path in your '
-                          'config.ini OR delete your .git folder and run from source to enable updates. ')
-
-        sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
     def _find_installed_version(self):
         """
@@ -699,11 +692,6 @@ class PipUpdateManager(UpdateManager):
     @property
     def get_newest_version(self):
         return self._check_for_new_version() or self.version
-
-    @staticmethod
-    def _pip_error():
-        error_message = _('Unable to find your pip executable - Shutdown SiCKRAGE and set pip_path in your config.ini.')
-        sickrage.srCore.NEWEST_VERSION_STRING = error_message
 
     def _find_installed_version(self):
         out, __, exit_status = self._pip_cmd(self._pip_path, 'show sickrage')

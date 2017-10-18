@@ -91,7 +91,7 @@ class BaseHandler(RequestHandler):
 
         # template settings
         self.mako_lookup = TemplateLookup(
-            directories=[os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'views')],
+            directories=[sickrage.srCore.srConfig.GUI_VIEWS_DIR],
             module_directory=os.path.join(sickrage.CACHE_DIR, 'mako'),
             filesystem_checks=True,
             strict_undefined=True,
@@ -4297,7 +4297,7 @@ class ConfigProviders(Config):
             error += _("\nNo Provider Api key specified")
 
         if not error:
-            tempProvider = NewznabProvider(name, url, True, key)
+            tempProvider = NewznabProvider(name, url, key)
             success, tv_categories, error = tempProvider.get_newznab_categories()
         return json_encode({'success': success, 'tv_categories': tv_categories, 'error': error})
 
@@ -4312,31 +4312,23 @@ class ConfigProviders(Config):
 
             if cur_type == "newznab":
                 cur_name, cur_url, cur_key, cur_cat = curProviderData.split('|')
-                cur_url = clean_url(cur_url)
 
-                providerObj = NewznabProvider(cur_name, cur_url, bool(not cur_key == 0), key=cur_key)
-                if providerObj.id not in sickrage.srCore.providersDict.newznab():
-                    sickrage.srCore.providersDict.newznab().update(**{providerObj.id: providerObj})
-                else:
-                    providerObj = sickrage.srCore.providersDict.newznab()[providerObj.id]
-                    providerObj.name = cur_name
-                    providerObj.urls['base_url'] = cur_url
-                    providerObj.key = cur_key
-                    providerObj.catIDs = cur_cat
+                providerObj = NewznabProvider(cur_name, cur_url, cur_key, cur_cat)
+                sickrage.srCore.providersDict.newznab().update(**{providerObj.id: providerObj})
+
+                kwargs[providerObj.id + '_name'] = cur_name
+                kwargs[providerObj.id + '_key'] = cur_key
+                kwargs[providerObj.id + '_catIDs'] = cur_cat
 
             elif cur_type == "torrentrss":
                 cur_name, cur_url, cur_cookies, cur_title_tag = curProviderData.split('|')
-                cur_url = clean_url(cur_url)
 
-                providerObj = TorrentRssProvider(cur_name, cur_url, False, cur_cookies, cur_title_tag)
-                if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
-                    sickrage.srCore.providersDict.torrentrss().update(**{providerObj.id: providerObj})
-                else:
-                    providerObj = sickrage.srCore.providersDict.torrentrss()[providerObj.id]
-                    providerObj.name = cur_name
-                    providerObj.urls['base_url'] = cur_url
-                    providerObj.cookies = cur_cookies
-                    providerObj.curTitleTAG = cur_title_tag
+                providerObj = TorrentRssProvider(cur_name, cur_url, cur_cookies, cur_title_tag)
+                sickrage.srCore.providersDict.torrentrss().update(**{providerObj.id: providerObj})
+
+                kwargs[providerObj.id + '_name'] = cur_name
+                kwargs[providerObj.id + '_cookies'] = cur_cookies
+                kwargs[providerObj.id + '_curTitleTAG'] = cur_title_tag
 
         sickrage.srCore.srConfig.CUSTOM_PROVIDERS = custom_providers
 
@@ -4949,8 +4941,9 @@ class Logs(WebHandler):
 
         minLevel = minLevel or sickrage.srCore.srLogger.INFO
 
-        logFiles = [sickrage.srCore.srConfig.LOG_FILE] + ["{}.{}".format(sickrage.srCore.srConfig.LOG_FILE, x) for x in
-                                                          xrange(int(sickrage.srCore.srConfig.LOG_NR))]
+        logFiles = [sickrage.srCore.srLogger.logFile] + \
+                   ["{}.{}".format(sickrage.srCore.srLogger.logFile, x) for x in
+                    xrange(int(sickrage.srCore.srLogger.logNr))]
 
         levelsFiltered = b'|'.join(
             [x for x in sickrage.srCore.srLogger.logLevels.keys() if

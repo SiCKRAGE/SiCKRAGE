@@ -529,10 +529,12 @@ class Tvdb:
 
                 # translate if required to provided language
                 if not self.config['language'] == self.config['api']['lang']:
+                    intl_episode_info = self._request('get',
+                                                      self.config['api']['episodes'].format(id=sid),
+                                                      params={'page': p})
+
                     for i, x in enumerate(episode_info):
-                        x.update((k, v) for k, v in self._request('get',
-                                                                  self.config['api']['episodes'].format(id=sid),
-                                                                  )['data'][i].iteritems() if v)
+                        x.update((k, v) for k, v in intl_episode_info['data'][i].iteritems() if v)
                         episode_info[i] = x
 
                 episodes += episode_info

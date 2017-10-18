@@ -20,9 +20,7 @@ from __future__ import unicode_literals
 
 import datetime
 import re
-import urllib
 
-import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import NZBProvider
 
@@ -31,6 +29,10 @@ class BinSearchProvider(NZBProvider):
     def __init__(self):
         super(BinSearchProvider, self).__init__("BinSearch", 'http://www.binsearch.info', False)
         self.supports_backlog = False
+
+        self.urls.update({
+            'rss': '{base_url}/rss.php'.format(**self.urls)
+        })
 
         self.cache = BinSearchCache(self)
 
@@ -85,16 +87,9 @@ class BinSearchCache(tv_cache.TVCache):
             # set updated
             self.last_update = datetime.datetime.today()
 
-            for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries',
-                          'alt.binaries.teevee']:
-                url = self.provider.urls['base_url'] + '/rss.php?'
-                urlArgs = {'max': 1000, 'g': group}
-
-                url += urllib.urlencode(urlArgs)
-
-                sickrage.srCore.srLogger.debug("Cache update URL: %s " % url)
-
-                for item in self.getRSSFeed(url)['entries'] or []:
+            for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries']:
+                search_params = {'max': 50, 'g': group}
+                for item in self.getRSSFeed(self.provider.urls['rss'], search_params)['entries'] or []:
                     self._parseItem(item)
 
         return True

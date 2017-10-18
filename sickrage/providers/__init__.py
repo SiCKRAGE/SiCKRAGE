@@ -25,14 +25,14 @@ import itertools
 import os
 import random
 import re
-import urllib
 from base64 import b16encode, b32decode
 from collections import OrderedDict
+from time import sleep
+from urlparse import urljoin
 from xml.sax import SAXParseException
 
 import bencode
 import requests
-import xmltodict
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
@@ -43,11 +43,10 @@ import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
-from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
-from sickrage.core.exceptions import AuthException
+from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.helpers import chmodAsParent, \
     findCertainShow, remove_file_failed, \
-    sanitizeFileName, sanitizeSceneName, clean_url
+    sanitizeFileName, clean_url, bs4_parser, validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -70,6 +69,7 @@ class GenericProvider(object):
         self.enable_backlog = False
         self.cache = TVCache(self)
         self.proper_strings = ['PROPER|REPACK|REAL']
+        self.search_separator = ' '
 
         # cookies
         self.enable_cookies = False
@@ -225,10 +225,74 @@ class GenericProvider(object):
         return []
 
     def _get_season_search_strings(self, episode):
-        return [{}]
+        """
+        Get season search strings.
+        """
+        search_string = {
+            'Season': []
+        }
 
-    def _get_episode_search_strings(self, eb_obj, add_string=''):
-        return [{}]
+        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+            episode_string = show_name + ' '
+
+            if episode.show.air_by_date or episode.show.sports:
+                episode_string += str(episode.airdate).split('-')[0]
+            elif episode.show.anime:
+                episode_string += 'Season'
+            else:
+                episode_string += 'S{season:0>2}'.format(season=episode.scene_season)
+
+            search_string['Season'].append(episode_string.strip())
+
+        return [search_string]
+
+    def _get_episode_search_strings(self, episode, add_string=''):
+        """
+        Get episode search strings.
+        """
+        if not episode:
+            return []
+
+        search_string = {
+            'Episode': []
+        }
+
+        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+            episode_string = show_name + self.search_separator
+            episode_string_fallback = None
+
+            if episode.show.air_by_date:
+                episode_string += str(episode.airdate).replace('-', ' ')
+            elif episode.show.sports:
+                episode_string += str(episode.airdate).replace('-', ' ')
+                episode_string += ('|', ' ')[len(self.proper_strings) > 1]
+                episode_string += episode.airdate.strftime('%b')
+            elif episode.show.anime:
+                # If the showname is a season scene exception, we want to use the indexer episode number.
+                if (episode.scene_season > 1 and
+                            show_name in get_scene_exceptions(episode.show.indexerid, episode.scene_season)):
+                    # This is apparently a season exception, let's use the scene_episode instead of absolute
+                    ep = episode.scene_episode
+                else:
+                    ep = episode.scene_absolute_number
+                episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
+                episode_string += '{episode:0>2}'.format(episode=ep)
+            else:
+                episode_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {
+                    'seasonnumber': episode.scene_season,
+                    'episodenumber': episode.scene_episode,
+                }
+
+            if add_string:
+                episode_string += self.search_separator + add_string
+                if episode_string_fallback:
+                    episode_string_fallback += self.search_separator + add_string
+
+            search_string['Episode'].append(episode_string.strip())
+            if episode_string_fallback:
+                search_string['Episode'].append(episode_string_fallback.strip())
+
+        return [search_string]
 
     def _get_title_and_url(self, item):
         """
@@ -548,7 +612,8 @@ class TorrentProvider(GenericProvider):
 
     @property
     def imageName(self):
-        if os.path.isfile(os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
+        if os.path.isfile(
+                os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images', 'providers', self.id + '.png')):
             return self.id + '.png'
         return self.type + '.png'
 
@@ -615,47 +680,6 @@ class TorrentProvider(GenericProvider):
 
         return files
 
-    def _get_season_search_strings(self, ep_obj):
-
-        search_string = {'Season': []}
-        for show_name in set(allPossibleShowNames(self.show)):
-            if ep_obj.show.air_by_date or ep_obj.show.sports:
-                ep_string = show_name + ' ' + str(ep_obj.airdate).split('-')[0]
-            elif ep_obj.show.anime:
-                ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
-            else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName.SXX
-
-            search_string['Season'].append(ep_string.encode('utf-8').strip())
-
-        return [search_string]
-
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-
-        search_string = {'Episode': []}
-
-        if not ep_obj:
-            return []
-
-        for show_name in set(allPossibleShowNames(ep_obj.show)):
-            ep_string = show_name + ' '
-            if ep_obj.show.air_by_date:
-                ep_string += str(ep_obj.airdate).replace('-', ' ')
-            elif ep_obj.show.sports:
-                ep_string += str(ep_obj.airdate).replace('-', ' ') + ('|', ' ')[
-                    len(self.proper_strings) > 1] + ep_obj.airdate.strftime('%b')
-            elif ep_obj.show.anime:
-                ep_string += "%02d" % int(ep_obj.scene_absolute_number)
-            else:
-                ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                           'episodenumber': ep_obj.scene_episode}
-            if add_string:
-                ep_string += ' %s' % add_string
-
-            search_string['Episode'].append(ep_string.strip())
-
-        return [search_string]
-
     @staticmethod
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
@@ -710,7 +734,8 @@ class NZBProvider(GenericProvider):
 
     @property
     def imageName(self):
-        if os.path.isfile(os.path.join(sickrage.srCore.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
+        if os.path.isfile(
+                os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images', 'providers', self.id + '.png')):
             return self.id + '.png'
         return self.type + '.png'
 
@@ -775,7 +800,6 @@ class TorrentRssProvider(TorrentProvider):
     def __init__(self,
                  name,
                  url,
-                 private,
                  cookies='',
                  titleTAG='title',
                  search_mode='eponly',
@@ -783,7 +807,7 @@ class TorrentRssProvider(TorrentProvider):
                  enable_daily=False,
                  enable_backlog=False,
                  default=False, ):
-        super(TorrentRssProvider, self).__init__(name, url, private)
+        super(TorrentRssProvider, self).__init__(name, clean_url(url), False)
 
         self.cache = TorrentRssCache(self)
         self.supports_backlog = False
@@ -889,9 +913,7 @@ class TorrentRssProvider(TorrentProvider):
                     cur_type, curProviderData = curProviderStr.split('|', 1)
                     if cur_type == "torrentrss":
                         cur_name, cur_url, cur_cookies, cur_title_tag = curProviderData.split('|')
-                        cur_url = clean_url(cur_url)
-
-                        providers += [TorrentRssProvider(cur_name, cur_url, False, cur_cookies, cur_title_tag)]
+                        providers += [TorrentRssProvider(cur_name, cur_url, cur_cookies, cur_title_tag)]
                 except Exception:
                     continue
         except Exception:
@@ -902,25 +924,16 @@ class TorrentRssProvider(TorrentProvider):
     @classmethod
     def getDefaultProviders(cls):
         return [
-            cls('showRSS', 'showrss.info', False, '', 'title', 'eponly', False, False, False, True)
+            cls('showRSS', 'showrss.info', '', 'title', 'eponly', False, False, False, True)
         ]
 
 
 class NewznabProvider(NZBProvider):
     type = 'newznab'
 
-    def __init__(self,
-                 name,
-                 url,
-                 private,
-                 key='',
-                 catIDs='5030,5040',
-                 search_mode='eponly',
-                 search_fallback=False,
-                 enable_daily=False,
-                 enable_backlog=False,
-                 default=False):
-        super(NewznabProvider, self).__init__(name, url, private)
+    def __init__(self, name, url, key='0', catIDs='5030,5040', search_mode='eponly', search_fallback=False,
+                 enable_daily=False, enable_backlog=False, default=False):
+        super(NewznabProvider, self).__init__(name, clean_url(url), bool(key != '0'))
 
         self.key = key
 
@@ -932,100 +945,73 @@ class NewznabProvider(NZBProvider):
         self.catIDs = catIDs
         self.default = default
 
+        self.caps = False
+        self.cap_tv_search = None
+        self.force_query = False
+
         self.cache = TVCache(self, min_time=30)
 
-    def get_newznab_categories(self):
+    def set_caps(self, data):
         """
-        Uses the newznab provider url and apikey to get the capabilities.
+        Set caps.
+        """
+        if not data:
+            return
+
+        def _parse_cap(tag):
+            elm = data.find(tag)
+            return elm.get('supportedparams', 'True') if elm and elm.get('available') else ''
+
+        self.cap_tv_search = _parse_cap('tv-search')
+        # self.cap_search = _parse_cap('search')
+        # self.cap_movie_search = _parse_cap('movie-search')
+        # self.cap_audio_search = _parse_cap('audio-search')
+
+        # self.caps = any([self.cap_tv_search, self.cap_search, self.cap_movie_search, self.cap_audio_search])
+        self.caps = any([self.cap_tv_search])
+
+    def get_newznab_categories(self, just_caps=False):
+        """
+        Use the newznab provider url and apikey to get the capabilities.
+
         Makes use of the default newznab caps param. e.a. http://yournewznab/api?t=caps&apikey=skdfiw7823sdkdsfjsfk
-        Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"},
-        {"id": "5080", "name": "Documentary"}, {"id": "5020", "name": "Foreign"}...etc}], error message)
+        Returns a tuple with (succes or not, array with dicts [{'id': '5070', 'name': 'Anime'},
+        {'id': '5080', 'name': 'Documentary'}, {'id': '5020', 'name': 'Foreign'}...etc}], error message)
         """
-        success = False
-        categories = []
-        message = ""
+        return_categories = []
 
-        self._check_auth()
+        if not self._check_auth():
+            return False, return_categories, 'Provider requires auth and your key is not set'
 
-        params = {"t": "caps"}
-        if self.key:
-            params['apikey'] = self.key
+        url_params = {'t': 'caps'}
+        if self.private and self.key:
+            url_params['apikey'] = self.key
 
         try:
-            resp = sickrage.srCore.srWebSession.get("{}api?{}".format(self.urls['base_url'], urllib.urlencode(params)))
-            data = xmltodict.parse(resp.content)
-
-            for category in data["caps"]["categories"]["category"]:
-                if category.get('@name') == 'TV':
-                    categories += [{"id": category['@id'], "name": category['@name']}]
-                    categories += [{"id": x["@id"], "name": x["@name"]} for x in category["subcat"]]
-
-            success = True
+            response = sickrage.srCore.srWebSession.get(urljoin(self.urls['base_url'], 'api'), params=url_params).text
         except Exception:
-            sickrage.srCore.srLogger.debug("[%s] failed to list categories" % self.name)
-            message = "[%s] failed to list categories" % self.name
+            error_string = 'Error getting caps xml for [{}]'.format(self.name)
+            sickrage.srCore.srLogger.warning(error_string)
+            return False, return_categories, error_string
 
-        return success, categories, message
+        with bs4_parser(response) as html:
+            if not html.find('categories'):
+                error_string = 'Error parsing caps xml for [{}]'.format(self.name)
+                sickrage.srCore.srLogger.debug(error_string)
+                return False, return_categories, error_string
 
-    def _get_season_search_strings(self, ep_obj):
+            self.set_caps(html.find('searching'))
+            if just_caps:
+                return
 
-        to_return = []
-        params = {}
-        if not ep_obj:
-            return to_return
+            for category in html('category'):
+                if 'TV' in category.get('name', '') and category.get('id', ''):
+                    return_categories.append({'id': category['id'], 'name': category['name']})
+                    for subcat in category('subcat'):
+                        if subcat.get('name', '') and subcat.get('id', ''):
+                            return_categories.append({'id': subcat['id'], 'name': subcat['name']})
 
-        params['maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
-                                                                                datetime.datetime.min.time())).days + 1
-        params['tvdbid'] = ep_obj.show.indexerid
-
-        # season
-        if ep_obj.show.air_by_date or ep_obj.show.sports:
-            date_str = str(ep_obj.airdate).split('-')[0]
-            params['season'] = date_str
-            params['q'] = date_str.replace('-', '.')
-        else:
-            params['season'] = str(ep_obj.scene_season)
-
-        save_q = ' ' + params['q'] if 'q' in params else ''
-
-        # add new query strings for exceptions
-        name_exceptions = list(
-            set([ep_obj.show.name] + get_scene_exceptions(ep_obj.show.indexerid)))
-        for cur_exception in name_exceptions:
-            params['q'] = sanitizeSceneName(cur_exception) + save_q
-            to_return.append(dict(params))
-
-        return to_return
-
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-        to_return = []
-        params = {}
-        if not ep_obj:
-            return to_return
-
-        params['maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
-                                                                                datetime.datetime.min.time())).days + 1
-        params['tvdbid'] = ep_obj.show.indexerid
-
-        if ep_obj.show.air_by_date or ep_obj.show.sports:
-            date_str = str(ep_obj.airdate)
-            params['season'] = date_str.partition('-')[0]
-            params['ep'] = date_str.partition('-')[2].replace('-', '/')
-        else:
-            params['season'] = ep_obj.scene_season
-            params['ep'] = ep_obj.scene_episode
-
-        # add new query strings for exceptions
-        name_exceptions = list(
-            set([ep_obj.show.name] + get_scene_exceptions(ep_obj.show.indexerid)))
-        for cur_exception in name_exceptions:
-            params['q'] = sanitizeSceneName(cur_exception)
-            if add_string:
-                params['q'] += ' ' + add_string
-
-            to_return.append(dict(params))
-
-        return to_return
+            return True, return_categories, ''
 
     def _doGeneralSearch(self, search_string):
         return self.search({'q': search_string})
@@ -1039,100 +1025,166 @@ class NewznabProvider(NZBProvider):
 
     def _check_auth_from_data(self, data):
         """
-        :type data: dict
+        Check that the returned data is valid.
+
+        :return: _check_auth if valid otherwise False if there is an error
         """
-        if all([x in data for x in ['feed', 'entries']]):
+        if data('categories') + data('item'):
             return self._check_auth()
 
         try:
-            if int(data['bozo']) == 1:
-                raise data['bozo_exception']
-        except (AttributeError, KeyError):
-            pass
+            err_desc = data.error.attrs['description']
+            if not err_desc:
+                raise Exception
+        except (AttributeError, TypeError):
+            return self._check_auth()
 
-        try:
-            err_code = data['feed']['error']['code']
-            err_desc = data['feed']['error']['description']
-
-            if int(err_code) == 100:
-                raise AuthException("Your API key for " + self.name + " is incorrect, check your config.")
-            elif int(err_code) == 101:
-                raise AuthException("Your account on " + self.name + " has been suspended, contact the administrator.")
-            elif int(err_code) == 102:
-                raise AuthException(
-                    "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
-            raise Exception("Error {}: {}".format(err_code, err_desc))
-        except (AttributeError, KeyError):
-            pass
+        sickrage.srCore.srLogger.info(err_desc)
 
         return False
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
+        """
+        Search indexer using the params in search_strings, either for latest releases, or a string/id search.
+
+        :return: list of results in dict form
+        """
         results = []
 
         if not self._check_auth():
             return results
 
-        params = {
-            "t": "tvsearch",
-            "maxage": min(age, sickrage.srCore.srConfig.USENET_RETENTION),
-            "limit": 100,
-            "offset": 0,
-            "cat": self.catIDs or '5030,5040'
-        }
+        # For providers that don't have caps, or for which the t=caps is not working.
+        if not self.caps:
+            self.get_newznab_categories(just_caps=True)
+            if not self.caps:
+                return results
 
-        params.update(search_params)
+        for mode in search_strings:
+            self.torznab = False
+            search_params = {
+                't': 'search',
+                'limit': 100,
+                'offset': 0,
+                'cat': self.catIDs.strip(', ') or '5030,5040',
+                'maxage': sickrage.srCore.srConfig.USENET_RETENTION
+            }
 
-        if self.key:
-            params['apikey'] = self.key
+            if self.private and self.key:
+                search_params['apikey'] = self.key
 
-        offset = total = 0
-        last_search = datetime.datetime.now()
-        while total >= offset:
-            if (datetime.datetime.now() - last_search).seconds < 5:
-                continue
+            if mode != 'RSS':
+                if (self.cap_tv_search or not self.cap_tv_search == 'True') and not self.force_query:
+                    search_params['t'] = 'tvsearch'
+                    search_params.update({'tvdbid': self.show.indexerid})
 
-            search_url = self.urls['base_url'] + '/api'
-            sickrage.srCore.srLogger.debug("Search url: %s?%s" % (search_url, urllib.urlencode(params)))
+                if search_params['t'] == 'tvsearch':
+                    if ep_obj.show.air_by_date or ep_obj.show.sports:
+                        date_str = str(ep_obj.airdate)
+                        search_params['season'] = date_str.partition('-')[0]
+                        search_params['ep'] = date_str.partition('-')[2].replace('-', '/')
+                    else:
+                        search_params['season'] = ep_obj.scene_season
+                        search_params['ep'] = ep_obj.scene_episode
 
-            data = self.cache.getRSSFeed(search_url, params=params)
+                if mode == 'Season':
+                    search_params.pop('ep', '')
 
-            last_search = datetime.datetime.now()
+            sickrage.srCore.srLogger.debug('Search mode: {0}'.format(mode))
 
-            if not self._check_auth_from_data(data):
-                break
+            for search_string in search_strings[mode]:
+                if mode != 'RSS':
+                    # If its a PROPER search, need to change param to 'search' so it searches using 'q' param
+                    if any(proper_string in search_string for proper_string in self.proper_strings):
+                        search_params['t'] = 'search'
 
-            for item in data['entries']:
+                    sickrage.srCore.srLogger.debug("Search string: {}".format(search_string))
 
-                (title, url) = self._get_title_and_url(item)
+                    if search_params['t'] != 'tvsearch':
+                        search_params['q'] = search_string
 
-                if title and url:
-                    results.append(item)
+                sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
 
-            # get total and offset attribs
-            try:
-                if total == 0:
-                    total = int(data['feed'].newznab_response['total'] or 0)
-                offset = int(data['feed'].newznab_response['offset'] or 0)
-            except AttributeError:
-                break
+                try:
+                    response = sickrage.srCore.srWebSession.get(urljoin(self.urls['base_url'], 'api'),
+                                                                params=search_params).text
+                except Exception:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
+                    continue
 
-            # No items found, prevent from doing another search
-            if total == 0:
-                break
+                with bs4_parser(response) as html:
+                    if not self._check_auth_from_data(html):
+                        return results
 
-            if offset != params['offset']:
-                sickrage.srCore.srLogger.info("Tell your newznab provider to fix their bloody newznab responses")
-                break
+                    try:
+                        self.torznab = 'xmlns:torznab' in html.rss.attrs
+                    except AttributeError:
+                        self.torznab = False
 
-            params['offset'] += params['limit']
-            if (total > int(params['offset'])) and (offset < 500):
-                offset = int(params['offset'])
-                # if there are more items available then the amount given in one call, grab some more
-                sickrage.srCore.srLogger.debug('%d' % (total - offset) + ' more items to be fetched from provider.' +
-                                               'Fetching another %d' % int(params['limit']) + ' items.')
-            else:
-                break
+                    if not html('item'):
+                        sickrage.srCore.srLogger.debug('No results returned from provider. Check chosen Newznab '
+                                                       'search categories in provider settings and/or usenet '
+                                                       'retention')
+                        continue
+
+                    for item in html('item'):
+                        try:
+                            title = item.title.get_text(strip=True)
+                            download_url = None
+                            if item.link:
+                                if validate_url(item.link.get_text(strip=True)):
+                                    download_url = item.link.get_text(strip=True)
+                                elif validate_url(item.link.next.strip()):
+                                    download_url = item.link.next.strip()
+
+                            if not download_url and item.enclosure:
+                                if validate_url(item.enclosure.get('url', '').strip()):
+                                    download_url = item.enclosure.get('url', '').strip()
+
+                            if not (title and download_url):
+                                continue
+
+                            seeders = leechers = -1
+                            if 'gingadaddy' in self.urls['base_url']:
+                                size_regex = re.search(r'\d*.?\d* [KMGT]B', str(item.description))
+                                item_size = size_regex.group() if size_regex else -1
+                            else:
+                                item_size = item.size.get_text(strip=True) if item.size else -1
+                                for attr in item('newznab:attr') + item('torznab:attr'):
+                                    item_size = attr['value'] if attr['name'] == 'size' else item_size
+                                    seeders = try_int(attr['value']) if attr['name'] == 'seeders' else seeders
+                                    peers = try_int(attr['value']) if attr['name'] == 'peers' else None
+                                    leechers = peers - seeders if peers else leechers
+
+                            if not item_size or (self.torznab and (seeders is -1 or leechers is -1)):
+                                continue
+
+                            size = convert_size(item_size, -1)
+
+                            item = {
+                                'title': title,
+                                'link': download_url,
+                                'size': size,
+                                'seeders': seeders,
+                                'leechers': leechers,
+                            }
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug('Found result: {0}'.format(title))
+
+                            results.append(item)
+                        except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+                            sickrage.srCore.srLogger.error('Failed parsing provider')
+                            continue
+
+                # Since we arent using the search string,
+                # break out of the search string loop
+                if 'tvdbid' in search_params:
+                    break
+
+        # Reproces but now use force_query = True
+        if not results and not self.force_query:
+            self.force_query = True
+            return self.search(search_strings, ep_obj=ep_obj)
 
         return results
 
@@ -1177,9 +1229,8 @@ class NewznabProvider(NZBProvider):
                         provider = NewznabProvider(
                             cur_name,
                             cur_url,
-                            bool(not cur_key == 0),
-                            key=cur_key,
-                            catIDs=cur_cat
+                            cur_key,
+                            cur_cat
                         )
 
                         providers += [provider]
@@ -1193,12 +1244,11 @@ class NewznabProvider(NZBProvider):
     @classmethod
     def getDefaultProviders(cls):
         return [
-            cls('SickBeard', 'http://lolo.sickbeard.com', False, '', '5030,5040', 'eponly', False, False, False, True),
-            cls('NZB.Cat', 'http://nzb.cat', True, '', '5030,5040,5010', 'eponly', True, True, True, True),
-            cls('NZBGeek', 'http://api.nzbgeek.info', True, '', '5030,5040', 'eponly', False, False, False, True),
-            cls('NZBs.org', 'http://nzbs.org', True, '', '5030,5040', 'eponly', False, False, False, True),
-            cls('Usenet-Crawler', 'http://usenet-crawler.com', True, '', '5030,5040', 'eponly', False, False, False,
-                True)
+            cls('DOGnzb', 'https://api.dognzb.cr', '', '5030,5040,5060,5070', 'eponly', False, False, False, True),
+            cls('NZB.Cat', 'http://nzb.cat', '', '5030,5040,5010', 'eponly', True, True, True, True),
+            cls('NZBGeek', 'http://api.nzbgeek.info', '', '5030,5040', 'eponly', False, False, False, True),
+            cls('NZBs.org', 'http://nzbs.org', '', '5030,5040', 'eponly', False, False, False, True),
+            cls('Usenet-Crawler', 'http://usenet-crawler.com', '', '5030,5040', 'eponly', False, False, False, True)
         ]
 
 

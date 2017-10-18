@@ -1,4 +1,4 @@
-<%inherit file="/layouts/main.mako"/>
+<%inherit file="/sickrage/core/webserver/views/layouts/main.mako"/>
 <%block name="content">
     <div class="row">
         <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1" align="center">
@@ -6,7 +6,7 @@
                 <form action="" method="post">
                     <div class="row">
                         <div class="col-md-12" align="center">
-                            <img src="../images/login.png" />
+                            <img src="../static/images/login.png" />
                         </div>
                     </div>
                     <div class="row">

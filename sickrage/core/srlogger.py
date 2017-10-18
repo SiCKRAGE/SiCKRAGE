@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 
 import logging
 import os
+import pkgutil
 import re
 from logging import FileHandler, CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
@@ -63,15 +64,15 @@ class srLogger(logging.getLoggerClass()):
         }
 
         # list of allowed loggers
-        self.allowedLoggers = ['sickrage',
-                               'tornado.general',
-                               'tornado.application',
-                               'apscheduler.jobstores',
-                               'apscheduler.scheduler']
+        self.loggers = {'sickrage': self,
+                        'tornado.general': logging.getLogger('tornado.general'),
+                        'tornado.application': logging.getLogger('tornado.application'),
+                        'apscheduler.jobstores': logging.getLogger('apscheduler.jobstores'),
+                        'apscheduler.scheduler': logging.getLogger('apscheduler.scheduler')}
 
         # set custom level for database logging
         logging.addLevelName(self.logLevels['DB'], 'DB')
-        logging.getLogger("sickrage").setLevel(self.logLevels['DB'])
+        self.setLevel(self.logLevels['DB'])
 
         # start logger
         self.start()
@@ -119,7 +120,7 @@ class srLogger(logging.getLoggerClass()):
             self.addHandler(rfh_errors)
 
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
-        if (False, True)[name in self.allowedLoggers]:
+        if (False, True)[name in self.loggers]:
             record = super(srLogger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
 
             try:
@@ -144,11 +145,31 @@ class srLogger(logging.getLoggerClass()):
     def set_level(self):
         self.debugLogging = sickrage.srCore.srConfig.DEBUG
         level = DEBUG if self.debugLogging else INFO
-        for name in self.allowedLoggers:
-            logger = logging.getLogger(name)
+        for __, logger in self.loggers.items():
             logger.setLevel(level)
             for handler in logger.handlers:
                 handler.setLevel(level)
+
+    def list_modules(self, package):
+        """Return all sub-modules for the specified package.
+
+        :param package:
+        :type package: module
+        :return:
+        :rtype: list of str
+        """
+        return [modname for importer, modname, ispkg in pkgutil.walk_packages(
+            path=package.__path__, prefix=package.__name__ + '.', onerror=lambda x: None)]
+
+    def get_loggers(self, package):
+        """Return all loggers for package and sub-packages.
+
+        :param package:
+        :type package: module
+        :return:
+        :rtype: list of logging.Logger
+        """
+        return [logging.getLogger(modname) for modname in self.list_modules(package)]
 
     def log(self, level, msg, *args, **kwargs):
         super(srLogger, self).log(level, msg, *args, **kwargs)

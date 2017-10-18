@@ -61,7 +61,7 @@ setup(
         ]
     },
     message_extractors={
-        'sickrage/core/webserver/gui/default': [
+        'sickrage/core/webserver': [
             ('**/views/**.mako', 'mako', {'input_encoding': 'utf-8'})
         ],
         'sickrage': [
