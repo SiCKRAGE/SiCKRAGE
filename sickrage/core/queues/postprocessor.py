@@ -54,7 +54,7 @@ class srPostProcessorQueue(srQueue):
         :return: instance of PostProcessorItem or None
         """
         for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
-            if isinstance(cur_item, PostProcessorItem) and cur_item.dirName == dirName and cur_item.mode == proc_type:
+            if isinstance(cur_item, PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
                 return cur_item
         return None
 
