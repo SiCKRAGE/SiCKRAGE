@@ -1,6 +1,7 @@
 # Changelog
 
-- * e8128a0 - 2017-10-19: Fixed issue #94 - manual post processing error 
+- * 38ffe94 - 2017-10-19: Release v9.1.46 
+- * b896e96 - 2017-10-19: Fixed issue #94 - manual post processing error 
 - * b0b9201 - 2017-10-18: Release v9.1.45 
 - * 71563bd - 2017-10-18: Fixed source url for login page logo 
 - * d41ddae - 2017-10-18: Fixed source url for login page logo 
