@@ -4396,8 +4396,13 @@ jQuery(document).ready(function ($) {
                 $('#Restore').click(function () {
                     $("#Restore").attr("disabled", true);
                     $('#Restore-result').html(SICKRAGE.loadingHTML);
-                    var backupFile = $("#backupFile").val();
-                    $.get(SICKRAGE.srWebRoot + "/config/backuprestore/restore", {'backupFile': backupFile})
+                    $.get(SICKRAGE.srWebRoot + "/config/backuprestore/restore",
+                        {
+                            'backupFile': $("#backupFile").val(),
+                            'restore_database': $("#restore_database").prop('checked'),
+                            'restore_config': $("#restore_config").prop('checked'),
+                            'restore_cache': $("#restore_cache").prop('checked'),
+                        })
                         .done(function (data) {
                             $('#Restore-result').html(data);
                             $("#Restore").attr("disabled", false);

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 38ffe94 - 2017-10-19: Release v9.1.46 
+- * 3961f78 - 2017-10-20: Added ability to select what you want to restore from backups 
+- * c470b37 - 2017-10-19: Release v9.1.46 
 - * b896e96 - 2017-10-19: Fixed issue #94 - manual post processing error 
 - * b0b9201 - 2017-10-18: Release v9.1.45 
 - * 71563bd - 2017-10-18: Fixed source url for login page logo 

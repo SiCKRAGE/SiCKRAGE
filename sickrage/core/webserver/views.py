@@ -3916,14 +3916,18 @@ class ConfigBackupRestore(Config):
         return finalResult
 
     @staticmethod
-    def restore(backupFile=None):
+    def restore(backupFile=None, restore_database=None, restore_config=None, restore_cache=None):
         finalResult = ''
 
         if backupFile:
             source = backupFile
             target_dir = os.path.join(sickrage.DATA_DIR, 'restore')
 
-            if restoreConfigZip(source, target_dir):
+            restore_database = checkbox_to_value(restore_database)
+            restore_config = checkbox_to_value(restore_config)
+            restore_cache = checkbox_to_value(restore_cache)
+
+            if restoreConfigZip(source, target_dir, restore_database, restore_config, restore_cache):
                 finalResult += _("Successfully extracted restore files to " + target_dir)
                 finalResult += _("<br>Restart sickrage to complete the restore.")
             else:
