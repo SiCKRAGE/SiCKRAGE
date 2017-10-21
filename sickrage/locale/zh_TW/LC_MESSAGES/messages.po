@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-18 11:16-0400\n"
-"PO-Revision-Date: 2017-10-18 11:17-0400\n"
+"POT-Creation-Date: 2017-10-21 13:54-0400\n"
+"PO-Revision-Date: 2017-10-21 13:55-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Traditional\n"
 "MIME-Version: 1.0\n"
@@ -309,23 +309,23 @@ msgstr "你沒有提供 Pushbullet api 金鑰"
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "別忘了保存您新的 pushbullet 設置。"
 
-#: dist/js/core.js:4518
+#: dist/js/core.js:4523
 msgid "Select backup folder to save to"
 msgstr "選擇要保存到備份檔案夾"
 
-#: dist/js/core.js:4523
+#: dist/js/core.js:4528
 msgid "Select backup files to restore"
 msgstr "選擇要還原的備份檔案"
 
-#: dist/js/core.js:5069
+#: dist/js/core.js:5074
 msgid "No providers available to configure."
 msgstr "沒有可用於配置的提供程式。"
 
-#: dist/js/core.js:5280
+#: dist/js/core.js:5285
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "您已選擇要刪除的演出。 你確定要繼續嗎？所有檔將被都刪除從您的系統。"
 
-#: dist/js/core.js:5350
+#: dist/js/core.js:5355
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
@@ -661,7 +661,7 @@ msgstr "備份"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:5
 #: sickrage/core/webserver/views/config/backup_restore.mako:37
-#: sickrage/core/webserver/views/config/backup_restore.mako:48
+#: sickrage/core/webserver/views/config/backup_restore.mako:50
 msgid "Restore"
 msgstr "還原"
 
@@ -677,9 +677,21 @@ msgstr "選擇您希望保存到您的備份檔案的資料夾"
 msgid "Restore your main database file and config"
 msgstr "還原主資料庫檔案和配置"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:45
+#: sickrage/core/webserver/views/config/backup_restore.mako:47
 msgid "Select the backup file you wish to restore"
 msgstr "選擇要還原的備份檔案"
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:62
+msgid "Restore database files"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:71
+msgid "Restore configuration file"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:80
+msgid "Restore cache files"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
@@ -3362,7 +3374,7 @@ msgstr "需要至少一個提供程式，但兩個建議。"
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/洪流供應商可以在進行切換"
 
-#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3953
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Search Clients"
@@ -4037,7 +4049,7 @@ msgstr "不允許有空白空格"
 
 #: sickrage/core/webserver/views/config/search.mako:888
 msgid "Add anime label to torrent"
-msgstr ""
+msgstr "將動漫標籤添加到洪流"
 
 #: sickrage/core/webserver/views/config/search.mako:906
 msgid "Downloaded files location"
@@ -4146,7 +4158,7 @@ msgstr "副標題目錄"
 msgid "The directory where SickRage should store your"
 msgstr "SickRage 應該在哪裡存儲的目錄你"
 
-#: sickrage/core/webserver/views.py:4737
+#: sickrage/core/webserver/views.py:4741
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:556
 #: sickrage/core/webserver/views/home/edit_show.mako:128
@@ -4540,7 +4552,7 @@ msgstr "永遠不會"
 msgid "Retry Download"
 msgstr "重試下載"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4943
 #: sickrage/core/webserver/views/home/edit_show.mako:26
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4654,7 +4666,7 @@ msgstr "使用 DVD 順序而不是空氣順序"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"力完全更新\"是必要的並且如果您擁有現有的插曲需要手動對它們進行排序。"
 
-#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4818
+#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4822
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
@@ -4986,7 +4998,7 @@ msgstr "錯誤： 重新開機已超時，也許事情阻止 SiCKRAGE 重新開�
 msgid "Daily Search"
 msgstr "每日搜索"
 
-#: sickrage/core/webserver/views.py:4926
+#: sickrage/core/webserver/views.py:4930
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "積壓"
@@ -5011,7 +5023,7 @@ msgstr "開機自檢過程"
 msgid "Subtitles Finder"
 msgstr "字幕 Finder"
 
-#: sickrage/core/webserver/views.py:4934
+#: sickrage/core/webserver/views.py:4938
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt 檢查器"
@@ -5044,7 +5056,7 @@ msgstr "不"
 msgid "True"
 msgstr "真正"
 
-#: sickrage/core/webserver/views.py:4929
+#: sickrage/core/webserver/views.py:4933
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "顯示佇列"
@@ -5408,7 +5420,7 @@ msgstr "一般"
 msgid "Backup and Restore"
 msgstr "備份和還原"
 
-#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4254
+#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4258
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Search Providers"
 msgstr "搜索提供程式"
@@ -5418,18 +5430,18 @@ msgstr "搜索提供程式"
 msgid "Subtitles Settings"
 msgstr "字幕設置"
 
-#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4861
 #: sickrage/core/webserver/views/layouts/main.mako:275
 msgid "Quality Settings"
 msgstr "品質設置"
 
 #: sickrage/core/webserver/views.py:2271 sickrage/core/webserver/views.py:2272
-#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4066
+#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4070
 #: sickrage/core/webserver/views/layouts/main.mako:280
 msgid "Post Processing"
 msgstr "後置處理"
 
-#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4410
+#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4414
 #: sickrage/core/webserver/views/layouts/main.mako:285
 msgid "Notifications"
 msgstr "通知"
@@ -6285,7 +6297,7 @@ msgstr "已經在分支："
 #: sickrage/core/webserver/views.py:1905 sickrage/core/webserver/views.py:1910
 #: sickrage/core/webserver/views.py:1913 sickrage/core/webserver/views.py:1956
 #: sickrage/core/webserver/views.py:1962 sickrage/core/webserver/views.py:1965
-#: sickrage/core/webserver/views.py:4936
+#: sickrage/core/webserver/views.py:4940
 msgid "Error"
 msgstr "錯誤"
 
@@ -6665,10 +6677,10 @@ msgstr "配置-一般"
 msgid "General Configuration"
 msgstr "常規配置"
 
-#: sickrage/core/webserver/views.py:3878 sickrage/core/webserver/views.py:4048
-#: sickrage/core/webserver/views.py:4172 sickrage/core/webserver/views.py:4392
-#: sickrage/core/webserver/views.py:4719 sickrage/core/webserver/views.py:4800
-#: sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:3878 sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:4176 sickrage/core/webserver/views.py:4396
+#: sickrage/core/webserver/views.py:4723 sickrage/core/webserver/views.py:4804
+#: sickrage/core/webserver/views.py:4843
 msgid "Error(s) Saving Configuration"
 msgstr "保存配置錯誤"
 
@@ -6692,168 +6704,168 @@ msgstr "備份失敗 ！"
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "你需要選擇一個資料夾以保存您的備份到第一 ！"
 
-#: sickrage/core/webserver/views.py:3927
+#: sickrage/core/webserver/views.py:3931
 msgid "Successfully extracted restore files to "
 msgstr "成功地提取的還原檔到"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3932
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage 來完成恢復。"
 
-#: sickrage/core/webserver/views.py:3930
+#: sickrage/core/webserver/views.py:3934
 msgid "Restore FAILED"
 msgstr "恢復失敗"
 
-#: sickrage/core/webserver/views.py:3932
+#: sickrage/core/webserver/views.py:3936
 msgid "You need to select a backup file to restore!"
 msgstr "您需要選擇要還原的備份檔案 ！"
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3952
 msgid "Config - Episode Search"
 msgstr "配置-插曲搜索"
 
-#: sickrage/core/webserver/views.py:3974 sickrage/core/webserver/views.py:3977
-#: sickrage/core/webserver/views.py:4092
+#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
+#: sickrage/core/webserver/views.py:4096
 msgid "Unable to create directory "
 msgstr "無法創建目錄"
 
-#: sickrage/core/webserver/views.py:3974 sickrage/core/webserver/views.py:3977
-#: sickrage/core/webserver/views.py:4092
+#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
+#: sickrage/core/webserver/views.py:4096
 msgid ", dir not changed."
 msgstr "dir 沒有改變。"
 
-#: sickrage/core/webserver/views.py:4050
+#: sickrage/core/webserver/views.py:4054
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 保存配置"
 
-#: sickrage/core/webserver/views.py:4065
+#: sickrage/core/webserver/views.py:4069
 msgid "Config - Post Processing"
 msgstr "配置-後置處理"
 
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:4106
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "拆包不支援，禁用解壓縮設置"
 
-#: sickrage/core/webserver/views.py:4133 sickrage/core/webserver/views.py:4144
+#: sickrage/core/webserver/views.py:4137 sickrage/core/webserver/views.py:4148
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "你試著保存不正確動漫命名配置，不保存設置命名"
 
-#: sickrage/core/webserver/views.py:4135 sickrage/core/webserver/views.py:4146
+#: sickrage/core/webserver/views.py:4139 sickrage/core/webserver/views.py:4150
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "你試著保存不正確命名配置，不保存設置命名"
 
-#: sickrage/core/webserver/views.py:4152
+#: sickrage/core/webserver/views.py:4156
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "你試著保存不正確空氣通過日期命名配置，不保存您的空氣通過日期設置"
 
-#: sickrage/core/webserver/views.py:4158
+#: sickrage/core/webserver/views.py:4162
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "你試著保存不正確體育命名配置，不保存設置體育"
 
-#: sickrage/core/webserver/views.py:4174
+#: sickrage/core/webserver/views.py:4178
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 保存配置"
 
-#: sickrage/core/webserver/views.py:4253
+#: sickrage/core/webserver/views.py:4257
 msgid "Config - Providers"
 msgstr "配置-供應商"
 
-#: sickrage/core/webserver/views.py:4293
+#: sickrage/core/webserver/views.py:4297
 msgid "\n"
 "No Provider Name specified"
 msgstr "沒有指定的提供程式名稱"
 
-#: sickrage/core/webserver/views.py:4295
+#: sickrage/core/webserver/views.py:4299
 msgid "\n"
 "No Provider Url specified"
 msgstr "沒有指定的提供程式 Url"
 
-#: sickrage/core/webserver/views.py:4297
+#: sickrage/core/webserver/views.py:4301
 msgid "\n"
 "No Provider Api key specified"
 msgstr "沒有指定的提供程式 Api 鍵"
 
-#: sickrage/core/webserver/views.py:4394
+#: sickrage/core/webserver/views.py:4398
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 保存配置"
 
-#: sickrage/core/webserver/views.py:4409
+#: sickrage/core/webserver/views.py:4413
 msgid "Config - Notifications"
 msgstr "配置-通知"
 
-#: sickrage/core/webserver/views.py:4721
+#: sickrage/core/webserver/views.py:4725
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 保存配置"
 
-#: sickrage/core/webserver/views.py:4736
+#: sickrage/core/webserver/views.py:4740
 msgid "Config - Subtitles"
 msgstr "配置-字幕"
 
-#: sickrage/core/webserver/views.py:4802
+#: sickrage/core/webserver/views.py:4806
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 保存配置"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4821
 msgid "Config - Anime"
 msgstr "配置-動漫"
 
-#: sickrage/core/webserver/views.py:4841
+#: sickrage/core/webserver/views.py:4845
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 保存配置"
 
-#: sickrage/core/webserver/views.py:4856
+#: sickrage/core/webserver/views.py:4860
 msgid "Config - Quality Settings"
 msgstr "配置-品質設置"
 
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:4872
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[品質設置]保存配置"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4885
 msgid "Clear Errors"
 msgstr "清除錯誤"
 
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:4888
 msgid "Clear Warnings"
 msgstr "明確的警告"
 
-#: sickrage/core/webserver/views.py:4925
+#: sickrage/core/webserver/views.py:4929
 msgid "Daily Searcher"
 msgstr "每日搜索"
 
-#: sickrage/core/webserver/views.py:4927
+#: sickrage/core/webserver/views.py:4931
 msgid "Show Updater"
 msgstr "顯示更新程式"
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4932
 msgid "Check Version"
 msgstr "檢查版本"
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4934
 msgid "Search Queue"
 msgstr "搜索佇列"
 
-#: sickrage/core/webserver/views.py:4931
+#: sickrage/core/webserver/views.py:4935
 msgid "Find Propers"
 msgstr "找到國際音標"
 
-#: sickrage/core/webserver/views.py:4932
+#: sickrage/core/webserver/views.py:4936
 msgid "Postprocessor"
 msgstr "後處理"
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4937
 msgid "Find Subtitles"
 msgstr "找字幕"
 
-#: sickrage/core/webserver/views.py:4935
+#: sickrage/core/webserver/views.py:4939
 msgid "Event"
 msgstr "事件"
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4941
 msgid "Tornado"
 msgstr "龍捲風"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4942
 msgid "Thread"
 msgstr "執行緒"
 

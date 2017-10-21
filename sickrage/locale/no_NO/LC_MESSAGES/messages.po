@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-18 11:16-0400\n"
-"PO-Revision-Date: 2017-10-18 11:17-0400\n"
+"POT-Creation-Date: 2017-10-21 13:54-0400\n"
+"PO-Revision-Date: 2017-10-21 13:55-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Norwegian\n"
 "MIME-Version: 1.0\n"
@@ -309,23 +309,23 @@ msgstr "Du angi ikke et Pushbullet api-nøkkel"
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Ikke glem å lagre innstillingene for nye pushbullet."
 
-#: dist/js/core.js:4518
+#: dist/js/core.js:4523
 msgid "Select backup folder to save to"
 msgstr "Velg sikkerhetskopimappen lagre"
 
-#: dist/js/core.js:4523
+#: dist/js/core.js:4528
 msgid "Select backup files to restore"
 msgstr "Velg sikkerhetskopifiler for gjenoppretting"
 
-#: dist/js/core.js:5069
+#: dist/js/core.js:5074
 msgid "No providers available to configure."
 msgstr "Ingen leverandører tilgjengelig for å konfigurere."
 
-#: dist/js/core.js:5280
+#: dist/js/core.js:5285
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Du har valgt for å slette show (s).  Er du sikker på at du vil fortsette? Alle filer fjernes fra systemet."
 
-#: dist/js/core.js:5350
+#: dist/js/core.js:5355
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
@@ -661,7 +661,7 @@ msgstr "Sikkerhetskopiering"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:5
 #: sickrage/core/webserver/views/config/backup_restore.mako:37
-#: sickrage/core/webserver/views/config/backup_restore.mako:48
+#: sickrage/core/webserver/views/config/backup_restore.mako:50
 msgid "Restore"
 msgstr "Gjenopprette"
 
@@ -677,9 +677,21 @@ msgstr "Velg mappen du vil lagre sikkerhetskopifilen til"
 msgid "Restore your main database file and config"
 msgstr "Gjenopprette hoveddatabasen fil og config"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:45
+#: sickrage/core/webserver/views/config/backup_restore.mako:47
 msgid "Select the backup file you wish to restore"
 msgstr "Merk sikkerhetskopifilen du vil gjenopprette"
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:62
+msgid "Restore database files"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:71
+msgid "Restore configuration file"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:80
+msgid "Restore cache files"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
@@ -3362,7 +3374,7 @@ msgstr "Minst én tilbyder er nødvendig, men to anbefales."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent leverandører kan slås i"
 
-#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3953
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Search Clients"
@@ -4037,7 +4049,7 @@ msgstr "Mellomrom tillates ikke"
 
 #: sickrage/core/webserver/views/config/search.mako:888
 msgid "Add anime label to torrent"
-msgstr ""
+msgstr "Legge til anime etikett i torrent"
 
 #: sickrage/core/webserver/views/config/search.mako:906
 msgid "Downloaded files location"
@@ -4146,7 +4158,7 @@ msgstr "Undertittel Directory"
 msgid "The directory where SickRage should store your"
 msgstr "Mappen der SickRage skal lagre din"
 
-#: sickrage/core/webserver/views.py:4737
+#: sickrage/core/webserver/views.py:4741
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:556
 #: sickrage/core/webserver/views/home/edit_show.mako:128
@@ -4540,7 +4552,7 @@ msgstr "Aldri"
 msgid "Retry Download"
 msgstr "Prøv nedlasting"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4943
 #: sickrage/core/webserver/views/home/edit_show.mako:26
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4654,7 +4666,7 @@ msgstr "Bruk DVD i stedet for luft rekkefølgen"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "En \"Force Full oppdatering\" er nødvendig, og hvis du har eksisterende episoder du vil sortere dem manuelt."
 
-#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4818
+#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4822
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
@@ -4986,7 +4998,7 @@ msgstr "Feil: Start tidsavbrutt, kanskje noe hindret SiCKRAGE fra å starte på 
 msgid "Daily Search"
 msgstr "Daglige søk"
 
-#: sickrage/core/webserver/views.py:4926
+#: sickrage/core/webserver/views.py:4930
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Etterslep"
@@ -5011,7 +5023,7 @@ msgstr "Post-prosessen"
 msgid "Subtitles Finder"
 msgstr "Undertekster Finder"
 
-#: sickrage/core/webserver/views.py:4934
+#: sickrage/core/webserver/views.py:4938
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt kontrolløren"
@@ -5044,7 +5056,7 @@ msgstr "nei"
 msgid "True"
 msgstr "Sant"
 
-#: sickrage/core/webserver/views.py:4929
+#: sickrage/core/webserver/views.py:4933
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "Vis kø"
@@ -5408,7 +5420,7 @@ msgstr "Generelt"
 msgid "Backup and Restore"
 msgstr "Sikkerhetskopiering og gjenoppretting"
 
-#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4254
+#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4258
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Search Providers"
 msgstr "Søkeleverandører"
@@ -5418,18 +5430,18 @@ msgstr "Søkeleverandører"
 msgid "Subtitles Settings"
 msgstr "Undertekster innstillinger"
 
-#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4861
 #: sickrage/core/webserver/views/layouts/main.mako:275
 msgid "Quality Settings"
 msgstr "Kvalitetsinnstillinger"
 
 #: sickrage/core/webserver/views.py:2271 sickrage/core/webserver/views.py:2272
-#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4066
+#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4070
 #: sickrage/core/webserver/views/layouts/main.mako:280
 msgid "Post Processing"
 msgstr "Etterbehandling"
 
-#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4410
+#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4414
 #: sickrage/core/webserver/views/layouts/main.mako:285
 msgid "Notifications"
 msgstr "Varsler"
@@ -6285,7 +6297,7 @@ msgstr "Allerede på gren "
 #: sickrage/core/webserver/views.py:1905 sickrage/core/webserver/views.py:1910
 #: sickrage/core/webserver/views.py:1913 sickrage/core/webserver/views.py:1956
 #: sickrage/core/webserver/views.py:1962 sickrage/core/webserver/views.py:1965
-#: sickrage/core/webserver/views.py:4936
+#: sickrage/core/webserver/views.py:4940
 msgid "Error"
 msgstr "Feil"
 
@@ -6665,10 +6677,10 @@ msgstr "Config - generelt"
 msgid "General Configuration"
 msgstr "Generell konfigurasjon"
 
-#: sickrage/core/webserver/views.py:3878 sickrage/core/webserver/views.py:4048
-#: sickrage/core/webserver/views.py:4172 sickrage/core/webserver/views.py:4392
-#: sickrage/core/webserver/views.py:4719 sickrage/core/webserver/views.py:4800
-#: sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:3878 sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:4176 sickrage/core/webserver/views.py:4396
+#: sickrage/core/webserver/views.py:4723 sickrage/core/webserver/views.py:4804
+#: sickrage/core/webserver/views.py:4843
 msgid "Error(s) Saving Configuration"
 msgstr "Feil lagre konfigurasjon"
 
@@ -6692,171 +6704,171 @@ msgstr "Sikkerhetskopieringen mislyktes!"
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Du må velge en mappe å lagre sikkerhetskopien først!"
 
-#: sickrage/core/webserver/views.py:3927
+#: sickrage/core/webserver/views.py:3931
 msgid "Successfully extracted restore files to "
 msgstr "Vellykket utdraget gjenopprette filer til "
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3932
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage å fullføre gjenopprettingspunktet."
 
-#: sickrage/core/webserver/views.py:3930
+#: sickrage/core/webserver/views.py:3934
 msgid "Restore FAILED"
 msgstr "Gjenoppretting mislyktes"
 
-#: sickrage/core/webserver/views.py:3932
+#: sickrage/core/webserver/views.py:3936
 msgid "You need to select a backup file to restore!"
 msgstr "Du må velge en sikkerhetskopifil gjenopprette!"
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3952
 msgid "Config - Episode Search"
 msgstr "Config - Episode søk"
 
-#: sickrage/core/webserver/views.py:3974 sickrage/core/webserver/views.py:3977
-#: sickrage/core/webserver/views.py:4092
+#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
+#: sickrage/core/webserver/views.py:4096
 msgid "Unable to create directory "
 msgstr "Kan ikke opprette katalogen "
 
-#: sickrage/core/webserver/views.py:3974 sickrage/core/webserver/views.py:3977
-#: sickrage/core/webserver/views.py:4092
+#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
+#: sickrage/core/webserver/views.py:4096
 msgid ", dir not changed."
 msgstr ", dir ikke endret."
 
-#: sickrage/core/webserver/views.py:4050
+#: sickrage/core/webserver/views.py:4054
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] konfigurasjon lagret"
 
-#: sickrage/core/webserver/views.py:4065
+#: sickrage/core/webserver/views.py:4069
 msgid "Config - Post Processing"
 msgstr "Config - etterbehandling"
 
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:4106
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Utpakking støttes ikke, deaktivere pakke innstillingen"
 
-#: sickrage/core/webserver/views.py:4133 sickrage/core/webserver/views.py:4144
+#: sickrage/core/webserver/views.py:4137 sickrage/core/webserver/views.py:4148
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Du prøvde å lagre en ugyldig anime navngiving config, lagrer ikke innstillingene for navngiving"
 
-#: sickrage/core/webserver/views.py:4135 sickrage/core/webserver/views.py:4146
+#: sickrage/core/webserver/views.py:4139 sickrage/core/webserver/views.py:4150
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Du forsøke å lagre en ugyldig navngiving config, lagrer ikke innstillingene for navngiving"
 
-#: sickrage/core/webserver/views.py:4152
+#: sickrage/core/webserver/views.py:4156
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Du forsøke å lagre en ugyldig luft-av-dato navngiving config, lagrer ikke innstillingene for luft-av-dato"
 
-#: sickrage/core/webserver/views.py:4158
+#: sickrage/core/webserver/views.py:4162
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Du prøvde å lagre en ugyldig sport navngiving config, lagrer ikke innstillingene for sport"
 
-#: sickrage/core/webserver/views.py:4174
+#: sickrage/core/webserver/views.py:4178
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] konfigurasjon lagret"
 
-#: sickrage/core/webserver/views.py:4253
+#: sickrage/core/webserver/views.py:4257
 msgid "Config - Providers"
 msgstr "Config - leverandører"
 
-#: sickrage/core/webserver/views.py:4293
+#: sickrage/core/webserver/views.py:4297
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Ingen angitt Leverandørnavn"
 
-#: sickrage/core/webserver/views.py:4295
+#: sickrage/core/webserver/views.py:4299
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Ingen leverandør URL-adresse angitt"
 
-#: sickrage/core/webserver/views.py:4297
+#: sickrage/core/webserver/views.py:4301
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Ingen leverandør Api nøkkel"
 
-#: sickrage/core/webserver/views.py:4394
+#: sickrage/core/webserver/views.py:4398
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] konfigurasjon lagret"
 
-#: sickrage/core/webserver/views.py:4409
+#: sickrage/core/webserver/views.py:4413
 msgid "Config - Notifications"
 msgstr "Config - varsler"
 
-#: sickrage/core/webserver/views.py:4721
+#: sickrage/core/webserver/views.py:4725
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] konfigurasjon lagret"
 
-#: sickrage/core/webserver/views.py:4736
+#: sickrage/core/webserver/views.py:4740
 msgid "Config - Subtitles"
 msgstr "Config - undertekster"
 
-#: sickrage/core/webserver/views.py:4802
+#: sickrage/core/webserver/views.py:4806
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] konfigurasjon lagret"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4821
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4841
+#: sickrage/core/webserver/views.py:4845
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] konfigurasjon lagret"
 
-#: sickrage/core/webserver/views.py:4856
+#: sickrage/core/webserver/views.py:4860
 msgid "Config - Quality Settings"
 msgstr "Config - innstillingene"
 
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:4872
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[KVALITETSINNSTILLINGER] Konfigurasjon lagret"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4885
 msgid "Clear Errors"
 msgstr "Klar feil"
 
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:4888
 msgid "Clear Warnings"
 msgstr "Fjerne advarsler"
 
-#: sickrage/core/webserver/views.py:4925
+#: sickrage/core/webserver/views.py:4929
 msgid "Daily Searcher"
 msgstr "Daglig søker"
 
-#: sickrage/core/webserver/views.py:4927
+#: sickrage/core/webserver/views.py:4931
 msgid "Show Updater"
 msgstr "Vis Updater"
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4932
 msgid "Check Version"
 msgstr "Sjekk versjon"
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4934
 msgid "Search Queue"
 msgstr "Søk etter kø"
 
-#: sickrage/core/webserver/views.py:4931
+#: sickrage/core/webserver/views.py:4935
 msgid "Find Propers"
 msgstr "Finne Propers"
 
-#: sickrage/core/webserver/views.py:4932
+#: sickrage/core/webserver/views.py:4936
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4937
 msgid "Find Subtitles"
 msgstr "Finne undertekster"
 
-#: sickrage/core/webserver/views.py:4935
+#: sickrage/core/webserver/views.py:4939
 msgid "Event"
 msgstr "Hendelse"
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4941
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4942
 msgid "Thread"
 msgstr "Tråd"
 

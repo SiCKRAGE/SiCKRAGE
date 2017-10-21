@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-18 11:16-0400\n"
-"PO-Revision-Date: 2017-10-18 11:17-0400\n"
+"POT-Creation-Date: 2017-10-21 13:54-0400\n"
+"PO-Revision-Date: 2017-10-21 13:55-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -309,23 +309,23 @@ msgstr "Δεν μπορείτε να δώσετε ένα κλειδί Pushbullet
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Μην ξεχάσετε να αποθηκεύσετε τις ρυθμίσεις σας με τη νέα pushbullet."
 
-#: dist/js/core.js:4518
+#: dist/js/core.js:4523
 msgid "Select backup folder to save to"
 msgstr "Επιλέξτε το φάκελο αντιγράφων ασφαλείας για να αποθηκεύσετε"
 
-#: dist/js/core.js:4523
+#: dist/js/core.js:4528
 msgid "Select backup files to restore"
 msgstr "Επιλέξτε τα αρχεία αντιγράφων ασφαλείας για επαναφορά"
 
-#: dist/js/core.js:5069
+#: dist/js/core.js:5074
 msgid "No providers available to configure."
 msgstr "Υπάρχουν διαθέσιμες για να ρυθμίσετε παροχείς."
 
-#: dist/js/core.js:5280
+#: dist/js/core.js:5285
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Έχετε επιλέξει να διαγράψετε παρουσίαζει(-ουν).  Είστε βέβαιοι ότι θέλετε να συνεχίσετε; Όλα τα αρχεία θα αφαιρεθεί από το σύστημά σας."
 
-#: dist/js/core.js:5350
+#: dist/js/core.js:5355
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
@@ -661,7 +661,7 @@ msgstr "Δημιουργία αντιγράφων ασφαλείας"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:5
 #: sickrage/core/webserver/views/config/backup_restore.mako:37
-#: sickrage/core/webserver/views/config/backup_restore.mako:48
+#: sickrage/core/webserver/views/config/backup_restore.mako:50
 msgid "Restore"
 msgstr "Επαναφορά"
 
@@ -677,9 +677,21 @@ msgstr "Επιλέξτε το φάκελο που επιθυμείτε να απ
 msgid "Restore your main database file and config"
 msgstr "Επαναφέρετε το αρχείο κύριας βάσης δεδομένων σας και config"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:45
+#: sickrage/core/webserver/views/config/backup_restore.mako:47
 msgid "Select the backup file you wish to restore"
 msgstr "Επιλέξτε το αρχείο αντιγράφου ασφαλείας που θέλετε να επαναφέρετε"
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:62
+msgid "Restore database files"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:71
+msgid "Restore configuration file"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:80
+msgid "Restore cache files"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
@@ -3362,7 +3374,7 @@ msgstr "Απαιτείται τουλάχιστον ένας πάροχος, α�
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent πάροχοι μπορούν να επιλεχτούν για"
 
-#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3953
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Search Clients"
@@ -4037,7 +4049,7 @@ msgstr "δεν επιτρέπονται κενά διαστήματα"
 
 #: sickrage/core/webserver/views/config/search.mako:888
 msgid "Add anime label to torrent"
-msgstr ""
+msgstr "Προσθέσετε ετικέτα anime σε torrent"
 
 #: sickrage/core/webserver/views/config/search.mako:906
 msgid "Downloaded files location"
@@ -4146,7 +4158,7 @@ msgstr "Υπότιτλος καταλόγου"
 msgid "The directory where SickRage should store your"
 msgstr "Ο κατάλογος όπου θα πρέπει να αποθηκεύσετε τα SickRage σας"
 
-#: sickrage/core/webserver/views.py:4737
+#: sickrage/core/webserver/views.py:4741
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:556
 #: sickrage/core/webserver/views/home/edit_show.mako:128
@@ -4540,7 +4552,7 @@ msgstr "Ποτέ δεν"
 msgid "Retry Download"
 msgstr "Επανάληψη λήψης"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4943
 #: sickrage/core/webserver/views/home/edit_show.mako:26
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4654,7 +4666,7 @@ msgstr "Χρησιμοποιήστε τη σειρά DVD αντί για τη σ
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Μια «πλήρη ενημέρωση δύναμη» είναι αναγκαία, και εάν έχετε υπάρχοντα επεισόδια θα πρέπει να τους ταξινομήσετε με μη αυτόματο τρόπο."
 
-#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4818
+#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4822
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
@@ -4986,7 +4998,7 @@ msgstr "Σφάλμα: Η επανεκκίνηση έχει λήξει, ίσως 
 msgid "Daily Search"
 msgstr "Καθημερινή Αναζήτηση"
 
-#: sickrage/core/webserver/views.py:4926
+#: sickrage/core/webserver/views.py:4930
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Λίστα εκκρεμοτήτων"
@@ -5011,7 +5023,7 @@ msgstr "Διαδικασία post"
 msgid "Subtitles Finder"
 msgstr "Εύρεση υπότιτλων"
 
-#: sickrage/core/webserver/views.py:4934
+#: sickrage/core/webserver/views.py:4938
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5044,7 +5056,7 @@ msgstr "Όχι"
 msgid "True"
 msgstr "Αλήθεια"
 
-#: sickrage/core/webserver/views.py:4929
+#: sickrage/core/webserver/views.py:4933
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "Προβολή ουράς"
@@ -5408,7 +5420,7 @@ msgstr "Γενικά"
 msgid "Backup and Restore"
 msgstr "Δημιουργία αντιγράφων ασφαλείας και επαναφοράς"
 
-#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4254
+#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4258
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Search Providers"
 msgstr "Υπηρεσίες παροχής αναζήτησης"
@@ -5418,18 +5430,18 @@ msgstr "Υπηρεσίες παροχής αναζήτησης"
 msgid "Subtitles Settings"
 msgstr "Ρυθμίσεις υποτίτλων"
 
-#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4861
 #: sickrage/core/webserver/views/layouts/main.mako:275
 msgid "Quality Settings"
 msgstr "Ρυθμίσεις για την ποιότητα"
 
 #: sickrage/core/webserver/views.py:2271 sickrage/core/webserver/views.py:2272
-#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4066
+#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4070
 #: sickrage/core/webserver/views/layouts/main.mako:280
 msgid "Post Processing"
 msgstr "Μετά την επεξεργασία"
 
-#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4410
+#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4414
 #: sickrage/core/webserver/views/layouts/main.mako:285
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
@@ -6285,7 +6297,7 @@ msgstr "Ήδη στο υποκατάστημα: "
 #: sickrage/core/webserver/views.py:1905 sickrage/core/webserver/views.py:1910
 #: sickrage/core/webserver/views.py:1913 sickrage/core/webserver/views.py:1956
 #: sickrage/core/webserver/views.py:1962 sickrage/core/webserver/views.py:1965
-#: sickrage/core/webserver/views.py:4936
+#: sickrage/core/webserver/views.py:4940
 msgid "Error"
 msgstr "Σφάλμα"
 
@@ -6665,10 +6677,10 @@ msgstr "Config - γενικά"
 msgid "General Configuration"
 msgstr "Γενική διαμόρφωση"
 
-#: sickrage/core/webserver/views.py:3878 sickrage/core/webserver/views.py:4048
-#: sickrage/core/webserver/views.py:4172 sickrage/core/webserver/views.py:4392
-#: sickrage/core/webserver/views.py:4719 sickrage/core/webserver/views.py:4800
-#: sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:3878 sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:4176 sickrage/core/webserver/views.py:4396
+#: sickrage/core/webserver/views.py:4723 sickrage/core/webserver/views.py:4804
+#: sickrage/core/webserver/views.py:4843
 msgid "Error(s) Saving Configuration"
 msgstr "Σφάλματα αποθήκευσης ρύθμισης παραμέτρων"
 
@@ -6692,171 +6704,171 @@ msgstr "Δημιουργία αντιγράφων ασφαλείας απέτυ�
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Πρέπει να επιλέξετε ένα φάκελο για να αποθηκεύσετε το αντίγραφο ασφαλείας πρώτα!"
 
-#: sickrage/core/webserver/views.py:3927
+#: sickrage/core/webserver/views.py:3931
 msgid "Successfully extracted restore files to "
 msgstr "Αρχεία που έχουν εξαχθεί με επιτυχία επαναφορά "
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3932
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage να ολοκληρωθεί η επαναφορά."
 
-#: sickrage/core/webserver/views.py:3930
+#: sickrage/core/webserver/views.py:3934
 msgid "Restore FAILED"
 msgstr "Η επαναφορά απέτυχε"
 
-#: sickrage/core/webserver/views.py:3932
+#: sickrage/core/webserver/views.py:3936
 msgid "You need to select a backup file to restore!"
 msgstr "Θα πρέπει να επιλέξετε ένα αρχείο αντιγράφου ασφαλείας για να επαναφέρετε!"
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3952
 msgid "Config - Episode Search"
 msgstr "Config - επεισόδιο αναζήτηση"
 
-#: sickrage/core/webserver/views.py:3974 sickrage/core/webserver/views.py:3977
-#: sickrage/core/webserver/views.py:4092
+#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
+#: sickrage/core/webserver/views.py:4096
 msgid "Unable to create directory "
 msgstr "Δεν είναι δυνατή η δημιουργία καταλόγου "
 
-#: sickrage/core/webserver/views.py:3974 sickrage/core/webserver/views.py:3977
-#: sickrage/core/webserver/views.py:4092
+#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
+#: sickrage/core/webserver/views.py:4096
 msgid ", dir not changed."
 msgstr ", dir δεν άλλαξε."
 
-#: sickrage/core/webserver/views.py:4050
+#: sickrage/core/webserver/views.py:4054
 msgid "[SEARCH] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [SEARCH]"
 
-#: sickrage/core/webserver/views.py:4065
+#: sickrage/core/webserver/views.py:4069
 msgid "Config - Post Processing"
 msgstr "Config - μετά την επεξεργασία"
 
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:4106
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Αποσυσκευασία δεν υποστηρίζεται, απενεργοποίηση απλήρωτος ρύθμιση"
 
-#: sickrage/core/webserver/views.py:4133 sickrage/core/webserver/views.py:4144
+#: sickrage/core/webserver/views.py:4137 sickrage/core/webserver/views.py:4148
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Προσπαθήσατε να εξοικονόμησης ένα έγκυρο anime ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας ονομασίας"
 
-#: sickrage/core/webserver/views.py:4135 sickrage/core/webserver/views.py:4146
+#: sickrage/core/webserver/views.py:4139 sickrage/core/webserver/views.py:4150
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Έχετε δοκιμάσει εξοικονόμηση μια έγκυρη ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας ονομασίας"
 
-#: sickrage/core/webserver/views.py:4152
+#: sickrage/core/webserver/views.py:4156
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Που προσπαθήσατε να αποθηκεύσετε μια έγκυρη ημερομηνία αέρα ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας αέρα-από-ημερομηνία"
 
-#: sickrage/core/webserver/views.py:4158
+#: sickrage/core/webserver/views.py:4162
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Προσπαθήσατε να εξοικονόμησης ένα έγκυρο σπορ ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας σπορ"
 
-#: sickrage/core/webserver/views.py:4174
+#: sickrage/core/webserver/views.py:4178
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [POST-PROCESSING]"
 
-#: sickrage/core/webserver/views.py:4253
+#: sickrage/core/webserver/views.py:4257
 msgid "Config - Providers"
 msgstr "Config - παρόχους"
 
-#: sickrage/core/webserver/views.py:4293
+#: sickrage/core/webserver/views.py:4297
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Δεν έχει καθοριστεί όνομα υπηρεσίας παροχής"
 
-#: sickrage/core/webserver/views.py:4295
+#: sickrage/core/webserver/views.py:4299
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Δεν καθορίζεται Url υπηρεσία παροχής"
 
-#: sickrage/core/webserver/views.py:4297
+#: sickrage/core/webserver/views.py:4301
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Κανένα κλειδί Api της υπηρεσίας παροχής που καθορίζεται"
 
-#: sickrage/core/webserver/views.py:4394
+#: sickrage/core/webserver/views.py:4398
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [PROVIDERS]"
 
-#: sickrage/core/webserver/views.py:4409
+#: sickrage/core/webserver/views.py:4413
 msgid "Config - Notifications"
 msgstr "Config - ειδοποιήσεις"
 
-#: sickrage/core/webserver/views.py:4721
+#: sickrage/core/webserver/views.py:4725
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [NOTIFICATIONS]"
 
-#: sickrage/core/webserver/views.py:4736
+#: sickrage/core/webserver/views.py:4740
 msgid "Config - Subtitles"
 msgstr "Config - υπότιτλοι"
 
-#: sickrage/core/webserver/views.py:4802
+#: sickrage/core/webserver/views.py:4806
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [SUBTITLES]"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4821
 msgid "Config - Anime"
 msgstr "Config - κινούμενο σχέδιο"
 
-#: sickrage/core/webserver/views.py:4841
+#: sickrage/core/webserver/views.py:4845
 msgid "[ANIME] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [ANIME]"
 
-#: sickrage/core/webserver/views.py:4856
+#: sickrage/core/webserver/views.py:4860
 msgid "Config - Quality Settings"
 msgstr "Config - ρυθμίσεις για την ποιότητα"
 
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:4872
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[ΡΥΘΜΊΣΕΙΣ ΠΟΙΌΤΗΤΑΣ] Ρύθμιση παραμέτρων που Αποθηκεύτηκε"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4885
 msgid "Clear Errors"
 msgstr "Καθαρισμός σφαλμάτων"
 
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:4888
 msgid "Clear Warnings"
 msgstr "Σαφείς προειδοποιήσεις"
 
-#: sickrage/core/webserver/views.py:4925
+#: sickrage/core/webserver/views.py:4929
 msgid "Daily Searcher"
 msgstr "Καθημερινή Searcher"
 
-#: sickrage/core/webserver/views.py:4927
+#: sickrage/core/webserver/views.py:4931
 msgid "Show Updater"
 msgstr "Εμφάνιση Updater"
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4932
 msgid "Check Version"
 msgstr "Έλεγχος έκδοσης"
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4934
 msgid "Search Queue"
 msgstr "Αναζήτηση ουρά"
 
-#: sickrage/core/webserver/views.py:4931
+#: sickrage/core/webserver/views.py:4935
 msgid "Find Propers"
 msgstr "Βρείτε Propers"
 
-#: sickrage/core/webserver/views.py:4932
+#: sickrage/core/webserver/views.py:4936
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4937
 msgid "Find Subtitles"
 msgstr "Βρείτε υπότιτλους"
 
-#: sickrage/core/webserver/views.py:4935
+#: sickrage/core/webserver/views.py:4939
 msgid "Event"
 msgstr "Εκδήλωση"
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4941
 msgid "Tornado"
 msgstr "Ανεμοστρόβιλος"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4942
 msgid "Thread"
 msgstr "Το νήμα"
 
