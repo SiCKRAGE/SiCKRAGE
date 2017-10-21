@@ -1095,9 +1095,9 @@ def backupConfigZip(fileList, archive, arcname=None):
         return False
 
 
-def restoreConfigZip(archive, targetDir):
+def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=True, restore_cache=True):
     """
-    Restores a Config ZIP file back in place
+    Restores a backup ZIP file back in place
 
     :param archive: ZIP filename
     :param targetDir: Directory to restore to
@@ -1117,6 +1117,15 @@ def restoreConfigZip(archive, targetDir):
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
+                if not restore_database and member.split('/')[0] in ['database', 'db_backup']:
+                    continue
+
+                if not restore_config and member.split('/')[0] == 'config.ini':
+                    continue
+
+                if not restore_cache and member.split('/')[0] == 'cache':
+                    continue
+
                 zip_file.extract(member, targetDir)
 
         return True

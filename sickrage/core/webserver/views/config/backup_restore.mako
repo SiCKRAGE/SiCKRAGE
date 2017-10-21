@@ -40,12 +40,45 @@
         <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
             <div class="row field-pair">
                 <div class="col-md-12 component-desc">
-                    <div class="input-group input350">
-                        <input name="backupFile" id="backupFile"
-                               placeholder="${_('Select the backup file you wish to restore')}"
-                               class="form-control" autocapitalize="off"/>
-                        <div class="input-group-addon">
-                            <a href="#" class="fa fa-upload" title="${_('Restore')}" id="Restore"></a>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="input-group input350">
+                                <input name="backupFile" id="backupFile"
+                                       placeholder="${_('Select the backup file you wish to restore')}"
+                                       class="form-control" autocapitalize="off"/>
+                                <div class="input-group-addon">
+                                    <a href="#" class="fa fa-upload" title="${_('Restore')}" id="Restore"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="checkbox" name="restore_database" id="restore_database" checked/>
+                            <label for="restore_database">
+                                ${_('Restore database files')}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="checkbox" name="restore_config" id="restore_config" checked/>
+                            <label for="restore_config">
+                                ${_('Restore configuration file')}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="checkbox" name="restore_cache" id="restore_cache" checked/>
+                            <label for="restore_cache">
+                                ${_('Restore cache files')}
+                            </label>
                         </div>
                     </div>
                 </div>
