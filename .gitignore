@@ -1,4 +1,4 @@
-# SR GitLab Files #
+# SR GitLab Files    #
 ######################
 /.gitlab/
 
@@ -24,11 +24,11 @@ autoProcessTV.cfg
 /tests/cache/
 /tests/show name final/
 
-#  Compiled source   #
+#  Compiled Source   #
 ######################
-*.py[co]
+*.py[cod]
 
-#  IDE specific      #
+#  IDE Specific      #
 ######################
 *.bak
 *.tmp
@@ -48,7 +48,7 @@ sickrage.egg-info
 /.settings/*
 /build/
 
-# OS generated files #
+# OS Generated Files #
 ######################
 desktop.ini
 ehthumbs.db
@@ -59,15 +59,15 @@ Thumbs.db
 /.directory
 /.DS_Store
 
-# GruntJS Files #
+# GruntJS Files      #
 ######################
 /.sass-cache
 
-# NodeJS Files #
+# NodeJS Files       #
 ######################
 /node_modules/
 
-# Bower #
+# Bower Files        #
 ######################
 _bower.js
 /bower_components/
