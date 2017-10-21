@@ -1,4 +1,4 @@
-##Before submitting your issue:
+## Before submitting your issue:
 Enable debug logging from settings in SiCKRAGE then try and reproduce the error
 
 **Summary**  
