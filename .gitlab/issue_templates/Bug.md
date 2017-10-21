@@ -5,6 +5,14 @@ Enable debug logging from settings in SiCKRAGE then try and reproduce the error
 (Summarize the bug encountered concisely)
 
 
+**Branch/Commit**  
+(Branch and commit currently being used)
+
+
+**OS**  
+(Operating system SiCKRAGE is running on)
+
+
 **Steps to reproduce**  
 (How one can reproduce the issue - this is very important)
 
