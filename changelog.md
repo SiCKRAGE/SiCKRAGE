@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3961f78 - 2017-10-20: Added ability to select what you want to restore from backups 
+- * 9738545 - 2017-10-21: Fixed UnicodeDecodeError for retrieving messages.json data 
+- * f5110a0 - 2017-10-20: Added ability to select what you want to restore from backups 
 - * c470b37 - 2017-10-19: Release v9.1.46 
 - * b896e96 - 2017-10-19: Fixed issue #94 - manual post processing error 
 - * b0b9201 - 2017-10-18: Release v9.1.45 

@@ -378,7 +378,7 @@ class WebRoot(WebHandler):
         locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.srCore.srConfig.GUI_LANG, 'LC_MESSAGES/messages.json')
         if os.path.isfile(locale_file):
             self.set_header('Content-Type', 'application/json')
-            with io.open(locale_file, 'r') as f:
+            with io.open(locale_file, 'r', encoding='utf8') as f:
                 return f.read()
 
     def apibuilder(self):
