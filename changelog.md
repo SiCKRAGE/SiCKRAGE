@@ -1,6 +1,7 @@
 # Changelog
 
-- * 388d3e9 - 2017-10-21: Renamed template and fixed small markdown typo 
+- * 0016758 - 2017-10-21: Added .gitlab folder to gitignore file 
+- * 801c6a3 - 2017-10-21: Renamed template and fixed small markdown typo 
 - * 2e87318 - 2017-10-21: Added issue templating for submitting bugs 
 - * e799d93 - 2017-10-21: Release v9.1.47 
 - * 07fe860 - 2017-10-21: Fixed UnicodeDecodeError for retrieving messages.json data 

@@ -1,3 +1,7 @@
+# SR GitLab Files #
+######################
+/.gitlab/
+
 # SR Travis-CI Files #
 ######################
 /.travis.yml
