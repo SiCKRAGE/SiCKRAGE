@@ -1,6 +1,7 @@
 # Changelog
 
-- * bc9ea6d - 2017-10-21: Release v9.1.47 
+- * 176b116 - 2017-10-21: Added issue templating for submitting bugs 
+- * e799d93 - 2017-10-21: Release v9.1.47 
 - * 07fe860 - 2017-10-21: Fixed UnicodeDecodeError for retrieving messages.json data 
 - * f5110a0 - 2017-10-20: Added ability to select what you want to restore from backups 
 - * c470b37 - 2017-10-19: Release v9.1.46 
