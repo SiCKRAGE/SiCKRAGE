@@ -25,6 +25,8 @@ import re
 from logging import FileHandler, CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
+from unidecode import unidecode
+
 import sickrage
 from sickrage.core import makeDir
 
@@ -131,6 +133,7 @@ class srLogger(logging.getLoggerClass()):
 
                 # needed because Newznab apikey isn't stored as key=value in a section.
                 record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
+                record.msg = unidecode(record.msg)
             except:
                 pass
 

@@ -28,8 +28,7 @@ from dateutil import parser
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, get_all_episodes_from_absolute_number, \
-    remove_extension
+from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, remove_extension
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
@@ -323,7 +322,7 @@ class NameParser(object):
                                                            bestResult.show.indexer, epAbsNo,
                                                            True, scene_season)
 
-                    (s, e) = get_all_episodes_from_absolute_number(bestResult.show, [a])
+                    (s, e) = bestResult.show.get_all_episodes_from_absolute_number([a])
 
                     new_absolute_numbers.append(a)
                     new_episode_numbers.extend(e)

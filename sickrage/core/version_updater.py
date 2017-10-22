@@ -27,7 +27,6 @@ import stat
 import subprocess
 import tarfile
 import threading
-import time
 import traceback
 
 import sickrage
@@ -85,7 +84,7 @@ class srVersionUpdater(object):
                 if not os.path.isdir(backupDir):
                     os.mkdir(backupDir)
 
-                if self._keeplatestbackup(backupDir) and backupSR(backupDir):
+                if backupSR(backupDir, keep_latest=True):
                     sickrage.srCore.srLogger.info("Config backup successful, updating...")
                     sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup successful, updating...'))
                     return True
@@ -97,29 +96,6 @@ class srVersionUpdater(object):
                 sickrage.srCore.srLogger.error('Update: Config backup failed. Error: %s' % e)
                 sickrage.srCore.srNotifications.message(_('Backup'), _('Config backup failed, aborting update'))
                 return False
-
-    @staticmethod
-    def _keeplatestbackup(backupDir=None):
-        if not backupDir:
-            return False
-
-        import glob
-        files = glob.glob(os.path.join(backupDir, '*.zip'))
-        if not files:
-            return True
-
-        now = time.time()
-        newest = files[0], now - os.path.getctime(files[0])
-        for f in files[1:]:
-            age = now - os.path.getctime(f)
-            if age < newest[1]:
-                newest = f, age
-        files.remove(newest[0])
-
-        for f in files:
-            os.remove(f)
-
-        return True
 
     @staticmethod
     def safe_to_update():

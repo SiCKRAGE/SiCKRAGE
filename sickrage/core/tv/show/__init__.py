@@ -40,8 +40,7 @@ from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, 
     UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
 from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from sickrage.core.helpers import list_media_files, isMediaFile, update_anime_support, findCertainShow, try_int, \
-    safe_getattr
+from sickrage.core.helpers import list_media_files, isMediaFile, findCertainShow, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
@@ -1337,8 +1336,6 @@ class TVShow(object):
         except RecordNotFound:
             sickrage.srCore.mainDB.db.insert(tv_show)
 
-        update_anime_support()
-
         if self.imdbid and self.imdb_info:
             try:
                 dbData = sickrage.srCore.mainDB.db.get('imdb_info', self.indexerid, with_doc=True)['doc']
@@ -1558,6 +1555,19 @@ class TVShow(object):
                         })
 
         return mapped
+
+    def get_all_episodes_from_absolute_number(self, absolute_numbers):
+        episodes = []
+        season = None
+
+        if len(absolute_numbers):
+            for absolute_number in absolute_numbers:
+                ep = self.getEpisode(absolute_number=absolute_number)
+                if ep:
+                    episodes.append(ep.episode)
+                    season = ep.season
+
+        return season, episodes
 
     def __getstate__(self):
         d = dict(self.__dict__)

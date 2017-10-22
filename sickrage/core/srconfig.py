@@ -36,7 +36,8 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, auto_type, get_lan_ip, extractZip, \
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, auto_type, get_lan_ip, \
+    extract_zipfile, \
     try_int, checkbox_to_value
 
 
@@ -301,7 +302,6 @@ class srConfig(object):
         self.NMJ_HOST = None
         self.NMJ_DATABASE = None
         self.NMJ_MOUNT = None
-        self.ANIMESUPPORT = False
         self.USE_ANIDB = False
         self.ANIDB_USERNAME = None
         self.ANIDB_PASSWORD = None
@@ -998,7 +998,7 @@ class srConfig(object):
 
                     if (sickrage.srCore.srWebSession.download(
                             "https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip,
-                    ) and extractZip(archive=unrar_zip, targetDir=unrar_dir)):
+                    ) and extract_zipfile(archive=unrar_zip, targetDir=unrar_dir)):
                         try:
                             os.remove(unrar_zip)
                         except OSError as e:
