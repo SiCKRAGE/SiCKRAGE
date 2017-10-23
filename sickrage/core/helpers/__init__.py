@@ -18,14 +18,10 @@
 
 from __future__ import unicode_literals
 
-import ast
 import base64
 import ctypes
 import datetime
-import hashlib
-import httplib
 import io
-import operator
 import os
 import platform
 import random
@@ -38,7 +34,6 @@ import sys
 import tempfile
 import time
 import traceback
-import urllib2
 import urlparse
 import uuid
 import webbrowser
@@ -61,23 +56,6 @@ mediaExtensions = [
     'mov', 'rmvb', 'vob', 'dvr-ms', 'wtv',
     'ogv', '3gp', 'webm', 'tp'
 ]
-
-
-def get_remote_md5_sum(url, max_file_size=100 * 1024 * 1024):
-    remote = urllib2.urlopen(url)
-    hash = hashlib.md5()
-
-    total_read = 0
-    while True:
-        data = remote.read(4096)
-        total_read += 4096
-
-        if not data or total_read > max_file_size:
-            break
-
-        hash.update(data)
-
-    return hash.hexdigest()
 
 
 def safe_getattr(object, name, default=None):
@@ -359,22 +337,6 @@ def isRarFile(filename):
         pass
 
     return ret
-
-
-def isBeingWritten(filepath):
-    """
-    Check if file has been written in last 60 seconds
-
-    :param filepath: Filename to check
-    :return: True if file has been written recently, False if none
-    """
-
-    # Return True if file was modified within 60 seconds. it might still be being written to.
-    ctime = max(os.path.getctime(filepath), os.path.getmtime(filepath))
-    if ctime > time.time() - 60:
-        return True
-
-    return False
 
 
 def sanitizeFileName(name):
@@ -771,42 +733,6 @@ def fixSetGroupID(childPath):
                     childPath, parentGID))
 
 
-def is_anime_in_show_list():
-    """
-    Check if any shows in list contain anime
-
-    :return: True if global showlist contains Anime, False if not
-    """
-
-    for show in sickrage.srCore.SHOWLIST:
-        if show.is_anime:
-            return True
-    return False
-
-
-def update_anime_support():
-    """Check if we need to support anime, and if we do, enable the feature"""
-
-    sickrage.srCore.srConfig.ANIMESUPPORT = is_anime_in_show_list()
-
-
-def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=None):
-    episodes = []
-    season = None
-
-    if len(absolute_numbers):
-        if not show and indexer_id:
-            show = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
-
-        for absolute_number in absolute_numbers if show else []:
-            ep = show.getEpisode(None, None, absolute_number=absolute_number)
-            if ep:
-                episodes.append(ep.episode)
-                season = ep.season
-
-    return season, episodes
-
-
 def sanitizeSceneName(name, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
@@ -834,39 +760,6 @@ def sanitizeSceneName(name, anime=False):
         name = name[:-1]
 
     return name
-
-
-_binOps = {
-    ast.Add: operator.add,
-    ast.Sub: operator.sub,
-    ast.Mult: operator.mul,
-    ast.Div: operator.div,
-    ast.Mod: operator.mod
-}
-
-
-def arithmeticEval(s):
-    """
-    A safe eval supporting basic arithmetic operations.
-
-    :param s: expression to evaluate
-    :return: value
-    """
-    node = ast.parse(s, mode='eval')
-
-    def _eval(node):
-        if isinstance(node, ast.Expression):
-            return _eval(node.body)
-        elif isinstance(node, ast.Str):
-            return node.s
-        elif isinstance(node, ast.Num):
-            return node.n
-        elif isinstance(node, ast.BinOp):
-            return _binOps[type(node.op)](_eval(node.left), _eval(node.right))
-        else:
-            raise Exception('Unsupported type {}'.format(node))
-
-    return _eval(node.body)
 
 
 def create_https_certificates(ssl_cert, ssl_key):
@@ -930,45 +823,11 @@ def create_https_certificates(ssl_cert, ssl_key):
     return True
 
 
-def md5_for_file(filename):
-    """
-    Generate an md5 hash for a file
-    :param filename: File to generate md5 hash for
-    :return MD5 hexdigest on success, or None on failure
-    """
-
-    try:
-        md5 = hashlib.md5()
-        for byte in readFileBuffered(filename):
-            md5.update(byte)
-        return md5.hexdigest()
-    except Exception:
-        return None
-
-
 def get_lan_ip():
     """Returns IP of system"""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
-
-
-def check_url(url):
-    """
-    Check if a URL exists without downloading the whole file.
-    We only check the URL header.
-    """
-    # see also http://stackoverflow.com/questions/2924422
-    # http://stackoverflow.com/questions/1140661
-    good_codes = [httplib.OK, httplib.FOUND, httplib.MOVED_PERMANENTLY]
-
-    host, path = urlparse.urlparse(url)[1:3]  # elems [1] and [2]
-    try:
-        conn = httplib.HTTPConnection(host)
-        conn.request('HEAD', path)
-        return conn.getresponse().status in good_codes
-    except StandardError:
-        return None
 
 
 def anon_url(*url):
@@ -1025,26 +884,7 @@ def real_path(path):
     return os.path.normpath(os.path.normcase(os.path.realpath(path)))
 
 
-def makeZip(fileList, archive):
-    """
-    Create a ZIP of files
-
-    :param fileList: A list of file names - full path each name
-    :param archive: File name for the archive with a full path
-    """
-
-    try:
-        a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
-        for f in fileList:
-            a.write(f)
-        a.close()
-        return True
-    except Exception as e:
-        sickrage.srCore.srLogger.error("Zip creation error: %r " % repr(e))
-        return False
-
-
-def extractZip(archive, targetDir):
+def extract_zipfile(archive, targetDir):
     """
     Unzip a file to a directory
 
@@ -1075,7 +915,7 @@ def extractZip(archive, targetDir):
         return False
 
 
-def backupConfigZip(fileList, archive, arcname=None):
+def create_zipfile(fileList, archive, arcname=None):
     """
     Store the config file as a ZIP
 
@@ -1134,7 +974,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
         shutil.rmtree(targetDir)
 
 
-def backupSR(backupDir):
+def backupSR(backupDir, keep_latest=False):
     source = []
 
     filesList = ['sickrage.db',
@@ -1142,22 +982,42 @@ def backupSR(backupDir):
                  'cache.db',
                  os.path.basename(sickrage.CONFIG_FILE)]
 
+    def _keep_latest_backup():
+        import glob
+
+        _files = glob.glob(os.path.join(backupDir, '*.zip'))
+
+        now = time.time()
+        newest = _files[0], now - os.path.getctime(_files[0])
+        for f in _files[1:]:
+            age = now - os.path.getctime(f)
+            if age < newest[1]:
+                newest = f, age
+        _files.remove(newest[0])
+
+        for f in _files:
+            os.remove(f)
+
+    if keep_latest:
+        _keep_latest_backup()
+
+    # individual files
     for f in filesList:
         fp = os.path.join(sickrage.DATA_DIR, f)
         if os.path.exists(fp):
             source += [fp]
 
-    # database
-    for (path, dirs, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'database'), topdown=True):
+    # database folder
+    for (path, __, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'database'), topdown=True):
         for filename in files:
             source += [os.path.join(path, filename)]
 
-    # database backups
-    for (path, dirs, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'db_backup'), topdown=True):
+    # db_backup folder
+    for (path, __, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'db_backup'), topdown=True):
         for filename in files:
             source += [os.path.join(path, filename)]
 
-    # cache
+    # cache folder
     if sickrage.CACHE_DIR:
         for (path, dirs, files) in os.walk(sickrage.CACHE_DIR, topdown=True):
             for dirname in dirs:
@@ -1167,8 +1027,10 @@ def backupSR(backupDir):
             for filename in files:
                 source += [os.path.join(path, filename)]
 
+    # ZIP filename
     target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
-    return backupConfigZip(source, target, sickrage.DATA_DIR)
+
+    return create_zipfile(source, target, sickrage.DATA_DIR)
 
 
 def restoreSR(srcDir, dstDir):
@@ -1571,16 +1433,6 @@ def backupVersionedFile(old_file, version):
     return True
 
 
-def flatten_dict(d, delimiter='.'):
-    def expand(key, value):
-        if isinstance(value, dict):
-            return [(delimiter.join([key, k]), v) for k, v in flatten_dict(value, delimiter).items()]
-        else:
-            return [(key, value)]
-
-    return dict([item for k, v in d.items() for item in expand(k, v)])
-
-
 @contextmanager
 def bs4_parser(markup, features="html5lib", *args, **kwargs):
     try:
@@ -1603,8 +1455,7 @@ def getFileSize(file):
 
 def get_temp_dir():
     """
-    Returns the [system temp dir]/thetvdb-u501 (or
-    thetvdb-myuser)
+    Returns the [system temp dir]/sickrage-u501 or sickrage-myuser
     """
 
     import getpass

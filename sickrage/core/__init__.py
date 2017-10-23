@@ -501,7 +501,7 @@ class Core(object):
 
         for dbData in [x['doc'] for x in self.mainDB.db.all('tv_shows', with_doc=True)]:
             try:
-                self.srLogger.debug("Loading data for show: [%s]", dbData['show_name'])
+                self.srLogger.debug("Loading data for show: [{}]".format(dbData['show_name']))
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
                 show.nextEpisode()
                 self.NAMECACHE.build(show)

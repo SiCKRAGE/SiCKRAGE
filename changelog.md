@@ -1,6 +1,9 @@
 # Changelog
 
-- * 3923941 - 2017-10-21: Updated .gitignore file 
+- * b83ff0b - 2017-10-23: Release v9.1.48 
+- * 8c12317 - 2017-10-22: Refactored logo 
+- * 32e2fd7 - 2017-10-22: Refactored code 
+- * ec907f7 - 2017-10-21: Updated .gitignore file 
 - * 08384bf - 2017-10-21: Update Bug.md 
 - * b29dc99 - 2017-10-21: Update Bug.md 
 - * 37035a9 - 2017-10-21: Added .gitlab folder to gitignore file 
