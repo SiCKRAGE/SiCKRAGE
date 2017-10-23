@@ -128,7 +128,7 @@ class srWebServer(threading.Thread):
 
                 # favicon
                 (r'%s/(favicon\.ico)' % sickrage.srCore.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images/ico/favicon.ico')}),
+                 {"path": os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images/favicon.ico')}),
 
                 # images
                 (r'%s/images/(.*)' % sickrage.srCore.srConfig.WEB_ROOT, StaticImageHandler,

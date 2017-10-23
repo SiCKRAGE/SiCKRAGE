@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4196eb8 - 2017-10-22: Refactored code 
+- * e908278 - 2017-10-22: Refactored logo 
+- * 32e2fd7 - 2017-10-22: Refactored code 
 - * ec907f7 - 2017-10-21: Updated .gitignore file 
 - * 08384bf - 2017-10-21: Update Bug.md 
 - * b29dc99 - 2017-10-21: Update Bug.md 
