@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-21 13:54-0400\n"
-"PO-Revision-Date: 2017-10-21 13:55-0400\n"
+"POT-Creation-Date: 2017-10-23 01:58-0400\n"
+"PO-Revision-Date: 2017-10-23 01:59-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: ko_KR\n"
 
-#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:371
+#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:358
 msgid "Shutdown"
 msgstr "종료"
 
@@ -25,7 +25,7 @@ msgstr "종료"
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "당신은 SiCKRAGE 종료 하 시겠습니까?"
 
-#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:366
+#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:353
 msgid "Restart"
 msgstr "다시 시작"
 
@@ -499,7 +499,7 @@ msgstr "품질"
 
 #: sickrage/core/common.py:185 sickrage/core/common.py:597
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:463
+#: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "납치"
 
@@ -651,8 +651,8 @@ msgstr "분할 보기 리스트"
 msgid "Separate anime and normal shows in groups"
 msgstr "별도 애니메이션 및 그룹에 정상 쇼"
 
-#: sickrage/core/version_updater.py:82 sickrage/core/version_updater.py:90
-#: sickrage/core/version_updater.py:94 sickrage/core/version_updater.py:98
+#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -741,25 +741,25 @@ msgid "when launching SickRage interface"
 msgstr "SickRage 인터페이스를 시작할 때"
 
 #: sickrage/core/webserver/views/config/general.mako:74
-#: sickrage/core/webserver/views/layouts/main.mako:116
-#: sickrage/core/webserver/views/layouts/main.mako:455
+#: sickrage/core/webserver/views/layouts/main.mako:103
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Shows"
 msgstr "쇼"
 
 #: sickrage/core/webserver/views.py:507 sickrage/core/webserver/views.py:508
 #: sickrage/core/webserver/views/config/general.mako:77
-#: sickrage/core/webserver/views/layouts/main.mako:229
+#: sickrage/core/webserver/views/layouts/main.mako:216
 msgid "Schedule"
 msgstr "일정"
 
 #: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:3653
 #: sickrage/core/webserver/views/config/general.mako:80
-#: sickrage/core/webserver/views/layouts/main.mako:233
+#: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "History"
 msgstr "역사"
 
 #: sickrage/core/webserver/views/config/general.mako:83
-#: sickrage/core/webserver/views/layouts/main.mako:322
+#: sickrage/core/webserver/views/layouts/main.mako:309
 msgid "IRC"
 msgstr "IRC"
 
@@ -3376,7 +3376,7 @@ msgstr "NZB/토런트 공급자에 토글 수 있습니다."
 
 #: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3953
 #: sickrage/core/webserver/views/config/providers.mako:71
-#: sickrage/core/webserver/views/layouts/main.mako:260
+#: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Search Clients"
 msgstr "검색 클라이언트"
 
@@ -4670,7 +4670,7 @@ msgstr "\"힘 전체 업데이트\" 필요한 이며 수동으로 정렬할 필�
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
-#: sickrage/core/webserver/views/layouts/main.mako:290
+#: sickrage/core/webserver/views/layouts/main.mako:277
 #: sickrage/core/webserver/views/manage/mass_edit.mako:195
 #: sickrage/core/webserver/views/manage/mass_update.mako:53
 msgid "Anime"
@@ -4886,7 +4886,7 @@ msgstr "다운로드"
 
 #: sickrage/core/webserver/views/home/index.mako:273
 #: sickrage/core/webserver/views/home/status.mako:38
-#: sickrage/core/webserver/views/layouts/main.mako:456
+#: sickrage/core/webserver/views/layouts/main.mako:443
 msgid "Active"
 msgstr "활성"
 
@@ -5337,178 +5337,178 @@ msgstr "모든 비 절대 폴더 위치는 상대적으로"
 msgid "SiCKRAGE"
 msgstr "SiCKRAGE"
 
-#: sickrage/core/webserver/views/layouts/main.mako:100
+#: sickrage/core/webserver/views/layouts/main.mako:87
 msgid "Toggle navigation"
 msgstr "전환 탐색"
 
-#: sickrage/core/webserver/views/layouts/main.mako:121
+#: sickrage/core/webserver/views/layouts/main.mako:108
 msgid "Show List"
 msgstr "표시 목록"
 
 #: sickrage/core/webserver/views.py:2305 sickrage/core/webserver/views.py:2306
-#: sickrage/core/webserver/views/layouts/main.mako:126
+#: sickrage/core/webserver/views/layouts/main.mako:113
 msgid "Add Shows"
 msgstr "쇼에 추가"
 
-#: sickrage/core/webserver/views/layouts/main.mako:131
+#: sickrage/core/webserver/views/layouts/main.mako:118
 msgid "Manual Post-Processing"
 msgstr "수동 후 처리"
 
 #: sickrage/core/webserver/views.py:3479 sickrage/core/webserver/views.py:3480
-#: sickrage/core/webserver/views/layouts/main.mako:157
+#: sickrage/core/webserver/views/layouts/main.mako:144
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "대량 업데이트"
 
 #: sickrage/core/webserver/views.py:3087 sickrage/core/webserver/views.py:3088
-#: sickrage/core/webserver/views/layouts/main.mako:162
+#: sickrage/core/webserver/views/layouts/main.mako:149
 msgid "Backlog Overview"
 msgstr "백로그 개요"
 
 #: sickrage/core/webserver/views.py:3532 sickrage/core/webserver/views.py:3533
-#: sickrage/core/webserver/views/layouts/main.mako:167
+#: sickrage/core/webserver/views/layouts/main.mako:154
 msgid "Manage Queues"
 msgstr "큐 관리"
 
-#: sickrage/core/webserver/views/layouts/main.mako:172
+#: sickrage/core/webserver/views/layouts/main.mako:159
 msgid "Episode Status Management"
 msgstr "에피소드 상태 관리"
 
-#: sickrage/core/webserver/views/layouts/main.mako:178
+#: sickrage/core/webserver/views/layouts/main.mako:165
 msgid "Sync Trakt"
 msgstr "동기화 Trakt"
 
-#: sickrage/core/webserver/views/layouts/main.mako:185
+#: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Update PLEX"
 msgstr "업데이트 플렉스"
 
-#: sickrage/core/webserver/views/layouts/main.mako:192
+#: sickrage/core/webserver/views/layouts/main.mako:179
 msgid "Update KODI"
 msgstr "코디 업데이트"
 
-#: sickrage/core/webserver/views/layouts/main.mako:199
+#: sickrage/core/webserver/views/layouts/main.mako:186
 msgid "Update Emby"
 msgstr "업데이트 Emby"
 
-#: sickrage/core/webserver/views/layouts/main.mako:206
+#: sickrage/core/webserver/views/layouts/main.mako:193
 msgid "Manage Torrents"
 msgstr "급류를 관리"
 
 #: sickrage/core/webserver/views.py:3508 sickrage/core/webserver/views.py:3509
-#: sickrage/core/webserver/views/layouts/main.mako:213
+#: sickrage/core/webserver/views/layouts/main.mako:200
 msgid "Failed Downloads"
 msgstr "실패 한 다운로드"
 
-#: sickrage/core/webserver/views/layouts/main.mako:220
+#: sickrage/core/webserver/views/layouts/main.mako:207
 msgid "Missed Subtitle Management"
 msgstr "놓친된 자막 관리"
 
-#: sickrage/core/webserver/views/layouts/main.mako:239
+#: sickrage/core/webserver/views/layouts/main.mako:226
 msgid "Config"
 msgstr "구성"
 
-#: sickrage/core/webserver/views/layouts/main.mako:245
+#: sickrage/core/webserver/views/layouts/main.mako:232
 msgid "Help and Info"
 msgstr "도움말 및 정보"
 
 #: sickrage/core/webserver/views.py:3682
-#: sickrage/core/webserver/views/layouts/main.mako:250
+#: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "General"
 msgstr "일반"
 
-#: sickrage/core/webserver/views/layouts/main.mako:255
+#: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Backup and Restore"
 msgstr "백업 및 복원"
 
 #: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4258
-#: sickrage/core/webserver/views/layouts/main.mako:265
+#: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "검색 공급자"
 
 #: sickrage/core/webserver/views.py:3686
-#: sickrage/core/webserver/views/layouts/main.mako:270
+#: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Subtitles Settings"
 msgstr "자막 설정"
 
 #: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4861
-#: sickrage/core/webserver/views/layouts/main.mako:275
+#: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Quality Settings"
 msgstr "품질 설정"
 
 #: sickrage/core/webserver/views.py:2271 sickrage/core/webserver/views.py:2272
 #: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4070
-#: sickrage/core/webserver/views/layouts/main.mako:280
+#: sickrage/core/webserver/views/layouts/main.mako:267
 msgid "Post Processing"
 msgstr "후 처리"
 
 #: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4414
-#: sickrage/core/webserver/views/layouts/main.mako:285
+#: sickrage/core/webserver/views/layouts/main.mako:272
 msgid "Notifications"
 msgstr "알림"
 
-#: sickrage/core/webserver/views/layouts/main.mako:315
+#: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "Tools"
 msgstr "도구"
 
-#: sickrage/core/webserver/views/layouts/main.mako:327
+#: sickrage/core/webserver/views/layouts/main.mako:314
 msgid "Changelog"
 msgstr "Changelog"
 
-#: sickrage/core/webserver/views/layouts/main.mako:333
+#: sickrage/core/webserver/views/layouts/main.mako:320
 msgid "Donate"
 msgstr "기부"
 
-#: sickrage/core/webserver/views/layouts/main.mako:340
+#: sickrage/core/webserver/views/layouts/main.mako:327
 msgid "View Errors"
 msgstr "보기 오류"
 
-#: sickrage/core/webserver/views/layouts/main.mako:348
+#: sickrage/core/webserver/views/layouts/main.mako:335
 msgid "View Warnings"
 msgstr "경고 보기"
 
-#: sickrage/core/webserver/views/layouts/main.mako:355
+#: sickrage/core/webserver/views/layouts/main.mako:342
 msgid "View Log"
 msgstr "로그 보기"
 
-#: sickrage/core/webserver/views/layouts/main.mako:361
+#: sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Check For Updates"
 msgstr "업데이트 확인"
 
-#: sickrage/core/webserver/views/layouts/main.mako:377
+#: sickrage/core/webserver/views/layouts/main.mako:364
 msgid "Logout"
 msgstr "로그 아웃"
 
-#: sickrage/core/webserver/views/layouts/main.mako:384
+#: sickrage/core/webserver/views/layouts/main.mako:371
 msgid "Server Status"
 msgstr "서버 상태"
 
-#: sickrage/core/webserver/views/layouts/main.mako:467
+#: sickrage/core/webserver/views/layouts/main.mako:454
 msgid "Episodes Downloaded"
 msgstr "에피소드 다운로드"
 
-#: sickrage/core/webserver/views/layouts/main.mako:468
+#: sickrage/core/webserver/views/layouts/main.mako:455
 msgid "Overall Downloaded"
 msgstr "전체 다운로드"
 
-#: sickrage/core/webserver/views/layouts/main.mako:469
+#: sickrage/core/webserver/views/layouts/main.mako:456
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "매일 검색:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:471
+#: sickrage/core/webserver/views/layouts/main.mako:458
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "백로그 검색:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:477
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr "메모리 사용:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:482
+#: sickrage/core/webserver/views/layouts/main.mako:469
 msgid "Load time:"
 msgstr "로드 시간:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:489
+#: sickrage/core/webserver/views/layouts/main.mako:476
 msgid "Now:"
 msgstr "지금:"
 
@@ -5867,47 +5867,47 @@ msgstr "무시"
 msgid "Episode snatched"
 msgstr "납치 하는 에피소드"
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "새로운 업데이트는 자동 업데이트를 시작 하는 SiCKRAGE에 대 한 발견"
 
-#: sickrage/core/version_updater.py:70
+#: sickrage/core/version_updater.py:69
 msgid "Update was successful"
 msgstr "업데이트 성공 했다"
 
-#: sickrage/core/version_updater.py:74
+#: sickrage/core/version_updater.py:73
 msgid "Update failed!"
 msgstr "업데이트 실패!"
 
-#: sickrage/core/version_updater.py:82
+#: sickrage/core/version_updater.py:81
 msgid "Config backup in progress..."
 msgstr "구성 백업 진행 중..."
 
-#: sickrage/core/version_updater.py:90
+#: sickrage/core/version_updater.py:89
 msgid "Config backup successful, updating..."
 msgstr "구성 백업 성공, 업데이트..."
 
-#: sickrage/core/version_updater.py:94 sickrage/core/version_updater.py:98
+#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
 msgid "Config backup failed, aborting update"
 msgstr "구성 백업 실패, 업데이트 중단"
 
-#: sickrage/core/version_updater.py:233
+#: sickrage/core/version_updater.py:209
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "일반 고급 또는->-> 설정에서 git 경로 찾을 수 없습니다 당신의 자식 실행-설정.git 폴더를 삭제 하 고 업데이트를 원본에서 실행."
 
-#: sickrage/core/version_updater.py:280
+#: sickrage/core/version_updater.py:256
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "찾을 수 없습니다 당신의 핍 실행-설정 핍 경로 설정에서-> 일반 고급->"
 
-#: sickrage/core/version_updater.py:442 sickrage/core/version_updater.py:589
+#: sickrage/core/version_updater.py:418 sickrage/core/version_updater.py:565
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "사용 가능한 최신 버전, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:585
+#: sickrage/core/version_updater.py:561
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "알 수 없는 현재 버전 번호: 만약 요 사용한 적이 전에 SiCKRAGE 업그레이드 시스템 현재 버전을 설정 하지 않으면 다음. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:735
+#: sickrage/core/version_updater.py:711
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "새로운 SiCKRAGE 업데이트에 PyPy 서버, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 

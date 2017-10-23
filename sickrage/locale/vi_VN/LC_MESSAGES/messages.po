@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-21 13:54-0400\n"
-"PO-Revision-Date: 2017-10-21 13:56-0400\n"
+"POT-Creation-Date: 2017-10-23 01:58-0400\n"
+"PO-Revision-Date: 2017-10-23 01:59-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: vi_VN\n"
 
-#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:371
+#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:358
 msgid "Shutdown"
 msgstr "Tắt máy"
 
@@ -25,7 +25,7 @@ msgstr "Tắt máy"
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Bạn có chắc bạn muốn tắt máy SiCKRAGE?"
 
-#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:366
+#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:353
 msgid "Restart"
 msgstr "Khởi động lại"
 
@@ -499,7 +499,7 @@ msgstr "Chất lượng"
 
 #: sickrage/core/common.py:185 sickrage/core/common.py:597
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:463
+#: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Snatched"
 
@@ -651,8 +651,8 @@ msgstr "Split Hiển thị danh sách"
 msgid "Separate anime and normal shows in groups"
 msgstr "Anime riêng biệt và các chương trình bình thường trong các nhóm"
 
-#: sickrage/core/version_updater.py:82 sickrage/core/version_updater.py:90
-#: sickrage/core/version_updater.py:94 sickrage/core/version_updater.py:98
+#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -741,25 +741,25 @@ msgid "when launching SickRage interface"
 msgstr "khi tung ra các giao diện SickRage"
 
 #: sickrage/core/webserver/views/config/general.mako:74
-#: sickrage/core/webserver/views/layouts/main.mako:116
-#: sickrage/core/webserver/views/layouts/main.mako:455
+#: sickrage/core/webserver/views/layouts/main.mako:103
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Shows"
 msgstr "Cho thấy"
 
 #: sickrage/core/webserver/views.py:507 sickrage/core/webserver/views.py:508
 #: sickrage/core/webserver/views/config/general.mako:77
-#: sickrage/core/webserver/views/layouts/main.mako:229
+#: sickrage/core/webserver/views/layouts/main.mako:216
 msgid "Schedule"
 msgstr "Lịch trình"
 
 #: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:3653
 #: sickrage/core/webserver/views/config/general.mako:80
-#: sickrage/core/webserver/views/layouts/main.mako:233
+#: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "History"
 msgstr "Lịch sử"
 
 #: sickrage/core/webserver/views/config/general.mako:83
-#: sickrage/core/webserver/views/layouts/main.mako:322
+#: sickrage/core/webserver/views/layouts/main.mako:309
 msgid "IRC"
 msgstr "IRC"
 
@@ -3376,7 +3376,7 @@ msgstr "NZB/Torrent các nhà cung cấp có thể được toggled trong"
 
 #: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3953
 #: sickrage/core/webserver/views/config/providers.mako:71
-#: sickrage/core/webserver/views/layouts/main.mako:260
+#: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Search Clients"
 msgstr "Tìm khách hàng"
 
@@ -4670,7 +4670,7 @@ msgstr "Một \"lực lượng đầy đủ Cập Nhật\" là cần thiết, v�
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
-#: sickrage/core/webserver/views/layouts/main.mako:290
+#: sickrage/core/webserver/views/layouts/main.mako:277
 #: sickrage/core/webserver/views/manage/mass_edit.mako:195
 #: sickrage/core/webserver/views/manage/mass_update.mako:53
 msgid "Anime"
@@ -4886,7 +4886,7 @@ msgstr "Tải hàng tuần"
 
 #: sickrage/core/webserver/views/home/index.mako:273
 #: sickrage/core/webserver/views/home/status.mako:38
-#: sickrage/core/webserver/views/layouts/main.mako:456
+#: sickrage/core/webserver/views/layouts/main.mako:443
 msgid "Active"
 msgstr "Hoạt động"
 
@@ -5337,178 +5337,178 @@ msgstr "Tất cả các vị trí thư mục không phải là tuyệt đối ph
 msgid "SiCKRAGE"
 msgstr "SiCKRAGE"
 
-#: sickrage/core/webserver/views/layouts/main.mako:100
+#: sickrage/core/webserver/views/layouts/main.mako:87
 msgid "Toggle navigation"
 msgstr "Toggle navigation"
 
-#: sickrage/core/webserver/views/layouts/main.mako:121
+#: sickrage/core/webserver/views/layouts/main.mako:108
 msgid "Show List"
 msgstr "Danh sách hiển thị"
 
 #: sickrage/core/webserver/views.py:2305 sickrage/core/webserver/views.py:2306
-#: sickrage/core/webserver/views/layouts/main.mako:126
+#: sickrage/core/webserver/views/layouts/main.mako:113
 msgid "Add Shows"
 msgstr "Thêm chương trình"
 
-#: sickrage/core/webserver/views/layouts/main.mako:131
+#: sickrage/core/webserver/views/layouts/main.mako:118
 msgid "Manual Post-Processing"
 msgstr "Hướng dẫn sử dụng chế biến"
 
 #: sickrage/core/webserver/views.py:3479 sickrage/core/webserver/views.py:3480
-#: sickrage/core/webserver/views/layouts/main.mako:157
+#: sickrage/core/webserver/views/layouts/main.mako:144
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "Khối lượng Cập Nhật"
 
 #: sickrage/core/webserver/views.py:3087 sickrage/core/webserver/views.py:3088
-#: sickrage/core/webserver/views/layouts/main.mako:162
+#: sickrage/core/webserver/views/layouts/main.mako:149
 msgid "Backlog Overview"
 msgstr "Tổng quan về việc tồn đọng"
 
 #: sickrage/core/webserver/views.py:3532 sickrage/core/webserver/views.py:3533
-#: sickrage/core/webserver/views/layouts/main.mako:167
+#: sickrage/core/webserver/views/layouts/main.mako:154
 msgid "Manage Queues"
 msgstr "Quản lý hàng đợi"
 
-#: sickrage/core/webserver/views/layouts/main.mako:172
+#: sickrage/core/webserver/views/layouts/main.mako:159
 msgid "Episode Status Management"
 msgstr "Episode tình trạng quản lý"
 
-#: sickrage/core/webserver/views/layouts/main.mako:178
+#: sickrage/core/webserver/views/layouts/main.mako:165
 msgid "Sync Trakt"
 msgstr "Đồng bộ Trakt"
 
-#: sickrage/core/webserver/views/layouts/main.mako:185
+#: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Update PLEX"
 msgstr "Cập Nhật PLEX"
 
-#: sickrage/core/webserver/views/layouts/main.mako:192
+#: sickrage/core/webserver/views/layouts/main.mako:179
 msgid "Update KODI"
 msgstr "Cập Nhật KODI"
 
-#: sickrage/core/webserver/views/layouts/main.mako:199
+#: sickrage/core/webserver/views/layouts/main.mako:186
 msgid "Update Emby"
 msgstr "Cập Nhật Emby"
 
-#: sickrage/core/webserver/views/layouts/main.mako:206
+#: sickrage/core/webserver/views/layouts/main.mako:193
 msgid "Manage Torrents"
 msgstr "Quản lý các Torrents"
 
 #: sickrage/core/webserver/views.py:3508 sickrage/core/webserver/views.py:3509
-#: sickrage/core/webserver/views/layouts/main.mako:213
+#: sickrage/core/webserver/views/layouts/main.mako:200
 msgid "Failed Downloads"
 msgstr "Thất bại lượt tải"
 
-#: sickrage/core/webserver/views/layouts/main.mako:220
+#: sickrage/core/webserver/views/layouts/main.mako:207
 msgid "Missed Subtitle Management"
 msgstr "Quản lý bị mất phụ đề"
 
-#: sickrage/core/webserver/views/layouts/main.mako:239
+#: sickrage/core/webserver/views/layouts/main.mako:226
 msgid "Config"
 msgstr "Cấu hình"
 
-#: sickrage/core/webserver/views/layouts/main.mako:245
+#: sickrage/core/webserver/views/layouts/main.mako:232
 msgid "Help and Info"
 msgstr "Trợ giúp và thông tin"
 
 #: sickrage/core/webserver/views.py:3682
-#: sickrage/core/webserver/views/layouts/main.mako:250
+#: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "General"
 msgstr "Tổng quát"
 
-#: sickrage/core/webserver/views/layouts/main.mako:255
+#: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Backup and Restore"
 msgstr "Sao lưu và khôi phục"
 
 #: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4258
-#: sickrage/core/webserver/views/layouts/main.mako:265
+#: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "Tìm nhà cung cấp"
 
 #: sickrage/core/webserver/views.py:3686
-#: sickrage/core/webserver/views/layouts/main.mako:270
+#: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Subtitles Settings"
 msgstr "Cài đặt phụ đề"
 
 #: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4861
-#: sickrage/core/webserver/views/layouts/main.mako:275
+#: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Quality Settings"
 msgstr "Thiết đặt chất lượng"
 
 #: sickrage/core/webserver/views.py:2271 sickrage/core/webserver/views.py:2272
 #: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4070
-#: sickrage/core/webserver/views/layouts/main.mako:280
+#: sickrage/core/webserver/views/layouts/main.mako:267
 msgid "Post Processing"
 msgstr "Xử lý đăng bài"
 
 #: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4414
-#: sickrage/core/webserver/views/layouts/main.mako:285
+#: sickrage/core/webserver/views/layouts/main.mako:272
 msgid "Notifications"
 msgstr "Thông báo"
 
-#: sickrage/core/webserver/views/layouts/main.mako:315
+#: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "Tools"
 msgstr "Công cụ"
 
-#: sickrage/core/webserver/views/layouts/main.mako:327
+#: sickrage/core/webserver/views/layouts/main.mako:314
 msgid "Changelog"
 msgstr "Changelog"
 
-#: sickrage/core/webserver/views/layouts/main.mako:333
+#: sickrage/core/webserver/views/layouts/main.mako:320
 msgid "Donate"
 msgstr "Quyên góp"
 
-#: sickrage/core/webserver/views/layouts/main.mako:340
+#: sickrage/core/webserver/views/layouts/main.mako:327
 msgid "View Errors"
 msgstr "Xem lỗi"
 
-#: sickrage/core/webserver/views/layouts/main.mako:348
+#: sickrage/core/webserver/views/layouts/main.mako:335
 msgid "View Warnings"
 msgstr "Xem cảnh báo"
 
-#: sickrage/core/webserver/views/layouts/main.mako:355
+#: sickrage/core/webserver/views/layouts/main.mako:342
 msgid "View Log"
 msgstr "Xem Nhật ký"
 
-#: sickrage/core/webserver/views/layouts/main.mako:361
+#: sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Check For Updates"
 msgstr "Kiểm tra Cập Nhật"
 
-#: sickrage/core/webserver/views/layouts/main.mako:377
+#: sickrage/core/webserver/views/layouts/main.mako:364
 msgid "Logout"
 msgstr "Đăng xuất"
 
-#: sickrage/core/webserver/views/layouts/main.mako:384
+#: sickrage/core/webserver/views/layouts/main.mako:371
 msgid "Server Status"
 msgstr "Tình trạng máy chủ"
 
-#: sickrage/core/webserver/views/layouts/main.mako:467
+#: sickrage/core/webserver/views/layouts/main.mako:454
 msgid "Episodes Downloaded"
 msgstr "Tập phim tải về"
 
-#: sickrage/core/webserver/views/layouts/main.mako:468
+#: sickrage/core/webserver/views/layouts/main.mako:455
 msgid "Overall Downloaded"
 msgstr "Tải về tổng thể"
 
-#: sickrage/core/webserver/views/layouts/main.mako:469
+#: sickrage/core/webserver/views/layouts/main.mako:456
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "Tìm kiếm hàng ngày:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:471
+#: sickrage/core/webserver/views/layouts/main.mako:458
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "Tìm kiếm tồn đọng:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:477
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr "Bộ nhớ sử dụng:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:482
+#: sickrage/core/webserver/views/layouts/main.mako:469
 msgid "Load time:"
 msgstr "Thời gian tải:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:489
+#: sickrage/core/webserver/views/layouts/main.mako:476
 msgid "Now:"
 msgstr "Bây giờ:"
 
@@ -5867,47 +5867,47 @@ msgstr "Bỏ qua"
 msgid "Episode snatched"
 msgstr "Episode snatched"
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Bản cập nhật mới tìm thấy cho SiCKRAGE, bắt đầu từ auto-updater"
 
-#: sickrage/core/version_updater.py:70
+#: sickrage/core/version_updater.py:69
 msgid "Update was successful"
 msgstr "Bản Cập Nhật đã thành công"
 
-#: sickrage/core/version_updater.py:74
+#: sickrage/core/version_updater.py:73
 msgid "Update failed!"
 msgstr "Bản Cập Nhật không thành công!"
 
-#: sickrage/core/version_updater.py:82
+#: sickrage/core/version_updater.py:81
 msgid "Config backup in progress..."
 msgstr "Cấu hình các dự phòng đang tiến hành..."
 
-#: sickrage/core/version_updater.py:90
+#: sickrage/core/version_updater.py:89
 msgid "Config backup successful, updating..."
 msgstr "Cấu hình sao lưu thành công, đang Cập Nhật..."
 
-#: sickrage/core/version_updater.py:94 sickrage/core/version_updater.py:98
+#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
 msgid "Config backup failed, aborting update"
 msgstr "Cấu hình sao lưu không thành công, aborting Cập Nhật"
 
-#: sickrage/core/version_updater.py:233
+#: sickrage/core/version_updater.py:209
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Không thể tìm thấy của bạn git thực thi - thiết lập đường dẫn git của bạn từ các cài đặt-> tổng-> nâng cao hoặc xoá thư mục .git của bạn và chạy từ nguồn để cho phép Cập Nhật."
 
-#: sickrage/core/version_updater.py:280
+#: sickrage/core/version_updater.py:256
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Không thể tìm thấy của bạn pip thực thi - thiết lập đường dẫn pip của bạn từ các cài đặt-> tổng-> nâng cao"
 
-#: sickrage/core/version_updater.py:442 sickrage/core/version_updater.py:589
+#: sickrage/core/version_updater.py:418 sickrage/core/version_updater.py:565
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Đó là một phiên bản mới hơn có sẵn, phiên bản {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:585
+#: sickrage/core/version_updater.py:561
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Không biết số phiên bản hiện tại: nếu bạn đã không bao giờ sử dụng SiCKRAGE hệ thống nâng cấp trước khi sau đó, phiên bản hiện tại không được thiết lập. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:735
+#: sickrage/core/version_updater.py:711
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Cập Nhật SiCKRAGE mới tìm thấy trên máy chủ PyPy, phiên bản {} &mdash; <a href=\"{}\">Update Now</a>"
 

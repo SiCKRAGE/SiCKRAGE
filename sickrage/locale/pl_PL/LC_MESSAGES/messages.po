@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-21 13:54-0400\n"
-"PO-Revision-Date: 2017-10-21 13:55-0400\n"
+"POT-Creation-Date: 2017-10-23 01:58-0400\n"
+"PO-Revision-Date: 2017-10-23 01:59-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: pl_PL\n"
 
-#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:371
+#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:358
 msgid "Shutdown"
 msgstr "Zamknięcia systemu"
 
@@ -25,7 +25,7 @@ msgstr "Zamknięcia systemu"
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Czy na pewno chcesz zamknąć SiCKRAGE?"
 
-#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:366
+#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:353
 msgid "Restart"
 msgstr "Uruchom ponownie"
 
@@ -499,7 +499,7 @@ msgstr "Jakość"
 
 #: sickrage/core/common.py:185 sickrage/core/common.py:597
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:463
+#: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Porwał"
 
@@ -651,8 +651,8 @@ msgstr "Split Pokaż list"
 msgid "Separate anime and normal shows in groups"
 msgstr "Oddzielne anime i normalny pokazuje w grupach"
 
-#: sickrage/core/version_updater.py:82 sickrage/core/version_updater.py:90
-#: sickrage/core/version_updater.py:94 sickrage/core/version_updater.py:98
+#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -741,25 +741,25 @@ msgid "when launching SickRage interface"
 msgstr "przy uruchamianiu interfejsu SickRage"
 
 #: sickrage/core/webserver/views/config/general.mako:74
-#: sickrage/core/webserver/views/layouts/main.mako:116
-#: sickrage/core/webserver/views/layouts/main.mako:455
+#: sickrage/core/webserver/views/layouts/main.mako:103
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Shows"
 msgstr "Pokazuje"
 
 #: sickrage/core/webserver/views.py:507 sickrage/core/webserver/views.py:508
 #: sickrage/core/webserver/views/config/general.mako:77
-#: sickrage/core/webserver/views/layouts/main.mako:229
+#: sickrage/core/webserver/views/layouts/main.mako:216
 msgid "Schedule"
 msgstr "Harmonogram"
 
 #: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:3653
 #: sickrage/core/webserver/views/config/general.mako:80
-#: sickrage/core/webserver/views/layouts/main.mako:233
+#: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "History"
 msgstr "Historia"
 
 #: sickrage/core/webserver/views/config/general.mako:83
-#: sickrage/core/webserver/views/layouts/main.mako:322
+#: sickrage/core/webserver/views/layouts/main.mako:309
 msgid "IRC"
 msgstr "IRC"
 
@@ -3376,7 +3376,7 @@ msgstr "NZB/Torrent dostawców może być przełączana w"
 
 #: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3953
 #: sickrage/core/webserver/views/config/providers.mako:71
-#: sickrage/core/webserver/views/layouts/main.mako:260
+#: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Search Clients"
 msgstr "Wyszukiwanie klientów"
 
@@ -4670,7 +4670,7 @@ msgstr "\"Życie pełną aktualizację\" jest konieczne, i jeśli masz istnieją
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
-#: sickrage/core/webserver/views/layouts/main.mako:290
+#: sickrage/core/webserver/views/layouts/main.mako:277
 #: sickrage/core/webserver/views/manage/mass_edit.mako:195
 #: sickrage/core/webserver/views/manage/mass_update.mako:53
 msgid "Anime"
@@ -4886,7 +4886,7 @@ msgstr "Pliki do pobrania"
 
 #: sickrage/core/webserver/views/home/index.mako:273
 #: sickrage/core/webserver/views/home/status.mako:38
-#: sickrage/core/webserver/views/layouts/main.mako:456
+#: sickrage/core/webserver/views/layouts/main.mako:443
 msgid "Active"
 msgstr "Aktywne"
 
@@ -5337,178 +5337,178 @@ msgstr "Wszystkie lokalizacje folderów innych niż bezwzględna są w stosunku 
 msgid "SiCKRAGE"
 msgstr "SiCKRAGE"
 
-#: sickrage/core/webserver/views/layouts/main.mako:100
+#: sickrage/core/webserver/views/layouts/main.mako:87
 msgid "Toggle navigation"
 msgstr "Przełącz nawigacji"
 
-#: sickrage/core/webserver/views/layouts/main.mako:121
+#: sickrage/core/webserver/views/layouts/main.mako:108
 msgid "Show List"
 msgstr "Pokaż listę"
 
 #: sickrage/core/webserver/views.py:2305 sickrage/core/webserver/views.py:2306
-#: sickrage/core/webserver/views/layouts/main.mako:126
+#: sickrage/core/webserver/views/layouts/main.mako:113
 msgid "Add Shows"
 msgstr "Dodać pokazuje"
 
-#: sickrage/core/webserver/views/layouts/main.mako:131
+#: sickrage/core/webserver/views/layouts/main.mako:118
 msgid "Manual Post-Processing"
 msgstr "Instrukcja post-processingu"
 
 #: sickrage/core/webserver/views.py:3479 sickrage/core/webserver/views.py:3480
-#: sickrage/core/webserver/views/layouts/main.mako:157
+#: sickrage/core/webserver/views/layouts/main.mako:144
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "Masowej aktualizacji"
 
 #: sickrage/core/webserver/views.py:3087 sickrage/core/webserver/views.py:3088
-#: sickrage/core/webserver/views/layouts/main.mako:162
+#: sickrage/core/webserver/views/layouts/main.mako:149
 msgid "Backlog Overview"
 msgstr "Przegląd zaległości"
 
 #: sickrage/core/webserver/views.py:3532 sickrage/core/webserver/views.py:3533
-#: sickrage/core/webserver/views/layouts/main.mako:167
+#: sickrage/core/webserver/views/layouts/main.mako:154
 msgid "Manage Queues"
 msgstr "Zarządzanie kolejkami"
 
-#: sickrage/core/webserver/views/layouts/main.mako:172
+#: sickrage/core/webserver/views/layouts/main.mako:159
 msgid "Episode Status Management"
 msgstr "Odcinek stan zarządzania"
 
-#: sickrage/core/webserver/views/layouts/main.mako:178
+#: sickrage/core/webserver/views/layouts/main.mako:165
 msgid "Sync Trakt"
 msgstr "Trakt synchronizacji"
 
-#: sickrage/core/webserver/views/layouts/main.mako:185
+#: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Update PLEX"
 msgstr "Aktualizacja obiektu typu PLEX"
 
-#: sickrage/core/webserver/views/layouts/main.mako:192
+#: sickrage/core/webserver/views/layouts/main.mako:179
 msgid "Update KODI"
 msgstr "Zaktualizować KODI"
 
-#: sickrage/core/webserver/views/layouts/main.mako:199
+#: sickrage/core/webserver/views/layouts/main.mako:186
 msgid "Update Emby"
 msgstr "Aktualizacja Emby"
 
-#: sickrage/core/webserver/views/layouts/main.mako:206
+#: sickrage/core/webserver/views/layouts/main.mako:193
 msgid "Manage Torrents"
 msgstr "Zarządzanie torrentów"
 
 #: sickrage/core/webserver/views.py:3508 sickrage/core/webserver/views.py:3509
-#: sickrage/core/webserver/views/layouts/main.mako:213
+#: sickrage/core/webserver/views/layouts/main.mako:200
 msgid "Failed Downloads"
 msgstr "Pobieranie nie powiodło się"
 
-#: sickrage/core/webserver/views/layouts/main.mako:220
+#: sickrage/core/webserver/views/layouts/main.mako:207
 msgid "Missed Subtitle Management"
 msgstr "Zarządzanie nieodebranych napisów"
 
-#: sickrage/core/webserver/views/layouts/main.mako:239
+#: sickrage/core/webserver/views/layouts/main.mako:226
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views/layouts/main.mako:245
+#: sickrage/core/webserver/views/layouts/main.mako:232
 msgid "Help and Info"
 msgstr "Pomoc i informacje"
 
 #: sickrage/core/webserver/views.py:3682
-#: sickrage/core/webserver/views/layouts/main.mako:250
+#: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "General"
 msgstr "Ogólne"
 
-#: sickrage/core/webserver/views/layouts/main.mako:255
+#: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Backup and Restore"
 msgstr "Kopia zapasowa i przywracanie"
 
 #: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:4258
-#: sickrage/core/webserver/views/layouts/main.mako:265
+#: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "Dostawców wyszukiwania"
 
 #: sickrage/core/webserver/views.py:3686
-#: sickrage/core/webserver/views/layouts/main.mako:270
+#: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Subtitles Settings"
 msgstr "Ustawienia napisów"
 
 #: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4861
-#: sickrage/core/webserver/views/layouts/main.mako:275
+#: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Quality Settings"
 msgstr "Ustawienia jakości"
 
 #: sickrage/core/webserver/views.py:2271 sickrage/core/webserver/views.py:2272
 #: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4070
-#: sickrage/core/webserver/views/layouts/main.mako:280
+#: sickrage/core/webserver/views/layouts/main.mako:267
 msgid "Post Processing"
 msgstr "Przetwarzanie końcowe"
 
 #: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4414
-#: sickrage/core/webserver/views/layouts/main.mako:285
+#: sickrage/core/webserver/views/layouts/main.mako:272
 msgid "Notifications"
 msgstr "Powiadomienia"
 
-#: sickrage/core/webserver/views/layouts/main.mako:315
+#: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "Tools"
 msgstr "Narzędzia"
 
-#: sickrage/core/webserver/views/layouts/main.mako:327
+#: sickrage/core/webserver/views/layouts/main.mako:314
 msgid "Changelog"
 msgstr "Lista zmian"
 
-#: sickrage/core/webserver/views/layouts/main.mako:333
+#: sickrage/core/webserver/views/layouts/main.mako:320
 msgid "Donate"
 msgstr "Darować"
 
-#: sickrage/core/webserver/views/layouts/main.mako:340
+#: sickrage/core/webserver/views/layouts/main.mako:327
 msgid "View Errors"
 msgstr "Wyświetl błędy"
 
-#: sickrage/core/webserver/views/layouts/main.mako:348
+#: sickrage/core/webserver/views/layouts/main.mako:335
 msgid "View Warnings"
 msgstr "Wyświetl ostrzeżenia"
 
-#: sickrage/core/webserver/views/layouts/main.mako:355
+#: sickrage/core/webserver/views/layouts/main.mako:342
 msgid "View Log"
 msgstr "Pokaż dziennik"
 
-#: sickrage/core/webserver/views/layouts/main.mako:361
+#: sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Check For Updates"
 msgstr "Sprawdź aktualizacje"
 
-#: sickrage/core/webserver/views/layouts/main.mako:377
+#: sickrage/core/webserver/views/layouts/main.mako:364
 msgid "Logout"
 msgstr "Wyloguj się"
 
-#: sickrage/core/webserver/views/layouts/main.mako:384
+#: sickrage/core/webserver/views/layouts/main.mako:371
 msgid "Server Status"
 msgstr "Stan serwera"
 
-#: sickrage/core/webserver/views/layouts/main.mako:467
+#: sickrage/core/webserver/views/layouts/main.mako:454
 msgid "Episodes Downloaded"
 msgstr "Pobrane odcinki"
 
-#: sickrage/core/webserver/views/layouts/main.mako:468
+#: sickrage/core/webserver/views/layouts/main.mako:455
 msgid "Overall Downloaded"
 msgstr "Ogólnie rzecz biorąc pobrany"
 
-#: sickrage/core/webserver/views/layouts/main.mako:469
+#: sickrage/core/webserver/views/layouts/main.mako:456
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "Szukaj codziennie:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:471
+#: sickrage/core/webserver/views/layouts/main.mako:458
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "Szukaj zaległości:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:477
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr "Pamięć używana:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:482
+#: sickrage/core/webserver/views/layouts/main.mako:469
 msgid "Load time:"
 msgstr "Czas ładowania:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:489
+#: sickrage/core/webserver/views/layouts/main.mako:476
 msgid "Now:"
 msgstr "Teraz:"
 
@@ -5867,47 +5867,47 @@ msgstr "Ignorowane"
 msgid "Episode snatched"
 msgstr "Odcinku porwał"
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Nowa aktualizacja dla SiCKRAGE, począwszy od auto-updater"
 
-#: sickrage/core/version_updater.py:70
+#: sickrage/core/version_updater.py:69
 msgid "Update was successful"
 msgstr "Aktualizacja powiodła się"
 
-#: sickrage/core/version_updater.py:74
+#: sickrage/core/version_updater.py:73
 msgid "Update failed!"
 msgstr "Aktualizacja nie powiodła się!"
 
-#: sickrage/core/version_updater.py:82
+#: sickrage/core/version_updater.py:81
 msgid "Config backup in progress..."
 msgstr "Config backup w toku..."
 
-#: sickrage/core/version_updater.py:90
+#: sickrage/core/version_updater.py:89
 msgid "Config backup successful, updating..."
 msgstr "Config backup udane, aktualizowanie..."
 
-#: sickrage/core/version_updater.py:94 sickrage/core/version_updater.py:98
+#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
 msgid "Config backup failed, aborting update"
 msgstr "Kopia zapasowa konfiguracji nie powiodło się, przerywanie aktualizacji"
 
-#: sickrage/core/version_updater.py:233
+#: sickrage/core/version_updater.py:209
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Nie można znaleźć Twój git wykonywalny - zestaw drogę git z ustawienia-> generalnego-> lub zaawansowane usuwanie katalogu .git i uruchomić ze źródła, aby włączyć aktualizacje."
 
-#: sickrage/core/version_updater.py:280
+#: sickrage/core/version_updater.py:256
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Nie można znaleźć Twój pip wykonywalny - zestaw drogę pip z ustawienia-> generalnego-> zaawansowane"
 
-#: sickrage/core/version_updater.py:442 sickrage/core/version_updater.py:589
+#: sickrage/core/version_updater.py:418 sickrage/core/version_updater.py:565
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Jest dostępna nowsza wersja, wersja {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:585
+#: sickrage/core/version_updater.py:561
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Nieznany numer bieżącej wersji: Jeśli yo nigdy nie używałem SiCKRAGE uaktualnienia systemu przed, a następnie aktualna wersja nie jest ustawiona. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:735
+#: sickrage/core/version_updater.py:711
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Nowa aktualizacja SiCKRAGE znalezione na serwerach PyPy, wersja {} &mdash; <a href=\"{}\">Update Now</a>"
 
