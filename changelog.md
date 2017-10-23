@@ -1,5 +1,6 @@
 # Changelog
 
+- * d80e492 - 2017-10-23: Release v9.1.49 
 - * 9419272 - 2017-10-23: Refactored logo 
 - * b51b312 - 2017-10-23: Release v9.1.48 
 - * 8c12317 - 2017-10-22: Refactored logo 
