@@ -1,6 +1,7 @@
 # Changelog
 
-- * 54586ee - 2017-10-24: Added MISSED labeling to show display view 
+- * fbaa412 - 2017-10-24: Updated url to favicon for notifications 
+- * 9b6fd8b - 2017-10-24: Added MISSED labeling to show display view 
 - * 036fc03 - 2017-10-24: Refactoring requirements.txt 
 - * 2a15a42 - 2017-10-24: Refactoring requirements.txt 
 - * c7de2b3 - 2017-10-24: Refactoring requirements.txt 
