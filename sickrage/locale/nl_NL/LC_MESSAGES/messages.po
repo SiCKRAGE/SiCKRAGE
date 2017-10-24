@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2017-10-23 01:58-0400\n"
-"PO-Revision-Date: 2017-10-23 01:58-0400\n"
+"PO-Revision-Date: 2017-10-24 04:39-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -99,7 +99,7 @@ msgstr "Koppeling SiCKRAGE"
 
 #: dist/js/core.js:2099 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
-msgstr "Verwijderen van Toon"
+msgstr "Serie verwijderen"
 
 #: dist/js/core.js:2100
 msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
@@ -683,15 +683,15 @@ msgstr "Selecteer het back-upbestand dat u wilt terugzetten"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:62
 msgid "Restore database files"
-msgstr ""
+msgstr "Database bestanden herstellen"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:71
 msgid "Restore configuration file"
-msgstr ""
+msgstr "Configuratie bestanden herstellen"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:80
 msgid "Restore cache files"
-msgstr ""
+msgstr "Cache bestanden herstellen"
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
