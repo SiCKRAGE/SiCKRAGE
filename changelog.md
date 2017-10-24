@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0f7efdc - 2017-10-24: Refactoring requirements.txt 
+- * 849b140 - 2017-10-24: Refactoring requirements.txt 
+- * c7de2b3 - 2017-10-24: Refactoring requirements.txt 
 - * 3df51c0 - 2017-10-24: Refactoring requirements.txt 
 - * dfdaf49 - 2017-10-24: Fixed setup import errors for babel 
 - * 0b218f2 - 2017-10-24: updated readme logo 
