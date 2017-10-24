@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6e9e0a2 - 2017-10-24: Refactoring requirements.txt 
+- * 0f7efdc - 2017-10-24: Refactoring requirements.txt 
+- * 3df51c0 - 2017-10-24: Refactoring requirements.txt 
 - * dfdaf49 - 2017-10-24: Fixed setup import errors for babel 
 - * 0b218f2 - 2017-10-24: updated readme logo 
 - * 9ca9dc4 - 2017-10-24: Release v9.1.51 
