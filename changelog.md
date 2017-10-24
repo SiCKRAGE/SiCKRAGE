@@ -1,6 +1,7 @@
 # Changelog
 
-- * 29d554a - 2017-10-24: updated readme logo 
+- * f1294b2 - 2017-10-24: Fixed setup import errors for babel 
+- * 0b218f2 - 2017-10-24: updated readme logo 
 - * 9ca9dc4 - 2017-10-24: Release v9.1.51 
 - * e94d370 - 2017-10-24: Release v9.1.50 
 - * 151fb91 - 2017-10-24: Changed urls for network timezones and scene exceptions to use our new CDN server address 

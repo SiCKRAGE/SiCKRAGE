@@ -3,7 +3,6 @@ import io
 import os
 import shutil
 
-from babel.messages import frontend as babel
 from setuptools import setup, Command
 
 # Get the version number
@@ -33,6 +32,22 @@ class CleanCommand(Command):
         shutil.rmtree(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage.egg-info')), ignore_errors=True)
         [os.remove(f) for f in glob.glob("dist/sickrage-*")]
 
+
+cmd_class = {'clean': CleanCommand}
+
+# Check for Babel availability
+try:
+    from babel.messages.frontend import compile_catalog, extract_messages, init_catalog, update_catalog
+
+    cmd_class.update(dict(
+        compile_catalog=compile_catalog,
+        extract_messages=extract_messages,
+        init_catalog=init_catalog,
+        update_catalog=update_catalog
+    ))
+except ImportError:
+    pass
+
 setup(
     name='sickrage',
     version=version,
@@ -48,13 +63,7 @@ setup(
     platforms='any',
     zip_safe=False,
     test_suite='tests',
-    cmdclass={
-        'clean': CleanCommand,
-        'compile_catalog': babel.compile_catalog,
-        'extract_messages': babel.extract_messages,
-        'init_catalog': babel.init_catalog,
-        'update_catalog': babel.update_catalog
-    },
+    cmdclass=cmd_class,
     entry_points={
         "console_scripts": [
             "sickrage=sickrage:main"
