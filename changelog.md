@@ -1,6 +1,7 @@
 # Changelog
 
-- * a244b27 - 2017-10-24: Refactoring requirements.txt 
+- * 54586ee - 2017-10-24: Added MISSED labeling to show display view 
+- * 036fc03 - 2017-10-24: Refactoring requirements.txt 
 - * 2a15a42 - 2017-10-24: Refactoring requirements.txt 
 - * c7de2b3 - 2017-10-24: Refactoring requirements.txt 
 - * 3df51c0 - 2017-10-24: Refactoring requirements.txt 

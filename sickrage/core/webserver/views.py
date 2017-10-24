@@ -61,6 +61,7 @@ from sickrage.core.helpers import argToBool, backupSR, chmodAsParent, findCertai
     clean_hosts
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
+from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.media.util import indexerImage
 from sickrage.core.nameparser import validator
@@ -1161,7 +1162,6 @@ class Home(WebHandler):
         return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
     def displayShow(self, show=None):
-
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
         else:
@@ -1244,9 +1244,20 @@ class Home(WebHandler):
         epCounts[Overview.GOOD] = 0
         epCounts[Overview.UNAIRED] = 0
         epCounts[Overview.SNATCHED] = 0
+        epCounts[Overview.MISSED] = 0
 
         for curEp in episodeResults:
             curEpCat = showObj.getOverview(int(curEp['status'] or -1))
+
+            if curEp['airdate'] != 1:
+                today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
+                airDate = datetime.datetime.fromordinal(curEp['airdate'])
+                if airDate.year >= 1970 or showObj.network:
+                    airDate = srDateTime.convert_to_setting(
+                        tz_updater.parse_date_time(airDate, showObj.airs, showObj.network))
+                if curEpCat == Overview.WANTED and airDate < today:
+                    curEpCat = Overview.MISSED
+
             if curEpCat:
                 epCats[str(curEp['season']) + "x" + str(curEp['episode'])] = curEpCat
                 epCounts[curEpCat] += 1
