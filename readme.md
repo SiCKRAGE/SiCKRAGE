@@ -1,4 +1,4 @@
-![image](https://sickrage.ca/wp-content/uploads/2016/11/sickrage-small.png)
+![image](https://sickrage.ca/img/logo-stacked.png)
 
 Automatic Video Library Manager for TV Shows. It watches for new episodes of your favorite shows, and when they are posted it does its magic.
 
