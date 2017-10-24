@@ -1,6 +1,7 @@
 # Changelog
 
-- * 002fe53 - 2017-10-24: Changed urls for network timezones and scene exceptions to use our new CDN server address 
+- * 0e88347 - 2017-10-24: Release v9.1.50 
+- * 151fb91 - 2017-10-24: Changed urls for network timezones and scene exceptions to use our new CDN server address 
 - * 563f61f - 2017-10-24: Changed urls for network timezones and scene exceptions to use our new CDN server address 
 - * 2ae8886 - 2017-10-23: Release v9.1.49 
 - * 9419272 - 2017-10-23: Refactored logo 
