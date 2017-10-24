@@ -1,6 +1,15 @@
 # Changelog
 
-- * 29d554a - 2017-10-24: updated readme logo 
+- * 0399ce3 - 2017-10-24: Release v9.1.52 
+- * 7772474 - 2017-10-24: Updated url to favicon for notifications 
+- * 68ee394 - 2017-10-24: Updated url to favicon for notifications 
+- * 9b6fd8b - 2017-10-24: Added MISSED labeling to show display view 
+- * 036fc03 - 2017-10-24: Refactoring requirements.txt 
+- * 2a15a42 - 2017-10-24: Refactoring requirements.txt 
+- * c7de2b3 - 2017-10-24: Refactoring requirements.txt 
+- * 3df51c0 - 2017-10-24: Refactoring requirements.txt 
+- * dfdaf49 - 2017-10-24: Fixed setup import errors for babel 
+- * 0b218f2 - 2017-10-24: updated readme logo 
 - * 9ca9dc4 - 2017-10-24: Release v9.1.51 
 - * e94d370 - 2017-10-24: Release v9.1.50 
 - * 151fb91 - 2017-10-24: Changed urls for network timezones and scene exceptions to use our new CDN server address 

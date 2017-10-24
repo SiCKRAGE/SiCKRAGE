@@ -415,6 +415,12 @@
                 <div class="col-md-6 pull-right">
                     <div class="pull-right" id="checkboxControls">
                         <div>
+                            <label class="pull-right" for="missed" style="padding-bottom: 5px;">
+                            <span class="missed">
+                                <input type="checkbox" id="missed" checked/>
+                                ${_('Missed:')} <b>${epCounts[Overview.MISSED]}</b>
+                            </span>
+                            </label>
                             <label class="pull-right" for="wanted" style="padding-bottom: 5px;">
                             <span class="wanted">
                                 <input type="checkbox" id="wanted" checked/>

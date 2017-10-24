@@ -121,7 +121,7 @@ class LibnotifyNotifier(srNotifiers):
 
         # Can't make this a global constant because PROG_DIR isn't available
         # when the module is imported.
-        icon_path = os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images', 'ico', 'favicon-96x96.png')
+        icon_path = os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR, 'images', 'favicon.png')
 
         # If the session bus can't be acquired here a bunch of warning messages
         # will be printed but the call to show() will still return True.

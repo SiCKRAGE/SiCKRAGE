@@ -342,18 +342,6 @@ class UpdateManager(object):
     def get_update_url():
         return "{}/home/update/?pid={}".format(sickrage.srCore.srConfig.WEB_ROOT, sickrage.srCore.PID)
 
-    @staticmethod
-    def github():
-        import github
-
-        try:
-            return github.Github(
-                login_or_token=sickrage.srCore.srConfig.GIT_USERNAME,
-                password=sickrage.srCore.srConfig.GIT_PASSWORD,
-                user_agent="SiCKRAGE")
-        except Exception:
-            return github.Github(user_agent="SiCKRAGE")
-
     def install_requirements(self):
         __, __, exit_status = self._pip_cmd(self._pip_path,
                                           'install --no-cache-dir --user -r {}'.format(sickrage.REQS_FILE))

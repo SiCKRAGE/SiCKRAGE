@@ -961,12 +961,17 @@ ul.tags li a {
 }
 
 .wanted {
-    background-color: #ffb0b0;
+    background-color: #ff9f38;
 }
 
 .snatched {
     background-color: #ebc1ea;
 }
+
+.missed {
+    background-color: #ffb0b0;
+}
+
 
 span.unaired {
     color: #584b20;
@@ -989,8 +994,8 @@ span.qual {
 }
 
 span.wanted {
-    color: #890000;
-    border: 1px solid #890000;
+    color: #894305;
+    border: 1px solid #894305;
 }
 
 span.snatched {
@@ -998,11 +1003,17 @@ span.snatched {
     border: 1px solid #652164;
 }
 
+span.missed {
+    color: #890000;
+    border: 1px solid #890000;
+}
+
 span.unaired b,
 span.skipped b,
 span.good b,
 span.qual b,
 span.wanted b,
+span.missed b,
 span.snatched b {
     color: #000000;
     font-weight: 800;

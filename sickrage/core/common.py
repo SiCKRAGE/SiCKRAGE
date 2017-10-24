@@ -612,6 +612,7 @@ class Overview(object):
     WANTED = WANTED  # 3
     GOOD = 4
     SKIPPED = SKIPPED  # 5
+    MISSED = 6  # 6
 
     # For both snatched statuses. Note: SNATCHED/QUAL have same value and break dict.
     SNATCHED = SNATCHED_PROPER = SNATCHED_BEST  # 9
@@ -621,7 +622,8 @@ class Overview(object):
                        QUAL: "qual",
                        GOOD: "good",
                        UNAIRED: "unaired",
-                       SNATCHED: "snatched"}
+                       SNATCHED: "snatched",
+                       MISSED: "missed"}
 
 
 def get_quality_string(quality):
