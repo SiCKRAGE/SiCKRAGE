@@ -961,7 +961,7 @@ ul.tags li a {
 }
 
 .wanted {
-    background-color: #ff9f38;
+    background-color: #ffb65e;
 }
 
 .snatched {
@@ -1209,11 +1209,11 @@ schedule.mako
 }
 
 .listing-current {
-    background-color: #dfd;
+    background-color: #ffb65e;
 }
 
 .listing-overdue {
-    background-color: #fdd;
+    background-color: #ffb0b0;
 }
 
 .listing-toofar {
@@ -1226,8 +1226,8 @@ span.listing-default {
 }
 
 span.listing-current {
-    color: #295730;
-    border: 1px solid #295730;
+    color: #894305;
+    border: 1px solid #894305;
 }
 
 span.listing-overdue {

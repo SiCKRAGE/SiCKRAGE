@@ -1254,7 +1254,7 @@ class Home(WebHandler):
                 airDate = datetime.datetime.fromordinal(curEp['airdate'])
                 if airDate.year >= 1970 or showObj.network:
                     airDate = srDateTime.convert_to_setting(
-                        tz_updater.parse_date_time(airDate, showObj.airs, showObj.network))
+                        tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network))
                 if curEpCat == Overview.WANTED and airDate < today:
                     curEpCat = Overview.MISSED
 
