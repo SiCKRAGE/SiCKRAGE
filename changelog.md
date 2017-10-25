@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0399ce3 - 2017-10-24: Release v9.1.52 
+- * 52d7fce - 2017-10-25: Fixed issue with wanted and missing labeling 
+- * c5143b6 - 2017-10-24: Release v9.1.52 
 - * 7772474 - 2017-10-24: Updated url to favicon for notifications 
 - * 68ee394 - 2017-10-24: Updated url to favicon for notifications 
 - * 9b6fd8b - 2017-10-24: Added MISSED labeling to show display view 
