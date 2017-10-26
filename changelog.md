@@ -1,6 +1,7 @@
 # Changelog
 
-- * 279eae1 - 2017-10-25: Release v9.1.53 
+- * c95eddc - 2017-10-26: Fixed issues with clearing out stale *.pyc files 
+- * 57bf43e - 2017-10-25: Release v9.1.53 
 - * f90baa4 - 2017-10-25: Fixed issue with wanted and missing labeling 
 - * c5143b6 - 2017-10-24: Release v9.1.52 
 - * 7772474 - 2017-10-24: Updated url to favicon for notifications 

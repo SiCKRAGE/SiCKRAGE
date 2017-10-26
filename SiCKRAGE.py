@@ -21,7 +21,7 @@ import os
 
 if __name__ == '__main__':
     # removes stale .pyc files
-    for root, dirs, files in os.walk("."):
+    for root, dirs, files in os.walk(os.path.dirname(__file__)):
         pyc_files = filter(lambda filename: filename.endswith(".pyc"), files)
         py_files = set(filter(lambda filename: filename.endswith(".py"), files))
         excess_pyc_files = filter(lambda pyc_filename: pyc_filename[:-1] not in py_files, pyc_files)
