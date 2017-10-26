@@ -1,6 +1,7 @@
 # Changelog
 
-- * d312ac2 - 2017-10-26: Fixed issue #91 - object of type &#x27;long&#x27; has no len() for newznab providers 
+- * 0256f52 - 2017-10-26: Release v9.1.55 
+- * 043f827 - 2017-10-26: Fixed issue #91 - object of type &#x27;long&#x27; has no len() for newznab providers 
 - * a3c8725 - 2017-10-26: Release v9.1.54 
 - * 5a73364 - 2017-10-26: Fixed issues with clearing out stale *.pyc files 
 - * 57bf43e - 2017-10-25: Release v9.1.53 
