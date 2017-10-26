@@ -1,6 +1,7 @@
 # Changelog
 
-- * c95eddc - 2017-10-26: Fixed issues with clearing out stale *.pyc files 
+- * 9657a59 - 2017-10-26: Release v9.1.54 
+- * 5a73364 - 2017-10-26: Fixed issues with clearing out stale *.pyc files 
 - * 57bf43e - 2017-10-25: Release v9.1.53 
 - * f90baa4 - 2017-10-25: Fixed issue with wanted and missing labeling 
 - * c5143b6 - 2017-10-24: Release v9.1.52 
