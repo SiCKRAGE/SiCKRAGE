@@ -1019,7 +1019,7 @@ class NewznabProvider(NZBProvider):
         return self.search({'q': search_string})
 
     def _check_auth(self):
-        if self.private and not len(self.key):
+        if self.private and not self.key:
             sickrage.srCore.srLogger.warning('Invalid api key for {}. Check your settings'.format(self.name))
             return False
 
