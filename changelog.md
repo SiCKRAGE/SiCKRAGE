@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7ddf16e - 2017-10-27: Fixed issue #97 - Torrentleech 
+- * ddcf327 - 2017-10-27: Release v9.1.56 
+- * 7792e65 - 2017-10-27: Fixed issue #97 - Torrentleech 
 - * 2ca0866 - 2017-10-27: Updated docstring 
 - * ef53a1d - 2017-10-27: Fixed url for torrent public tracker list 
 - * 6382b2e - 2017-10-27: added feature to automatically add verified public torrent trackers to both torrent files and torrent magnet links for public torrent providers to help improve download reliability and speed removed ability to manually set custom trackers from settings 
