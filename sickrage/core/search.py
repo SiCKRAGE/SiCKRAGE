@@ -46,42 +46,61 @@ def _download_result(result):
     :param result: SearchResult instance to download.
     :return: boolean, True on success
     """
+    downloaded = False
 
     resProvider = result.provider
     if resProvider is None:
         sickrage.srCore.srLogger.error("Invalid provider name - this is a coding error, report it please")
         return False
 
+    filename = resProvider.make_filename(result.name)
+
+    # Support for Jackett/TorzNab
+    if result.url.endswith('torrent') and filename.endswith('nzb'):
+        filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
+
     # nzbs with an URL can just be downloaded from the provider
     if result.resultType == "nzb":
-        newResult = resProvider.download_result(result)
+        result = resProvider.verify_result(result)
+        if result.content:
+            sickrage.srCore.srLogger.info("Saving NZB to " + filename)
+
+            # write content to torrent file
+            with io.open(filename, 'wb') as f:
+                f.write(result.content)
+
+            downloaded = True
     # if it's an nzb data result
     elif result.resultType == "nzbdata":
-
         # get the final file path to the nzb
-        fileName = os.path.join(sickrage.srCore.srConfig.NZB_DIR, result.name + ".nzb")
+        filename = os.path.join(sickrage.srCore.srConfig.NZB_DIR, result.name + ".nzb")
 
-        sickrage.srCore.srLogger.info("Saving NZB to " + fileName)
-
-        newResult = True
+        sickrage.srCore.srLogger.info("Saving NZB to " + filename)
 
         # save the data to disk
         try:
-            with io.open(fileName, 'w') as fileOut:
+            with io.open(filename, 'w') as fileOut:
                 fileOut.write(result.extraInfo[0])
 
-            chmodAsParent(fileName)
+            chmodAsParent(filename)
 
+            downloaded = True
         except EnvironmentError as e:
             sickrage.srCore.srLogger.error("Error trying to save NZB to black hole: {}".format(e.message))
-            newResult = False
     elif result.resultType == "torrent":
-        newResult = resProvider.download_result(result)
+        result = resProvider.verify_result(result)
+        if result.content:
+            sickrage.srCore.srLogger.info("Saving TORRENT to " + filename)
+
+            # write content to torrent file
+            with io.open(filename, 'wb') as f:
+                f.write(result.content)
+
+            downloaded = True
     else:
         sickrage.srCore.srLogger.error("Invalid provider type - this is a coding error, report it please")
-        newResult = False
 
-    return newResult
+    return downloaded
 
 
 def snatchEpisode(result, endStatus=SNATCHED):
@@ -126,14 +145,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         if sickrage.srCore.srConfig.TORRENT_METHOD == "blackhole":
             dlResult = _download_result(result)
         else:
-            if all([not result.content, not result.url.startswith('magnet:')]):
-                if result.provider.login():
-                    result.content = sickrage.srCore.srWebSession.get(result.url).content
-
             if any([result.content, result.url.startswith('magnet:')]):
-                if not result.provider.private:
-                    # add public trackers to torrent result
-                    result = result.provider.add_trackers(result)
                 client = getClientIstance(sickrage.srCore.srConfig.TORRENT_METHOD)()
                 dlResult = client.sendTORRENT(result)
             else:
@@ -257,6 +269,11 @@ def pickBestResult(results, show):
                     )
         except Exception as e:
             sickrage.srCore.srLogger.info(e.message)
+            continue
+
+        # verify result content
+        cur_result = cur_result.provider.verify_result(cur_result)
+        if not cur_result.content:
             continue
 
         if not bestResult:
@@ -474,8 +491,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     break
                 finally:
                     threading.currentThread().setName(origThreadName)
-
-                didSearch = True
 
                 if len(searchResults):
                     # make a list of all the results for this provider
