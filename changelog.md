@@ -1,6 +1,7 @@
 # Changelog
 
-- * cf0260c - 2017-10-27: Release v9.1.57 
+- * b8006f5 - 2017-10-27: added code to verify all provider search results content when picking best result 
+- * 492a3fb - 2017-10-27: Release v9.1.57 
 - * 1d4bc73 - 2017-10-27: Release v9.1.56 
 - * 7792e65 - 2017-10-27: Fixed issue #97 - Torrentleech 
 - * 2ca0866 - 2017-10-27: Updated docstring 

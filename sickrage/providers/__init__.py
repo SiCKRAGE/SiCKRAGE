@@ -146,7 +146,7 @@ class GenericProvider(object):
     def make_filename(self, name):
         return ""
 
-    def download_result(self, result):
+    def verify_result(self, result):
         """
         Save the result to disk.
         """
@@ -156,7 +156,6 @@ class GenericProvider(object):
             return False
 
         urls = self.make_url(result.url)
-        filename = self.make_filename(result.name)
 
         for url in urls:
             if 'NO_DOWNLOAD_NAME' in url:
@@ -168,33 +167,23 @@ class GenericProvider(object):
                     'Referer': '/'.join(url.split('/')[:3]) + '/'
                 })
 
-            sickrage.srCore.srLogger.info("Downloading a result from " + self.name + " at " + url)
-
-            # Support for Jackett/TorzNab
-            if url.endswith('torrent') and filename.endswith('nzb'):
-                filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
+            sickrage.srCore.srLogger.info("Verifiying a result from " + self.name + " at " + url)
 
             result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
-            if self._verify_download(result):
+            if self._verify_content(result):
                 if result.resultType == "torrent" and not result.provider.private:
                     # add public trackers to torrent result
                     result = result.provider.add_trackers(result)
 
-                # write content to torrent file
-                with io.open(filename, 'wb') as f:
-                    f.write(result.content)
+                return result
 
-                sickrage.srCore.srLogger.info("Saved result to " + filename)
-                return True
+            sickrage.srCore.srLogger.warning("Failed to verify result: %s" % url)
 
-            sickrage.srCore.srLogger.warning("Could not download %s" % url)
+        result.content = None
 
-        if len(urls):
-            sickrage.srCore.srLogger.warning("Failed to download any results")
+        return result
 
-        return False
-
-    def _verify_download(self, result):
+    def _verify_content(self, result):
         """
         Checks the saved file to see if it was actually valid, if not then consider the download a failure.
         """
@@ -682,7 +671,7 @@ class TorrentProvider(GenericProvider):
         return os.path.join(sickrage.srCore.srConfig.TORRENT_DIR,
                             '{}.torrent'.format(sanitizeFileName(name)))
 
-    def _verify_download(self, result):
+    def _verify_content(self, result):
         """
         Checks the saved file to see if it was actually valid, if not then consider the download a failure.
         """
@@ -692,9 +681,9 @@ class TorrentProvider(GenericProvider):
             if parser and parser._getMimeType() == 'application/x-bittorrent':
                 return True
         except Exception as e:
-            sickrage.srCore.srLogger.debug("Failed to validate torrent file: {}".format(e.message))
+            sickrage.srCore.srLogger.debug("Failed to verify torrent result: {}".format(e.message))
 
-        sickrage.srCore.srLogger.debug("Result is not a valid torrent file")
+        sickrage.srCore.srLogger.debug("Invalid torrent result")
 
     def add_trackers(self, result):
         """
