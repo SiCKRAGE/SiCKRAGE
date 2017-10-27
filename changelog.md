@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3d26d47 - 2017-10-27: public torrent trackers now added to both magnet and content if exists 
+- * b0302d6 - 2017-10-27: Fixed issues with starting app under service in daemon mode as unprivileged user 
+- * 5d29937 - 2017-10-27: public torrent trackers now added to both magnet and content if exists 
 - * 074910e - 2017-10-27: added code to verify all provider search results content when picking best result 
 - * 492a3fb - 2017-10-27: Release v9.1.57 
 - * 1d4bc73 - 2017-10-27: Release v9.1.56 

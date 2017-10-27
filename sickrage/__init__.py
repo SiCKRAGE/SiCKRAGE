@@ -105,7 +105,8 @@ class Daemon(object):
             sys.exit(1)
 
         os.setsid()
-        os.umask(0)
+        os.umask(0o27)
+        os.chdir(self.working_dir)
 
         # do second fork
         try:
