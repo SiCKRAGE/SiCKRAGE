@@ -699,8 +699,7 @@ class TorrentProvider(GenericProvider):
     def add_trackers(self, result):
         """
         Adds public trackers to either torrent file or magnet link
-        :param filename: torrent filename
-        :param magnet: torrent magnet url
+        :param result: provider result
         :return: result
         """
 
