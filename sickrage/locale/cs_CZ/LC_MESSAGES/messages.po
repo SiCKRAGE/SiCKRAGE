@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-24 19:41-0400\n"
-"PO-Revision-Date: 2017-10-24 19:41-0400\n"
+"POT-Creation-Date: 2017-10-27 12:25-0400\n"
+"PO-Revision-Date: 2017-10-27 12:26-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -189,7 +189,7 @@ msgstr "Vyberte umístění blackhole/sledování .torrent"
 msgid "Select .torrent download location"
 msgstr "Vyberte umístění pro stažení .torrent"
 
-#: dist/js/core.js:3159 sickrage/core/webserver/views/config/search.mako:925
+#: dist/js/core.js:3159 sickrage/core/webserver/views/config/search.mako:907
 msgid "Minimum seeding time is"
 msgstr "Minimální čas výsevu je"
 
@@ -563,8 +563,8 @@ msgstr "AniDB je neziskové databáze informací anime, která je volně příst
 
 #: sickrage/core/webserver/views/config/anime.mako:27
 #: sickrage/core/webserver/views/config/postprocessing.mako:30
-#: sickrage/core/webserver/views/config/search.mako:285
-#: sickrage/core/webserver/views/config/search.mako:702
+#: sickrage/core/webserver/views/config/search.mako:267
+#: sickrage/core/webserver/views/config/search.mako:684
 #: sickrage/core/webserver/views/config/subtitles.mako:30
 #: sickrage/core/webserver/views/home/status.mako:37
 msgid "Enabled"
@@ -630,10 +630,10 @@ msgstr "Chcete přidat epizody zpracovány MyList?"
 #: sickrage/core/webserver/views/config/providers.mako:117
 #: sickrage/core/webserver/views/config/providers.mako:900
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
-#: sickrage/core/webserver/views/config/search.mako:266
-#: sickrage/core/webserver/views/config/search.mako:681
-#: sickrage/core/webserver/views/config/search.mako:753
-#: sickrage/core/webserver/views/config/search.mako:979
+#: sickrage/core/webserver/views/config/search.mako:248
+#: sickrage/core/webserver/views/config/search.mako:663
+#: sickrage/core/webserver/views/config/search.mako:735
+#: sickrage/core/webserver/views/config/search.mako:961
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
@@ -1001,7 +1001,7 @@ msgstr "zobrazení data a času ve své časové pásmo nebo pásmo sítě pořa
 #: sickrage/core/webserver/views/config/postprocessing.mako:1260
 #: sickrage/core/webserver/views/config/postprocessing.mako:1274
 #: sickrage/core/webserver/views/config/postprocessing.mako:1288
-#: sickrage/core/webserver/views/config/search.mako:917
+#: sickrage/core/webserver/views/config/search.mako:899
 #: sickrage/core/webserver/views/config/subtitles.mako:124
 #: sickrage/core/webserver/views/config/subtitles.mako:162
 msgid "NOTE:"
@@ -1068,10 +1068,10 @@ msgstr "Uživatelské jméno protokolu HTTP"
 #: sickrage/core/webserver/views/config/notifications.mako:426
 #: sickrage/core/webserver/views/config/notifications.mako:442
 #: sickrage/core/webserver/views/config/notifications.mako:1058
+#: sickrage/core/webserver/views/config/search.mako:343
 #: sickrage/core/webserver/views/config/search.mako:361
-#: sickrage/core/webserver/views/config/search.mako:379
-#: sickrage/core/webserver/views/config/search.mako:845
-#: sickrage/core/webserver/views/config/search.mako:862
+#: sickrage/core/webserver/views/config/search.mako:827
+#: sickrage/core/webserver/views/config/search.mako:844
 msgid "blank = no authentication"
 msgstr "prázdné = bez ověření"
 
@@ -2132,12 +2132,12 @@ msgid "Moderate"
 msgstr "Střední"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1685
-#: sickrage/core/webserver/views/config/search.mako:655
+#: sickrage/core/webserver/views/config/search.mako:637
 msgid "Normal"
 msgstr "Normální"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1688
-#: sickrage/core/webserver/views/config/search.mako:658
+#: sickrage/core/webserver/views/config/search.mako:640
 msgid "High"
 msgstr "Vysoká"
 
@@ -2925,17 +2925,17 @@ msgid "Use Failed Downloads"
 msgstr "Použití ke stažení se nezdařilo"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:288
-#: sickrage/core/webserver/views/config/search.mako:243
+#: sickrage/core/webserver/views/config/search.mako:225
 msgid "Use Failed Download Handling?"
 msgstr "Použití se nezdařilo stáhnout zpracování?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:294
-#: sickrage/core/webserver/views/config/search.mako:251
+#: sickrage/core/webserver/views/config/search.mako:233
 msgid "Delete Failed"
 msgstr "Odstranění se nezdařilo"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:300
-#: sickrage/core/webserver/views/config/search.mako:258
+#: sickrage/core/webserver/views/config/search.mako:240
 msgid "Delete files left over from a failed download?"
 msgstr "Odstranit soubory zanechané selhalo stahování?"
 
@@ -3682,12 +3682,12 @@ msgid "Search Settings"
 msgstr "Nastavení hledání"
 
 #: sickrage/core/webserver/views/config/search.mako:8
-#: sickrage/core/webserver/views/config/search.mako:277
+#: sickrage/core/webserver/views/config/search.mako:259
 msgid "NZB Clients"
 msgstr "NZB klienti"
 
 #: sickrage/core/webserver/views/config/search.mako:9
-#: sickrage/core/webserver/views/config/search.mako:694
+#: sickrage/core/webserver/views/config/search.mako:676
 msgid "Torrent Clients"
 msgstr "Torrent klientů"
 
@@ -3773,313 +3773,305 @@ msgid "Usenet retention"
 msgstr "Usenet uchování"
 
 #: sickrage/core/webserver/views/config/search.mako:151
-msgid "Torrent Trackers"
-msgstr "Torrent trackery"
-
-#: sickrage/core/webserver/views/config/search.mako:160
-msgid "ex. tracker1,tracker2,tracker3"
-msgstr "ex. tracker1, tracker2, tracker3"
-
-#: sickrage/core/webserver/views/config/search.mako:169
 msgid "Ignore words"
 msgstr "Přeskakovat slova"
 
+#: sickrage/core/webserver/views/config/search.mako:160
 #: sickrage/core/webserver/views/config/search.mako:178
-#: sickrage/core/webserver/views/config/search.mako:196
 #: sickrage/core/webserver/views/home/edit_show.mako:287
 #: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "ex. word1,word2,word3"
 msgstr "ex. word1 word2, slovo 3"
 
-#: sickrage/core/webserver/views/config/search.mako:187
+#: sickrage/core/webserver/views/config/search.mako:169
 msgid "Require words"
 msgstr "Vyžadovat slova"
 
-#: sickrage/core/webserver/views/config/search.mako:205
+#: sickrage/core/webserver/views/config/search.mako:187
 msgid "Ignore language names in subbed results"
 msgstr "Ignorovat názvy jazyků v subbed výsledky"
 
-#: sickrage/core/webserver/views/config/search.mako:214
+#: sickrage/core/webserver/views/config/search.mako:196
 msgid "ex. lang1,lang2,lang3"
 msgstr "ex. lang1, lang2, lang3"
 
-#: sickrage/core/webserver/views/config/search.mako:223
+#: sickrage/core/webserver/views/config/search.mako:205
 msgid "Allow high priority"
 msgstr "Povolit vysokou prioritu"
 
-#: sickrage/core/webserver/views/config/search.mako:229
+#: sickrage/core/webserver/views/config/search.mako:211
 msgid "Set downloads of recently aired episodes to high priority"
 msgstr "Nastavení stahování epizod seriálu nedávno vysílala na vysokou prioritu"
 
-#: sickrage/core/webserver/views/config/search.mako:236
+#: sickrage/core/webserver/views/config/search.mako:218
 msgid "Failed Downloads Handling"
 msgstr "Neúspěšné stahování manipulace s"
 
-#: sickrage/core/webserver/views/config/search.mako:278
+#: sickrage/core/webserver/views/config/search.mako:260
 msgid "How to handle NZB search results for clients."
 msgstr "Jak zpracovat výsledky hledání NZB pro klienty."
 
-#: sickrage/core/webserver/views/config/search.mako:290
+#: sickrage/core/webserver/views/config/search.mako:272
 msgid "enable NZB searches"
 msgstr "Povolit hledání NZB"
 
-#: sickrage/core/webserver/views/config/search.mako:297
+#: sickrage/core/webserver/views/config/search.mako:279
 msgid "Send .nzb files to:"
 msgstr "Odešlete .nzb soubory do:"
 
-#: sickrage/core/webserver/views/config/search.mako:317
-#: sickrage/core/webserver/views/config/search.mako:735
+#: sickrage/core/webserver/views/config/search.mako:299
+#: sickrage/core/webserver/views/config/search.mako:717
 msgid "Black hole folder location"
 msgstr "Umístění složky černá díra"
 
-#: sickrage/core/webserver/views/config/search.mako:326
-#: sickrage/core/webserver/views/config/search.mako:746
+#: sickrage/core/webserver/views/config/search.mako:308
+#: sickrage/core/webserver/views/config/search.mako:728
 msgid "files are stored at this location for external software to find and use"
 msgstr "soubory jsou uloženy v tomto umístění pro externí software k vyhledání a použití"
 
-#: sickrage/core/webserver/views/config/search.mako:335
+#: sickrage/core/webserver/views/config/search.mako:317
 msgid "SABnzbd server URL"
 msgstr "Adresa URL serveru SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:344
+#: sickrage/core/webserver/views/config/search.mako:326
 msgid "ex. http://localhost:8080/"
 msgstr "například http://localhost: 8080 /"
 
-#: sickrage/core/webserver/views/config/search.mako:352
+#: sickrage/core/webserver/views/config/search.mako:334
 msgid "SABnzbd username"
 msgstr "Uživatelské jméno SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:370
+#: sickrage/core/webserver/views/config/search.mako:352
 msgid "SABnzbd password"
 msgstr "SABnzbd heslo"
 
-#: sickrage/core/webserver/views/config/search.mako:388
+#: sickrage/core/webserver/views/config/search.mako:370
 msgid "SABnzbd API key"
 msgstr "SABnzbd API klíč"
 
-#: sickrage/core/webserver/views/config/search.mako:406
+#: sickrage/core/webserver/views/config/search.mako:388
 msgid "Use SABnzbd category"
 msgstr "Kategorie použití SABnzbd"
 
+#: sickrage/core/webserver/views/config/search.mako:397
 #: sickrage/core/webserver/views/config/search.mako:415
-#: sickrage/core/webserver/views/config/search.mako:433
+#: sickrage/core/webserver/views/config/search.mako:556
 #: sickrage/core/webserver/views/config/search.mako:574
-#: sickrage/core/webserver/views/config/search.mako:592
 msgid "ex. TV"
 msgstr "ex. TV"
 
-#: sickrage/core/webserver/views/config/search.mako:424
+#: sickrage/core/webserver/views/config/search.mako:406
 msgid "Use SABnzbd category (backlog episodes)"
 msgstr "SABnzbd kategorie (nevyřízené epizody)"
 
-#: sickrage/core/webserver/views/config/search.mako:442
+#: sickrage/core/webserver/views/config/search.mako:424
 msgid "Use SABnzbd category for anime"
 msgstr "Použití SABnzbd kategorie pro anime"
 
-#: sickrage/core/webserver/views/config/search.mako:451
-#: sickrage/core/webserver/views/config/search.mako:471
-#: sickrage/core/webserver/views/config/search.mako:610
-#: sickrage/core/webserver/views/config/search.mako:629
+#: sickrage/core/webserver/views/config/search.mako:433
+#: sickrage/core/webserver/views/config/search.mako:453
+#: sickrage/core/webserver/views/config/search.mako:592
+#: sickrage/core/webserver/views/config/search.mako:611
 msgid "ex. anime"
 msgstr "ex. anime"
 
-#: sickrage/core/webserver/views/config/search.mako:461
+#: sickrage/core/webserver/views/config/search.mako:443
 msgid "Use SABnzbd category for anime (backlog episodes)"
 msgstr "SABnzbd kategorie slouží pro anime (nevyřízené epizody)"
 
-#: sickrage/core/webserver/views/config/search.mako:481
+#: sickrage/core/webserver/views/config/search.mako:463
 msgid "Use forced priority"
 msgstr "Použít prioritu nucené"
 
-#: sickrage/core/webserver/views/config/search.mako:487
+#: sickrage/core/webserver/views/config/search.mako:469
 msgid "enable to change priority from HIGH to FORCED"
 msgstr "umožní změnit prioritu z vysoké na FORCED"
 
-#: sickrage/core/webserver/views/config/search.mako:497
+#: sickrage/core/webserver/views/config/search.mako:479
 msgid "Connect using HTTPS"
 msgstr "Připojení pomocí protokolu HTTPS"
 
-#: sickrage/core/webserver/views/config/search.mako:503
+#: sickrage/core/webserver/views/config/search.mako:485
 msgid "enable secure control"
 msgstr "umožňují bezpečné ovládání"
 
-#: sickrage/core/webserver/views/config/search.mako:510
+#: sickrage/core/webserver/views/config/search.mako:492
 msgid "NZBget host:port"
 msgstr "NZBget počítač: port"
 
-#: sickrage/core/webserver/views/config/search.mako:519
+#: sickrage/core/webserver/views/config/search.mako:501
 msgid "ex. localhost:6789"
 msgstr "ex. localhost:6789"
 
-#: sickrage/core/webserver/views/config/search.mako:529
+#: sickrage/core/webserver/views/config/search.mako:511
 msgid "NZBget username"
 msgstr "NZBget jméno"
 
-#: sickrage/core/webserver/views/config/search.mako:538
+#: sickrage/core/webserver/views/config/search.mako:520
 msgid "default = nzbget"
 msgstr "výchozí = nzbget"
 
-#: sickrage/core/webserver/views/config/search.mako:547
+#: sickrage/core/webserver/views/config/search.mako:529
 msgid "NZBget password"
 msgstr "NZBget heslo"
 
-#: sickrage/core/webserver/views/config/search.mako:556
+#: sickrage/core/webserver/views/config/search.mako:538
 msgid "default = tegbzn6789"
 msgstr "výchozí = tegbzn6789"
 
-#: sickrage/core/webserver/views/config/search.mako:565
+#: sickrage/core/webserver/views/config/search.mako:547
 msgid "Use NZBget category"
 msgstr "Použití NZBget kategorie"
 
-#: sickrage/core/webserver/views/config/search.mako:583
+#: sickrage/core/webserver/views/config/search.mako:565
 msgid "Use NZBget category (backlog episodes)"
 msgstr "NZBget kategorie (nevyřízené epizody)"
 
-#: sickrage/core/webserver/views/config/search.mako:601
+#: sickrage/core/webserver/views/config/search.mako:583
 msgid "Use NZBget category for anime"
 msgstr "Použití NZBget kategorie pro anime"
 
-#: sickrage/core/webserver/views/config/search.mako:619
+#: sickrage/core/webserver/views/config/search.mako:601
 msgid "Use NZBget category for anime (backlog episodes)"
 msgstr "Použít NZBget kategorie pro anime (nevyřízené epizody)"
 
-#: sickrage/core/webserver/views/config/search.mako:638
+#: sickrage/core/webserver/views/config/search.mako:620
 msgid "NZBget priority"
 msgstr "NZBget priorita"
 
-#: sickrage/core/webserver/views/config/search.mako:649
+#: sickrage/core/webserver/views/config/search.mako:631
 msgid "Very low"
 msgstr "Velmi nízká"
 
-#: sickrage/core/webserver/views/config/search.mako:652
+#: sickrage/core/webserver/views/config/search.mako:634
 msgid "Low"
 msgstr "Nízká"
 
-#: sickrage/core/webserver/views/config/search.mako:661
+#: sickrage/core/webserver/views/config/search.mako:643
 msgid "Very high"
 msgstr "Velmi vysoké"
 
-#: sickrage/core/webserver/views/config/search.mako:664
+#: sickrage/core/webserver/views/config/search.mako:646
 #: sickrage/core/webserver/views/manage/queues.mako:19
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Force"
 msgstr "Síla"
 
-#: sickrage/core/webserver/views/config/search.mako:674
-#: sickrage/core/webserver/views/config/search.mako:972
+#: sickrage/core/webserver/views/config/search.mako:656
+#: sickrage/core/webserver/views/config/search.mako:954
 msgid "Click below to test"
 msgstr "Klikněte níže k testování"
 
-#: sickrage/core/webserver/views/config/search.mako:680
+#: sickrage/core/webserver/views/config/search.mako:662
 msgid "Test SABnzbd"
 msgstr "Testovat SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:695
+#: sickrage/core/webserver/views/config/search.mako:677
 msgid "How to handle Torrent search results for clients."
 msgstr "Jak zpracovat výsledky hledání Torrent klientů."
 
-#: sickrage/core/webserver/views/config/search.mako:707
+#: sickrage/core/webserver/views/config/search.mako:689
 msgid "Enable torrent searches"
 msgstr "Povolit hledání torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:714
+#: sickrage/core/webserver/views/config/search.mako:696
 msgid "Send .torrent files to:"
 msgstr "Odešlete .torrent soubory do:"
 
-#: sickrage/core/webserver/views/config/search.mako:759
+#: sickrage/core/webserver/views/config/search.mako:741
 msgid "Torrent host:port"
 msgstr "Torrent počítač: port"
 
-#: sickrage/core/webserver/views/config/search.mako:768
+#: sickrage/core/webserver/views/config/search.mako:750
 msgid "ex. http://localhost:8000/"
 msgstr "například http://localhost: 8000 /"
 
-#: sickrage/core/webserver/views/config/search.mako:778
+#: sickrage/core/webserver/views/config/search.mako:760
 msgid "Torrent RPC URL"
 msgstr "Adresa URL služby RPC torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:787
+#: sickrage/core/webserver/views/config/search.mako:769
 msgid "ex. transmission"
 msgstr "přenos např."
 
-#: sickrage/core/webserver/views/config/search.mako:797
+#: sickrage/core/webserver/views/config/search.mako:779
 msgid "HTTP Authentication"
 msgstr "Ověřování HTTP"
 
-#: sickrage/core/webserver/views/config/search.mako:806
+#: sickrage/core/webserver/views/config/search.mako:788
 msgid "None"
 msgstr "Žádný"
 
-#: sickrage/core/webserver/views/config/search.mako:806
+#: sickrage/core/webserver/views/config/search.mako:788
 msgid "Basic"
 msgstr "Základní"
 
-#: sickrage/core/webserver/views/config/search.mako:806
+#: sickrage/core/webserver/views/config/search.mako:788
 msgid "Digest"
 msgstr "Ověřování algoritmem Digest"
 
-#: sickrage/core/webserver/views/config/search.mako:818
+#: sickrage/core/webserver/views/config/search.mako:800
 msgid "Verify certificate"
 msgstr "Ověřit certifikát"
 
-#: sickrage/core/webserver/views/config/search.mako:825
+#: sickrage/core/webserver/views/config/search.mako:807
 msgid "disable if you get \"Deluge: Authentication Error\" in your log"
 msgstr "zakážete, pokud se dostanete \"Potopa: ověření Chyba\" v protokolu"
 
-#: sickrage/core/webserver/views/config/search.mako:828
+#: sickrage/core/webserver/views/config/search.mako:810
 msgid "Verify SSL certificates for HTTPS requests"
 msgstr "Ověření SSL certifikáty pro požadavky HTTPS"
 
-#: sickrage/core/webserver/views/config/search.mako:836
+#: sickrage/core/webserver/views/config/search.mako:818
 msgid "Client username"
 msgstr "Uživatelské jméno klienta"
 
-#: sickrage/core/webserver/views/config/search.mako:853
+#: sickrage/core/webserver/views/config/search.mako:835
 msgid "Client password"
 msgstr "Heslo klienta"
 
-#: sickrage/core/webserver/views/config/search.mako:870
+#: sickrage/core/webserver/views/config/search.mako:852
 msgid "Add label to torrent"
 msgstr "Přidat popisek k torrentu"
 
+#: sickrage/core/webserver/views/config/search.mako:861
 #: sickrage/core/webserver/views/config/search.mako:879
-#: sickrage/core/webserver/views/config/search.mako:897
 msgid "blank spaces are not allowed"
 msgstr "mezery nejsou povoleny"
 
-#: sickrage/core/webserver/views/config/search.mako:888
+#: sickrage/core/webserver/views/config/search.mako:870
 msgid "Add anime label to torrent"
 msgstr "Přidat popisek anime torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:906
+#: sickrage/core/webserver/views/config/search.mako:888
 msgid "Downloaded files location"
 msgstr "Umístění stažených souborů"
 
-#: sickrage/core/webserver/views/config/search.mako:916
+#: sickrage/core/webserver/views/config/search.mako:898
 msgid "where the torrent client will save downloaded files (blank for client default)"
 msgstr "kde bude torrent klient uložit stažené soubory (prázdné pro klienta výchozí)"
 
-#: sickrage/core/webserver/views/config/search.mako:917
+#: sickrage/core/webserver/views/config/search.mako:899
 msgid "the destination has to be a shared folder for Synology DS"
 msgstr "cíl musí být sdílenou složku pro Synology DS"
 
-#: sickrage/core/webserver/views/config/search.mako:946
+#: sickrage/core/webserver/views/config/search.mako:928
 msgid "Start torrent paused"
 msgstr "Start torrent pozastaven"
 
-#: sickrage/core/webserver/views/config/search.mako:952
+#: sickrage/core/webserver/views/config/search.mako:934
 msgid "add .torrent to client but do <b>not</b> start downloading"
 msgstr "Přidat torrent klienta, ale to <b>not</b> spustit stahování"
 
-#: sickrage/core/webserver/views/config/search.mako:959
+#: sickrage/core/webserver/views/config/search.mako:941
 msgid "Allow high bandwidth"
 msgstr "Povolit s velkou šířkou pásma"
 
-#: sickrage/core/webserver/views/config/search.mako:965
+#: sickrage/core/webserver/views/config/search.mako:947
 msgid "use high bandwidth allocation if priority is high"
 msgstr "s velkou šířkou pásma přiřazení použít, je-li prioritou je vysoká"
 
-#: sickrage/core/webserver/views/config/search.mako:978
+#: sickrage/core/webserver/views/config/search.mako:960
 msgid "Test Connection"
 msgstr "Testovat připojení"
 
@@ -4158,7 +4150,7 @@ msgstr "Adresář titulků"
 msgid "The directory where SickRage should store your"
 msgstr "Adresář, kde SickRage by měl ukládat vaše"
 
-#: sickrage/core/webserver/views.py:4752
+#: sickrage/core/webserver/views.py:4750
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:562
 #: sickrage/core/webserver/views/home/edit_show.mako:128
@@ -4556,7 +4548,7 @@ msgstr "Nikdy"
 msgid "Retry Download"
 msgstr "Opakovat stahování"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4952
 #: sickrage/core/webserver/views/home/edit_show.mako:26
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4670,7 +4662,7 @@ msgstr "použití DVD pořadí místo pořadí vzduchu"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"Síla úplná aktualizace\" je nutný, a máte existující epizody je seřadit ručně."
 
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4833
+#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4831
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
@@ -5002,7 +4994,7 @@ msgstr "Chyba: Restartování vypršel, snad něco zabránil SiCKRAGE spuštěn�
 msgid "Daily Search"
 msgstr "Denní hledání"
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4939
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Nevyřízené položky"
@@ -5027,7 +5019,7 @@ msgstr "Zaúčtovat proces"
 msgid "Subtitles Finder"
 msgstr "Titulky Finder"
 
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4947
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt kontrola"
@@ -5060,7 +5052,7 @@ msgstr "Ne"
 msgid "True"
 msgstr "Pravda"
 
-#: sickrage/core/webserver/views.py:4944
+#: sickrage/core/webserver/views.py:4942
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "Zobrazit frontu"
@@ -5424,7 +5416,7 @@ msgstr "Obecné"
 msgid "Backup and Restore"
 msgstr "Zálohování a obnovení"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4269
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4267
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "Poskytovatelé hledání"
@@ -5434,18 +5426,18 @@ msgstr "Poskytovatelé hledání"
 msgid "Subtitles Settings"
 msgstr "Nastavení titulků"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4872
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4870
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Quality Settings"
 msgstr "Nastavení kvality"
 
 #: sickrage/core/webserver/views.py:2282 sickrage/core/webserver/views.py:2283
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4081
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4079
 #: sickrage/core/webserver/views/layouts/main.mako:267
 msgid "Post Processing"
 msgstr "Zpracování po"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4425
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4423
 #: sickrage/core/webserver/views/layouts/main.mako:272
 msgid "Notifications"
 msgstr "Oznámení"
@@ -5867,7 +5859,7 @@ msgstr "Chtěl"
 msgid "Ignored"
 msgstr "Ignorováno"
 
-#: sickrage/core/search.py:152
+#: sickrage/core/search.py:151
 msgid "Episode snatched"
 msgstr "Epizoda vytrhl"
 
@@ -6301,7 +6293,7 @@ msgstr "Již na větvi: "
 #: sickrage/core/webserver/views.py:1916 sickrage/core/webserver/views.py:1921
 #: sickrage/core/webserver/views.py:1924 sickrage/core/webserver/views.py:1967
 #: sickrage/core/webserver/views.py:1973 sickrage/core/webserver/views.py:1976
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4949
 msgid "Error"
 msgstr "Chyba"
 
@@ -6681,10 +6673,10 @@ msgstr "Config - obecné"
 msgid "General Configuration"
 msgstr "Obecná konfigurace"
 
-#: sickrage/core/webserver/views.py:3889 sickrage/core/webserver/views.py:4063
-#: sickrage/core/webserver/views.py:4187 sickrage/core/webserver/views.py:4407
-#: sickrage/core/webserver/views.py:4734 sickrage/core/webserver/views.py:4815
-#: sickrage/core/webserver/views.py:4854
+#: sickrage/core/webserver/views.py:3889 sickrage/core/webserver/views.py:4061
+#: sickrage/core/webserver/views.py:4185 sickrage/core/webserver/views.py:4405
+#: sickrage/core/webserver/views.py:4732 sickrage/core/webserver/views.py:4813
+#: sickrage/core/webserver/views.py:4852
 msgid "Error(s) Saving Configuration"
 msgstr "Chyby konfigurace"
 
@@ -6728,151 +6720,151 @@ msgstr "Je třeba vybrat záložní soubor pro obnovení!"
 msgid "Config - Episode Search"
 msgstr "Config - epizoda hledání"
 
-#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
-#: sickrage/core/webserver/views.py:4107
+#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
+#: sickrage/core/webserver/views.py:4105
 msgid "Unable to create directory "
 msgstr "Nelze vytvořit adresář "
 
-#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
-#: sickrage/core/webserver/views.py:4107
+#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
+#: sickrage/core/webserver/views.py:4105
 msgid ", dir not changed."
 msgstr ", dir není změněna."
 
-#: sickrage/core/webserver/views.py:4065
+#: sickrage/core/webserver/views.py:4063
 msgid "[SEARCH] Configuration Saved"
 msgstr "Uloženo v [SEARCH] konfigurace"
 
-#: sickrage/core/webserver/views.py:4080
+#: sickrage/core/webserver/views.py:4078
 msgid "Config - Post Processing"
 msgstr "Config - Post zpracování"
 
-#: sickrage/core/webserver/views.py:4117
+#: sickrage/core/webserver/views.py:4115
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Rozbalení není podporováno, zakázání rozbalit nastavení"
 
-#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
+#: sickrage/core/webserver/views.py:4146 sickrage/core/webserver/views.py:4157
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Jste se pokusili, uložení neplatný anime pojmenování config, neukládá nastavení pojmenování"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Jste se pokusili uložit neplatný pojmenování config, neukládá nastavení pojmenování"
 
-#: sickrage/core/webserver/views.py:4167
+#: sickrage/core/webserver/views.py:4165
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Jste se pokusili uložení neplatný vzduchu datum pojmenování config, neukládá nastavení vzduchu podle data"
 
-#: sickrage/core/webserver/views.py:4173
+#: sickrage/core/webserver/views.py:4171
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Jste se pokusili, uložení neplatný sportovní pojmenování config, neukládá nastavení sportovní"
 
-#: sickrage/core/webserver/views.py:4189
+#: sickrage/core/webserver/views.py:4187
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "Uloženo v [POST-PROCESSING] konfigurace"
 
-#: sickrage/core/webserver/views.py:4268
+#: sickrage/core/webserver/views.py:4266
 msgid "Config - Providers"
 msgstr "Config - poskytovatelé"
 
-#: sickrage/core/webserver/views.py:4308
+#: sickrage/core/webserver/views.py:4306
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nebyl zadán žádný název poskytovatele"
 
-#: sickrage/core/webserver/views.py:4310
+#: sickrage/core/webserver/views.py:4308
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Zadána žádná adresa Url poskytovatele"
 
-#: sickrage/core/webserver/views.py:4312
+#: sickrage/core/webserver/views.py:4310
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Žádný zprostředkovatel Api klíč zadán"
 
-#: sickrage/core/webserver/views.py:4409
+#: sickrage/core/webserver/views.py:4407
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "Uloženo v [PROVIDERS] konfigurace"
 
-#: sickrage/core/webserver/views.py:4424
+#: sickrage/core/webserver/views.py:4422
 msgid "Config - Notifications"
 msgstr "Config - oznámení"
 
-#: sickrage/core/webserver/views.py:4736
+#: sickrage/core/webserver/views.py:4734
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "Uloženo v [NOTIFICATIONS] konfigurace"
 
-#: sickrage/core/webserver/views.py:4751
+#: sickrage/core/webserver/views.py:4749
 msgid "Config - Subtitles"
 msgstr "Config - titulky"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4815
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "Uloženo v [SUBTITLES] konfigurace"
 
-#: sickrage/core/webserver/views.py:4832
+#: sickrage/core/webserver/views.py:4830
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4856
+#: sickrage/core/webserver/views.py:4854
 msgid "[ANIME] Configuration Saved"
 msgstr "Uloženo v [ANIME] konfigurace"
 
-#: sickrage/core/webserver/views.py:4871
+#: sickrage/core/webserver/views.py:4869
 msgid "Config - Quality Settings"
 msgstr "Config - nastavení kvality"
 
-#: sickrage/core/webserver/views.py:4883
+#: sickrage/core/webserver/views.py:4881
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[NASTAVENÍ] Uložení konfigurace"
 
-#: sickrage/core/webserver/views.py:4896
+#: sickrage/core/webserver/views.py:4894
 msgid "Clear Errors"
 msgstr "Vymazat chyby"
 
-#: sickrage/core/webserver/views.py:4899
+#: sickrage/core/webserver/views.py:4897
 msgid "Clear Warnings"
 msgstr "Jasné varování"
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4938
 msgid "Daily Searcher"
 msgstr "Denní Searcher"
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4940
 msgid "Show Updater"
 msgstr "Zobrazit Updater"
 
-#: sickrage/core/webserver/views.py:4943
+#: sickrage/core/webserver/views.py:4941
 msgid "Check Version"
 msgstr "Kontrola verze"
 
-#: sickrage/core/webserver/views.py:4945
+#: sickrage/core/webserver/views.py:4943
 msgid "Search Queue"
 msgstr "Hledat fronty"
 
-#: sickrage/core/webserver/views.py:4946
+#: sickrage/core/webserver/views.py:4944
 msgid "Find Propers"
 msgstr "Najít Propers"
 
-#: sickrage/core/webserver/views.py:4947
+#: sickrage/core/webserver/views.py:4945
 msgid "Postprocessor"
 msgstr "Postprocesor"
 
-#: sickrage/core/webserver/views.py:4948
+#: sickrage/core/webserver/views.py:4946
 msgid "Find Subtitles"
 msgstr "Najít titulky"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4948
 msgid "Event"
 msgstr "Událost"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4950
 msgid "Tornado"
 msgstr "Tornádo"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4951
 msgid "Thread"
 msgstr "Vlákno"
 

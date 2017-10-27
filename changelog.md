@@ -1,6 +1,11 @@
 # Changelog
 
-- * 0256f52 - 2017-10-26: Release v9.1.55 
+- * ddcf327 - 2017-10-27: Release v9.1.56 
+- * 7792e65 - 2017-10-27: Fixed issue #97 - Torrentleech 
+- * 2ca0866 - 2017-10-27: Updated docstring 
+- * ef53a1d - 2017-10-27: Fixed url for torrent public tracker list 
+- * 6382b2e - 2017-10-27: added feature to automatically add verified public torrent trackers to both torrent files and torrent magnet links for public torrent providers to help improve download reliability and speed removed ability to manually set custom trackers from settings 
+- * 8a121c7 - 2017-10-26: Release v9.1.55 
 - * 043f827 - 2017-10-26: Fixed issue #91 - object of type &#x27;long&#x27; has no len() for newznab providers 
 - * a3c8725 - 2017-10-26: Release v9.1.54 
 - * 5a73364 - 2017-10-26: Fixed issues with clearing out stale *.pyc files 
