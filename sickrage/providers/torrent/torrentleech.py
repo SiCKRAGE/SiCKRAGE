@@ -19,7 +19,8 @@
 from __future__ import unicode_literals
 
 import re
-import urllib
+
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -29,14 +30,11 @@ from sickrage.providers import TorrentProvider
 
 class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
-        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'http://torrentleech.org', True)
+        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://www.torrentleech.org', True)
 
         self.urls.update({
             'login': '{base_url}/user/account/login/'.format(**self.urls),
-            'detail': '{base_url}/torrent/%s'.format(**self.urls),
-            'search': '{base_url}/torrents/browse/index/query/%s/categories/%s'.format(**self.urls),
-            'download': '{base_url}/%s'.format(**self.urls),
-            'index': '{base_url}/torrents/browse/index/categories/%s'.format(**self.urls)
+            'search': '{base_url}/torrents/browse'.format(**self.urls),
         })
 
         self.username = None
@@ -45,18 +43,18 @@ class TorrentLeechProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.categories = "2,7,26,27,32,34,35"
-
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
-        login_params = {'username': self.username,
-                        'password': self.password,
-                        'remember_me': 'on',
-                        'login': 'submit'}
+        login_params = {
+            'username': self.username,
+            'password': self.password,
+        }
 
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
@@ -81,18 +79,23 @@ class TorrentLeechProvider(TorrentProvider):
         for mode in search_params.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
 
-                if mode == 'RSS':
-                    searchURL = self.urls['index'] % self.categories
+                    categories = ["2", "7", "35"]
+                    categories += ["26", "32"] if mode == "Episode" else ["27"]
+                    if self.show and self.show.is_anime:
+                        categories += ["34"]
                 else:
-                    searchURL = self.urls['search'] % (
-                        urllib.quote_plus(search_string.encode('utf-8')), self.categories)
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    categories = ["2", "26", "27", "32", "7", "34", "35"]
 
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                search_params = {
+                    "categories": ",".join(categories),
+                    "query": search_string
+                }
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
+                    data = sickrage.srCore.srWebSession.get(self.urls["search"], params=search_params, cache=False).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
@@ -131,11 +134,13 @@ class TorrentLeechProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
                                     sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: "
+                                        "{} (S:{} L:{})".format(title, seeders, leechers))
                                 continue
 
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers, 'hash': ''}
+                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                    'leechers': leechers, 'hash': ''}
+
                             if mode != 'RSS':
                                 sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
@@ -147,4 +152,3 @@ class TorrentLeechProvider(TorrentProvider):
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
-
