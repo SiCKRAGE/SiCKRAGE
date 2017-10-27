@@ -705,7 +705,7 @@ class TorrentProvider(GenericProvider):
         """
 
         try:
-            trackers_list = sickrage.srCore.srWebSession.get('https://newtrackon.com/api/stable').text.split()
+            trackers_list = sickrage.srCore.srWebSession.get('https://cdn.sickrage.ca/torrent_trackers/').text.split()
         except Exception:
             trackers_list = []
 
