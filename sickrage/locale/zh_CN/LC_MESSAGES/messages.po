@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-27 12:25-0400\n"
-"PO-Revision-Date: 2017-10-27 12:26-0400\n"
+"POT-Creation-Date: 2017-10-27 19:05-0400\n"
+"PO-Revision-Date: 2017-10-27 19:06-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -5859,7 +5859,7 @@ msgstr "想要"
 msgid "Ignored"
 msgstr "忽略"
 
-#: sickrage/core/search.py:151
+#: sickrage/core/search.py:163
 msgid "Episode snatched"
 msgstr "抢走的插曲"
 
