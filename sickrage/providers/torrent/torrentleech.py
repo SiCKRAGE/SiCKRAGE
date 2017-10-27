@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import re
+from urlparse import urljoin
 
 from requests.utils import dict_from_cookiejar
 
@@ -111,12 +112,14 @@ class TorrentLeechProvider(TorrentProvider):
                             continue
 
                         for result in torrent_table.find_all('tr')[1:]:
-
                             try:
-                                link = result.find('td', attrs={'class': 'name'}).find('a')
-                                url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
-                                title = link.string
-                                download_url = url['href']
+                                title = result.find("td", class_="name").find("a").get_text(strip=True)
+                                download_url = urljoin(self.urls['base_url'],
+                                                       result.find("td", class_="quickdownload").find("a")["href"])
+
+                                if not all([title, download_url]):
+                                    continue
+
                                 seeders = try_int(result.find('td', attrs={'class': 'seeders'}).text, 0)
                                 leechers = try_int(result.find('td', attrs={'class': 'leechers'}).text, 0)
 
@@ -125,9 +128,6 @@ class TorrentLeechProvider(TorrentProvider):
                                             result('td', class_="listcolumn")[1].text):
                                     size = convert_size(result('td', class_="listcolumn")[1].text.strip(), -1)
                             except (AttributeError, TypeError):
-                                continue
-
-                            if not all([title, download_url]):
                                 continue
 
                             # Filter unseeded torrent

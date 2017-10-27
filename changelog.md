@@ -1,6 +1,7 @@
 # Changelog
 
-- * ddcf327 - 2017-10-27: Release v9.1.56 
+- * cf0260c - 2017-10-27: Release v9.1.57 
+- * 1d4bc73 - 2017-10-27: Release v9.1.56 
 - * 7792e65 - 2017-10-27: Fixed issue #97 - Torrentleech 
 - * 2ca0866 - 2017-10-27: Updated docstring 
 - * ef53a1d - 2017-10-27: Fixed url for torrent public tracker list 
