@@ -185,7 +185,7 @@ class GenericProvider(object):
 
     def _verify_content(self, result):
         """
-        Checks the saved file to see if it was actually valid, if not then consider the download a failure.
+        Checks the content of the result to see if its valid or not.
         """
 
         return True
@@ -673,7 +673,9 @@ class TorrentProvider(GenericProvider):
 
     def _verify_content(self, result):
         """
-        Checks the saved file to see if it was actually valid, if not then consider the download a failure.
+        Checks the content of the result to see if its valid or not.
+        :param result: SearchResult
+        :return: SearchResult
         """
 
         try:
@@ -688,8 +690,8 @@ class TorrentProvider(GenericProvider):
     def add_trackers(self, result):
         """
         Adds public trackers to either torrent file or magnet link
-        :param result: provider result
-        :return: result
+        :param result: SearchResult
+        :return: SearchResult
         """
 
         try:
@@ -698,9 +700,12 @@ class TorrentProvider(GenericProvider):
             trackers_list = []
 
         if trackers_list:
+            # adds public torrent trackers to magnet url
             if result.url.startswith('magnet:'):
                 result.url += '&tr='.join(trackers_list)
-            elif result.content:
+
+            # adds public torrent trackers to content
+            if result.content:
                 decoded_data = bencode.bdecode(result.content)
                 for tracker in trackers_list:
                     if tracker not in decoded_data['announce-list']:
