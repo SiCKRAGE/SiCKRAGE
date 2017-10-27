@@ -45,8 +45,7 @@ from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.helpers import chmodAsParent, \
-    findCertainShow, remove_file_failed, \
-    sanitizeFileName, clean_url, bs4_parser, validate_url, try_int, convert_size
+    findCertainShow, sanitizeFileName, clean_url, bs4_parser, validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -163,53 +162,42 @@ class GenericProvider(object):
             if 'NO_DOWNLOAD_NAME' in url:
                 continue
 
+            headers = {}
+            if url.startswith('http'):
+                headers.update({
+                    'Referer': '/'.join(url.split('/')[:3]) + '/'
+                })
+
             sickrage.srCore.srLogger.info("Downloading a result from " + self.name + " at " + url)
 
             # Support for Jackett/TorzNab
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            retries = 2
-            while retries:
-                if sickrage.srCore.srWebSession.download(url,
-                                                         filename,
-                                                         verify=False,
-                                                         cache=False,
-                                                         headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'}
-                                                                  )[url.startswith('http')]
-                                                         ):
+            result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
+            if self._verify_download(result):
+                if result.resultType == "torrent" and not result.provider.private:
+                    # add public trackers to torrent result
+                    result = result.provider.add_trackers(result)
 
-                    if self._verify_download(filename):
-                        sickrage.srCore.srLogger.info("Saved result to " + filename)
-                        return True
+                # write content to torrent file
+                with io.open(filename, 'wb') as f:
+                    f.write(result.content)
 
-                retries -= 1
-                if not retries:
-                    sickrage.srCore.srLogger.warning("Could not download %s" % url)
-                    remove_file_failed(filename)
+                sickrage.srCore.srLogger.info("Saved result to " + filename)
+                return True
+
+            sickrage.srCore.srLogger.warning("Could not download %s" % url)
 
         if len(urls):
             sickrage.srCore.srLogger.warning("Failed to download any results")
 
         return False
 
-    def _verify_download(self, file_name=None):
+    def _verify_download(self, result):
         """
         Checks the saved file to see if it was actually valid, if not then consider the download a failure.
         """
-
-        # primitive verification of torrents, just make sure we didn't get a text file or something
-        if file_name.endswith('torrent'):
-            try:
-                with io.open(file_name, 'rb') as f:
-                    parser = guessParser(StringInputStream(f.read()))
-                    if parser and parser._getMimeType() == 'application/x-bittorrent':
-                        return True
-            except Exception as e:
-                sickrage.srCore.srLogger.debug("Failed to validate torrent file: {}".format(e.message))
-
-            sickrage.srCore.srLogger.debug("Result is not a valid torrent file")
-            return False
 
         return True
 
@@ -323,7 +311,6 @@ class GenericProvider(object):
         return {}
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
-
         if not self._check_auth:
             return
 
@@ -532,7 +519,6 @@ class GenericProvider(object):
         return results
 
     def find_propers(self, search_date=None):
-
         results = self.cache.list_propers(search_date)
 
         return [Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time']), self.show) for x in
@@ -695,6 +681,45 @@ class TorrentProvider(GenericProvider):
     def make_filename(self, name):
         return os.path.join(sickrage.srCore.srConfig.TORRENT_DIR,
                             '{}.torrent'.format(sanitizeFileName(name)))
+
+    def _verify_download(self, result):
+        """
+        Checks the saved file to see if it was actually valid, if not then consider the download a failure.
+        """
+
+        try:
+            parser = guessParser(StringInputStream(result.content))
+            if parser and parser._getMimeType() == 'application/x-bittorrent':
+                return True
+        except Exception as e:
+            sickrage.srCore.srLogger.debug("Failed to validate torrent file: {}".format(e.message))
+
+        sickrage.srCore.srLogger.debug("Result is not a valid torrent file")
+
+    def add_trackers(self, result):
+        """
+        Adds public trackers to either torrent file or magnet link
+        :param filename: torrent filename
+        :param magnet: torrent magnet url
+        :return: result
+        """
+
+        try:
+            trackers_list = sickrage.srCore.srWebSession.get('https://newtrackon.com/api/stable').text.split()
+        except Exception:
+            trackers_list = []
+
+        if trackers_list:
+            if result.url.startswith('magnet:'):
+                result.url += '&tr='.join(trackers_list)
+            elif result.content:
+                decoded_data = bencode.bdecode(result.content)
+                for tracker in trackers_list:
+                    if tracker not in decoded_data['announce-list']:
+                        decoded_data['announce-list'].append([str(tracker)])
+                result.content = bencode.bencode(decoded_data)
+
+        return result
 
     def find_propers(self, search_date=datetime.datetime.today()):
         results = []

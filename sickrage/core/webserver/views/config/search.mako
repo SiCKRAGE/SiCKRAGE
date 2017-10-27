@@ -148,24 +148,6 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Torrent Trackers')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-list"></span>
-                            </div>
-                            <input name="torrent_trackers"
-                                   value="${sickrage.srCore.srConfig.TORRENT_TRACKERS}"
-                                   placeholder="${_('ex. tracker1,tracker2,tracker3')}"
-                                   title="Trackers that will be added to magnets without trackers. Separate trackers with a comma"
-                                   class="form-control" autocapitalize="off"/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Ignore words')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">

@@ -127,14 +127,13 @@ def snatchEpisode(result, endStatus=SNATCHED):
             dlResult = _download_result(result)
         else:
             if all([not result.content, not result.url.startswith('magnet:')]):
-                result.content = sickrage.srCore.srWebSession.get(result.url).content
+                if result.provider.login():
+                    result.content = sickrage.srCore.srWebSession.get(result.url).content
 
             if any([result.content, result.url.startswith('magnet:')]):
-                # add public trackers to magnet url for non-private torrent providers
-                if not result.provider.private and result.url.startswith('magnet:'):
-                    result.url += '&tr='.join(
-                        [x.strip() for x in sickrage.srCore.srConfig.TORRENT_TRACKERS.split(',') if x.strip()])
-
+                if not result.provider.private:
+                    # add public trackers to torrent result
+                    result = result.provider.add_trackers(result)
                 client = getClientIstance(sickrage.srCore.srConfig.TORRENT_METHOD)()
                 dlResult = client.sendTORRENT(result)
             else:

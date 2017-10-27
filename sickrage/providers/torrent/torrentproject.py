@@ -90,7 +90,7 @@ class TorrentProjectProvider(TorrentProvider):
                     if not all([t_hash, torrent_size]):
                         continue
 
-                    download_url = torrents[i]["magnet"] + sickrage.srCore.srConfig.TORRENT_TRACKERS
+                    download_url = torrents[i]["magnet"]
                     size = convert_size(torrent_size, -1)
 
                     if not all([title, download_url]):

@@ -3980,8 +3980,7 @@ class ConfigSearch(Config):
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
                    torrent_rpcurl=None, torrent_auth_type=None, ignore_words=None, require_words=None,
-                   ignored_subs_list=None, torrent_trackers=None, enable_rss_cache=None,
-                   enable_rss_cache_valid_shows=None):
+                   ignored_subs_list=None, enable_rss_cache=None, enable_rss_cache_valid_shows=None):
 
         results = []
 
@@ -4002,7 +4001,6 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.TORRENT_METHOD = torrent_method
         sickrage.srCore.srConfig.USENET_RETENTION = try_int(usenet_retention, 500)
 
-        sickrage.srCore.srConfig.TORRENT_TRACKERS = torrent_trackers if torrent_trackers else ""
         sickrage.srCore.srConfig.IGNORE_WORDS = ignore_words if ignore_words else ""
         sickrage.srCore.srConfig.REQUIRE_WORDS = require_words if require_words else ""
         sickrage.srCore.srConfig.IGNORED_SUBS_LIST = ignored_subs_list if ignored_subs_list else ""

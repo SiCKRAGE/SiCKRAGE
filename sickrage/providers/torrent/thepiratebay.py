@@ -126,8 +126,7 @@ class ThePirateBayProvider(TorrentProvider):
 
                                 # Funky js on page messing up titles, this fixes that
                                 title = result.find(class_="detLink")['title'].split('Details for ', 1)[-1]
-                                download_url = result.find(title="Download this torrent using magnet")[
-                                                   "href"] + sickrage.srCore.srConfig.TORRENT_TRACKERS
+                                download_url = result.find(title="Download this torrent using magnet")["href"]
                                 if not self.magnet_regex.match(download_url):
                                     sickrage.srCore.srLogger.info("Got an invalid magnet: {0}".format(download_url))
                                     sickrage.srCore.srLogger.debug("Invalid ThePirateBay proxy please try another one")

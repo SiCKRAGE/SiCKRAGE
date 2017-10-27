@@ -214,13 +214,6 @@ class srConfig(object):
         self.TORRENT_VERIFY_CERT = False
         self.TORRENT_RPCURL = None
         self.TORRENT_AUTH_TYPE = None
-        self.TORRENT_TRACKERS = "udp://coppersurfer.tk:6969/announce," \
-                                "udp://open.demonii.com:1337," \
-                                "udp://exodus.desync.com:6969," \
-                                "udp://9.rarbg.me:2710/announce," \
-                                "udp://glotorrents.pw:6969/announce," \
-                                "udp://tracker.openbittorrent.com:80/announce," \
-                                "udp://9.rarbg.to:2710/announce"
         self.USE_KODI = False
         self.KODI_ALWAYS_ON = True
         self.KODI_NOTIFY_ONSNATCH = False
@@ -608,13 +601,6 @@ class srConfig(object):
                 'torrent_verify_cert': False,
                 'torrent_paused': False,
                 'torrent_host': '',
-                'torrent_trackers': 'udp://coppersurfer.tk:6969/announce,'
-                                    'udp://open.demonii.com:1337,'
-                                    'udp://exodus.desync.com:6969,'
-                                    'udp://9.rarbg.me:2710/announce,'
-                                    'udp://glotorrents.pw:6969/announce,'
-                                    'udp://tracker.openbittorrent.com:80/announce,'
-                                    'udp://9.rarbg.to:2710/announce',
                 'torrent_label_anime': '',
                 'torrent_path': '',
                 'torrent_auth_type': '',
@@ -1564,7 +1550,6 @@ class srConfig(object):
         self.TORRENT_VERIFY_CERT = self.check_setting_bool('TORRENT', 'torrent_verify_cert')
         self.TORRENT_RPCURL = self.check_setting_str('TORRENT', 'torrent_rpcurl')
         self.TORRENT_AUTH_TYPE = self.check_setting_str('TORRENT', 'torrent_auth_type')
-        self.TORRENT_TRACKERS = self.check_setting_str('TORRENT', 'torrent_trackers')
 
         # KODI SETTINGS
         self.USE_KODI = self.check_setting_bool('KODI', 'use_kodi')
@@ -2033,7 +2018,6 @@ class srConfig(object):
                 'torrent_verify_cert': int(self.TORRENT_VERIFY_CERT),
                 'torrent_rpcurl': self.TORRENT_RPCURL,
                 'torrent_auth_type': self.TORRENT_AUTH_TYPE,
-                'torrent_trackers': self.TORRENT_TRACKERS,
             },
             'KODI': {
                 'use_kodi': int(self.USE_KODI),
