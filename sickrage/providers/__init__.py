@@ -34,8 +34,6 @@ from xml.sax import SAXParseException
 import bencode
 import requests
 from feedparser import FeedParserDict
-from hachoir_core.stream import StringInputStream
-from hachoir_parser import guessParser
 from pynzb import nzb_parser
 from requests.utils import add_dict_to_cookiejar
 
@@ -145,50 +143,6 @@ class GenericProvider(object):
 
     def make_filename(self, name):
         return ""
-
-    def verify_result(self, result):
-        """
-        Save the result to disk.
-        """
-
-        # check for auth
-        if not self.login():
-            return False
-
-        urls = self.make_url(result.url)
-
-        for url in urls:
-            if 'NO_DOWNLOAD_NAME' in url:
-                continue
-
-            headers = {}
-            if url.startswith('http'):
-                headers.update({
-                    'Referer': '/'.join(url.split('/')[:3]) + '/'
-                })
-
-            sickrage.srCore.srLogger.info("Verifiying a result from " + self.name + " at " + url)
-
-            result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
-            if self._verify_content(result):
-                if result.resultType == "torrent" and not result.provider.private:
-                    # add public trackers to torrent result
-                    result = result.provider.add_trackers(result)
-
-                return result
-
-            sickrage.srCore.srLogger.warning("Failed to verify result: %s" % url)
-
-        result.content = None
-
-        return result
-
-    def _verify_content(self, result):
-        """
-        Checks the content of the result to see if its valid or not.
-        """
-
-        return True
 
     def getQuality(self, item, anime=False):
         """
@@ -670,22 +624,6 @@ class TorrentProvider(GenericProvider):
     def make_filename(self, name):
         return os.path.join(sickrage.srCore.srConfig.TORRENT_DIR,
                             '{}.torrent'.format(sanitizeFileName(name)))
-
-    def _verify_content(self, result):
-        """
-        Checks the content of the result to see if its valid or not.
-        :param result: SearchResult
-        :return: SearchResult
-        """
-
-        try:
-            parser = guessParser(StringInputStream(result.content))
-            if parser and parser._getMimeType() == 'application/x-bittorrent':
-                return True
-        except Exception as e:
-            sickrage.srCore.srLogger.debug("Failed to verify torrent result: {}".format(e.message))
-
-        sickrage.srCore.srLogger.debug("Invalid torrent result")
 
     def add_trackers(self, result):
         """

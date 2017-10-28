@@ -1,6 +1,10 @@
 # Changelog
 
-- * da16ee0 - 2017-10-27: Release v9.1.58 
+- * 20333b8 - 2017-10-28: Release v9.1.59 
+- * 56a04dc - 2017-10-28: Fixed issue with verifying search results 
+- * 2c23053 - 2017-10-28: Fixed issues with scene numbering and NoneType errors 
+- * 4c26bb0 - 2017-10-27: cleanup code 
+- * 78f6aff - 2017-10-27: Release v9.1.58 
 - * 1f182f0 - 2017-10-27: Fixed issues with starting app under service in daemon mode as unprivileged user 
 - * 5d29937 - 2017-10-27: public torrent trackers now added to both magnet and content if exists 
 - * 074910e - 2017-10-27: added code to verify all provider search results content when picking best result 
