@@ -50,39 +50,35 @@ def _verify_result(result):
     resProvider = result.provider
 
     # check for auth
-    if not resProvider.login():
-        return False
+    if resProvider.login():
+        for url in resProvider.make_url(result.url):
+            if 'NO_DOWNLOAD_NAME' in url:
+                continue
 
-    urls = resProvider.make_url(result.url)
+            headers = {}
+            if url.startswith('http'):
+                headers.update({
+                    'Referer': '/'.join(url.split('/')[:3]) + '/'
+                })
 
-    for url in urls:
-        if 'NO_DOWNLOAD_NAME' in url:
-            continue
+            sickrage.srCore.srLogger.info("Verifiying a result from " + resProvider.name + " at " + url)
 
-        headers = {}
-        if url.startswith('http'):
-            headers.update({
-                'Referer': '/'.join(url.split('/')[:3]) + '/'
-            })
+            result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
 
-        sickrage.srCore.srLogger.info("Verifiying a result from " + resProvider.name + " at " + url)
+            if result.resultType == "torrent":
+                try:
+                    parser = guessParser(StringInputStream(result.content))
+                    if parser and parser._getMimeType() == 'application/x-bittorrent':
+                        if result.resultType == "torrent" and not resProvider.private:
+                            # add public trackers to torrent result
+                            result = resProvider.add_trackers(result)
+                        return result
+                except Exception:
+                    pass
+            else:
+                return result
 
-        result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
-
-        if result.resultType == "torrent":
-            try:
-                parser = guessParser(StringInputStream(result.content))
-                if parser and parser._getMimeType() == 'application/x-bittorrent':
-                    if result.resultType == "torrent" and not resProvider.private:
-                        # add public trackers to torrent result
-                        result = resProvider.add_trackers(result)
-                    return result
-            except Exception:
-                pass
-        else:
-            return result
-
-        sickrage.srCore.srLogger.warning("Failed to verify result: %s" % url)
+            sickrage.srCore.srLogger.warning("Failed to verify result: %s" % url)
 
     result.content = None
 

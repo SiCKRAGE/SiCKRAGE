@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-28 19:11-0400\n"
-"PO-Revision-Date: 2017-10-28 19:12-0400\n"
+"POT-Creation-Date: 2017-10-28 19:22-0400\n"
+"PO-Revision-Date: 2017-10-28 19:23-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -5859,7 +5859,7 @@ msgstr "싶 었 어 요"
 msgid "Ignored"
 msgstr "무시"
 
-#: sickrage/core/search.py:212
+#: sickrage/core/search.py:208
 msgid "Episode snatched"
 msgstr "납치 하는 에피소드"
 
