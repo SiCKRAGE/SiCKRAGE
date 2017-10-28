@@ -1,6 +1,7 @@
 # Changelog
 
-- * cacb95a - 2017-10-28: Fixed issue with verifying search results 
+- * 20333b8 - 2017-10-28: Release v9.1.59 
+- * 56a04dc - 2017-10-28: Fixed issue with verifying search results 
 - * 2c23053 - 2017-10-28: Fixed issues with scene numbering and NoneType errors 
 - * 4c26bb0 - 2017-10-27: cleanup code 
 - * 78f6aff - 2017-10-27: Release v9.1.58 
