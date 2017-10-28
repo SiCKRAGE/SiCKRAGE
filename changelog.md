@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6ff8e6a - 2017-10-28: Fixed issues with scene numbering and NoneType errors 
+- * cacb95a - 2017-10-28: Fixed issue with verifying search results 
+- * 2c23053 - 2017-10-28: Fixed issues with scene numbering and NoneType errors 
 - * 4c26bb0 - 2017-10-27: cleanup code 
 - * 78f6aff - 2017-10-27: Release v9.1.58 
 - * 1f182f0 - 2017-10-27: Fixed issues with starting app under service in daemon mode as unprivileged user 

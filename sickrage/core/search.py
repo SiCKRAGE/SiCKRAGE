@@ -76,7 +76,7 @@ def _verify_result(result):
                     if result.resultType == "torrent" and not resProvider.private:
                         # add public trackers to torrent result
                         result = resProvider.add_trackers(result)
-                        return result
+                    return result
             except Exception:
                 pass
         else:
