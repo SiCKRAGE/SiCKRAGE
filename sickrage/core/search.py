@@ -25,6 +25,9 @@ import re
 import threading
 from datetime import date, timedelta
 
+from hachoir_core.stream import StringInputStream
+from hachoir_parser import guessParser
+
 import sickrage
 from sickrage.clients import getClientIstance
 from sickrage.clients.nzbget import NZBGet
@@ -38,6 +41,52 @@ from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import srNotifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
+
+def _verify_result(result):
+    """
+    Save the result to disk.
+    """
+
+    resProvider = result.provider
+
+    # check for auth
+    if not resProvider.login():
+        return False
+
+    urls = resProvider.make_url(result.url)
+
+    for url in urls:
+        if 'NO_DOWNLOAD_NAME' in url:
+            continue
+
+        headers = {}
+        if url.startswith('http'):
+            headers.update({
+                'Referer': '/'.join(url.split('/')[:3]) + '/'
+            })
+
+        sickrage.srCore.srLogger.info("Verifiying a result from " + resProvider.name + " at " + url)
+
+        result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
+
+        if result.resultType == "torrent":
+            try:
+                parser = guessParser(StringInputStream(result.content))
+                if parser and parser._getMimeType() == 'application/x-bittorrent':
+                    if result.resultType == "torrent" and not resProvider.private:
+                        # add public trackers to torrent result
+                        result = resProvider.add_trackers(result)
+                        return result
+            except Exception:
+                pass
+        else:
+            return result
+
+        sickrage.srCore.srLogger.warning("Failed to verify result: %s" % url)
+
+    result.content = None
+
+    return result
 
 def _download_result(result):
     """
@@ -61,7 +110,7 @@ def _download_result(result):
 
     # nzbs with an URL can just be downloaded from the provider
     if result.resultType == "nzb":
-        result = resProvider.verify_result(result)
+        result = _verify_result(result)
         if result.content:
             sickrage.srCore.srLogger.info("Saving NZB to " + filename)
 
@@ -88,7 +137,7 @@ def _download_result(result):
         except EnvironmentError as e:
             sickrage.srCore.srLogger.error("Error trying to save NZB to black hole: {}".format(e.message))
     elif result.resultType == "torrent":
-        result = resProvider.verify_result(result)
+        result = _verify_result(result)
         if result.content:
             sickrage.srCore.srLogger.info("Saving TORRENT to " + filename)
 
@@ -272,7 +321,7 @@ def pickBestResult(results, show):
             continue
 
         # verify result content
-        cur_result = cur_result.provider.verify_result(cur_result)
+        cur_result = _verify_result(cur_result)
         if not cur_result.content:
             continue
 

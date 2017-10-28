@@ -1,6 +1,7 @@
 # Changelog
 
-- * da16ee0 - 2017-10-27: Release v9.1.58 
+- * 786dcdc - 2017-10-27: cleanup code 
+- * 78f6aff - 2017-10-27: Release v9.1.58 
 - * 1f182f0 - 2017-10-27: Fixed issues with starting app under service in daemon mode as unprivileged user 
 - * 5d29937 - 2017-10-27: public torrent trackers now added to both magnet and content if exists 
 - * 074910e - 2017-10-27: added code to verify all provider search results content when picking best result 
