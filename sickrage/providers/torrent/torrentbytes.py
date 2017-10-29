@@ -70,7 +70,7 @@ class TorrentBytesProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():
@@ -81,9 +81,9 @@ class TorrentBytesProvider(TorrentProvider):
             "Season": {"c41": 1}
         }
 
-        for mode in search_params.keys():
+        for mode in search_strings:
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
-            for search_string in search_params[mode]:
+            for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 

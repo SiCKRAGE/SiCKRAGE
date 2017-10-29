@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3d6f35a - 2017-10-28: Fixed typo in TorrentBytes provider 
+- * 5435dbc - 2017-10-29: Fixed issus with TorrentBytes provider Fixed issues with TorrentLeech provider 
+- * 415189d - 2017-10-28: Fixed typo in TorrentBytes provider 
 - * 7b6bbe3 - 2017-10-28: Enabled caching for all providers Fixed issue #99 - Torrentbytes not returning search results 
 - * a90e20b - 2017-10-28: Fixed default poster size 
 - * ad2f5d9 - 2017-10-28: Release v9.1.60 
