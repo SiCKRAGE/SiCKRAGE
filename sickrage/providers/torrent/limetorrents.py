@@ -47,7 +47,6 @@ class LimeTorrentsProvider(TorrentProvider):
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
         for mode in search_strings:
-
             sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
 
