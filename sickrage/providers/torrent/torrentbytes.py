@@ -76,10 +76,7 @@ class TorrentBytesProvider(TorrentProvider):
         if not self.login():
             return results
 
-        search_params = {
-            "Episode": {"c33": 1, "c38": 1, "c32": 1, "c37": 1},
-            "Season": {"c41": 1}
-        }
+        search_params = {"c33": 1, "c38": 1, "c32": 1, "c37": 1, "c41": 1}
 
         for mode in search_strings:
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
@@ -87,7 +84,7 @@ class TorrentBytesProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
-                search_params[mode]["search"] = search_string
+                search_params["search"] = search_string
 
                 try:
                     data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
