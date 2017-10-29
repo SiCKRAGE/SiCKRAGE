@@ -63,7 +63,7 @@ def _verify_result(result):
 
             sickrage.srCore.srLogger.info("Verifiying a result from " + resProvider.name + " at " + url)
 
-            result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
+            result.content = sickrage.srCore.srWebSession.get(url, verify=False, headers=headers).content
 
             if result.resultType == "torrent":
                 try:

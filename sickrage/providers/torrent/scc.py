@@ -46,8 +46,10 @@ class SCCProvider(TorrentProvider):
         self.minleech = None
 
         self.categories = {
-            'Season': 'c26=26&c44=44&c45=45',  # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
-            'Episode': 'c17=17&c27=27&c33=33&c34=34&c44=44&c45=45',  # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
+            'Season': 'c26=26&c44=44&c45=45',
+        # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
+            'Episode': 'c17=17&c27=27&c33=33&c34=34&c44=44&c45=45',
+        # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
             'RSS': 'c17=17&c26=26&c27=27&c33=33&c34=34&c44=44&c45=45'  # Season + Episode
         }
 
@@ -95,7 +97,7 @@ class SCCProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
@@ -117,8 +119,7 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = sickrage.srCore.srWebSession.get(self.urls['base_url'] + "/" + link['href'],
-                                                                        cache=False).text
+                                data = sickrage.srCore.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
                                 with bs4_parser(data) as details_html:
                                     title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                             download_url = self.urls['download'] % url['href']
@@ -151,4 +152,3 @@ class SCCProvider(TorrentProvider):
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
-

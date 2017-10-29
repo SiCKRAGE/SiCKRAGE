@@ -1,6 +1,7 @@
 # Changelog
 
-- * 70aeb25 - 2017-10-28: Fixed default poster size 
+- * 2621b76 - 2017-10-28: Enabled caching for all providers Fixed issue #99 - Torrentbytes not returning search results 
+- * a90e20b - 2017-10-28: Fixed default poster size 
 - * ad2f5d9 - 2017-10-28: Release v9.1.60 
 - * b30936a - 2017-10-28: Release v9.1.59 
 - * 56a04dc - 2017-10-28: Fixed issue with verifying search results 

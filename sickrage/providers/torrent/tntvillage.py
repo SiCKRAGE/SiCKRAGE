@@ -316,7 +316,7 @@ class TNTVillageProvider(TorrentProvider):
                     sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                     try:
-                        data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
+                        data = sickrage.srCore.srWebSession.get(searchURL).text
                     except Exception:
                         sickrage.srCore.srLogger.debug("No data returned from provider")
                         continue

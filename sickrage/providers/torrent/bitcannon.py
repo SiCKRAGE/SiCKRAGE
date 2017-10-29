@@ -45,7 +45,7 @@ class BitCannonProvider(TorrentProvider):
         results = []
 
         try:
-            trackers = sickrage.srCore.srWebSession.get(self.urls['trackers'], cache=False).json().get('Trackers')
+            trackers = sickrage.srCore.srWebSession.get(self.urls['trackers']).json().get('Trackers')
         except Exception:
             sickrage.srCore.srLogger.info('Could not get tracker list from BitCannon, aborting search')
             return results
@@ -57,7 +57,7 @@ class BitCannonProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).json()
+                    data = sickrage.srCore.srWebSession.get(searchURL).json()
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue

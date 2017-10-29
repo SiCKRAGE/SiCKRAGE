@@ -26,7 +26,7 @@ import sickrage
 
 def getFeed(url, params=None, request_headers=None, handlers=None):
     try:
-        resp = sickrage.srCore.srWebSession.get(url, params=params, cache=False)
+        resp = sickrage.srCore.srWebSession.get(url, params=params)
         if resp.ok:
             return feedparser.parse(
                 resp.text,

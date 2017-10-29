@@ -101,7 +101,7 @@ class GFTrackerProvider(TorrentProvider):
                 # Returns top 30 results by default, expandable in user profile
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL, cookies=self.cookies, cache=False).text
+                    data = sickrage.srCore.srWebSession.get(searchURL, cookies=self.cookies).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
