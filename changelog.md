@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4084ab6 - 2017-10-29: Cleaned up IPTorrents provider code 
+- * cecfda3 - 2017-10-29: Added custom url setting to IPTorrents 
+- * 0c01ea0 - 2017-10-29: Cleaned up IPTorrents provider code 
 - * 598a329 - 2017-10-29: Fixed issus with TorrentBytes provider Fixed issues with TorrentLeech provider 
 - * 415189d - 2017-10-28: Fixed typo in TorrentBytes provider 
 - * 7b6bbe3 - 2017-10-28: Enabled caching for all providers Fixed issue #99 - Torrentbytes not returning search results 
