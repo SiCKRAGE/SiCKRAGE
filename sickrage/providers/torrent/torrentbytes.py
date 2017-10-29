@@ -35,7 +35,7 @@ class TorrentBytesProvider(TorrentProvider):
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
-            'search': '{base_url}/browse.php?search=%s%s'.format(**self.urls),
+            'search': '{base_url}/browse.php'.format(**self.urls),
         })
 
         self.username = None
