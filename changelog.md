@@ -1,6 +1,7 @@
 # Changelog
 
-- * 821dc0d - 2017-10-28: Release v9.1.60 
+- * 70aeb25 - 2017-10-28: Fixed default poster size 
+- * ad2f5d9 - 2017-10-28: Release v9.1.60 
 - * b30936a - 2017-10-28: Release v9.1.59 
 - * 56a04dc - 2017-10-28: Fixed issue with verifying search results 
 - * 2c23053 - 2017-10-28: Fixed issues with scene numbering and NoneType errors 
