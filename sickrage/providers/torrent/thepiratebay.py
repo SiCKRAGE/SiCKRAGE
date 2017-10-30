@@ -36,7 +36,7 @@ class ThePirateBayProvider(TorrentProvider):
                 "{base_url}/browse/208/0/4/0".format(**self.urls),
                 "{base_url}/browse/205/0/4/0".format(**self.urls)
             ],
-            "search": "{base_url}/search".format(**self.urls),
+            "search": "{base_url}/s".format(**self.urls),
         })
 
         self.confirmed = True
