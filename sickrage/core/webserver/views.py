@@ -4285,10 +4285,11 @@ class ConfigProviders(Config):
 
         providerObj = TorrentRssProvider(name, url, True, cookies, titleTAG)
         if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
-            (succ, errMsg) = providerObj.validateRSS()
-            if succ: return json_encode({'success': providerObj.id})
-            return json_encode({'error': errMsg})
-        return json_encode({'error': 'Provider Name already exists as ' + name})
+            validate = providerObj.validateRSS()
+            if validate['result']:
+                return json_encode({'success': providerObj.id})
+            return json_encode({'error': validate['message']})
+        return json_encode({'error': 'Provider name already exists as {}'.format(name)})
 
     @staticmethod
     def getNewznabCategories(name, url, key):

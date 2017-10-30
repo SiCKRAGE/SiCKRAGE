@@ -32,13 +32,13 @@ class EliteTorrentProvider(TorrentProvider):
     def __init__(self):
         super(EliteTorrentProvider, self).__init__('EliteTorrent', 'http://www.elitetorrent.net', True)
 
-        self.onlyspasearch = None
-        self.minseed = None
-        self.minleech = None
-
         self.urls.update({
             'search': '{base_url}/torrents.php'.format(**self.urls)
         })
+
+        self.onlyspasearch = None
+        self.minseed = None
+        self.minleech = None
 
         self.cache = TVCache(self)
 

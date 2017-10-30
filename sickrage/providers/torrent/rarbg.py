@@ -77,7 +77,7 @@ class RarbgProvider(TorrentProvider):
         try:
             response = sickrage.srCore.srWebSession.get(self.urls['token'], timeout=30).json()
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         self.token = response.get('token')

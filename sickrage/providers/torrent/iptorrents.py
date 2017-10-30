@@ -21,8 +21,6 @@ from __future__ import unicode_literals
 import re
 from urlparse import urljoin
 
-from requests.utils import dict_from_cookiejar
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size, try_int, validate_url
@@ -43,10 +41,9 @@ class IPTorrentsProvider(TorrentProvider):
 
         self.freeleech = False
         self.enable_cookies = True
-
+        self.required_cookies = ('uid', 'pass')
         self.minseed = None
         self.minleech = None
-
         self.categories = '73=&60='
 
         self.custom_url = ""
@@ -54,49 +51,7 @@ class IPTorrentsProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
-        cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)
-        if cookie_dict.get('uid') and cookie_dict.get('pass'):
-            return True
-
-        if not self.cookies:
-            sickrage.srCore.srLogger.info('You need to set your cookies to use {}'.format(self.name))
-            return False
-
-        if not self.add_cookies_from_ui():
-            return False
-
-        login_params = {'username': self.username, 'password': self.password, 'login': 'submit'}
-
-        login_url = self.urls['login']
-        if self.custom_url:
-            if not validate_url(self.custom_url):
-                sickrage.srCore.srLogger.warning("Invalid custom url: {}".format(self.custom_url))
-                return False
-
-            login_url = urljoin(self.custom_url, self.urls['login'].split(self.urls['base_url'])[1])
-
-        response = sickrage.srCore.srWebSession.post(login_url, data=login_params, timeout=30)
-        if not response.ok:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
-            return False
-
-        # Invalid username and password combination
-        if re.search('Invalid username and password combination', response.text):
-            sickrage.srCore.srLogger.warning(u"Invalid username or password. Check your settings")
-            return False
-
-        # You tried too often, please try again after 2 hours!
-        if re.search('You tried too often', response.text):
-            sickrage.srCore.srLogger.warning(
-                u"You tried too often, please try again after 2 hours! Disable IPTorrents for at least 2 hours")
-            return False
-
-        # Captcha!
-        if re.search('Captcha verification failed.', response.text):
-            sickrage.srCore.srLogger.warning(u"Stupid captcha")
-            return False
-
-        return True
+        return self.cookie_login('sign in')
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []

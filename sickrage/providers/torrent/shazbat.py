@@ -49,7 +49,7 @@ class ShazbatProvider(TorrentProvider):
             self._check_auth()
         elif not (data['entries'] and data['feed']):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
 
         return True
 

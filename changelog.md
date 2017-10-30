@@ -1,5 +1,6 @@
 # Changelog
 
+- * 2fd65d3 - 2017-10-30: Refactoring search providers 
 - * cbb3632 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
 - * c6bc2e9 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
 - * 4d52518 - 2017-10-29: Refactoring search providers 

@@ -66,7 +66,7 @@ class T411Provider(TorrentProvider):
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30,
                                                          auth=T411Auth(self.token)).json()
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if 'token' in response:

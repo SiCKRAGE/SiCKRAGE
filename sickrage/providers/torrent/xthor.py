@@ -23,7 +23,7 @@ import cookielib
 import re
 import urllib
 
-import requests
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -49,7 +49,7 @@ class XthorProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
-        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -60,12 +60,12 @@ class XthorProvider(TorrentProvider):
             response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
                                                          timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('donate.php', response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

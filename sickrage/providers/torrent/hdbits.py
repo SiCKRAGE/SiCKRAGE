@@ -43,18 +43,16 @@ class HDBitsProvider(TorrentProvider):
         self.cache = HDBitsCache(self, min_time=15)
 
     def _check_auth(self):
-
         if not self.username or not self.passkey:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
     def _check_auth_from_data(self, parsedJSON):
-
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
                 sickrage.srCore.srLogger.warning(
-                    "[{}]: Invalid username or password. Check your settings".format(self.name))
+                    "Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -67,7 +65,6 @@ class HDBitsProvider(TorrentProvider):
         return episode_search_string
 
     def _get_title_and_url(self, item):
-
         title = item['name']
         if title:
             title = self._clean_title_from_provider(title)
@@ -77,7 +74,6 @@ class HDBitsProvider(TorrentProvider):
         return title, url
 
     def search(self, search_params, age=0, ep_obj=None):
-
         # FIXME
         results = []
 

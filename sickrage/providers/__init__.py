@@ -32,10 +32,9 @@ from urlparse import urljoin
 from xml.sax import SAXParseException
 
 import bencode
-import requests
 from feedparser import FeedParserDict
 from pynzb import nzb_parser
-from requests.utils import add_dict_to_cookiejar
+from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -70,8 +69,8 @@ class GenericProvider(object):
 
         # cookies
         self.enable_cookies = False
+        self.required_cookies = []
         self.cookies = ''
-        self.rss_cookies = ''
 
     @property
     def id(self):
@@ -254,13 +253,13 @@ class GenericProvider(object):
         return {}
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
-        if not self._check_auth:
-            return
-
         self.show = show
 
         results = {}
         itemList = []
+
+        if not self._check_auth:
+            return results
 
         searched_scene_season = None
         for epObj in episodes:
@@ -469,18 +468,102 @@ class GenericProvider(object):
 
     def add_cookies_from_ui(self):
         """
-        Adds the cookies configured from UI to the providers requests session
-        :return: A tuple with the the (success result, and a descriptive message in str)
+        Add the cookies configured from UI to the providers requests session.
+        :return: dict
         """
 
         # This is the generic attribute used to manually add cookies for provider authentication
-        if self.enable_cookies and self.cookies:
-            cookie_validator = re.compile(r'^(\w+=\w+)(;\w+=\w+)*$')
-            if cookie_validator.match(self.cookies):
-                add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
-                                      dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
-                return True
-        return False
+        if not self.enable_cookies:
+            return {'result': False,
+                    'message': 'Adding cookies is not supported for provider: {}'.format(self.name)}
+
+        if not self.cookies:
+            return {'result': False,
+                    'message': 'No Cookies added from ui for provider: {}'.format(self.name)}
+
+        cookie_validator = re.compile(r'^([\w%]+=[\w%]+)(;[\w%]+=[\w%]+)*$')
+        if not cookie_validator.match(self.cookies):
+            sickrage.srCore.srNotifications.message(
+                'Failed to validate cookie for provider {}'.format(self.name),
+                'Cookie is not correctly formatted: {}'.format(self.cookies))
+
+            return {'result': False,
+                    'message': 'Cookie is not correctly formatted: {}'.format(self.cookies)}
+
+        if not all(req_cookie in [x.rsplit('=', 1)[0] for x in self.cookies.split(';')] for req_cookie in
+                   self.required_cookies):
+            return {'result': False,
+                    'message': "You haven't configured the required cookies. Please login at {provider_url}, "
+                               "and make sure you have copied the following cookies: {required_cookies!r}"
+                        .format(provider_url=self.name, required_cookies=self.required_cookies)}
+
+        # cookie_validator got at least one cookie key/value pair, let's return success
+        add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
+                              dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
+
+        return {'result': True,
+                'message': ''}
+
+    def check_required_cookies(self):
+        """
+        Check if we have the required cookies in the requests sessions object.
+
+        Meaning that we've already successfully authenticated once, and we don't need to go through this again.
+        Note! This doesn't mean the cookies are correct!
+        """
+        if not hasattr(self, 'required_cookies'):
+            # A reminder for the developer, implementing cookie based authentication.
+            sickrage.srCore.srLogger.error(
+                'You need to configure the required_cookies attribute, for the provider: {}'.format(self.name))
+            return False
+        return all(
+            dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).get(cookie) for cookie in self.required_cookies)
+
+    def cookie_login(self, check_login_text, check_url=None):
+        """
+        Check the response for text that indicates a login prompt.
+
+        In that case, the cookie authentication was not successful.
+        :param check_login_text: A string that's visible when the authentication failed.
+        :param check_url: The url to use to test the login with cookies. By default the providers home page is used.
+
+        :return: False when authentication was not successful. True if successful.
+        """
+        check_url = check_url or self.urls['base_url']
+
+        if self.check_required_cookies():
+            # All required cookies have been found within the current session, we don't need to go through this again.
+            return True
+
+        if self.cookies:
+            result = self.add_cookies_from_ui()
+            if not result['result']:
+                sickrage.srCore.srNotifications.notifications.message(result['message'])
+                sickrage.srCore.srLogger.warning(result['message'])
+                return False
+        else:
+            sickrage.srCore.srLogger.warning('Failed to login, you will need to add your cookies in the provider '
+                                             'settings')
+
+            sickrage.srCore.srNotifications.notifications.error(
+                'Failed to auth with {provider}'.format(provider=self.name),
+                'You will need to add your cookies in the provider settings')
+            return False
+
+        response = sickrage.srCore.srWebSession.get(check_url)
+        if any([not response, not (response.text and response.status_code == 200),
+                check_login_text.lower() in response.text.lower()]):
+            sickrage.srCore.srLogger.warning('Please configure the required cookies for this provider. Check your '
+                                             'provider settings')
+
+            sickrage.srCore.srNotifications.notifications.error(
+                'Wrong cookies for {}'.format(self.name),
+                'Check your provider settings'
+            )
+            sickrage.srCore.srWebSession.cookies.clear()
+            return False
+        else:
+            return True
 
     @classmethod
     def getDefaultProviders(cls):
@@ -803,46 +886,46 @@ class TorrentRssProvider(TorrentProvider):
         return title, url
 
     def validateRSS(self):
+        torrent_file = None
+
         try:
-            if self.cookies:
-                cookie_validator = re.compile(r"^(\w+=\w+)(;\w+=\w+)*$")
-                if not cookie_validator.match(self.cookies):
-                    return False, 'Cookie is not correctly formatted: ' + self.cookies
+            add_cookie = self.add_cookies_from_ui()
+            if not add_cookie.get('result'):
+                return add_cookie
 
             data = self.cache._get_rss_data()['entries']
             if not data:
-                return False, 'No items found in the RSS feed ' + self.urls['base_url']
+                return {'result': False,
+                        'message': 'No items found in the RSS feed {}'.format(self.urls['base_url'])}
 
             (title, url) = self._get_title_and_url(data[0])
 
             if not title:
-                return False, 'Unable to get title from first item'
+                return {'result': False,
+                        'message': 'Unable to get title from first item'}
 
             if not url:
-                return False, 'Unable to get torrent url from first item'
+                return {'result': False,
+                        'message': 'Unable to get torrent url from first item'}
 
             if url.startswith('magnet:') and re.search(r'urn:btih:([\w]{32,40})', url):
-                return True, 'RSS feed Parsed correctly'
+                return {'result': True,
+                        'message': 'RSS feed Parsed correctly'}
             else:
-                if self.cookies:
-                    requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
-                                                         dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
-
                 try:
-                    torrent_file = sickrage.srCore.srWebSession.get(url).text
-                except Exception:
-                    return False, 'Unable to get torrent from url'
-
-                try:
+                    torrent_file = sickrage.srCore.srWebSession.get(url).content
                     bencode.bdecode(torrent_file)
                 except Exception as e:
-                    self.dumpHTML(torrent_file)
-                    return False, 'Torrent link is not a valid torrent file: {}'.format(e.message)
+                    if data: self.dumpHTML(torrent_file)
+                    return {'result': False,
+                            'message': 'Torrent link is not a valid torrent file: {}'.format(e.message)}
 
-            return True, 'RSS feed Parsed correctly'
+            return {'result': True,
+                    'message': 'RSS feed Parsed correctly'}
 
         except Exception as e:
-            return False, 'Error when trying to load RSS: {}'.format(e.message)
+            return {'result': False,
+                    'message': 'Error when trying to load RSS: {}'.format(e.message)}
 
     @staticmethod
     def dumpHTML(data):
@@ -851,11 +934,14 @@ class TorrentRssProvider(TorrentProvider):
         try:
             with io.open(dumpName, 'wb') as fileOut:
                 fileOut.write(data)
+
             chmodAsParent(dumpName)
+
+            sickrage.srCore.srLogger.info("Saved custom_torrent html dump %s " % dumpName)
         except IOError as e:
             sickrage.srCore.srLogger.error("Unable to save the file: %s " % repr(e))
             return False
-        sickrage.srCore.srLogger.info("Saved custom_torrent html dump %s " % dumpName)
+
         return True
 
     @classmethod

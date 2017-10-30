@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 import re
 import urllib
 
-import requests
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -57,16 +57,17 @@ class HDSpaceProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def _check_auth(self):
-
         if not self.username or not self.password:
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
 
         return True
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
-        if 'pass' in requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies):
+        if 'pass' in dict_from_cookiejar(sickrage.srCore.srWebSession.cookies):
             return True
 
         login_params = {'uid': self.username,
@@ -75,12 +76,12 @@ class HDSpaceProvider(TorrentProvider):
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Password Incorrect', response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -96,73 +97,17 @@ class HDSpaceProvider(TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
                     searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
                 else:
                     searchURL = self.urls['search'] % ''
 
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
-                if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
-
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
-
-                # Search result page contains some invalid html that prevents html parser from returning all data.
-                # We cut everything before the table that contains the data we are interested in thus eliminating
-                # the invalid html portions
-                try:
-                    data = data.split('<div id="information"></div>')[1]
-                    index = data.index('<table')
-                except ValueError:
-                    sickrage.srCore.srLogger.error("Could not find main torrent table")
-                    continue
-
-                with bs4_parser(data[index:]) as html:
-                    if not html:
-                        sickrage.srCore.srLogger.debug("No html data parsed from provider")
-                        continue
-
-                torrents = html.findAll('tr')
-                if not torrents:
-                    continue
-
-                # Skip column headers
-                for result in torrents[1:]:
-                    if len(result.contents) < 10:
-                        # skip extraneous rows at the end
-                        continue
-
-                    try:
-                        dl_href = result.find('a', attrs={'href': re.compile(r'download.php.*')})['href']
-                        title = re.search('f=(.*).torrent', dl_href).group(1).replace('+', '.')
-                        download_url = self.urls['base_url'] + dl_href
-                        seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
-                        leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
-                        size = convert_size(result, -1)
-
-                        if not all([title, download_url]):
-                            continue
-
-                        # Filter unseeded torrent
-                        if seeders < self.minseed or leechers < self.minleech:
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                        title, seeders, leechers))
-                            continue
-
-                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                'leechers': leechers, 'hash': ''}
-
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                        results.append(item)
-                    except (AttributeError, TypeError, KeyError, ValueError):
-                        continue
 
         # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
@@ -178,3 +123,52 @@ class HDSpaceProvider(TorrentProvider):
         """
 
         results = []
+
+        try:
+            data = data.split('<div id="information"></div>')[1]
+        except ValueError:
+            sickrage.srCore.srLogger.error("Could not find main torrent table")
+            return results
+
+        with bs4_parser(data[data.index('<table'):]) as html:
+            torrents = html.findAll('tr')
+            if not torrents:
+                return results
+
+            # Skip column headers
+            for result in torrents[1:]:
+                if len(result.contents) < 10:
+                    # skip extraneous rows at the end
+                    continue
+
+                try:
+                    dl_href = result.find('a', attrs={'href': re.compile(r'download.php.*')})['href']
+                    title = re.search('f=(.*).torrent', dl_href).group(1).replace('+', '.')
+                    download_url = self.urls['base_url'] + dl_href
+                    seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
+                    leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
+                    size = convert_size(result, -1)
+
+                    if not all([title, download_url]):
+                        continue
+
+                    # Filter unseeded torrent
+                    if seeders < self.minseed or leechers < self.minleech:
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the minimum "
+                                                           "seeders or leechers: {0} (S:{1} L:{2})".format(title,
+                                                                                                           seeders,
+                                                                                                           leechers))
+                        continue
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except (AttributeError, TypeError, KeyError, ValueError):
+                    continue
+
+        return results

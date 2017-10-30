@@ -87,14 +87,14 @@ class MoreThanTVProvider(TorrentProvider):
                 sickrage.srCore.srWebSession.get(self.urls['login'])
                 response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params).text
             except Exception:
-                sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+                sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('logout.php', response):
                 return True
             elif re.search('Your username or password was incorrect.', response):
                 sickrage.srCore.srLogger.warning(
-                    "[{}]: Invalid username or password. Check your settings".format(self.name))
+                    "Invalid username or password. Check your settings".format(self.name))
 
     def search(self, search_params, age=0, ep_obj=None):
         results = []

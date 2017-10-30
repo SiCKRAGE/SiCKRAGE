@@ -21,10 +21,10 @@ from __future__ import unicode_literals
 import re
 
 import requests
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
@@ -53,14 +53,9 @@ class GFTrackerProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=20)
 
-    def _check_auth(self):
-
-        if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
-
-        return True
-
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
         login_params = {'username': self.username,
                         'password': self.password}
@@ -68,13 +63,13 @@ class GFTrackerProvider(TorrentProvider):
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         # Save cookies from response
         if re.search('Username or password incorrect', response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
@@ -107,6 +102,14 @@ class GFTrackerProvider(TorrentProvider):
                     continue
 
                 try:
+                    def process_column_header(td):
+                        result = ''
+                        if td.a and td.a.img:
+                            result = td.a.img.get('title', td.a.get_text(strip=True))
+                        if not result:
+                            result = td.get_text(strip=True)
+                        return result
+
                     with bs4_parser(data) as html:
                         torrent_table = html.find("div", id="torrentBrowse")
                         torrent_rows = torrent_table.findChildren("tr") if torrent_table else []
