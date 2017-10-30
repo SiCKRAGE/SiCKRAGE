@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0e6b451 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
+- * 1bcdf4f - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
+- * c6bc2e9 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
 - * c174e09 - 2017-10-29: Release v9.1.62 
 - * 8191cb2 - 2017-10-29: Fixed categories for TorrentBytes 
 - * f49f2ee - 2017-10-29: Added custom url setting to IPTorrents 
