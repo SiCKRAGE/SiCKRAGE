@@ -1,6 +1,7 @@
 # Changelog
 
-- * 930cd8f - 2017-10-29: Fixed categories for TorrentBytes 
+- * 196db64 - 2017-10-29: Release v9.1.62 
+- * 8191cb2 - 2017-10-29: Fixed categories for TorrentBytes 
 - * f49f2ee - 2017-10-29: Added custom url setting to IPTorrents 
 - * 0c01ea0 - 2017-10-29: Cleaned up IPTorrents provider code 
 - * 598a329 - 2017-10-29: Fixed issus with TorrentBytes provider Fixed issues with TorrentLeech provider 
