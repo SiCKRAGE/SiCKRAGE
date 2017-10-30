@@ -1,6 +1,7 @@
 # Changelog
 
-- * a384813 - 2017-10-29: Refactored search providers 
+- * c174e09 - 2017-10-29: Release v9.1.62 
+- * ed3f92d - 2017-10-29: Refactored search providers 
 - * 40c06a0 - 2017-10-29: Refactored Abnormal torrent provider 
 - * 8191cb2 - 2017-10-29: Fixed categories for TorrentBytes 
 - * f49f2ee - 2017-10-29: Added custom url setting to IPTorrents 
