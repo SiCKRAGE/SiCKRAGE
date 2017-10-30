@@ -67,7 +67,7 @@ class NextorrentProvider(TorrentProvider):
                     search_url = urljoin(self.urls['base_url'], search_string)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url, cache=False).text
+                    data = sickrage.srCore.srWebSession.get(search_url).text
                 except Exception:
                     sickrage.srCore.srLogger.debug('No data returned from provider')
                     continue

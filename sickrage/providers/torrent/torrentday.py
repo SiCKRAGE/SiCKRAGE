@@ -106,7 +106,7 @@ class TorrentDayProvider(TorrentProvider):
                     post_data.update({'free': 'on'})
 
                 try:
-                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data, cache=False).json()
+                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
                     torrents = data['Fs'][0]['Cn']['torrents']
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")

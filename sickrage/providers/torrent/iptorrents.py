@@ -19,13 +19,13 @@
 from __future__ import unicode_literals
 
 import re
+from urlparse import urljoin
 
 from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser, convert_size, try_int
+from sickrage.core.helpers import bs4_parser, convert_size, try_int, validate_url
 from sickrage.providers import TorrentProvider
 
 
@@ -49,13 +49,9 @@ class IPTorrentsProvider(TorrentProvider):
 
         self.categories = '73=&60='
 
+        self.custom_url = ""
+
         self.cache = TVCache(self, min_time=10)
-
-    def _check_auth(self):
-        if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
-
-        return True
 
     def login(self):
         cookie_dict = dict_from_cookiejar(sickrage.srCore.srWebSession.cookies)
@@ -71,7 +67,15 @@ class IPTorrentsProvider(TorrentProvider):
 
         login_params = {'username': self.username, 'password': self.password, 'login': 'submit'}
 
-        response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30)
+        login_url = self.urls['login']
+        if self.custom_url:
+            if not validate_url(self.custom_url):
+                sickrage.srCore.srLogger.warning("Invalid custom url: {}".format(self.custom_url))
+                return False
+
+            login_url = urljoin(self.custom_url, self.urls['login'].split(self.urls['base_url'])[1])
+
+        response = sickrage.srCore.srWebSession.post(login_url, data=login_params, timeout=30)
         if not response.ok:
             sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -94,7 +98,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         freeleech = '&free=on' if self.freeleech else ''
@@ -102,20 +106,26 @@ class IPTorrentsProvider(TorrentProvider):
         if not self.login():
             return results
 
-        for mode in search_params.keys():
+        for mode in search_strings:
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
-            for search_string in search_params[mode]:
-
+            for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
                 # URL with 50 tv-show results, or max 150 if adjusted in IPTorrents profile
-                searchURL = self.urls['search'] % (self.categories, freeleech, search_string)
-                searchURL += ';o=seeders' if mode != 'RSS' else ''
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                search_url = self.urls['search'] % (self.categories, freeleech, search_string)
+                search_url += ';o=seeders' if mode != 'RSS' else ''
+
+                if self.custom_url:
+                    if not validate_url(self.custom_url):
+                        sickrage.srCore.srLogger.warning("Invalid custom url: {}".format(self.custom_url))
+                        return results
+                    search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
+
+                sickrage.srCore.srLogger.debug("Search URL: %s" % search_url)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL, cache=False).text
+                    data = sickrage.srCore.srWebSession.get(search_url).text
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue

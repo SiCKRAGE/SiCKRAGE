@@ -61,9 +61,9 @@ def _verify_result(result):
                     'Referer': '/'.join(url.split('/')[:3]) + '/'
                 })
 
-            sickrage.srCore.srLogger.info("Verifiying a result from " + resProvider.name + " at " + url)
+            sickrage.srCore.srLogger.debug("Verifiying a result from " + resProvider.name + " at " + url)
 
-            result.content = sickrage.srCore.srWebSession.get(url, verify=False, cache=False, headers=headers).content
+            result.content = sickrage.srCore.srWebSession.get(url, verify=False, headers=headers).content
 
             if result.resultType == "torrent":
                 try:
@@ -78,7 +78,7 @@ def _verify_result(result):
             else:
                 return result
 
-            sickrage.srCore.srLogger.warning("Failed to verify result: %s" % url)
+            sickrage.srCore.srLogger.debug("Failed to verify result: %s" % url)
 
     result.content = None
 
@@ -289,7 +289,7 @@ def pickBestResult(results, show):
 
         if not show_names.filterBadReleases(cur_result.name, parse=False):
             sickrage.srCore.srLogger.info(
-                "Ignoring " + cur_result.name + " because its not a valid scene release that we want, ignoring it")
+                "Ignoring " + cur_result.name + " because its not a valid scene release that we want")
             continue
 
         if hasattr(cur_result, 'size'):
@@ -309,7 +309,7 @@ def pickBestResult(results, show):
                 file_size = float(file_size / 1000000)
                 if file_size > quality_size:
                     raise Exception(
-                        "Ignoring " + cur_result.name + " with size: {} based on quality size filter: {}, ignoring it".format(
+                        "Ignoring " + cur_result.name + " with size: {} based on quality size filter: {}".format(
                             file_size, quality_size)
                     )
         except Exception as e:
@@ -319,6 +319,7 @@ def pickBestResult(results, show):
         # verify result content
         cur_result = _verify_result(cur_result)
         if not cur_result.content:
+            sickrage.srCore.srLogger.info("Ignoring " + cur_result.name + " because it does not have valid download url")
             continue
 
         if not bestResult:

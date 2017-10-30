@@ -180,7 +180,7 @@
                             <div class="show-image">
                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                     <img alt="" class="show-image"
-                                         src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"/>
+                                         src="${srWebRoot}${showImage(curShow.indexerid, 'poster').url}"/>
                                 </a>
                             </div>
 
