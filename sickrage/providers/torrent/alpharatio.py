@@ -57,7 +57,7 @@ class AlphaRatioProvider(TorrentProvider):
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning('Unable to connect to provider')
             return False
 
         if re.search('Invalid Username/password', response) \

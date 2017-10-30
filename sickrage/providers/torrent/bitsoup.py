@@ -94,57 +94,68 @@ class BitSoupProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(self.urls['search'], search_params).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
-
-                try:
-                    with bs4_parser(data) as html:
-                        torrent_table = html.find('table', attrs={'class': 'koptekst'})
-                        torrent_rows = torrent_table.find_all('tr') if torrent_table else []
-
-                        # Continue only if one Release is found
-                        if len(torrent_rows) < 2:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        for result in torrent_rows[1:]:
-                            cells = result.find_all('td')
-
-                            link = cells[1].find('a')
-                            download_url = self.urls['download'] % cells[2].find('a')['href']
-
-                            try:
-                                title = link.getText()
-                                seeders = int(cells[10].getText())
-                                leechers = int(cells[11].getText())
-                                # FIXME
-                                size = -1
-                            except (AttributeError, TypeError):
-                                continue
-
-                            if not all([title, download_url]):
-                                continue
-
-                                # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-                except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find('table', attrs={'class': 'koptekst'})
+            torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+
+            # Continue only if one Release is found
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            for row in torrent_rows[1:]:
+                try:
+                    cells = row.find_all('td')
+
+                    link = cells[1].find('a')
+                    download_url = self.urls['download'] % cells[2].find('a')['href']
+
+                    try:
+                        title = link.getText()
+                        seeders = int(cells[10].getText())
+                        leechers = int(cells[11].getText())
+                        # FIXME
+                        size = -1
+                    except (AttributeError, TypeError):
+                        continue
+
+                    if not all([title, download_url]):
+                        continue
+
+                        # Filter unseeded torrent
+                    if seeders < self.minseed or leechers < self.minleech:
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
+                        continue
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")

@@ -63,7 +63,6 @@ class HD4FreeProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-
             sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if self.freeleech:
@@ -132,3 +131,13 @@ class HD4FreeProvider(TorrentProvider):
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []

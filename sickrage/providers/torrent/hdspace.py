@@ -169,3 +169,12 @@ class HDSpaceProvider(TorrentProvider):
 
         return results
 
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []

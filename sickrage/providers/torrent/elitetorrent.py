@@ -156,3 +156,13 @@ class EliteTorrentProvider(TorrentProvider):
         title += '-ELITETORRENT'
 
         return title.strip()
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []

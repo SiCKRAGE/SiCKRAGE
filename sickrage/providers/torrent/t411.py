@@ -162,7 +162,15 @@ class T411Provider(TorrentProvider):
 
         return results
 
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
 
+        results = []
 
 class T411Auth(AuthBase):
     """Attaches HTTP Authentication to the given Request object."""

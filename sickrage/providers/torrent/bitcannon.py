@@ -19,87 +19,129 @@
 
 from __future__ import unicode_literals
 
-from urllib import quote_plus
+from urlparse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import try_int
+from sickrage.core.helpers import try_int, convert_size, validate_url
 from sickrage.providers import TorrentProvider
 
 
 class BitCannonProvider(TorrentProvider):
     def __init__(self):
-        super(BitCannonProvider, self).__init__("BitCannon", 'http://127.0.0.1:1337', False)
+        super(BitCannonProvider, self).__init__("BitCannon", 'http://localhost:3000', False)
+        self.api_key = None
 
         self.minseed = None
         self.minleech = None
 
+        self.custom_url = ""
+
         self.urls.update({
-            'search': '{base_url}/search/'.format(**self.urls),
-            'trackers': '{base_url}/stats'.format(**self.urls),
+            'search': '{base_url}/api/search'.format(**self.urls)
         })
 
-        self.cache = TVCache(self, min_time=20)
+        self.cache = TVCache(self, search_params={'RSS': ['tv', 'anime']})
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
-        try:
-            trackers = sickrage.srCore.srWebSession.get(self.urls['trackers']).json().get('Trackers')
-        except Exception:
-            sickrage.srCore.srLogger.info('Could not get tracker list from BitCannon, aborting search')
-            return results
+        search_url = self.urls["search"]
+        if self.custom_url:
+            if not validate_url(self.custom_url):
+                sickrage.srCore.srLogger.warning("Invalid custom url: {0}".format(self.custom_url))
+                return results
+            search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
-        for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+        # Search Params
+        search_params = {
+            'category': 'anime' if ep_obj and ep_obj.series and ep_obj.series.anime else 'tv',
+            'apiKey': self.api_key,
+        }
+
+        for mode in search_strings:
+            sickrage.srCore.srLogger.debug('Search mode: {}'.format(mode))
             for search_string in search_strings[mode]:
-                searchURL = self.urls['search'] + search_string
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                search_params['q'] = search_string
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-                try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).json()
-                except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                response = sickrage.srCore.srWebSession.get(search_url, params=search_params)
+                if not response or not response.content:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
                     continue
 
-                for item in data:
-                    if 'tv' not in (item.get('Category') or '').lower():
-                        continue
+                try:
+                    jdata = response.json()
+                except ValueError:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
+                    continue
 
-                    title = item.get('Title', '')
-                    info_hash = item.get('Btih', '')
-                    if not all([title, info_hash]):
-                        continue
+                if not self._check_auth_from_data(jdata):
+                    return results
 
-                    swarm = item.get('Swarm', {})
-                    seeders = swarm.get('Seeders', 0)
-                    leechers = swarm.get('Leechers', 0)
-                    size = item.get('Size', -1)
-
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                    title, seeders, leechers))
-                        continue
-
-                    # Only build the url if we selected it
-                    download_url = 'magnet:?xt=urn:btih:%s&dn=%s&tr=%s' % (info_hash, quote_plus(title.encode('utf-8')),
-                                                                           '&tr='.join(
-                                                                               [quote_plus(x.encode('utf-8')) for x
-                                                                                in trackers]))
-
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
-
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                    results.append(item)
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                results += self.parse(jdata, mode)
 
         return results
 
+    def parse(self, data, mode):
+        """
+        Parse search results for items.
+
+        :param data: The raw response from a search
+        :param mode: The current mode used to search, e.g. RSS
+
+        :return: A list of items found
+        """
+        items = []
+        torrent_rows = data.pop('torrents', {})
+
+        # Skip column headers
+        for row in torrent_rows:
+            try:
+                title = row.pop('title', '')
+                info_hash = row.pop('infoHash', '')
+                download_url = 'magnet:?xt=urn:btih:' + info_hash
+                if not all([title, download_url, info_hash]):
+                    continue
+
+                swarm = row.pop('swarm', {})
+                seeders = try_int(swarm.pop('seeders', 0))
+                leechers = try_int(swarm.pop('leechers', 0))
+
+                # Filter unseeded torrent
+                if seeders < min(self.minseed, 1):
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the minimum  "
+                                                       "seeders: {0}. Seeders: {1}".format(title, seeders))
+                    continue
+
+                size = convert_size(row.pop('size', -1)) or -1
+
+                item = {
+                    'title': title,
+                    'link': download_url,
+                    'size': size,
+                    'seeders': seeders,
+                    'leechers': leechers,
+                    'pubdate': None,
+                }
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+
+                items.append(item)
+            except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+                sickrage.srCore.srLogger.error('Failed parsing provider')
+
+        return items
+
+    @staticmethod
+    def _check_auth_from_data(data):
+        if not all([isinstance(data, dict),
+                    data.pop('status', 200) != 401,
+                    data.pop('message', '') != 'Invalid API key']):
+
+            sickrage.srCore.srLogger.warning('Invalid api key. Check your settings')
+            return False
+
+        return True

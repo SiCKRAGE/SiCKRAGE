@@ -64,7 +64,6 @@ class NyaaProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug('Searching only confirmed torrents')
 
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
                     search_params['q'] = search_string
@@ -87,12 +86,10 @@ class NyaaProvider(TorrentProvider):
 
     def parse(self, data, mode):
         """
-        Parse search results for items.
-
-        :param data: The raw response from a search
-        :param mode: The current mode used to search, e.g. RSS
-
-        :return: A list of items found
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
         """
 
         results = []
