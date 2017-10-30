@@ -65,45 +65,17 @@ class DanishbitsProvider(TorrentProvider):
 
         for mode in search_strings:
             sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
-
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: {0}".format(search_string))
 
                 search_params['search'] = search_string
 
-                data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    results += self.parse(data, mode)
+                except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                torrents = json.loads(data)
-                if 'results' in torrents:
-                    for torrent in torrents['results']:
-                        title = torrent['release_name']
-                        download_url = torrent['download_url']
-                        seeders = torrent['seeders']
-                        leechers = torrent['leechers']
-                        if seeders < self.minseed or leechers < self.minleech:
-                            sickrage.srCore.srLogger.debug(
-                                "Discarded {0} because with {1}/{2} seeders/leechers does not meet the requirement of "
-                                "{3}/{4} seeders/leechers".format(title, seeders, leechers, self.minseed,
-                                                                  self.minleech))
-                            continue
-
-                        freeleech = torrent['freeleech']
-                        if self.freeleech and not freeleech:
-                            continue
-
-                        size = torrent['size']
-                        size = convert_size(size, -1)
-                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                'leechers': leechers, 'hash': ''}
-
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                        results.append(item)
 
         # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
@@ -119,3 +91,36 @@ class DanishbitsProvider(TorrentProvider):
         """
 
         results = []
+
+        torrents = json.loads(data)
+
+        if 'results' in torrents:
+            for torrent in torrents['results']:
+                try:
+                    title = torrent['release_name']
+                    download_url = torrent['download_url']
+                    seeders = torrent['seeders']
+                    leechers = torrent['leechers']
+                    if seeders < self.minseed or leechers < self.minleech:
+                        sickrage.srCore.srLogger.debug(
+                            "Discarded {0} because with {1}/{2} seeders/leechers does not meet the requirement of "
+                            "{3}/{4} seeders/leechers".format(title, seeders, leechers, self.minseed, self.minleech))
+                        continue
+
+                    freeleech = torrent['freeleech']
+                    if self.freeleech and not freeleech:
+                        continue
+
+                    size = torrent['size']
+                    size = convert_size(size, -1)
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error('Failed parsing provider')
+
+        return results

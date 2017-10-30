@@ -138,11 +138,11 @@ class ABNormalProvider(TorrentProvider):
 
             # Skip column headers
             for result in torrent_rows[1:]:
-                cells = result('td')
-                if len(cells) < len(labels):
-                    continue
-
                 try:
+                    cells = result('td')
+                    if len(cells) < len(labels):
+                        continue
+
                     title = cells[labels.index('Release')].get_text(strip=True)
                     download_url = urljoin(self.urls['base_url'],
                                            cells[labels.index('DL')].find('a', class_='tooltip')['href'])
@@ -169,10 +169,10 @@ class ABNormalProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug('Found result: {0}'.format(title))
+                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
                     results.append(item)
                 except Exception:
-                    continue
+                    sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results

@@ -77,6 +77,7 @@ class FileListProvider(TorrentProvider):
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
+
         if not self.login():
             return results
 
@@ -96,75 +97,11 @@ class FileListProvider(TorrentProvider):
                 search_params["search"] = search_string
                 search_url = self.urls["search"]
 
-                data = sickrage.srCore.srWebSession.get(search_url, params=search_params).text
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).text
+                    results += self.parse(data, mode)
+                except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                with bs4_parser(data, "html5lib") as html:
-                    torrent_rows = html.find_all("div", class_="torrentrow")
-
-                    # Continue only if at least one Release is found
-                    if not torrent_rows:
-                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                        continue
-
-                    # "Type", "Name", "Download", "Files", "Comments", "Added", "Size", "Snatched", "Seeders", "Leechers", "Upped by"
-                    labels = []
-
-                    columns = html.find_all("div", class_="colhead")
-                    for index, column in enumerate(columns):
-                        lbl = column.get_text(strip=True)
-                        if lbl:
-                            labels.append(str(lbl))
-                        else:
-                            lbl = column.find("img")
-                            if lbl:
-                                if lbl.has_attr("alt"):
-                                    lbl = lbl['alt']
-                                    labels.append(str(lbl))
-                            else:
-                                if index == 3:
-                                    lbl = "Download"
-                                else:
-                                    lbl = str(index)
-                                labels.append(lbl)
-
-                    # Skip column headers
-                    for result in torrent_rows:
-                        cells = result.find_all("div", class_="torrenttable")
-                        if len(cells) < len(labels):
-                            continue
-
-                        try:
-                            title = cells[labels.index("Name")].find("a").find("b").get_text(strip=True)
-                            download_url = urljoin(self.urls['base_url'],
-                                                   cells[labels.index("Download")].find("a")["href"])
-                            if not all([title, download_url]):
-                                continue
-
-                            seeders = try_int(cells[labels.index("Seeders")].find("span").get_text(strip=True))
-                            leechers = try_int(cells[labels.index("Leechers")].find("span").get_text(strip=True))
-
-                            # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != "RSS":
-                                    sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the"
-                                                                   " minimum seeders or leechers: {0} (S:{1} L:{2})".format
-                                                                   (title, seeders, leechers))
-                                continue
-
-                            torrent_size = cells[labels.index("Size")].find("span").get_text(strip=True)
-                            size = convert_size(torrent_size, -1)
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': None}
-                            if mode != "RSS":
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-                        except StandardError:
-                            continue
 
         # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
@@ -180,3 +117,70 @@ class FileListProvider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data, "html5lib") as html:
+            torrent_rows = html.find_all("div", class_="torrentrow")
+
+            # Continue only if at least one Release is found
+            if not torrent_rows:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            # "Type", "Name", "Download", "Files", "Comments", "Added", "Size", "Snatched", "Seeders", "Leechers", "Upped by"
+            labels = []
+
+            columns = html.find_all("div", class_="colhead")
+            for index, column in enumerate(columns):
+                lbl = column.get_text(strip=True)
+                if lbl:
+                    labels.append(str(lbl))
+                else:
+                    lbl = column.find("img")
+                    if lbl:
+                        if lbl.has_attr("alt"):
+                            lbl = lbl['alt']
+                            labels.append(str(lbl))
+                    else:
+                        if index == 3:
+                            lbl = "Download"
+                        else:
+                            lbl = str(index)
+                        labels.append(lbl)
+
+            # Skip column headers
+            for result in torrent_rows:
+                try:
+                    cells = result.find_all("div", class_="torrenttable")
+                    if len(cells) < len(labels):
+                        continue
+
+                    title = cells[labels.index("Name")].find("a").find("b").get_text(strip=True)
+                    download_url = urljoin(self.urls['base_url'],
+                                           cells[labels.index("Download")].find("a")["href"])
+                    if not all([title, download_url]):
+                        continue
+
+                    seeders = try_int(cells[labels.index("Seeders")].find("span").get_text(strip=True))
+                    leechers = try_int(cells[labels.index("Leechers")].find("span").get_text(strip=True))
+
+                    # Filter unseeded torrent
+                    if seeders < self.minseed or leechers < self.minleech:
+                        if mode != "RSS":
+                            sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the"
+                                                           " minimum seeders or leechers: {0} (S:{1} L:{2})".format
+                                                           (title, seeders, leechers))
+                        continue
+
+                    torrent_size = cells[labels.index("Size")].find("span").get_text(strip=True)
+                    size = convert_size(torrent_size, -1)
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': None}
+                    if mode != "RSS":
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

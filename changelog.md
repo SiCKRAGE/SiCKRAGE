@@ -1,5 +1,6 @@
 # Changelog
 
+- * b89f887 - 2017-10-29: Refactoring search providers 
 - * c174e09 - 2017-10-29: Release v9.1.62 
 - * ed3f92d - 2017-10-29: Refactored search providers 
 - * 40c06a0 - 2017-10-29: Refactored Abnormal torrent provider 

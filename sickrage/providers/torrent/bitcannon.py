@@ -66,35 +66,28 @@ class BitCannonProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-                response = sickrage.srCore.srWebSession.get(search_url, params=search_params)
-                if not response or not response.content:
-                    sickrage.srCore.srLogger.debug('No data returned from provider')
-                    continue
-
                 try:
-                    jdata = response.json()
-                except ValueError:
+                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).json()
+                    results += self.parse(data, mode)
+                except Exception:
                     sickrage.srCore.srLogger.debug('No data returned from provider')
-                    continue
-
-                if not self._check_auth_from_data(jdata):
-                    return results
-
-                results += self.parse(jdata, mode)
 
         return results
 
     def parse(self, data, mode):
         """
-        Parse search results for items.
-
-        :param data: The raw response from a search
-        :param mode: The current mode used to search, e.g. RSS
-
-        :return: A list of items found
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
         """
-        items = []
+
+        results = []
+
         torrent_rows = data.pop('torrents', {})
+
+        if not self._check_auth_from_data(data):
+            return results
 
         # Skip column headers
         for row in torrent_rows:
@@ -129,11 +122,11 @@ class BitCannonProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
-                items.append(item)
-            except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+                results.append(item)
+            except Exception:
                 sickrage.srCore.srLogger.error('Failed parsing provider')
 
-        return items
+        return results
 
     @staticmethod
     def _check_auth_from_data(data):

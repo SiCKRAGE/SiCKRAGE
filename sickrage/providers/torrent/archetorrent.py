@@ -121,7 +121,7 @@ class ArcheTorrentProvider(TorrentProvider):
                     data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    continue
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
 
         # Sort all the items by seeders if available
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
@@ -152,11 +152,11 @@ class ArcheTorrentProvider(TorrentProvider):
 
             # Skip column headers
             for result in torrent_rows[1:]:
-                cells = result('td')
-                if len(cells) < len(labels):
-                    continue
-
                 try:
+                    cells = result('td')
+                    if len(cells) < len(labels):
+                        continue
+
                     id = re.search('id=([0-9]+)', cells[labels.index('Nom')].find('a')['href']).group(1)
                     title = cells[labels.index('Nom')].get_text(strip=True)
                     download_url = urljoin(self.urls['download'], '?id={0}&name={1}'.format(id, title))
@@ -185,7 +185,7 @@ class ArcheTorrentProvider(TorrentProvider):
                         sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
                     results.append(item)
-                except StandardError:
-                    continue
+                except Exception:
+                    sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results
