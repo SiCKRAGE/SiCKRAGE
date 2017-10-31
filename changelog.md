@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1bcdf4f - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
+- * f81e833 - 2017-10-31: Updated grunt file to reflect repo changes 
+- * cbb3632 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
 - * c6bc2e9 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
 - * c174e09 - 2017-10-29: Release v9.1.62 
 - * 8191cb2 - 2017-10-29: Fixed categories for TorrentBytes 
