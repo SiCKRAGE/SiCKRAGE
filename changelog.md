@@ -1,6 +1,7 @@
 # Changelog
 
-- * f81e833 - 2017-10-31: Updated grunt file to reflect repo changes 
+- * a64cf5b - 2017-11-02: Fixed issue #102 - Newpct.com changed his web structure 
+- * 7f450e6 - 2017-10-31: Updated grunt file to reflect repo changes 
 - * cbb3632 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
 - * c6bc2e9 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
 - * c174e09 - 2017-10-29: Release v9.1.62 
