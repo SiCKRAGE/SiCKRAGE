@@ -47,6 +47,15 @@ class TVCache(object):
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
 
+    def _get_result_stats(self, item):
+        return self.provider._get_result_stats(item)
+
+    def _get_size(self, item):
+        return self.provider._get_size(item)
+
+    def _get_files(self, item):
+        return self.provider._get_files(item)
+
     def _get_rss_data(self):
         if self.search_params:
             return {'entries': self.provider.search(self.search_params)}
@@ -101,14 +110,14 @@ class TVCache(object):
 
     def _parseItem(self, item):
         title, url = self._get_title_and_url(item)
+        seeders, leechers = self._get_result_stats(item)
+        size = self._get_size(item)
+        files = self._get_files(item)
 
         self.check_item(title, url)
 
         if title and url:
-            title = self._translateTitle(title)
-            url = self._translateLinkURL(url)
-            self.addCacheEntry(title, url)
-
+            self.addCacheEntry(self._translateTitle(title), self._translateLinkURL(url), seeders, leechers, size, files)
         else:
             sickrage.srCore.srLogger.debug(
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
@@ -175,7 +184,7 @@ class TVCache(object):
             return False
         return True
 
-    def addCacheEntry(self, name, url, parse_result=None, indexer_id=0):
+    def addCacheEntry(self, name, url, seeders, leechers, size, files, parse_result=None, indexer_id=0):
         # check for existing entry in cache
         if len([x for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True) if
                 x['doc']['url'] == url]): return
@@ -220,16 +229,14 @@ class TVCache(object):
                     'time': int(time.mktime(datetime.datetime.today().timetuple())),
                     'quality': quality,
                     'release_group': release_group,
-                    'version': version
+                    'version': version,
+                    'seeders': seeders,
+                    'leechers': leechers,
+                    'size': size,
+                    'files': files
                 })
 
                 sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
-
-    def list_propers(self, date=None):
-        return [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
-                if ('.PROPER.' in x['doc']['name'] or '.REPACK.' in x['doc']['name'])
-                and x['doc']['time'] >= str(int(time.mktime(date.timetuple())))
-                and x['doc']['indexerid']]
 
     def search_cache(self, episode=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
@@ -245,6 +252,8 @@ class TVCache(object):
 
         # for each cache entry
         for curResult in dbData:
+            result = self.provider.getResult()
+
             # ignored/required words, and non-tv junk
             if not show_names.filterBadReleases(curResult["name"]):
                 continue
@@ -270,41 +279,37 @@ class TVCache(object):
 
             curEp = int(curEp)
 
-            curQuality = int(curResult["quality"])
-            curReleaseGroup = curResult["release_group"]
-            curVersion = curResult["version"]
+            result.quality = int(curResult["quality"])
+            result.release_group = curResult["release_group"]
+            result.version = curResult["version"]
 
             # if the show says we want that episode then add it to the list
-            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch, downCurQuality):
+            if not showObj.wantEpisode(curSeason, curEp, result.quality, manualSearch, downCurQuality):
                 sickrage.srCore.srLogger.info(
                     "Skipping " + curResult["name"] + " because we don't want an episode that's " +
-                    Quality.qualityStrings[curQuality])
+                    Quality.qualityStrings[result.quality])
                 continue
 
-            epObj = showObj.getEpisode(curSeason, curEp)
+            result.episodes = [showObj.getEpisode(curSeason, curEp)]
 
             # build a result object
-            title = curResult["name"]
-            url = curResult["url"]
+            result.name = curResult["name"]
+            result.url = curResult["url"]
 
-            sickrage.srCore.srLogger.info("Found result " + title + " at " + url)
+            sickrage.srCore.srLogger.info("Found result " + result.name + " at " + result.url)
 
-            result = self.provider.getResult([epObj])
             result.show = showObj
-            result.url = url
-            result.name = title
-            result.quality = curQuality
-            result.release_group = curReleaseGroup
-            result.version = curVersion
+            result.seeders = curResult.get("seeders", -1)
+            result.leechers = curResult.get("leechers", -1)
+            result.size = curResult.get("size", -1)
+            result.files = curResult.get("files", {})
             result.content = None
-            result.size = self.provider._get_size(url)
-            result.files = self.provider._get_files(url)
 
             # add it to the list
-            if epObj.episode not in neededEps:
-                neededEps[epObj.episode] = [result]
+            if result.episodes[0].episode not in neededEps:
+                neededEps[result.episodes[0].episode] = [result]
             else:
-                neededEps[epObj.episode] += [result]
+                neededEps[result.episodes[0].episode] += [result]
 
         # datetime stamp this search so cache gets cleared
         self.last_search = datetime.datetime.today()

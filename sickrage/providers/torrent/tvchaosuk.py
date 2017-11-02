@@ -52,7 +52,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         search_string = {'Season': []}
 
-        for show_name in set(show_names.allPossibleShowNames(self.show)):
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
             for sep in ' ', ' - ':
                 season_string = show_name + sep + 'Series '
                 if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -73,14 +73,14 @@ class TVChaosUKProvider(TorrentProvider):
         if not ep_obj:
             return []
 
-        for show_name in set(show_names.allPossibleShowNames(self.show)):
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
             for sep in ' ', ' - ':
                 ep_string = sanitizeSceneName(show_name) + sep
-                if self.show.air_by_date:
+                if ep_obj.show.air_by_date:
                     ep_string += str(ep_obj.airdate).replace('-', '|')
-                elif self.show.sports:
+                elif ep_obj.show.sports:
                     ep_string += str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
-                elif self.show.anime:
+                elif ep_obj.show.anime:
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
                     ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,

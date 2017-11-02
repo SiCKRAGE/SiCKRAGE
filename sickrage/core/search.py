@@ -84,6 +84,7 @@ def _verify_result(result):
 
     return result
 
+
 def _download_result(result):
     """
     Downloads a result to the appropriate black hole folder.
@@ -275,6 +276,18 @@ def pickBestResult(results, show):
             sickrage.srCore.srLogger.debug(cur_result.name + " is a quality we know we don't want, rejecting it")
             continue
 
+        # check if seeders and leechers meet out minimum requirements, disgard result if it does not
+        if hasattr(cur_result.provider, 'minseed') and hasattr(cur_result.provider, 'minleech'):
+            if cur_result.seeders not in (-1, None) and cur_result.leechers not in (-1, None):
+                if int(cur_result.seeders) < int(cur_result.provider.minseed) or int(cur_result.leechers) < int(cur_result.provider.minleech):
+                    sickrage.srCore.srLogger.info('Discarding torrent because it does not meet the minimum provider '
+                                                  'setting S:{} L:{}. Result has S:{} L:{}',
+                                                  cur_result.provider.minseed,
+                                                  cur_result.provider.minleech,
+                                                  cur_result.seeders,
+                                                  cur_result.leechers)
+                    continue
+
         if show.rls_ignore_words and show_names.containsAtLeastOneWord(cur_result.name,
                                                                        cur_result.show.rls_ignore_words):
             sickrage.srCore.srLogger.info(
@@ -319,7 +332,8 @@ def pickBestResult(results, show):
         # verify result content
         cur_result = _verify_result(cur_result)
         if not cur_result.content:
-            sickrage.srCore.srLogger.info("Ignoring " + cur_result.name + " because it does not have valid download url")
+            sickrage.srCore.srLogger.info(
+                "Ignoring " + cur_result.name + " because it does not have valid download url")
             continue
 
         if not bestResult:

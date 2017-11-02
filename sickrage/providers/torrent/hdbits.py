@@ -15,13 +15,11 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import json
 import urllib
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.classes import Proper
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
@@ -95,26 +93,6 @@ class HDBitsProvider(TorrentProvider):
 
         # sort by number of seeders
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
-
-        return results
-
-    def find_propers(self, search_date=None):
-        results = []
-
-        search_terms = [' proper ', ' repack ']
-
-        for term in search_terms:
-            for item in self.search(self._make_post_data_JSON(search_term=term)):
-                if item['utadded']:
-                    try:
-                        result_date = datetime.datetime.fromtimestamp(int(item['utadded']))
-                    except Exception:
-                        result_date = None
-
-                    if result_date:
-                        if not search_date or result_date > search_date:
-                            title, url = self._get_title_and_url(item)
-                            results.append(Proper(title, url, result_date, self.show))
 
         return results
 

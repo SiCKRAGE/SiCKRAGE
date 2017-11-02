@@ -38,14 +38,12 @@ from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
-    TorrentSearchResult
+from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
-from sickrage.core.helpers import chmodAsParent, \
-    findCertainShow, sanitizeFileName, clean_url, bs4_parser, validate_url, try_int, convert_size
+from sickrage.core.helpers import chmodAsParent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, validate_url, \
+    try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
@@ -54,7 +52,6 @@ class GenericProvider(object):
         self.name = name
         self.urls = {'base_url': url}
         self.private = private
-        self.show = None
         self.supports_backlog = True
         self.supports_absolute_numbering = False
         self.anime_only = False
@@ -64,7 +61,7 @@ class GenericProvider(object):
         self.enable_daily = False
         self.enable_backlog = False
         self.cache = TVCache(self)
-        self.proper_strings = ['PROPER|REPACK|REAL']
+        self.proper_strings = ['PROPER|REPACK|REAL|RERIP']
         self.search_separator = ' '
 
         # cookies
@@ -102,7 +99,7 @@ class GenericProvider(object):
                 for s in sub.get_subclasses():
                     yield s
 
-    def getResult(self, episodes):
+    def getResult(self, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -244,17 +241,21 @@ class GenericProvider(object):
 
     def _get_size(self, item):
         """Gets the size from the item"""
-        sickrage.srCore.srLogger.error("Provider type doesn't have ability to provide download size implemented yet")
+        sickrage.srCore.srLogger.debug("Provider type doesn't have ability to provide download size implemented yet")
         return -1
 
-    def _get_files(self, url):
+    def _get_files(self, item):
         """Gets dict of files with sizes from the item"""
-        sickrage.srCore.srLogger.error("Provider type doesn't have _get_files() implemented yet")
+        sickrage.srCore.srLogger.debug("Provider type doesn't have _get_files() implemented yet")
         return {}
 
-    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
-        self.show = show
+    def _get_result_stats(self, item):
+        # Get seeders/leechers stats
+        seeders = item.get('seeders', -1)
+        leechers = item.get('leechers', -1)
+        return try_int(seeders, -1), try_int(leechers, -1)
 
+    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
         results = {}
         itemList = []
 
@@ -322,62 +323,68 @@ class GenericProvider(object):
             items = {}
             itemsUnknown = []
             for item in itemList:
-                quality = self.getQuality(item, anime=show.is_anime)
-                if quality == Quality.UNKNOWN:
+                item_quality = self.getQuality(item, anime=show.is_anime)
+                if item_quality == Quality.UNKNOWN:
                     itemsUnknown += [item]
                 else:
-                    if quality not in items:
-                        items[quality] = [item]
+                    if item_quality not in items:
+                        items[item_quality] = [item]
                     else:
-                        items[quality].append(item)
+                        items[item_quality].append(item)
 
             itemList = list(itertools.chain(*[v for (k, v) in sorted(items.items(), reverse=True)]))
             itemList += itemsUnknown or []
 
         # filter results
         for item in itemList:
-            (title, url) = self._get_title_and_url(item)
+            result = self.getResult()
+
+            result.title, result.url = self._get_title_and_url(item)
 
             # parse the file name
             try:
                 myParser = NameParser(False)
-                parse_result = myParser.parse(title)
+                parse_result = myParser.parse(result.title)
             except InvalidNameException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + title + " into a valid episode")
+                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.title + " into a valid episode")
                 continue
             except InvalidShowException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + title + " into a valid show")
+                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.title + " into a valid show")
                 continue
 
-            showObj = parse_result.show
-            quality = parse_result.quality
-            release_group = parse_result.release_group
-            version = parse_result.version
+            result.show = parse_result.show
+            result.quality = parse_result.quality
+            result.release_group = parse_result.release_group
+            result.version = parse_result.version
+            result.size = self._get_size(item)
+            result.files = self._get_files(item)
+
+            result.seeders, result.leechers = self._get_result_stats(item)
 
             addCacheEntry = False
-            if not (showObj.air_by_date or showObj.sports):
+            if not (result.show.air_by_date or result.show.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         sickrage.srCore.srLogger.debug(
-                            "This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it")
+                            "This is supposed to be a season pack search but the result " + result.title + " is not a valid season pack, skipping it")
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
                                     parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
                         sickrage.srCore.srLogger.debug(
-                            "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + result.title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
                                                                                                      episodes if
                                                                                                      ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srCore.srLogger.debug(
-                            "The result " + title + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
+                            "The result " + result.title + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
                         addCacheEntry = True
                     elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srCore.srLogger.debug(
-                            "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + result.title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
 
                 if not addCacheEntry:
@@ -387,17 +394,17 @@ class GenericProvider(object):
             else:
                 if not parse_result.is_air_by_date:
                     sickrage.srCore.srLogger.debug(
-                        "This is supposed to be a date search but the result " + title + " didn't parse as one, skipping it")
+                        "This is supposed to be a date search but the result " + result.title + " didn't parse as one, skipping it")
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
                     dbData = [x['doc'] for x in
-                              sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
+                              sickrage.srCore.mainDB.db.get_many('tv_episodes', result.show.indexerid, with_doc=True)
                               if x['doc']['airdate'] == airdate]
 
                     if len(dbData) != 1:
                         sickrage.srCore.srLogger.warning(
-                            "Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it")
+                            "Tried to look up the date for the episode " + result.title + " but the database didn't give proper results, skipping it")
                         addCacheEntry = True
 
                 if not addCacheEntry:
@@ -406,50 +413,41 @@ class GenericProvider(object):
 
             # add parsed result to cache for usage later on
             if addCacheEntry:
-                sickrage.srCore.srLogger.debug("Adding item from search to cache: " + title)
-                self.cache.addCacheEntry(title, url, parse_result=parse_result)
+                sickrage.srCore.srLogger.debug("Adding item from search to cache: " + result.title)
+                self.cache.addCacheEntry(result.title, result.url, result.seeders, result.leechers, result.size,
+                                         result.files, parse_result)
                 continue
 
             # make sure we want the episode
             wantEp = True
             for epNo in actual_episodes:
-                if not showObj.wantEpisode(actual_season, epNo, quality, manualSearch, downCurQuality):
+                if not result.show.wantEpisode(actual_season, epNo, result.quality, manualSearch, downCurQuality):
                     wantEp = False
                     break
 
             if not wantEp:
                 sickrage.srCore.srLogger.info(
-                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(title, Quality.qualityStrings[quality]))
+                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.title, Quality.qualityStrings[result.quality]))
                 continue
 
             # make a result object
-            epObjs = []
+            result.episodes = []
             for curEp in actual_episodes:
-                epObjs.append(showObj.getEpisode(actual_season, curEp))
-
-            result = self.getResult(epObjs)
-            result.show = showObj
-            result.url = url
-            result.name = title
-            result.quality = quality
-            result.release_group = release_group
-            result.version = version
-            result.content = None
-            result.size = self._get_size(url)
-            result.files = self._get_files(url)
+                result.episodes.append(result.show.getEpisode(actual_season, curEp))
 
             sickrage.srCore.srLogger.debug(
-                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(title, Quality.qualityStrings[quality], url))
+                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.title, Quality.qualityStrings[result.quality],
+                                                                 result.url))
 
-            if len(epObjs) == 1:
-                epNum = epObjs[0].episode
+            if len(result.episodes) == 1:
+                epNum = result.episodes[0].episode
                 sickrage.srCore.srLogger.debug("Single episode result.")
-            elif len(epObjs) > 1:
+            elif len(result.episodes) > 1:
                 epNum = MULTI_EP_RESULT
                 sickrage.srCore.srLogger.debug(
                     "Separating multi-episode result to check for later - result contains episodes: " + str(
                         parse_result.episode_numbers))
-            elif len(epObjs) == 0:
+            elif len(result.episodes) == 0:
                 epNum = SEASON_RESULT
                 sickrage.srCore.srLogger.debug("Separating full season result to check for later")
 
@@ -460,11 +458,28 @@ class GenericProvider(object):
 
         return results
 
-    def find_propers(self, search_date=None):
-        results = self.cache.list_propers(search_date)
+    def find_propers(self, episodes):
+        results = []
 
-        return [Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time']), self.show) for x in
-                results]
+        for episode in episodes:
+            show = findCertainShow(sickrage.srCore.SHOWLIST, int(episode["showid"]))
+            if not show:
+                continue
+
+            ep_obj = show.getEpisode(int(episode["season"]), int(episode["episode"]))
+            for term in self.proper_strings:
+                search_strngs = self._get_episode_search_strings(ep_obj, add_string=term)
+                for item in self.search(search_strngs[0], ep_obj=ep_obj):
+                    result = self.getResult([ep_obj])
+                    result.name, result.url = self._get_title_and_url(item)
+                    result.seeders, result.leechers = self._get_result_stats(item)
+                    result.size = self._get_size(item)
+                    result.files = self._get_files(item)
+                    result.date = datetime.datetime.today()
+                    result.show = show
+                    results.append(result)
+
+        return results
 
     def add_cookies_from_ui(self):
         """
@@ -634,7 +649,7 @@ class TorrentProvider(GenericProvider):
         """
         return self.ratio
 
-    def getResult(self, episodes):
+    def getResult(self, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -662,38 +677,42 @@ class TorrentProvider(GenericProvider):
 
         return title, download_url
 
-    def _get_size(self, url):
-        size = -1
+    def _get_size(self, item):
+        size = item.get('size', -1)
+        title, url = self._get_title_and_url(item)
 
-        for url in self.make_url(url):
-            try:
-                resp = sickrage.srCore.srWebSession.get(url)
-                torrent = bencode.bdecode(resp.content)
+        if size == -1 and url:
+            for url in self.make_url(url):
+                try:
+                    resp = sickrage.srCore.srWebSession.get(url)
+                    torrent = bencode.bdecode(resp.content)
 
-                total_length = 0
-                for file in torrent['info']['files']:
-                    total_length += int(file['length'])
+                    total_length = 0
+                    for file in torrent['info']['files']:
+                        total_length += int(file['length'])
 
-                if total_length > 0:
-                    size = total_length
-                    break
-            except Exception:
-                pass
+                    if total_length > 0:
+                        size = total_length
+                        break
+                except Exception:
+                    pass
 
         return size
 
-    def _get_files(self, url):
+    def _get_files(self, item):
         files = {}
 
-        for url in self.make_url(url):
-            try:
-                resp = sickrage.srCore.srWebSession.get(url)
-                torrent = bencode.bdecode(resp.content)
+        title, url = self._get_title_and_url(item)
+        if url:
+            for url in self.make_url(url):
+                try:
+                    resp = sickrage.srCore.srWebSession.get(url)
+                    torrent = bencode.bdecode(resp.content)
 
-                for file in torrent['info']['files']:
-                    files[file['path'][0]] = int(file['length'])
-            except Exception:
-                pass
+                    for file in torrent['info']['files']:
+                        files[file['path'][0]] = int(file['length'])
+                except Exception:
+                    pass
 
         return files
 
@@ -735,27 +754,6 @@ class TorrentProvider(GenericProvider):
 
         return result
 
-    def find_propers(self, search_date=datetime.datetime.today()):
-        results = []
-
-        for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in
-                            sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
-                if episode['airdate'] >= str(search_date.toordinal()) \
-                        and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
-
-                    self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(episode["showid"]))
-                    if not show: continue
-
-                    curEp = show.getEpisode(int(episode["season"]), int(episode["episode"]))
-                    for term in self.proper_strings:
-                        searchString = self._get_episode_search_strings(curEp, add_string=term)
-                        for item in self.search(searchString[0]):
-                            title, url = self._get_title_and_url(item)
-                            results.append(Proper(title, url, datetime.datetime.today(), self.show))
-
-        return results
-
     @classmethod
     def getProviders(cls):
         return super(TorrentProvider, cls).loadProviders(cls.type)
@@ -780,7 +778,7 @@ class NZBProvider(GenericProvider):
             return self.id + '.png'
         return self.type + '.png'
 
-    def getResult(self, episodes):
+    def getResult(self, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -788,38 +786,42 @@ class NZBProvider(GenericProvider):
         result.provider = self
         return result
 
-    def _get_size(self, url):
-        size = -1
+    def _get_size(self, item):
+        size = item.get('size', -1)
+        title, url = self._get_title_and_url(item)
 
-        try:
-            resp = sickrage.srCore.srWebSession.get(url)
+        if size == -1 and url:
+            try:
+                resp = sickrage.srCore.srWebSession.get(url)
 
-            total_length = 0
-            for file in nzb_parser.parse(resp.content):
-                for segment in file.segments:
-                    total_length += int(segment.bytes)
+                total_length = 0
+                for file in nzb_parser.parse(resp.content):
+                    for segment in file.segments:
+                        total_length += int(segment.bytes)
 
-            if total_length > 0:
-                size = total_length
-        except Exception:
-            pass
+                if total_length > 0:
+                    size = total_length
+            except Exception:
+                pass
 
         return size
 
-    def _get_files(self, url):
+    def _get_files(self, item):
         files = {}
 
-        try:
-            resp = sickrage.srCore.srWebSession.get(url)
+        title, url = self._get_title_and_url(item)
+        if url:
+            try:
+                resp = sickrage.srCore.srWebSession.get(url)
 
-            for file in nzb_parser.parse(resp.content):
-                total_length = 0
-                for segment in file.segments:
-                    total_length += int(segment.bytes)
+                for file in nzb_parser.parse(resp.content):
+                    total_length = 0
+                    for segment in file.segments:
+                        total_length += int(segment.bytes)
 
-                files[file.subject] = total_length
-        except Exception:
-            pass
+                    files[file.subject] = total_length
+            except Exception:
+                pass
 
         return files
 
@@ -1120,7 +1122,7 @@ class NewznabProvider(NZBProvider):
             if mode != 'RSS':
                 if (self.cap_tv_search or not self.cap_tv_search == 'True') and not self.force_query:
                     search_params['t'] = 'tvsearch'
-                    search_params.update({'tvdbid': self.show.indexerid})
+                    search_params.update({'tvdbid': ep_obj.show.indexerid})
 
                 if search_params['t'] == 'tvsearch':
                     if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -1229,28 +1231,6 @@ class NewznabProvider(NZBProvider):
         if not results and not self.force_query:
             self.force_query = True
             return self.search(search_strings, ep_obj=ep_obj)
-
-        return results
-
-    def find_propers(self, search_date=datetime.datetime.today()):
-        results = []
-
-        for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in
-                            sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
-                if episode['airdate'] >= str(search_date.toordinal()) \
-                        and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
-
-                    self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
-                    if not self.show: continue
-
-                    curEp = self.show.getEpisode(int(episode["season"]), int(episode["episode"]))
-                    searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
-                    for searchString in searchStrings:
-                        for item in self.search(searchString):
-                            title, url = self._get_title_and_url(item)
-                            if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                                results += [Proper(title, url, datetime.datetime.today(), self.show)]
 
         return results
 

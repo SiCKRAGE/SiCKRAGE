@@ -76,11 +76,24 @@ class srProperSearcher(object):
 
         origThreadName = threading.currentThread().getName()
 
+        recently_aired = []
+        for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+            for episode in [e['doc'] for e in
+                            sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+                if episode['airdate'] >= str(search_date.toordinal()):
+                    if episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
+                        recently_aired += [episode]
+
+        if not recently_aired:
+            sickrage.srCore.srLogger.info('No recently aired episodes, nothing to search for')
+            return []
+
         # for each provider get a list of the
         for providerID, providerObj in sickrage.srCore.providersDict.sort(
                 randomize=sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS).items():
             # check provider type and provider is enabled
-            if not sickrage.srCore.srConfig.USE_NZBS and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
+            if not sickrage.srCore.srConfig.USE_NZBS and providerObj.type in [NZBProvider.type,
+                                                                              NewznabProvider.type]:
                 continue
             elif not sickrage.srCore.srConfig.USE_TORRENTS and providerObj.type in [TorrentProvider.type,
                                                                                     TorrentRssProvider.type]:
@@ -93,7 +106,7 @@ class srProperSearcher(object):
             sickrage.srCore.srLogger.info("Searching for any new PROPER releases from " + providerObj.name)
 
             try:
-                curPropers = providerObj.find_propers(search_date)
+                curPropers = providerObj.find_propers(recently_aired)
             except AuthException as e:
                 sickrage.srCore.srLogger.warning("Authentication error: {}".format(e.message))
                 continue
@@ -251,20 +264,19 @@ class srProperSearcher(object):
                     sickrage.srCore.srLogger.debug("This proper is already in history, skipping it")
                     continue
 
-                # get the episode object
-                epObj = curProper.show.getEpisode(curProper.season, curProper.episode)
-
                 # make the result object
-                result = curProper.provider.getResult([epObj])
+                result = curProper.provider.getResult([curProper.show.getEpisode(curProper.season, curProper.episode)])
                 result.show = curProper.show
                 result.url = curProper.url
                 result.name = curProper.name
                 result.quality = curProper.quality
                 result.release_group = curProper.release_group
                 result.version = curProper.version
+                result.seeders = curProper.seeders
+                result.leechers = curProper.leechers
+                result.size = curProper.size
+                result.files = curProper.files
                 result.content = curProper.content
-                result.size = curProper.provider._get_size(curProper.url)
-                result.files = curProper.provider._get_files(curProper.url)
 
                 # snatch it
                 snatchEpisode(result, SNATCHED_PROPER)
