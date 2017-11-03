@@ -94,7 +94,6 @@ class HoundDawgsProvider(TorrentProvider):
         for mode in search_strings.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
@@ -102,67 +101,9 @@ class HoundDawgsProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(self.urls['search'], params=self.search_params).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                try:
-                    with bs4_parser(data[data.find("<table class=\"torrent_table")]) as html:
-                        result_table = html.find('table', {'id': 'torrent_table'})
-
-                        if not result_table:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        result_tbody = result_table.find('tbody')
-                        entries = result_tbody.contents
-                        del entries[1::2]
-
-                        for result in entries[1:]:
-
-                            torrent = result.find_all('td')
-                            if len(torrent) <= 1:
-                                break
-
-                            allAs = (torrent[1]).find_all('a')
-
-                            try:
-                                # link = self.urls['base_url'] + allAs[2].attrs['href']
-                                # url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
-                                title = allAs[2].string
-                                # Trimming title so accepted by scene check(Feature has been rewuestet i forum)
-                                title = title.replace("custom.", "")
-                                title = title.replace("CUSTOM.", "")
-                                title = title.replace("Custom.", "")
-                                title = title.replace("dk", "")
-                                title = title.replace("DK", "")
-                                title = title.replace("Dk", "")
-                                title = title.replace("subs.", "")
-                                title = title.replace("SUBS.", "")
-                                title = title.replace("Subs.", "")
-
-                                download_url = self.urls['base_url'] + allAs[0].attrs['href']
-                                # FIXME
-                                size = -1
-                                seeders = 1
-                                leechers = 0
-
-                            except (AttributeError, TypeError):
-                                continue
-
-                            if not title or not download_url:
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-
-                except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         return results
 
@@ -175,3 +116,58 @@ class HoundDawgsProvider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data[data.find("<table class=\"torrent_table")]) as html:
+            result_table = html.find('table', {'id': 'torrent_table'})
+
+            if not result_table:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            result_tbody = result_table.find('tbody')
+            entries = result_tbody.contents
+            del entries[1::2]
+
+            for result in entries[1:]:
+
+                torrent = result.find_all('td')
+                if len(torrent) <= 1:
+                    break
+
+                allAs = (torrent[1]).find_all('a')
+
+                try:
+                    # link = self.urls['base_url'] + allAs[2].attrs['href']
+                    # url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
+                    title = allAs[2].string
+                    # Trimming title so accepted by scene check(Feature has been rewuestet i forum)
+                    title = title.replace("custom.", "")
+                    title = title.replace("CUSTOM.", "")
+                    title = title.replace("Custom.", "")
+                    title = title.replace("dk", "")
+                    title = title.replace("DK", "")
+                    title = title.replace("Dk", "")
+                    title = title.replace("subs.", "")
+                    title = title.replace("SUBS.", "")
+                    title = title.replace("Subs.", "")
+
+                    download_url = self.urls['base_url'] + allAs[0].attrs['href']
+                    # FIXME
+                    size = -1
+                    seeders = 1
+                    leechers = 0
+
+                    if not title or not download_url:
+                        continue
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

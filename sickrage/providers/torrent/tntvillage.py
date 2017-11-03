@@ -21,6 +21,8 @@ from __future__ import unicode_literals
 import re
 import traceback
 
+from requests.utils import dict_from_cookiejar
+
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.common import Quality
@@ -119,6 +121,8 @@ class TNTVillageProvider(TorrentProvider):
         return True
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
         login_params = {'UserName': self.username,
                         'PassWord': self.password,
@@ -399,13 +403,3 @@ class TNTVillageProvider(TorrentProvider):
                         sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         return results
-
-    def parse(self, data, mode):
-        """
-        Parse search results from data
-        :param data: response data
-        :param mode: search mode
-        :return: search results
-        """
-
-        results = []

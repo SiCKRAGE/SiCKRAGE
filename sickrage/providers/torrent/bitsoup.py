@@ -151,3 +151,5 @@ class BitSoupProvider(TorrentProvider):
                     results.append(item)
                 except Exception:
                     sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

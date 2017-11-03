@@ -163,18 +163,18 @@ class HDTorrentsProvider(TorrentProvider):
 
                     size = convert_size(torrent_size, -1)
                     download_url = self.urls['base_url'] + '/' + cells[labels.index('Dl')].a['href']
-                except (AttributeError, TypeError, KeyError, ValueError, IndexError):
-                    continue
 
-                if not all([title, download_url]):
-                    continue
+                    if not all([title, download_url]):
+                        continue
 
-                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                        'leechers': leechers, 'hash': ''}
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
 
-                if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                results.append(item)
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
 
         return results

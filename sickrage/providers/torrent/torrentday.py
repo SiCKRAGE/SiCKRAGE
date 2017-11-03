@@ -79,29 +79,9 @@ class TorrentDayProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
-                    torrents = data['Fs'][0]['Cn']['torrents']
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                for torrent in torrents:
-                    title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent['name'])
-                    download_url = self.urls['download'] % (torrent['id'], torrent['fname'])
-                    seeders = int(torrent['seed'])
-                    leechers = int(torrent['leech'])
-                    # FIXME
-                    size = -1
-
-                    if not all([title, download_url]):
-                        continue
-
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
-
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                    results.append(item)
 
         return results
 
@@ -114,3 +94,32 @@ class TorrentDayProvider(TorrentProvider):
         """
 
         results = []
+
+        try:
+            torrents = data['Fs'][0]['Cn']['torrents']
+        except Exception:
+            return results
+
+        for torrent in torrents:
+            try:
+                title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent['name'])
+                download_url = self.urls['download'] % (torrent['id'], torrent['fname'])
+                seeders = int(torrent['seed'])
+                leechers = int(torrent['leech'])
+                # FIXME
+                size = -1
+
+                if not all([title, download_url]):
+                    continue
+
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': ''}
+
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider.")
+
+        return results

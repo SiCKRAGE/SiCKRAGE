@@ -17,6 +17,8 @@ from __future__ import unicode_literals
 
 import re
 
+from requests.utils import dict_from_cookiejar
+
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
@@ -94,6 +96,8 @@ class TVChaosUKProvider(TorrentProvider):
         return [search_string]
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
         login_params = {'username': self.username, 'password': self.password}
 
@@ -174,16 +178,6 @@ class TVChaosUKProvider(TorrentProvider):
 
                             results.append(item)
                         except Exception:
-                            continue
+                            sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         return results
-
-    def parse(self, data, mode):
-        """
-        Parse search results from data
-        :param data: response data
-        :param mode: search mode
-        :return: search results
-        """
-
-        results = []

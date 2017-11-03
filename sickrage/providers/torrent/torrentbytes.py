@@ -91,7 +91,6 @@ class TorrentBytesProvider(TorrentProvider):
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
 
         return results
 

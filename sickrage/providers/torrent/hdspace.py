@@ -156,7 +156,7 @@ class HDSpaceProvider(TorrentProvider):
                         sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
-                except (AttributeError, TypeError, KeyError, ValueError):
-                    continue
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
 
         return results

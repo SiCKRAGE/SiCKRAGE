@@ -65,36 +65,11 @@ class Torrent9Provider(TorrentProvider):
                 else:
                     search_url = self.urls['rss']
 
-                data = sickrage.srCore.srWebSession.get(search_url).text
-                if not data:
-                    continue
-
-                with bs4_parser(data) as html:
-                    torrent_rows = html.findAll('tr')
-                    for result in torrent_rows:
-                        try:
-                            title = result.find('a').get_text(strip=False).replace("HDTV", "HDTV x264-Torrent9")
-                            title = re.sub(r' Saison', ' Season', title, flags=re.I)
-                            tmp = result.find("a")['href'].split('/')[-1].replace('.html', '.torrent').strip()
-                            download_url = (self.urls['base_url'] + '/get_torrent/{0}'.format(tmp) + ".torrent")
-                            if not all([title, download_url]):
-                                continue
-
-                            seeders = try_int(result.find(class_="seed_ok").get_text(strip=True))
-                            leechers = try_int(result.find_all('td')[3].get_text(strip=True))
-                            torrent_size = result.find_all('td')[1].get_text(strip=True)
-
-                            size = convert_size(torrent_size, -1, ['o', 'Ko', 'Mo', 'Go', 'To', 'Po'])
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-                        except StandardError:
-                            continue
+                try:
+                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -107,3 +82,32 @@ class Torrent9Provider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data) as html:
+            torrent_rows = html.findAll('tr')
+            for result in torrent_rows:
+                try:
+                    title = result.find('a').get_text(strip=False).replace("HDTV", "HDTV x264-Torrent9")
+                    title = re.sub(r' Saison', ' Season', title, flags=re.I)
+                    tmp = result.find("a")['href'].split('/')[-1].replace('.html', '.torrent').strip()
+                    download_url = (self.urls['base_url'] + '/get_torrent/{0}'.format(tmp) + ".torrent")
+                    if not all([title, download_url]):
+                        continue
+
+                    seeders = try_int(result.find(class_="seed_ok").get_text(strip=True))
+                    leechers = try_int(result.find_all('td')[3].get_text(strip=True))
+                    torrent_size = result.find_all('td')[1].get_text(strip=True)
+
+                    size = convert_size(torrent_size, -1, ['o', 'Ko', 'Mo', 'Go', 'To', 'Po'])
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

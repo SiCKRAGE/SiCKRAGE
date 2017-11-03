@@ -93,54 +93,9 @@ class NebulanceProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                try:
-                    with bs4_parser(data) as html:
-
-                        torrent_rows = []
-
-                        down_elems = html.findAll("img", {"alt": "Download Torrent"})
-                        for down_elem in down_elems:
-                            if down_elem:
-                                torr_row = down_elem.findParent('tr')
-                                if torr_row:
-                                    torrent_rows.append(torr_row)
-
-                        # Continue only if one Release is found
-                        if len(torrent_rows) < 1:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        for torrent_row in torrent_rows:
-
-                            title = torrent_row.find('a', {"data-src": True})['data-src'].rsplit('.', 1)[0]
-                            download_href = torrent_row.find('img', {"alt": 'Download Torrent'}).findParent()['href']
-                            seeders = int(
-                                torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
-                                    0].text.strip())
-                            leechers = int(
-                                torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
-                                    1].text.strip())
-                            download_url = self.urls['base_url'] + download_href
-                            # FIXME
-                            size = -1
-
-                            if not all([title, download_url]):
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-
-                except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
 
         return results
 
@@ -153,3 +108,47 @@ class NebulanceProvider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data) as html:
+            torrent_rows = []
+
+            down_elems = html.findAll("img", {"alt": "Download Torrent"})
+            for down_elem in down_elems:
+                if down_elem:
+                    torr_row = down_elem.findParent('tr')
+                    if torr_row:
+                        torrent_rows.append(torr_row)
+
+            # Continue only if one Release is found
+            if len(torrent_rows) < 1:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            for torrent_row in torrent_rows:
+                try:
+                    title = torrent_row.find('a', {"data-src": True})['data-src'].rsplit('.', 1)[0]
+                    download_href = torrent_row.find('img', {"alt": 'Download Torrent'}).findParent()['href']
+                    seeders = int(
+                        torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
+                            0].text.strip())
+                    leechers = int(
+                        torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
+                            1].text.strip())
+                    download_url = self.urls['base_url'] + download_href
+                    # FIXME
+                    size = -1
+
+                    if not all([title, download_url]):
+                        continue
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

@@ -96,49 +96,10 @@ class TorrentLeechProvider(TorrentProvider):
                 }
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls["search"], params=search_params, cache=False).text
+                    data = sickrage.srCore.srWebSession.get(self.urls["search"], params=search_params).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                try:
-                    with bs4_parser(data) as html:
-                        torrent_table = html.find('table', attrs={'id': 'torrenttable'})
-                        torrent_rows = torrent_table.find_all('tr') if torrent_table else []
-
-                        # Continue only if one Release is found
-                        if len(torrent_rows) < 2:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        for result in torrent_table.find_all('tr')[1:]:
-                            try:
-                                title = result.find("td", class_="name").find("a").get_text(strip=True)
-                                download_url = urljoin(self.urls['base_url'],
-                                                       result.find("td", class_="quickdownload").find("a")["href"])
-
-                                if not all([title, download_url]):
-                                    continue
-
-                                seeders = try_int(result.find('td', attrs={'class': 'seeders'}).text, 0)
-                                leechers = try_int(result.find('td', attrs={'class': 'leechers'}).text, 0)
-
-                                size = -1
-                                if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',
-                                            result('td', class_="listcolumn")[1].text):
-                                    size = convert_size(result('td', class_="listcolumn")[1].text.strip(), -1)
-                            except (AttributeError, TypeError):
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-                except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         return results
 
@@ -151,3 +112,41 @@ class TorrentLeechProvider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find('table', attrs={'id': 'torrenttable'})
+            torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+
+            # Continue only if one Release is found
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            for result in torrent_table.find_all('tr')[1:]:
+                try:
+                    title = result.find("td", class_="name").find("a").get_text(strip=True)
+                    download_url = urljoin(self.urls['base_url'],
+                                           result.find("td", class_="quickdownload").find("a")["href"])
+
+                    if not all([title, download_url]):
+                        continue
+
+                    seeders = try_int(result.find('td', attrs={'class': 'seeders'}).text, 0)
+                    leechers = try_int(result.find('td', attrs={'class': 'leechers'}).text, 0)
+
+                    size = -1
+                    if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',
+                                result('td', class_="listcolumn")[1].text):
+                        size = convert_size(result('td', class_="listcolumn")[1].text.strip(), -1)
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider.")
+
+        return results

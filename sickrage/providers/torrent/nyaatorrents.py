@@ -121,7 +121,7 @@ class NyaaProvider(TorrentProvider):
                     sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
                 results.append(item)
-            except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+            except Exception:
                 sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results

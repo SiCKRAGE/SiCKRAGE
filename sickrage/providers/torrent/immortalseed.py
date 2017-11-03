@@ -59,7 +59,6 @@ class ImmortalseedProvider(TorrentProvider):
         self.cache = ImmortalseedCache(self, min_time=20)
 
     def _check_auth(self):
-
         if not self.username or not self.password:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
@@ -105,66 +104,18 @@ class ImmortalseedProvider(TorrentProvider):
             'keywords': ''
         }
 
-        def process_column_header(td):
-            td_title = ''
-            if td.img:
-                td_title = td.img.get('title', td.get_text(strip=True))
-            if not td_title:
-                td_title = td.get_text(strip=True)
-            return td_title
-
         for mode in search_strings:
-
             sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
-
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: {0}".format(search_string))
                     search_params['keywords'] = search_string
 
-                data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    results += self.parse(data, mode)
+                except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                with bs4_parser(data) as html:
-                    torrent_table = html.find('table', id='sortabletable')
-                    torrent_rows = torrent_table('tr') if torrent_table else []
-
-                    # Continue only if at least one Release is found
-                    if len(torrent_rows) < 2:
-                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                        continue
-
-                    labels = [process_column_header(label) for label in torrent_rows[0]('td')]
-
-                    # Skip column headers
-                    for result in torrent_rows[1:]:
-                        try:
-                            title = result.find('div', class_='tooltip-target').get_text(strip=True)
-                            # skip if torrent has been nuked due to poor quality
-                            if title.startswith('Nuked.'):
-                                continue
-                            download_url = result.find(
-                                'img', title='Click to Download this Torrent in SSL!').parent['href']
-                            if not all([title, download_url]):
-                                continue
-
-                            cells = result('td')
-                            seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True))
-                            leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True))
-                            torrent_size = cells[labels.index('Size')].get_text(strip=True)
-                            size = convert_size(torrent_size, -1)
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-                        except StandardError:
-                            continue
 
         return results
 
@@ -177,6 +128,56 @@ class ImmortalseedProvider(TorrentProvider):
         """
 
         results = []
+
+        def process_column_header(td):
+            td_title = ''
+            if td.img:
+                td_title = td.img.get('title', td.get_text(strip=True))
+            if not td_title:
+                td_title = td.get_text(strip=True)
+            return td_title
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find('table', id='sortabletable')
+            torrent_rows = torrent_table('tr') if torrent_table else []
+
+            # Continue only if at least one Release is found
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            labels = [process_column_header(label) for label in torrent_rows[0]('td')]
+
+            # Skip column headers
+            for result in torrent_rows[1:]:
+                try:
+                    title = result.find('div', class_='tooltip-target').get_text(strip=True)
+                    # skip if torrent has been nuked due to poor quality
+                    if title.startswith('Nuked.'):
+                        continue
+                    download_url = result.find(
+                        'img', title='Click to Download this Torrent in SSL!').parent['href']
+                    if not all([title, download_url]):
+                        continue
+
+                    cells = result('td')
+                    seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True))
+                    leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True))
+                    torrent_size = cells[labels.index('Size')].get_text(strip=True)
+                    size = convert_size(torrent_size, -1)
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results
+
 
 class ImmortalseedCache(TVCache):
     def _get_rss_data(self):

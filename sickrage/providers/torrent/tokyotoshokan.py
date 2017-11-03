@@ -61,48 +61,11 @@ class TokyoToshokanProvider(TorrentProvider):
                     "type": 1,  # get anime types
                 }
 
-                data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
-                if not data:
-                    continue
-
-                with bs4_parser(data) as soup:
-                    torrent_table = soup.find('table', class_='listing')
-                    torrent_rows = torrent_table('tr') if torrent_table else []
-
-                    # Continue only if one Release is found
-                    if len(torrent_rows) < 2:
-                        sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                        continue
-
-                    a = 1 if len(torrent_rows[0]('td')) < 2 else 0
-
-                    for top, bot in zip(torrent_rows[a::2], torrent_rows[a + 1::2]):
-                        try:
-                            desc_top = top.find('td', class_='desc-top')
-                            title = desc_top.get_text(strip=True)
-                            download_url = desc_top.find('a')['href']
-
-                            desc_bottom = bot.find('td', class_='desc-bot').get_text(strip=True)
-                            size = convert_size(desc_bottom.split('|')[1].strip('Size: '), -1)
-
-                            stats = bot.find('td', class_='stats').get_text(strip=True)
-                            sl = re.match(r'S:(?P<seeders>\d+)L:(?P<leechers>\d+)C:(?:\d+)ID:(?:\d+)',
-                                          stats.replace(' ', ''))
-                            seeders = try_int(sl.group('seeders')) if sl else 0
-                            leechers = try_int(sl.group('leechers')) if sl else 0
-                        except StandardError:
-                            continue
-
-                        if not all([title, download_url]):
-                            continue
-
-                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                'leechers': leechers, 'hash': ''}
-
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                        results.append(item)
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -115,3 +78,44 @@ class TokyoToshokanProvider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data) as soup:
+            torrent_table = soup.find('table', class_='listing')
+            torrent_rows = torrent_table('tr') if torrent_table else []
+
+            # Continue only if one Release is found
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            a = 1 if len(torrent_rows[0]('td')) < 2 else 0
+
+            for top, bot in zip(torrent_rows[a::2], torrent_rows[a + 1::2]):
+                try:
+                    desc_top = top.find('td', class_='desc-top')
+                    title = desc_top.get_text(strip=True)
+                    download_url = desc_top.find('a')['href']
+
+                    desc_bottom = bot.find('td', class_='desc-bot').get_text(strip=True)
+                    size = convert_size(desc_bottom.split('|')[1].strip('Size: '), -1)
+
+                    stats = bot.find('td', class_='stats').get_text(strip=True)
+                    sl = re.match(r'S:(?P<seeders>\d+)L:(?P<leechers>\d+)C:(?:\d+)ID:(?:\d+)',
+                                  stats.replace(' ', ''))
+                    seeders = try_int(sl.group('seeders')) if sl else 0
+                    leechers = try_int(sl.group('leechers')) if sl else 0
+
+                    if not all([title, download_url]):
+                        continue
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

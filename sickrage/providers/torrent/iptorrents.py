@@ -81,51 +81,9 @@ class IPTorrentsProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(search_url).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                try:
-                    data = re.sub(r'(?im)<button.+?<[/]button>', '', data, 0)
-                    with bs4_parser(data) as html:
-                        if not html:
-                            sickrage.srCore.srLogger.debug("No data returned from provider")
-                            continue
-
-                        if html.find(text='No Torrents Found!'):
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        torrent_table = html.find('table', id='torrents')
-                        torrents = torrent_table.find_all('tr') if torrent_table else []
-
-                        # Continue only if one Release is found
-                        if len(torrents) < 2:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        for result in torrents[1:]:
-                            try:
-                                title = result.find_all('td')[1].find('a').text
-                                download_url = self.urls['base_url'] + result.find_all('td')[3].find('a')['href']
-                                size = convert_size(result.find_all('td')[5].text, -1)
-                                seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).text)
-                                leechers = int(result.find('td', attrs={'class': 'ac t_leechers'}).text)
-                            except (AttributeError, TypeError, KeyError):
-                                continue
-
-                            if not all([title, download_url]):
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-                except Exception as e:
-                    sickrage.srCore.srLogger.error("Failed parsing provider. Error: %r" % e)
 
         return results
 
@@ -138,3 +96,44 @@ class IPTorrentsProvider(TorrentProvider):
         """
 
         results = []
+
+        data = re.sub(r'(?im)<button.+?<[/]button>', '', data, 0)
+        with bs4_parser(data) as html:
+            if not html:
+                sickrage.srCore.srLogger.debug("No data returned from provider")
+                return results
+
+            if html.find(text='No Torrents Found!'):
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            torrent_table = html.find('table', id='torrents')
+            torrents = torrent_table.find_all('tr') if torrent_table else []
+
+            # Continue only if one Release is found
+            if len(torrents) < 2:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            for result in torrents[1:]:
+                try:
+                    title = result.find_all('td')[1].find('a').text
+                    download_url = self.urls['base_url'] + result.find_all('td')[3].find('a')['href']
+                    size = convert_size(result.find_all('td')[5].text, -1)
+                    seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).text)
+                    leechers = int(result.find('td', attrs={'class': 'ac t_leechers'}).text)
+
+                    if not all([title, download_url]):
+                        continue
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

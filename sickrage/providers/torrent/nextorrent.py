@@ -68,43 +68,9 @@ class NextorrentProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(search_url).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug('No data returned from provider')
-                    continue
-
-                with bs4_parser(data) as html:
-                    torrent_rows = html.find_all('tr')
-                    for row in torrent_rows:
-                        for torrent in row.find_all('td'):
-                            for link in torrent.find_all('a'):
-                                fileType = ''.join(link.find_previous('i')["class"])
-                                fileType = unicodedata.normalize('NFKD', fileType). \
-                                    encode(sickrage.srCore.SYS_ENCODING, 'ignore')
-
-                                if fileType == "Series":
-                                    title = link.get_text(strip=True)
-                                    download_url = self.get_download_url(link.get('href'))
-
-                                    if not all([title, download_url]):
-                                        continue
-
-                                    # size
-                                    size = convert_size(link.findNext('td').text, -1)
-
-                                    # Filter unseeded torrent
-                                    seeders = try_int(link.find_next('img', alt='seeders').parent.text, 0)
-                                    leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
-
-                                    results += [{
-                                        'title': title,
-                                        'link': download_url,
-                                        'size': size,
-                                        'seeders': seeders,
-                                        'leechers': leechers,
-                                    }]
-
-                                    if mode != 'RSS':
-                                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
         return results
 
@@ -117,3 +83,42 @@ class NextorrentProvider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data) as html:
+            torrent_rows = html.find_all('tr')
+            for row in torrent_rows:
+                for torrent in row.find_all('td'):
+                    for link in torrent.find_all('a'):
+                        try:
+                            fileType = ''.join(link.find_previous('i')["class"])
+                            fileType = unicodedata.normalize('NFKD', fileType). \
+                                encode(sickrage.srCore.SYS_ENCODING, 'ignore')
+
+                            if fileType == "Series":
+                                title = link.get_text(strip=True)
+                                download_url = self.get_download_url(link.get('href'))
+
+                                if not all([title, download_url]):
+                                    continue
+
+                                # size
+                                size = convert_size(link.findNext('td').text, -1)
+
+                                # Filter unseeded torrent
+                                seeders = try_int(link.find_next('img', alt='seeders').parent.text, 0)
+                                leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
+
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                                results += [{
+                                    'title': title,
+                                    'link': download_url,
+                                    'size': size,
+                                    'seeders': seeders,
+                                    'leechers': leechers,
+                                }]
+                        except Exception:
+                            sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

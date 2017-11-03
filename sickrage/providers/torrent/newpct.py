@@ -94,6 +94,21 @@ class newpctProvider(TorrentProvider):
 
         results = []
 
+        def _process_title(title):
+            # Add encoder and group to title
+            title = title.strip() + ' x264-NEWPCT'
+
+            # Quality - Use re module to avoid case sensitive problems with replace
+            title = re.sub(r'\[ALTA DEFINICION[^\[]*]', '720p HDTV', title, flags=re.IGNORECASE)
+            title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay', title, flags=re.IGNORECASE)
+            title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay', title, flags=re.IGNORECASE)
+
+            # Language
+            title = re.sub(r'\[(Spanish|Castellano|Español)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
+            title = re.sub(r'\[AC3 5\.1 Español[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
+
+            return title
+
         with bs4_parser(data) as html:
             torrent_table = html.find('table', id='categoryTable')
             torrent_rows = torrent_table('tr') if torrent_table else []
@@ -113,7 +128,7 @@ class newpctProvider(TorrentProvider):
 
                 try:
                     torrent_anchor = row.find('a')
-                    title = self._process_title(torrent_anchor.get_text())
+                    title = _process_title(torrent_anchor.get_text())
                     download_url = torrent_anchor.get('href', '')
                     if not all([title, download_url]):
                         continue
@@ -140,23 +155,7 @@ class newpctProvider(TorrentProvider):
                         sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
                         results.append(item)
-                except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+                except Exception:
                     sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results
-
-    @staticmethod
-    def _process_title(title):
-        # Add encoder and group to title
-        title = title.strip() + ' x264-NEWPCT'
-
-        # Quality - Use re module to avoid case sensitive problems with replace
-        title = re.sub(r'\[ALTA DEFINICION[^\[]*]', '720p HDTV', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay', title, flags=re.IGNORECASE)
-
-        # Language
-        title = re.sub(r'\[(Spanish|Castellano|Español)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[AC3 5\.1 Español[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
-
-        return title

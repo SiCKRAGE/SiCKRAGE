@@ -20,6 +20,9 @@ from __future__ import unicode_literals
 
 import datetime
 from time import sleep
+from urlparse import urljoin
+
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -71,6 +74,9 @@ class RarbgProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self, reset=False):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
+
         if not reset and self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
@@ -119,6 +125,7 @@ class RarbgProvider(TorrentProvider):
                         searchURL = self.urls['search'] % (search_string) + self.defaultOptions
                 else:
                     sickrage.srCore.srLogger.error("Invalid search mode: %s " % mode)
+                    continue
 
                 if self.minleech:
                     searchURL += self.urlOptions['leechers'].format(min_leechers=int(self.minleech))
@@ -132,48 +139,15 @@ class RarbgProvider(TorrentProvider):
                 if self.ranked:
                     searchURL += self.urlOptions['ranked'].format(ranked=int(self.ranked))
 
+                searchURL = urljoin(searchURL, self.urlOptions['token'].format(token=self.token))
+
                 sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
 
-                for r in range(0, 3):
-                    try:
-                        data = sickrage.srCore.srWebSession.get(
-                            searchURL + self.urlOptions['token'].format(token=self.token)).json()
-                    except Exception:
-                        sickrage.srCore.srLogger.debug("No data returned from provider")
-                        return results
-
-                    if data.get('error'):
-                        if data.get('error_code') == 4:
-                            if not self.login(True): return results
-                            continue
-                        elif data.get('error_code') == 5:
-                            sleep(5)
-                            continue
-                        elif data.get('error_code') != 20:
-                            sickrage.srCore.srLogger.debug(data['error'])
-                            continue
-
-                    for item in data.get('torrent_results') or []:
-                        try:
-                            title = item['title']
-                            download_url = item['download']
-                            size = convert_size(item['size'], -1)
-                            seeders = item['seeders']
-                            leechers = item['leechers']
-                            # pubdate = item['pubdate']
-
-                            if not all([title, download_url]):
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-                            results.append(item)
-                        except Exception:
-                            continue
-                    break
+                try:
+                    data = sickrage.srCore.srWebSession.get(searchURL).json()
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -186,3 +160,36 @@ class RarbgProvider(TorrentProvider):
         """
 
         results = []
+
+        if data.get('error'):
+            if data.get('error_code') == 4:
+                if not self.login(True): return results
+                return results
+            elif data.get('error_code') == 5:
+                sleep(5)
+                return results
+            elif data.get('error_code') != 20:
+                sickrage.srCore.srLogger.debug(data['error'])
+                return results
+
+        for item in data.get('torrent_results') or []:
+            try:
+                title = item['title']
+                download_url = item['download']
+                size = convert_size(item['size'], -1)
+                seeders = item['seeders']
+                leechers = item['leechers']
+
+                if not all([title, download_url]):
+                    continue
+
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': ''}
+
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

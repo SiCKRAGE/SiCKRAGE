@@ -67,36 +67,11 @@ class TorrentProjectProvider(TorrentProvider):
                         return results
                     search_url = self.custom_url
 
-                torrents = sickrage.srCore.srWebSession.get(search_url, params=search_params).json()
-                if not (torrents and "total_found" in torrents and int(torrents["total_found"]) > 0):
-                    sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                    continue
-
-                del torrents["total_found"]
-
-                results = []
-                for i in torrents:
-                    title = torrents[i]["title"]
-                    seeders = try_int(torrents[i]["seeds"], 1)
-                    leechers = try_int(torrents[i]["leechs"], 0)
-                    t_hash = torrents[i]["torrent_hash"]
-                    torrent_size = torrents[i]["torrent_size"]
-                    if not all([t_hash, torrent_size]):
-                        continue
-
-                    download_url = torrents[i]["magnet"]
-                    size = convert_size(torrent_size, -1)
-
-                    if not all([title, download_url]):
-                        continue
-
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': t_hash}
-
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                    results.append(item)
+                try:
+                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).json()
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -109,3 +84,37 @@ class TorrentProjectProvider(TorrentProvider):
         """
 
         results = []
+
+        if not (data and "total_found" in data and int(data["total_found"]) > 0):
+            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+            return results
+
+        del data["total_found"]
+
+        for i in data:
+            try:
+                title = data[i]["title"]
+                seeders = try_int(data[i]["seeds"], 1)
+                leechers = try_int(data[i]["leechs"], 0)
+                t_hash = data[i]["torrent_hash"]
+                torrent_size = data[i]["torrent_size"]
+                if not all([t_hash, torrent_size]):
+                    continue
+
+                download_url = data[i]["magnet"]
+                size = convert_size(torrent_size, -1)
+
+                if not all([title, download_url]):
+                    continue
+
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': t_hash}
+
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider.")
+
+        return results

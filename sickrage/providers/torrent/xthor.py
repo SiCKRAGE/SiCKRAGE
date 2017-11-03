@@ -80,7 +80,6 @@ class XthorProvider(TorrentProvider):
         for mode in search_params.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
@@ -89,35 +88,9 @@ class XthorProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                with bs4_parser(data) as html:
-                    resultsTable = html.find("table", {"class": "table2 table-bordered2"})
-                    if resultsTable:
-                        rows = resultsTable.findAll("tr")
-                        for row in rows:
-                            link = row.find("a", href=re.compile("details.php"))
-                            if link:
-                                title = link.text
-                                download_url = self.urls['base_url'] + '/' + \
-                                               row.find("a", href=re.compile("download.php"))['href']
-                                # FIXME
-                                size = -1
-                                seeders = 1
-                                leechers = 0
-
-                                if not all([title, download_url]):
-                                    continue
-
-                                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                        'leechers': leechers, 'hash': ''}
-
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                                results.append(item)
 
         return results
 
@@ -130,3 +103,34 @@ class XthorProvider(TorrentProvider):
         """
 
         results = []
+
+        with bs4_parser(data) as html:
+            resultsTable = html.find("table", {"class": "table2 table-bordered2"})
+            if resultsTable:
+                rows = resultsTable.findAll("tr")
+                for row in rows:
+                    try:
+                        link = row.find("a", href=re.compile("details.php"))
+                        if link:
+                            title = link.text
+                            download_url = self.urls['base_url'] + '/' + \
+                                           row.find("a", href=re.compile("download.php"))['href']
+                            # FIXME
+                            size = -1
+                            seeders = 1
+                            leechers = 0
+
+                            if not all([title, download_url]):
+                                continue
+
+                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                    'leechers': leechers, 'hash': ''}
+
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                            results.append(item)
+                    except Exception:
+                        sickrage.srCore.srLogger.error("Failed parsing provider.")
+
+        return results
