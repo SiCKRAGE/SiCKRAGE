@@ -24,7 +24,7 @@ import urllib
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, try_int
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -147,9 +147,6 @@ class SCCProvider(TorrentProvider):
                             sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
                         results.append(item)
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

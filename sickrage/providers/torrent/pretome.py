@@ -23,7 +23,7 @@ import urllib
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, try_int
+from sickrage.core.helpers import bs4_parser, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -159,9 +159,6 @@ class PretomeProvider(TorrentProvider):
                             results.append(item)
                 except Exception:
                     sickrage.srCore.srLogger.error("Failed parsing provider.")
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

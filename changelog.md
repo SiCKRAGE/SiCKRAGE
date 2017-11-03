@@ -1,6 +1,7 @@
 # Changelog
 
-- * ded5e12 - 2017-11-02: Refactored provider proper searches 
+- * 181f877 - 2017-11-03: refactored torrent providers 
+- * ac96d4d - 2017-11-02: Refactored provider proper searches 
 - * 5cea4c4 - 2017-11-02: Fixed issue #102 - Newpct.com changed his web structure 
 - * 7f450e6 - 2017-10-31: Updated grunt file to reflect repo changes 
 - * ebb2a6b - 2017-10-30: Refactoring search providers 

@@ -27,7 +27,7 @@ from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, try_int
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -124,9 +124,6 @@ class XthorProvider(TorrentProvider):
                                     sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
                                 results.append(item)
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

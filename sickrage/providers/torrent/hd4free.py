@@ -22,7 +22,7 @@ from __future__ import print_function, unicode_literals
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size, try_int
+from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -82,9 +82,6 @@ class HD4FreeProvider(TorrentProvider):
                 except ValueError:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
                     continue
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

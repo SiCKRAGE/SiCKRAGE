@@ -113,9 +113,6 @@ class NextorrentProvider(TorrentProvider):
                                     if mode != 'RSS':
                                         sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-        # Sort all the items by seeders if available
-        results.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
-
         return results
 
     def parse(self, data, mode):

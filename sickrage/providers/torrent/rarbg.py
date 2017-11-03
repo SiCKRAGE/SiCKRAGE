@@ -23,7 +23,7 @@ from time import sleep
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size, try_int
+from sickrage.core.helpers import convert_size
 from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
 
@@ -174,9 +174,6 @@ class RarbgProvider(TorrentProvider):
                         except Exception:
                             continue
                     break
-
-        # Sort all the items by seeders
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

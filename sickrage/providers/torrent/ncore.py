@@ -22,7 +22,7 @@ import re
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size, try_int
+from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -131,9 +131,6 @@ class NcoreProvider(TorrentProvider):
                         results.append(item)
                     except StandardError:
                         continue
-
-        # Sort all the items by seeders
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

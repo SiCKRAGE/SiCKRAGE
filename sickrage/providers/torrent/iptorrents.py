@@ -23,7 +23,7 @@ from urlparse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, try_int, validate_url
+from sickrage.core.helpers import bs4_parser, convert_size, validate_url
 from sickrage.providers import TorrentProvider
 
 
@@ -134,9 +134,6 @@ class IPTorrentsProvider(TorrentProvider):
                             results.append(item)
                 except Exception as e:
                     sickrage.srCore.srLogger.error("Failed parsing provider. Error: %r" % e)
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 

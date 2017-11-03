@@ -26,7 +26,7 @@ import os
 import random
 import re
 from base64 import b16encode, b32decode
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from time import sleep
 from urlparse import urljoin
 from xml.sax import SAXParseException
@@ -319,21 +319,23 @@ class GenericProvider(object):
             return results
 
         # sort list by quality
-        if len(itemList):
-            items = {}
-            itemsUnknown = []
+        if itemList:
+            # categorize the items into lists by quality
+            items = defaultdict(list)
             for item in itemList:
-                item_quality = self.getQuality(item, anime=show.is_anime)
-                if item_quality == Quality.UNKNOWN:
-                    itemsUnknown += [item]
-                else:
-                    if item_quality not in items:
-                        items[item_quality] = [item]
-                    else:
-                        items[item_quality].append(item)
+                items[self.getQuality(item, anime=show.is_anime)].append(item)
 
-            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.items(), reverse=True)]))
-            itemList += itemsUnknown or []
+            # temporarily remove the list of items with unknown quality
+            unknown_items = items.pop(Quality.UNKNOWN, [])
+
+            # make a generator to sort the remaining items by descending quality
+            items_list = (items[quality] for quality in sorted(items, reverse=True))
+
+            # unpack all of the quality lists into a single sorted list
+            items_list = list(itertools.chain(*items_list))
+
+            # extend the list with the unknown qualities, now sorted at the bottom of the list
+            items_list.extend(unknown_items)
 
         # filter results
         for item in itemList:
@@ -1220,7 +1222,6 @@ class NewznabProvider(NZBProvider):
                             results.append(item)
                         except (AttributeError, TypeError, KeyError, ValueError, IndexError):
                             sickrage.srCore.srLogger.error('Failed parsing provider')
-                            continue
 
                 # Since we arent using the search string,
                 # break out of the search string loop

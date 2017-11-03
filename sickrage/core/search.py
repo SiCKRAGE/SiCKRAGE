@@ -559,6 +559,11 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                             foundResults[providerObj.name][curEp] += searchResults[curEp]
                         else:
                             foundResults[providerObj.name][curEp] = searchResults[curEp]
+
+                        # Sort results by seeders if available
+                        if providerObj.type == 'torrent' or getattr(providerObj, 'torznab', False):
+                            foundResults[providerObj.name][curEp].sort(key=lambda k: int(k.seeders), reverse=True)
+
                     break
                 elif not providerObj.search_fallback or searchCount == 2:
                     break

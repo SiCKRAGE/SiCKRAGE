@@ -102,9 +102,6 @@ class TORRENTZProvider(TorrentProvider):
                             'hash': t_hash
                         }]
 
-        # Sort all the items by seeders if available
-        results.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
-
         return results
 
     def parse(self, data, mode):

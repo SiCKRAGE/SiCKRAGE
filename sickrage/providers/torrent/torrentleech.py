@@ -148,9 +148,6 @@ class TorrentLeechProvider(TorrentProvider):
                 except Exception:
                     sickrage.srCore.srLogger.error("Failed parsing provider.")
 
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
-
         return results
 
     def parse(self, data, mode):
