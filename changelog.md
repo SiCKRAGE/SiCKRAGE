@@ -1,6 +1,7 @@
 # Changelog
 
-- * 924e220 - 2017-11-03: refactored more torrent providers 
+- * f4a383c - 2017-11-03: refactored IPTorrents provider 
+- * 6820bf0 - 2017-11-03: refactored more torrent providers 
 - * 90308f0 - 2017-11-03: refactored minimum seeders and leechers checks 
 - * 0bf0945 - 2017-11-03: refactored torrent providers 
 - * ac96d4d - 2017-11-02: Refactored provider proper searches 
