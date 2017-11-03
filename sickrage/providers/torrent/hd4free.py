@@ -79,9 +79,8 @@ class HD4FreeProvider(TorrentProvider):
                 try:
                     data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).json()
                     results += self.parse(data, mode)
-                except ValueError:
+                except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
 
         return results
 
@@ -116,12 +115,6 @@ class HD4FreeProvider(TorrentProvider):
 
                 seeders = data[i]["seeders"]
                 leechers = data[i]["leechers"]
-                if seeders < self.minseed or leechers < self.minleech:
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the minimum "
-                                                       "seeders or leechers: {} (S:{} L:{})".format(title, seeders,
-                                                                                                    leechers))
-                    continue
 
                 torrent_size = str(data[i]["size"]) + ' MB'
                 size = convert_size(torrent_size, -1)

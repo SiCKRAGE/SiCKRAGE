@@ -129,14 +129,6 @@ class T411Provider(TorrentProvider):
                                 leechers = int(torrent['leechers'])
                                 verified = bool(torrent['isVerified'])
 
-                                # Filter unseeded torrent
-                                if seeders < self.minseed or leechers < self.minleech:
-                                    if mode != 'RSS':
-                                        sickrage.srCore.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
-                                    continue
-
                                 if self.confirmed and not verified and mode != 'RSS':
                                     sickrage.srCore.srLogger.debug(
                                         "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")

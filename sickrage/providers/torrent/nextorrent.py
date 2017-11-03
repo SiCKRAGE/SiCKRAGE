@@ -95,13 +95,6 @@ class NextorrentProvider(TorrentProvider):
                                     seeders = try_int(link.find_next('img', alt='seeders').parent.text, 0)
                                     leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
 
-                                    if seeders < self.minseed or leechers < self.minleech:
-                                        if mode != 'RSS':
-                                            sickrage.srCore.srLogger.debug(
-                                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                                    title, seeders, leechers))
-                                        continue
-
                                     results += [{
                                         'title': title,
                                         'link': download_url,

@@ -100,13 +100,6 @@ class NorbitsProvider(TorrentProvider):
 
                         seeders = try_int(item.pop('seeders', 0))
                         leechers = try_int(item.pop('leechers', 0))
-
-                        if seeders < self.minseed or leechers < self.minleech:
-                            sickrage.srCore.srLogger.debug('Discarding torrent because it does not meet '
-                                                     'the minimum seeders or leechers: {0} (S:{1} L:{2})'.format
-                                                     (title, seeders, leechers))
-                            continue
-
                         info_hash = item.pop('info_hash', '')
                         size = convert_size(item.pop('size', -1), -1)
 

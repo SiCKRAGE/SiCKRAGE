@@ -114,14 +114,6 @@ class GFTrackerProvider(TorrentProvider):
 
         results = []
 
-        def process_column_header(td):
-            result = ''
-            if td.a and td.a.img:
-                result = td.a.img.get('title', td.a.get_text(strip=True))
-            if not result:
-                result = td.get_text(strip=True)
-            return result
-
         with bs4_parser(data) as html:
             torrent_table = html.find("div", id="torrentBrowse")
             torrent_rows = torrent_table.findChildren("tr") if torrent_table else []
@@ -155,14 +147,6 @@ class GFTrackerProvider(TorrentProvider):
                     if not all([title, download_url]):
                         continue
 
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: "
-                                "{} (S:{} L:{})".format(title, seeders, leechers))
-                        continue
-
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                             'leechers': leechers, 'hash': ''}
 
@@ -172,3 +156,5 @@ class GFTrackerProvider(TorrentProvider):
                     results.append(item)
                 except Exception:
                     sickrage.srCore.srLogger.error("Failed parsing provider.")
+
+        return results

@@ -160,14 +160,6 @@ class FileListProvider(TorrentProvider):
                     seeders = try_int(cells[labels.index("Seeders")].find("span").get_text(strip=True))
                     leechers = try_int(cells[labels.index("Leechers")].find("span").get_text(strip=True))
 
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != "RSS":
-                            sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the"
-                                                           " minimum seeders or leechers: {0} (S:{1} L:{2})".format
-                                                           (title, seeders, leechers))
-                        continue
-
                     torrent_size = cells[labels.index("Size")].find("span").get_text(strip=True)
                     size = convert_size(torrent_size, -1)
 

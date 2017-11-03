@@ -111,14 +111,6 @@ class NcoreProvider(TorrentProvider):
 
                         seeders = item.pop("seeders")
                         leechers = item.pop("leechers")
-
-                        if seeders < self.minseed or leechers < self.minleech:
-                            if mode != "RSS":
-                                sickrage.srCore.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                        title, seeders, leechers))
-                            continue
-
                         torrent_size = item.pop("size", -1)
                         size = convert_size(torrent_size, -1)
 

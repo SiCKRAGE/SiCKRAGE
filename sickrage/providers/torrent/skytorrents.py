@@ -102,12 +102,6 @@ class SkyTorrents(TorrentProvider):
 
                         seeders = try_int(info.group("seeders"))
                         leechers = try_int(info.group("leechers"))
-                        if seeders < self.minseed or leechers < self.minleech:
-                            if mode != "RSS":
-                                sickrage.srCore.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format
-                                    (title, seeders, leechers))
-                            continue
 
                         category = item.category
                         if category != 'all':

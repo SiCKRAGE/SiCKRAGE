@@ -98,11 +98,6 @@ class DanishbitsProvider(TorrentProvider):
                     download_url = torrent['download_url']
                     seeders = torrent['seeders']
                     leechers = torrent['leechers']
-                    if seeders < self.minseed or leechers < self.minleech:
-                        sickrage.srCore.srLogger.debug(
-                            "Discarded {0} because with {1}/{2} seeders/leechers does not meet the requirement of "
-                            "{3}/{4} seeders/leechers".format(title, seeders, leechers, self.minseed, self.minleech))
-                        continue
 
                     freeleech = torrent['freeleech']
                     if self.freeleech and not freeleech:

@@ -388,14 +388,6 @@ class TNTVillageProvider(TorrentProvider):
                                 if self._is_season_pack(title):
                                     title = re.sub(r'([Ee][\d{1,2}\-?]+)', '', title)
 
-                                # Filter unseeded torrent
-                                if seeders < self.minseed or leechers < self.minleech:
-                                    if mode != 'RSS':
-                                        sickrage.srCore.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: %s (S:%s L:%s)" % (
-                                                title, seeders, leechers))
-                                    continue
-
                                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                                         'leechers': leechers, 'hash': ''}
 

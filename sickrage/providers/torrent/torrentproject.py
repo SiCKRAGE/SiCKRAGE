@@ -79,12 +79,6 @@ class TorrentProjectProvider(TorrentProvider):
                     title = torrents[i]["title"]
                     seeders = try_int(torrents[i]["seeds"], 1)
                     leechers = try_int(torrents[i]["leechs"], 0)
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Torrent doesn't meet minimum seeds & leechers not selecting : {0}".format(title))
-                        continue
-
                     t_hash = torrents[i]["torrent_hash"]
                     torrent_size = torrents[i]["torrent_size"]
                     if not all([t_hash, torrent_size]):

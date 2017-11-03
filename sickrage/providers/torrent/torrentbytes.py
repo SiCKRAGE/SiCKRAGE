@@ -137,15 +137,6 @@ class TorrentBytesProvider(TorrentProvider):
 
                     seeders = try_int(cells[labels.index("Seeders")].get_text(strip=True))
                     leechers = try_int(cells[labels.index("Leechers")].get_text(strip=True))
-
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != "RSS":
-                            sickrage.srCore.srLogger.debug(
-                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: "
-                                "{} (S:{} L:{})".format(title, seeders, leechers))
-                            continue
-
                     torrent_size = cells[labels.index("Size")].get_text(strip=True)
                     size = convert_size(torrent_size, -1)
 

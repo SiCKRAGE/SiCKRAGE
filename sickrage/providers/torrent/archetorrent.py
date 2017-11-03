@@ -163,14 +163,6 @@ class ArcheTorrentProvider(TorrentProvider):
                     seeders = try_int(cells[labels.index('S')].get_text(strip=True))
                     leechers = try_int(cells[labels.index('L')].get_text(strip=True))
 
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                'Discarding torrent because it doesn\'t meet the minimum seeders or leechers: '
-                                '{} (S:{} L:{})'.format(title, seeders, leechers))
-                        continue
-
                     size_index = labels.index('Size') if 'Size' in labels else labels.index('Taille')
                     torrent_size = cells[size_index].get_text()
                     size = convert_size(torrent_size, -1)
