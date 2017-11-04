@@ -316,7 +316,7 @@ def pickBestResult(results, show):
         try:
             quality_size = sickrage.srCore.srConfig.QUALITY_SIZES[cur_result.quality]
             for file, file_size in cur_result.files.items():
-                if not file.endswith(tuple(video_exts)):
+                if not file.decode('utf-8').endswith(tuple(video_exts)):
                     continue
 
                 file_size = float(file_size / 1000000)

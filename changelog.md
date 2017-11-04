@@ -1,6 +1,7 @@
 # Changelog
 
-- * f4a383c - 2017-11-03: refactored IPTorrents provider 
+- * bf9f932 - 2017-11-03: refactored newpct provider fixed typo when saving result name causing searches to fail 
+- * 1886733 - 2017-11-03: refactored IPTorrents provider 
 - * 6820bf0 - 2017-11-03: refactored more torrent providers 
 - * 90308f0 - 2017-11-03: refactored minimum seeders and leechers checks 
 - * 0bf0945 - 2017-11-03: refactored torrent providers 

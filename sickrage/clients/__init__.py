@@ -296,6 +296,7 @@ class GenericClient(object):
                 sickrage.srCore.srLogger.error('Unable to bdecode torrent')
                 sickrage.srCore.srLogger.debug('Torrent bencoded data: %r' % result.content)
                 raise
+
             try:
                 info = torrent_bdecode["info"]
             except Exception:

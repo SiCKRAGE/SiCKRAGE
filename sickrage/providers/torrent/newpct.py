@@ -25,7 +25,7 @@ import re
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.core.helpers import bs4_parser, convert_size, show_names
 from sickrage.providers import TorrentProvider
 
 
@@ -34,28 +34,37 @@ class newpctProvider(TorrentProvider):
         super(newpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self.urls.update({
-            'search': '{base_url}/index.php'.format(**self.urls)
+            'search': '{base_url}/series'.format(**self.urls),
+            'rss': '{base_url}/feed'.format(**self.urls),
+            'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
         })
 
         self.onlyspasearch = None
+        self.supports_backlog = False
 
         self.cache = TVCache(self, min_time=20)
+
+    def _get_season_search_strings(self, ep_obj):
+        search_string = {'Season': []}
+
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
+            search_string['Season'].append(show_name.replace(' ', '-'))
+
+        return [search_string]
+
+    def _get_episode_search_strings(self, ep_obj, add_string=''):
+        search_string = {'Episode': []}
+
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
+            search_string['Episode'].append(show_name.replace(' ', '-'))
+
+        return [search_string]
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         # Only search if user conditions are true
         lang_info = '' if not ep_obj or not ep_obj.show else ep_obj.show.lang
-
-        # http://www.newpct.com/index.php?l=doSearch&q=fringe&category_=All&idioma_=1&bus_de_=All
-        # Search Params
-        search_params = {
-            'l': 'doSearch',
-            'q': '',  # Show name
-            'category_': 'All',  # Category 'Shows' (767)
-            'idioma_': 1,  # Language Spanish (1)
-            'bus_de_': 'All'  # Date from (All, hoy)
-        }
 
         for mode in search_strings:
             sickrage.srCore.srLogger.debug('Search mode: {}'.format(mode))
@@ -65,16 +74,14 @@ class newpctProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug('Show info is not spanish, skipping provider search')
                 continue
 
-            search_params['bus_de_'] = 'All' if mode != 'RSS' else 'hoy'
-
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-                search_params['q'] = search_string
+                searchURL = self.urls['search'] + '/' + search_string
+
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug('No data returned from provider')
@@ -95,6 +102,9 @@ class newpctProvider(TorrentProvider):
         results = []
 
         def _process_title(title):
+            # Strip word Serie from start of title
+            title = title.split(' ', 1)[1]
+
             # Add encoder and group to title
             title = title.strip() + ' x264-NEWPCT'
 
@@ -107,41 +117,41 @@ class newpctProvider(TorrentProvider):
             title = re.sub(r'\[(Spanish|Castellano|Español)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
             title = re.sub(r'\[AC3 5\.1 Español[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
 
+            # Season and Episode
+            title = re.sub(r'Temporada[^\[]*?', 'SEASON', title, flags=re.IGNORECASE)
+            title = re.sub(r'Capitulo[^\[]*?', 'EPISODE', title, flags=re.IGNORECASE)
+
             return title
 
         with bs4_parser(data) as html:
-            torrent_table = html.find('table', id='categoryTable')
-            torrent_rows = torrent_table('tr') if torrent_table else []
+            torrent_table = html.find('ul', class_='buscar-list')
+            torrent_rows = torrent_table('li') if torrent_table else []
 
             # Continue only if at least one release is found
             if len(torrent_rows) < 3:  # Headers + 1 Torrent + Pagination
                 sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
                 return results
 
-            # 'Fecha', 'Título', 'Tamaño', ''
-            # Date,    Title,     Size
-            labels = [label.get_text(strip=True) for label in torrent_rows[0]('th')]
-
-            # Skip column headers
             for row in torrent_rows[1:-1]:
-                cells = row('td')
-
                 try:
-                    torrent_anchor = row.find('a')
+                    torrent_anchor = row.find_all('a')[1]
                     title = _process_title(torrent_anchor.get_text())
-                    download_url = torrent_anchor.get('href', '')
-                    if not all([title, download_url]):
-                        continue
+                    link_url = torrent_anchor.get('href', '')
 
                     try:
-                        r = sickrage.srCore.srWebSession.get(download_url).text
-                        download_url = re.search(r'http://tumejorserie.com/descargar/.+\.torrent', r, re.DOTALL).group()
+                        link_data = sickrage.srCore.srWebSession.get(link_url).text
+                        download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', link_data,
+                                                re.DOTALL).group(1)
+                        download_url = self.urls['download'] % download_id
                     except Exception:
+                        continue
+
+                    if not all([title, download_url]):
                         continue
 
                     seeders = 1  # Provider does not provide seeders
                     leechers = 0  # Provider does not provide leechers
-                    torrent_size = cells[labels.index('Tamaño')].get_text(strip=True)
+                    torrent_size = row.find_all('span')[4].get_text(strip=True)
                     size = convert_size(torrent_size, -1)
 
                     item = {

@@ -77,7 +77,7 @@ class LimeTorrentsProvider(TorrentProvider):
             sickrage.srCore.srLogger.debug('Expected xml but got something else, is your mirror failing?')
             return results
 
-        with bs4_parser(data, 'html5lib') as html:
+        with bs4_parser(data) as html:
             entries = html('item')
             if not entries:
                 sickrage.srCore.srLogger.debug('Returned xml contained no results')

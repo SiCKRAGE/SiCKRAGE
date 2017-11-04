@@ -341,17 +341,17 @@ class GenericProvider(object):
         for item in itemList:
             result = self.getResult()
 
-            result.title, result.url = self._get_title_and_url(item)
+            result.name, result.url = self._get_title_and_url(item)
 
             # parse the file name
             try:
                 myParser = NameParser(False)
-                parse_result = myParser.parse(result.title)
+                parse_result = myParser.parse(result.name)
             except InvalidNameException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.title + " into a valid episode")
+                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.name + " into a valid episode")
                 continue
             except InvalidShowException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.title + " into a valid show")
+                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.name + " into a valid show")
                 continue
 
             result.show = parse_result.show
@@ -368,25 +368,25 @@ class GenericProvider(object):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         sickrage.srCore.srLogger.debug(
-                            "This is supposed to be a season pack search but the result " + result.title + " is not a valid season pack, skipping it")
+                            "This is supposed to be a season pack search but the result " + result.name + " is not a valid season pack, skipping it")
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
                                     parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
                         sickrage.srCore.srLogger.debug(
-                            "The result " + result.title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
                                                                                                      episodes if
                                                                                                      ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srCore.srLogger.debug(
-                            "The result " + result.title + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
+                            "The result " + result.name + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
                         addCacheEntry = True
                     elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srCore.srLogger.debug(
-                            "The result " + result.title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
 
                 if not addCacheEntry:
@@ -396,7 +396,7 @@ class GenericProvider(object):
             else:
                 if not parse_result.is_air_by_date:
                     sickrage.srCore.srLogger.debug(
-                        "This is supposed to be a date search but the result " + result.title + " didn't parse as one, skipping it")
+                        "This is supposed to be a date search but the result " + result.name + " didn't parse as one, skipping it")
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
@@ -406,7 +406,7 @@ class GenericProvider(object):
 
                     if len(dbData) != 1:
                         sickrage.srCore.srLogger.warning(
-                            "Tried to look up the date for the episode " + result.title + " but the database didn't give proper results, skipping it")
+                            "Tried to look up the date for the episode " + result.name + " but the database didn't give proper results, skipping it")
                         addCacheEntry = True
 
                 if not addCacheEntry:
@@ -415,8 +415,8 @@ class GenericProvider(object):
 
             # add parsed result to cache for usage later on
             if addCacheEntry:
-                sickrage.srCore.srLogger.debug("Adding item from search to cache: " + result.title)
-                self.cache.addCacheEntry(result.title, result.url, result.seeders, result.leechers, result.size,
+                sickrage.srCore.srLogger.debug("Adding item from search to cache: " + result.name)
+                self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size,
                                          result.files, parse_result)
                 continue
 
@@ -429,7 +429,7 @@ class GenericProvider(object):
 
             if not wantEp:
                 sickrage.srCore.srLogger.info(
-                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.title, Quality.qualityStrings[result.quality]))
+                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.name, Quality.qualityStrings[result.quality]))
                 continue
 
             # make a result object
@@ -438,7 +438,7 @@ class GenericProvider(object):
                 result.episodes.append(result.show.getEpisode(actual_season, curEp))
 
             sickrage.srCore.srLogger.debug(
-                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.title, Quality.qualityStrings[result.quality],
+                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name, Quality.qualityStrings[result.quality],
                                                                  result.url))
 
             if len(result.episodes) == 1:
