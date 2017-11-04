@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-28 19:22-0400\n"
-"PO-Revision-Date: 2017-10-28 19:24-0400\n"
+"POT-Creation-Date: 2017-11-04 00:40-0400\n"
+"PO-Revision-Date: 2017-11-04 00:41-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -189,7 +189,7 @@ msgstr "Chọn vị trí blackhole/watch .torrent"
 msgid "Select .torrent download location"
 msgstr "Chọn vị trí tải .torrent"
 
-#: dist/js/core.js:3159 sickrage/core/webserver/views/config/search.mako:907
+#: dist/js/core.js:3159 sickrage/core/webserver/views/config/search.mako:923
 msgid "Minimum seeding time is"
 msgstr "Gieo hạt thời gian tối thiểu là"
 
@@ -509,7 +509,7 @@ msgid "Downloaded"
 msgstr "Tải về"
 
 #: sickrage/core/common.py:604
-#: sickrage/core/webserver/views/config/providers.mako:884
+#: sickrage/core/webserver/views/config/providers.mako:891
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
 msgstr "Phụ đề"
@@ -563,8 +563,8 @@ msgstr "AniDB là phi lợi nhuận cơ sở dữ liệu thông tin anime tự d
 
 #: sickrage/core/webserver/views/config/anime.mako:27
 #: sickrage/core/webserver/views/config/postprocessing.mako:30
-#: sickrage/core/webserver/views/config/search.mako:267
-#: sickrage/core/webserver/views/config/search.mako:684
+#: sickrage/core/webserver/views/config/search.mako:280
+#: sickrage/core/webserver/views/config/search.mako:699
 #: sickrage/core/webserver/views/config/subtitles.mako:30
 #: sickrage/core/webserver/views/home/status.mako:37
 msgid "Enabled"
@@ -628,12 +628,12 @@ msgstr "Bạn có muốn thêm PostProcessed tập MyList?"
 #: sickrage/core/webserver/views/config/postprocessing.mako:327
 #: sickrage/core/webserver/views/config/postprocessing.mako:1297
 #: sickrage/core/webserver/views/config/providers.mako:117
-#: sickrage/core/webserver/views/config/providers.mako:900
+#: sickrage/core/webserver/views/config/providers.mako:907
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
-#: sickrage/core/webserver/views/config/search.mako:248
-#: sickrage/core/webserver/views/config/search.mako:663
-#: sickrage/core/webserver/views/config/search.mako:735
-#: sickrage/core/webserver/views/config/search.mako:961
+#: sickrage/core/webserver/views/config/search.mako:261
+#: sickrage/core/webserver/views/config/search.mako:678
+#: sickrage/core/webserver/views/config/search.mako:750
+#: sickrage/core/webserver/views/config/search.mako:978
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
@@ -1001,7 +1001,7 @@ msgstr "Hiển thị ngày tháng và thời gian trong múi hoặc cho thấy m
 #: sickrage/core/webserver/views/config/postprocessing.mako:1260
 #: sickrage/core/webserver/views/config/postprocessing.mako:1274
 #: sickrage/core/webserver/views/config/postprocessing.mako:1288
-#: sickrage/core/webserver/views/config/search.mako:899
+#: sickrage/core/webserver/views/config/search.mako:915
 #: sickrage/core/webserver/views/config/subtitles.mako:124
 #: sickrage/core/webserver/views/config/subtitles.mako:162
 msgid "NOTE:"
@@ -1068,10 +1068,10 @@ msgstr "Tên người dùng HTTP"
 #: sickrage/core/webserver/views/config/notifications.mako:426
 #: sickrage/core/webserver/views/config/notifications.mako:442
 #: sickrage/core/webserver/views/config/notifications.mako:1058
-#: sickrage/core/webserver/views/config/search.mako:343
-#: sickrage/core/webserver/views/config/search.mako:361
-#: sickrage/core/webserver/views/config/search.mako:827
-#: sickrage/core/webserver/views/config/search.mako:844
+#: sickrage/core/webserver/views/config/search.mako:358
+#: sickrage/core/webserver/views/config/search.mako:376
+#: sickrage/core/webserver/views/config/search.mako:842
+#: sickrage/core/webserver/views/config/search.mako:859
 msgid "blank = no authentication"
 msgstr "trống = không xác thực"
 
@@ -2132,12 +2132,12 @@ msgid "Moderate"
 msgstr "Vừa phải"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1685
-#: sickrage/core/webserver/views/config/search.mako:637
+#: sickrage/core/webserver/views/config/search.mako:652
 msgid "Normal"
 msgstr "Bình thường"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1688
-#: sickrage/core/webserver/views/config/search.mako:640
+#: sickrage/core/webserver/views/config/search.mako:655
 msgid "High"
 msgstr "Cao"
 
@@ -2925,17 +2925,17 @@ msgid "Use Failed Downloads"
 msgstr "Sử dụng thất bại lượt tải"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:288
-#: sickrage/core/webserver/views/config/search.mako:225
+#: sickrage/core/webserver/views/config/search.mako:238
 msgid "Use Failed Download Handling?"
 msgstr "Sử dụng không thể xử lý tải về?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:294
-#: sickrage/core/webserver/views/config/search.mako:233
+#: sickrage/core/webserver/views/config/search.mako:246
 msgid "Delete Failed"
 msgstr "Xóa bỏ thất bại"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:300
-#: sickrage/core/webserver/views/config/search.mako:240
+#: sickrage/core/webserver/views/config/search.mako:253
 msgid "Delete files left over from a failed download?"
 msgstr "Xóa các tập tin còn lại trên một tải xuống không thành công?"
 
@@ -3398,67 +3398,67 @@ msgstr "Cấu hình nhà cung cấp:"
 
 #: sickrage/core/webserver/views/config/providers.mako:176
 #: sickrage/core/webserver/views/config/providers.mako:306
-#: sickrage/core/webserver/views/config/providers.mako:967
+#: sickrage/core/webserver/views/config/providers.mako:974
 msgid "API key:"
 msgstr "Khóa API:"
 
 #: sickrage/core/webserver/views/config/providers.mako:198
 #: sickrage/core/webserver/views/config/providers.mako:326
-#: sickrage/core/webserver/views/config/providers.mako:761
+#: sickrage/core/webserver/views/config/providers.mako:768
 msgid "Enable daily searches"
 msgstr "Sử hàng ngày tìm kiếm"
 
 #: sickrage/core/webserver/views/config/providers.mako:204
 #: sickrage/core/webserver/views/config/providers.mako:332
-#: sickrage/core/webserver/views/config/providers.mako:767
+#: sickrage/core/webserver/views/config/providers.mako:774
 msgid "enable provider to perform daily searches."
 msgstr "cho phép các nhà cung cấp để thực hiện các tìm kiếm hàng ngày."
 
 #: sickrage/core/webserver/views/config/providers.mako:213
 #: sickrage/core/webserver/views/config/providers.mako:341
-#: sickrage/core/webserver/views/config/providers.mako:791
+#: sickrage/core/webserver/views/config/providers.mako:798
 msgid "Enable backlog searches"
 msgstr "Sử backlog tìm kiếm"
 
 #: sickrage/core/webserver/views/config/providers.mako:219
 #: sickrage/core/webserver/views/config/providers.mako:347
-#: sickrage/core/webserver/views/config/providers.mako:797
+#: sickrage/core/webserver/views/config/providers.mako:804
 msgid "enable provider to perform backlog searches."
 msgstr "cho phép các nhà cung cấp để thực hiện tìm kiếm tồn đọng."
 
 #: sickrage/core/webserver/views/config/providers.mako:228
 #: sickrage/core/webserver/views/config/providers.mako:356
-#: sickrage/core/webserver/views/config/providers.mako:806
+#: sickrage/core/webserver/views/config/providers.mako:813
 msgid "Search mode fallback"
 msgstr "Chế độ tìm kiếm dự"
 
 #: sickrage/core/webserver/views/config/providers.mako:235
 #: sickrage/core/webserver/views/config/providers.mako:363
-#: sickrage/core/webserver/views/config/providers.mako:813
+#: sickrage/core/webserver/views/config/providers.mako:820
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
 msgstr "Khi tìm kiếm một mùa giải đầy đủ tùy thuộc vào chế độ tìm kiếm bạn có thể trở lại không có kết quả, điều này giúp bằng cách khởi động lại việc tìm kiếm bằng cách sử dụng các chế độ tìm kiếm đối diện."
 
 #: sickrage/core/webserver/views/config/providers.mako:247
 #: sickrage/core/webserver/views/config/providers.mako:375
-#: sickrage/core/webserver/views/config/providers.mako:825
+#: sickrage/core/webserver/views/config/providers.mako:832
 msgid "Season search mode"
 msgstr "Mùa tìm chế độ"
 
 #: sickrage/core/webserver/views/config/providers.mako:256
 #: sickrage/core/webserver/views/config/providers.mako:395
-#: sickrage/core/webserver/views/config/providers.mako:834
+#: sickrage/core/webserver/views/config/providers.mako:841
 msgid "season packs only."
 msgstr "mùa gói chỉ."
 
 #: sickrage/core/webserver/views/config/providers.mako:267
 #: sickrage/core/webserver/views/config/providers.mako:384
-#: sickrage/core/webserver/views/config/providers.mako:845
+#: sickrage/core/webserver/views/config/providers.mako:852
 msgid "episodes only."
 msgstr "tập phim."
 
 #: sickrage/core/webserver/views/config/providers.mako:272
 #: sickrage/core/webserver/views/config/providers.mako:401
-#: sickrage/core/webserver/views/config/providers.mako:851
+#: sickrage/core/webserver/views/config/providers.mako:858
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
 msgstr "Khi tìm kiếm hoàn thành mùa, bạn có thể chọn để có nó tìm kiếm các gói mùa chỉ, hoặc chọn để có nó xây dựng một mùa giải đầy đủ chỉ duy nhất tập."
 
@@ -3492,174 +3492,177 @@ msgid "Passkey:"
 msgstr "Khóa thông hành:"
 
 #: sickrage/core/webserver/views/config/providers.mako:559
-#: sickrage/core/webserver/views/config/providers.mako:1088
+#: sickrage/core/webserver/views/config/providers.mako:1095
 msgid "Cookies:"
 msgstr "Cookie:"
 
-#: sickrage/core/webserver/views/config/providers.mako:569
-#: sickrage/core/webserver/views/config/providers.mako:1095
-msgid "ex. uid=xx;pass=yy"
-msgstr "Ví dụ: uid = xx; vượt qua = yy"
+#: sickrage/core/webserver/views/config/providers.mako:576
+msgid "this provider requires the following cookies: "
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:580
+#: sickrage/core/webserver/views/config/providers.mako:587
 msgid "Pin:"
 msgstr "Pin:"
 
-#: sickrage/core/webserver/views/config/providers.mako:601
+#: sickrage/core/webserver/views/config/providers.mako:608
 msgid "Seed ratio:"
 msgstr "Tỷ lệ hạt giống:"
 
-#: sickrage/core/webserver/views/config/providers.mako:621
+#: sickrage/core/webserver/views/config/providers.mako:628
 msgid "Minimum seeders:"
 msgstr "Tối thiểu gieo hạt:"
 
-#: sickrage/core/webserver/views/config/providers.mako:641
+#: sickrage/core/webserver/views/config/providers.mako:648
 msgid "Minimum leechers:"
 msgstr "Leechers tối thiểu:"
 
-#: sickrage/core/webserver/views/config/providers.mako:661
+#: sickrage/core/webserver/views/config/providers.mako:668
 msgid "Confirmed download"
 msgstr "Xác nhận tải về"
 
-#: sickrage/core/webserver/views/config/providers.mako:667
+#: sickrage/core/webserver/views/config/providers.mako:674
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "chỉ tải về torrents từ uploaders đáng tin cậy hoặc xác minh?"
 
-#: sickrage/core/webserver/views/config/providers.mako:676
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "Ranked torrents"
 msgstr "Xếp hạng torrents"
 
-#: sickrage/core/webserver/views/config/providers.mako:682
+#: sickrage/core/webserver/views/config/providers.mako:689
 msgid "only download ranked torrents (internal releases)"
 msgstr "Xếp hạng chỉ tải về torrents (bản phát hành nội bộ)"
 
-#: sickrage/core/webserver/views/config/providers.mako:691
+#: sickrage/core/webserver/views/config/providers.mako:698
 msgid "English torrents"
 msgstr "Anh torrents"
 
-#: sickrage/core/webserver/views/config/providers.mako:697
+#: sickrage/core/webserver/views/config/providers.mako:704
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "tiếng Anh chỉ tải về torrents hoặc torrents chứa phụ đề tiếng Anh"
 
-#: sickrage/core/webserver/views/config/providers.mako:706
+#: sickrage/core/webserver/views/config/providers.mako:713
 msgid "For Spanish torrents"
 msgstr "Cho torrents Tây Ban Nha"
 
-#: sickrage/core/webserver/views/config/providers.mako:713
+#: sickrage/core/webserver/views/config/providers.mako:720
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "CHỈ tìm kiếm nhà cung cấp này nếu thông tin hiển thị được định nghĩa là \"Tây Ban Nha\" (tránh việc sử dụng của nhà cung cấp cho cho thấy VOS)"
 
-#: sickrage/core/webserver/views/config/providers.mako:724
+#: sickrage/core/webserver/views/config/providers.mako:731
 msgid "Sort results by"
 msgstr "Sắp xếp kết quả theo"
 
-#: sickrage/core/webserver/views/config/providers.mako:746
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:752
+#: sickrage/core/webserver/views/config/providers.mako:759
 msgid "only download"
 msgstr "chỉ tải về"
 
-#: sickrage/core/webserver/views/config/providers.mako:752
+#: sickrage/core/webserver/views/config/providers.mako:759
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:752
+#: sickrage/core/webserver/views/config/providers.mako:759
 msgid "torrents."
 msgstr "torrents."
 
-#: sickrage/core/webserver/views/config/providers.mako:776
+#: sickrage/core/webserver/views/config/providers.mako:783
 msgid "Reject Blu-ray M2TS releases"
 msgstr "Từ chối phát hành đĩa Blu-ray M2TS"
 
-#: sickrage/core/webserver/views/config/providers.mako:782
+#: sickrage/core/webserver/views/config/providers.mako:789
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "cho phép bỏ qua đĩa Blu-ray MPEG-2 Transport Stream container chí"
 
-#: sickrage/core/webserver/views/config/providers.mako:862
+#: sickrage/core/webserver/views/config/providers.mako:869
 msgid "Category:"
 msgstr "Thể loại:"
 
-#: sickrage/core/webserver/views/config/providers.mako:890
+#: sickrage/core/webserver/views/config/providers.mako:897
 msgid "select torrent with Italian subtitle"
 msgstr "chọn torrent với ý phụ đề"
 
-#: sickrage/core/webserver/views/config/providers.mako:912
+#: sickrage/core/webserver/views/config/providers.mako:919
 msgid "Configure Custom"
 msgstr "Cấu hình tùy chỉnh"
 
-#: sickrage/core/webserver/views/config/providers.mako:913
+#: sickrage/core/webserver/views/config/providers.mako:920
 msgid "Newznab Providers"
 msgstr "Newznab nhà cung cấp"
 
-#: sickrage/core/webserver/views/config/providers.mako:916
+#: sickrage/core/webserver/views/config/providers.mako:923
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "Thêm và cài đặt hoặc loại bỏ các tuỳ chỉnh Newznab nhà cung cấp."
 
-#: sickrage/core/webserver/views/config/providers.mako:923
-#: sickrage/core/webserver/views/config/providers.mako:1042
+#: sickrage/core/webserver/views/config/providers.mako:930
+#: sickrage/core/webserver/views/config/providers.mako:1049
 msgid "Select provider:"
 msgstr "Chọn nhà cung cấp:"
 
-#: sickrage/core/webserver/views/config/providers.mako:931
-#: sickrage/core/webserver/views/config/providers.mako:1050
+#: sickrage/core/webserver/views/config/providers.mako:938
+#: sickrage/core/webserver/views/config/providers.mako:1057
 msgid "add new provider"
 msgstr "thêm nhà cung cấp mới"
 
-#: sickrage/core/webserver/views/config/providers.mako:940
-#: sickrage/core/webserver/views/config/providers.mako:1059
+#: sickrage/core/webserver/views/config/providers.mako:947
+#: sickrage/core/webserver/views/config/providers.mako:1066
 msgid "Provider name:"
 msgstr "Tên nhà cung cấp:"
 
-#: sickrage/core/webserver/views/config/providers.mako:953
+#: sickrage/core/webserver/views/config/providers.mako:960
 msgid "Site URL:"
 msgstr "URL trang web:"
 
-#: sickrage/core/webserver/views/config/providers.mako:982
+#: sickrage/core/webserver/views/config/providers.mako:989
 msgid "Newznab search categories:"
 msgstr "Các danh mục tìm kiếm Newznab:"
 
-#: sickrage/core/webserver/views/config/providers.mako:992
+#: sickrage/core/webserver/views/config/providers.mako:999
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(chọn danh mục Newznab của bạn trên bên trái và nhấp vào nút \"Cập Nhật thể loại\" để sử dụng chúng để tìm kiếm.)"
 
-#: sickrage/core/webserver/views/config/providers.mako:994
+#: sickrage/core/webserver/views/config/providers.mako:1001
 msgid "Don't forget to save changes!"
 msgstr "Đừng quên lưu các thay đổi!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1004
+#: sickrage/core/webserver/views/config/providers.mako:1011
 msgid "Update Categories"
 msgstr "Cập Nhật thể loại"
 
-#: sickrage/core/webserver/views/config/providers.mako:1013
+#: sickrage/core/webserver/views/config/providers.mako:1020
 #: sickrage/core/webserver/views/home/index.mako:281
 msgid "Add"
 msgstr "Thêm"
 
-#: sickrage/core/webserver/views/config/providers.mako:1021
+#: sickrage/core/webserver/views/config/providers.mako:1028
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:70
 msgid "Delete"
 msgstr "Xóa bỏ"
 
-#: sickrage/core/webserver/views/config/providers.mako:1035
+#: sickrage/core/webserver/views/config/providers.mako:1042
 msgid "Configure Custom Torrent Providers"
 msgstr "Cấu hình nhà cung cấp tùy chỉnh Torrent"
 
-#: sickrage/core/webserver/views/config/providers.mako:1036
+#: sickrage/core/webserver/views/config/providers.mako:1043
 msgid "Add and setup or remove custom RSS providers."
 msgstr "Thêm và cài đặt hoặc loại bỏ các tuỳ chỉnh RSS nhà cung cấp."
 
-#: sickrage/core/webserver/views/config/providers.mako:1074
+#: sickrage/core/webserver/views/config/providers.mako:1081
 msgid "RSS URL:"
 msgstr "RSS URL:"
 
 #: sickrage/core/webserver/views/config/providers.mako:1102
+msgid "ex. uid=xx;pass=yy"
+msgstr "Ví dụ: uid = xx; vượt qua = yy"
+
+#: sickrage/core/webserver/views/config/providers.mako:1109
 msgid "Search element:"
 msgstr "Tìm kiếm nguyên tố:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1109
+#: sickrage/core/webserver/views/config/providers.mako:1116
 msgid "ex. title"
 msgstr "Ví dụ: tiêu đề"
 
@@ -3682,12 +3685,12 @@ msgid "Search Settings"
 msgstr "Cài đặt tìm kiếm"
 
 #: sickrage/core/webserver/views/config/search.mako:8
-#: sickrage/core/webserver/views/config/search.mako:259
+#: sickrage/core/webserver/views/config/search.mako:272
 msgid "NZB Clients"
 msgstr "NZB khách hàng"
 
 #: sickrage/core/webserver/views/config/search.mako:9
-#: sickrage/core/webserver/views/config/search.mako:676
+#: sickrage/core/webserver/views/config/search.mako:691
 msgid "Torrent Clients"
 msgstr "Khách hàng torrent"
 
@@ -3699,379 +3702,387 @@ msgstr "Làm thế nào để quản lý tìm kiếm với"
 msgid "providers"
 msgstr "nhà cung cấp"
 
-#: sickrage/core/webserver/views/config/search.mako:21
+#: sickrage/core/webserver/views/config/search.mako:22
 msgid "Randomize Providers"
 msgstr "Chọn ngẫu nhiên các nhà cung cấp"
 
-#: sickrage/core/webserver/views/config/search.mako:27
+#: sickrage/core/webserver/views/config/search.mako:28
 msgid "randomize the provider search order"
 msgstr "chọn ngẫu nhiên để tìm nhà cung cấp"
 
-#: sickrage/core/webserver/views/config/search.mako:33
+#: sickrage/core/webserver/views/config/search.mako:34
 msgid "Download propers"
 msgstr "Tải về propers"
 
-#: sickrage/core/webserver/views/config/search.mako:39
+#: sickrage/core/webserver/views/config/search.mako:40
 msgid "replace original download with \"Proper\" or \"Repack\" if nuked"
 msgstr "thay thế nguyên bản tải xuống với \"Đúng\" hoặc \"Đóng gói\" nếu nuked"
 
-#: sickrage/core/webserver/views/config/search.mako:45
+#: sickrage/core/webserver/views/config/search.mako:46
 msgid "Enable provider RSS cache"
 msgstr "Sử nhà cung cấp RSS cache"
 
-#: sickrage/core/webserver/views/config/search.mako:51
+#: sickrage/core/webserver/views/config/search.mako:52
 msgid "enables/disables provider RSS feed caching"
 msgstr "cho phép/disables cung cấp RSS nguồn cấp dữ liệu bộ nhớ đệm"
 
-#: sickrage/core/webserver/views/config/search.mako:57
+#: sickrage/core/webserver/views/config/search.mako:58
 msgid "Enable provider RSS cache for valid shows only"
 msgstr "Sử nhà cung cấp RSS cache cho hợp lệ cho thấy chỉ"
 
-#: sickrage/core/webserver/views/config/search.mako:63
+#: sickrage/core/webserver/views/config/search.mako:64
 msgid "enables/disables caching of shows already added to SiCKRAGE, speeds up searches"
 msgstr "cho phép/disables bộ nhớ đệm của cho thấy đã được thêm vào SiCKRAGE, tăng tốc độ tìm kiếm"
 
 #: sickrage/core/webserver/views/config/search.mako:70
+msgid "Convert provider torrent file links to magnetic links"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/search.mako:76
+msgid "enables/disables converting of public torrent provider file links to magnetic links"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
 msgstr "Kiểm tra propers mỗi:"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "24 hours"
 msgstr "24 giờ"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "4 hours"
 msgstr "4 giờ"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "90 mins"
 msgstr "90 phút"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "45 mins"
 msgstr "45 phút"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "15 mins"
 msgstr "15 phút"
 
-#: sickrage/core/webserver/views/config/search.mako:91
+#: sickrage/core/webserver/views/config/search.mako:104
 msgid "Backlog search frequency"
 msgstr "Backlog tìm tần số"
 
-#: sickrage/core/webserver/views/config/search.mako:101
-#: sickrage/core/webserver/views/config/search.mako:119
+#: sickrage/core/webserver/views/config/search.mako:114
+#: sickrage/core/webserver/views/config/search.mako:132
 msgid "time in minutes"
 msgstr "thời gian trong vài phút"
 
-#: sickrage/core/webserver/views/config/search.mako:110
+#: sickrage/core/webserver/views/config/search.mako:123
 msgid "Daily search frequency"
 msgstr "Hàng ngày tìm tần số"
 
-#: sickrage/core/webserver/views/config/search.mako:131
+#: sickrage/core/webserver/views/config/search.mako:144
 msgid "Usenet retention"
 msgstr "Usenet lưu giữ"
 
-#: sickrage/core/webserver/views/config/search.mako:151
+#: sickrage/core/webserver/views/config/search.mako:164
 msgid "Ignore words"
 msgstr "Bỏ qua các từ"
 
-#: sickrage/core/webserver/views/config/search.mako:160
-#: sickrage/core/webserver/views/config/search.mako:178
+#: sickrage/core/webserver/views/config/search.mako:173
+#: sickrage/core/webserver/views/config/search.mako:191
 #: sickrage/core/webserver/views/home/edit_show.mako:287
 #: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "ex. word1,word2,word3"
 msgstr "Ví dụ: word1, word2, word3"
 
-#: sickrage/core/webserver/views/config/search.mako:169
+#: sickrage/core/webserver/views/config/search.mako:182
 msgid "Require words"
 msgstr "Yêu cầu lời"
 
-#: sickrage/core/webserver/views/config/search.mako:187
+#: sickrage/core/webserver/views/config/search.mako:200
 msgid "Ignore language names in subbed results"
 msgstr "Bỏ qua các tên ngôn ngữ trong subbed kết quả"
 
-#: sickrage/core/webserver/views/config/search.mako:196
+#: sickrage/core/webserver/views/config/search.mako:209
 msgid "ex. lang1,lang2,lang3"
 msgstr "Ví dụ: lang1, lang2, lang3"
 
-#: sickrage/core/webserver/views/config/search.mako:205
+#: sickrage/core/webserver/views/config/search.mako:218
 msgid "Allow high priority"
 msgstr "Cho phép ưu tiên cao"
 
-#: sickrage/core/webserver/views/config/search.mako:211
+#: sickrage/core/webserver/views/config/search.mako:224
 msgid "Set downloads of recently aired episodes to high priority"
 msgstr "Thiết lập tải các tập phim gần đây sóng: để ưu tiên cao"
 
-#: sickrage/core/webserver/views/config/search.mako:218
+#: sickrage/core/webserver/views/config/search.mako:231
 msgid "Failed Downloads Handling"
 msgstr "Không tải xử lý"
 
-#: sickrage/core/webserver/views/config/search.mako:260
+#: sickrage/core/webserver/views/config/search.mako:273
 msgid "How to handle NZB search results for clients."
 msgstr "Làm thế nào để xử lý kết quả tìm kiếm NZB cho khách hàng."
 
-#: sickrage/core/webserver/views/config/search.mako:272
+#: sickrage/core/webserver/views/config/search.mako:285
 msgid "enable NZB searches"
 msgstr "sử NZB tìm kiếm"
 
-#: sickrage/core/webserver/views/config/search.mako:279
+#: sickrage/core/webserver/views/config/search.mako:292
 msgid "Send .nzb files to:"
 msgstr "Gửi tập tin .nzb để:"
 
-#: sickrage/core/webserver/views/config/search.mako:299
-#: sickrage/core/webserver/views/config/search.mako:717
+#: sickrage/core/webserver/views/config/search.mako:312
+#: sickrage/core/webserver/views/config/search.mako:732
 msgid "Black hole folder location"
 msgstr "Vị trí cặp lỗ đen"
 
-#: sickrage/core/webserver/views/config/search.mako:308
-#: sickrage/core/webserver/views/config/search.mako:728
+#: sickrage/core/webserver/views/config/search.mako:322
+#: sickrage/core/webserver/views/config/search.mako:743
 msgid "files are stored at this location for external software to find and use"
 msgstr "tập tin được lưu trữ tại vị trí này cho các phần mềm bên ngoài để tìm và sử dụng"
 
-#: sickrage/core/webserver/views/config/search.mako:317
+#: sickrage/core/webserver/views/config/search.mako:332
 msgid "SABnzbd server URL"
 msgstr "URL hệ phục vụ SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:326
+#: sickrage/core/webserver/views/config/search.mako:341
 msgid "ex. http://localhost:8080/"
 msgstr "Ví dụ: http://localhost:8080 /"
 
-#: sickrage/core/webserver/views/config/search.mako:334
+#: sickrage/core/webserver/views/config/search.mako:349
 msgid "SABnzbd username"
 msgstr "SABnzbd người dùng"
 
-#: sickrage/core/webserver/views/config/search.mako:352
+#: sickrage/core/webserver/views/config/search.mako:367
 msgid "SABnzbd password"
 msgstr "SABnzbd mật khẩu"
 
-#: sickrage/core/webserver/views/config/search.mako:370
+#: sickrage/core/webserver/views/config/search.mako:385
 msgid "SABnzbd API key"
 msgstr "Khóa SABnzbd API"
 
-#: sickrage/core/webserver/views/config/search.mako:388
+#: sickrage/core/webserver/views/config/search.mako:403
 msgid "Use SABnzbd category"
 msgstr "Sử dụng SABnzbd thể loại"
 
-#: sickrage/core/webserver/views/config/search.mako:397
-#: sickrage/core/webserver/views/config/search.mako:415
-#: sickrage/core/webserver/views/config/search.mako:556
-#: sickrage/core/webserver/views/config/search.mako:574
+#: sickrage/core/webserver/views/config/search.mako:412
+#: sickrage/core/webserver/views/config/search.mako:430
+#: sickrage/core/webserver/views/config/search.mako:571
+#: sickrage/core/webserver/views/config/search.mako:589
 msgid "ex. TV"
 msgstr "Ví dụ: TV"
 
-#: sickrage/core/webserver/views/config/search.mako:406
+#: sickrage/core/webserver/views/config/search.mako:421
 msgid "Use SABnzbd category (backlog episodes)"
 msgstr "Sử dụng SABnzbd thể loại (backlog tập)"
 
-#: sickrage/core/webserver/views/config/search.mako:424
+#: sickrage/core/webserver/views/config/search.mako:439
 msgid "Use SABnzbd category for anime"
 msgstr "Sử dụng SABnzbd mục cho anime"
 
-#: sickrage/core/webserver/views/config/search.mako:433
-#: sickrage/core/webserver/views/config/search.mako:453
-#: sickrage/core/webserver/views/config/search.mako:592
-#: sickrage/core/webserver/views/config/search.mako:611
+#: sickrage/core/webserver/views/config/search.mako:448
+#: sickrage/core/webserver/views/config/search.mako:468
+#: sickrage/core/webserver/views/config/search.mako:607
+#: sickrage/core/webserver/views/config/search.mako:626
 msgid "ex. anime"
 msgstr "Ví dụ: anime"
 
-#: sickrage/core/webserver/views/config/search.mako:443
+#: sickrage/core/webserver/views/config/search.mako:458
 msgid "Use SABnzbd category for anime (backlog episodes)"
 msgstr "Sử dụng SABnzbd thể loại anime (backlog tập)"
 
-#: sickrage/core/webserver/views/config/search.mako:463
+#: sickrage/core/webserver/views/config/search.mako:478
 msgid "Use forced priority"
 msgstr "Ưu tiên sử dụng buộc"
 
-#: sickrage/core/webserver/views/config/search.mako:469
+#: sickrage/core/webserver/views/config/search.mako:484
 msgid "enable to change priority from HIGH to FORCED"
 msgstr "cho phép thay đổi mức ưu tiên từ cao đến FORCED"
 
-#: sickrage/core/webserver/views/config/search.mako:479
+#: sickrage/core/webserver/views/config/search.mako:494
 msgid "Connect using HTTPS"
 msgstr "Kết nối sử dụng HTTPS"
 
-#: sickrage/core/webserver/views/config/search.mako:485
+#: sickrage/core/webserver/views/config/search.mako:500
 msgid "enable secure control"
 msgstr "cho phép điều khiển an toàn"
 
-#: sickrage/core/webserver/views/config/search.mako:492
+#: sickrage/core/webserver/views/config/search.mako:507
 msgid "NZBget host:port"
 msgstr "NZBget chủ: port"
 
-#: sickrage/core/webserver/views/config/search.mako:501
+#: sickrage/core/webserver/views/config/search.mako:516
 msgid "ex. localhost:6789"
 msgstr "Ví dụ: localhost:6789"
 
-#: sickrage/core/webserver/views/config/search.mako:511
+#: sickrage/core/webserver/views/config/search.mako:526
 msgid "NZBget username"
 msgstr "NZBget người dùng"
 
-#: sickrage/core/webserver/views/config/search.mako:520
+#: sickrage/core/webserver/views/config/search.mako:535
 msgid "default = nzbget"
 msgstr "mặc định = nzbget"
 
-#: sickrage/core/webserver/views/config/search.mako:529
+#: sickrage/core/webserver/views/config/search.mako:544
 msgid "NZBget password"
 msgstr "NZBget mật khẩu"
 
-#: sickrage/core/webserver/views/config/search.mako:538
+#: sickrage/core/webserver/views/config/search.mako:553
 msgid "default = tegbzn6789"
 msgstr "mặc định = tegbzn6789"
 
-#: sickrage/core/webserver/views/config/search.mako:547
+#: sickrage/core/webserver/views/config/search.mako:562
 msgid "Use NZBget category"
 msgstr "Sử dụng NZBget thể loại"
 
-#: sickrage/core/webserver/views/config/search.mako:565
+#: sickrage/core/webserver/views/config/search.mako:580
 msgid "Use NZBget category (backlog episodes)"
 msgstr "Sử dụng NZBget thể loại (backlog tập)"
 
-#: sickrage/core/webserver/views/config/search.mako:583
+#: sickrage/core/webserver/views/config/search.mako:598
 msgid "Use NZBget category for anime"
 msgstr "Sử dụng NZBget mục cho anime"
 
-#: sickrage/core/webserver/views/config/search.mako:601
+#: sickrage/core/webserver/views/config/search.mako:616
 msgid "Use NZBget category for anime (backlog episodes)"
 msgstr "Sử dụng NZBget thể loại anime (backlog tập)"
 
-#: sickrage/core/webserver/views/config/search.mako:620
+#: sickrage/core/webserver/views/config/search.mako:635
 msgid "NZBget priority"
 msgstr "NZBget ưu tiên"
 
-#: sickrage/core/webserver/views/config/search.mako:631
+#: sickrage/core/webserver/views/config/search.mako:646
 msgid "Very low"
 msgstr "Rất thấp"
 
-#: sickrage/core/webserver/views/config/search.mako:634
+#: sickrage/core/webserver/views/config/search.mako:649
 msgid "Low"
 msgstr "Thấp"
 
-#: sickrage/core/webserver/views/config/search.mako:643
+#: sickrage/core/webserver/views/config/search.mako:658
 msgid "Very high"
 msgstr "Rất cao"
 
-#: sickrage/core/webserver/views/config/search.mako:646
+#: sickrage/core/webserver/views/config/search.mako:661
 #: sickrage/core/webserver/views/manage/queues.mako:19
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Force"
 msgstr "Lực lượng"
 
-#: sickrage/core/webserver/views/config/search.mako:656
-#: sickrage/core/webserver/views/config/search.mako:954
+#: sickrage/core/webserver/views/config/search.mako:671
+#: sickrage/core/webserver/views/config/search.mako:970
 msgid "Click below to test"
 msgstr "Bấm vào dưới đây để kiểm tra"
 
-#: sickrage/core/webserver/views/config/search.mako:662
+#: sickrage/core/webserver/views/config/search.mako:677
 msgid "Test SABnzbd"
 msgstr "Kiểm tra SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:677
+#: sickrage/core/webserver/views/config/search.mako:692
 msgid "How to handle Torrent search results for clients."
 msgstr "Làm thế nào để xử lý kết quả tìm kiếm Torrent cho khách hàng."
 
-#: sickrage/core/webserver/views/config/search.mako:689
+#: sickrage/core/webserver/views/config/search.mako:704
 msgid "Enable torrent searches"
 msgstr "Sử tìm kiếm torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:696
+#: sickrage/core/webserver/views/config/search.mako:711
 msgid "Send .torrent files to:"
 msgstr "Gửi tệp .torrent để:"
 
-#: sickrage/core/webserver/views/config/search.mako:741
+#: sickrage/core/webserver/views/config/search.mako:756
 msgid "Torrent host:port"
 msgstr "Máy chủ Torrent: port"
 
-#: sickrage/core/webserver/views/config/search.mako:750
+#: sickrage/core/webserver/views/config/search.mako:765
 msgid "ex. http://localhost:8000/"
 msgstr "Ví dụ: http://localhost:8000 /"
 
-#: sickrage/core/webserver/views/config/search.mako:760
+#: sickrage/core/webserver/views/config/search.mako:775
 msgid "Torrent RPC URL"
 msgstr "Torrent RPC URL"
 
-#: sickrage/core/webserver/views/config/search.mako:769
+#: sickrage/core/webserver/views/config/search.mako:784
 msgid "ex. transmission"
 msgstr "Ví dụ: bộ truyền động"
 
-#: sickrage/core/webserver/views/config/search.mako:779
+#: sickrage/core/webserver/views/config/search.mako:794
 msgid "HTTP Authentication"
 msgstr "Xác thực HTTP"
 
-#: sickrage/core/webserver/views/config/search.mako:788
+#: sickrage/core/webserver/views/config/search.mako:803
 msgid "None"
 msgstr "Không có"
 
-#: sickrage/core/webserver/views/config/search.mako:788
+#: sickrage/core/webserver/views/config/search.mako:803
 msgid "Basic"
 msgstr "Cơ bản"
 
-#: sickrage/core/webserver/views/config/search.mako:788
+#: sickrage/core/webserver/views/config/search.mako:803
 msgid "Digest"
 msgstr "Tiêu hóa"
 
-#: sickrage/core/webserver/views/config/search.mako:800
+#: sickrage/core/webserver/views/config/search.mako:815
 msgid "Verify certificate"
 msgstr "Xác minh chứng chỉ"
 
-#: sickrage/core/webserver/views/config/search.mako:807
+#: sickrage/core/webserver/views/config/search.mako:822
 msgid "disable if you get \"Deluge: Authentication Error\" in your log"
 msgstr "vô hiệu hóa nếu bạn nhận được \"Vô số: lỗi xác thực\" trong đăng nhập của bạn"
 
-#: sickrage/core/webserver/views/config/search.mako:810
+#: sickrage/core/webserver/views/config/search.mako:825
 msgid "Verify SSL certificates for HTTPS requests"
 msgstr "Xác minh chứng chỉ SSL cho HTTPS yêu cầu"
 
-#: sickrage/core/webserver/views/config/search.mako:818
+#: sickrage/core/webserver/views/config/search.mako:833
 msgid "Client username"
 msgstr "Tên đăng nhập của khách hàng"
 
-#: sickrage/core/webserver/views/config/search.mako:835
+#: sickrage/core/webserver/views/config/search.mako:850
 msgid "Client password"
 msgstr "Mật khẩu khách hàng"
 
-#: sickrage/core/webserver/views/config/search.mako:852
+#: sickrage/core/webserver/views/config/search.mako:867
 msgid "Add label to torrent"
 msgstr "Thêm nhãn torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:861
-#: sickrage/core/webserver/views/config/search.mako:879
+#: sickrage/core/webserver/views/config/search.mako:876
+#: sickrage/core/webserver/views/config/search.mako:894
 msgid "blank spaces are not allowed"
 msgstr "khoảng trống không được phép"
 
-#: sickrage/core/webserver/views/config/search.mako:870
+#: sickrage/core/webserver/views/config/search.mako:885
 msgid "Add anime label to torrent"
 msgstr "Thêm anime nhãn torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:888
+#: sickrage/core/webserver/views/config/search.mako:903
 msgid "Downloaded files location"
 msgstr "Vị trí tệp đã tải xuống"
 
-#: sickrage/core/webserver/views/config/search.mako:898
+#: sickrage/core/webserver/views/config/search.mako:913
 msgid "where the torrent client will save downloaded files (blank for client default)"
 msgstr "nơi khách hàng torrent sẽ tiết kiệm tải về tập tin (trống cho khách hàng mặc định)"
 
-#: sickrage/core/webserver/views/config/search.mako:899
+#: sickrage/core/webserver/views/config/search.mako:915
 msgid "the destination has to be a shared folder for Synology DS"
 msgstr "điểm đến đã là một thư mục được chia sẻ cho Synology DS"
 
-#: sickrage/core/webserver/views/config/search.mako:928
+#: sickrage/core/webserver/views/config/search.mako:944
 msgid "Start torrent paused"
 msgstr "Torrent bắt đầu tạm dừng"
 
-#: sickrage/core/webserver/views/config/search.mako:934
+#: sickrage/core/webserver/views/config/search.mako:950
 msgid "add .torrent to client but do <b>not</b> start downloading"
 msgstr "Thêm .torrent khách hàng nhưng làm <b>not</b> bắt đầu tải về"
 
-#: sickrage/core/webserver/views/config/search.mako:941
+#: sickrage/core/webserver/views/config/search.mako:957
 msgid "Allow high bandwidth"
 msgstr "Cho phép băng thông cao"
 
-#: sickrage/core/webserver/views/config/search.mako:947
+#: sickrage/core/webserver/views/config/search.mako:963
 msgid "use high bandwidth allocation if priority is high"
 msgstr "sử dụng phân bổ băng thông cao nếu ưu tiên cao"
 
-#: sickrage/core/webserver/views/config/search.mako:960
+#: sickrage/core/webserver/views/config/search.mako:976
 msgid "Test Connection"
 msgstr "Kiểm tra kết nối"
 
@@ -4150,7 +4161,7 @@ msgstr "Thư mục phụ đề"
 msgid "The directory where SickRage should store your"
 msgstr "Các thư mục nơi SickRage nên lưu trữ của bạn"
 
-#: sickrage/core/webserver/views.py:4750
+#: sickrage/core/webserver/views.py:4752
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:562
 #: sickrage/core/webserver/views/home/edit_show.mako:128
@@ -4548,7 +4559,7 @@ msgstr "Không bao giờ"
 msgid "Retry Download"
 msgstr "Thử tải về"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4954
 #: sickrage/core/webserver/views/home/edit_show.mako:26
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4662,7 +4673,7 @@ msgstr "sử dụng bộ đĩa DVD thay vì bộ máy"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Một \"lực lượng đầy đủ Cập Nhật\" là cần thiết, và nếu bạn đã sẵn có tập bạn cần phải sắp xếp chúng theo cách thủ công."
 
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4831
+#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4833
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
@@ -4994,7 +5005,7 @@ msgstr "Lỗi: Khởi động lại đã hết, có lẽ cái gì ngăn cản Si
 msgid "Daily Search"
 msgstr "Tìm kiếm hàng ngày"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4941
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Việc tồn đọng"
@@ -5019,7 +5030,7 @@ msgstr "Đăng trình"
 msgid "Subtitles Finder"
 msgstr "Tìm kiếm phụ đề"
 
-#: sickrage/core/webserver/views.py:4947
+#: sickrage/core/webserver/views.py:4949
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5052,7 +5063,7 @@ msgstr "Không"
 msgid "True"
 msgstr "Sự thật"
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4944
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "Hiển thị xếp hàng"
@@ -5416,7 +5427,7 @@ msgstr "Tổng quát"
 msgid "Backup and Restore"
 msgstr "Sao lưu và khôi phục"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4267
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4268
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "Tìm nhà cung cấp"
@@ -5426,18 +5437,18 @@ msgstr "Tìm nhà cung cấp"
 msgid "Subtitles Settings"
 msgstr "Cài đặt phụ đề"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4870
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4872
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Quality Settings"
 msgstr "Thiết đặt chất lượng"
 
 #: sickrage/core/webserver/views.py:2282 sickrage/core/webserver/views.py:2283
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4080
 #: sickrage/core/webserver/views/layouts/main.mako:267
 msgid "Post Processing"
 msgstr "Xử lý đăng bài"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4423
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4425
 #: sickrage/core/webserver/views/layouts/main.mako:272
 msgid "Notifications"
 msgstr "Thông báo"
@@ -5859,7 +5870,7 @@ msgstr "Muốn"
 msgid "Ignored"
 msgstr "Bỏ qua"
 
-#: sickrage/core/search.py:208
+#: sickrage/core/search.py:209
 msgid "Episode snatched"
 msgstr "Episode snatched"
 
@@ -6293,7 +6304,7 @@ msgstr "Đã có trên chi nhánh: "
 #: sickrage/core/webserver/views.py:1916 sickrage/core/webserver/views.py:1921
 #: sickrage/core/webserver/views.py:1924 sickrage/core/webserver/views.py:1967
 #: sickrage/core/webserver/views.py:1973 sickrage/core/webserver/views.py:1976
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4951
 msgid "Error"
 msgstr "Lỗi"
 
@@ -6673,10 +6684,10 @@ msgstr "Config - tổng hợp"
 msgid "General Configuration"
 msgstr "Cấu hình chung"
 
-#: sickrage/core/webserver/views.py:3889 sickrage/core/webserver/views.py:4061
-#: sickrage/core/webserver/views.py:4185 sickrage/core/webserver/views.py:4405
-#: sickrage/core/webserver/views.py:4732 sickrage/core/webserver/views.py:4813
-#: sickrage/core/webserver/views.py:4852
+#: sickrage/core/webserver/views.py:3889 sickrage/core/webserver/views.py:4062
+#: sickrage/core/webserver/views.py:4186 sickrage/core/webserver/views.py:4407
+#: sickrage/core/webserver/views.py:4734 sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:4854
 msgid "Error(s) Saving Configuration"
 msgstr "Lỗi đã lưu cấu hình"
 
@@ -6720,151 +6731,151 @@ msgstr "Bạn cần phải chọn một tập tin sao lưu để khôi phục!"
 msgid "Config - Episode Search"
 msgstr "Config - tập tìm"
 
-#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
-#: sickrage/core/webserver/views.py:4105
+#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
+#: sickrage/core/webserver/views.py:4106
 msgid "Unable to create directory "
 msgstr "Không thể tạo thư mục "
 
-#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
-#: sickrage/core/webserver/views.py:4105
+#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
+#: sickrage/core/webserver/views.py:4106
 msgid ", dir not changed."
 msgstr ", dir không thay đổi."
 
-#: sickrage/core/webserver/views.py:4063
+#: sickrage/core/webserver/views.py:4064
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4078
+#: sickrage/core/webserver/views.py:4079
 msgid "Config - Post Processing"
 msgstr "Config - đăng bài chế biến"
 
-#: sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4116
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Giải nén không hỗ trợ, vô hiệu hóa giải nén cài đặt"
 
-#: sickrage/core/webserver/views.py:4146 sickrage/core/webserver/views.py:4157
+#: sickrage/core/webserver/views.py:4147 sickrage/core/webserver/views.py:4158
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Bạn cố gắng tiết kiệm một anime không hợp lệ đặt tên cấu hình, không tiết kiệm cài đặt tên"
 
-#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
+#: sickrage/core/webserver/views.py:4149 sickrage/core/webserver/views.py:4160
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Bạn cố gắng tiết kiệm một cấu hình đặt tên không hợp lệ, không tiết kiệm cài đặt tên"
 
-#: sickrage/core/webserver/views.py:4165
+#: sickrage/core/webserver/views.py:4166
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Bạn cố gắng tiết kiệm một cấu hình không hợp lệ đặt tên máy bằng ngày, không tiết kiệm của bạn cài đặt máy bởi ngày"
 
-#: sickrage/core/webserver/views.py:4171
+#: sickrage/core/webserver/views.py:4172
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Bạn cố gắng tiết kiệm một môn thể thao không hợp lệ đặt tên cấu hình, không tiết kiệm của bạn cài đặt thể thao"
 
-#: sickrage/core/webserver/views.py:4187
+#: sickrage/core/webserver/views.py:4188
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4266
+#: sickrage/core/webserver/views.py:4267
 msgid "Config - Providers"
 msgstr "Config - nhà cung cấp"
 
-#: sickrage/core/webserver/views.py:4306
+#: sickrage/core/webserver/views.py:4308
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Không có tên nhà cung cấp được chỉ định"
 
-#: sickrage/core/webserver/views.py:4308
+#: sickrage/core/webserver/views.py:4310
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Không có nhà cung cấp Url được chỉ định"
 
-#: sickrage/core/webserver/views.py:4310
+#: sickrage/core/webserver/views.py:4312
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Không có chìa khóa nhà cung cấp Api được chỉ định"
 
-#: sickrage/core/webserver/views.py:4407
+#: sickrage/core/webserver/views.py:4409
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4422
+#: sickrage/core/webserver/views.py:4424
 msgid "Config - Notifications"
 msgstr "Config - thông báo"
 
-#: sickrage/core/webserver/views.py:4734
+#: sickrage/core/webserver/views.py:4736
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4749
+#: sickrage/core/webserver/views.py:4751
 msgid "Config - Subtitles"
 msgstr "Config - phụ đề"
 
-#: sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:4817
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4830
+#: sickrage/core/webserver/views.py:4832
 msgid "Config - Anime"
 msgstr "Cấu hình - Anime"
 
-#: sickrage/core/webserver/views.py:4854
+#: sickrage/core/webserver/views.py:4856
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4869
+#: sickrage/core/webserver/views.py:4871
 msgid "Config - Quality Settings"
 msgstr "Config - cài đặt chất lượng"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4883
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[CHẤT LƯỢNG CÀI ĐẶT] Cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4894
+#: sickrage/core/webserver/views.py:4896
 msgid "Clear Errors"
 msgstr "Sai sót rõ ràng"
 
-#: sickrage/core/webserver/views.py:4897
+#: sickrage/core/webserver/views.py:4899
 msgid "Clear Warnings"
 msgstr "Cảnh báo rõ ràng"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4940
 msgid "Daily Searcher"
 msgstr "Tìm kiếm hàng ngày"
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4942
 msgid "Show Updater"
 msgstr "Hiển thị Updater"
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4943
 msgid "Check Version"
 msgstr "Kiểm tra phiên bản"
 
-#: sickrage/core/webserver/views.py:4943
+#: sickrage/core/webserver/views.py:4945
 msgid "Search Queue"
 msgstr "Tìm hàng đợi"
 
-#: sickrage/core/webserver/views.py:4944
+#: sickrage/core/webserver/views.py:4946
 msgid "Find Propers"
 msgstr "Tìm Propers"
 
-#: sickrage/core/webserver/views.py:4945
+#: sickrage/core/webserver/views.py:4947
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4946
+#: sickrage/core/webserver/views.py:4948
 msgid "Find Subtitles"
 msgstr "Tìm phụ đề"
 
-#: sickrage/core/webserver/views.py:4948
+#: sickrage/core/webserver/views.py:4950
 msgid "Event"
 msgstr "Tổ chức sự kiện"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4952
 msgid "Tornado"
 msgstr "Cơn lốc xoáy"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4953
 msgid "Thread"
 msgstr "Chủ đề"
 

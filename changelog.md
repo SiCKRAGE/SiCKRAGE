@@ -1,6 +1,7 @@
 # Changelog
 
-- * fba367c - 2017-11-04: refactored qBitTorrent client, fixed issues with sending torrent files 
+- * f68233a - 2017-11-04: Release v9.1.63 
+- * 4555644 - 2017-11-04: refactored qBitTorrent client, fixed issues with sending torrent files 
 - * 0e2ebef - 2017-11-03: added download client setting for torrent clients to convert torrent file links to magnetic links, helps resolve download issues for certain clients and only works with public torrent providers 
 - * 00b3ffb - 2017-11-03: refactored newpct provider fixed typo when saving result name causing searches to fail 
 - * 1886733 - 2017-11-03: refactored IPTorrents provider 

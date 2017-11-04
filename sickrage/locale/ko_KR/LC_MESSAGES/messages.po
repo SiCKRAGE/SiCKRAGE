@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-10-28 19:22-0400\n"
-"PO-Revision-Date: 2017-10-28 19:23-0400\n"
+"POT-Creation-Date: 2017-11-04 00:40-0400\n"
+"PO-Revision-Date: 2017-11-04 00:41-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -189,7 +189,7 @@ msgstr ".Torrent blackhole/시계 위치 선택"
 msgid "Select .torrent download location"
 msgstr ".Torrent 다운로드 위치를 선택"
 
-#: dist/js/core.js:3159 sickrage/core/webserver/views/config/search.mako:907
+#: dist/js/core.js:3159 sickrage/core/webserver/views/config/search.mako:923
 msgid "Minimum seeding time is"
 msgstr "최소 시간 시드"
 
@@ -509,7 +509,7 @@ msgid "Downloaded"
 msgstr "다운로드"
 
 #: sickrage/core/common.py:604
-#: sickrage/core/webserver/views/config/providers.mako:884
+#: sickrage/core/webserver/views/config/providers.mako:891
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
 msgstr "자막"
@@ -563,8 +563,8 @@ msgstr "AniDB는 자유롭게 공중에 게 열려 있는 애니메이션 정보
 
 #: sickrage/core/webserver/views/config/anime.mako:27
 #: sickrage/core/webserver/views/config/postprocessing.mako:30
-#: sickrage/core/webserver/views/config/search.mako:267
-#: sickrage/core/webserver/views/config/search.mako:684
+#: sickrage/core/webserver/views/config/search.mako:280
+#: sickrage/core/webserver/views/config/search.mako:699
 #: sickrage/core/webserver/views/config/subtitles.mako:30
 #: sickrage/core/webserver/views/home/status.mako:37
 msgid "Enabled"
@@ -628,12 +628,12 @@ msgstr "당신은 PostProcessed 에피소드는 MyList에 추가 하 시겠습�
 #: sickrage/core/webserver/views/config/postprocessing.mako:327
 #: sickrage/core/webserver/views/config/postprocessing.mako:1297
 #: sickrage/core/webserver/views/config/providers.mako:117
-#: sickrage/core/webserver/views/config/providers.mako:900
+#: sickrage/core/webserver/views/config/providers.mako:907
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
-#: sickrage/core/webserver/views/config/search.mako:248
-#: sickrage/core/webserver/views/config/search.mako:663
-#: sickrage/core/webserver/views/config/search.mako:735
-#: sickrage/core/webserver/views/config/search.mako:961
+#: sickrage/core/webserver/views/config/search.mako:261
+#: sickrage/core/webserver/views/config/search.mako:678
+#: sickrage/core/webserver/views/config/search.mako:750
+#: sickrage/core/webserver/views/config/search.mako:978
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
@@ -1001,7 +1001,7 @@ msgstr "귀하의 시간대 또는 쇼 네트워크 시간대에 날짜와 시�
 #: sickrage/core/webserver/views/config/postprocessing.mako:1260
 #: sickrage/core/webserver/views/config/postprocessing.mako:1274
 #: sickrage/core/webserver/views/config/postprocessing.mako:1288
-#: sickrage/core/webserver/views/config/search.mako:899
+#: sickrage/core/webserver/views/config/search.mako:915
 #: sickrage/core/webserver/views/config/subtitles.mako:124
 #: sickrage/core/webserver/views/config/subtitles.mako:162
 msgid "NOTE:"
@@ -1068,10 +1068,10 @@ msgstr "HTTP 사용자 이름"
 #: sickrage/core/webserver/views/config/notifications.mako:426
 #: sickrage/core/webserver/views/config/notifications.mako:442
 #: sickrage/core/webserver/views/config/notifications.mako:1058
-#: sickrage/core/webserver/views/config/search.mako:343
-#: sickrage/core/webserver/views/config/search.mako:361
-#: sickrage/core/webserver/views/config/search.mako:827
-#: sickrage/core/webserver/views/config/search.mako:844
+#: sickrage/core/webserver/views/config/search.mako:358
+#: sickrage/core/webserver/views/config/search.mako:376
+#: sickrage/core/webserver/views/config/search.mako:842
+#: sickrage/core/webserver/views/config/search.mako:859
 msgid "blank = no authentication"
 msgstr "빈 = 인증 없음"
 
@@ -2132,12 +2132,12 @@ msgid "Moderate"
 msgstr "보통"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1685
-#: sickrage/core/webserver/views/config/search.mako:637
+#: sickrage/core/webserver/views/config/search.mako:652
 msgid "Normal"
 msgstr "정상"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1688
-#: sickrage/core/webserver/views/config/search.mako:640
+#: sickrage/core/webserver/views/config/search.mako:655
 msgid "High"
 msgstr "높은"
 
@@ -2925,17 +2925,17 @@ msgid "Use Failed Downloads"
 msgstr "사용 다운로드 실패"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:288
-#: sickrage/core/webserver/views/config/search.mako:225
+#: sickrage/core/webserver/views/config/search.mako:238
 msgid "Use Failed Download Handling?"
 msgstr "사용은 다운로드 처리 실패?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:294
-#: sickrage/core/webserver/views/config/search.mako:233
+#: sickrage/core/webserver/views/config/search.mako:246
 msgid "Delete Failed"
 msgstr "삭제 실패"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:300
-#: sickrage/core/webserver/views/config/search.mako:240
+#: sickrage/core/webserver/views/config/search.mako:253
 msgid "Delete files left over from a failed download?"
 msgstr "실패 한 다운로드에서 남은 파일을 삭제?"
 
@@ -3398,67 +3398,67 @@ msgstr "공급자를 구성."
 
 #: sickrage/core/webserver/views/config/providers.mako:176
 #: sickrage/core/webserver/views/config/providers.mako:306
-#: sickrage/core/webserver/views/config/providers.mako:967
+#: sickrage/core/webserver/views/config/providers.mako:974
 msgid "API key:"
 msgstr "API 키:"
 
 #: sickrage/core/webserver/views/config/providers.mako:198
 #: sickrage/core/webserver/views/config/providers.mako:326
-#: sickrage/core/webserver/views/config/providers.mako:761
+#: sickrage/core/webserver/views/config/providers.mako:768
 msgid "Enable daily searches"
 msgstr "일일 검색 활성화"
 
 #: sickrage/core/webserver/views/config/providers.mako:204
 #: sickrage/core/webserver/views/config/providers.mako:332
-#: sickrage/core/webserver/views/config/providers.mako:767
+#: sickrage/core/webserver/views/config/providers.mako:774
 msgid "enable provider to perform daily searches."
 msgstr "일일 검색을 수행 하려면 공급자를 사용 합니다."
 
 #: sickrage/core/webserver/views/config/providers.mako:213
 #: sickrage/core/webserver/views/config/providers.mako:341
-#: sickrage/core/webserver/views/config/providers.mako:791
+#: sickrage/core/webserver/views/config/providers.mako:798
 msgid "Enable backlog searches"
 msgstr "백로그 검색 활성화"
 
 #: sickrage/core/webserver/views/config/providers.mako:219
 #: sickrage/core/webserver/views/config/providers.mako:347
-#: sickrage/core/webserver/views/config/providers.mako:797
+#: sickrage/core/webserver/views/config/providers.mako:804
 msgid "enable provider to perform backlog searches."
 msgstr "백로그 검색을 수행 하는 공급자를 사용 합니다."
 
 #: sickrage/core/webserver/views/config/providers.mako:228
 #: sickrage/core/webserver/views/config/providers.mako:356
-#: sickrage/core/webserver/views/config/providers.mako:806
+#: sickrage/core/webserver/views/config/providers.mako:813
 msgid "Search mode fallback"
 msgstr "검색 모드 대체"
 
 #: sickrage/core/webserver/views/config/providers.mako:235
 #: sickrage/core/webserver/views/config/providers.mako:363
-#: sickrage/core/webserver/views/config/providers.mako:813
+#: sickrage/core/webserver/views/config/providers.mako:820
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
 msgstr "검색 모드에 따라 완전 한 시즌에 대 한 검색 결과 반환할 수 있습니다,이 반대 검색 모드를 사용 하 여 검색을 다시 시작 하 여 도움이 됩니다."
 
 #: sickrage/core/webserver/views/config/providers.mako:247
 #: sickrage/core/webserver/views/config/providers.mako:375
-#: sickrage/core/webserver/views/config/providers.mako:825
+#: sickrage/core/webserver/views/config/providers.mako:832
 msgid "Season search mode"
 msgstr "시즌 검색 모드"
 
 #: sickrage/core/webserver/views/config/providers.mako:256
 #: sickrage/core/webserver/views/config/providers.mako:395
-#: sickrage/core/webserver/views/config/providers.mako:834
+#: sickrage/core/webserver/views/config/providers.mako:841
 msgid "season packs only."
 msgstr "시즌 팩만."
 
 #: sickrage/core/webserver/views/config/providers.mako:267
 #: sickrage/core/webserver/views/config/providers.mako:384
-#: sickrage/core/webserver/views/config/providers.mako:845
+#: sickrage/core/webserver/views/config/providers.mako:852
 msgid "episodes only."
 msgstr "에피소드만."
 
 #: sickrage/core/webserver/views/config/providers.mako:272
 #: sickrage/core/webserver/views/config/providers.mako:401
-#: sickrage/core/webserver/views/config/providers.mako:851
+#: sickrage/core/webserver/views/config/providers.mako:858
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
 msgstr "완전 한 절 기에 대 한 검색할 때 시즌 팩만 찾거나 그냥 하나의 에피소드에서 완벽 한 시즌을 구축 하도록 선택할 그것을 선택할 수 있습니다."
 
@@ -3492,174 +3492,177 @@ msgid "Passkey:"
 msgstr "암호:"
 
 #: sickrage/core/webserver/views/config/providers.mako:559
-#: sickrage/core/webserver/views/config/providers.mako:1088
+#: sickrage/core/webserver/views/config/providers.mako:1095
 msgid "Cookies:"
 msgstr "쿠키:"
 
-#: sickrage/core/webserver/views/config/providers.mako:569
-#: sickrage/core/webserver/views/config/providers.mako:1095
-msgid "ex. uid=xx;pass=yy"
-msgstr "예: uid = xx; 통과 yy ="
+#: sickrage/core/webserver/views/config/providers.mako:576
+msgid "this provider requires the following cookies: "
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:580
+#: sickrage/core/webserver/views/config/providers.mako:587
 msgid "Pin:"
 msgstr "핀:"
 
-#: sickrage/core/webserver/views/config/providers.mako:601
+#: sickrage/core/webserver/views/config/providers.mako:608
 msgid "Seed ratio:"
 msgstr "씨 비:"
 
-#: sickrage/core/webserver/views/config/providers.mako:621
+#: sickrage/core/webserver/views/config/providers.mako:628
 msgid "Minimum seeders:"
 msgstr "최소 파:"
 
-#: sickrage/core/webserver/views/config/providers.mako:641
+#: sickrage/core/webserver/views/config/providers.mako:648
 msgid "Minimum leechers:"
 msgstr "최소 leechers:"
 
-#: sickrage/core/webserver/views/config/providers.mako:661
+#: sickrage/core/webserver/views/config/providers.mako:668
 msgid "Confirmed download"
 msgstr "확인된 다운로드"
 
-#: sickrage/core/webserver/views/config/providers.mako:667
+#: sickrage/core/webserver/views/config/providers.mako:674
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "신뢰할 수 있는 또는 검증 uploaders에서 급류를 다운로드만?"
 
-#: sickrage/core/webserver/views/config/providers.mako:676
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "Ranked torrents"
 msgstr "위 급류"
 
-#: sickrage/core/webserver/views/config/providers.mako:682
+#: sickrage/core/webserver/views/config/providers.mako:689
 msgid "only download ranked torrents (internal releases)"
 msgstr "만 다운로드 순위 급류 (내부 자료)"
 
-#: sickrage/core/webserver/views/config/providers.mako:691
+#: sickrage/core/webserver/views/config/providers.mako:698
 msgid "English torrents"
 msgstr "영어 급류"
 
-#: sickrage/core/webserver/views/config/providers.mako:697
+#: sickrage/core/webserver/views/config/providers.mako:704
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "만 다운로드 영어 급류, 또는 영어 자막을 포함 하는 급류"
 
-#: sickrage/core/webserver/views/config/providers.mako:706
+#: sickrage/core/webserver/views/config/providers.mako:713
 msgid "For Spanish torrents"
 msgstr "스페인 급류에 대 한"
 
-#: sickrage/core/webserver/views/config/providers.mako:713
+#: sickrage/core/webserver/views/config/providers.mako:720
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "공연 정보 \"스페인어\" (VOS 쇼에 대 한 공급자의 사용 방지)으로 정의 된 경우이 공급자에만 검색"
 
-#: sickrage/core/webserver/views/config/providers.mako:724
+#: sickrage/core/webserver/views/config/providers.mako:731
 msgid "Sort results by"
 msgstr "에 의해 정렬 결과"
 
-#: sickrage/core/webserver/views/config/providers.mako:746
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:752
+#: sickrage/core/webserver/views/config/providers.mako:759
 msgid "only download"
 msgstr "만 다운로드"
 
-#: sickrage/core/webserver/views/config/providers.mako:752
+#: sickrage/core/webserver/views/config/providers.mako:759
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:752
+#: sickrage/core/webserver/views/config/providers.mako:759
 msgid "torrents."
 msgstr "급류입니다."
 
-#: sickrage/core/webserver/views/config/providers.mako:776
+#: sickrage/core/webserver/views/config/providers.mako:783
 msgid "Reject Blu-ray M2TS releases"
 msgstr "블루-레이 M2TS 자료 거부"
 
-#: sickrage/core/webserver/views/config/providers.mako:782
+#: sickrage/core/webserver/views/config/providers.mako:789
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "블루-레이 mpeg-2 전송 스트림 컨테이너 자료를 무시 하는 사용 하도록 설정"
 
-#: sickrage/core/webserver/views/config/providers.mako:862
+#: sickrage/core/webserver/views/config/providers.mako:869
 msgid "Category:"
 msgstr "카테고리:"
 
-#: sickrage/core/webserver/views/config/providers.mako:890
+#: sickrage/core/webserver/views/config/providers.mako:897
 msgid "select torrent with Italian subtitle"
 msgstr "이탈리아 자막 급류를 선택"
 
-#: sickrage/core/webserver/views/config/providers.mako:912
+#: sickrage/core/webserver/views/config/providers.mako:919
 msgid "Configure Custom"
 msgstr "사용자 지정 구성"
 
-#: sickrage/core/webserver/views/config/providers.mako:913
+#: sickrage/core/webserver/views/config/providers.mako:920
 msgid "Newznab Providers"
 msgstr "Newznab 공급자"
 
-#: sickrage/core/webserver/views/config/providers.mako:916
+#: sickrage/core/webserver/views/config/providers.mako:923
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "추가 하 고 설치 하거나 사용자 지정 Newznab 공급자를 제거 합니다."
 
-#: sickrage/core/webserver/views/config/providers.mako:923
-#: sickrage/core/webserver/views/config/providers.mako:1042
+#: sickrage/core/webserver/views/config/providers.mako:930
+#: sickrage/core/webserver/views/config/providers.mako:1049
 msgid "Select provider:"
 msgstr "공급자를 선택 합니다."
 
-#: sickrage/core/webserver/views/config/providers.mako:931
-#: sickrage/core/webserver/views/config/providers.mako:1050
+#: sickrage/core/webserver/views/config/providers.mako:938
+#: sickrage/core/webserver/views/config/providers.mako:1057
 msgid "add new provider"
 msgstr "새 공급자 추가"
 
-#: sickrage/core/webserver/views/config/providers.mako:940
-#: sickrage/core/webserver/views/config/providers.mako:1059
+#: sickrage/core/webserver/views/config/providers.mako:947
+#: sickrage/core/webserver/views/config/providers.mako:1066
 msgid "Provider name:"
 msgstr "공급자 이름:"
 
-#: sickrage/core/webserver/views/config/providers.mako:953
+#: sickrage/core/webserver/views/config/providers.mako:960
 msgid "Site URL:"
 msgstr "사이트 URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:982
+#: sickrage/core/webserver/views/config/providers.mako:989
 msgid "Newznab search categories:"
 msgstr "Newznab 검색 카테고리:"
 
-#: sickrage/core/webserver/views/config/providers.mako:992
+#: sickrage/core/webserver/views/config/providers.mako:999
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(왼쪽에 Newznab 범주를 선택 하 고 검색을 위해 그들을 사용 하 여 \"카테고리 업데이트\" 버튼을 클릭 합니다.)"
 
-#: sickrage/core/webserver/views/config/providers.mako:994
+#: sickrage/core/webserver/views/config/providers.mako:1001
 msgid "Don't forget to save changes!"
 msgstr "변경 내용을 저장 하는 것을 잊지 마세요!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1004
+#: sickrage/core/webserver/views/config/providers.mako:1011
 msgid "Update Categories"
 msgstr "카테고리 업데이트"
 
-#: sickrage/core/webserver/views/config/providers.mako:1013
+#: sickrage/core/webserver/views/config/providers.mako:1020
 #: sickrage/core/webserver/views/home/index.mako:281
 msgid "Add"
 msgstr "추가"
 
-#: sickrage/core/webserver/views/config/providers.mako:1021
+#: sickrage/core/webserver/views/config/providers.mako:1028
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:70
 msgid "Delete"
 msgstr "삭제"
 
-#: sickrage/core/webserver/views/config/providers.mako:1035
+#: sickrage/core/webserver/views/config/providers.mako:1042
 msgid "Configure Custom Torrent Providers"
 msgstr "토런트 사용자 지정 공급자 구성"
 
-#: sickrage/core/webserver/views/config/providers.mako:1036
+#: sickrage/core/webserver/views/config/providers.mako:1043
 msgid "Add and setup or remove custom RSS providers."
 msgstr "추가 하 고 설치 하거나 사용자 지정 RSS 공급자를 제거 합니다."
 
-#: sickrage/core/webserver/views/config/providers.mako:1074
+#: sickrage/core/webserver/views/config/providers.mako:1081
 msgid "RSS URL:"
 msgstr "RSS URL:"
 
 #: sickrage/core/webserver/views/config/providers.mako:1102
+msgid "ex. uid=xx;pass=yy"
+msgstr "예: uid = xx; 통과 yy ="
+
+#: sickrage/core/webserver/views/config/providers.mako:1109
 msgid "Search element:"
 msgstr "검색 요소:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1109
+#: sickrage/core/webserver/views/config/providers.mako:1116
 msgid "ex. title"
 msgstr "예: 제목"
 
@@ -3682,12 +3685,12 @@ msgid "Search Settings"
 msgstr "검색 설정"
 
 #: sickrage/core/webserver/views/config/search.mako:8
-#: sickrage/core/webserver/views/config/search.mako:259
+#: sickrage/core/webserver/views/config/search.mako:272
 msgid "NZB Clients"
 msgstr "NZB 클라이언트"
 
 #: sickrage/core/webserver/views/config/search.mako:9
-#: sickrage/core/webserver/views/config/search.mako:676
+#: sickrage/core/webserver/views/config/search.mako:691
 msgid "Torrent Clients"
 msgstr "토런트 클라이언트"
 
@@ -3699,379 +3702,387 @@ msgstr "검색을 관리 하는 방법"
 msgid "providers"
 msgstr "공급자"
 
-#: sickrage/core/webserver/views/config/search.mako:21
+#: sickrage/core/webserver/views/config/search.mako:22
 msgid "Randomize Providers"
 msgstr "공급자를 무작위"
 
-#: sickrage/core/webserver/views/config/search.mako:27
+#: sickrage/core/webserver/views/config/search.mako:28
 msgid "randomize the provider search order"
 msgstr "공급자 검색 순서를 임의화"
 
-#: sickrage/core/webserver/views/config/search.mako:33
+#: sickrage/core/webserver/views/config/search.mako:34
 msgid "Download propers"
 msgstr "Propers 다운로드"
 
-#: sickrage/core/webserver/views/config/search.mako:39
+#: sickrage/core/webserver/views/config/search.mako:40
 msgid "replace original download with \"Proper\" or \"Repack\" if nuked"
 msgstr "대체 원래 다운로드 \"적절 한\" 또는 \"재포장\" 핵 공격을 하는 경우"
 
-#: sickrage/core/webserver/views/config/search.mako:45
+#: sickrage/core/webserver/views/config/search.mako:46
 msgid "Enable provider RSS cache"
 msgstr "공급자 RSS 캐시 사용"
 
-#: sickrage/core/webserver/views/config/search.mako:51
+#: sickrage/core/webserver/views/config/search.mako:52
 msgid "enables/disables provider RSS feed caching"
 msgstr "활성화/비활성화 공급자 RSS 피드 캐싱"
 
-#: sickrage/core/webserver/views/config/search.mako:57
+#: sickrage/core/webserver/views/config/search.mako:58
 msgid "Enable provider RSS cache for valid shows only"
 msgstr "유효한 쇼만에 대 한 공급자 RSS 캐시 사용"
 
-#: sickrage/core/webserver/views/config/search.mako:63
+#: sickrage/core/webserver/views/config/search.mako:64
 msgid "enables/disables caching of shows already added to SiCKRAGE, speeds up searches"
 msgstr "검색 최대 속도 SiCKRAGE에 이미 추가 하는 쇼의 캐싱을 활성화/비활성화"
 
 #: sickrage/core/webserver/views/config/search.mako:70
+msgid "Convert provider torrent file links to magnetic links"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/search.mako:76
+msgid "enables/disables converting of public torrent provider file links to magnetic links"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
 msgstr "Propers 확인 모든:"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "24 hours"
 msgstr "24 시간"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "4 hours"
 msgstr "4 시간"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "90 mins"
 msgstr "90 분"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "45 mins"
 msgstr "45 분"
 
-#: sickrage/core/webserver/views/config/search.mako:79
+#: sickrage/core/webserver/views/config/search.mako:92
 msgid "15 mins"
 msgstr "15 분"
 
-#: sickrage/core/webserver/views/config/search.mako:91
+#: sickrage/core/webserver/views/config/search.mako:104
 msgid "Backlog search frequency"
 msgstr "백로그 검색 빈도"
 
-#: sickrage/core/webserver/views/config/search.mako:101
-#: sickrage/core/webserver/views/config/search.mako:119
+#: sickrage/core/webserver/views/config/search.mako:114
+#: sickrage/core/webserver/views/config/search.mako:132
 msgid "time in minutes"
 msgstr "시간 분"
 
-#: sickrage/core/webserver/views/config/search.mako:110
+#: sickrage/core/webserver/views/config/search.mako:123
 msgid "Daily search frequency"
 msgstr "매일 검색 빈도"
 
-#: sickrage/core/webserver/views/config/search.mako:131
+#: sickrage/core/webserver/views/config/search.mako:144
 msgid "Usenet retention"
 msgstr "Usenet 보존"
 
-#: sickrage/core/webserver/views/config/search.mako:151
+#: sickrage/core/webserver/views/config/search.mako:164
 msgid "Ignore words"
 msgstr "단어 무시"
 
-#: sickrage/core/webserver/views/config/search.mako:160
-#: sickrage/core/webserver/views/config/search.mako:178
+#: sickrage/core/webserver/views/config/search.mako:173
+#: sickrage/core/webserver/views/config/search.mako:191
 #: sickrage/core/webserver/views/home/edit_show.mako:287
 #: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "ex. word1,word2,word3"
 msgstr "예: word1, word2 word3"
 
-#: sickrage/core/webserver/views/config/search.mako:169
+#: sickrage/core/webserver/views/config/search.mako:182
 msgid "Require words"
 msgstr "단어가 필요"
 
-#: sickrage/core/webserver/views/config/search.mako:187
+#: sickrage/core/webserver/views/config/search.mako:200
 msgid "Ignore language names in subbed results"
 msgstr "언어 이름이 척된 결과에 무시"
 
-#: sickrage/core/webserver/views/config/search.mako:196
+#: sickrage/core/webserver/views/config/search.mako:209
 msgid "ex. lang1,lang2,lang3"
 msgstr "예: lang1, lang2, lang3"
 
-#: sickrage/core/webserver/views/config/search.mako:205
+#: sickrage/core/webserver/views/config/search.mako:218
 msgid "Allow high priority"
 msgstr "높은 우선 순위를 허용"
 
-#: sickrage/core/webserver/views/config/search.mako:211
+#: sickrage/core/webserver/views/config/search.mako:224
 msgid "Set downloads of recently aired episodes to high priority"
 msgstr "최근 방영된 에피소드의 다운로드 높은 우선 순위 설정"
 
-#: sickrage/core/webserver/views/config/search.mako:218
+#: sickrage/core/webserver/views/config/search.mako:231
 msgid "Failed Downloads Handling"
 msgstr "처리 실패 한 다운로드"
 
-#: sickrage/core/webserver/views/config/search.mako:260
+#: sickrage/core/webserver/views/config/search.mako:273
 msgid "How to handle NZB search results for clients."
 msgstr "고객을 위한 NZB 검색 결과 처리 하는 방법."
 
-#: sickrage/core/webserver/views/config/search.mako:272
+#: sickrage/core/webserver/views/config/search.mako:285
 msgid "enable NZB searches"
 msgstr "NZB 검색 활성화"
 
-#: sickrage/core/webserver/views/config/search.mako:279
+#: sickrage/core/webserver/views/config/search.mako:292
 msgid "Send .nzb files to:"
 msgstr ".Nzb 파일을 보내기:"
 
-#: sickrage/core/webserver/views/config/search.mako:299
-#: sickrage/core/webserver/views/config/search.mako:717
+#: sickrage/core/webserver/views/config/search.mako:312
+#: sickrage/core/webserver/views/config/search.mako:732
 msgid "Black hole folder location"
 msgstr "블랙 홀 폴더 위치"
 
-#: sickrage/core/webserver/views/config/search.mako:308
-#: sickrage/core/webserver/views/config/search.mako:728
+#: sickrage/core/webserver/views/config/search.mako:322
+#: sickrage/core/webserver/views/config/search.mako:743
 msgid "files are stored at this location for external software to find and use"
 msgstr "외부 소프트웨어를 찾아서 사용을 위한이 위치에 파일 저장"
 
-#: sickrage/core/webserver/views/config/search.mako:317
+#: sickrage/core/webserver/views/config/search.mako:332
 msgid "SABnzbd server URL"
 msgstr "SABnzbd 서버 URL"
 
-#: sickrage/core/webserver/views/config/search.mako:326
+#: sickrage/core/webserver/views/config/search.mako:341
 msgid "ex. http://localhost:8080/"
 msgstr "출 http://localhost:8080/ /"
 
-#: sickrage/core/webserver/views/config/search.mako:334
+#: sickrage/core/webserver/views/config/search.mako:349
 msgid "SABnzbd username"
 msgstr "SABnzbd 사용자 이름"
 
-#: sickrage/core/webserver/views/config/search.mako:352
+#: sickrage/core/webserver/views/config/search.mako:367
 msgid "SABnzbd password"
 msgstr "SABnzbd 암호"
 
-#: sickrage/core/webserver/views/config/search.mako:370
+#: sickrage/core/webserver/views/config/search.mako:385
 msgid "SABnzbd API key"
 msgstr "SABnzbd API 키"
 
-#: sickrage/core/webserver/views/config/search.mako:388
+#: sickrage/core/webserver/views/config/search.mako:403
 msgid "Use SABnzbd category"
 msgstr "사용 SABnzbd 카테고리"
 
-#: sickrage/core/webserver/views/config/search.mako:397
-#: sickrage/core/webserver/views/config/search.mako:415
-#: sickrage/core/webserver/views/config/search.mako:556
-#: sickrage/core/webserver/views/config/search.mako:574
+#: sickrage/core/webserver/views/config/search.mako:412
+#: sickrage/core/webserver/views/config/search.mako:430
+#: sickrage/core/webserver/views/config/search.mako:571
+#: sickrage/core/webserver/views/config/search.mako:589
 msgid "ex. TV"
 msgstr "예: TV"
 
-#: sickrage/core/webserver/views/config/search.mako:406
+#: sickrage/core/webserver/views/config/search.mako:421
 msgid "Use SABnzbd category (backlog episodes)"
 msgstr "SABnzbd 카테고리 (백로그 에피소드)를 사용 하 여"
 
-#: sickrage/core/webserver/views/config/search.mako:424
+#: sickrage/core/webserver/views/config/search.mako:439
 msgid "Use SABnzbd category for anime"
 msgstr "애니메이션에 대 한 사용 SABnzbd 카테고리"
 
-#: sickrage/core/webserver/views/config/search.mako:433
-#: sickrage/core/webserver/views/config/search.mako:453
-#: sickrage/core/webserver/views/config/search.mako:592
-#: sickrage/core/webserver/views/config/search.mako:611
+#: sickrage/core/webserver/views/config/search.mako:448
+#: sickrage/core/webserver/views/config/search.mako:468
+#: sickrage/core/webserver/views/config/search.mako:607
+#: sickrage/core/webserver/views/config/search.mako:626
 msgid "ex. anime"
 msgstr "예: 애니메이션"
 
-#: sickrage/core/webserver/views/config/search.mako:443
+#: sickrage/core/webserver/views/config/search.mako:458
 msgid "Use SABnzbd category for anime (backlog episodes)"
 msgstr "SABnzbd 범주를 사용 하 여 애니메이션 (백로그 에피소드)"
 
-#: sickrage/core/webserver/views/config/search.mako:463
+#: sickrage/core/webserver/views/config/search.mako:478
 msgid "Use forced priority"
 msgstr "강제 사용 우선 순위"
 
-#: sickrage/core/webserver/views/config/search.mako:469
+#: sickrage/core/webserver/views/config/search.mako:484
 msgid "enable to change priority from HIGH to FORCED"
 msgstr "강제 하에서 높은 우선 순위를 변경 하려면 사용"
 
-#: sickrage/core/webserver/views/config/search.mako:479
+#: sickrage/core/webserver/views/config/search.mako:494
 msgid "Connect using HTTPS"
 msgstr "HTTPS를 사용 하 여 연결"
 
-#: sickrage/core/webserver/views/config/search.mako:485
+#: sickrage/core/webserver/views/config/search.mako:500
 msgid "enable secure control"
 msgstr "보안 제어를 사용 하도록 설정"
 
-#: sickrage/core/webserver/views/config/search.mako:492
+#: sickrage/core/webserver/views/config/search.mako:507
 msgid "NZBget host:port"
 msgstr "NZBget 호스트: 포트"
 
-#: sickrage/core/webserver/views/config/search.mako:501
+#: sickrage/core/webserver/views/config/search.mako:516
 msgid "ex. localhost:6789"
 msgstr "예: localhost:6789"
 
-#: sickrage/core/webserver/views/config/search.mako:511
+#: sickrage/core/webserver/views/config/search.mako:526
 msgid "NZBget username"
 msgstr "NZBget 사용자 이름"
 
-#: sickrage/core/webserver/views/config/search.mako:520
+#: sickrage/core/webserver/views/config/search.mako:535
 msgid "default = nzbget"
 msgstr "기본값 = nzbget"
 
-#: sickrage/core/webserver/views/config/search.mako:529
+#: sickrage/core/webserver/views/config/search.mako:544
 msgid "NZBget password"
 msgstr "NZBget 암호"
 
-#: sickrage/core/webserver/views/config/search.mako:538
+#: sickrage/core/webserver/views/config/search.mako:553
 msgid "default = tegbzn6789"
 msgstr "기본값 = tegbzn6789"
 
-#: sickrage/core/webserver/views/config/search.mako:547
+#: sickrage/core/webserver/views/config/search.mako:562
 msgid "Use NZBget category"
 msgstr "사용 NZBget 카테고리"
 
-#: sickrage/core/webserver/views/config/search.mako:565
+#: sickrage/core/webserver/views/config/search.mako:580
 msgid "Use NZBget category (backlog episodes)"
 msgstr "NZBget 카테고리 (백로그 에피소드)를 사용 하 여"
 
-#: sickrage/core/webserver/views/config/search.mako:583
+#: sickrage/core/webserver/views/config/search.mako:598
 msgid "Use NZBget category for anime"
 msgstr "애니메이션에 대 한 사용 NZBget 카테고리"
 
-#: sickrage/core/webserver/views/config/search.mako:601
+#: sickrage/core/webserver/views/config/search.mako:616
 msgid "Use NZBget category for anime (backlog episodes)"
 msgstr "NZBget 범주를 사용 하 여 애니메이션 (백로그 에피소드)"
 
-#: sickrage/core/webserver/views/config/search.mako:620
+#: sickrage/core/webserver/views/config/search.mako:635
 msgid "NZBget priority"
 msgstr "NZBget 우선 순위"
 
-#: sickrage/core/webserver/views/config/search.mako:631
+#: sickrage/core/webserver/views/config/search.mako:646
 msgid "Very low"
 msgstr "매우 낮은"
 
-#: sickrage/core/webserver/views/config/search.mako:634
+#: sickrage/core/webserver/views/config/search.mako:649
 msgid "Low"
 msgstr "낮은"
 
-#: sickrage/core/webserver/views/config/search.mako:643
+#: sickrage/core/webserver/views/config/search.mako:658
 msgid "Very high"
 msgstr "매우 높은"
 
-#: sickrage/core/webserver/views/config/search.mako:646
+#: sickrage/core/webserver/views/config/search.mako:661
 #: sickrage/core/webserver/views/manage/queues.mako:19
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Force"
 msgstr "힘"
 
-#: sickrage/core/webserver/views/config/search.mako:656
-#: sickrage/core/webserver/views/config/search.mako:954
+#: sickrage/core/webserver/views/config/search.mako:671
+#: sickrage/core/webserver/views/config/search.mako:970
 msgid "Click below to test"
 msgstr "아래 테스트를 클릭합니다"
 
-#: sickrage/core/webserver/views/config/search.mako:662
+#: sickrage/core/webserver/views/config/search.mako:677
 msgid "Test SABnzbd"
 msgstr "테스트 SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:677
+#: sickrage/core/webserver/views/config/search.mako:692
 msgid "How to handle Torrent search results for clients."
 msgstr "고객에 대 한 토런트 검색 결과 처리 하는 방법."
 
-#: sickrage/core/webserver/views/config/search.mako:689
+#: sickrage/core/webserver/views/config/search.mako:704
 msgid "Enable torrent searches"
 msgstr "토런트 검색 활성화"
 
-#: sickrage/core/webserver/views/config/search.mako:696
+#: sickrage/core/webserver/views/config/search.mako:711
 msgid "Send .torrent files to:"
 msgstr ".Torrent 파일을 보내기:"
 
-#: sickrage/core/webserver/views/config/search.mako:741
+#: sickrage/core/webserver/views/config/search.mako:756
 msgid "Torrent host:port"
 msgstr "토런트 호스트: 포트"
 
-#: sickrage/core/webserver/views/config/search.mako:750
+#: sickrage/core/webserver/views/config/search.mako:765
 msgid "ex. http://localhost:8000/"
 msgstr "예 http://localhost:8000 /"
 
-#: sickrage/core/webserver/views/config/search.mako:760
+#: sickrage/core/webserver/views/config/search.mako:775
 msgid "Torrent RPC URL"
 msgstr "토런트 RPC URL"
 
-#: sickrage/core/webserver/views/config/search.mako:769
+#: sickrage/core/webserver/views/config/search.mako:784
 msgid "ex. transmission"
 msgstr "예: 전송"
 
-#: sickrage/core/webserver/views/config/search.mako:779
+#: sickrage/core/webserver/views/config/search.mako:794
 msgid "HTTP Authentication"
 msgstr "HTTP 인증"
 
-#: sickrage/core/webserver/views/config/search.mako:788
+#: sickrage/core/webserver/views/config/search.mako:803
 msgid "None"
 msgstr "없음"
 
-#: sickrage/core/webserver/views/config/search.mako:788
+#: sickrage/core/webserver/views/config/search.mako:803
 msgid "Basic"
 msgstr "기본"
 
-#: sickrage/core/webserver/views/config/search.mako:788
+#: sickrage/core/webserver/views/config/search.mako:803
 msgid "Digest"
 msgstr "다이제스트"
 
-#: sickrage/core/webserver/views/config/search.mako:800
+#: sickrage/core/webserver/views/config/search.mako:815
 msgid "Verify certificate"
 msgstr "인증서 확인"
 
-#: sickrage/core/webserver/views/config/search.mako:807
+#: sickrage/core/webserver/views/config/search.mako:822
 msgid "disable if you get \"Deluge: Authentication Error\" in your log"
 msgstr "당신의 로그에서 \"홍수:: 인증 오류\"를 얻을 경우 사용 하지 않도록 설정"
 
-#: sickrage/core/webserver/views/config/search.mako:810
+#: sickrage/core/webserver/views/config/search.mako:825
 msgid "Verify SSL certificates for HTTPS requests"
 msgstr "HTTPS 요청에 대 한 SSL 인증서 확인"
 
-#: sickrage/core/webserver/views/config/search.mako:818
+#: sickrage/core/webserver/views/config/search.mako:833
 msgid "Client username"
 msgstr "클라이언트 사용자 이름"
 
-#: sickrage/core/webserver/views/config/search.mako:835
+#: sickrage/core/webserver/views/config/search.mako:850
 msgid "Client password"
 msgstr "클라이언트 암호"
 
-#: sickrage/core/webserver/views/config/search.mako:852
+#: sickrage/core/webserver/views/config/search.mako:867
 msgid "Add label to torrent"
 msgstr "토런트에 레이블 추가"
 
-#: sickrage/core/webserver/views/config/search.mako:861
-#: sickrage/core/webserver/views/config/search.mako:879
+#: sickrage/core/webserver/views/config/search.mako:876
+#: sickrage/core/webserver/views/config/search.mako:894
 msgid "blank spaces are not allowed"
 msgstr "공백이 허용 되지 않습니다."
 
-#: sickrage/core/webserver/views/config/search.mako:870
+#: sickrage/core/webserver/views/config/search.mako:885
 msgid "Add anime label to torrent"
 msgstr "토런트에 애니메이션 레이블 추가"
 
-#: sickrage/core/webserver/views/config/search.mako:888
+#: sickrage/core/webserver/views/config/search.mako:903
 msgid "Downloaded files location"
 msgstr "다운로드 한 파일 위치"
 
-#: sickrage/core/webserver/views/config/search.mako:898
+#: sickrage/core/webserver/views/config/search.mako:913
 msgid "where the torrent client will save downloaded files (blank for client default)"
 msgstr "(클라이언트 기본 빈) 파일을 다운로드 토런트 클라이언트 저장 됩니다."
 
-#: sickrage/core/webserver/views/config/search.mako:899
+#: sickrage/core/webserver/views/config/search.mako:915
 msgid "the destination has to be a shared folder for Synology DS"
 msgstr "대상은 Synology DS에 대 한 공유 폴더를 수 있다"
 
-#: sickrage/core/webserver/views/config/search.mako:928
+#: sickrage/core/webserver/views/config/search.mako:944
 msgid "Start torrent paused"
 msgstr "시작 급류 일시 중지"
 
-#: sickrage/core/webserver/views/config/search.mako:934
+#: sickrage/core/webserver/views/config/search.mako:950
 msgid "add .torrent to client but do <b>not</b> start downloading"
 msgstr ".torrent 클라이언트를 추가 하지만 <b>not</b> 시작 다운로드"
 
-#: sickrage/core/webserver/views/config/search.mako:941
+#: sickrage/core/webserver/views/config/search.mako:957
 msgid "Allow high bandwidth"
 msgstr "높은 대역폭을 허용"
 
-#: sickrage/core/webserver/views/config/search.mako:947
+#: sickrage/core/webserver/views/config/search.mako:963
 msgid "use high bandwidth allocation if priority is high"
 msgstr "높은 대역폭 할당을 사용 하 여 우선 순위가 높은 경우"
 
-#: sickrage/core/webserver/views/config/search.mako:960
+#: sickrage/core/webserver/views/config/search.mako:976
 msgid "Test Connection"
 msgstr "연결 테스트"
 
@@ -4150,7 +4161,7 @@ msgstr "자막 디렉토리"
 msgid "The directory where SickRage should store your"
 msgstr "SickRage 저장 해야 하는 디렉터리를"
 
-#: sickrage/core/webserver/views.py:4750
+#: sickrage/core/webserver/views.py:4752
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:562
 #: sickrage/core/webserver/views/home/edit_show.mako:128
@@ -4548,7 +4559,7 @@ msgstr "결코"
 msgid "Retry Download"
 msgstr "다운로드 다시 시도"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4954
 #: sickrage/core/webserver/views/home/edit_show.mako:26
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4662,7 +4673,7 @@ msgstr "공기 순서 대신 DVD 순서를 사용 하 여"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"힘 전체 업데이트\" 필요한 이며 수동으로 정렬할 필요가 경우 기존 에피소드."
 
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4831
+#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4833
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:33
@@ -4994,7 +5005,7 @@ msgstr "오류: 다시 시작 시간이 초과 되었습니다, 그리고 아마
 msgid "Daily Search"
 msgstr "매일 검색"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4941
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "백로그"
@@ -5019,7 +5030,7 @@ msgstr "포스트 프로세스"
 msgid "Subtitles Finder"
 msgstr "자막 찾기"
 
-#: sickrage/core/webserver/views.py:4947
+#: sickrage/core/webserver/views.py:4949
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt 검사기"
@@ -5052,7 +5063,7 @@ msgstr "아니요"
 msgid "True"
 msgstr "사실"
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4944
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "큐 보기"
@@ -5416,7 +5427,7 @@ msgstr "일반"
 msgid "Backup and Restore"
 msgstr "백업 및 복원"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4267
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4268
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "검색 공급자"
@@ -5426,18 +5437,18 @@ msgstr "검색 공급자"
 msgid "Subtitles Settings"
 msgstr "자막 설정"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4870
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4872
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Quality Settings"
 msgstr "품질 설정"
 
 #: sickrage/core/webserver/views.py:2282 sickrage/core/webserver/views.py:2283
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4080
 #: sickrage/core/webserver/views/layouts/main.mako:267
 msgid "Post Processing"
 msgstr "후 처리"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4423
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4425
 #: sickrage/core/webserver/views/layouts/main.mako:272
 msgid "Notifications"
 msgstr "알림"
@@ -5859,7 +5870,7 @@ msgstr "싶 었 어 요"
 msgid "Ignored"
 msgstr "무시"
 
-#: sickrage/core/search.py:208
+#: sickrage/core/search.py:209
 msgid "Episode snatched"
 msgstr "납치 하는 에피소드"
 
@@ -6293,7 +6304,7 @@ msgstr "지점에 이미: "
 #: sickrage/core/webserver/views.py:1916 sickrage/core/webserver/views.py:1921
 #: sickrage/core/webserver/views.py:1924 sickrage/core/webserver/views.py:1967
 #: sickrage/core/webserver/views.py:1973 sickrage/core/webserver/views.py:1976
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4951
 msgid "Error"
 msgstr "오류"
 
@@ -6673,10 +6684,10 @@ msgstr "설정-일반"
 msgid "General Configuration"
 msgstr "일반 구성"
 
-#: sickrage/core/webserver/views.py:3889 sickrage/core/webserver/views.py:4061
-#: sickrage/core/webserver/views.py:4185 sickrage/core/webserver/views.py:4405
-#: sickrage/core/webserver/views.py:4732 sickrage/core/webserver/views.py:4813
-#: sickrage/core/webserver/views.py:4852
+#: sickrage/core/webserver/views.py:3889 sickrage/core/webserver/views.py:4062
+#: sickrage/core/webserver/views.py:4186 sickrage/core/webserver/views.py:4407
+#: sickrage/core/webserver/views.py:4734 sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:4854
 msgid "Error(s) Saving Configuration"
 msgstr "구성 저장 오류"
 
@@ -6720,151 +6731,151 @@ msgstr "백업 파일 복원을 선택 해야 합니다!"
 msgid "Config - Episode Search"
 msgstr "구성-에피소드 검색"
 
-#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
-#: sickrage/core/webserver/views.py:4105
+#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
+#: sickrage/core/webserver/views.py:4106
 msgid "Unable to create directory "
 msgstr "디렉터리를 만들 수 없습니다 "
 
-#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
-#: sickrage/core/webserver/views.py:4105
+#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
+#: sickrage/core/webserver/views.py:4106
 msgid ", dir not changed."
 msgstr "dir 변경 되지 않습니다."
 
-#: sickrage/core/webserver/views.py:4063
+#: sickrage/core/webserver/views.py:4064
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4078
+#: sickrage/core/webserver/views.py:4079
 msgid "Config - Post Processing"
 msgstr "구성-게시물 처리"
 
-#: sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4116
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "지원 되지 않는 압축 풀기, 설정 압축 해제"
 
-#: sickrage/core/webserver/views.py:4146 sickrage/core/webserver/views.py:4157
+#: sickrage/core/webserver/views.py:4147 sickrage/core/webserver/views.py:4158
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "잘못 된 애니메이션 구성 명명, 이름 설정을 저장 하지 저장 시도"
 
-#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
+#: sickrage/core/webserver/views.py:4149 sickrage/core/webserver/views.py:4160
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "당신이 시도 잘못 된 명명 구성 저장 명명 설정을 저장"
 
-#: sickrage/core/webserver/views.py:4165
+#: sickrage/core/webserver/views.py:4166
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "당신이 시도 잘못 된 공기-의해-날짜 명명 구성 저장 공기-의해-날짜 설정을 저장"
 
-#: sickrage/core/webserver/views.py:4171
+#: sickrage/core/webserver/views.py:4172
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "저장 구성 명명, 스포츠 설정을 저장 하지 않은 경우 잘못 된 스포츠 시도"
 
-#: sickrage/core/webserver/views.py:4187
+#: sickrage/core/webserver/views.py:4188
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4266
+#: sickrage/core/webserver/views.py:4267
 msgid "Config - Providers"
 msgstr "구성-공급자"
 
-#: sickrage/core/webserver/views.py:4306
+#: sickrage/core/webserver/views.py:4308
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "지정 된 공급자 이름 없음"
 
-#: sickrage/core/webserver/views.py:4308
+#: sickrage/core/webserver/views.py:4310
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "지정 된 공급자 Url 없음"
 
-#: sickrage/core/webserver/views.py:4310
+#: sickrage/core/webserver/views.py:4312
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "지정 된 공급자 Api 키"
 
-#: sickrage/core/webserver/views.py:4407
+#: sickrage/core/webserver/views.py:4409
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4422
+#: sickrage/core/webserver/views.py:4424
 msgid "Config - Notifications"
 msgstr "구성-알림"
 
-#: sickrage/core/webserver/views.py:4734
+#: sickrage/core/webserver/views.py:4736
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4749
+#: sickrage/core/webserver/views.py:4751
 msgid "Config - Subtitles"
 msgstr "설정-자막"
 
-#: sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:4817
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4830
+#: sickrage/core/webserver/views.py:4832
 msgid "Config - Anime"
 msgstr "구성-애니메이션"
 
-#: sickrage/core/webserver/views.py:4854
+#: sickrage/core/webserver/views.py:4856
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4869
+#: sickrage/core/webserver/views.py:4871
 msgid "Config - Quality Settings"
 msgstr "구성-품질 설정"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4883
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[품질 설정] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4894
+#: sickrage/core/webserver/views.py:4896
 msgid "Clear Errors"
 msgstr "명확한 오류"
 
-#: sickrage/core/webserver/views.py:4897
+#: sickrage/core/webserver/views.py:4899
 msgid "Clear Warnings"
 msgstr "지우기 경고"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4940
 msgid "Daily Searcher"
 msgstr "매일 검색"
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4942
 msgid "Show Updater"
 msgstr "표시 업데이트"
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4943
 msgid "Check Version"
 msgstr "버전 확인"
 
-#: sickrage/core/webserver/views.py:4943
+#: sickrage/core/webserver/views.py:4945
 msgid "Search Queue"
 msgstr "검색 큐"
 
-#: sickrage/core/webserver/views.py:4944
+#: sickrage/core/webserver/views.py:4946
 msgid "Find Propers"
 msgstr "Propers 찾기"
 
-#: sickrage/core/webserver/views.py:4945
+#: sickrage/core/webserver/views.py:4947
 msgid "Postprocessor"
 msgstr "재설정할"
 
-#: sickrage/core/webserver/views.py:4946
+#: sickrage/core/webserver/views.py:4948
 msgid "Find Subtitles"
 msgstr "자막 찾기"
 
-#: sickrage/core/webserver/views.py:4948
+#: sickrage/core/webserver/views.py:4950
 msgid "Event"
 msgstr "이벤트"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4952
 msgid "Tornado"
 msgstr "토네이도"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4953
 msgid "Thread"
 msgstr "스레드"
 
