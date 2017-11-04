@@ -1,6 +1,7 @@
 # Changelog
 
-- * e6076d7 - 2017-11-04: fixed issues with getting RSS feed from Newpct provider 
+- * 2aa3b2c - 2017-11-04: added code to Newpct torrent provider to search page by page 
+- * 1deec4c - 2017-11-04: fixed issues with getting RSS feed from Newpct provider 
 - * b0b02e3 - 2017-11-04: Release v9.1.63 
 - * 4555644 - 2017-11-04: refactored qBitTorrent client, fixed issues with sending torrent files 
 - * 0e2ebef - 2017-11-03: added download client setting for torrent clients to convert torrent file links to magnetic links, helps resolve download issues for certain clients and only works with public torrent providers 

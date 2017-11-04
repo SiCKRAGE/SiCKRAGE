@@ -40,7 +40,6 @@ class NewpctProvider(TorrentProvider):
         })
 
         self.onlyspasearch = None
-        self.supports_backlog = False
 
         self.cache = NewpctCache(self, min_time=20)
 
@@ -78,14 +77,21 @@ class NewpctProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-                searchURL = self.urls['search'] + '/' + search_string
+                pg = 1
 
-                try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
-                    results += self.parse(data, mode)
-                except Exception:
-                    sickrage.srCore.srLogger.debug('No data returned from provider')
-                    continue
+                while True:
+                    searchURL = self.urls['search'] + '/' + search_string + '//pg/' + str(pg)
+
+                    try:
+                        data = sickrage.srCore.srWebSession.get(searchURL).text
+                        items = self.parse(data, mode)
+                        if not len(items): break
+                        results += items
+                    except Exception:
+                        sickrage.srCore.srLogger.debug('No data returned from provider')
+                        break
+
+                    pg += 1
 
         return results
 
@@ -101,48 +107,30 @@ class NewpctProvider(TorrentProvider):
 
         results = []
 
-        def _process_title(title):
-            # Strip word Serie from start of title
-            title = title.split(' ', 1)[1]
-
-            # Add encoder and group to title
-            title = title.strip() + ' x264-NEWPCT'
-
-            # Quality - Use re module to avoid case sensitive problems with replace
-            title = re.sub(r'\[ALTA DEFINICION[^\[]*]', '720p HDTV', title, flags=re.IGNORECASE)
-            title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay', title, flags=re.IGNORECASE)
-            title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay', title, flags=re.IGNORECASE)
-
-            # Language
-            title = re.sub(r'\[(Spanish|Castellano|Español)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
-            title = re.sub(r'\[AC3 5\.1 Español[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
-
-            # Season and Episode
-            title = re.sub(r'Temporada[^\[]*?', 'SEASON', title, flags=re.IGNORECASE)
-            title = re.sub(r'Capitulo[^\[]*?', 'EPISODE', title, flags=re.IGNORECASE)
-
-            return title
-
         with bs4_parser(data) as html:
             torrent_table = html.find('ul', class_='buscar-list')
             torrent_rows = torrent_table('li') if torrent_table else []
 
             # Continue only if at least one release is found
-            if len(torrent_rows) < 3:  # Headers + 1 Torrent + Pagination
+            if not len(torrent_rows):
                 sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
                 return results
 
             for row in torrent_rows[1:-1]:
                 try:
                     torrent_anchor = row.find_all('a')[1]
-                    title = _process_title(torrent_anchor.get_text())
-                    download_url = self.process_link(torrent_anchor.get('href', ''))
+                    title = self._process_title(torrent_anchor.get_text())
+                    download_url = self._process_link(torrent_anchor.get('href', ''))
                     if not all([title, download_url]):
                         continue
 
                     seeders = 1  # Provider does not provide seeders
                     leechers = 0  # Provider does not provide leechers
-                    torrent_size = row.find_all('span')[4].get_text(strip=True)
+
+                    try:
+                        torrent_size = row.find_all('span')[3].get_text(strip=True)
+                    except IndexError:
+                        torrent_size = row.find_all('span')[1].get_text(strip=True)
                     size = convert_size(torrent_size, -1)
 
                     item = {
@@ -161,12 +149,34 @@ class NewpctProvider(TorrentProvider):
 
         return results
 
-    def process_link(self, url):
+    def _process_title(self, title):
+        # Strip word Serie from start of title
+        title = title.split(' ', 1)[1]
+
+        # Add encoder and group to title
+        title = title.strip() + ' x264-NEWPCT'
+
+        # Quality - Use re module to avoid case sensitive problems with replace
+        title = re.sub(r'\[ALTA DEFINICION[^\[]*]', '720p HDTV', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay', title, flags=re.IGNORECASE)
+
+        # Language
+        title = re.sub(r'\[(Spanish|Castellano|Espanol)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[AC3 5\.1 Espanol[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
+
+        # Season and Episode
+        title = re.sub(r'Temporada[^\[]*?', 'SEASON', title, flags=re.IGNORECASE)
+        title = re.sub(r'Capitulo[^\[]*?', 'EPISODE', title, flags=re.IGNORECASE)
+
+        return title
+
+    def _process_link(self, url):
         try:
             url = sickrage.srCore.srWebSession.get(url).text
             download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', url, re.DOTALL).group(1)
             url = self.urls['download'] % download_id
-        except Exception:
+        except Exception as e:
             pass
 
         return url
@@ -180,7 +190,8 @@ class NewpctCache(TVCache):
         data = self.getRSSFeed(self.provider.urls['rss'])
         for entry in data.entries:
             if 'Series' in entry.category:
-                entry.link = self.provider.process_link(entry.link)
+                entry.title = self.provider._process_title(entry.title)
+                entry.link = self.provider._process_link(entry.link)
                 results['entries'].append(entry)
 
         return results
