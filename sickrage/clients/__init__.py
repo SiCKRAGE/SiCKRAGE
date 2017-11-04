@@ -22,7 +22,6 @@ import re
 import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
-from urllib import urlencode
 
 from bencode import BTFailure, bdecode, bencode
 
@@ -178,21 +177,20 @@ class GenericClient(object):
         self._response = value
 
     def _request(self, method='get', params=None, data=None, *args, **kwargs):
-
         if time.time() > self.last_time + 1800 or not self.auth:
             self.last_time = time.time()
             self._get_auth()
 
-        log_string = '{}: Requested a {} connection to url {}'.format(self.name, method.upper(), self.url)
-
-        if params:
-            log_string += '?{}'.format(urlencode(params))
-
-        if data:
-            log_string += ' and data: {}{}'.format(
-                str(data)[0:99], '...' if len(str(data)) > 100 else '')
-
-        sickrage.srCore.srLogger.debug(log_string)
+        sickrage.srCore.srLogger.debug(
+            '{name}: Requested a {method} connection to {url} with'
+            ' params: {params} Data: {data}'.format(
+                name=self.name,
+                method=method.upper(),
+                url=self.url,
+                params=params,
+                data=str(data)[0:99] + '...' if len(str(data)) > 102 else str(data)
+            )
+        )
 
         if not self.auth:
             sickrage.srCore.srLogger.warning(self.name + ': Authentication Failed')
@@ -207,13 +205,15 @@ class GenericClient(object):
                                                                  timeout=120,
                                                                  verify=False,
                                                                  cache=False,
-                                                                 *args,
-                                                                 **kwargs)
-        except Exception as e:
+                                                                 *args, **kwargs)
+        except Exception:
             return False
 
-        sickrage.srCore.srLogger.debug(
-            self.name + ': Response to ' + method.upper() + ' request is ' + self._response.text)
+        sickrage.srCore.srLogger.debug('{name}: Response to {method} request is {response}'.format(
+            name=self.name,
+            method=method.upper(),
+            response=self.response.text
+        ))
 
         return True
 

@@ -87,7 +87,7 @@ class qbittorrentAPI(GenericClient):
 
     def _add_torrent_file(self, result):
         self.url = '{}command/upload'.format(self.host)
-        files = {'torrents': ('{}.torrent'.format(result.name), result.content)}
+        files = {'torrent': result.content}
         return self._request(method='post', files=files, cookies=sickrage.srCore.srWebSession.cookies)
 
     def _set_torrent_priority(self, result):
