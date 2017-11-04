@@ -22,11 +22,10 @@
 from __future__ import unicode_literals
 
 import re
-from urllib import urlencode
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, try_int
+from sickrage.core.helpers import bs4_parser, convert_size, show_names
 from sickrage.providers import TorrentProvider
 
 
@@ -34,158 +33,139 @@ class newpctProvider(TorrentProvider):
     def __init__(self):
         super(newpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
+        self.urls.update({
+            'search': '{base_url}/series'.format(**self.urls),
+            'rss': '{base_url}/feed'.format(**self.urls),
+            'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
+        })
+
         self.onlyspasearch = None
+        self.supports_backlog = False
 
         self.cache = TVCache(self, min_time=20)
 
-        self.urls.update({
-            'search': '{base_url}/index.php'.format(**self.urls)
-        })
+    def _get_season_search_strings(self, ep_obj):
+        search_string = {'Season': []}
+
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
+            search_string['Season'].append(show_name.replace(' ', '-'))
+
+        return [search_string]
+
+    def _get_episode_search_strings(self, ep_obj, add_string=''):
+        search_string = {'Episode': []}
+
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
+            search_string['Episode'].append(show_name.replace(' ', '-'))
+
+        return [search_string]
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
-        search_params = {
-            'l': 'doSearch',
-            'q': '',
-            'category_': 'All',
-            'idioma_': 1,
-            'bus_de_': 'All'
-        }
-
+        # Only search if user conditions are true
         lang_info = '' if not ep_obj or not ep_obj.show else ep_obj.show.lang
 
-        for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
-
-            if self.onlyspasearch:
-                search_params['idioma_'] = 1
-            else:
-                search_params['idioma_'] = 'All'
+        for mode in search_strings:
+            sickrage.srCore.srLogger.debug('Search mode: {}'.format(mode))
 
             # Only search if user conditions are true
             if self.onlyspasearch and lang_info != 'es' and mode != 'RSS':
-                sickrage.srCore.srLogger.debug("Show info is not spanish, skipping provider search")
+                sickrage.srCore.srLogger.debug('Show info is not spanish, skipping provider search')
                 continue
 
-            search_params['bus_de_'] = 'All' if mode != 'RSS' else 'semana'
-
             for search_string in search_strings[mode]:
-                search_params['q'] = search_string.strip()
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-                sickrage.srCore.srLogger.debug(
-                    "Search URL: %s" % self.urls['search'] + '?' + urlencode(search_params))
+                searchURL = self.urls['search'] + '/' + search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=search_params, timeout=30).text
+                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    results += self.parse(data, mode)
                 except Exception:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
                     continue
-
-                try:
-                    with bs4_parser(data) as html:
-                        torrent_table = html.find('table', id='categoryTable')
-                        torrent_rows = torrent_table('tr') if torrent_table else []
-
-                        if len(torrent_rows) < 3:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        for row in torrent_rows[1:-1]:
-                            try:
-                                cells = row('td')
-
-                                torrent_row = row.find('a')
-                                download_url = torrent_row.get('href', '')
-                                title = self._processTitle(torrent_row.get('title', ''), download_url)
-                                if not all([title, download_url]):
-                                    continue
-
-                                # Provider does not provide seeders/leechers
-                                seeders = 1
-                                leechers = 0
-                                torrent_size = cells[2].get_text(strip=True)
-
-                                size = convert_size(torrent_size, -1)
-                                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                        'leechers': leechers, 'hash': ''}
-
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
-
-                                results.append(item)
-                            except (AttributeError, TypeError):
-                                continue
-
-                except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider.")
-
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 
-    @staticmethod
-    def _processTitle(title, url):
-        # Remove 'Mas informacion sobre ' literal from title
-        title = title[22:]
-        title = re.sub(r'[ ]{2,}', ' ', title, flags=re.I)
+    def parse(self, data, mode):
+        """
+        Parse search results for items.
 
-        # Quality - Use re module to avoid case sensitive problems with replace
-        title = re.sub(r'\[HDTV 1080p?[^\[]*]', '1080p HDTV x264', title, flags=re.I)
-        title = re.sub(r'\[HDTV 720p?[^\[]*]', '720p HDTV x264', title, flags=re.I)
-        title = re.sub(r'\[ALTA DEFINICION 720p?[^\[]*]', '720p HDTV x264', title, flags=re.I)
-        title = re.sub(r'\[HDTV]', 'HDTV x264', title, flags=re.I)
-        title = re.sub(r'\[DVD[^\[]*]', 'DVDrip x264', title, flags=re.I)
-        title = re.sub(r'\[BluRay 1080p?[^\[]*]', '1080p BluRay x264', title, flags=re.I)
-        title = re.sub(r'\[BluRay Rip 1080p?[^\[]*]', '1080p BluRay x264', title, flags=re.I)
-        title = re.sub(r'\[BluRay Rip 720p?[^\[]*]', '720p BluRay x264', title, flags=re.I)
-        title = re.sub(r'\[BluRay MicroHD[^\[]*]', '1080p BluRay x264', title, flags=re.I)
-        title = re.sub(r'\[MicroHD 1080p?[^\[]*]', '1080p BluRay x264', title, flags=re.I)
-        title = re.sub(r'\[BLuRay[^\[]*]', '720p BluRay x264', title, flags=re.I)
-        title = re.sub(r'\[BRrip[^\[]*]', '720p BluRay x264', title, flags=re.I)
-        title = re.sub(r'\[BDrip[^\[]*]', '720p BluRay x264', title, flags=re.I)
+        :param data: The raw response from a search
+        :param mode: The current mode used to search, e.g. RSS
 
-        #detect hdtv/bluray by url
-        #hdtv 1080p example url: http://www.newpct.com/descargar-seriehd/foo/capitulo-610/hdtv-1080p-ac3-5-1/
-        #hdtv 720p example url: http://www.newpct.com/descargar-seriehd/foo/capitulo-26/hdtv-720p-ac3-5-1/
-        #hdtv example url: http://www.newpct.com/descargar-serie/foo/capitulo-214/hdtv/
-        #bluray compilation example url: http://www.newpct.com/descargar-seriehd/foo/capitulo-11/bluray-1080p/
-        title_hdtv = re.search(r'HDTV', title, flags=re.I)
-        title_720p = re.search(r'720p', title, flags=re.I)
-        title_1080p = re.search(r'1080p', title, flags=re.I)
-        title_x264 = re.search(r'x264', title, flags=re.I)
-        title_bluray = re.search(r'bluray', title, flags=re.I)
-        title_serie_hd = re.search(r'descargar-seriehd', title, flags=re.I)
-        url_hdtv = re.search(r'HDTV', url, flags=re.I)
-        url_720p = re.search(r'720p', url, flags=re.I)
-        url_1080p = re.search(r'1080p', url, flags=re.I)
-        url_bluray = re.search(r'bluray', url, flags=re.I)
+        :return: A list of items found
+        """
 
-        if not title_hdtv and url_hdtv:
-            title += ' HDTV'
-            if not title_x264:
-                title += ' x264'
-        if not title_bluray and url_bluray:
-            title += ' BluRay'
-            if not title_x264:
-                title += ' x264'
-        if not title_1080p and url_1080p:
-            title += ' 1080p'
-            title_1080p = True
-        if not title_720p and url_720p:
-            title += ' 720p'
-            title_720p = True
-        if not (title_720p or title_1080p) and title_serie_hd:
-            title += ' 720p'
+        results = []
 
-        # Language
-        title = re.sub(r'\[Spanish[^\[]*]', 'SPANISH AUDIO', title, flags=re.I)
-        title = re.sub(r'\[Castellano[^\[]*]', 'SPANISH AUDIO', title, flags=re.I)
-        title = re.sub(r'\[Español[^\[]*]', 'SPANISH AUDIO', title, flags=re.I)
-        title = re.sub(r'\[AC3 5\.1 Español[^\[]*]', 'SPANISH AUDIO', title, flags=re.I)
+        def _process_title(title):
+            # Strip word Serie from start of title
+            title = title.split(' ', 1)[1]
 
-        if re.search(r'\[V.O.[^\[]*]', title, flags=re.I):
-            title += '-NEWPCTVO'
-        else:
-            title += '-NEWPCT'
+            # Add encoder and group to title
+            title = title.strip() + ' x264-NEWPCT'
 
-        return title.strip()
+            # Quality - Use re module to avoid case sensitive problems with replace
+            title = re.sub(r'\[ALTA DEFINICION[^\[]*]', '720p HDTV', title, flags=re.IGNORECASE)
+            title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay', title, flags=re.IGNORECASE)
+            title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay', title, flags=re.IGNORECASE)
+
+            # Language
+            title = re.sub(r'\[(Spanish|Castellano|Español)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
+            title = re.sub(r'\[AC3 5\.1 Español[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
+
+            # Season and Episode
+            title = re.sub(r'Temporada[^\[]*?', 'SEASON', title, flags=re.IGNORECASE)
+            title = re.sub(r'Capitulo[^\[]*?', 'EPISODE', title, flags=re.IGNORECASE)
+
+            return title
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find('ul', class_='buscar-list')
+            torrent_rows = torrent_table('li') if torrent_table else []
+
+            # Continue only if at least one release is found
+            if len(torrent_rows) < 3:  # Headers + 1 Torrent + Pagination
+                sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
+                return results
+
+            for row in torrent_rows[1:-1]:
+                try:
+                    torrent_anchor = row.find_all('a')[1]
+                    title = _process_title(torrent_anchor.get_text())
+                    link_url = torrent_anchor.get('href', '')
+
+                    try:
+                        link_data = sickrage.srCore.srWebSession.get(link_url).text
+                        download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', link_data,
+                                                re.DOTALL).group(1)
+                        download_url = self.urls['download'] % download_id
+                    except Exception:
+                        continue
+
+                    if not all([title, download_url]):
+                        continue
+
+                    seeders = 1  # Provider does not provide seeders
+                    leechers = 0  # Provider does not provide leechers
+                    torrent_size = row.find_all('span')[4].get_text(strip=True)
+                    size = convert_size(torrent_size, -1)
+
+                    item = {
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers,
+                    }
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+
+                        results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error('Failed parsing provider')
+
+        return results

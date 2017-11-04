@@ -64,7 +64,6 @@ class NyaaProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug('Searching only confirmed torrents')
 
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
                     search_params['q'] = search_string
@@ -80,19 +79,14 @@ class NyaaProvider(TorrentProvider):
 
                 results += self.parse(data['entries'], mode)
 
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
-
         return results
 
     def parse(self, data, mode):
         """
-        Parse search results for items.
-
-        :param data: The raw response from a search
-        :param mode: The current mode used to search, e.g. RSS
-
-        :return: A list of items found
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
         """
 
         results = []
@@ -127,7 +121,7 @@ class NyaaProvider(TorrentProvider):
                     sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
                 results.append(item)
-            except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+            except Exception:
                 sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results

@@ -32,13 +32,13 @@ class EliteTorrentProvider(TorrentProvider):
     def __init__(self):
         super(EliteTorrentProvider, self).__init__('EliteTorrent', 'http://www.elitetorrent.net', True)
 
-        self.onlyspasearch = None
-        self.minseed = None
-        self.minleech = None
-
         self.urls.update({
             'search': '{base_url}/torrents.php'.format(**self.urls)
         })
+
+        self.onlyspasearch = None
+        self.minseed = None
+        self.minleech = None
 
         self.cache = TVCache(self)
 
@@ -67,7 +67,7 @@ class EliteTorrentProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.srCore.srLogger.debug("Search Mode: {}".format(mode))
 
             # Only search if user conditions are true
             if self.onlyspasearch and lang_info != 'es' and mode != 'RSS':
@@ -81,78 +81,74 @@ class EliteTorrentProvider(TorrentProvider):
                 search_string = re.sub(r'S0*(\d*)E(\d*)', r'\1x\2', search_string)
                 search_params['buscar'] = search_string.strip() if mode != 'RSS' else ''
 
-                data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
-                if not data:
-                    continue
-
                 try:
-                    with bs4_parser(data) as html:
-                        torrent_table = html.find('table', class_='fichas-listado')
-                        torrent_rows = torrent_table('tr') if torrent_table else []
-
-                        if len(torrent_rows) < 2:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        for row in torrent_rows[1:]:
-                            try:
-                                download_url = self.urls['base_url'] + row.find('a')['href']
-                                row_title = row.find('a', class_='nombre')['title']
-                                title = self._processTitle(row_title.encode('latin-1').decode('utf8'))
-
-                                seeders = try_int(row.find('td', class_='semillas').get_text(strip=True))
-                                leechers = try_int(row.find('td', class_='clientes').get_text(strip=True))
-
-                                # seeders are not well reported. Set 1 in case of 0
-                                seeders = max(1, seeders)
-
-                                # Provider does not provide size
-                                size = -1
-
-                            except (AttributeError, TypeError, KeyError, ValueError):
-                                continue
-
-                            if not all([title, download_url]):
-                                continue
-
-                            # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: "
-                                        "{} (S:{} L:{})".format(title, seeders, leechers))
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
 
         return results
 
-    @staticmethod
-    def _processTitle(title):
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
 
-        # Quality, if no literal is defined it's HDTV
-        if 'calidad' not in title:
-            title += ' HDTV x264'
+        results = []
 
-        title = title.replace('(calidad baja)', 'HDTV x264')
-        title = title.replace('(Buena calidad)', '720p HDTV x264')
-        title = title.replace('(Alta calidad)', '720p HDTV x264')
-        title = title.replace('(calidad regular)', 'DVDrip x264')
-        title = title.replace('(calidad media)', 'DVDrip x264')
+        def _processTitle(title):
+            # Quality, if no literal is defined it's HDTV
+            if 'calidad' not in title:
+                title += ' HDTV x264'
 
-        # Language, all results from this provider have spanish audio, we append it to title (avoid to download undesired torrents)
-        title += ' SPANISH AUDIO'
-        title += '-ELITETORRENT'
+            title = title.replace('(calidad baja)', 'HDTV x264')
+            title = title.replace('(Buena calidad)', '720p HDTV x264')
+            title = title.replace('(Alta calidad)', '720p HDTV x264')
+            title = title.replace('(calidad regular)', 'DVDrip x264')
+            title = title.replace('(calidad media)', 'DVDrip x264')
 
-        return title.strip()
+            # Language, all results from this provider have spanish audio, we append it to title (avoid to download undesired torrents)
+            title += ' SPANISH AUDIO'
+            title += '-ELITETORRENT'
+
+            return title.strip()
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find('table', class_='fichas-listado')
+            torrent_rows = torrent_table('tr') if torrent_table else []
+
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            for row in torrent_rows[1:]:
+                try:
+                    download_url = self.urls['base_url'] + row.find('a')['href']
+                    row_title = row.find('a', class_='nombre')['title']
+                    title = _processTitle(row_title.encode('latin-1').decode('utf8'))
+                    if not all([title, download_url]):
+                        continue
+
+                    seeders = try_int(row.find('td', class_='semillas').get_text(strip=True))
+                    leechers = try_int(row.find('td', class_='clientes').get_text(strip=True))
+
+                    # seeders are not well reported. Set 1 in case of 0
+                    seeders = max(1, seeders)
+
+                    # Provider does not provide size
+                    size = -1
+
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
+
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

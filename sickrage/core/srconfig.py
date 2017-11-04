@@ -152,6 +152,7 @@ class srConfig(object):
         self.DOWNLOAD_PROPERS = False
         self.ENABLE_RSS_CACHE = True
         self.ENABLE_RSS_CACHE_VALID_SHOWS = False
+        self.TORRENT_FILE_TO_MAGNET = False
         self.PROPER_SEARCHER_INTERVAL = None
         self.ALLOW_HIGH_PRIORITY = False
         self.SAB_FORCED = False
@@ -752,6 +753,7 @@ class srConfig(object):
                 'showupdate_hour': 3,
                 'enable_rss_cache': True,
                 'enable_rss_cache_valid_shows': False,
+                'torrent_file_to_magnet': False,
                 'status_default': 5,
                 'naming_anime': 3,
                 'naming_custom_sports': False,
@@ -1438,6 +1440,7 @@ class srConfig(object):
         self.DOWNLOAD_PROPERS = self.check_setting_bool('General', 'download_propers')
         self.ENABLE_RSS_CACHE = self.check_setting_bool('General', 'enable_rss_cache')
         self.ENABLE_RSS_CACHE_VALID_SHOWS = self.check_setting_bool('General', 'enable_rss_cache_valid_shows')
+        self.TORRENT_FILE_TO_MAGNET = self.check_setting_bool('General', 'torrent_file_to_magnet')
         self.PROPER_SEARCHER_INTERVAL = self.check_setting_str('General', 'check_propers_interval')
         self.RANDOMIZE_PROVIDERS = self.check_setting_bool('General', 'randomize_providers')
         self.ALLOW_HIGH_PRIORITY = self.check_setting_bool('General', 'allow_high_priority')
@@ -1879,6 +1882,7 @@ class srConfig(object):
                 'download_propers': int(self.DOWNLOAD_PROPERS),
                 'enable_rss_cache': int(self.ENABLE_RSS_CACHE),
                 'enable_rss_cache_valid_shows': int(self.ENABLE_RSS_CACHE_VALID_SHOWS),
+                'torrent_file_to_magnet': int(self.TORRENT_FILE_TO_MAGNET),
                 'randomize_providers': int(self.RANDOMIZE_PROVIDERS),
                 'check_propers_interval': self.PROPER_SEARCHER_INTERVAL,
                 'allow_high_priority': int(self.ALLOW_HIGH_PRIORITY),

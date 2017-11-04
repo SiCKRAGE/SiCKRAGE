@@ -68,52 +68,57 @@ class NextorrentProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(search_url).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug('No data returned from provider')
-                    continue
 
-                with bs4_parser(data) as html:
-                    torrent_rows = html.find_all('tr')
-                    for row in torrent_rows:
-                        for torrent in row.find_all('td'):
-                            for link in torrent.find_all('a'):
-                                fileType = ''.join(link.find_previous('i')["class"])
-                                fileType = unicodedata.normalize('NFKD', fileType). \
-                                    encode(sickrage.srCore.SYS_ENCODING, 'ignore')
+        return results
 
-                                if fileType == "Series":
-                                    title = link.get_text(strip=True)
-                                    download_url = self.get_download_url(link.get('href'))
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
 
-                                    if not all([title, download_url]):
-                                        continue
+        results = []
 
-                                    # size
-                                    size = convert_size(link.findNext('td').text, -1)
+        with bs4_parser(data) as html:
+            torrent_rows = html.find_all('tr')
+            for row in torrent_rows:
+                for torrent in row.find_all('td'):
+                    for link in torrent.find_all('a'):
+                        try:
+                            fileType = ''.join(link.find_previous('i')["class"])
+                            fileType = unicodedata.normalize('NFKD', fileType). \
+                                encode(sickrage.srCore.SYS_ENCODING, 'ignore')
 
-                                    # Filter unseeded torrent
-                                    seeders = try_int(link.find_next('img', alt='seeders').parent.text, 0)
-                                    leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
+                            if fileType == "Series":
+                                title = link.get_text(strip=True)
+                                download_url = self.get_download_url(link.get('href'))
 
-                                    if seeders < self.minseed or leechers < self.minleech:
-                                        if mode != 'RSS':
-                                            sickrage.srCore.srLogger.debug(
-                                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                                    title, seeders, leechers))
-                                        continue
+                                if not all([title, download_url]):
+                                    continue
 
-                                    results += [{
-                                        'title': title,
-                                        'link': download_url,
-                                        'size': size,
-                                        'seeders': seeders,
-                                        'leechers': leechers,
-                                    }]
+                                # size
+                                size = convert_size(link.findNext('td').text, -1)
 
-                                    if mode != 'RSS':
-                                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                                # Filter unseeded torrent
+                                seeders = try_int(link.find_next('img', alt='seeders').parent.text, 0)
+                                leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
 
-        # Sort all the items by seeders if available
-        results.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
+                                if mode != 'RSS':
+                                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                                results += [{
+                                    'title': title,
+                                    'link': download_url,
+                                    'size': size,
+                                    'seeders': seeders,
+                                    'leechers': leechers,
+                                }]
+                        except Exception:
+                            sickrage.srCore.srLogger.error("Failed parsing provider")
 
         return results

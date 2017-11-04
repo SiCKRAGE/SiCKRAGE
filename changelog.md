@@ -1,6 +1,23 @@
 # Changelog
 
-- * 196db64 - 2017-10-29: Release v9.1.62 
+- * f68233a - 2017-11-04: Release v9.1.63 
+- * 4555644 - 2017-11-04: refactored qBitTorrent client, fixed issues with sending torrent files 
+- * 0e2ebef - 2017-11-03: added download client setting for torrent clients to convert torrent file links to magnetic links, helps resolve download issues for certain clients and only works with public torrent providers 
+- * 00b3ffb - 2017-11-03: refactored newpct provider fixed typo when saving result name causing searches to fail 
+- * 1886733 - 2017-11-03: refactored IPTorrents provider 
+- * 6820bf0 - 2017-11-03: refactored more torrent providers 
+- * 90308f0 - 2017-11-03: refactored minimum seeders and leechers checks 
+- * 0bf0945 - 2017-11-03: refactored torrent providers 
+- * ac96d4d - 2017-11-02: Refactored provider proper searches 
+- * 5cea4c4 - 2017-11-02: Fixed issue #102 - Newpct.com changed his web structure 
+- * 7f450e6 - 2017-10-31: Updated grunt file to reflect repo changes 
+- * ebb2a6b - 2017-10-30: Refactoring search providers 
+- * cbb3632 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
+- * c6bc2e9 - 2017-10-30: Fixed searches for ThePirateBay using custom urls 
+- * 4d52518 - 2017-10-29: Refactoring search providers 
+- * c174e09 - 2017-10-29: Release v9.1.62 
+- * ed3f92d - 2017-10-29: Refactored search providers 
+- * 40c06a0 - 2017-10-29: Refactored Abnormal torrent provider 
 - * 8191cb2 - 2017-10-29: Fixed categories for TorrentBytes 
 - * f49f2ee - 2017-10-29: Added custom url setting to IPTorrents 
 - * 0c01ea0 - 2017-10-29: Cleaned up IPTorrents provider code 

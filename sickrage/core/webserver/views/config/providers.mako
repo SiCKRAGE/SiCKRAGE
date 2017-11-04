@@ -566,10 +566,17 @@
                                         <input name="${providerID}_cookies"
                                                id="${providerID}_cookies"
                                                value="${providerObj.cookies}"
-                                               placeholder="${_('ex. uid=xx;pass=yy')}"
                                                class="form-control"
                                                autocapitalize="off" autocomplete="no"/>
                                     </div>
+                                    % if hasattr(providerObj, 'required_cookies'):
+                                        <label for="${providerID}_cookies">
+                                            <p>
+                                                ex. ${'{}=xx'.format('=xx;'.join(providerObj.required_cookies))}<br/>
+                                                ${_('this provider requires the following cookies: ')}${', '.join(providerObj.required_cookies)}
+                                            </p>
+                                        </label>
+                                    % endif
                                 </div>
                             </div>
                         % endif

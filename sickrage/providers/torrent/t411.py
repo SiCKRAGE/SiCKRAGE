@@ -21,10 +21,10 @@ from __future__ import unicode_literals
 import time
 
 from requests.auth import AuthBase
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -54,6 +54,8 @@ class T411Provider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
         if self.token is not None:
             if time.time() < (self.tokenLastUpdate + 30 * 60):
@@ -66,7 +68,7 @@ class T411Provider(TorrentProvider):
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30,
                                                          auth=T411Auth(self.token)).json()
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if 'token' in response:
@@ -99,69 +101,64 @@ class T411Provider(TorrentProvider):
 
                     try:
                         data = sickrage.srCore.srWebSession.get(searchURL, auth=T411Auth(self.token)).json()
+                        results += self.parse(data, mode)
                     except Exception:
                         sickrage.srCore.srLogger.debug("No data returned from provider")
-                        continue
-
-                    try:
-                        if 'torrents' not in data and mode != 'RSS':
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        torrents = data['torrents'] if mode != 'RSS' else data
-
-                        if not torrents:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
-
-                        for torrent in torrents:
-                            if mode == 'RSS' and int(torrent['category']) not in self.subcategories:
-                                continue
-
-                            try:
-                                title = torrent['name']
-                                torrent_id = torrent['id']
-                                download_url = (self.urls['download'] % torrent_id).encode('utf8')
-                                if not all([title, download_url]):
-                                    continue
-
-                                size = int(torrent['size'])
-                                seeders = int(torrent['seeders'])
-                                leechers = int(torrent['leechers'])
-                                verified = bool(torrent['isVerified'])
-
-                                # Filter unseeded torrent
-                                if seeders < self.minseed or leechers < self.minleech:
-                                    if mode != 'RSS':
-                                        sickrage.srCore.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
-                                    continue
-
-                                if self.confirmed and not verified and mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
-                                    continue
-
-                                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                        'leechers': leechers, 'hash': ''}
-
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                                results.append(item)
-                            except Exception:
-                                sickrage.srCore.srLogger.debug("Invalid torrent data, skipping result: %s" % torrent)
-                                sickrage.srCore.srLogger.error("Failed parsing provider.")
-                                continue
-                    except Exception:
-                        sickrage.srCore.srLogger.error("Failed parsing provider.")
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        if 'torrents' not in data and mode != 'RSS':
+            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+            return results
+
+        torrents = data['torrents'] if mode != 'RSS' else data
+
+        if not torrents:
+            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+            return results
+
+        for torrent in torrents:
+            if mode == 'RSS' and int(torrent['category']) not in self.subcategories:
+                continue
+
+            try:
+                title = torrent['name']
+                torrent_id = torrent['id']
+                download_url = (self.urls['download'] % torrent_id).encode('utf8')
+                if not all([title, download_url]):
+                    continue
+
+                size = int(torrent['size'])
+                seeders = int(torrent['seeders'])
+                leechers = int(torrent['leechers'])
+                verified = bool(torrent['isVerified'])
+
+                if self.confirmed and not verified and mode != 'RSS':
+                    sickrage.srCore.srLogger.debug(
+                        "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
+                    continue
+
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': ''}
+
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider.")
+
+        return results
 
 
 class T411Auth(AuthBase):

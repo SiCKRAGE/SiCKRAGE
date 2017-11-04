@@ -109,68 +109,72 @@ class ArcheTorrentProvider(TorrentProvider):
 
         for mode in search_strings:
             sickrage.srCore.srLogger.debug('Search Mode: {0}'.format(mode))
-
             for search_string in search_strings[mode]:
                 sickrage.srCore.srLogger.debug('Search String: {0} for mode {1}'.format(search_strings[mode], mode))
+
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {0}'.format(search_string))
 
                 search_params['search'] = re.sub(r'[()]', '', search_string)
-                data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
-                if not data:
-                    continue
 
-                with bs4_parser(data) as html:
-                    torrent_table = html.find(class_='ttable_headinner')
-                    torrent_rows = torrent_table('tr') if torrent_table else []
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
 
-                    # Continue only if at least one Release is found
-                    if len(torrent_rows) < 2:
-                        sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
+        return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find(class_='ttable_headinner')
+            torrent_rows = torrent_table('tr') if torrent_table else []
+
+            # Continue only if at least one Release is found
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
+                return results
+
+            # Catégorie, Release, Date, DL, Size, C, S, L
+            labels = [label.get_text(strip=True) for label in torrent_rows[0]('th')]
+
+            # Skip column headers
+            for result in torrent_rows[1:]:
+                try:
+                    cells = result('td')
+                    if len(cells) < len(labels):
                         continue
 
-                    # Catégorie, Release, Date, DL, Size, C, S, L
-                    labels = [label.get_text(strip=True) for label in torrent_rows[0]('th')]
+                    id = re.search('id=([0-9]+)', cells[labels.index('Nom')].find('a')['href']).group(1)
+                    title = cells[labels.index('Nom')].get_text(strip=True)
+                    download_url = urljoin(self.urls['download'], '?id={0}&name={1}'.format(id, title))
+                    if not all([title, download_url]):
+                        continue
 
-                    # Skip column headers
-                    for result in torrent_rows[1:]:
-                        cells = result('td')
-                        if len(cells) < len(labels):
-                            continue
+                    seeders = try_int(cells[labels.index('S')].get_text(strip=True))
+                    leechers = try_int(cells[labels.index('L')].get_text(strip=True))
 
-                        try:
-                            id = re.search('id=([0-9]+)', cells[labels.index('Nom')].find('a')['href']).group(1)
-                            title = cells[labels.index('Nom')].get_text(strip=True)
-                            download_url = urljoin(self.urls['download'], '?id={0}&name={1}'.format(id, title))
-                            if not all([title, download_url]):
-                                continue
+                    size_index = labels.index('Size') if 'Size' in labels else labels.index('Taille')
+                    torrent_size = cells[size_index].get_text()
+                    size = convert_size(torrent_size, -1)
 
-                            seeders = try_int(cells[labels.index('S')].get_text(strip=True))
-                            leechers = try_int(cells[labels.index('L')].get_text(strip=True))
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
 
-                            # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        'Discarding torrent because it doesn\'t meet the minimum seeders or leechers: '
-                                        '{} (S:{} L:{})'.format(title, seeders, leechers))
-                                continue
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
-                            size_index = labels.index('Size') if 'Size' in labels else labels.index('Taille')
-                            torrent_size = cells[size_index].get_text()
-                            size = convert_size(torrent_size, -1)
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
-
-                            results.append(item)
-                        except StandardError:
-                            continue
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results

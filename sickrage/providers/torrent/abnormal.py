@@ -62,8 +62,9 @@ class ABNormalProvider(TorrentProvider):
             'password': self.password,
         }
 
-        response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params).text
-        if not response:
+        try:
+            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params).text
+        except Exception:
             sickrage.srCore.srLogger.warning('Unable to connect to provider')
             return False
 
@@ -94,71 +95,73 @@ class ABNormalProvider(TorrentProvider):
 
         for mode in search_strings:
             sickrage.srCore.srLogger.debug('Search Mode: {0}'.format(mode))
-
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
                 # Sorting: Available parameters: ReleaseName, Seeders, Leechers, Snatched, Size
                 search_params['order'] = ('Seeders', 'Time')[mode == 'RSS']
                 search_params['search'] = re.sub(r'[()]', '', search_string)
-                data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
-                if not data:
-                    continue
 
-                with bs4_parser(data) as html:
-                    torrent_table = html.find(class_='torrent_table')
-                    torrent_rows = torrent_table('tr') if torrent_table else []
+                try:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug('No data returned from provider')
 
-                    # Continue only if at least one Release is found
-                    if len(torrent_rows) < 2:
-                        sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
+        return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find(class_='torrent_table')
+            torrent_rows = torrent_table('tr') if torrent_table else []
+
+            # Continue only if at least one Release is found
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
+                return results
+
+            # Catégorie, Release, Date, DL, Size, C, S, L
+            labels = [label.get_text(strip=True) for label in torrent_rows[0]('td')]
+
+            # Skip column headers
+            for result in torrent_rows[1:]:
+                try:
+                    cells = result('td')
+                    if len(cells) < len(labels):
                         continue
 
-                    # Catégorie, Release, Date, DL, Size, C, S, L
-                    labels = [label.get_text(strip=True) for label in torrent_rows[0]('td')]
+                    title = cells[labels.index('Release')].get_text(strip=True)
+                    download_url = urljoin(self.urls['base_url'],
+                                           cells[labels.index('DL')].find('a', class_='tooltip')['href'])
+                    if not all([title, download_url]):
+                        continue
 
-                    # Skip column headers
-                    for result in torrent_rows[1:]:
-                        cells = result('td')
-                        if len(cells) < len(labels):
-                            continue
+                    seeders = try_int(cells[labels.index('S')].get_text(strip=True))
+                    leechers = try_int(cells[labels.index('L')].get_text(strip=True))
 
-                        try:
-                            title = cells[labels.index('Release')].get_text(strip=True)
-                            download_url = urljoin(self.urls['base_url'],
-                                                   cells[labels.index('DL')].find('a', class_='tooltip')['href'])
-                            if not all([title, download_url]):
-                                continue
+                    size_index = labels.index('Size') if 'Size' in labels else labels.index('Taille')
 
-                            seeders = try_int(cells[labels.index('S')].get_text(strip=True))
-                            leechers = try_int(cells[labels.index('L')].get_text(strip=True))
+                    units = ['O', 'KO', 'MO', 'GO', 'TO', 'PO']
+                    size = convert_size(cells[size_index].get_text(), -1, units)
 
-                            # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        'Discarding torrent because it doesn\'t meet the minimum seeders or leechers: '
-                                        '{} (S:{} L:{})'.format(title, seeders, leechers))
-                                continue
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
 
-                            size_index = labels.index('Size') if 'Size' in labels else labels.index('Taille')
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
-                            units = ['O', 'KO', 'MO', 'GO', 'TO', 'PO']
-                            size = convert_size(cells[size_index].get_text(), -1, units)
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug('Found result: {0}'.format(title))
-
-                            results.append(item)
-                        except StandardError:
-                            continue
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results

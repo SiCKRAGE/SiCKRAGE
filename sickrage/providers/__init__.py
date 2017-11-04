@@ -26,27 +26,24 @@ import os
 import random
 import re
 from base64 import b16encode, b32decode
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from time import sleep
 from urlparse import urljoin
 from xml.sax import SAXParseException
 
 import bencode
-import requests
 from feedparser import FeedParserDict
 from pynzb import nzb_parser
-from requests.utils import add_dict_to_cookiejar
+from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
-    TorrentSearchResult
+from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
-from sickrage.core.helpers import chmodAsParent, \
-    findCertainShow, sanitizeFileName, clean_url, bs4_parser, validate_url, try_int, convert_size
+from sickrage.core.helpers import chmodAsParent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, validate_url, \
+    try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
@@ -55,7 +52,6 @@ class GenericProvider(object):
         self.name = name
         self.urls = {'base_url': url}
         self.private = private
-        self.show = None
         self.supports_backlog = True
         self.supports_absolute_numbering = False
         self.anime_only = False
@@ -65,13 +61,13 @@ class GenericProvider(object):
         self.enable_daily = False
         self.enable_backlog = False
         self.cache = TVCache(self)
-        self.proper_strings = ['PROPER|REPACK|REAL']
+        self.proper_strings = ['PROPER|REPACK|REAL|RERIP']
         self.search_separator = ' '
 
         # cookies
         self.enable_cookies = False
+        self.required_cookies = []
         self.cookies = ''
-        self.rss_cookies = ''
 
     @property
     def id(self):
@@ -103,7 +99,7 @@ class GenericProvider(object):
                 for s in sub.get_subclasses():
                     yield s
 
-    def getResult(self, episodes):
+    def getResult(self, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -245,22 +241,26 @@ class GenericProvider(object):
 
     def _get_size(self, item):
         """Gets the size from the item"""
-        sickrage.srCore.srLogger.error("Provider type doesn't have ability to provide download size implemented yet")
+        sickrage.srCore.srLogger.debug("Provider type doesn't have ability to provide download size implemented yet")
         return -1
 
-    def _get_files(self, url):
+    def _get_files(self, item):
         """Gets dict of files with sizes from the item"""
-        sickrage.srCore.srLogger.error("Provider type doesn't have _get_files() implemented yet")
+        sickrage.srCore.srLogger.debug("Provider type doesn't have _get_files() implemented yet")
         return {}
 
+    def _get_result_stats(self, item):
+        # Get seeders/leechers stats
+        seeders = item.get('seeders', -1)
+        leechers = item.get('leechers', -1)
+        return try_int(seeders, -1), try_int(leechers, -1)
+
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False, cacheOnly=False):
-        if not self._check_auth:
-            return
-
-        self.show = show
-
         results = {}
         itemList = []
+
+        if not self._check_auth:
+            return results
 
         searched_scene_season = None
         for epObj in episodes:
@@ -319,66 +319,74 @@ class GenericProvider(object):
             return results
 
         # sort list by quality
-        if len(itemList):
-            items = {}
-            itemsUnknown = []
+        if itemList:
+            # categorize the items into lists by quality
+            items = defaultdict(list)
             for item in itemList:
-                quality = self.getQuality(item, anime=show.is_anime)
-                if quality == Quality.UNKNOWN:
-                    itemsUnknown += [item]
-                else:
-                    if quality not in items:
-                        items[quality] = [item]
-                    else:
-                        items[quality].append(item)
+                items[self.getQuality(item, anime=show.is_anime)].append(item)
 
-            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.items(), reverse=True)]))
-            itemList += itemsUnknown or []
+            # temporarily remove the list of items with unknown quality
+            unknown_items = items.pop(Quality.UNKNOWN, [])
+
+            # make a generator to sort the remaining items by descending quality
+            items_list = (items[quality] for quality in sorted(items, reverse=True))
+
+            # unpack all of the quality lists into a single sorted list
+            items_list = list(itertools.chain(*items_list))
+
+            # extend the list with the unknown qualities, now sorted at the bottom of the list
+            items_list.extend(unknown_items)
 
         # filter results
         for item in itemList:
-            (title, url) = self._get_title_and_url(item)
+            result = self.getResult()
+
+            result.name, result.url = self._get_title_and_url(item)
 
             # parse the file name
             try:
                 myParser = NameParser(False)
-                parse_result = myParser.parse(title)
+                parse_result = myParser.parse(result.name)
             except InvalidNameException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + title + " into a valid episode")
+                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.name + " into a valid episode")
                 continue
             except InvalidShowException:
-                sickrage.srCore.srLogger.debug("Unable to parse the filename " + title + " into a valid show")
+                sickrage.srCore.srLogger.debug("Unable to parse the filename " + result.name + " into a valid show")
                 continue
 
-            showObj = parse_result.show
-            quality = parse_result.quality
-            release_group = parse_result.release_group
-            version = parse_result.version
+            result.show = parse_result.show
+            result.quality = parse_result.quality
+            result.release_group = parse_result.release_group
+            result.version = parse_result.version
+            result.size = self._get_size(item)
+            result.files = self._get_files(item)
+
+            result.seeders, result.leechers = self._get_result_stats(item)
 
             addCacheEntry = False
-            if not (showObj.air_by_date or showObj.sports):
+            if not (result.show.air_by_date or result.show.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         sickrage.srCore.srLogger.debug(
-                            "This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it")
+                            "This is supposed to be a season pack search but the result " + result.name + " is not a valid season pack, skipping it")
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
                                     parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
                         sickrage.srCore.srLogger.debug(
-                            "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
                                                                                                      episodes if
                                                                                                      ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srCore.srLogger.debug(
-                            "The result " + title + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
+                            "The result " + result.name + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
                         addCacheEntry = True
                     elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srCore.srLogger.debug(
-                            "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
 
                 if not addCacheEntry:
@@ -388,17 +396,17 @@ class GenericProvider(object):
             else:
                 if not parse_result.is_air_by_date:
                     sickrage.srCore.srLogger.debug(
-                        "This is supposed to be a date search but the result " + title + " didn't parse as one, skipping it")
+                        "This is supposed to be a date search but the result " + result.name + " didn't parse as one, skipping it")
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
                     dbData = [x['doc'] for x in
-                              sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)
+                              sickrage.srCore.mainDB.db.get_many('tv_episodes', result.show.indexerid, with_doc=True)
                               if x['doc']['airdate'] == airdate]
 
                     if len(dbData) != 1:
                         sickrage.srCore.srLogger.warning(
-                            "Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it")
+                            "Tried to look up the date for the episode " + result.name + " but the database didn't give proper results, skipping it")
                         addCacheEntry = True
 
                 if not addCacheEntry:
@@ -407,50 +415,41 @@ class GenericProvider(object):
 
             # add parsed result to cache for usage later on
             if addCacheEntry:
-                sickrage.srCore.srLogger.debug("Adding item from search to cache: " + title)
-                self.cache.addCacheEntry(title, url, parse_result=parse_result)
+                sickrage.srCore.srLogger.debug("Adding item from search to cache: " + result.name)
+                self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size,
+                                         result.files, parse_result)
                 continue
 
             # make sure we want the episode
             wantEp = True
             for epNo in actual_episodes:
-                if not showObj.wantEpisode(actual_season, epNo, quality, manualSearch, downCurQuality):
+                if not result.show.wantEpisode(actual_season, epNo, result.quality, manualSearch, downCurQuality):
                     wantEp = False
                     break
 
             if not wantEp:
                 sickrage.srCore.srLogger.info(
-                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(title, Quality.qualityStrings[quality]))
+                    "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.name, Quality.qualityStrings[result.quality]))
                 continue
 
             # make a result object
-            epObjs = []
+            result.episodes = []
             for curEp in actual_episodes:
-                epObjs.append(showObj.getEpisode(actual_season, curEp))
-
-            result = self.getResult(epObjs)
-            result.show = showObj
-            result.url = url
-            result.name = title
-            result.quality = quality
-            result.release_group = release_group
-            result.version = version
-            result.content = None
-            result.size = self._get_size(url)
-            result.files = self._get_files(url)
+                result.episodes.append(result.show.getEpisode(actual_season, curEp))
 
             sickrage.srCore.srLogger.debug(
-                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(title, Quality.qualityStrings[quality], url))
+                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name, Quality.qualityStrings[result.quality],
+                                                                 result.url))
 
-            if len(epObjs) == 1:
-                epNum = epObjs[0].episode
+            if len(result.episodes) == 1:
+                epNum = result.episodes[0].episode
                 sickrage.srCore.srLogger.debug("Single episode result.")
-            elif len(epObjs) > 1:
+            elif len(result.episodes) > 1:
                 epNum = MULTI_EP_RESULT
                 sickrage.srCore.srLogger.debug(
                     "Separating multi-episode result to check for later - result contains episodes: " + str(
                         parse_result.episode_numbers))
-            elif len(epObjs) == 0:
+            elif len(result.episodes) == 0:
                 epNum = SEASON_RESULT
                 sickrage.srCore.srLogger.debug("Separating full season result to check for later")
 
@@ -461,26 +460,127 @@ class GenericProvider(object):
 
         return results
 
-    def find_propers(self, search_date=None):
-        results = self.cache.list_propers(search_date)
+    def find_propers(self, episodes):
+        results = []
 
-        return [Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time']), self.show) for x in
-                results]
+        for episode in episodes:
+            show = findCertainShow(sickrage.srCore.SHOWLIST, int(episode["showid"]))
+            if not show:
+                continue
+
+            ep_obj = show.getEpisode(int(episode["season"]), int(episode["episode"]))
+            for term in self.proper_strings:
+                search_strngs = self._get_episode_search_strings(ep_obj, add_string=term)
+                for item in self.search(search_strngs[0], ep_obj=ep_obj):
+                    result = self.getResult([ep_obj])
+                    result.name, result.url = self._get_title_and_url(item)
+                    result.seeders, result.leechers = self._get_result_stats(item)
+                    result.size = self._get_size(item)
+                    result.files = self._get_files(item)
+                    result.date = datetime.datetime.today()
+                    result.show = show
+                    results.append(result)
+
+        return results
 
     def add_cookies_from_ui(self):
         """
-        Adds the cookies configured from UI to the providers requests session
-        :return: A tuple with the the (success result, and a descriptive message in str)
+        Add the cookies configured from UI to the providers requests session.
+        :return: dict
         """
 
         # This is the generic attribute used to manually add cookies for provider authentication
-        if self.enable_cookies and self.cookies:
-            cookie_validator = re.compile(r'^(\w+=\w+)(;\w+=\w+)*$')
-            if cookie_validator.match(self.cookies):
-                add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
-                                      dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
-                return True
-        return False
+        if not self.enable_cookies:
+            return {'result': False,
+                    'message': 'Adding cookies is not supported for provider: {}'.format(self.name)}
+
+        if not self.cookies:
+            return {'result': False,
+                    'message': 'No Cookies added from ui for provider: {}'.format(self.name)}
+
+        cookie_validator = re.compile(r'^([\w%]+=[\w%]+)(;[\w%]+=[\w%]+)*$')
+        if not cookie_validator.match(self.cookies):
+            sickrage.srCore.srNotifications.message(
+                'Failed to validate cookie for provider {}'.format(self.name),
+                'Cookie is not correctly formatted: {}'.format(self.cookies))
+
+            return {'result': False,
+                    'message': 'Cookie is not correctly formatted: {}'.format(self.cookies)}
+
+        if not all(req_cookie in [x.rsplit('=', 1)[0] for x in self.cookies.split(';')] for req_cookie in
+                   self.required_cookies):
+            return {'result': False,
+                    'message': "You haven't configured the required cookies. Please login at {provider_url}, "
+                               "and make sure you have copied the following cookies: {required_cookies!r}"
+                        .format(provider_url=self.name, required_cookies=self.required_cookies)}
+
+        # cookie_validator got at least one cookie key/value pair, let's return success
+        add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
+                              dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
+
+        return {'result': True,
+                'message': ''}
+
+    def check_required_cookies(self):
+        """
+        Check if we have the required cookies in the requests sessions object.
+
+        Meaning that we've already successfully authenticated once, and we don't need to go through this again.
+        Note! This doesn't mean the cookies are correct!
+        """
+        if not hasattr(self, 'required_cookies'):
+            # A reminder for the developer, implementing cookie based authentication.
+            sickrage.srCore.srLogger.error(
+                'You need to configure the required_cookies attribute, for the provider: {}'.format(self.name))
+            return False
+        return all(
+            dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).get(cookie) for cookie in self.required_cookies)
+
+    def cookie_login(self, check_login_text, check_url=None):
+        """
+        Check the response for text that indicates a login prompt.
+
+        In that case, the cookie authentication was not successful.
+        :param check_login_text: A string that's visible when the authentication failed.
+        :param check_url: The url to use to test the login with cookies. By default the providers home page is used.
+
+        :return: False when authentication was not successful. True if successful.
+        """
+        check_url = check_url or self.urls['base_url']
+
+        if self.check_required_cookies():
+            # All required cookies have been found within the current session, we don't need to go through this again.
+            return True
+
+        if self.cookies:
+            result = self.add_cookies_from_ui()
+            if not result['result']:
+                sickrage.srCore.srNotifications.notifications.message(result['message'])
+                sickrage.srCore.srLogger.warning(result['message'])
+                return False
+        else:
+            sickrage.srCore.srLogger.warning('Failed to login, you will need to add your cookies in the provider '
+                                             'settings')
+
+            sickrage.srCore.srNotifications.notifications.error(
+                'Failed to auth with {provider}'.format(provider=self.name),
+                'You will need to add your cookies in the provider settings')
+            return False
+
+        response = sickrage.srCore.srWebSession.get(check_url)
+        if any([not response, not (response.text and response.status_code == 200),
+                check_login_text.lower() in response.text.lower()]):
+            sickrage.srCore.srLogger.warning('Please configure the required cookies for this provider. Check your '
+                                             'provider settings')
+
+            sickrage.srCore.srNotifications.notifications.error(
+                'Wrong cookies for {}'.format(self.name),
+                'Check your provider settings'
+            )
+            sickrage.srCore.srWebSession.cookies.clear()
+            return False
+        else:
+            return True
 
     @classmethod
     def getDefaultProviders(cls):
@@ -551,7 +651,7 @@ class TorrentProvider(GenericProvider):
         """
         return self.ratio
 
-    def getResult(self, episodes):
+    def getResult(self, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -579,38 +679,42 @@ class TorrentProvider(GenericProvider):
 
         return title, download_url
 
-    def _get_size(self, url):
-        size = -1
+    def _get_size(self, item):
+        size = item.get('size', -1)
+        title, url = self._get_title_and_url(item)
 
-        for url in self.make_url(url):
-            try:
-                resp = sickrage.srCore.srWebSession.get(url)
-                torrent = bencode.bdecode(resp.content)
+        if size == -1 and url:
+            for url in self.make_url(url):
+                try:
+                    resp = sickrage.srCore.srWebSession.get(url)
+                    torrent = bencode.bdecode(resp.content)
 
-                total_length = 0
-                for file in torrent['info']['files']:
-                    total_length += int(file['length'])
+                    total_length = 0
+                    for file in torrent['info']['files']:
+                        total_length += int(file['length'])
 
-                if total_length > 0:
-                    size = total_length
-                    break
-            except Exception:
-                pass
+                    if total_length > 0:
+                        size = total_length
+                        break
+                except Exception:
+                    pass
 
         return size
 
-    def _get_files(self, url):
+    def _get_files(self, item):
         files = {}
 
-        for url in self.make_url(url):
-            try:
-                resp = sickrage.srCore.srWebSession.get(url)
-                torrent = bencode.bdecode(resp.content)
+        title, url = self._get_title_and_url(item)
+        if url:
+            for url in self.make_url(url):
+                try:
+                    resp = sickrage.srCore.srWebSession.get(url)
+                    torrent = bencode.bdecode(resp.content)
 
-                for file in torrent['info']['files']:
-                    files[file['path'][0]] = int(file['length'])
-            except Exception:
-                pass
+                    for file in torrent['info']['files']:
+                        files[file['path'][0]] = int(file['length'])
+                except Exception:
+                    pass
 
         return files
 
@@ -652,27 +756,6 @@ class TorrentProvider(GenericProvider):
 
         return result
 
-    def find_propers(self, search_date=datetime.datetime.today()):
-        results = []
-
-        for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in
-                            sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
-                if episode['airdate'] >= str(search_date.toordinal()) \
-                        and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
-
-                    self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(episode["showid"]))
-                    if not show: continue
-
-                    curEp = show.getEpisode(int(episode["season"]), int(episode["episode"]))
-                    for term in self.proper_strings:
-                        searchString = self._get_episode_search_strings(curEp, add_string=term)
-                        for item in self.search(searchString[0]):
-                            title, url = self._get_title_and_url(item)
-                            results.append(Proper(title, url, datetime.datetime.today(), self.show))
-
-        return results
-
     @classmethod
     def getProviders(cls):
         return super(TorrentProvider, cls).loadProviders(cls.type)
@@ -697,7 +780,7 @@ class NZBProvider(GenericProvider):
             return self.id + '.png'
         return self.type + '.png'
 
-    def getResult(self, episodes):
+    def getResult(self, episodes=None):
         """
         Returns a result of the correct type for this provider
         """
@@ -705,38 +788,42 @@ class NZBProvider(GenericProvider):
         result.provider = self
         return result
 
-    def _get_size(self, url):
-        size = -1
+    def _get_size(self, item):
+        size = item.get('size', -1)
+        title, url = self._get_title_and_url(item)
 
-        try:
-            resp = sickrage.srCore.srWebSession.get(url)
+        if size == -1 and url:
+            try:
+                resp = sickrage.srCore.srWebSession.get(url)
 
-            total_length = 0
-            for file in nzb_parser.parse(resp.content):
-                for segment in file.segments:
-                    total_length += int(segment.bytes)
+                total_length = 0
+                for file in nzb_parser.parse(resp.content):
+                    for segment in file.segments:
+                        total_length += int(segment.bytes)
 
-            if total_length > 0:
-                size = total_length
-        except Exception:
-            pass
+                if total_length > 0:
+                    size = total_length
+            except Exception:
+                pass
 
         return size
 
-    def _get_files(self, url):
+    def _get_files(self, item):
         files = {}
 
-        try:
-            resp = sickrage.srCore.srWebSession.get(url)
+        title, url = self._get_title_and_url(item)
+        if url:
+            try:
+                resp = sickrage.srCore.srWebSession.get(url)
 
-            for file in nzb_parser.parse(resp.content):
-                total_length = 0
-                for segment in file.segments:
-                    total_length += int(segment.bytes)
+                for file in nzb_parser.parse(resp.content):
+                    total_length = 0
+                    for segment in file.segments:
+                        total_length += int(segment.bytes)
 
-                files[file.subject] = total_length
-        except Exception:
-            pass
+                    files[file.subject] = total_length
+            except Exception:
+                pass
 
         return files
 
@@ -803,46 +890,46 @@ class TorrentRssProvider(TorrentProvider):
         return title, url
 
     def validateRSS(self):
+        torrent_file = None
+
         try:
-            if self.cookies:
-                cookie_validator = re.compile(r"^(\w+=\w+)(;\w+=\w+)*$")
-                if not cookie_validator.match(self.cookies):
-                    return False, 'Cookie is not correctly formatted: ' + self.cookies
+            add_cookie = self.add_cookies_from_ui()
+            if not add_cookie.get('result'):
+                return add_cookie
 
             data = self.cache._get_rss_data()['entries']
             if not data:
-                return False, 'No items found in the RSS feed ' + self.urls['base_url']
+                return {'result': False,
+                        'message': 'No items found in the RSS feed {}'.format(self.urls['base_url'])}
 
             (title, url) = self._get_title_and_url(data[0])
 
             if not title:
-                return False, 'Unable to get title from first item'
+                return {'result': False,
+                        'message': 'Unable to get title from first item'}
 
             if not url:
-                return False, 'Unable to get torrent url from first item'
+                return {'result': False,
+                        'message': 'Unable to get torrent url from first item'}
 
             if url.startswith('magnet:') and re.search(r'urn:btih:([\w]{32,40})', url):
-                return True, 'RSS feed Parsed correctly'
+                return {'result': True,
+                        'message': 'RSS feed Parsed correctly'}
             else:
-                if self.cookies:
-                    requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies,
-                                                         dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
-
                 try:
-                    torrent_file = sickrage.srCore.srWebSession.get(url).text
-                except Exception:
-                    return False, 'Unable to get torrent from url'
-
-                try:
+                    torrent_file = sickrage.srCore.srWebSession.get(url).content
                     bencode.bdecode(torrent_file)
                 except Exception as e:
-                    self.dumpHTML(torrent_file)
-                    return False, 'Torrent link is not a valid torrent file: {}'.format(e.message)
+                    if data: self.dumpHTML(torrent_file)
+                    return {'result': False,
+                            'message': 'Torrent link is not a valid torrent file: {}'.format(e.message)}
 
-            return True, 'RSS feed Parsed correctly'
+            return {'result': True,
+                    'message': 'RSS feed Parsed correctly'}
 
         except Exception as e:
-            return False, 'Error when trying to load RSS: {}'.format(e.message)
+            return {'result': False,
+                    'message': 'Error when trying to load RSS: {}'.format(e.message)}
 
     @staticmethod
     def dumpHTML(data):
@@ -851,11 +938,14 @@ class TorrentRssProvider(TorrentProvider):
         try:
             with io.open(dumpName, 'wb') as fileOut:
                 fileOut.write(data)
+
             chmodAsParent(dumpName)
+
+            sickrage.srCore.srLogger.info("Saved custom_torrent html dump %s " % dumpName)
         except IOError as e:
             sickrage.srCore.srLogger.error("Unable to save the file: %s " % repr(e))
             return False
-        sickrage.srCore.srLogger.info("Saved custom_torrent html dump %s " % dumpName)
+
         return True
 
     @classmethod
@@ -1034,7 +1124,7 @@ class NewznabProvider(NZBProvider):
             if mode != 'RSS':
                 if (self.cap_tv_search or not self.cap_tv_search == 'True') and not self.force_query:
                     search_params['t'] = 'tvsearch'
-                    search_params.update({'tvdbid': self.show.indexerid})
+                    search_params.update({'tvdbid': ep_obj.show.indexerid})
 
                 if search_params['t'] == 'tvsearch':
                     if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -1132,7 +1222,6 @@ class NewznabProvider(NZBProvider):
                             results.append(item)
                         except (AttributeError, TypeError, KeyError, ValueError, IndexError):
                             sickrage.srCore.srLogger.error('Failed parsing provider')
-                            continue
 
                 # Since we arent using the search string,
                 # break out of the search string loop
@@ -1143,28 +1232,6 @@ class NewznabProvider(NZBProvider):
         if not results and not self.force_query:
             self.force_query = True
             return self.search(search_strings, ep_obj=ep_obj)
-
-        return results
-
-    def find_propers(self, search_date=datetime.datetime.today()):
-        results = []
-
-        for show in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for episode in [e['doc'] for e in
-                            sickrage.srCore.mainDB.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
-                if episode['airdate'] >= str(search_date.toordinal()) \
-                        and episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
-
-                    self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(show["showid"]))
-                    if not self.show: continue
-
-                    curEp = self.show.getEpisode(int(episode["season"]), int(episode["episode"]))
-                    searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
-                    for searchString in searchStrings:
-                        for item in self.search(searchString):
-                            title, url = self._get_title_and_url(item)
-                            if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                                results += [Proper(title, url, datetime.datetime.today(), self.show)]
 
         return results
 

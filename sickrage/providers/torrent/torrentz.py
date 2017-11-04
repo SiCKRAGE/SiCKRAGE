@@ -53,7 +53,6 @@ class TORRENTZProvider(TorrentProvider):
         results = []
 
         for mode in search_strings:
-
             sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 search_url = self.urls['feed']
@@ -62,47 +61,51 @@ class TORRENTZProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(search_url, params={'f': search_string}).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug('No data returned from provider')
-                    continue
 
-                if not data.startswith('<?xml'):
-                    sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
-                    continue
+        return results
 
-                with bs4_parser(data) as parser:
-                    for item in parser('item'):
-                        if item.category and 'tv' not in item.category.get_text(strip=True):
-                            continue
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
 
-                        title = item.title.get_text(strip=True)
-                        t_hash = item.guid.get_text(strip=True).rsplit('/', 1)[-1]
+        results = []
 
-                        if not all([title, t_hash]):
-                            continue
+        if not data.startswith('<?xml'):
+            sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
+            return results
 
-                        download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title
-                        torrent_size, seeders, leechers = self._split_description(item.find('description').text)
-                        size = convert_size(torrent_size, -1)
+        with bs4_parser(data) as parser:
+            for item in parser('item'):
+                try:
+                    if item.category and 'tv' not in item.category.get_text(strip=True):
+                        continue
 
-                        # Filter unseeded torrent
-                        if seeders < self.minseed or leechers < self.minleech:
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                        title, seeders, leechers))
-                            continue
+                    title = item.title.get_text(strip=True)
+                    t_hash = item.guid.get_text(strip=True).rsplit('/', 1)[-1]
 
-                        results += [{
-                            'title': title,
-                            'link': download_url,
-                            'size': size,
-                            'seeders': seeders,
-                            'leechers': leechers,
-                            'hash': t_hash
-                        }]
+                    if not all([title, t_hash]):
+                        continue
 
-        # Sort all the items by seeders if available
-        results.sort(key=lambda d: int(d.get('seeders', 0)), reverse=True)
+                    download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title
+                    torrent_size, seeders, leechers = self._split_description(item.find('description').text)
+                    size = convert_size(torrent_size, -1)
+
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers,
+                        'hash': t_hash
+                    }]
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         return results

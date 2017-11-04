@@ -420,8 +420,6 @@ module.exports = function (grunt) {
             'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
             'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
-            'exec:git_push:sickrage:develop:tags',
-            'exec:git_push:sickrage:master:tags',
             'exec:pypi_publish'
         ];
 

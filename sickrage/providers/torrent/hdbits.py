@@ -15,13 +15,11 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import json
 import urllib
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.classes import Proper
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
@@ -43,18 +41,16 @@ class HDBitsProvider(TorrentProvider):
         self.cache = HDBitsCache(self, min_time=15)
 
     def _check_auth(self):
-
         if not self.username or not self.passkey:
             raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
     def _check_auth_from_data(self, parsedJSON):
-
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
                 sickrage.srCore.srLogger.warning(
-                    "[{}]: Invalid username or password. Check your settings".format(self.name))
+                    "Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -67,7 +63,6 @@ class HDBitsProvider(TorrentProvider):
         return episode_search_string
 
     def _get_title_and_url(self, item):
-
         title = item['name']
         if title:
             title = self._clean_title_from_provider(title)
@@ -77,7 +72,6 @@ class HDBitsProvider(TorrentProvider):
         return title, url
 
     def search(self, search_params, age=0, ep_obj=None):
-
         # FIXME
         results = []
 
@@ -99,26 +93,6 @@ class HDBitsProvider(TorrentProvider):
 
         # sort by number of seeders
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
-
-        return results
-
-    def find_propers(self, search_date=None):
-        results = []
-
-        search_terms = [' proper ', ' repack ']
-
-        for term in search_terms:
-            for item in self.search(self._make_post_data_JSON(search_term=term)):
-                if item['utadded']:
-                    try:
-                        result_date = datetime.datetime.fromtimestamp(int(item['utadded']))
-                    except Exception:
-                        result_date = None
-
-                    if result_date:
-                        if not search_date or result_date > search_date:
-                            title, url = self._get_title_and_url(item)
-                            results.append(Proper(title, url, result_date, self.show))
 
         return results
 

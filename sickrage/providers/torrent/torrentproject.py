@@ -67,44 +67,54 @@ class TorrentProjectProvider(TorrentProvider):
                         return results
                     search_url = self.custom_url
 
-                torrents = sickrage.srCore.srWebSession.get(search_url, params=search_params).json()
-                if not (torrents and "total_found" in torrents and int(torrents["total_found"]) > 0):
-                    sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                try:
+                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).json()
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
+
+        return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        if not (data and "total_found" in data and int(data["total_found"]) > 0):
+            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+            return results
+
+        del data["total_found"]
+
+        for i in data:
+            try:
+                title = data[i]["title"]
+                seeders = try_int(data[i]["seeds"], 1)
+                leechers = try_int(data[i]["leechs"], 0)
+                t_hash = data[i]["torrent_hash"]
+                torrent_size = data[i]["torrent_size"]
+                if not all([t_hash, torrent_size]):
                     continue
 
-                del torrents["total_found"]
+                download_url = data[i]["magnet"]
+                size = convert_size(torrent_size, -1)
 
-                results = []
-                for i in torrents:
-                    title = torrents[i]["title"]
-                    seeders = try_int(torrents[i]["seeds"], 1)
-                    leechers = try_int(torrents[i]["leechs"], 0)
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Torrent doesn't meet minimum seeds & leechers not selecting : {0}".format(title))
-                        continue
+                if not all([title, download_url]):
+                    continue
 
-                    t_hash = torrents[i]["torrent_hash"]
-                    torrent_size = torrents[i]["torrent_size"]
-                    if not all([t_hash, torrent_size]):
-                        continue
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': t_hash}
 
-                    download_url = torrents[i]["magnet"]
-                    size = convert_size(torrent_size, -1)
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                    if not all([title, download_url]):
-                        continue
-
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': t_hash}
-
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                    results.append(item)
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         return results

@@ -17,10 +17,12 @@ from __future__ import unicode_literals
 
 import re
 
+from requests.utils import dict_from_cookiejar
+
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser, try_int
+from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -52,7 +54,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         search_string = {'Season': []}
 
-        for show_name in set(show_names.allPossibleShowNames(self.show)):
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
             for sep in ' ', ' - ':
                 season_string = show_name + sep + 'Series '
                 if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -73,14 +75,14 @@ class TVChaosUKProvider(TorrentProvider):
         if not ep_obj:
             return []
 
-        for show_name in set(show_names.allPossibleShowNames(self.show)):
+        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
             for sep in ' ', ' - ':
                 ep_string = sanitizeSceneName(show_name) + sep
-                if self.show.air_by_date:
+                if ep_obj.show.air_by_date:
                     ep_string += str(ep_obj.airdate).replace('-', '|')
-                elif self.show.sports:
+                elif ep_obj.show.sports:
                     ep_string += str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
-                elif self.show.anime:
+                elif ep_obj.show.anime:
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
                     ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
@@ -94,18 +96,20 @@ class TVChaosUKProvider(TorrentProvider):
         return [search_string]
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
         login_params = {'username': self.username, 'password': self.password}
 
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Error: Username or password incorrect!', response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -151,14 +155,6 @@ class TVChaosUKProvider(TorrentProvider):
                             if not all([title, download_url]):
                                 continue
 
-                            # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
-                                continue
-
                             # Chop off tracker/channel prefix or we cant parse the result!
                             show_name_first_word = re.search(r'^[^ .]+', search_params['keywords']).group()
                             if not title.startswith(show_name_first_word):
@@ -182,10 +178,6 @@ class TVChaosUKProvider(TorrentProvider):
 
                             results.append(item)
                         except Exception:
-                            continue
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                            sickrage.srCore.srLogger.error("Failed parsing provider.")
 
         return results
-

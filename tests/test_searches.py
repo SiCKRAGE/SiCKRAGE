@@ -59,7 +59,6 @@ def test_generator(curData, name, provider, forceSearch):
 
             episode.saveToDB()
 
-            provider.show = show
             season_strings = provider._get_season_search_strings(episode)
             episode_strings = provider._get_episode_search_strings(episode)
 

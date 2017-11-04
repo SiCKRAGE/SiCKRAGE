@@ -22,7 +22,7 @@ from __future__ import print_function, unicode_literals
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size, try_int
+from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -63,7 +63,6 @@ class HD4FreeProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-
             sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if self.freeleech:
@@ -78,57 +77,56 @@ class HD4FreeProvider(TorrentProvider):
                     search_params.pop('search', '')
 
                 try:
-                    jdata = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).json()
-                except ValueError:
+                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).json()
+                    results += self.parse(data, mode)
+                except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
+
+        return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        error = data.get('error')
+        if error:
+            sickrage.srCore.srLogger.debug(error)
+            return results
+
+        try:
+            if data['0']['total_results'] == 0:
+                sickrage.srCore.srLogger.debug("Provider has no results for this search")
+                return results
+        except Exception:
+            return results
+
+        for i in data:
+            try:
+                title = data[i]["release_name"]
+                download_url = data[i]["download_url"]
+                if not all([title, download_url]):
                     continue
 
-                if not jdata:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
+                seeders = data[i]["seeders"]
+                leechers = data[i]["leechers"]
 
-                error = jdata.get('error')
-                if error:
-                    sickrage.srCore.srLogger.debug(error)
-                    return results
+                torrent_size = str(data[i]["size"]) + ' MB'
+                size = convert_size(torrent_size, -1)
 
-                try:
-                    if jdata['0']['total_results'] == 0:
-                        sickrage.srCore.srLogger.debug("Provider has no results for this search")
-                        continue
-                except StandardError:
-                    continue
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': ''}
 
-                for i in jdata:
-                    try:
-                        title = jdata[i]["release_name"]
-                        download_url = jdata[i]["download_url"]
-                        if not all([title, download_url]):
-                            continue
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                        seeders = jdata[i]["seeders"]
-                        leechers = jdata[i]["leechers"]
-                        if seeders < self.minseed or leechers < self.minleech:
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format
-                                    (title, seeders, leechers))
-                            continue
-
-                        torrent_size = str(jdata[i]["size"]) + ' MB'
-                        size = convert_size(torrent_size, -1)
-
-                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                'leechers': leechers, 'hash': ''}
-
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                        results.append(item)
-                    except StandardError:
-                        continue
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider")
 
         return results

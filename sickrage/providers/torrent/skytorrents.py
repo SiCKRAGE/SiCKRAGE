@@ -78,57 +78,61 @@ class SkyTorrents(TorrentProvider):
                         return results
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
-                data = sickrage.srCore.srWebSession.get(search_url).text
-                if not data:
+                try:
+                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    results += self.parse(data, mode)
+                except Exception:
                     sickrage.srCore.srLogger.debug("URL did not return results/data, if the results are on the site "
                                                    "maybe try a custom url, or a different one")
+
+        return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        if not data.startswith("<rss"):
+            sickrage.srCore.srLogger.info("Expected rss but got something else, is your mirror failing?")
+            return results
+
+        feed = feedparser.parse(data)
+        for item in feed.entries:
+            try:
+                title = item.title
+                download_url = item.link
+                if not (title and download_url):
                     continue
 
-                if not data.startswith("<rss"):
-                    sickrage.srCore.srLogger.info("Expected rss but got something else, is your mirror failing?")
+                info = self.regex.search(item.description)
+                if not info:
                     continue
 
-                feed = feedparser.parse(data)
-                for item in feed.entries:
-                    try:
-                        title = item.title
-                        download_url = item.link
-                        if not (title and download_url):
-                            continue
+                seeders = try_int(info.group("seeders"))
+                leechers = try_int(info.group("leechers"))
 
-                        info = self.regex.search(item.description)
-                        if not info:
-                            continue
+                category = item.category
+                if category != 'all':
+                    sickrage.srCore.srLogger.warning(
+                        'skytorrents.in has added categories! Please report this so it can be updated: Category={cat}, '
+                        'Title={title}'.format(cat=category, title=title))
 
-                        seeders = try_int(info.group("seeders"))
-                        leechers = try_int(info.group("leechers"))
-                        if seeders < self.minseed or leechers < self.minleech:
-                            if mode != "RSS":
-                                sickrage.srCore.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format
-                                    (title, seeders, leechers))
-                            continue
+                size = convert_size(info.group('size'), -1)
+                info_hash = download_url.rsplit('/', 2)[1]
 
-                        category = item.category
-                        if category != 'all':
-                            sickrage.srCore.srLogger.warning(
-                                'skytorrents.in has added categories! Please report this so it can be updated: Category={cat}, '
-                                'Title={title}'.format(cat=category, title=title))
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': info_hash}
 
-                        size = convert_size(info.group('size'), -1)
-                        info_hash = download_url.rsplit('/', 2)[1]
+                if mode != "RSS":
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                'leechers': leechers, 'hash': info_hash}
-                        if mode != "RSS":
-                            sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                        results.append(item)
-
-                    except (AttributeError, TypeError, KeyError, ValueError):
-                        continue
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider")
 
         return results

@@ -13,7 +13,8 @@
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>${_('Search Settings')}</h3>
-                <p>${_('How to manage searching with')} <a href="${srWebRoot}/config/providers">${_('providers')}</a>.</p>
+                <p>${_('How to manage searching with')} <a href="${srWebRoot}/config/providers">${_('providers')}</a>.
+                </p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
@@ -61,6 +62,18 @@
                                class="enabler" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS)]}/>
                         <label for="enable_rss_cache_valid_shows">
                             <p>${_('enables/disables caching of shows already added to SiCKRAGE, speeds up searches')}</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Convert provider torrent file links to magnetic links')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="torrent_file_to_magnet" id="torrent_file_to_magnet"
+                               class="enabler" ${('', 'checked')[bool(sickrage.srCore.srConfig.TORRENT_FILE_TO_MAGNET)]}/>
+                        <label for="torrent_file_to_magnet">
+                            <p>${_('enables/disables converting of public torrent provider file links to magnetic links')}</p>
                         </label>
                     </div>
                 </div>
@@ -305,7 +318,9 @@
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                                 <label for="nzb_dir">
-                                    <p><b>.nzb</b> ${_('files are stored at this location for external software to find and use')}</p>
+                                    <p>
+                                        <b>.nzb</b> ${_('files are stored at this location for external software to find and use')}
+                                    </p>
                                 </label>
                             </div>
                         </div>
@@ -895,7 +910,8 @@
                                            autocapitalize="off"/>
                                 </div>
                                 <label for="torrent_path">
-                                    ${_('where the torrent client will save downloaded files (blank for client default)')}<br/>
+                                    ${_('where the torrent client will save downloaded files (blank for client default)')}
+                                    <br/>
                                     <b>${_('NOTE:')}</b> ${_('the destination has to be a shared folder for Synology DS')}
                                 </label>
                             </div>
@@ -957,7 +973,8 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <input class="btn test-button" type="button" value="${_('Test Connection')}" id="test_torrent"/>
+                                <input class="btn test-button" type="button" value="${_('Test Connection')}"
+                                       id="test_torrent"/>
                                 <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
                             </div>
                         </div>

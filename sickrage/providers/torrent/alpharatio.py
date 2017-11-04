@@ -19,10 +19,13 @@
 from __future__ import unicode_literals
 
 import re
+from urlparse import urljoin
+
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, try_int
+from sickrage.core.helpers import bs4_parser, try_int, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -37,9 +40,7 @@ class AlphaRatioProvider(TorrentProvider):
 
         self.urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
-            'detail': '{base_url}/torrents.php?torrentid=%s'.format(**self.urls),
-            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(**self.urls),
-            'download': '{base_url}/%s'.format(**self.urls)
+            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(**self.urls)
         })
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"
@@ -49,6 +50,9 @@ class AlphaRatioProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
+
         login_params = {'username': self.username,
                         'password': self.password,
                         'remember_me': 'on',
@@ -57,13 +61,13 @@ class AlphaRatioProvider(TorrentProvider):
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning('Unable to connect to provider')
             return False
 
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -86,57 +90,81 @@ class AlphaRatioProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
 
+        return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        def process_column_header(td):
+            result = ''
+            if td.a and td.a.img:
+                result = td.a.img.get('title', td.a.get_text(strip=True))
+            if not result:
+                result = td.get_text(strip=True)
+            return result
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find('table', attrs={'id': 'torrent_table'})
+            torrent_rows = torrent_table('tr') if torrent_table else []
+
+            # Continue only if one Release is found
+            if len(torrent_rows) < 2:
+                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                return results
+
+            # '', '', 'Name /Year', 'Files', 'Time', 'Size', 'Snatches', 'Seeders', 'Leechers'
+            labels = [process_column_header(label) for label in torrent_rows[0]('td')]
+
+            # Skip column headers
+            for row in torrent_rows[1:]:
                 try:
-                    with bs4_parser(data) as html:
-                        torrent_table = html.find('table', attrs={'id': 'torrent_table'})
-                        torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+                    cells = row('td')
+                    if len(cells) < len(labels):
+                        continue
 
-                        # Continue only if one Release is found
-                        if len(torrent_rows) < 2:
-                            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
-                            continue
+                    title = cells[labels.index('Name /Year')].find('a', dir='ltr').get_text(strip=True)
+                    download = cells[labels.index('Name /Year')].find('a', title='Download')['href']
+                    download_url = urljoin(self.urls['base_url'], download)
+                    if not all([title, download_url]):
+                        continue
 
-                        for result in torrent_rows[1:]:
-                            cells = result.find_all('td')
-                            link = result.find('a', attrs={'dir': 'ltr'})
-                            url = result.find('a', attrs={'title': 'Download'})
+                    seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True))
+                    leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True))
 
-                            try:
-                                title = link.contents[0]
-                                download_url = self.urls['download'] % (url['href'])
-                                seeders = cells[len(cells) - 2].contents[0]
-                                leechers = cells[len(cells) - 1].contents[0]
-                                # FIXME
-                                size = -1
-                            except (AttributeError, TypeError):
-                                continue
+                    # Filter unseeded torrent
+                    if seeders < min(self.minseed, 1):
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the"
+                                                           " minimum seeders: {0}. Seeders: {1}".format(title, seeders))
+                        continue
 
-                            if not all([title, download_url]):
-                                continue
+                    torrent_size = cells[labels.index('Size')].get_text(strip=True)
+                    size = convert_size(torrent_size, -1)
 
-                            # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
-                                continue
+                    item = {
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers,
+                    }
 
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
+                    results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                    sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results

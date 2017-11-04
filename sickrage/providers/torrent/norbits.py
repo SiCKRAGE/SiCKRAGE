@@ -65,9 +65,7 @@ class NorbitsProvider(TorrentProvider):
         results = []
 
         for mode in search_params:
-
             sickrage.srCore.srLogger.debug('Search Mode: {0}'.format(mode))
-
             for search_string in search_params[mode]:
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {0}'.format(search_string))
@@ -81,43 +79,51 @@ class NorbitsProvider(TorrentProvider):
 
                 self._check_auth()
 
-                parsed_json = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
-                if not parsed_json:
-                    return results
+                try:
+                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
 
-                if self._check_auth_from_data(parsed_json):
-                    json_items = parsed_json.get('data', '')
-                    if not json_items:
-                        sickrage.srCore.srLogger.error('Resulting JSON from provider is not correct, not parsing it')
+        return results
 
-                    for item in json_items.get('torrents', []):
-                        title = item.pop('name', '')
-                        download_url = '{0}{1}'.format(
-                            self.urls['download'], urlencode({'id': item.pop('id', ''), 'passkey': self.passkey}))
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
 
-                        if not all([title, download_url]):
-                            continue
+        results = []
 
-                        seeders = try_int(item.pop('seeders', 0))
-                        leechers = try_int(item.pop('leechers', 0))
+        if self._check_auth_from_data(data):
+            json_items = data.get('data', '')
+            if not json_items:
+                sickrage.srCore.srLogger.error('Resulting JSON from provider is not correct, not parsing it')
+                return results
 
-                        if seeders < self.minseed or leechers < self.minleech:
-                            sickrage.srCore.srLogger.debug('Discarding torrent because it does not meet '
-                                                     'the minimum seeders or leechers: {0} (S:{1} L:{2})'.format
-                                                     (title, seeders, leechers))
-                            continue
+            for item in json_items.get('torrents', []):
+                try:
+                    title = item.pop('name', '')
+                    download_url = '{0}{1}'.format(
+                        self.urls['download'], urlencode({'id': item.pop('id', ''), 'passkey': self.passkey}))
 
-                        info_hash = item.pop('info_hash', '')
-                        size = convert_size(item.pop('size', -1), -1)
+                    if not all([title, download_url]):
+                        continue
 
-                        item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                'leechers': leechers, 'hash': info_hash}
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug('Found result: {0}'.format(title))
+                    seeders = try_int(item.pop('seeders', 0))
+                    leechers = try_int(item.pop('leechers', 0))
+                    info_hash = item.pop('info_hash', '')
+                    size = convert_size(item.pop('size', -1), -1)
 
-                        results.append(item)
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': info_hash}
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug('Found result: {0}'.format(title))
 
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                    results.append(item)
+                except Exception:
+                    sickrage.srCore.srLogger.error("Failed parsing provider")
 
         return results

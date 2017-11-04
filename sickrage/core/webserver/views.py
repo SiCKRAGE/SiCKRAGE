@@ -3980,7 +3980,8 @@ class ConfigSearch(Config):
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
                    torrent_rpcurl=None, torrent_auth_type=None, ignore_words=None, require_words=None,
-                   ignored_subs_list=None, enable_rss_cache=None, enable_rss_cache_valid_shows=None):
+                   ignored_subs_list=None, enable_rss_cache=None, enable_rss_cache_valid_shows=None,
+                   torrent_file_to_magnet=None):
 
         results = []
 
@@ -4008,8 +4009,8 @@ class ConfigSearch(Config):
         sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS = checkbox_to_value(randomize_providers)
 
         sickrage.srCore.srConfig.ENABLE_RSS_CACHE = checkbox_to_value(enable_rss_cache)
-        sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS = checkbox_to_value(
-            enable_rss_cache_valid_shows)
+        sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS = checkbox_to_value(enable_rss_cache_valid_shows)
+        sickrage.srCore.srConfig.TORRENT_FILE_TO_MAGNET = checkbox_to_value(torrent_file_to_magnet)
 
         sickrage.srCore.srConfig.change_download_propers(download_propers)
 
@@ -4285,10 +4286,11 @@ class ConfigProviders(Config):
 
         providerObj = TorrentRssProvider(name, url, True, cookies, titleTAG)
         if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
-            (succ, errMsg) = providerObj.validateRSS()
-            if succ: return json_encode({'success': providerObj.id})
-            return json_encode({'error': errMsg})
-        return json_encode({'error': 'Provider Name already exists as ' + name})
+            validate = providerObj.validateRSS()
+            if validate['result']:
+                return json_encode({'success': providerObj.id})
+            return json_encode({'error': validate['message']})
+        return json_encode({'error': 'Provider name already exists as {}'.format(name)})
 
     @staticmethod
     def getNewznabCategories(name, url, key):

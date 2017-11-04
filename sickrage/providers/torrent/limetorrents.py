@@ -47,90 +47,86 @@ class LimeTorrentsProvider(TorrentProvider):
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
         for mode in search_strings:
-
             sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: {0}".format
                                                    (search_string))
 
+                search_url = (self.urls['rss'], self.urls['search'] + search_string)[mode != 'RSS']
+
                 try:
-                    search_url = (self.urls['rss'], self.urls['search'] + search_string)[mode != 'RSS']
-
                     data = sickrage.srCore.srWebSession.get(search_url).text
-                    if not data:
-                        sickrage.srCore.srLogger.debug("No data returned from provider")
+                    results += self.parse(data, mode)
+                except Exception:
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
+
+        return results
+
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        if not data.startswith('<?xml'):
+            sickrage.srCore.srLogger.debug('Expected xml but got something else, is your mirror failing?')
+            return results
+
+        with bs4_parser(data) as html:
+            entries = html('item')
+            if not entries:
+                sickrage.srCore.srLogger.debug('Returned xml contained no results')
+                return results
+
+            for item in entries:
+                try:
+                    title = item.title.text
+                    # Use the itorrents link limetorrents provides,
+                    # unless it is not itorrents or we are not using blackhole
+                    # because we want to use magnets if connecting direct to client
+                    # so that proxies work.
+                    download_url = item.enclosure['url']
+                    if sickrage.srCore.srConfig.TORRENT_METHOD != "blackhole" or 'itorrents' not in download_url:
+                        download_url = item.enclosure['url']
+                        # http://itorrents.org/torrent/C7203982B6F000393B1CE3A013504E5F87A46A7F.torrent?title=The-Night-of-the-Generals-(1967)[BRRip-1080p-x264-by-alE13-DTS-AC3][Lektor-i-Napisy-PL-Eng][Eng]
+                        # Keep the hash a separate string for when its needed for failed
+                        torrent_hash = re.match(r"(.*)([A-F0-9]{40})(.*)", download_url, re.I).group(2)
+                        download_url = "magnet:?xt=urn:btih:" + torrent_hash + "&dn=" + title
+
+                    if not (title and download_url):
                         continue
 
-                    if not data.startswith('<?xml'):
-                        sickrage.srCore.srLogger.debug('Expected xml but got something else, is your mirror failing?')
-                        continue
+                    # seeders and leechers are presented diferently when doing a search and when looking for newly added
+                    if mode == 'RSS':
+                        # <![CDATA[
+                        # Category: <a href="http://www.limetorrents.cc/browse-torrents/TV-shows/">TV shows</a><br /> Seeds: 1<br />Leechers: 0<br />Size: 7.71 GB<br /><br /><a href="http://www.limetorrents.cc/Owen-Hart-of-Gold-Djon91-torrent-7180661.html">More @ limetorrents.cc</a><br />
+                        # ]]>
+                        description = item.find('description')
+                        seeders = try_int(description('br')[0].next_sibling.strip().lstrip('Seeds: '))
+                        leechers = try_int(description('br')[1].next_sibling.strip().lstrip('Leechers: '))
+                    else:
+                        # <description>Seeds: 6982 , Leechers 734</description>
+                        description = item.find('description').text.partition(',')
+                        seeders = try_int(description[0].lstrip('Seeds: ').strip())
+                        leechers = try_int(description[2].lstrip('Leechers ').strip())
 
-                    with bs4_parser(data, 'html5lib') as html:
-                        entries = html('item')
-                        if not entries:
-                            sickrage.srCore.srLogger.debug('Returned xml contained no results')
-                            continue
+                    torrent_size = item.find('size').text
 
-                        for item in entries:
-                            try:
-                                title = item.title.text
-                                # Use the itorrents link limetorrents provides,
-                                # unless it is not itorrents or we are not using blackhole
-                                # because we want to use magnets if connecting direct to client
-                                # so that proxies work.
-                                download_url = item.enclosure['url']
-                                if sickrage.srCore.srConfig.TORRENT_METHOD != "blackhole" or 'itorrents' not in download_url:
-                                    download_url = item.enclosure['url']
-                                    # http://itorrents.org/torrent/C7203982B6F000393B1CE3A013504E5F87A46A7F.torrent?title=The-Night-of-the-Generals-(1967)[BRRip-1080p-x264-by-alE13-DTS-AC3][Lektor-i-Napisy-PL-Eng][Eng]
-                                    # Keep the hash a separate string for when its needed for failed
-                                    torrent_hash = re.match(r"(.*)([A-F0-9]{40})(.*)", download_url, re.I).group(2)
-                                    download_url = "magnet:?xt=urn:btih:" + torrent_hash + "&dn=" + title
+                    size = convert_size(torrent_size, -1)
 
-                                if not (title and download_url):
-                                    continue
+                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                            'leechers': leechers, 'hash': ''}
 
-                                # seeders and leechers are presented diferently when doing a search and when looking for newly added
-                                if mode == 'RSS':
-                                    # <![CDATA[
-                                    # Category: <a href="http://www.limetorrents.cc/browse-torrents/TV-shows/">TV shows</a><br /> Seeds: 1<br />Leechers: 0<br />Size: 7.71 GB<br /><br /><a href="http://www.limetorrents.cc/Owen-Hart-of-Gold-Djon91-torrent-7180661.html">More @ limetorrents.cc</a><br />
-                                    # ]]>
-                                    description = item.find('description')
-                                    seeders = try_int(description('br')[0].next_sibling.strip().lstrip('Seeds: '))
-                                    leechers = try_int(description('br')[1].next_sibling.strip().lstrip('Leechers: '))
-                                else:
-                                    # <description>Seeds: 6982 , Leechers 734</description>
-                                    description = item.find('description').text.partition(',')
-                                    seeders = try_int(description[0].lstrip('Seeds: ').strip())
-                                    leechers = try_int(description[2].lstrip('Leechers ').strip())
+                    if mode != 'RSS':
+                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
 
-                                torrent_size = item.find('size').text
-
-                                size = convert_size(torrent_size, -1)
-
-                            except (AttributeError, TypeError, KeyError, ValueError):
-                                continue
-
-                                # Filter unseeded torrent
-                            if seeders < self.minseed or leechers < self.minleech:
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format
-                                        (title, seeders, leechers))
-                                continue
-
-                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                    'leechers': leechers, 'hash': ''}
-
-                            if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                            results.append(item)
-                except (AttributeError, TypeError, KeyError, ValueError):
+                    results.append(item)
+                except Exception:
                     sickrage.srCore.srLogger.error("Failed parsing provider")
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results

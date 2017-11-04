@@ -59,6 +59,15 @@ class SearchResult(object):
         # size of the release (-1 = n/a)
         self.size = -1
 
+        # seeders of the release
+        self.seeders = -1
+
+        # leechers of the release
+        self.leechers = -1
+
+        # update date
+        self.date = None
+
         # release group
         self.release_group = ""
 
@@ -185,29 +194,6 @@ class ShowListUI(object):
 
         # if nothing matches then return first result
         return allSeries[0]
-
-
-class Proper(object):
-    def __init__(self, name, url, date, show):
-        self.name = name
-        self.url = url
-        self.date = date
-        self.provider = None
-        self.quality = Quality.UNKNOWN
-        self.release_group = None
-        self.version = -1
-
-        self.show = show
-        self.indexer = None
-        self.indexerid = -1
-        self.season = -1
-        self.episode = -1
-        self.scene_season = -1
-        self.scene_episode = -1
-
-    def __str__(self):
-        return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-            self.indexerid)
 
 
 class UIError(object):

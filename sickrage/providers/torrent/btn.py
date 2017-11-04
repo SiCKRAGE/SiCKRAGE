@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import math
 import re
 import socket
@@ -28,7 +27,6 @@ import jsonrpclib
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.classes import Proper
 from sickrage.core.common import cpu_presets
 from sickrage.core.helpers import sanitizeSceneName
 from sickrage.core.scene_exceptions import get_scene_exceptions
@@ -239,27 +237,6 @@ class BTNProvider(TorrentProvider):
         # 'search' looks as broad is it can find. Can contain episode overview and title for example,
         # use with caution!
         return self.search({'search': search_string})
-
-    def find_propers(self, search_date=None):
-        results = []
-
-        search_terms = ['%.proper.%', '%.repack.%']
-
-        for term in search_terms:
-            for item in self.search({'release': term}, age=4 * 24 * 60 * 60):
-                if item['Time']:
-                    try:
-                        result_date = datetime.datetime.fromtimestamp(float(item['Time']))
-                    except TypeError:
-                        result_date = None
-
-                    if result_date:
-                        if not search_date or result_date > search_date:
-                            title, url = self._get_title_and_url(item)
-                            results.append(Proper(title, url, result_date, self.show))
-
-        return results
-
 
 
 class BTNCache(tv_cache.TVCache):

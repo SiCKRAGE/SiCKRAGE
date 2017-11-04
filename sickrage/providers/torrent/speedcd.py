@@ -20,9 +20,10 @@ from __future__ import unicode_literals
 
 import re
 
+from requests.utils import dict_from_cookiejar
+
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -51,6 +52,8 @@ class SpeedCDProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
         login_params = {'username': self.username,
                         'password': self.password}
@@ -58,12 +61,12 @@ class SpeedCDProvider(TorrentProvider):
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -87,43 +90,51 @@ class SpeedCDProvider(TorrentProvider):
                                  **self.categories[mode])
 
                 try:
-                    parsedJSON = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
-                    torrents = parsedJSON['Fs'][0]['Cn']['torrents']
+                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
+                    results += self.parse(data, mode)
                 except Exception:
-                    continue
-
-                for torrent in torrents:
-                    if self.freeleech and not torrent['free']:
-                        continue
-
-                    title = re.sub('<[^>]*>', '', torrent['name'])
-                    download_url = self.urls['download'] % (torrent['id'])
-                    seeders = int(torrent['seed'])
-                    leechers = int(torrent['leech'])
-                    # FIXME
-                    size = -1
-
-                    if not all([title, download_url]):
-                        continue
-
-                    # Filter unseeded torrent
-                    if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug(
-                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                    title, seeders, leechers))
-                        continue
-
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
-
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                    results.append(item)
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
+                    sickrage.srCore.srLogger.debug("No data returned from provider")
 
         return results
 
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        try:
+            torrents = data['Fs'][0]['Cn']['torrents']
+        except Exception:
+            return results
+
+        for torrent in torrents:
+            try:
+                if self.freeleech and not torrent['free']:
+                    continue
+
+                title = re.sub('<[^>]*>', '', torrent['name'])
+                download_url = self.urls['download'] % (torrent['id'])
+                seeders = int(torrent['seed'])
+                leechers = int(torrent['leech'])
+                # FIXME
+                size = -1
+
+                if not all([title, download_url]):
+                    continue
+
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                        'leechers': leechers, 'hash': ''}
+
+                if mode != 'RSS':
+                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                results.append(item)
+            except Exception:
+                sickrage.srCore.srLogger.error("Failed parsing provider")
+
+        return results

@@ -21,11 +21,13 @@ from __future__ import unicode_literals
 import re
 import traceback
 
+from requests.utils import dict_from_cookiejar
+
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser, try_int
+from sickrage.core.helpers import bs4_parser
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.providers import TorrentProvider
@@ -119,6 +121,8 @@ class TNTVillageProvider(TorrentProvider):
         return True
 
     def login(self):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+            return True
 
         login_params = {'UserName': self.username,
                         'PassWord': self.password,
@@ -128,13 +132,13 @@ class TNTVillageProvider(TorrentProvider):
         try:
             response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Sono stati riscontrati i seguenti errori', response) or re.search('<title>Connettiti</title>',
                                                                                         response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -388,14 +392,6 @@ class TNTVillageProvider(TorrentProvider):
                                 if self._is_season_pack(title):
                                     title = re.sub(r'([Ee][\d{1,2}\-?]+)', '', title)
 
-                                # Filter unseeded torrent
-                                if seeders < self.minseed or leechers < self.minleech:
-                                    if mode != 'RSS':
-                                        sickrage.srCore.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: %s (S:%s L:%s)" % (
-                                                title, seeders, leechers))
-                                    continue
-
                                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                                         'leechers': leechers, 'hash': ''}
 
@@ -406,8 +402,4 @@ class TNTVillageProvider(TorrentProvider):
                     except Exception:
                         sickrage.srCore.srLogger.error("Failed parsing provider.")
 
-                        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
-
         return results
-

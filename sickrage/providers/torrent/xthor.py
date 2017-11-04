@@ -23,11 +23,11 @@ import cookielib
 import re
 import urllib
 
-import requests
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, try_int
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -49,7 +49,7 @@ class XthorProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
-        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -60,12 +60,12 @@ class XthorProvider(TorrentProvider):
             response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
                                                          timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
+            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('donate.php', response):
             sickrage.srCore.srLogger.warning(
-                "[{}]: Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -80,7 +80,6 @@ class XthorProvider(TorrentProvider):
         for mode in search_params.keys():
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
-
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
 
@@ -89,44 +88,49 @@ class XthorProvider(TorrentProvider):
 
                 try:
                     data = sickrage.srCore.srWebSession.get(searchURL).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
-                    continue
-
-                with bs4_parser(data) as html:
-                    resultsTable = html.find("table", {"class": "table2 table-bordered2"})
-                    if resultsTable:
-                        rows = resultsTable.findAll("tr")
-                        for row in rows:
-                            link = row.find("a", href=re.compile("details.php"))
-                            if link:
-                                title = link.text
-                                download_url = self.urls['base_url'] + '/' + \
-                                               row.find("a", href=re.compile("download.php"))['href']
-                                # FIXME
-                                size = -1
-                                seeders = 1
-                                leechers = 0
-
-                                if not all([title, download_url]):
-                                    continue
-
-                                # Filter unseeded torrent
-                                # if seeders < self.minseed or leechers < self.minleech:
-                                #    if mode != 'RSS':
-                                #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
-                                #    continue
-
-                                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                        'leechers': leechers, 'hash': ''}
-
-                                if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
-
-                                results.append(item)
-
-        # Sort all the items by seeders if available
-        results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
 
         return results
 
+    def parse(self, data, mode):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
+
+        results = []
+
+        with bs4_parser(data) as html:
+            resultsTable = html.find("table", {"class": "table2 table-bordered2"})
+            if resultsTable:
+                rows = resultsTable.findAll("tr")
+                for row in rows:
+                    try:
+                        link = row.find("a", href=re.compile("details.php"))
+                        if link:
+                            title = link.text
+                            download_url = self.urls['base_url'] + '/' + \
+                                           row.find("a", href=re.compile("download.php"))['href']
+                            # FIXME
+                            size = -1
+                            seeders = 1
+                            leechers = 0
+
+                            if not all([title, download_url]):
+                                continue
+
+                            item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                                    'leechers': leechers, 'hash': ''}
+
+                            if mode != 'RSS':
+                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+
+                            results.append(item)
+                    except Exception:
+                        sickrage.srCore.srLogger.error("Failed parsing provider.")
+
+        return results
