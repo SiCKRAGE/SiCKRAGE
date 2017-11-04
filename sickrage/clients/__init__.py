@@ -324,6 +324,11 @@ class GenericClient(object):
             # lazy fix for now, I'm sure we already do this somewhere else too
             result = self._get_torrent_hash(result)
 
+            # convert to magnetic url if result has info hash and is not a private provider
+            if sickrage.srCore.srConfig.TORRENT_FILE_TO_MAGNET:
+                if result.hash and not result.provider.private and not result.url.startswith('magnet'):
+                    result.url = "magnet:?xt=urn:btih:{}".format(result.hash)
+
             if result.url.startswith('magnet'):
                 r_code = self._add_torrent_uri(result)
             else:

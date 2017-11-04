@@ -1,6 +1,7 @@
 # Changelog
 
-- * bf9f932 - 2017-11-03: refactored newpct provider fixed typo when saving result name causing searches to fail 
+- * 75af42d - 2017-11-03: added download client setting for torrent clients to convert torrent file links to magnetic links, helps resolve download issues for certain clients and only works with public torrent providers 
+- * 00b3ffb - 2017-11-03: refactored newpct provider fixed typo when saving result name causing searches to fail 
 - * 1886733 - 2017-11-03: refactored IPTorrents provider 
 - * 6820bf0 - 2017-11-03: refactored more torrent providers 
 - * 90308f0 - 2017-11-03: refactored minimum seeders and leechers checks 
