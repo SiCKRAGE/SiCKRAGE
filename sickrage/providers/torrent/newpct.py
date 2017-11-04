@@ -29,9 +29,9 @@ from sickrage.core.helpers import bs4_parser, convert_size, show_names
 from sickrage.providers import TorrentProvider
 
 
-class newpctProvider(TorrentProvider):
+class NewpctProvider(TorrentProvider):
     def __init__(self):
-        super(newpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
+        super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self.urls.update({
             'search': '{base_url}/series'.format(**self.urls),
@@ -42,7 +42,7 @@ class newpctProvider(TorrentProvider):
         self.onlyspasearch = None
         self.supports_backlog = False
 
-        self.cache = TVCache(self, min_time=20)
+        self.cache = NewpctCache(self, min_time=20)
 
     def _get_season_search_strings(self, ep_obj):
         search_string = {'Season': []}
@@ -136,16 +136,7 @@ class newpctProvider(TorrentProvider):
                 try:
                     torrent_anchor = row.find_all('a')[1]
                     title = _process_title(torrent_anchor.get_text())
-                    link_url = torrent_anchor.get('href', '')
-
-                    try:
-                        link_data = sickrage.srCore.srWebSession.get(link_url).text
-                        download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', link_data,
-                                                re.DOTALL).group(1)
-                        download_url = self.urls['download'] % download_id
-                    except Exception:
-                        continue
-
+                    download_url = self.process_link(torrent_anchor.get('href', ''))
                     if not all([title, download_url]):
                         continue
 
@@ -167,5 +158,29 @@ class newpctProvider(TorrentProvider):
                         results.append(item)
                 except Exception:
                     sickrage.srCore.srLogger.error('Failed parsing provider')
+
+        return results
+
+    def process_link(self, url):
+        try:
+            url = sickrage.srCore.srWebSession.get(url).text
+            download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', url, re.DOTALL).group(1)
+            url = self.urls['download'] % download_id
+        except Exception:
+            pass
+
+        return url
+
+class NewpctCache(TVCache):
+    def _get_rss_data(self):
+        results = {'entries': []}
+
+        sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['rss'])
+
+        data = self.getRSSFeed(self.provider.urls['rss'])
+        for entry in data.entries:
+            if 'Series' in entry.category:
+                entry.link = self.provider.process_link(entry.link)
+                results['entries'].append(entry)
 
         return results
