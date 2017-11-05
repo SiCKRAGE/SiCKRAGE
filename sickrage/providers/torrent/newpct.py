@@ -122,7 +122,7 @@ class NewpctProvider(TorrentProvider):
                     torrent_anchor = row.find_all('a')[1]
                     details_url = torrent_anchor.get('href', '')
                     with bs4_parser(sickrage.srCore.srWebSession.get(details_url).text) as details:
-                        title = self._process_title(details.find('h1').get_text(strip=True).split('/')[1])
+                        title = self._process_title(details.find('h1').get_text().split('/')[1])
                         download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html',
                                                 details.get_text(), re.DOTALL).group(1)
                         download_url = self.urls['download'] % download_id
@@ -153,22 +153,22 @@ class NewpctProvider(TorrentProvider):
         return results
 
     def _process_title(self, title):
-        # Cleanup
-        title = re.sub(r'-.+?\d{1,2}', '-', title, flags=re.IGNORECASE)
+        # Strip unwanted characters
+        title = title.strip()
 
         # Quality - Use re module to avoid case sensitive problems with replace
-        title = re.sub(r'\[HDTV[^\[]*]', 'HDTV x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[DVD[^\[]*]', 'DVDrip x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[HDTV 1080[p][^\[]*]', '1080p HDTV x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(HDTV 720[p]|ALTA DEFINICION)[^\[]*]', '720p HDTV x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV[^\[]*]', '[HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[DVD[^\[]*]', '[DVDrip x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV 1080[p][^\[]*]', '[1080p HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(HDTV 720[p]|ALTA DEFINICION)[^\[]*]', '[720p HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '[1080p BluRay x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '[720p BluRay x264]', title, flags=re.IGNORECASE)
 
         # Language
-        title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1SPANISH AUDIO', title, flags=re.IGNORECASE)
+        title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1[SPANISH AUDIO]', title, flags=re.IGNORECASE)
 
         # Add encoder and group to title
-        title = title + ' -NEWPCT'
+        title += '[NEWPCT]'
 
         return title
 

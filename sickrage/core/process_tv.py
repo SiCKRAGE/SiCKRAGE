@@ -367,14 +367,14 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         try:
             NameParser().parse(video, cache_result=False)
             return True
-        except (InvalidNameException, InvalidShowException):
+        except (InvalidNameException, InvalidShowException) as e:
             pass
 
     for proc_dir in allDirs:
         try:
             NameParser().parse(proc_dir, cache_result=False)
             return True
-        except (InvalidNameException, InvalidShowException):
+        except (InvalidNameException, InvalidShowException) as e:
             pass
 
     if sickrage.srCore.srConfig.UNPACK:
