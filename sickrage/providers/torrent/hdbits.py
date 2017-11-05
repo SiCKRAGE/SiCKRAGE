@@ -19,7 +19,7 @@ import json
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
@@ -151,8 +151,7 @@ class HDBitsProvider(TorrentProvider):
         return json.dumps(post_data)
 
 
-
-class HDBitsCache(tv_cache.TVCache):
+class HDBitsCache(TVCache):
     def _get_rss_data(self):
         results = []
 

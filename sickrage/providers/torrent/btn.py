@@ -26,7 +26,7 @@ import time
 import jsonrpclib
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.common import cpu_presets
 from sickrage.core.helpers import sanitizeSceneName
 from sickrage.core.scene_exceptions import get_scene_exceptions
@@ -239,7 +239,7 @@ class BTNProvider(TorrentProvider):
         return self.search({'search': search_string})
 
 
-class BTNCache(tv_cache.TVCache):
+class BTNCache(TVCache):
     def _get_rss_data(self):
         # Get the torrents uploaded since last check.
         seconds_since_last_update = math.ceil(time.time() - time.mktime(self.last_update.timetuple()))

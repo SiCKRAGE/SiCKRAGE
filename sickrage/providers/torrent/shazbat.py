@@ -19,7 +19,7 @@
 from __future__ import unicode_literals
 
 import sickrage
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
 from sickrage.providers import TorrentProvider
 
@@ -54,8 +54,7 @@ class ShazbatProvider(TorrentProvider):
         return True
 
 
-
-class ShazbatCache(tv_cache.TVCache):
+class ShazbatCache(TVCache):
     def _get_rss_data(self):
         rss_url = self.provider.urls['base_url'] + '/rss/recent?passkey=' + self.provider.passkey + '&fname=true'
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)

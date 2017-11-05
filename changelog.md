@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7553890 - 2017-11-05: Fixed issue with messages being NoneType during post-processing 
+- * 20fedd5 - 2017-11-05: Fixed search issues for RARBG 
+- * c5fa018 - 2017-11-05: Fixed issue with messages being NoneType during post-processing 
 - * 31c2cbe - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
 - * 1260ed4 - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
 - * 209d748 - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 

@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import datetime
 import re
 
-from sickrage.core.caches import tv_cache
+from sickrage.core.caches.tv_cache import TVCache
 from sickrage.providers import NZBProvider
 
 
@@ -37,9 +37,9 @@ class BinSearchProvider(NZBProvider):
         self.cache = BinSearchCache(self)
 
 
-class BinSearchCache(tv_cache.TVCache):
+class BinSearchCache(TVCache):
     def __init__(self, provider_obj):
-        tv_cache.TVCache.__init__(self, provider_obj, min_time=30)
+        TVCache.__init__(self, provider_obj, min_time=30)
         # only poll Binsearch every 30 minutes max
 
         # compile and save our regular expressions

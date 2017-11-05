@@ -20,31 +20,19 @@ from __future__ import unicode_literals
 
 import datetime
 from time import sleep
-from urlparse import urljoin
-
-from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import convert_size
-from sickrage.indexers.config import INDEXER_TVDB
+from sickrage.core.helpers import convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
 class RarbgProvider(TorrentProvider):
     def __init__(self):
-        super(RarbgProvider, self).__init__("Rarbg", 'http://torrentapi.org', False)
+        super(RarbgProvider, self).__init__("Rarbg", 'http://rarbg.com', False)
 
         self.urls.update({
-            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage'.format(**self.urls),
-            'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage'.format(**self.urls),
-            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string=%s'.format(**self.urls),
-            'search_tvdb': '{base_url}/pubapi_v2.php'
-                           '?mode=search'
-                           '&app_id=sickrage'
-                           '&search_tvdb=%s'
-                           '&search_string=%s'.format(**self.urls),
-            'api_spec': '{base_url}/apidocs_v2.txt'.format(**self.urls)
+            'api': 'http://torrentapi.org/pubapi_v2.php'
         })
 
         self.minseed = None
@@ -54,19 +42,6 @@ class RarbgProvider(TorrentProvider):
         self.token = None
         self.tokenExpireDate = None
 
-        self.urlOptions = {'categories': '&category={categories}',
-                           'seeders': '&min_seeders={min_seeders}',
-                           'leechers': '&min_leechers={min_leechers}',
-                           'sorting': '&sort={sorting}',
-                           'limit': '&limit={limit}',
-                           'format': '&format={format}',
-                           'ranked': '&ranked={ranked}',
-                           'token': '&token={token}'}
-
-        self.defaultOptions = self.urlOptions['categories'].format(categories='tv') + \
-                              self.urlOptions['limit'].format(limit='100') + \
-                              self.urlOptions['format'].format(format='json_extended')
-
         self.proper_strings = ['{{PROPER|REPACK}}']
 
         self.next_request = datetime.datetime.now()
@@ -74,14 +49,17 @@ class RarbgProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self, reset=False):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
-            return True
-
         if not reset and self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
+        login_params = {
+            'get_token': 'get_token',
+            'format': 'json',
+            'app_id': 'sickrage',
+        }
+
         try:
-            response = sickrage.srCore.srWebSession.get(self.urls['token'], timeout=30).json()
+            response = sickrage.srCore.srWebSession.get(self.urls['api'], params=login_params, timeout=30).json()
         except Exception:
             sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
@@ -91,60 +69,54 @@ class RarbgProvider(TorrentProvider):
 
         return self.token is not None
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         if not self.login():
             return results
 
-        if ep_obj is not None:
-            ep_indexerid = ep_obj.show.indexerid
-            ep_indexer = ep_obj.show.indexer
-        else:
-            ep_indexerid = None
-            ep_indexer = None
+        # Search Params
+        search_params = {
+            'app_id': 'sickrage',
+            'category': 'tv',
+            'min_seeders': try_int(self.minseed),
+            'min_leechers': try_int(self.minleech),
+            'limit': 100,
+            'format': 'json_extended',
+            'ranked': try_int(self.ranked),
+            'token': self.token,
+            'sort': 'last',
+            'mode': 'list',
+        }
 
-        for mode in search_params.keys():  # Mode = RSS, Season, Episode
+        for mode in search_strings:
             sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
-            for search_string in search_params[mode]:
 
+            if mode == 'RSS':
+                search_params['search_string'] = None
+                search_params['search_tvdb'] = None
+            else:
+                search_params['sort'] = self.sorting if self.sorting else 'seeders'
+                search_params['mode'] = 'search'
+                search_params['search_tvdb'] = ep_obj.show.indexerid
+
+            for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    if self.ranked:
+                        sickrage.srCore.srLogger.debug('Searching only ranked torrents')
 
-                if mode == 'RSS':
-                    searchURL = self.urls['listing'] + self.defaultOptions
-                elif mode == 'Season':
-                    if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls['search_tvdb'] % (ep_indexerid, search_string) + self.defaultOptions
-                    else:
-                        searchURL = self.urls['search'] % search_string + self.defaultOptions
-                elif mode == 'Episode':
-                    if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls['search_tvdb'] % (ep_indexerid, search_string) + self.defaultOptions
-                    else:
-                        searchURL = self.urls['search'] % (search_string) + self.defaultOptions
-                else:
-                    sickrage.srCore.srLogger.error("Invalid search mode: %s " % mode)
+                search_params['search_string'] = search_string
+
+                # Check if token is still valid before search
+                if not self.login():
                     continue
 
-                if self.minleech:
-                    searchURL += self.urlOptions['leechers'].format(min_leechers=int(self.minleech))
-
-                if self.minseed:
-                    searchURL += self.urlOptions['seeders'].format(min_seeders=int(self.minseed))
-
-                if self.sorting:
-                    searchURL += self.urlOptions['sorting'].format(sorting=self.sorting)
-
-                if self.ranked:
-                    searchURL += self.urlOptions['ranked'].format(ranked=int(self.ranked))
-
-                searchURL = urljoin(searchURL, self.urlOptions['token'].format(token=self.token))
-
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                # sleep 5 secs per request
+                sleep(5)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).json()
+                    data = sickrage.srCore.srWebSession.get(self.urls['api'], params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.srCore.srLogger.debug("No data returned from provider")
