@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8b2d42f - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
+- * 1005ad9 - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
+- * 1260ed4 - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
 - * 209d748 - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
 - * 361860d - 2017-11-05: Fixed newpct RSS search parsing of results 
 - * c75e4b3 - 2017-11-05: Fixed newpct RSS search parsing of results 
