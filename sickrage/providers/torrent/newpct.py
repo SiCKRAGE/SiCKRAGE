@@ -186,11 +186,10 @@ class NewpctCache(TVCache):
 
         sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['rss'])
 
-        data = self.getRSSFeed(self.provider.urls['rss'])
-        for entry in data.entries:
-            if 'Series' in entry.category:
-                entry['title'] = entry['title_detail']['value'] = self.provider._process_title(entry['title'])
-                entry['link'] = self.provider._process_link(entry['link'])
-                results['entries'].append(entry)
+        for result in self.getRSSFeed(self.provider.urls['rss']).entries:
+            if 'Series' in result.category:
+                title = self.provider._process_title(result.title)
+                link = self.provider._process_link(result.link)
+                results['entries'].append({'title':title, 'link': link})
 
         return results
