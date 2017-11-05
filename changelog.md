@@ -1,6 +1,7 @@
 # Changelog
 
-- * bb32df5 - 2017-11-05: Fixed quality regex for Newpct 
+- * b45dae1 - 2017-11-05: Fixed quality regex for Newpct 
+- * 02baa59 - 2017-11-05: Fixed quality regex for Newpct 
 - * aa57fe3 - 2017-11-05: Fixed search issues for RARBG 
 - * d6151f1 - 2017-11-05: Fixed search issues for RARBG 
 - * b3feaac - 2017-11-05: Fixed search issues for RARBG 

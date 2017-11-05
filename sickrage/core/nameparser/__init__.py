@@ -181,10 +181,14 @@ class NameParser(object):
             if 'ep_num' in named_groups:
                 ep_num = self._convert_number(match.group('ep_num'))
                 if 'extra_ep_num' in named_groups and match.group('extra_ep_num'):
-                    result.episode_numbers = range(ep_num, self._convert_number(match.group('extra_ep_num')) + 1)
+                    tmp_episodes = range(ep_num, self._convert_number(match.group('extra_ep_num')) + 1)
+                    if len(tmp_episodes) > 6:
+                        continue
                     result.score += 1
                 else:
-                    result.episode_numbers = [ep_num]
+                    tmp_episodes = [ep_num]
+
+                result.episode_numbers = tmp_episodes
                 result.score += 3
 
             if 'ep_ab_num' in named_groups:
