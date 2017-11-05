@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4873d62 - 2017-11-05: fixed post-processor queue issues with none types 
+- * 3957c80 - 2017-11-05: fixed post-processor queue issues with none types 
+- * 373a99f - 2017-11-05: fixed post-processor queue issues with none types 
 - * ccc4dd6 - 2017-11-05: Fixed quality regex for Newpct 
 - * 02baa59 - 2017-11-05: Fixed quality regex for Newpct 
 - * aa57fe3 - 2017-11-05: Fixed search issues for RARBG 
