@@ -40,16 +40,14 @@ class RarbgProvider(TorrentProvider):
         self.sorting = None
         self.minleech = None
         self.token = None
-        self.tokenExpireDate = None
+        self.token_expires = None
 
-        self.proper_strings = ['{{PROPER|REPACK}}']
-
-        self.next_request = datetime.datetime.now()
+        self.proper_strings = ['{{PROPER|REPACK|REAL|RERIP}}']
 
         self.cache = TVCache(self, min_time=10)
 
     def login(self, reset=False):
-        if not reset and self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
+        if not reset and self.token and self.token_expires and datetime.datetime.now() < self.token_expires:
             return True
 
         login_params = {
@@ -65,7 +63,7 @@ class RarbgProvider(TorrentProvider):
             return False
 
         self.token = response.get('token')
-        self.tokenExpireDate = datetime.datetime.now() + datetime.timedelta(minutes=14) if self.token else None
+        self.token_expires = datetime.datetime.now() + datetime.timedelta(minutes=14) if self.token else None
 
         return self.token is not None
 
