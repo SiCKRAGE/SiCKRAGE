@@ -1,6 +1,7 @@
 # Changelog
 
-- * 25a0665 - 2017-11-04: Fixed issues with Newpct provider searches 
+- * e963bb0 - 2017-11-05: Fixed AmbiguousTimeError 
+- * e131756 - 2017-11-04: Fixed issues with Newpct provider searches 
 - * 08aadb2 - 2017-11-04: Fixed issues with Newpct provider searches 
 - * fd03d0c - 2017-11-04: added code to Newpct torrent provider to search page by page 
 - * 1deec4c - 2017-11-04: fixed issues with getting RSS feed from Newpct provider 

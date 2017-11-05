@@ -190,7 +190,7 @@ class NewpctCache(TVCache):
         for entry in data.entries:
             if 'Series' in entry.category:
                 entry.title = self.provider._process_title(entry.title)
-                entry.link = self.provider._process_link(entry.link)
+                #entry.link = self.provider._process_link(entry.link)
                 results['entries'].append(entry)
 
         return results

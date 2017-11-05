@@ -31,10 +31,10 @@ import uuid
 from itertools import izip, cycle
 
 import rarfile
+from apscheduler.triggers.interval import IntervalTrigger
 from configobj import ConfigObj
 
 import sickrage
-from sickrage.core.classes import srIntervalTrigger
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, auto_type, get_lan_ip, \
     extract_zipfile, \
@@ -1126,14 +1126,10 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.AUTOPOSTPROCESSOR_FREQ = try_int(freq, self.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
-
-        if self.AUTOPOSTPROCESSOR_FREQ < self.MIN_AUTOPOSTPROCESSOR_FREQ:
-            self.AUTOPOSTPROCESSOR_FREQ = self.MIN_AUTOPOSTPROCESSOR_FREQ
-
         sickrage.srCore.srScheduler.modify_job('POSTPROCESSOR',
-                                               trigger=srIntervalTrigger(
-                                                   **{'minutes': self.AUTOPOSTPROCESSOR_FREQ,
-                                                      'min': self.MIN_AUTOPOSTPROCESSOR_FREQ}))
+                                               trigger=IntervalTrigger(
+                                                   minutes=self.AUTOPOSTPROCESSOR_FREQ if self.AUTOPOSTPROCESSOR_FREQ >= self.MIN_AUTOPOSTPROCESSOR_FREQ else self.MIN_AUTOPOSTPROCESSOR_FREQ
+                                               ))
 
     def change_daily_searcher_freq(self, freq):
         """
@@ -1143,9 +1139,9 @@ class srConfig(object):
         """
         self.DAILY_SEARCHER_FREQ = try_int(freq, self.DEFAULT_DAILY_SEARCHER_FREQ)
         sickrage.srCore.srScheduler.modify_job('DAILYSEARCHER',
-                                               trigger=srIntervalTrigger(
-                                                   **{'minutes': self.DAILY_SEARCHER_FREQ,
-                                                      'min': self.MIN_DAILY_SEARCHER_FREQ}))
+                                               trigger=IntervalTrigger(
+                                                   minutes=self.DAILY_SEARCHER_FREQ if self.DAILY_SEARCHER_FREQ >= self.MIN_DAILY_SEARCHER_FREQ else self.MIN_DAILY_SEARCHER_FREQ
+                                               ))
 
     def change_backlog_searcher_freq(self, freq):
         """
@@ -1156,9 +1152,9 @@ class srConfig(object):
         self.BACKLOG_SEARCHER_FREQ = try_int(freq, self.DEFAULT_BACKLOG_SEARCHER_FREQ)
         self.MIN_BACKLOG_SEARCHER_FREQ = sickrage.srCore.BACKLOGSEARCHER.get_backlog_cycle_time()
         sickrage.srCore.srScheduler.modify_job('BACKLOG',
-                                               trigger=srIntervalTrigger(
-                                                   **{'minutes': self.BACKLOG_SEARCHER_FREQ,
-                                                      'min': self.MIN_BACKLOG_SEARCHER_FREQ}))
+                                               trigger=IntervalTrigger(
+                                                   minutes=self.BACKLOG_SEARCHER_FREQ if self.BACKLOG_SEARCHER_FREQ >= self.MIN_BACKLOG_SEARCHER_FREQ else self.MIN_BACKLOG_SEARCHER_FREQ
+                                               ))
 
     def change_updater_freq(self, freq):
         """
@@ -1168,9 +1164,9 @@ class srConfig(object):
         """
         self.VERSION_UPDATER_FREQ = try_int(freq, self.DEFAULT_VERSION_UPDATE_FREQ)
         sickrage.srCore.srScheduler.modify_job('VERSIONUPDATER',
-                                               trigger=srIntervalTrigger(
-                                                   **{'hours': self.VERSION_UPDATER_FREQ,
-                                                      'min': self.MIN_VERSION_UPDATER_FREQ}))
+                                               trigger=IntervalTrigger(
+                                                   hours=self.VERSION_UPDATER_FREQ if self.VERSION_UPDATER_FREQ >= self.MIN_VERSION_UPDATER_FREQ else self.MIN_VERSION_UPDATER_FREQ
+                                               ))
 
     def change_showupdate_hour(self, freq):
         """
@@ -1179,14 +1175,12 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.SHOWUPDATE_HOUR = try_int(freq, self.DEFAULT_SHOWUPDATE_HOUR)
-        if self.SHOWUPDATE_HOUR < 0 or self.SHOWUPDATE_HOUR > 23:
-            self.SHOWUPDATE_HOUR = 0
-
         sickrage.srCore.srScheduler.modify_job('SHOWUPDATER',
-                                               trigger=srIntervalTrigger(
-                                                   **{'hours': 1,
-                                                      'start_date': datetime.datetime.now().replace(
-                                                          hour=self.SHOWUPDATE_HOUR)}))
+                                               trigger=IntervalTrigger(
+                                                   hours=1,
+                                                   start_date=datetime.datetime.now().replace(
+                                                       hour=self.SHOWUPDATE_HOUR if self.SHOWUPDATE_HOUR >= 0 and self.SHOWUPDATE_HOUR <= 23 else 0)
+                                               ))
 
     def change_subtitle_searcher_freq(self, freq):
         """
@@ -1196,9 +1190,9 @@ class srConfig(object):
         """
         self.SUBTITLE_SEARCHER_FREQ = try_int(freq, self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
         sickrage.srCore.srScheduler.modify_job('SUBTITLESEARCHER',
-                                               trigger=srIntervalTrigger(
-                                                   **{'hours': self.SUBTITLE_SEARCHER_FREQ,
-                                                      'min': self.MIN_SUBTITLE_SEARCHER_FREQ}))
+                                               trigger=IntervalTrigger(
+                                                   hours=self.SUBTITLE_SEARCHER_FREQ if self.SUBTITLE_SEARCHER_FREQ >= self.MIN_SUBTITLE_SEARCHER_FREQ else self.MIN_SUBTITLE_SEARCHER_FREQ
+                                               ))
 
     def change_version_notify(self, version_notify):
         """
