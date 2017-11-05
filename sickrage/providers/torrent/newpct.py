@@ -153,7 +153,7 @@ class NewpctProvider(TorrentProvider):
 
     def _process_title(self, title):
         # Cleanup
-        title = re.sub(r'-.+?\d{1,2}[ ,.]', '', title, flags=re.IGNORECASE)
+        title = re.sub(r'-.+?\d{1,2}', '-', title, flags=re.IGNORECASE)
 
         # Quality - Use re module to avoid case sensitive problems with replace
         title = re.sub(r'\[HDTV[^\[]*]', 'HDTV x264', title, flags=re.IGNORECASE)
@@ -189,8 +189,8 @@ class NewpctCache(TVCache):
         data = self.getRSSFeed(self.provider.urls['rss'])
         for entry in data.entries:
             if 'Series' in entry.category:
-                entry.title = self.provider._process_title(entry.title)
-                #entry.link = self.provider._process_link(entry.link)
+                entry['title'] = entry['title_detail']['value'] = self.provider._process_title(entry['title'])
+                #entry['link'] = self.provider._process_link(entry['link'])
                 results['entries'].append(entry)
 
         return results
