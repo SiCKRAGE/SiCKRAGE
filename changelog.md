@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5b925dc - 2017-11-05: Fixed newpct RSS search parsing of results 
+- * bfe97bd - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
+- * 361860d - 2017-11-05: Fixed newpct RSS search parsing of results 
 - * c75e4b3 - 2017-11-05: Fixed newpct RSS search parsing of results 
 - * 227e5bb - 2017-11-05: Fixed newpct RSS search parsing of results 
 - * d2e76c2 - 2017-11-05: Fixed AmbiguousTimeError 

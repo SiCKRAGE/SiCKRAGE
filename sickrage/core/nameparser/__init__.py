@@ -184,6 +184,7 @@ class NameParser(object):
                     tmp_episodes = range(ep_num, self._convert_number(match.group('extra_ep_num')) + 1)
                     if len(tmp_episodes) > 4:
                         continue
+                    result.score += 1
                 else:
                     tmp_episodes = [ep_num]
 

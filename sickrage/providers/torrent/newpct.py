@@ -34,7 +34,7 @@ class NewpctProvider(TorrentProvider):
         super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self.urls.update({
-            'search': '{base_url}/series'.format(**self.urls),
+            'search': ['{base_url}/series'.format(**self.urls), '{base_url}/series-hd'.format(**self.urls)],
             'rss': '{base_url}/feed'.format(**self.urls),
             'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
         })
@@ -77,21 +77,22 @@ class NewpctProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-                pg = 1
+                for search_url in self.urls['search']:
+                    pg = 1
 
-                while True:
-                    searchURL = self.urls['search'] + '/' + search_string + '//pg/' + str(pg)
+                    while True:
+                        searchURL = search_url + '/' + search_string + '//pg/' + str(pg)
 
-                    try:
-                        data = sickrage.srCore.srWebSession.get(searchURL).text
-                        items = self.parse(data, mode)
-                        if not len(items): break
-                        results += items
-                    except Exception:
-                        sickrage.srCore.srLogger.debug('No data returned from provider')
-                        break
+                        try:
+                            data = sickrage.srCore.srWebSession.get(searchURL).text
+                            items = self.parse(data, mode)
+                            if not len(items): break
+                            results += items
+                        except Exception:
+                            sickrage.srCore.srLogger.debug('No data returned from provider')
+                            break
 
-                    pg += 1
+                        pg += 1
 
         return results
 
@@ -157,7 +158,9 @@ class NewpctProvider(TorrentProvider):
 
         # Quality - Use re module to avoid case sensitive problems with replace
         title = re.sub(r'\[HDTV[^\[]*]', 'HDTV x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(720p HDTV|ALTA DEFINICION)[^\[]*]', '720p HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[DVD[^\[]*]', 'DVDrip x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV 1080[p][^\[]*]', '1080p HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(HDTV 720[p]|ALTA DEFINICION)[^\[]*]', '720p HDTV x264', title, flags=re.IGNORECASE)
         title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay x264', title, flags=re.IGNORECASE)
         title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay x264', title, flags=re.IGNORECASE)
 
