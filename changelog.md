@@ -1,6 +1,7 @@
 # Changelog
 
-- * e700575 - 2017-11-05: Fixed search issues for RARBG 
+- * bb32df5 - 2017-11-05: Fixed quality regex for Newpct 
+- * aa57fe3 - 2017-11-05: Fixed search issues for RARBG 
 - * d6151f1 - 2017-11-05: Fixed search issues for RARBG 
 - * b3feaac - 2017-11-05: Fixed search issues for RARBG 
 - * c5fa018 - 2017-11-05: Fixed issue with messages being NoneType during post-processing 

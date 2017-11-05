@@ -157,12 +157,11 @@ class NewpctProvider(TorrentProvider):
         title = title.strip()
 
         # Quality - Use re module to avoid case sensitive problems with replace
-        title = re.sub(r'\[HDTV[^\[]*]', '[HDTV x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[DVD[^\[]*]', '[DVDrip x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[HDTV 1080[p][^\[]*]', '[1080p HDTV x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(HDTV 720[p]|ALTA DEFINICION)[^\[]*]', '[720p HDTV x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '[1080p BluRay x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV.1080[p][^\[]*]', '[1080p HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(HDTV.720[p]|ALTA.DEFINICION)[^\[]*]', '[720p HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(BluRay.MicroHD|MicroHD.1080p)[^\[]*]', '[1080p BluRay x264]', title, flags=re.IGNORECASE)
         title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '[720p BluRay x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV[^\[]*]', '[HDTV x264]', title, flags=re.IGNORECASE)
 
         # Language
         title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1[SPANISH AUDIO]', title, flags=re.IGNORECASE)
