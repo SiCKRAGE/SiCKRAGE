@@ -119,55 +119,50 @@ class NewpctProvider(TorrentProvider):
             for row in torrent_rows[1:-1]:
                 try:
                     torrent_anchor = row.find_all('a')[1]
-                    title = self._process_title(torrent_anchor.get_text())
-                    download_url = self._process_link(torrent_anchor.get('href', ''))
-                    if not all([title, download_url]):
-                        continue
+                    details_url = torrent_anchor.get('href', '')
+                    with bs4_parser(sickrage.srCore.srWebSession.get(details_url).text) as details:
+                        title = self._process_title(details.find('h1').get_text(strip=True).split('/')[1])
+                        download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html',
+                                                details.get_text(), re.DOTALL).group(1)
+                        download_url = self.urls['download'] % download_id
+                        if not all([title, download_url]):
+                            continue
 
-                    seeders = 1  # Provider does not provide seeders
-                    leechers = 0  # Provider does not provide leechers
+                        seeders = 1  # Provider does not provide seeders
+                        leechers = 0  # Provider does not provide leechers
 
-                    try:
-                        torrent_size = row.find_all('span')[3].get_text(strip=True)
-                    except IndexError:
-                        torrent_size = row.find_all('span')[1].get_text(strip=True)
-                    size = convert_size(torrent_size, -1)
+                        torrent_size = details.find_all(class_='imp')[1].get_text()
+                        torrent_size = re.sub(r'Size: ([\d.]+).+([KMGT]B)', r'\1 \2', torrent_size)
+                        size = convert_size(torrent_size, -1)
 
-                    item = {
-                        'title': title,
-                        'link': download_url,
-                        'size': size,
-                        'seeders': seeders,
-                        'leechers': leechers,
-                    }
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+                        item = {
+                            'title': title,
+                            'link': download_url,
+                            'size': size,
+                            'seeders': seeders,
+                            'leechers': leechers,
+                        }
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
-                        results.append(item)
+                            results.append(item)
                 except Exception:
                     sickrage.srCore.srLogger.error('Failed parsing provider')
 
         return results
 
     def _process_title(self, title):
-        # Strip word Serie from start of title
-        title = title.split(' ', 1)[1]
-
-        # Add encoder and group to title
-        title = title.strip() + ' x264-NEWPCT'
-
         # Quality - Use re module to avoid case sensitive problems with replace
-        title = re.sub(r'\[ALTA DEFINICION[^\[]*]', '720p HDTV', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV[^\[]*]', ' HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[ALTA DEFINICION[^\[]*]', ' 720p HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', ' 1080p BluRay x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', ' 720p BluRay x264', title, flags=re.IGNORECASE)
 
         # Language
-        title = re.sub(r'\[(Spanish|Castellano|Espanol)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[AC3 5\.1 Espanol[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
+        title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1SPANISH AUDIO', title, flags=re.IGNORECASE)
 
-        # Season and Episode
-        title = re.sub(r'Temporada[^\[]*?', 'SEASON', title, flags=re.IGNORECASE)
-        title = re.sub(r'Capitulo[^\[]*?', 'EPISODE', title, flags=re.IGNORECASE)
+        # Add encoder and group to title
+        title = title + ' -NEWPCT'
 
         return title
 
@@ -180,6 +175,7 @@ class NewpctProvider(TorrentProvider):
             pass
 
         return url
+
 
 class NewpctCache(TVCache):
     def _get_rss_data(self):

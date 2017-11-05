@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2aa3b2c - 2017-11-04: added code to Newpct torrent provider to search page by page 
+- * db174db - 2017-11-04: Fixed issues with Newpct provider searches 
+- * fd03d0c - 2017-11-04: added code to Newpct torrent provider to search page by page 
 - * 1deec4c - 2017-11-04: fixed issues with getting RSS feed from Newpct provider 
 - * b0b02e3 - 2017-11-04: Release v9.1.63 
 - * 4555644 - 2017-11-04: refactored qBitTorrent client, fixed issues with sending torrent files 
