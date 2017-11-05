@@ -118,8 +118,6 @@ class srPostProcessorQueue(srQueue):
         :return: string indicating success or failure
         """
 
-        message = ''
-
         if not dirName:
             return logHelper(
                 "{} post-processing attempted but directory is not set: {}".format(proc_type.title(), dirName),
@@ -150,22 +148,22 @@ class srPostProcessorQueue(srQueue):
                                   'failed': failed,
                                   'proc_type': proc_type})
 
-            message += logHelper(
+            message = logHelper(
                 "An item with directory {} is already being processed in the queue, item updated".format(dirName))
+            return message + "<br\><span class='hidden'>Processing succeeded</span>"
         else:
             item = PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type)
             if force_next:
                 with postprocessor_queue_lock:
                     item.run()
-                    message += item.result
+                    message = item.result
+                return message
             else:
                 super(srPostProcessorQueue, self).put(item)
-                message += logHelper(
+                message = logHelper(
                     "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
+                return message + "<br\><span class='hidden'>Processing succeeded</span>"
 
-        message += "<br\><span class='hidden'>Processing succeeded</span>"
-
-        return message
 
 
 class PostProcessorItem(srQueueItem):
