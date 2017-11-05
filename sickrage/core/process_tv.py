@@ -286,15 +286,12 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 result.output += logHelper("Sync Files: [%s] in path %s" % (", ".join(SyncFiles), processPath))
                 result.missedfiles.append("%s : Syncfiles found" % processPath)
 
-    if result.aggresult:
-        result.output += logHelper("Processing completed")
-        if result.missedfiles:
-            result.output += logHelper("I did encounter some unprocessable items: [%s]" % ", ".join(result.missedfiles))
-    else:
-        result.output += logHelper(
-            "Problem(s) during processing, failed the following files/folders:  [%s]" % ", ".join(
-                result.missedfiles),
-            sickrage.srCore.srLogger.WARNING)
+    result.output += logHelper(("Processing Failed", "Successfully processed")[result.aggresult],
+                                (sickrage.srCore.srLogger.WARNING, sickrage.srCore.srLogger.INFO)[result.aggresult])
+    if result.missedfiles:
+        result.output += logHelper("Some items were not processed.")
+        for missed_file in result.missedfiles:
+            result.output += logHelper(missed_file)
 
     return result.output
 
