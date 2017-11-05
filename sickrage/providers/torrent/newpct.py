@@ -152,11 +152,14 @@ class NewpctProvider(TorrentProvider):
         return results
 
     def _process_title(self, title):
+        # Cleanup
+        title = re.sub(r'-.+?\d{1,2}[ ,.]', '', title, flags=re.IGNORECASE)
+
         # Quality - Use re module to avoid case sensitive problems with replace
-        title = re.sub(r'\[HDTV[^\[]*]', ' HDTV x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[ALTA DEFINICION[^\[]*]', ' 720p HDTV x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', ' 1080p BluRay x264', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', ' 720p BluRay x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV[^\[]*]', 'HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(720p HDTV|ALTA DEFINICION)[^\[]*]', '720p HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay x264', title, flags=re.IGNORECASE)
 
         # Language
         title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1SPANISH AUDIO', title, flags=re.IGNORECASE)

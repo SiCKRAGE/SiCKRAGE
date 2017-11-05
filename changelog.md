@@ -1,6 +1,7 @@
 # Changelog
 
-- * db174db - 2017-11-04: Fixed issues with Newpct provider searches 
+- * 25a0665 - 2017-11-04: Fixed issues with Newpct provider searches 
+- * 08aadb2 - 2017-11-04: Fixed issues with Newpct provider searches 
 - * fd03d0c - 2017-11-04: added code to Newpct torrent provider to search page by page 
 - * 1deec4c - 2017-11-04: fixed issues with getting RSS feed from Newpct provider 
 - * b0b02e3 - 2017-11-04: Release v9.1.63 
