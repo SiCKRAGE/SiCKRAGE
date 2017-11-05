@@ -136,7 +136,6 @@ class RarbgProvider(TorrentProvider):
                 if not self.login(True): return results
                 return results
             elif data.get('error_code') == 5:
-                sleep(5)
                 return results
             elif data.get('error_code') != 20:
                 sickrage.srCore.srLogger.debug(data['error'])
