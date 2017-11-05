@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5b57d0f - 2017-11-05: Fixed newpct RSS search parsing of results 
+- * 930747e - 2017-11-05: Fixed newpct RSS search parsing of results 
+- * 227e5bb - 2017-11-05: Fixed newpct RSS search parsing of results 
 - * d2e76c2 - 2017-11-05: Fixed AmbiguousTimeError 
 - * e131756 - 2017-11-04: Fixed issues with Newpct provider searches 
 - * 08aadb2 - 2017-11-04: Fixed issues with Newpct provider searches 
