@@ -42,6 +42,7 @@ from contextlib import contextmanager
 
 import rarfile
 import requests
+import scandir
 import six
 from bs4 import BeautifulSoup
 
@@ -1008,18 +1009,18 @@ def backupSR(backupDir, keep_latest=False):
             source += [fp]
 
     # database folder
-    for (path, __, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'database'), topdown=True):
+    for (path, __, files) in scandir.walk(os.path.join(sickrage.DATA_DIR, 'database'), topdown=True):
         for filename in files:
             source += [os.path.join(path, filename)]
 
     # db_backup folder
-    for (path, __, files) in os.walk(os.path.join(sickrage.DATA_DIR, 'db_backup'), topdown=True):
+    for (path, __, files) in scandir.walk(os.path.join(sickrage.DATA_DIR, 'db_backup'), topdown=True):
         for filename in files:
             source += [os.path.join(path, filename)]
 
     # cache folder
     if sickrage.CACHE_DIR:
-        for (path, dirs, files) in os.walk(sickrage.CACHE_DIR, topdown=True):
+        for (path, dirs, files) in scandir.walk(sickrage.CACHE_DIR, topdown=True):
             for dirname in dirs:
                 if path == sickrage.CACHE_DIR and dirname not in ['images']:
                     dirs.remove(dirname)
@@ -1114,7 +1115,7 @@ def get_size(start_path='.'):
     total_size = 0
 
     try:
-        for dirpath, __, filenames in os.walk(start_path):
+        for dirpath, __, filenames in scandir.walk(start_path):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 try:

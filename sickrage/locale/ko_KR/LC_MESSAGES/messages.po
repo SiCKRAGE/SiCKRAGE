@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-04 00:40-0400\n"
-"PO-Revision-Date: 2017-11-04 00:41-0400\n"
+"POT-Creation-Date: 2017-11-05 21:33-0500\n"
+"PO-Revision-Date: 2017-11-05 21:34-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -651,8 +651,8 @@ msgstr "분할 보기 리스트"
 msgid "Separate anime and normal shows in groups"
 msgstr "별도 애니메이션 및 그룹에 정상 쇼"
 
-#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:83 sickrage/core/version_updater.py:91
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -683,15 +683,15 @@ msgstr "복원 하려는 백업 파일을 선택"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:62
 msgid "Restore database files"
-msgstr ""
+msgstr "데이터베이스 파일을 복원"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:71
 msgid "Restore configuration file"
-msgstr ""
+msgstr "구성 파일을 복원"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:80
 msgid "Restore cache files"
-msgstr ""
+msgstr "캐시 파일을 복원"
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
@@ -3498,7 +3498,7 @@ msgstr "쿠키:"
 
 #: sickrage/core/webserver/views/config/providers.mako:576
 msgid "this provider requires the following cookies: "
-msgstr ""
+msgstr "이 공급자는 다음 쿠키를 필요로합니다. "
 
 #: sickrage/core/webserver/views/config/providers.mako:587
 msgid "Pin:"
@@ -3736,11 +3736,11 @@ msgstr "검색 최대 속도 SiCKRAGE에 이미 추가 하는 쇼의 캐싱을 �
 
 #: sickrage/core/webserver/views/config/search.mako:70
 msgid "Convert provider torrent file links to magnetic links"
-msgstr ""
+msgstr "마그네틱 링크 공급자 급류 파일 링크 변환"
 
 #: sickrage/core/webserver/views/config/search.mako:76
 msgid "enables/disables converting of public torrent provider file links to magnetic links"
-msgstr ""
+msgstr "공개 토런트 공급자 파일 링크 자석 링크 변환 활성화/비활성화"
 
 #: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
@@ -4454,7 +4454,7 @@ msgstr "아카이브 첫 경기:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:421
 msgid "Missed:"
-msgstr ""
+msgstr "보고 싶 었 어:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:427
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:23
@@ -5874,47 +5874,47 @@ msgstr "무시"
 msgid "Episode snatched"
 msgstr "납치 하는 에피소드"
 
-#: sickrage/core/version_updater.py:66
+#: sickrage/core/version_updater.py:68
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "새로운 업데이트는 자동 업데이트를 시작 하는 SiCKRAGE에 대 한 발견"
 
-#: sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:71
 msgid "Update was successful"
 msgstr "업데이트 성공 했다"
 
-#: sickrage/core/version_updater.py:73
+#: sickrage/core/version_updater.py:75
 msgid "Update failed!"
 msgstr "업데이트 실패!"
 
-#: sickrage/core/version_updater.py:81
+#: sickrage/core/version_updater.py:83
 msgid "Config backup in progress..."
 msgstr "구성 백업 진행 중..."
 
-#: sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:91
 msgid "Config backup successful, updating..."
 msgstr "구성 백업 성공, 업데이트..."
 
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 msgid "Config backup failed, aborting update"
 msgstr "구성 백업 실패, 업데이트 중단"
 
-#: sickrage/core/version_updater.py:209
+#: sickrage/core/version_updater.py:211
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "일반 고급 또는->-> 설정에서 git 경로 찾을 수 없습니다 당신의 자식 실행-설정.git 폴더를 삭제 하 고 업데이트를 원본에서 실행."
 
-#: sickrage/core/version_updater.py:256
+#: sickrage/core/version_updater.py:258
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "찾을 수 없습니다 당신의 핍 실행-설정 핍 경로 설정에서-> 일반 고급->"
 
-#: sickrage/core/version_updater.py:406 sickrage/core/version_updater.py:553
+#: sickrage/core/version_updater.py:408 sickrage/core/version_updater.py:555
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "사용 가능한 최신 버전, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:549
+#: sickrage/core/version_updater.py:551
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "알 수 없는 현재 버전 번호: 만약 요 사용한 적이 전에 SiCKRAGE 업그레이드 시스템 현재 버전을 설정 하지 않으면 다음. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:699
+#: sickrage/core/version_updater.py:701
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "새로운 SiCKRAGE 업데이트에 PyPy 서버, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 

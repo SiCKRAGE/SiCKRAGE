@@ -70,11 +70,11 @@ normal_regexes = [
      # American Horror Story - Temporada 4 [HDTV][Cap.408][Espanol Castellano]
      # American Horror Story - Temporada 4 HDTV x264[Cap.408]SPANISH AUDIO –NEWPCT)
      r'''
-     (?P<series_name>.+?).-.+\d{1,2}[ ,.]       # Show name: American Horror Story
-     (?P<extra_info>.+)\[Cap\.                   # Quality: HDTV x264, [HDTV], HDTV x264
-     (?P<season_num>\d{1,2})                     # Season Number: 4
-     (?P<ep_num>\d{2})                           # Episode Number: 08
-     ((_\d{1,2}(?P<extra_ep_num>\d{2}))|.*\])     # Episode number2: 09
+     (?P<series_name>.+?).-.+\d{1,2}[ ,.]         # Show name: American Horror Story
+     (?P<extra_info>.+)\[Cap\.                    # Quality: HDTV x264, [HDTV], HDTV x264
+     (?P<season_num>\d{1,2})                      # Season Number: 4
+     (?P<ep_num>\d{2})                            # Episode Number: 08
+     ((_\d{1,2}(?P<extra_ep_num>\d{2})).*\]|.*\]) # Episode number2: 09
      '''),
     ('fov',
      # Show_Name.1x02.Source_Quality_Etc-Group

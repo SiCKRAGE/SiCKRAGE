@@ -1,6 +1,30 @@
 # Changelog
 
-- * f68233a - 2017-11-04: Release v9.1.63 
+- * 674208c - 2017-11-05: Release v9.1.64 
+- * 68d647b - 2017-11-05: Fixed encoding/decoding unicode issues with tuples and kludge 
+- * 394338f - 2017-11-05: Fixed encoding/decoding unicode issues with tuples and kludge 
+- * c12b19d - 2017-11-05: Fixed issue #109 - AmbiguousTimeError Fixed issue #108 - Post-Processing issues due to unicode directory and file names 
+- * 02e5733 - 2017-11-05: fixed post-processor queue issues with none types 
+- * 0c46c22 - 2017-11-05: fixed post-processor queue issues with none types 
+- * 373a99f - 2017-11-05: fixed post-processor queue issues with none types 
+- * ccc4dd6 - 2017-11-05: Fixed quality regex for Newpct 
+- * 02baa59 - 2017-11-05: Fixed quality regex for Newpct 
+- * aa57fe3 - 2017-11-05: Fixed search issues for RARBG 
+- * d6151f1 - 2017-11-05: Fixed search issues for RARBG 
+- * b3feaac - 2017-11-05: Fixed search issues for RARBG 
+- * c5fa018 - 2017-11-05: Fixed issue with messages being NoneType during post-processing 
+- * 31c2cbe - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
+- * 1260ed4 - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
+- * 209d748 - 2017-11-05: Fixed regex&#x27;s for Newpct provider and added search url for HD series 
+- * 361860d - 2017-11-05: Fixed newpct RSS search parsing of results 
+- * c75e4b3 - 2017-11-05: Fixed newpct RSS search parsing of results 
+- * 227e5bb - 2017-11-05: Fixed newpct RSS search parsing of results 
+- * d2e76c2 - 2017-11-05: Fixed AmbiguousTimeError 
+- * e131756 - 2017-11-04: Fixed issues with Newpct provider searches 
+- * 08aadb2 - 2017-11-04: Fixed issues with Newpct provider searches 
+- * fd03d0c - 2017-11-04: added code to Newpct torrent provider to search page by page 
+- * 1deec4c - 2017-11-04: fixed issues with getting RSS feed from Newpct provider 
+- * b0b02e3 - 2017-11-04: Release v9.1.63 
 - * 4555644 - 2017-11-04: refactored qBitTorrent client, fixed issues with sending torrent files 
 - * 0e2ebef - 2017-11-03: added download client setting for torrent clients to convert torrent file links to magnetic links, helps resolve download issues for certain clients and only works with public torrent providers 
 - * 00b3ffb - 2017-11-03: refactored newpct provider fixed typo when saving result name causing searches to fail 

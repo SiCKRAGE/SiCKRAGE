@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-04 00:40-0400\n"
-"PO-Revision-Date: 2017-11-04 00:41-0400\n"
+"POT-Creation-Date: 2017-11-05 21:33-0500\n"
+"PO-Revision-Date: 2017-11-05 21:34-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -651,8 +651,8 @@ msgstr "Σπλιτ εμφανίζονται λίστες"
 msgid "Separate anime and normal shows in groups"
 msgstr "Ξεχωριστό anime και κανονικές παραστάσεις σε ομάδες"
 
-#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:83 sickrage/core/version_updater.py:91
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -683,15 +683,15 @@ msgstr "Επιλέξτε το αρχείο αντιγράφου ασφαλεία
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:62
 msgid "Restore database files"
-msgstr ""
+msgstr "Επαναφορά αρχείων βάσης δεδομένων"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:71
 msgid "Restore configuration file"
-msgstr ""
+msgstr "Επαναφέρετε το αρχείο ρύθμισης παραμέτρων"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:80
 msgid "Restore cache files"
-msgstr ""
+msgstr "Επαναφέρετε τα αρχεία cache"
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
@@ -3498,7 +3498,7 @@ msgstr "Cookies:"
 
 #: sickrage/core/webserver/views/config/providers.mako:576
 msgid "this provider requires the following cookies: "
-msgstr ""
+msgstr "Αυτή η υπηρεσία παροχής απαιτεί τα παρακάτω cookies: "
 
 #: sickrage/core/webserver/views/config/providers.mako:587
 msgid "Pin:"
@@ -3736,11 +3736,11 @@ msgstr "Ενεργοποιεί/απενεργοποιεί την προσωρι�
 
 #: sickrage/core/webserver/views/config/search.mako:70
 msgid "Convert provider torrent file links to magnetic links"
-msgstr ""
+msgstr "Μετατροπή υπηρεσίας παροχής αρχείου torrent δεσμοί μαγνητικό συνδέσεις"
 
 #: sickrage/core/webserver/views/config/search.mako:76
 msgid "enables/disables converting of public torrent provider file links to magnetic links"
-msgstr ""
+msgstr "Ενεργοποιεί/απενεργοποιεί τη μετατροπή από δημόσια torrent αρχείο παροχής συνδέσεις μαγνητικό συνδέσεις"
 
 #: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
@@ -4454,7 +4454,7 @@ msgstr "Αρχείο πρώτο αγώνα:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:421
 msgid "Missed:"
-msgstr ""
+msgstr "Χάσει:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:427
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:23
@@ -5874,47 +5874,47 @@ msgstr "Αγνοούνται"
 msgid "Episode snatched"
 msgstr "Άρπαξε το επεισόδιο"
 
-#: sickrage/core/version_updater.py:66
+#: sickrage/core/version_updater.py:68
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Νέα ενημερωμένη έκδοση που βρέθηκαν για SiCKRAGE, ξεκινώντας το αυτόματος-Updater-αυτοκίνητο"
 
-#: sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:71
 msgid "Update was successful"
 msgstr "Ενημέρωση ολοκληρώθηκε με επιτυχία"
 
-#: sickrage/core/version_updater.py:73
+#: sickrage/core/version_updater.py:75
 msgid "Update failed!"
 msgstr "Απέτυχε η ενημέρωση!"
 
-#: sickrage/core/version_updater.py:81
+#: sickrage/core/version_updater.py:83
 msgid "Config backup in progress..."
 msgstr "Config εφεδρική σε εξέλιξη..."
 
-#: sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:91
 msgid "Config backup successful, updating..."
 msgstr "Config backup επιτυχής, ενημέρωση..."
 
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 msgid "Config backup failed, aborting update"
 msgstr "Config δημιουργίας αντιγράφων ασφαλείας απέτυχε, ματαίωση ενημερωμένη έκδοση"
 
-#: sickrage/core/version_updater.py:209
+#: sickrage/core/version_updater.py:211
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Δεν μπορείτε να βρείτε σας git εκτελέσιμο - σετ σας git διαδρομή από τις ρυθμίσεις-> γενικής-> για προχωρημένους ή διαγραφή του φακέλου .git και τρέχει από την πηγή για να ενεργοποιήσετε τις ενημερωμένες εκδόσεις."
 
-#: sickrage/core/version_updater.py:256
+#: sickrage/core/version_updater.py:258
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Δεν μπορείτε να βρείτε σας pip εκτελέσιμο - σετ σας pip διαδρομή από τις ρυθμίσεις-> γενικής-> για προχωρημένους"
 
-#: sickrage/core/version_updater.py:406 sickrage/core/version_updater.py:553
+#: sickrage/core/version_updater.py:408 sickrage/core/version_updater.py:555
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Υπάρχει νεότερη έκδοση διαθέσιμη, έκδοση {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:549
+#: sickrage/core/version_updater.py:551
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Άγνωστο αριθμό της τρέχουσας έκδοσης: Εάν yo ποτέ δεν έχω χρησιμοποιήσει το σύστημα αναβάθμισης SiCKRAGE πριν από την τότε τρέχουσα έκδοση δεν έχει οριστεί. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:699
+#: sickrage/core/version_updater.py:701
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Νέα ενημέρωση SiCKRAGE βρέθηκαν σε διακομιστές PyPy, έκδοση {} &mdash; <a href=\"{}\">Update Now</a>"
 

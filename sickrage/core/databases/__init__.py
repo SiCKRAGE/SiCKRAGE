@@ -26,6 +26,7 @@ import time
 import traceback
 from sqlite3 import OperationalError
 
+import scandir
 from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
 from CodernityDB.index import IndexNotFoundException, IndexConflict, IndexException
 from CodernityDB.storage import IU_Storage
@@ -66,7 +67,7 @@ class srDatabase(object):
             existing_backups = []
             if not os.path.isdir(backup_path): os.makedirs(backup_path)
 
-            for root, dirs, files in os.walk(backup_path):
+            for root, dirs, files in scandir.walk(backup_path):
                 # Only consider files being a direct child of the backup_path
                 if root == backup_path:
                     for backup_file in sorted(files):
@@ -91,7 +92,7 @@ class srDatabase(object):
             # Create new backup
             new_backup = os.path.join(backup_path, '%s.tar.gz' % int(time.time()))
             with tarfile.open(new_backup, 'w:gz') as zipf:
-                for root, dirs, files in os.walk(self.db_path):
+                for root, dirs, files in scandir.walk(self.db_path):
                     for zfilename in files:
                         zipf.add(os.path.join(root, zfilename),
                                  arcname='database/%s/%s' % (

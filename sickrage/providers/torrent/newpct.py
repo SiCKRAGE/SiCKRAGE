@@ -29,20 +29,19 @@ from sickrage.core.helpers import bs4_parser, convert_size, show_names
 from sickrage.providers import TorrentProvider
 
 
-class newpctProvider(TorrentProvider):
+class NewpctProvider(TorrentProvider):
     def __init__(self):
-        super(newpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
+        super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self.urls.update({
-            'search': '{base_url}/series'.format(**self.urls),
+            'search': ['{base_url}/series'.format(**self.urls), '{base_url}/series-hd'.format(**self.urls)],
             'rss': '{base_url}/feed'.format(**self.urls),
             'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
         })
 
         self.onlyspasearch = None
-        self.supports_backlog = False
 
-        self.cache = TVCache(self, min_time=20)
+        self.cache = NewpctCache(self, min_time=20)
 
     def _get_season_search_strings(self, ep_obj):
         search_string = {'Season': []}
@@ -78,14 +77,22 @@ class newpctProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
 
-                searchURL = self.urls['search'] + '/' + search_string
+                for search_url in self.urls['search']:
+                    pg = 1
 
-                try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
-                    results += self.parse(data, mode)
-                except Exception:
-                    sickrage.srCore.srLogger.debug('No data returned from provider')
-                    continue
+                    while True:
+                        searchURL = search_url + '/' + search_string + '//pg/' + str(pg)
+
+                        try:
+                            data = sickrage.srCore.srWebSession.get(searchURL).text
+                            items = self.parse(data, mode)
+                            if not len(items): break
+                            results += items
+                        except Exception:
+                            sickrage.srCore.srLogger.debug('No data returned from provider')
+                            break
+
+                        pg += 1
 
         return results
 
@@ -101,71 +108,90 @@ class newpctProvider(TorrentProvider):
 
         results = []
 
-        def _process_title(title):
-            # Strip word Serie from start of title
-            title = title.split(' ', 1)[1]
-
-            # Add encoder and group to title
-            title = title.strip() + ' x264-NEWPCT'
-
-            # Quality - Use re module to avoid case sensitive problems with replace
-            title = re.sub(r'\[ALTA DEFINICION[^\[]*]', '720p HDTV', title, flags=re.IGNORECASE)
-            title = re.sub(r'\[(BluRay MicroHD|MicroHD 1080p)[^\[]*]', '1080p BluRay', title, flags=re.IGNORECASE)
-            title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '720p BluRay', title, flags=re.IGNORECASE)
-
-            # Language
-            title = re.sub(r'\[(Spanish|Castellano|Español)[^\[]*]', 'SPANISH AUDIO', title, flags=re.IGNORECASE)
-            title = re.sub(r'\[AC3 5\.1 Español[^\[]*]', 'SPANISH AUDIO AC3 5.1', title, flags=re.IGNORECASE)
-
-            # Season and Episode
-            title = re.sub(r'Temporada[^\[]*?', 'SEASON', title, flags=re.IGNORECASE)
-            title = re.sub(r'Capitulo[^\[]*?', 'EPISODE', title, flags=re.IGNORECASE)
-
-            return title
-
         with bs4_parser(data) as html:
             torrent_table = html.find('ul', class_='buscar-list')
             torrent_rows = torrent_table('li') if torrent_table else []
 
             # Continue only if at least one release is found
-            if len(torrent_rows) < 3:  # Headers + 1 Torrent + Pagination
+            if not len(torrent_rows):
                 sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
                 return results
 
             for row in torrent_rows[1:-1]:
                 try:
                     torrent_anchor = row.find_all('a')[1]
-                    title = _process_title(torrent_anchor.get_text())
-                    link_url = torrent_anchor.get('href', '')
-
-                    try:
-                        link_data = sickrage.srCore.srWebSession.get(link_url).text
-                        download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', link_data,
-                                                re.DOTALL).group(1)
+                    details_url = torrent_anchor.get('href', '')
+                    with bs4_parser(sickrage.srCore.srWebSession.get(details_url).text) as details:
+                        title = self._process_title(details.find('h1').get_text().split('/')[1])
+                        download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html',
+                                                details.get_text(), re.DOTALL).group(1)
                         download_url = self.urls['download'] % download_id
-                    except Exception:
-                        continue
+                        if not all([title, download_url]):
+                            continue
 
-                    if not all([title, download_url]):
-                        continue
+                        seeders = 1  # Provider does not provide seeders
+                        leechers = 0  # Provider does not provide leechers
 
-                    seeders = 1  # Provider does not provide seeders
-                    leechers = 0  # Provider does not provide leechers
-                    torrent_size = row.find_all('span')[4].get_text(strip=True)
-                    size = convert_size(torrent_size, -1)
+                        torrent_size = details.find_all(class_='imp')[1].get_text()
+                        torrent_size = re.sub(r'Size: ([\d.]+).+([KMGT]B)', r'\1 \2', torrent_size)
+                        size = convert_size(torrent_size, -1)
 
-                    item = {
-                        'title': title,
-                        'link': download_url,
-                        'size': size,
-                        'seeders': seeders,
-                        'leechers': leechers,
-                    }
-                    if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+                        item = {
+                            'title': title,
+                            'link': download_url,
+                            'size': size,
+                            'seeders': seeders,
+                            'leechers': leechers,
+                        }
+                        if mode != 'RSS':
+                            sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
 
-                        results.append(item)
+                            results.append(item)
                 except Exception:
                     sickrage.srCore.srLogger.error('Failed parsing provider')
+
+        return results
+
+    def _process_title(self, title):
+        # Strip unwanted characters
+        title = title.strip()
+
+        # Quality - Use re module to avoid case sensitive problems with replace
+        title = re.sub(r'\[HDTV.1080[p][^\[]*]', '[1080p HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(HDTV.720[p]|ALTA.DEFINICION)[^\[]*]', '[720p HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(BluRay.MicroHD|MicroHD.1080p)[^\[]*]', '[1080p BluRay x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '[720p BluRay x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV[^\[]*]', '[HDTV x264]', title, flags=re.IGNORECASE)
+
+        # Language
+        title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1[SPANISH AUDIO]', title, flags=re.IGNORECASE)
+
+        # Add encoder and group to title
+        title += '[NEWPCT]'
+
+        return title
+
+    def _process_link(self, url):
+        try:
+            url = sickrage.srCore.srWebSession.get(url).text
+            download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', url, re.DOTALL).group(1)
+            url = self.urls['download'] % download_id
+        except Exception as e:
+            pass
+
+        return url
+
+
+class NewpctCache(TVCache):
+    def _get_rss_data(self):
+        results = {'entries': []}
+
+        sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['rss'])
+
+        for result in self.getRSSFeed(self.provider.urls['rss']).entries:
+            if 'Series' in result.category:
+                title = self.provider._process_title(result.title)
+                link = self.provider._process_link(result.link)
+                results['entries'].append({'title':title, 'link': link})
 
         return results

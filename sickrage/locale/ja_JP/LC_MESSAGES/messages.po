@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-04 00:40-0400\n"
-"PO-Revision-Date: 2017-11-04 00:41-0400\n"
+"POT-Creation-Date: 2017-11-05 21:33-0500\n"
+"PO-Revision-Date: 2017-11-05 21:34-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -651,8 +651,8 @@ msgstr "分割表示します。"
 msgid "Separate anime and normal shows in groups"
 msgstr "別のキャラクターやグループで通常番組"
 
-#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:83 sickrage/core/version_updater.py:91
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -683,15 +683,15 @@ msgstr "復元したいバックアップファイルを選択します。"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:62
 msgid "Restore database files"
-msgstr ""
+msgstr "データベース ファイルを復元します。"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:71
 msgid "Restore configuration file"
-msgstr ""
+msgstr "構成ファイルを復元します。"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:80
 msgid "Restore cache files"
-msgstr ""
+msgstr "キャッシュ ファイルを復元します。"
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
@@ -3498,7 +3498,7 @@ msgstr "クッキー:"
 
 #: sickrage/core/webserver/views/config/providers.mako:576
 msgid "this provider requires the following cookies: "
-msgstr ""
+msgstr "このプロバイダーには、次の cookie が必要です。"
 
 #: sickrage/core/webserver/views/config/providers.mako:587
 msgid "Pin:"
@@ -3736,11 +3736,11 @@ msgstr "ショーは既に SiCKRAGE に追加のキャッシュを有効/無効�
 
 #: sickrage/core/webserver/views/config/search.mako:70
 msgid "Convert provider torrent file links to magnetic links"
-msgstr ""
+msgstr "プロバイダーの急流ファイルのリンクを磁気リンクに変換します。"
 
 #: sickrage/core/webserver/views/config/search.mako:76
 msgid "enables/disables converting of public torrent provider file links to magnetic links"
-msgstr ""
+msgstr "公共の奔流プロバイダー ファイル リンクへの磁気リンクの変換を有効/無効に"
 
 #: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
@@ -4454,7 +4454,7 @@ msgstr "アーカイブ最初に一致:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:421
 msgid "Missed:"
-msgstr ""
+msgstr "逃した。"
 
 #: sickrage/core/webserver/views/home/display_show.mako:427
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:23
@@ -5874,47 +5874,47 @@ msgstr "無視されます。"
 msgid "Episode snatched"
 msgstr "誘拐のエピソード"
 
-#: sickrage/core/version_updater.py:66
+#: sickrage/core/version_updater.py:68
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "新しい更新プログラムの自動アップデーターを起動 SiCKRAGE の発見"
 
-#: sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:71
 msgid "Update was successful"
 msgstr "正常に更新されました。"
 
-#: sickrage/core/version_updater.py:73
+#: sickrage/core/version_updater.py:75
 msgid "Update failed!"
 msgstr "更新に失敗しました!"
 
-#: sickrage/core/version_updater.py:81
+#: sickrage/core/version_updater.py:83
 msgid "Config backup in progress..."
 msgstr "設定バックアップ実行中."
 
-#: sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:91
 msgid "Config backup successful, updating..."
 msgstr "設定バックアップ成功、更新."
 
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 msgid "Config backup failed, aborting update"
 msgstr "構成バックアップに失敗しました、更新を中止して"
 
-#: sickrage/core/version_updater.py:209
+#: sickrage/core/version_updater.py:211
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "実行可能 - セット、git を見つけることができません詳細 OR-> 一般的な-> の設定から git パス .git フォルダーを削除、ソースから実行する更新を有効にします。"
 
-#: sickrage/core/version_updater.py:256
+#: sickrage/core/version_updater.py:258
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "見つけるのためにあなたの pip 実行可能 - 高度な-> 一般-> 設定から pip パスを設定できません。"
 
-#: sickrage/core/version_updater.py:406 sickrage/core/version_updater.py:553
+#: sickrage/core/version_updater.py:408 sickrage/core/version_updater.py:555
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "あるより新しいバージョン、バージョン {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:549
+#: sickrage/core/version_updater.py:551
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "未知の現在のバージョン番号: もしよ使ったことがない前に SiCKRAGE アップ グレード システム、現在のバージョンが設定されていません。&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:699
+#: sickrage/core/version_updater.py:701
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "PyPy サーバー、バージョン {} &mdash; は、新しい SiCKRAGE 更新 <a href=\"{}\">Update Now</a>"
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-04 00:40-0400\n"
-"PO-Revision-Date: 2017-11-04 00:40-0400\n"
+"POT-Creation-Date: 2017-11-05 21:33-0500\n"
+"PO-Revision-Date: 2017-11-05 21:33-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -651,8 +651,8 @@ msgstr "انقسام إظهار القوائم"
 msgid "Separate anime and normal shows in groups"
 msgstr "أنمي منفصلة ويظهر طبيعي في المجموعات"
 
-#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:83 sickrage/core/version_updater.py:91
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -683,15 +683,15 @@ msgstr "حدد ملف النسخة الاحتياطية التي ترغب في �
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:62
 msgid "Restore database files"
-msgstr ""
+msgstr "استعادة ملفات قاعدة البيانات"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:71
 msgid "Restore configuration file"
-msgstr ""
+msgstr "استعادة ملف التكوين"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:80
 msgid "Restore cache files"
-msgstr ""
+msgstr "استعادة ملفات ذاكرة التخزين المؤقت"
 
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:29
@@ -3498,7 +3498,7 @@ msgstr "ملفات تعريف الارتباط:"
 
 #: sickrage/core/webserver/views/config/providers.mako:576
 msgid "this provider requires the following cookies: "
-msgstr ""
+msgstr "ويتطلب هذا الموفر ملفات تعريف الارتباط التالي: "
 
 #: sickrage/core/webserver/views/config/providers.mako:587
 msgid "Pin:"
@@ -3736,11 +3736,11 @@ msgstr "تمكين/تعطيل التخزين المؤقت ليظهر بالفع�
 
 #: sickrage/core/webserver/views/config/search.mako:70
 msgid "Convert provider torrent file links to magnetic links"
-msgstr ""
+msgstr "تحويل الروابط ملف تورنت مزود بوصلات مغناطيسية"
 
 #: sickrage/core/webserver/views/config/search.mako:76
 msgid "enables/disables converting of public torrent provider file links to magnetic links"
-msgstr ""
+msgstr "تمكين/تعطيل التحويل من سيل العام ارتباطات الملف مزود بوصلات مغناطيسية"
 
 #: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
@@ -4454,7 +4454,7 @@ msgstr "المباراة الأولى للأرشيف:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:421
 msgid "Missed:"
-msgstr ""
+msgstr "غاب:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:427
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:23
@@ -5874,47 +5874,47 @@ msgstr "تجاهل"
 msgid "Episode snatched"
 msgstr "الحلقة انتزع"
 
-#: sickrage/core/version_updater.py:66
+#: sickrage/core/version_updater.py:68
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "تحديث جديد سيكراجي، بدء تشغيل التحديث التلقائي"
 
-#: sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:71
 msgid "Update was successful"
 msgstr "تم التحديث الناجحة"
 
-#: sickrage/core/version_updater.py:73
+#: sickrage/core/version_updater.py:75
 msgid "Update failed!"
 msgstr "فشل تحديث!"
 
-#: sickrage/core/version_updater.py:81
+#: sickrage/core/version_updater.py:83
 msgid "Config backup in progress..."
 msgstr "تكوين النسخ الاحتياطي قيد التقدم..."
 
-#: sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:91
 msgid "Config backup successful, updating..."
 msgstr "تكوين النسخ الاحتياطي الناجحة، تحديث..."
 
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 msgid "Config backup failed, aborting update"
 msgstr "النسخ الاحتياطي الملف Config فشل، إحباط التحديث"
 
-#: sickrage/core/version_updater.py:209
+#: sickrage/core/version_updater.py:211
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "غير قادر على العثور على جهاز بوابة القابل للتنفيذ--مجموعة المسار الخاص بك بوابة من إعدادات-> العامة-> أو خيارات متقدمة حذف المجلد.git الخاص بك وتشغيل من مصدر لتمكين التحديثات."
 
-#: sickrage/core/version_updater.py:256
+#: sickrage/core/version_updater.py:258
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "غير قادر على العثور على النقطة الخاصة بك القابل للتنفيذ--تعيين مسار النقطة الخاصة بك من إعدادات-> العامة-> خيارات متقدمة"
 
-#: sickrage/core/version_updater.py:406 sickrage/core/version_updater.py:553
+#: sickrage/core/version_updater.py:408 sickrage/core/version_updater.py:555
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "هناك إصدار أحدث المتاحة، الإصدار {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:549
+#: sickrage/core/version_updater.py:551
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "رقم الإصدار الحالي غير معروف: إذا يو لم يسبق استخدام نظام الترقية قبل سيكراجي ثم لم يتم تعيين الإصدار الحالي. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:699
+#: sickrage/core/version_updater.py:701
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "تحديث جديد سيكراجي العثور على ملقمات بيبي، الإصدار {} &mdash; <a href=\"{}\">Update Now</a>"
 

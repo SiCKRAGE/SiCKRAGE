@@ -236,7 +236,7 @@ class TVCache(object):
                     'files': files
                 })
 
-                sickrage.srCore.srLogger.debug("RSS ITEM:[%s] ADDED!", name)
+                sickrage.srCore.srLogger.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
 
     def search_cache(self, episode=None, manualSearch=False, downCurQuality=False):
         neededEps = {}

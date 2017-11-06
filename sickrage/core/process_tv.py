@@ -23,6 +23,7 @@ import shutil
 import stat
 
 import UnRAR2
+import scandir
 from UnRAR2.rar_exceptions import ArchiveHeaderBroken, FileOpenError, \
     IncorrectRARPassword, InvalidRARArchive, InvalidRARArchiveUsage
 
@@ -232,7 +233,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         result.result = True
 
-        for processPath, __, fileList in os.walk(os.path.join(path, curDir), topdown=False):
+        for processPath, __, fileList in scandir.walk(os.path.join(path, curDir), topdown=False):
 
             if not validateDir(path, processPath, nzbNameOriginal, failed, result):
                 continue
@@ -286,15 +287,12 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 result.output += logHelper("Sync Files: [%s] in path %s" % (", ".join(SyncFiles), processPath))
                 result.missedfiles.append("%s : Syncfiles found" % processPath)
 
-    if result.aggresult:
-        result.output += logHelper("Processing completed")
-        if result.missedfiles:
-            result.output += logHelper("I did encounter some unprocessable items: [%s]" % ", ".join(result.missedfiles))
-    else:
-        result.output += logHelper(
-            "Problem(s) during processing, failed the following files/folders:  [%s]" % ", ".join(
-                result.missedfiles),
-            sickrage.srCore.srLogger.WARNING)
+    result.output += logHelper(("Processing Failed", "Successfully processed")[result.aggresult],
+                                (sickrage.srCore.srLogger.WARNING, sickrage.srCore.srLogger.INFO)[result.aggresult])
+    if result.missedfiles:
+        result.output += logHelper("Some items were not processed.")
+        for missed_file in result.missedfiles:
+            result.output += logHelper(missed_file)
 
     return result.output
 
@@ -355,7 +353,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     # Get the videofile list for the next checks
     allFiles = []
     allDirs = []
-    for __, processdir, fileList in os.walk(os.path.join(path, dirName), topdown=False):
+    for __, processdir, fileList in scandir.walk(os.path.join(path, dirName), topdown=False):
         allDirs += processdir
         allFiles += fileList
 
@@ -367,14 +365,14 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         try:
             NameParser().parse(video, cache_result=False)
             return True
-        except (InvalidNameException, InvalidShowException):
+        except (InvalidNameException, InvalidShowException) as e:
             pass
 
     for proc_dir in allDirs:
         try:
             NameParser().parse(proc_dir, cache_result=False)
             return True
-        except (InvalidNameException, InvalidShowException):
+        except (InvalidNameException, InvalidShowException) as e:
             pass
 
     if sickrage.srCore.srConfig.UNPACK:
@@ -586,7 +584,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 
     if dirName == sickrage.srCore.srConfig.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
-        for path, dirs, files in os.walk(dirName):
+        for path, dirs, files in scandir.walk(dirName):
             break
     else:
         path, dirs = os.path.split(dirName)  # Script Post Processing

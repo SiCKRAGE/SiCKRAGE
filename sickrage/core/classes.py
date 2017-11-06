@@ -23,7 +23,6 @@ import datetime
 import re
 import sys
 
-from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import parser
 
 import sickrage
@@ -271,12 +270,3 @@ class AttrDict(dict):
             del self[name]
         else:
             raise AttributeError("No such attribute: " + name)
-
-
-class srIntervalTrigger(IntervalTrigger):
-    def __init__(self, weeks=0, days=0, hours=0, minutes=0, seconds=0, start_date=None, end_date=None, timezone=None,
-                 **kwargs):
-        min = kwargs.pop('min', 0)
-        if min <= weeks + days + hours + minutes + seconds:
-            super(srIntervalTrigger, self).__init__(weeks, days, hours, minutes, seconds, start_date, end_date,
-                                                    timezone)

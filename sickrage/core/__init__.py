@@ -34,11 +34,13 @@ import uuid
 
 import adba
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 from fake_useragent import UserAgent
+from pytz import utc
+from tzlocal import get_localzone
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
-from sickrage.core.classes import AttrDict, srIntervalTrigger
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.failed import FailedDB
@@ -291,38 +293,30 @@ class Core(object):
                                                 'mlnet',
                                                 'putio'): self.srConfig.TORRENT_METHOD = 'blackhole'
 
-        if self.srConfig.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
-            self.srConfig.PROPER_SEARCHER_INTERVAL = 'daily'
-
         if self.srConfig.AUTOPOSTPROCESSOR_FREQ < self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ:
             self.srConfig.AUTOPOSTPROCESSOR_FREQ = self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ
-
         if self.srConfig.DAILY_SEARCHER_FREQ < self.srConfig.MIN_DAILY_SEARCHER_FREQ:
             self.srConfig.DAILY_SEARCHER_FREQ = self.srConfig.MIN_DAILY_SEARCHER_FREQ
-
         self.srConfig.MIN_BACKLOG_SEARCHER_FREQ = self.BACKLOGSEARCHER.get_backlog_cycle_time()
         if self.srConfig.BACKLOG_SEARCHER_FREQ < self.srConfig.MIN_BACKLOG_SEARCHER_FREQ:
             self.srConfig.BACKLOG_SEARCHER_FREQ = self.srConfig.MIN_BACKLOG_SEARCHER_FREQ
-
         if self.srConfig.VERSION_UPDATER_FREQ < self.srConfig.MIN_VERSION_UPDATER_FREQ:
             self.srConfig.VERSION_UPDATER_FREQ = self.srConfig.MIN_VERSION_UPDATER_FREQ
-
-        if self.srConfig.SHOWUPDATE_HOUR > 23:
-            self.srConfig.SHOWUPDATE_HOUR = 0
-        elif self.srConfig.SHOWUPDATE_HOUR < 0:
-            self.srConfig.SHOWUPDATE_HOUR = 0
-
         if self.srConfig.SUBTITLE_SEARCHER_FREQ < self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ:
             self.srConfig.SUBTITLE_SEARCHER_FREQ = self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ
-
+        if self.srConfig.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
+            self.srConfig.PROPER_SEARCHER_INTERVAL = 'daily'
+        if self.srConfig.SHOWUPDATE_HOUR < 0 or self.srConfig.SHOWUPDATE_HOUR > 23:
+            self.srConfig.SHOWUPDATE_HOUR = 0
         if self.srConfig.SUBTITLES_LANGUAGES[0] == '':
             self.srConfig.SUBTITLES_LANGUAGES = []
 
         # add version checker job
         self.srScheduler.add_job(
             self.VERSIONUPDATER.run,
-            srIntervalTrigger(
-                **{'hours': self.srConfig.VERSION_UPDATER_FREQ, 'min': self.srConfig.MIN_VERSION_UPDATER_FREQ}),
+            IntervalTrigger(
+                hours=self.srConfig.VERSION_UPDATER_FREQ
+            ),
             name="VERSIONUPDATER",
             id="VERSIONUPDATER"
         )
@@ -330,7 +324,9 @@ class Core(object):
         # add network timezones updater job
         self.srScheduler.add_job(
             update_network_dict,
-            srIntervalTrigger(**{'days': 1}),
+            IntervalTrigger(
+                days=1
+            ),
             name="TZUPDATER",
             id="TZUPDATER"
         )
@@ -338,9 +334,11 @@ class Core(object):
         # add show updater job
         self.srScheduler.add_job(
             self.SHOWUPDATER.run,
-            srIntervalTrigger(
-                **{'days': 1,
-                   'start_date': datetime.datetime.now().replace(hour=self.srConfig.SHOWUPDATE_HOUR)}),
+            IntervalTrigger(
+                days=1,
+                start_date=utc.localize(datetime.datetime.now().replace(hour=self.srConfig.SHOWUPDATE_HOUR)).astimezone(
+                    get_localzone())
+            ),
             name="SHOWUPDATER",
             id="SHOWUPDATER"
         )
@@ -348,10 +346,11 @@ class Core(object):
         # add daily search job
         self.srScheduler.add_job(
             self.DAILYSEARCHER.run,
-            srIntervalTrigger(
-                **{'minutes': self.srConfig.DAILY_SEARCHER_FREQ,
-                   'min': self.srConfig.MIN_DAILY_SEARCHER_FREQ,
-                   'start_date': datetime.datetime.now() + datetime.timedelta(minutes=4)}),
+            IntervalTrigger(
+                minutes=self.srConfig.DAILY_SEARCHER_FREQ,
+                start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=4)).astimezone(
+                    get_localzone())
+            ),
             name="DAILYSEARCHER",
             id="DAILYSEARCHER"
         )
@@ -359,10 +358,11 @@ class Core(object):
         # add backlog search job
         self.srScheduler.add_job(
             self.BACKLOGSEARCHER.run,
-            srIntervalTrigger(
-                **{'minutes': self.srConfig.BACKLOG_SEARCHER_FREQ,
-                   'min': self.srConfig.MIN_BACKLOG_SEARCHER_FREQ,
-                   'start_date': datetime.datetime.now() + datetime.timedelta(minutes=30)}),
+            IntervalTrigger(
+                minutes=self.srConfig.BACKLOG_SEARCHER_FREQ,
+                start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=30)).astimezone(
+                    get_localzone())
+            ),
             name="BACKLOG",
             id="BACKLOG"
         )
@@ -370,8 +370,9 @@ class Core(object):
         # add auto-postprocessing job
         self.srScheduler.add_job(
             self.AUTOPOSTPROCESSOR.run,
-            srIntervalTrigger(**{'minutes': self.srConfig.AUTOPOSTPROCESSOR_FREQ,
-                                 'min': self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ}),
+            IntervalTrigger(
+                minutes=self.srConfig.AUTOPOSTPROCESSOR_FREQ
+            ),
             name="POSTPROCESSOR",
             id="POSTPROCESSOR"
         )
@@ -379,9 +380,10 @@ class Core(object):
         # add find proper job
         self.srScheduler.add_job(
             self.PROPERSEARCHER.run,
-            srIntervalTrigger(**{
-                'minutes': {'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
-                    self.srConfig.PROPER_SEARCHER_INTERVAL]}),
+            IntervalTrigger(
+                minutes={'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
+                    self.srConfig.PROPER_SEARCHER_INTERVAL]
+            ),
             name="PROPERSEARCHER",
             id="PROPERSEARCHER"
         )
@@ -389,7 +391,9 @@ class Core(object):
         # add trakt.tv checker job
         self.srScheduler.add_job(
             self.TRAKTSEARCHER.run,
-            srIntervalTrigger(**{'hours': 1}),
+            IntervalTrigger(
+                hours=1
+            ),
             name="TRAKTSEARCHER",
             id="TRAKTSEARCHER"
         )
@@ -397,7 +401,9 @@ class Core(object):
         # add subtitles finder job
         self.srScheduler.add_job(
             self.SUBTITLESEARCHER.run,
-            srIntervalTrigger(**{'hours': self.srConfig.SUBTITLE_SEARCHER_FREQ}),
+            IntervalTrigger(
+                hours=self.srConfig.SUBTITLE_SEARCHER_FREQ
+            ),
             name="SUBTITLESEARCHER",
             id="SUBTITLESEARCHER"
         )

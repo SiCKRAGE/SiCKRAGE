@@ -25,6 +25,7 @@ import re
 import stat
 import subprocess
 
+import scandir
 from adba import aniDBAbstracter
 
 import sickrage
@@ -171,7 +172,7 @@ class PostProcessor(object):
 
         def recursive_glob(treeroot, pattern):
             results = []
-            for base, __, files in os.walk(treeroot):
+            for base, __, files in scandir.walk(treeroot):
                 goodfiles = fnmatch.filter(files, pattern)
                 results.extend(os.path.join(base, f) for f in goodfiles)
             return results

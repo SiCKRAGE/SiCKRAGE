@@ -681,10 +681,8 @@ class TorrentProvider(GenericProvider):
 
     def _get_size(self, item):
         size = item.get('size', -1)
-        title, url = self._get_title_and_url(item)
-
-        if size == -1 and url:
-            for url in self.make_url(url):
+        if size == -1 and item.get('url'):
+            for url in self.make_url(item.url):
                 try:
                     resp = sickrage.srCore.srWebSession.get(url)
                     torrent = bencode.bdecode(resp.content)
@@ -790,11 +788,9 @@ class NZBProvider(GenericProvider):
 
     def _get_size(self, item):
         size = item.get('size', -1)
-        title, url = self._get_title_and_url(item)
-
-        if size == -1 and url:
+        if size == -1 and item.get('url'):
             try:
-                resp = sickrage.srCore.srWebSession.get(url)
+                resp = sickrage.srCore.srWebSession.get(item.url)
 
                 total_length = 0
                 for file in nzb_parser.parse(resp.content):
