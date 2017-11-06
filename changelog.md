@@ -1,6 +1,11 @@
 # Changelog
 
-- * da510b8 - 2017-11-06: Release v9.1.65 
+- * d777ab9 - 2017-11-06: Release v9.1.66 
+- * 9b68632 - 2017-11-06: Fix issue with checking for latest version via git 
+- * 4c2676f - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
+- * 8a5d431 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
+- * aa334f6 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
+- * 56217dd - 2017-11-06: Release v9.1.65 
 - * fe33bd5 - 2017-11-06: Removed scandir and reverted back to os.walk due to compiler issues for Synology devices 
 - * d9bae0b - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * eac86ef - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 

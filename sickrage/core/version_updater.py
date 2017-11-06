@@ -388,12 +388,12 @@ class GitUpdateManager(UpdateManager):
             return
 
         # get latest commit_hash from remote
-        output, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --verify --quiet "@{upstream}"')
+        output, __, exit_status = self._git_cmd(self._git_path,
+                                                'rev-parse --verify --quiet origin/{}'.format(self.current_branch))
         if exit_status == 0 and output:
             return output.strip()
 
     def set_newest_text(self):
-
         # if we're up to date then don't set this
         sickrage.srCore.NEWEST_VERSION_STRING = None
 
