@@ -137,7 +137,7 @@ def fix_generator_encoding(gen):
         for x in item:
             if isinstance(x, (list, tuple)):
                 x = fix_list_encoding(x)
-            elif isinstance(result, str):
+            elif isinstance(x, str):
                 x = to_unicode(x)
             temp.append(x)
         result[i] = type(item)(temp)
