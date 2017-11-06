@@ -1066,21 +1066,53 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+
+        <div class="row tab-pane">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                <h3>${_('PIP Settings')}</h3>
+            </div>
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('PIP executable path')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-file"></span>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-file"></span>
+                                    </div>
+                                    <input id="pip_path" name="pip_path"
+                                           value="${sickrage.srCore.srConfig.PIP_PATH}"
+                                           placeholder="${_('ex: /path/to/pip')}"
+                                           title="only needed if OS is unable to locate pip from env"
+                                           class="form-control" autocapitalize="off"/>
+                                    <div class="input-group-addon">
+                                        <input class="button" type="button" id="verifyPipPath" value="Verify Path">
+                                    </div>
+                                </div>
                             </div>
-                            <input id="pip_path" name="pip_path"
-                                   value="${sickrage.srCore.srConfig.PIP_PATH}"
-                                   placeholder="${_('ex: /path/to/pip')}"
-                                   title="only needed if OS is unable to locate pip from env"
-                                   class="form-control" autocapitalize="off"/>
                         </div>
+                        <p></p>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="testNotification" id="testPIP-result">
+                                    ${_('Click vefify path to test.')}
+                                </div>
+                                <input class="btn btn-inline" type="button" id="installRequirements"
+                                       value="Install Requirements">
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -1089,7 +1121,6 @@
                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
-
             </fieldset>
         </div>
 
@@ -1100,7 +1131,7 @@
 
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
-                    <h3>${_('Git Settings')}</h3>
+                    <h3>${_('GIT Settings')}</h3>
                 </div>
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                     <div class="row field-pair">
@@ -1108,43 +1139,42 @@
                             <label class="component-title">${_('Git Branches')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="fa fa-git"></span>
-                                </div>
-                                <select id="branchVersion"
-                                        class="form-control form-control-inline pull-left"
-                                        title="GIT Branch Version">
-                                    % if git_branch:
-                                        % for cur_branch in git_branch:
-                                            % if sickrage.srCore.srConfig.DEVELOPER:
-                                                <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
-                                            % elif cur_branch in ['master', 'develop']:
-                                                <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="fa fa-git"></span>
+                                        </div>
+                                        <select id="branchVersion" class="form-control"
+                                                title=${_('GIT Branch Version')}>
+                                            % if git_branch:
+                                                % for cur_branch in git_branch:
+                                                    % if sickrage.srCore.srConfig.DEVELOPER:
+                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                    % elif cur_branch in ['master', 'develop']:
+                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                    % endif
+                                                % endfor
                                             % endif
-                                        % endfor
-                                    % endif
-                                </select>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <br/>
+                            <p></p>
                             <div class="row">
                                 <div class="col-md-12">
                                     % if not git_branch:
-                                        <input class="btn btn-inline" style="margin-left: 6px;"
-                                               type="button"
-                                               id="branchCheckout" value="Checkout Branch" disabled>
+                                        <input class="btn btn-inline" type="button" id="branchCheckout"
+                                               value="Checkout Branch" disabled>
                                         <label for="branchCheckout">${_('Error: No branches found.')}</label>>
                                     % else:
-                                        <input class="btn btn-inline" style="margin-left: 6px;"
-                                               type="button"
-                                               id="branchCheckout" value="Checkout Branch">
+                                        <input class="btn btn-inline" type="button" id="branchCheckout"
+                                               value="Checkout Branch">
                                         <label for="branchCheckout">${_('select branch to use (restart required)')}</label>
                                     % endif
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
 
                     <div class="row field-pair">
@@ -1152,15 +1182,29 @@
                             <label class="component-title">${_('GIT executable path')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-file"></span>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-file"></span>
+                                        </div>
+                                        <input id="git_path" name="git_path"
+                                               value="${sickrage.srCore.srConfig.GIT_PATH}"
+                                               placeholder="${_('ex: /path/to/git')}"
+                                               title="only needed if OS is unable to locate git from env"
+                                               class="form-control" autocapitalize="off"/>
+                                        <div class="input-group-addon">
+                                            <input class="button" type="button" id="verifyGitPath" value="Verify Path">
+                                        </div>
+                                    </div>
                                 </div>
-                                <input id="git_path" name="git_path"
-                                       value="${sickrage.srCore.srConfig.GIT_PATH}"
-                                       placeholder="${_('ex: /path/to/git')}"
-                                       title="only needed if OS is unable to locate git from env"
-                                       class="form-control" autocapitalize="off"/>
+                            </div>
+                            <p></p>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="testNotification"
+                                         id="testGIT-result">${_('Click vefify path to test.')}</div>
+                                </div>
                             </div>
                         </div>
                     </div>

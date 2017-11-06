@@ -1150,6 +1150,22 @@ class Home(WebHandler):
                                  _("Update wasn't successful, not restarting. Check your log for more information."))
             return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
 
+    def verifyPath(self, path):
+        if os.path.isfile(path):
+            return _('Successfully found {path}'.format(path=path))
+        else:
+            return _('Failed to find {path}'.format(path=path))
+
+    def installRequirements(self):
+        sickrage.srCore.srNotifications.message(_('Installing SiCKRAGE requirements'))
+        if not sickrage.srCore.VERSIONUPDATER.updater.install_requirements():
+            sickrage.srCore.srNotifications.message(_('Failed to install SiCKRAGE requirements'))
+        else:
+            sickrage.srCore.srNotifications.message(_('Installed SiCKRAGE requirements successfully!'))
+
+        return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+
+
     def branchCheckout(self, branch):
         if branch and sickrage.srCore.VERSIONUPDATER.updater.current_branch != branch:
             sickrage.srCore.srNotifications.message(_('Checking out branch: '), branch)

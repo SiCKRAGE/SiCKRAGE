@@ -2818,6 +2818,58 @@ jQuery(document).ready(function ($) {
                         });
                 });
 
+                $('#pip_path').fileBrowser({
+                    title: gt('Select path to pip'),
+                    key: 'pip_path',
+                    includeFiles: 1
+                });
+
+                $('#git_path').fileBrowser({
+                    title: gt('Select path to git'),
+                    key: 'git_path',
+                    includeFiles: 1
+                });
+
+                $('#verifyPipPath').click(function () {
+                    var pip_path = $.trim($('#pip_path').val());
+                    if (!pip_path) {
+                        $('#testPIP-result').html(gt('Please fill out the necessary fields above.'));
+                        $('#pip_path').addClass('warning');
+                        return;
+                    }
+                    $('#pip_path').removeClass('warning');
+                    $(this).prop('disabled', true);
+                    $('#testPIP-result').html(SICKRAGE.loadingHTML);
+                    $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
+                        'path': pip_path
+                    }).done(function (data) {
+                        $('#testPIP-result').html(data);
+                        $('#verifyPipPath').prop('disabled', false);
+                    });
+                });
+
+                $('#verifyGitPath').click(function () {
+                    var git_path = $.trim($('#git_path').val());
+                    if (!git_path) {
+                        $('#testGIT-result').html(gt('Please fill out the necessary fields above.'));
+                        $('#git_path').addClass('warning');
+                        return;
+                    }
+                    $('#git_path').removeClass('warning');
+                    $(this).prop('disabled', true);
+                    $('#testGIT-result').html(SICKRAGE.loadingHTML);
+                    $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
+                        'path': git_path
+                    }).done(function (data) {
+                        $('#testGIT-result').html(data);
+                        $('#verifyGitPath').prop('disabled', false);
+                    });
+                });
+
+                $('#installRequirements').on('click', function () {
+                    window.location.href = SICKRAGE.srWebRoot + '/home/installRequirements';
+                });
+
                 $('#branchCheckout').on('click', function () {
                     window.location.href = SICKRAGE.srWebRoot + '/home/branchCheckout?branch=' + $("#branchVersion").val();
                 });

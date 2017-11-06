@@ -346,11 +346,8 @@ class UpdateManager(object):
 
     def install_requirements(self):
         __, __, exit_status = self._pip_cmd(self._pip_path,
-                                          'install --no-cache-dir --user -r {}'.format(sickrage.REQS_FILE))
-        if not exit_status == 0:
-            sickrage.srCore.srLogger.warning(
-                "Failed to install requirements, please manually run 'pip install --no-cache-dir --user -r {}".format(
-                    sickrage.REQS_FILE))
+                                            'install --no-cache-dir --user -r {}'.format(sickrage.REQS_FILE))
+        return (False, True)[exit_status == 0]
 
 
 class GitUpdateManager(UpdateManager):
@@ -430,7 +427,7 @@ class GitUpdateManager(UpdateManager):
             self.reset()
 
         __, __, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.srCore.srConfig.GIT_REMOTE,
-                                                                                 self.current_branch))
+                                                                                   self.current_branch))
         if exit_status == 0:
             sickrage.srCore.srLogger.info("Updating SiCKRAGE from GIT servers")
             srNotifiers.notify_version_update(self.get_newest_version)
@@ -461,7 +458,7 @@ class GitUpdateManager(UpdateManager):
         on the call's success.
         """
         __, __, exit_status = self._git_cmd(self._git_path,
-                                          'config remote.origin.fetch %s' % '+refs/heads/*:refs/remotes/origin/*')
+                                            'config remote.origin.fetch %s' % '+refs/heads/*:refs/remotes/origin/*')
         if exit_status == 0:
             __, __, exit_status = self._git_cmd(self._git_path, 'fetch --all')
         return (False, True)[exit_status == 0]
@@ -486,7 +483,7 @@ class GitUpdateManager(UpdateManager):
 
     def get_remote_url(self):
         url, __, exit_status = self._git_cmd(self._git_path,
-                                            'remote get-url {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
+                                             'remote get-url {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         return ("", url)[exit_status == 0 and url is not None]
 
     def set_remote_url(self):
@@ -502,7 +499,7 @@ class GitUpdateManager(UpdateManager):
     @property
     def remote_branches(self):
         branches, __, exit_status = self._git_cmd(self._git_path,
-                                                 'ls-remote --heads {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
+                                                  'ls-remote --heads {}'.format(sickrage.srCore.srConfig.GIT_REMOTE))
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
 
