@@ -117,7 +117,7 @@ class NewpctProvider(TorrentProvider):
                 sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
                 return results
 
-            for row in torrent_rows[1:-1]:
+            for row in torrent_rows:
                 try:
                     torrent_anchor = row.find_all('a')[1]
                     details_url = torrent_anchor.get('href', '')
