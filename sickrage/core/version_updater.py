@@ -30,8 +30,6 @@ import tarfile
 import threading
 import traceback
 
-import scandir
-
 import sickrage
 from sickrage.core.helpers import backupSR
 from sickrage.notifiers import srNotifiers
@@ -156,7 +154,7 @@ class srVersionUpdater(object):
                     # Clean up after update
                     to_clean = os.path.join(sickrage.CACHE_DIR, 'mako')
 
-                    for root, dirs, files in scandir.walk(to_clean, topdown=False):
+                    for root, dirs, files in os.walk(to_clean, topdown=False):
                         [os.remove(os.path.join(root, name)) for name in files]
                         [shutil.rmtree(os.path.join(root, name)) for name in dirs]
 
@@ -605,7 +603,7 @@ class SourceUpdateManager(UpdateManager):
 
             # walk temp folder and move files to main folder
             sickrage.srCore.srLogger.info("Moving files from " + content_dir + " to " + sickrage.PROG_DIR)
-            for dirname, __, filenames in scandir.walk(content_dir):
+            for dirname, __, filenames in os.walk(content_dir):
                 dirname = dirname[len(content_dir) + 1:]
                 for curfile in filenames:
                     old_path = os.path.join(content_dir, dirname, curfile)
