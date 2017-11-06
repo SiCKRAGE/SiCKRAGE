@@ -1,6 +1,7 @@
 # Changelog
 
-- * 441a1c0 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 07854e2 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 1f0f7f3 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * 120f9f8 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * f5d4759 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * 7154272 - 2017-11-06: Added file browser to help aid in locating PIP and GIT executables from WebUI Added function to allow verifying of PIP and GIT executable locations from WebUI Added function to install app requirements from WebUI 
