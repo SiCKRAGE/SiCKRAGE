@@ -71,7 +71,7 @@ def ek(f):
             result = f(*[ss(x) if isinstance(x, six.string_types) else x for x in args], **kwargs)
 
         if isinstance(result, types.GeneratorType):
-            result = tuple(result)
+            return fix_generator_encoding(result)
         if isinstance(result, (list, tuple)):
             return fix_list_encoding(result)
         if isinstance(result, str):
@@ -117,19 +117,28 @@ def fix_list_encoding(var):
     :return: Unicode converted input
     """
 
-    if isinstance(var, list):
+    if isinstance(var, (list, tuple)):
         var = filter(lambda x: x is not None, map(to_unicode, var))
-    elif isinstance(var, tuple):
-        new_var = list(var)
-        for i, tup in enumerate(var):
-            temp = []
-            for x in tup:
-                temp.append(fix_list_encoding(x))
-            new_var[i] = tuple(temp)
-        var = tuple(new_var)
 
     return var
 
+def fix_generator_encoding(gen):
+    """
+    Converts each item in a list to Unicode
+
+    :param var: List or tuple to convert to Unicode
+    :return: Unicode converted input
+    """
+
+    result = list(gen)
+
+    for i, item in enumerate(result):
+        temp = []
+        for x in item:
+            temp.append(fix_list_encoding(x))
+        result[i] = type(item)(temp)
+
+    return result
 
 def to_unicode(var):
     """
