@@ -1,6 +1,15 @@
 # Changelog
 
-- * 674208c - 2017-11-05: Release v9.1.64 
+- * da510b8 - 2017-11-06: Release v9.1.65 
+- * fe33bd5 - 2017-11-06: Removed scandir and reverted back to os.walk due to compiler issues for Synology devices 
+- * d9bae0b - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * eac86ef - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 613cc9c - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 1f0f7f3 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 120f9f8 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * f5d4759 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 7154272 - 2017-11-06: Added file browser to help aid in locating PIP and GIT executables from WebUI Added function to allow verifying of PIP and GIT executable locations from WebUI Added function to install app requirements from WebUI 
+- * a5cd4f5 - 2017-11-05: Release v9.1.64 
 - * 68d647b - 2017-11-05: Fixed encoding/decoding unicode issues with tuples and kludge 
 - * 394338f - 2017-11-05: Fixed encoding/decoding unicode issues with tuples and kludge 
 - * c12b19d - 2017-11-05: Fixed issue #109 - AmbiguousTimeError Fixed issue #108 - Post-Processing issues due to unicode directory and file names 

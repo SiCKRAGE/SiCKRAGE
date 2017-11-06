@@ -206,8 +206,7 @@ def patch_modules():
                 'shutil.move',
                 'shutil.copyfileobj',
                 'shutil.copy',
-                'shutil.copyfile',
-                'scandir.walk']
+                'shutil.copyfile']
 
     def decorate_modules(modules, decorator):
         for module in modules:
