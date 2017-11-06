@@ -1,6 +1,7 @@
 # Changelog
 
-- * d0b96c4 - 2017-11-06: Added file browser to help aid in locating PIP and GIT executables from WebUI Added function to allow verifying of PIP and GIT executable locations from WebUI Added function to install app requirements from WebUI 
+- * c38463f - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 7154272 - 2017-11-06: Added file browser to help aid in locating PIP and GIT executables from WebUI Added function to allow verifying of PIP and GIT executable locations from WebUI Added function to install app requirements from WebUI 
 - * a5cd4f5 - 2017-11-05: Release v9.1.64 
 - * 68d647b - 2017-11-05: Fixed encoding/decoding unicode issues with tuples and kludge 
 - * 394338f - 2017-11-05: Fixed encoding/decoding unicode issues with tuples and kludge 

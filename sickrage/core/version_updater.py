@@ -269,10 +269,10 @@ class UpdateManager(object):
             exit_status = 1
             return output, err, exit_status
 
-        cmd = git_path + ' ' + args
+        cmd = [git_path, args]
 
         try:
-            sickrage.srCore.srLogger.debug("Executing " + cmd + " with your shell in " + sickrage.PROG_DIR)
+            sickrage.srCore.srLogger.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.PROG_DIR)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  shell=True, cwd=sickrage.PROG_DIR)
             output, err = p.communicate()
@@ -282,27 +282,24 @@ class UpdateManager(object):
                 output = output.strip()
 
         except OSError:
-            sickrage.srCore.srLogger.info("Command " + cmd + " didn't work")
+            sickrage.srCore.srLogger.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
 
         if exit_status == 0:
-            sickrage.srCore.srLogger.debug(cmd + " : returned successful")
+            sickrage.srCore.srLogger.debug(' '.join(cmd) + " : returned successful")
             exit_status = 0
-
         elif exit_status == 1:
             if 'stash' in output:
                 sickrage.srCore.srLogger.warning(
                     "Please enable 'git reset' in settings or stash your changes in local files")
             else:
-                sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output))
+                sickrage.srCore.srLogger.debug(' '.join(cmd) + " returned : " + str(output))
             exit_status = 1
-
         elif exit_status == 128 or 'fatal:' in output or err:
-            sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output))
+            sickrage.srCore.srLogger.debug(' '.join(cmd) + " returned : " + str(output))
             exit_status = 128
-
         else:
-            sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output) + ", treat as error for now")
+            sickrage.srCore.srLogger.debug(' '.join(cmd) + " returned : " + str(output) + ", treat as error for now")
             exit_status = 1
 
         return output, err, exit_status
@@ -316,10 +313,10 @@ class UpdateManager(object):
             exit_status = 1
             return output, err, exit_status
 
-        cmd = pip_path + ' ' + args
+        cmd = [pip_path, args]
 
         try:
-            sickrage.srCore.srLogger.debug("Executing " + cmd + " with your shell in " + sickrage.PROG_DIR)
+            sickrage.srCore.srLogger.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.PROG_DIR)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  shell=True, cwd=sickrage.PROG_DIR)
             output, err = p.communicate()
@@ -328,14 +325,14 @@ class UpdateManager(object):
             if output:
                 output = output.strip()
         except OSError:
-            sickrage.srCore.srLogger.info("Command " + cmd + " didn't work")
+            sickrage.srCore.srLogger.info("Command " + ' '.join(cmd) + " didn't work")
             exit_status = 1
 
         if exit_status == 0:
-            sickrage.srCore.srLogger.debug(cmd + " : returned successful")
+            sickrage.srCore.srLogger.debug(' '.join(cmd) + " : returned successful")
             exit_status = 0
         else:
-            sickrage.srCore.srLogger.debug(cmd + " returned : " + str(output) + ", treat as error for now")
+            sickrage.srCore.srLogger.debug(' '.join(cmd) + " returned : " + str(output) + ", treat as error for now")
             exit_status = 1
 
         return output, err, exit_status
