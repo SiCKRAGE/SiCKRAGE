@@ -1,6 +1,7 @@
 # Changelog
 
-- * bb4ef58 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
+- * 1627b8d - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
+- * 8a5d431 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
 - * aa334f6 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
 - * 56217dd - 2017-11-06: Release v9.1.65 
 - * fe33bd5 - 2017-11-06: Removed scandir and reverted back to os.walk due to compiler issues for Synology devices 
