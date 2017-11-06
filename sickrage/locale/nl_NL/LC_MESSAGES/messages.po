@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-04 00:40-0400\n"
-"PO-Revision-Date: 2017-11-04 00:40-0400\n"
+"POT-Creation-Date: 2017-11-05 21:33-0500\n"
+"PO-Revision-Date: 2017-11-05 21:34-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -651,8 +651,8 @@ msgstr "Split Toon lijsten"
 msgid "Separate anime and normal shows in groups"
 msgstr "Aparte anime en normale shows in groepen"
 
-#: sickrage/core/version_updater.py:81 sickrage/core/version_updater.py:89
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:83 sickrage/core/version_updater.py:91
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -3498,7 +3498,7 @@ msgstr "Cookies:"
 
 #: sickrage/core/webserver/views/config/providers.mako:576
 msgid "this provider requires the following cookies: "
-msgstr ""
+msgstr "deze provider vereist de volgende cookies: "
 
 #: sickrage/core/webserver/views/config/providers.mako:587
 msgid "Pin:"
@@ -3736,11 +3736,11 @@ msgstr "Hiermee schakelt u caching van programma's al toegevoegd aan SiCKRAGE, v
 
 #: sickrage/core/webserver/views/config/search.mako:70
 msgid "Convert provider torrent file links to magnetic links"
-msgstr ""
+msgstr "Converteer provider torrent bestand Verwijzigingen naar magnetische links"
 
 #: sickrage/core/webserver/views/config/search.mako:76
 msgid "enables/disables converting of public torrent provider file links to magnetic links"
-msgstr ""
+msgstr "Hiermee schakelt u converteren van openbare torrent provider dossierverbindingen magnetische koppelingen"
 
 #: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
@@ -4454,7 +4454,7 @@ msgstr "De eerste wedstrijd archief:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:421
 msgid "Missed:"
-msgstr ""
+msgstr "Gemist:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:427
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:23
@@ -5874,47 +5874,47 @@ msgstr "Genegeerd"
 msgid "Episode snatched"
 msgstr "Aflevering griste"
 
-#: sickrage/core/version_updater.py:66
+#: sickrage/core/version_updater.py:68
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Nieuwe update gevonden voor SiCKRAGE, auto-updater starten"
 
-#: sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:71
 msgid "Update was successful"
 msgstr "Update is gelukt"
 
-#: sickrage/core/version_updater.py:73
+#: sickrage/core/version_updater.py:75
 msgid "Update failed!"
 msgstr "Update is mislukt!"
 
-#: sickrage/core/version_updater.py:81
+#: sickrage/core/version_updater.py:83
 msgid "Config backup in progress..."
 msgstr "Config backup in vooruitgang..."
 
-#: sickrage/core/version_updater.py:89
+#: sickrage/core/version_updater.py:91
 msgid "Config backup successful, updating..."
 msgstr "Config back-up succesvolle, bijwerken..."
 
-#: sickrage/core/version_updater.py:93 sickrage/core/version_updater.py:97
+#: sickrage/core/version_updater.py:95 sickrage/core/version_updater.py:99
 msgid "Config backup failed, aborting update"
 msgstr "Config backup mislukt, aborting update"
 
-#: sickrage/core/version_updater.py:209
+#: sickrage/core/version_updater.py:211
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Kan niet vinden uw git uitvoerbaar - Set je git pad van instellingen-> generaal-> Geavanceerd of uw .git map verwijderen en uitvoeren vanaf bronpakket updates inschakelen."
 
-#: sickrage/core/version_updater.py:256
+#: sickrage/core/version_updater.py:258
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Kan niet vinden uw pip uitvoerbaar - Set uw pip pad van instellingen-> generaal-> Geavanceerd"
 
-#: sickrage/core/version_updater.py:406 sickrage/core/version_updater.py:553
+#: sickrage/core/version_updater.py:408 sickrage/core/version_updater.py:555
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Er is een nieuwere versie beschikbaar, versie {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:549
+#: sickrage/core/version_updater.py:551
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Onbekende actuele versienummer: als yo nog nooit hebt gebruikt de SiCKRAGE upgrade systeem voordat dan de huidige versie niet is ingesteld. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:699
+#: sickrage/core/version_updater.py:701
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Nieuwe SiCKRAGE update gevonden op PyPy servers, versie {} &mdash; <a href=\"{}\">Update Now</a>"
 
