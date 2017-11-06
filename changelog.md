@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1627b8d - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
+- * 475729f - 2017-11-06: Fix issue with checking for latest version via git 
+- * 4c2676f - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
 - * 8a5d431 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
 - * aa334f6 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
 - * 56217dd - 2017-11-06: Release v9.1.65 
