@@ -1,6 +1,7 @@
 # Changelog
 
-- * c62e094 - 2017-11-06: Removed scandir and reverted back to os.walk due to compiler issues for Synology devices 
+- * da510b8 - 2017-11-06: Release v9.1.65 
+- * fe33bd5 - 2017-11-06: Removed scandir and reverted back to os.walk due to compiler issues for Synology devices 
 - * d9bae0b - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * eac86ef - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * 613cc9c - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
