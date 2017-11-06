@@ -170,7 +170,7 @@ class srVersionUpdater(object):
 class UpdateManager(object):
     @property
     def _git_path(self):
-        test_cmd = 'version'
+        test_cmd = '--version'
 
         main_git = sickrage.srCore.srConfig.GIT_PATH or 'git'
 
