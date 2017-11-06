@@ -70,6 +70,8 @@ def ek(f):
         else:
             result = f(*[ss(x) if isinstance(x, six.string_types) else x for x in args], **kwargs)
 
+        if isinstance(result, types.GeneratorType):
+            result = tuple(result)
         if isinstance(result, (list, tuple)):
             return fix_list_encoding(result)
         if isinstance(result, str):
@@ -99,7 +101,10 @@ def ss(var):
             try:
                 var = var.encode(sickrage.srCore.SYS_ENCODING, 'replace')
             except Exception:
-                var = var.encode('utf-8', 'ignore')
+                try:
+                    var = var.encode('utf-8', 'ignore')
+                except Exception:
+                    pass
 
     return var
 
@@ -112,8 +117,16 @@ def fix_list_encoding(var):
     :return: Unicode converted input
     """
 
-    if isinstance(var, (list, tuple)):
-        return filter(lambda x: x is not None, map(to_unicode, var))
+    if isinstance(var, list):
+        var = filter(lambda x: x is not None, map(to_unicode, var))
+    elif isinstance(var, tuple):
+        new_var = list(var)
+        for i, tup in enumerate(var):
+            temp = []
+            for x in tup:
+                temp.append(fix_list_encoding(x))
+            new_var[i] = tuple(temp)
+        var = tuple(new_var)
 
     return var
 

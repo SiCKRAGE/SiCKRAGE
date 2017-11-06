@@ -33,7 +33,6 @@ from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException
 from sickrage.core.helpers import isMediaFile, isRarFile, isSyncFile, \
     is_hidden_folder, notTorNZBFile, real_path
-from sickrage.core.helpers.encoding import fix_list_encoding
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.processors import failed_processor, post_processor
@@ -600,7 +599,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
             dirs = [dirs]
             files = []
 
-    return path, fix_list_encoding(dirs), fix_list_encoding(files)
+    return path, dirs, files
 
 
 def process_failed(dirName, nzbName, result):

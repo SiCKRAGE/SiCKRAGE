@@ -1,6 +1,7 @@
 # Changelog
 
-- * e90ae63 - 2017-11-05: Fixed issue #109 - AmbiguousTimeError Fixed issue #108 - Post-Processing issues due to unicode directory and file names 
+- * a36503f - 2017-11-05: Fixed encoding/decoding unicode issues with tuples and kludge 
+- * c12b19d - 2017-11-05: Fixed issue #109 - AmbiguousTimeError Fixed issue #108 - Post-Processing issues due to unicode directory and file names 
 - * 02e5733 - 2017-11-05: fixed post-processor queue issues with none types 
 - * 0c46c22 - 2017-11-05: fixed post-processor queue issues with none types 
 - * 373a99f - 2017-11-05: fixed post-processor queue issues with none types 
