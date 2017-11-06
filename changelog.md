@@ -1,6 +1,7 @@
 # Changelog
 
-- * aeeb448 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * 7666db3 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
+- * eac86ef - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * 613cc9c - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * 1f0f7f3 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 
 - * 120f9f8 - 2017-11-06: Fixed issues when using full-path to PIP and GIT commands 

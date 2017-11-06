@@ -270,7 +270,7 @@ class UpdateManager(object):
             exit_status = 1
             return output, err, exit_status
 
-        cmd = [git_path, args]
+        cmd = [git_path] + args.split()
 
         try:
             sickrage.srCore.srLogger.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.PROG_DIR)
@@ -314,7 +314,7 @@ class UpdateManager(object):
             exit_status = 1
             return output, err, exit_status
 
-        cmd = [pip_path, args]
+        cmd = [pip_path] + args.split()
 
         try:
             sickrage.srCore.srLogger.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.PROG_DIR)
