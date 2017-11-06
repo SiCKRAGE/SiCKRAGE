@@ -394,7 +394,6 @@ class GitUpdateManager(UpdateManager):
             return output.strip()
 
     def set_newest_text(self):
-
         # if we're up to date then don't set this
         sickrage.srCore.NEWEST_VERSION_STRING = None
 
