@@ -1,6 +1,7 @@
 # Changelog
 
-- * 48067f9 - 2017-11-06: Fixed issue with Newpct torrent provider skipping first result from search results 
+- * 392b567 - 2017-11-06: Added search url for Newpct subtitles 
+- * 9221129 - 2017-11-06: Fixed issue with Newpct torrent provider skipping first result from search results 
 - * 735906d - 2017-11-06: Release v9.1.66 
 - * 9b68632 - 2017-11-06: Fix issue with checking for latest version via git 
 - * 4c2676f - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
