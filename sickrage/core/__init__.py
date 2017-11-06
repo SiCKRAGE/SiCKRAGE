@@ -293,30 +293,21 @@ class Core(object):
                                                 'mlnet',
                                                 'putio'): self.srConfig.TORRENT_METHOD = 'blackhole'
 
-        if self.srConfig.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
-            self.srConfig.PROPER_SEARCHER_INTERVAL = 'daily'
-
         if self.srConfig.AUTOPOSTPROCESSOR_FREQ < self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ:
             self.srConfig.AUTOPOSTPROCESSOR_FREQ = self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ
-
         if self.srConfig.DAILY_SEARCHER_FREQ < self.srConfig.MIN_DAILY_SEARCHER_FREQ:
             self.srConfig.DAILY_SEARCHER_FREQ = self.srConfig.MIN_DAILY_SEARCHER_FREQ
-
         self.srConfig.MIN_BACKLOG_SEARCHER_FREQ = self.BACKLOGSEARCHER.get_backlog_cycle_time()
         if self.srConfig.BACKLOG_SEARCHER_FREQ < self.srConfig.MIN_BACKLOG_SEARCHER_FREQ:
             self.srConfig.BACKLOG_SEARCHER_FREQ = self.srConfig.MIN_BACKLOG_SEARCHER_FREQ
-
         if self.srConfig.VERSION_UPDATER_FREQ < self.srConfig.MIN_VERSION_UPDATER_FREQ:
             self.srConfig.VERSION_UPDATER_FREQ = self.srConfig.MIN_VERSION_UPDATER_FREQ
-
-        if self.srConfig.SHOWUPDATE_HOUR > 23:
-            self.srConfig.SHOWUPDATE_HOUR = 0
-        elif self.srConfig.SHOWUPDATE_HOUR < 0:
-            self.srConfig.SHOWUPDATE_HOUR = 0
-
         if self.srConfig.SUBTITLE_SEARCHER_FREQ < self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ:
             self.srConfig.SUBTITLE_SEARCHER_FREQ = self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ
-
+        if self.srConfig.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
+            self.srConfig.PROPER_SEARCHER_INTERVAL = 'daily'
+        if self.srConfig.SHOWUPDATE_HOUR < 0 or self.srConfig.SHOWUPDATE_HOUR > 23:
+            self.srConfig.SHOWUPDATE_HOUR = 0
         if self.srConfig.SUBTITLES_LANGUAGES[0] == '':
             self.srConfig.SUBTITLES_LANGUAGES = []
 
@@ -324,7 +315,7 @@ class Core(object):
         self.srScheduler.add_job(
             self.VERSIONUPDATER.run,
             IntervalTrigger(
-                hours=self.srConfig.VERSION_UPDATER_FREQ if self.srConfig.VERSION_UPDATER_FREQ >= self.srConfig.MIN_VERSION_UPDATER_FREQ else self.srConfig.MIN_VERSION_UPDATER_FREQ
+                hours=self.srConfig.VERSION_UPDATER_FREQ
             ),
             name="VERSIONUPDATER",
             id="VERSIONUPDATER"
@@ -345,8 +336,8 @@ class Core(object):
             self.SHOWUPDATER.run,
             IntervalTrigger(
                 days=1,
-                start_date=datetime.datetime.now().replace(
-                    hour=self.srConfig.SHOWUPDATE_HOUR if self.srConfig.SHOWUPDATE_HOUR >= 0 and self.srConfig.SHOWUPDATE_HOUR <= 23 else 0)
+                start_date=utc.localize(datetime.datetime.now().replace(hour=self.srConfig.SHOWUPDATE_HOUR)).astimezone(
+                    get_localzone())
             ),
             name="SHOWUPDATER",
             id="SHOWUPDATER"
@@ -356,7 +347,7 @@ class Core(object):
         self.srScheduler.add_job(
             self.DAILYSEARCHER.run,
             IntervalTrigger(
-                minutes=self.srConfig.DAILY_SEARCHER_FREQ if self.srConfig.DAILY_SEARCHER_FREQ >= self.srConfig.MIN_DAILY_SEARCHER_FREQ else self.srConfig.MIN_DAILY_SEARCHER_FREQ,
+                minutes=self.srConfig.DAILY_SEARCHER_FREQ,
                 start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=4)).astimezone(
                     get_localzone())
             ),
@@ -368,7 +359,7 @@ class Core(object):
         self.srScheduler.add_job(
             self.BACKLOGSEARCHER.run,
             IntervalTrigger(
-                minutes=self.srConfig.BACKLOG_SEARCHER_FREQ if self.srConfig.BACKLOG_SEARCHER_FREQ >= self.srConfig.MIN_BACKLOG_SEARCHER_FREQ else self.srConfig.MIN_BACKLOG_SEARCHER_FREQ,
+                minutes=self.srConfig.BACKLOG_SEARCHER_FREQ,
                 start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=30)).astimezone(
                     get_localzone())
             ),
@@ -380,7 +371,7 @@ class Core(object):
         self.srScheduler.add_job(
             self.AUTOPOSTPROCESSOR.run,
             IntervalTrigger(
-                minutes=self.srConfig.AUTOPOSTPROCESSOR_FREQ if self.srConfig.AUTOPOSTPROCESSOR_FREQ >= self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ else self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ
+                minutes=self.srConfig.AUTOPOSTPROCESSOR_FREQ
             ),
             name="POSTPROCESSOR",
             id="POSTPROCESSOR"

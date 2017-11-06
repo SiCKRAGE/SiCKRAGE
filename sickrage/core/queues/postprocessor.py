@@ -183,7 +183,7 @@ class PostProcessorItem(srQueueItem):
 
         self.priority = (srQueuePriorities.HIGH, srQueuePriorities.NORMAL)[proc_type == 'auto']
 
-        self.result = ''
+        self.result = None
 
     def run(self):
         """

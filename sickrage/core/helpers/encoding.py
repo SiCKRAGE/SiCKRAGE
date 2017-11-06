@@ -71,9 +71,9 @@ def ek(f):
             result = f(*[ss(x) if isinstance(x, six.string_types) else x for x in args], **kwargs)
 
         if isinstance(result, (list, tuple)):
-            return _fix_list_encoding(result)
+            return fix_list_encoding(result)
         if isinstance(result, str):
-            return _to_unicode(result)
+            return to_unicode(result)
 
         return result
 
@@ -88,7 +88,7 @@ def ss(var):
     :return: Converted string
     """
 
-    var = _to_unicode(var)
+    var = to_unicode(var)
 
     try:
         var = var.encode(sickrage.srCore.SYS_ENCODING)
@@ -104,7 +104,7 @@ def ss(var):
     return var
 
 
-def _fix_list_encoding(var):
+def fix_list_encoding(var):
     """
     Converts each item in a list to Unicode
 
@@ -113,12 +113,12 @@ def _fix_list_encoding(var):
     """
 
     if isinstance(var, (list, tuple)):
-        return filter(lambda x: x is not None, map(_to_unicode, var))
+        return filter(lambda x: x is not None, map(to_unicode, var))
 
     return var
 
 
-def _to_unicode(var):
+def to_unicode(var):
     """
     Converts string to Unicode, using in order: UTF-8, Latin-1, System encoding or finally what chardet wants
 
@@ -184,7 +184,8 @@ def patch_modules():
                 'shutil.move',
                 'shutil.copyfileobj',
                 'shutil.copy',
-                'shutil.copyfile']
+                'shutil.copyfile',
+                'scandir.walk']
 
     def decorate_modules(modules, decorator):
         for module in modules:
