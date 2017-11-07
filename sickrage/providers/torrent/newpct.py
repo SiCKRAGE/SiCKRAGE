@@ -34,9 +34,7 @@ class NewpctProvider(TorrentProvider):
         super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self.urls.update({
-            'search': ['{base_url}/series'.format(**self.urls),
-                       '{base_url}/series-hd'.format(**self.urls),
-                       '{base_url}/series-vo'.format(**self.urls)],
+            'search': ['{base_url}/series'.format(**self.urls), '{base_url}/series-hd'.format(**self.urls)],
             'rss': '{base_url}/feed'.format(**self.urls),
             'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
         })
