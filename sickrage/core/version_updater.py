@@ -81,7 +81,7 @@ class srVersionUpdater(object):
             sickrage.app.srLogger.info("Config backup in progress...")
             sickrage.app.srNotifications.message(_('Backup'), _('Config backup in progress...'))
             try:
-                backupDir = os.path.join(sickrage.DATA_DIR, 'backup')
+                backupDir = os.path.join(sickrage.app.DATA_DIR, 'backup')
                 if not os.path.isdir(backupDir):
                     os.mkdir(backupDir)
 
@@ -152,7 +152,7 @@ class srVersionUpdater(object):
             if self.updater.need_update():
                 if self.updater.update():
                     # Clean up after update
-                    to_clean = os.path.join(sickrage.CACHE_DIR, 'mako')
+                    to_clean = os.path.join(sickrage.app.CACHE_DIR, 'mako')
 
                     for root, dirs, files in os.walk(to_clean, topdown=False):
                         [os.remove(os.path.join(root, name)) for name in files]

@@ -60,7 +60,7 @@
                             <i class="icons-sickrage icons-sickrage-cfg"></i> ${_('SR Config:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.CONFIG_FILE}
+                            ${sickrage.app.CONFIG_FILE}
                         </div>
                     </div>
                     <br/>
@@ -69,7 +69,7 @@
                             <i class="icons-sickrage icons-sickrage-cache"></i> ${_('SR Cache Dir:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.CACHE_DIR}
+                            ${sickrage.app.CACHE_DIR}
                         </div>
                     </div>
                     <br/>

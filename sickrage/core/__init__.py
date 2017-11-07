@@ -37,6 +37,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from fake_useragent import UserAgent
 from pytz import utc
+from tornado.ioloop import IOLoop
 from tzlocal import get_localzone
 
 import sickrage
@@ -77,82 +78,52 @@ from sickrage.providers import providersDict
 class Core(object):
     def __init__(self):
         self.started = False
+        self.daemon = None
+        self.io_loop = IOLoop().instance()
 
-        # process id
-        self.PID = os.getpid()
-
-        # generate notifiers dict
-        self.notifiersDict = notifiersDict()
-
-        # generate metadata providers dict
-        self.metadataProvidersDict = metadataProvidersDict()
-
-        # generate providers dict
-        self.providersDict = providersDict()
-
-        # init notification queue
-        self.srNotifications = Notifications()
-
-        # init logger
-        self.srLogger = srLogger()
-
-        # init config
-        self.srConfig = srConfig()
-
-        # init databases
-        self.mainDB = MainDB()
-        self.cacheDB = CacheDB()
-        self.failedDB = FailedDB()
-
-        # init scheduler service
-        self.srScheduler = BackgroundScheduler()
-
-        # init web server
-        self.srWebServer = srWebServer()
-
-        # init web client session
-        self.srWebSession = srSession()
-
-        # google api
-        self.googleAuth = googleAuth()
-
-        # name cache
-        self.NAMECACHE = srNameCache()
-
-        # queues
-        self.SHOWQUEUE = srShowQueue()
-        self.SEARCHQUEUE = srSearchQueue()
-        self.POSTPROCESSORQUEUE = srPostProcessorQueue()
-
-        # updaters
-        self.VERSIONUPDATER = srVersionUpdater()
-        self.SHOWUPDATER = srShowUpdater()
-
-        # searchers
-        self.DAILYSEARCHER = srDailySearcher()
-        self.BACKLOGSEARCHER = srBacklogSearcher()
-        self.PROPERSEARCHER = srProperSearcher()
-        self.TRAKTSEARCHER = srTraktSearcher()
-        self.SUBTITLESEARCHER = srSubtitleSearcher()
-
-        # auto postprocessor
-        self.AUTOPOSTPROCESSOR = srPostProcessor()
-
-        # sickrage version
+        self.CONFIG_FILE = None
+        self.DATA_DIR = None
+        self.CACHE_DIR = None
+        self.QUITE = None
+        self.NOLAUNCH = None
+        self.WEB_PORT = None
+        self.DEVELOPER = None
+        self.DEBUG = None
         self.NEWEST_VERSION = None
         self.NEWEST_VERSION_STRING = None
-
-        # anidb connection
         self.ADBA_CONNECTION = None
-
-        # show list
         self.SHOWLIST = []
 
+        self.PID = os.getpid()
         self.USER_AGENT = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
-
         self.SYS_ENCODING = get_sys_encoding()
-
         self.LANGUAGES = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
+
+        self.notifiersDict = None
+        self.metadataProvidersDict = None
+        self.providersDict = None
+        self.srNotifications = None
+        self.srLogger = None
+        self.srConfig = None
+        self.mainDB = None
+        self.cacheDB = None
+        self.failedDB = None
+        self.srScheduler = None
+        self.srWebServer = None
+        self.srWebSession = None
+        self.googleAuth = None
+        self.NAMECACHE = None
+        self.SHOWQUEUE = None
+        self.SEARCHQUEUE = None
+        self.POSTPROCESSORQUEUE = None
+        self.VERSIONUPDATER = None
+        self.SHOWUPDATER = None
+        self.DAILYSEARCHER = None
+        self.BACKLOGSEARCHER = None
+        self.PROPERSEARCHER = None
+        self.TRAKTSEARCHER = None
+        self.SUBTITLESEARCHER = None
+        self.AUTOPOSTPROCESSOR = None
 
         # patch modules with encoding kludge
         patch_modules()
@@ -163,24 +134,51 @@ class Core(object):
         # thread name
         threading.currentThread().setName('CORE')
 
+        # init core classes
+        self.notifiersDict = notifiersDict()
+        self.metadataProvidersDict = metadataProvidersDict()
+        self.providersDict = providersDict()
+        self.srNotifications = Notifications()
+        self.srLogger = srLogger()
+        self.srConfig = srConfig()
+        self.mainDB = MainDB()
+        self.cacheDB = CacheDB()
+        self.failedDB = FailedDB()
+        self.srScheduler = BackgroundScheduler()
+        self.srWebServer = srWebServer()
+        self.srWebSession = srSession()
+        self.googleAuth = googleAuth()
+        self.NAMECACHE = srNameCache()
+        self.SHOWQUEUE = srShowQueue()
+        self.SEARCHQUEUE = srSearchQueue()
+        self.POSTPROCESSORQUEUE = srPostProcessorQueue()
+        self.VERSIONUPDATER = srVersionUpdater()
+        self.SHOWUPDATER = srShowUpdater()
+        self.DAILYSEARCHER = srDailySearcher()
+        self.BACKLOGSEARCHER = srBacklogSearcher()
+        self.PROPERSEARCHER = srProperSearcher()
+        self.TRAKTSEARCHER = srTraktSearcher()
+        self.SUBTITLESEARCHER = srSubtitleSearcher()
+        self.AUTOPOSTPROCESSOR = srPostProcessor()
+
         # Check if we need to perform a restore first
-        if os.path.exists(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore'))):
-            success = restoreSR(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore')), sickrage.DATA_DIR)
+        if os.path.exists(os.path.abspath(os.path.join(self.DATA_DIR, 'restore'))):
+            success = restoreSR(os.path.abspath(os.path.join(self.DATA_DIR, 'restore')), self.DATA_DIR)
             print("Restoring SiCKRAGE backup: %s!\n" % ("FAILED", "SUCCESSFUL")[success])
             if success:
-                shutil.rmtree(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore')), ignore_errors=True)
+                shutil.rmtree(os.path.abspath(os.path.join(self.DATA_DIR, 'restore')), ignore_errors=True)
 
         # migrate old database file names to new ones
-        if os.path.isfile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db'))):
-            if os.path.isfile(os.path.join(sickrage.DATA_DIR, 'sickrage.db')):
-                helpers.moveFile(os.path.join(sickrage.DATA_DIR, 'sickrage.db'),
-                                 os.path.join(sickrage.DATA_DIR, '{}.bak-{}'
+        if os.path.isfile(os.path.abspath(os.path.join(self.DATA_DIR, 'sickbeard.db'))):
+            if os.path.isfile(os.path.join(self.DATA_DIR, 'sickrage.db')):
+                helpers.moveFile(os.path.join(self.DATA_DIR, 'sickrage.db'),
+                                 os.path.join(self.DATA_DIR, '{}.bak-{}'
                                               .format('sickrage.db',
                                                       datetime.datetime.now().strftime(
                                                           '%Y%m%d_%H%M%S'))))
 
-            helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')),
-                             os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
+            helpers.moveFile(os.path.abspath(os.path.join(self.DATA_DIR, 'sickbeard.db')),
+                             os.path.abspath(os.path.join(self.DATA_DIR, 'sickrage.db')))
 
         # load config
         self.srConfig.load()
@@ -194,9 +192,9 @@ class Core(object):
         # setup logger settings
         self.srLogger.logSize = self.srConfig.LOG_SIZE
         self.srLogger.logNr = self.srConfig.LOG_NR
-        self.srLogger.logFile = os.path.join(sickrage.DATA_DIR, 'logs', 'sickrage.log')
+        self.srLogger.logFile = os.path.join(self.DATA_DIR, 'logs', 'sickrage.log')
         self.srLogger.debugLogging = self.srConfig.DEBUG
-        self.srLogger.consoleLogging = not sickrage.QUITE
+        self.srLogger.consoleLogging = not self.QUITE
 
         # start logger
         self.srLogger.start()
@@ -210,7 +208,7 @@ class Core(object):
 
         # Check available space
         try:
-            total_space, available_space = getFreeSpace(sickrage.DATA_DIR)
+            total_space, available_space = getFreeSpace(self.DATA_DIR)
             if available_space < 100:
                 self.srLogger.error(
                     'Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left',
@@ -250,7 +248,7 @@ class Core(object):
         # cleanup cache folder
         for folder in ['mako', 'sessions', 'indexers']:
             try:
-                shutil.rmtree(os.path.join(sickrage.CACHE_DIR, folder), ignore_errors=True)
+                shutil.rmtree(os.path.join(sickrage.app.CACHE_DIR, folder), ignore_errors=True)
             except Exception:
                 continue
 
@@ -483,8 +481,8 @@ class Core(object):
 
         if restart:
             os.execl(sys.executable, sys.executable, *sys.argv)
-        elif sickrage.daemon:
-            sickrage.daemon.stop()
+        elif sickrage.app.daemon:
+            sickrage.app.daemon.stop()
 
         self.started = False
 

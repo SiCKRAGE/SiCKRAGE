@@ -43,7 +43,7 @@ class ImageCache(object):
         """
         Builds up the full path to the image cache directory
         """
-        return os.path.abspath(os.path.join(sickrage.CACHE_DIR, 'images'))
+        return os.path.abspath(os.path.join(sickrage.app.CACHE_DIR, 'images'))
 
     def _thumbnails_dir(self):
         """

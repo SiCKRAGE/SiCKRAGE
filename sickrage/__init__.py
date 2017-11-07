@@ -31,41 +31,12 @@ import traceback
 from signal import SIGTERM
 
 app = None
-daemon = None
-io_loop = None
 
 MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(os.path.dirname(__file__)))))
 PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
 LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
-
-DEBUG = None
-WEB_PORT = None
-DEVELOPER = None
-DAEMONIZE = None
-NOLAUNCH = None
-QUITE = None
-MODULE_DIR = None
-DATA_DIR = None
-CACHE_DIR = None
-CONFIG_FILE = None
-PID_FILE = None
-
-# fix threading time bug
-time.strptime("2012", "%Y")
-
-# set thread name
-threading.currentThread().setName('MAIN')
-
-# add sickrage libs path to python system path
-if not (LIBS_DIR in sys.path):
-    sys.path, remainder = sys.path[:1], sys.path[1:]
-    site.addsitedir(LIBS_DIR)
-    sys.path.extend(remainder)
-
-# set system default language
-gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
 
 
 class Daemon(object):
@@ -220,11 +191,28 @@ def version():
 
 
 def main():
-    global app, daemon, io_loop, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+    global app
+
+    # set thread name
+    threading.currentThread().setName('MAIN')
+
+    # fix threading time bug
+    time.strptime("2012", "%Y")
+
+    # add sickrage libs path to python system path
+    if not (LIBS_DIR in sys.path):
+        sys.path, remainder = sys.path[:1], sys.path[1:]
+        site.addsitedir(LIBS_DIR)
+        sys.path.extend(remainder)
+
+    # set system default language
+    gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
 
     try:
-        from tornado.ioloop import IOLoop
         from sickrage.core import Core
+
+        # main app instance
+        app = Core()
 
         # sickrage startup options
         parser = argparse.ArgumentParser(prog='sickrage')
@@ -262,22 +250,22 @@ def main():
 
         # Parse startup args
         args = parser.parse_args()
-        QUITE = args.quite
-        WEB_PORT = int(args.port)
-        NOLAUNCH = args.nolaunch
-        DEVELOPER = args.dev
-        DEBUG = args.debug
+        app.QUITE = args.quite
+        app.WEB_PORT = int(args.port)
+        app.NOLAUNCH = args.nolaunch
+        app.DEVELOPER = args.dev
+        app.DEBUG = args.debug
+        app.DATA_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
+        app.CACHE_DIR = os.path.abspath(os.path.realpath(os.path.join(app.DATA_DIR, 'cache')))
+        app.CONFIG_FILE = args.config
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
-        DATA_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
-        CACHE_DIR = os.path.abspath(os.path.realpath(os.path.join(DATA_DIR, 'cache')))
-        CONFIG_FILE = args.config
         PID_FILE = args.pidfile
 
-        if not os.path.isabs(CONFIG_FILE):
-            CONFIG_FILE = os.path.join(DATA_DIR, CONFIG_FILE)
+        if not os.path.isabs(app.CONFIG_FILE):
+            app.CONFIG_FILE = os.path.join(app.DATA_DIR, app.CONFIG_FILE)
 
         if not os.path.abspath(PID_FILE):
-            PID_FILE = os.path.join(DATA_DIR, PID_FILE)
+            PID_FILE = os.path.join(app.DATA_DIR, PID_FILE)
 
         # check lib requirements
         check_requirements()
@@ -289,39 +277,35 @@ def main():
             sys.path.extend(remainder)
 
         # Make sure that we can create the data dir
-        if not os.access(DATA_DIR, os.F_OK):
+        if not os.access(app.DATA_DIR, os.F_OK):
             try:
-                os.makedirs(DATA_DIR, 0o744)
+                os.makedirs(app.DATA_DIR, 0o744)
             except os.error:
-                sys.exit("Unable to create data directory '" + DATA_DIR + "'")
+                sys.exit("Unable to create data directory '" + app.DATA_DIR + "'")
 
         # Make sure we can write to the data dir
-        if not os.access(DATA_DIR, os.W_OK):
-            sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
+        if not os.access(app.DATA_DIR, os.W_OK):
+            sys.exit("Data directory must be writeable '" + app.DATA_DIR + "'")
 
         # Make sure that we can create the cache dir
-        if not os.access(CACHE_DIR, os.F_OK):
+        if not os.access(app.CACHE_DIR, os.F_OK):
             try:
-                os.makedirs(CACHE_DIR, 0o744)
+                os.makedirs(app.CACHE_DIR, 0o744)
             except os.error:
-                sys.exit("Unable to create cache directory '" + CACHE_DIR + "'")
+                sys.exit("Unable to create cache directory '" + app.CACHE_DIR + "'")
 
         # Make sure we can write to the cache dir
-        if not os.access(CACHE_DIR, os.W_OK):
-            sys.exit("Cache directory must be writeable '" + CACHE_DIR + "'")
+        if not os.access(app.CACHE_DIR, os.W_OK):
+            sys.exit("Cache directory must be writeable '" + app.CACHE_DIR + "'")
 
         # daemonize if requested
         if DAEMONIZE:
-            NOLAUNCH = True
-            QUITE = True
-            daemon = Daemon(PID_FILE, DATA_DIR)
-            daemon.daemonize()
+            app.NOLAUNCH = True
+            app.QUITE = True
+            app.daemon = Daemon(PID_FILE, app.DATA_DIR)
+            app.daemon.daemonize()
 
-        # io loop
-        io_loop = IOLoop().instance()
-
-        # main app
-        app = Core()
+        # start app
         app.start()
 
         # main thread loop

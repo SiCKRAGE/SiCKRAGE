@@ -1151,7 +1151,7 @@ class TVShow(object):
         sickrage.app.SHOWLIST = [x for x in sickrage.app.SHOWLIST if int(x.indexerid) != self.indexerid]
 
         # clear the cache
-        image_cache_dir = os.path.join(sickrage.CACHE_DIR, 'images')
+        image_cache_dir = os.path.join(sickrage.app.CACHE_DIR, 'images')
         for cache_file in glob.glob(os.path.join(image_cache_dir, str(self.indexerid) + '.*')):
             sickrage.app.srLogger.info('Attempt to %s cache file %s' % (action, cache_file))
             try:

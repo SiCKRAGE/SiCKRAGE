@@ -1,6 +1,7 @@
 # Changelog
 
-- * 80bbad2 - 2017-11-07: refactored variable name srCore to app 
+- * aa518ff - 2017-11-07: refactored core variables from main module to core class 
+- * bbe7773 - 2017-11-07: refactored variable name srCore to app 
 - * 4eec63e - 2017-11-06: Added search url for Newpct subtitles 
 - * 9221129 - 2017-11-06: Fixed issue with Newpct torrent provider skipping first result from search results 
 - * 735906d - 2017-11-06: Release v9.1.66 

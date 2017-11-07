@@ -307,8 +307,8 @@ class Tvdb:
         if headers is None: headers = {}
 
         self.shows = ShowCache()
-        if os.path.isfile(os.path.join(sickrage.DATA_DIR, 'thetvdb.db')):
-            with io.open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'rb') as fp:
+        if os.path.isfile(os.path.join(sickrage.app.DATA_DIR, 'thetvdb.db')):
+            with io.open(os.path.join(sickrage.app.DATA_DIR, 'thetvdb.db'), 'rb') as fp:
                 try:
                     self.shows = ShowCache(pickle.load(fp))
                 except:
@@ -430,7 +430,7 @@ class Tvdb:
 
         self.shows[sid].data[key] = value
 
-        with io.open(os.path.join(sickrage.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
+        with io.open(os.path.join(sickrage.app.DATA_DIR, 'thetvdb.db'), 'wb') as fp:
             pickle.dump(self.shows, fp)
 
     def _cleanData(self, data):

@@ -924,7 +924,7 @@
                         <input type="checkbox" name="encryption_version"
                                id="encryption_version" ${('', 'checked')[bool(sickrage.app.srConfig.ENCRYPTION_VERSION)]}/>
                         <label for="encryption_version">
-                            ${_('in the')} <code>${sickrage.CONFIG_FILE}</code> ${_('file.')}
+                            ${_('in the')} <code>${sickrage.app.CONFIG_FILE}</code> ${_('file.')}
                         </label>
                     </div>
 

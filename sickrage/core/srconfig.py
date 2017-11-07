@@ -930,7 +930,7 @@ class srConfig(object):
     def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
         # Check for failed unrar attempt, and remove it
         # Must be done before unrar is ever called or the self-extractor opens and locks startup
-        bad_unrar = os.path.join(sickrage.DATA_DIR, 'unrar.exe')
+        bad_unrar = os.path.join(sickrage.app.DATA_DIR, 'unrar.exe')
         if os.path.exists(bad_unrar) and os.path.getsize(bad_unrar) == 447440:
             try:
                 os.remove(bad_unrar)
@@ -1337,18 +1337,18 @@ class srConfig(object):
 
     def load(self, defaults=False):
         # Make sure we can write to the config file
-        if not os.path.isabs(sickrage.CONFIG_FILE):
-            sickrage.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.DATA_DIR, sickrage.CONFIG_FILE))
+        if not os.path.isabs(sickrage.app.CONFIG_FILE):
+            sickrage.app.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.app.DATA_DIR, sickrage.app.CONFIG_FILE))
 
-        if not os.access(sickrage.CONFIG_FILE, os.W_OK):
-            if os.path.isfile(sickrage.CONFIG_FILE):
-                raise SystemExit("Config file '" + sickrage.CONFIG_FILE + "' must be writeable.")
-            elif not os.access(os.path.dirname(sickrage.CONFIG_FILE), os.W_OK):
+        if not os.access(sickrage.app.CONFIG_FILE, os.W_OK):
+            if os.path.isfile(sickrage.app.CONFIG_FILE):
+                raise SystemExit("Config file '" + sickrage.app.CONFIG_FILE + "' must be writeable.")
+            elif not os.access(os.path.dirname(sickrage.app.CONFIG_FILE), os.W_OK):
                 raise SystemExit(
-                    "Config file root dir '" + os.path.dirname(sickrage.CONFIG_FILE) + "' must be writeable.")
+                    "Config file root dir '" + os.path.dirname(sickrage.app.CONFIG_FILE) + "' must be writeable.")
 
         # load config
-        self.CONFIG_OBJ = ConfigObj(sickrage.CONFIG_FILE, encoding='utf8')
+        self.CONFIG_OBJ = ConfigObj(sickrage.app.CONFIG_FILE, encoding='utf8')
 
         # use defaults
         if defaults: self.CONFIG_OBJ.clear()
@@ -1362,8 +1362,8 @@ class srConfig(object):
         self.CONFIG_OBJ = ConfigMigrator(self.CONFIG_OBJ).migrate_config()
 
         # GENERAL SETTINGS
-        self.DEBUG = sickrage.DEBUG or self.check_setting_bool('General', 'debug')
-        self.DEVELOPER = sickrage.DEVELOPER or self.check_setting_bool('General', 'developer')
+        self.DEBUG = sickrage.app.DEBUG or self.check_setting_bool('General', 'debug')
+        self.DEVELOPER = sickrage.app.DEVELOPER or self.check_setting_bool('General', 'developer')
         self.LAST_DB_COMPACT = self.check_setting_int('General', 'last_db_compact')
         self.LOG_NR = self.check_setting_int('General', 'log_nr')
         self.LOG_SIZE = self.check_setting_int('General', 'log_size')
@@ -1376,7 +1376,7 @@ class srConfig(object):
         self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', censor=True)
         self.GIT_NEWVER = self.check_setting_bool('General', 'git_newver')
         self.GIT_RESET = self.check_setting_bool('General', 'git_reset')
-        self.WEB_PORT = self.check_setting_int('General', 'web_port')
+        self.WEB_PORT = sickrage.app.WEB_PORT or self.check_setting_int('General', 'web_port')
         self.WEB_HOST = self.check_setting_str('General', 'web_host')
         self.WEB_IPV6 = self.check_setting_bool('General', 'web_ipv6')
         self.WEB_ROOT = self.check_setting_str('General', 'web_root').rstrip("/")
@@ -1823,7 +1823,7 @@ class srConfig(object):
         if not self.loaded:
             return
 
-        new_config = ConfigObj(sickrage.CONFIG_FILE, indent_type='  ', encoding='utf8')
+        new_config = ConfigObj(sickrage.app.CONFIG_FILE, indent_type='  ', encoding='utf8')
         new_config.clear()
 
         sickrage.app.srLogger.debug("Saving all settings to disk")
@@ -2374,7 +2374,7 @@ class ConfigMigrator(srConfig):
                 migration_name = ''
 
             sickrage.app.srLogger.info("Backing up config before upgrade")
-            if not backupVersionedFile(sickrage.CONFIG_FILE, self.config_version):
+            if not backupVersionedFile(sickrage.app.CONFIG_FILE, self.config_version):
                 sickrage.app.srLogger.exit("Config backup failed, abort upgrading config")
                 sys.exit(1)
             else:

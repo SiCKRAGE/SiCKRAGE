@@ -92,7 +92,7 @@ class srSession(cfscrape.CloudflareScraper):
 
         # setup caching adapter
         if cache:
-            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))))
+            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.app.DATA_DIR, 'sessions.db'))))
             self.mount('http://', adapter)
             self.mount('https://', adapter)
 

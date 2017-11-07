@@ -40,8 +40,8 @@ class StaticImageHandler(StaticFileHandler):
 
     def get(self, path, include_body=True):
         # image cache check
-        self.root = (self.root, os.path.join(sickrage.CACHE_DIR, 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickrage.CACHE_DIR, 'images', path)))
+        self.root = (self.root, os.path.join(sickrage.app.CACHE_DIR, 'images'))[
+            os.path.exists(os.path.normpath(os.path.join(sickrage.app.CACHE_DIR, 'images', path)))
         ]
 
         return super(StaticImageHandler, self).get(path, include_body)
@@ -64,7 +64,7 @@ class srWebServer(threading.Thread):
         tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
 
         # clear mako cache folder
-        mako_cache = os.path.join(sickrage.CACHE_DIR, 'mako')
+        mako_cache = os.path.join(sickrage.app.CACHE_DIR, 'mako')
         if os.path.isdir(mako_cache):
             shutil.rmtree(mako_cache)
 
@@ -169,21 +169,21 @@ class srWebServer(threading.Thread):
         }
 
         try:
-            self.server.listen(sickrage.WEB_PORT or sickrage.app.srConfig.WEB_PORT, None)
+            self.server.listen(sickrage.app.WEB_PORT or sickrage.app.srConfig.WEB_PORT, None)
 
             sickrage.app.srLogger.info(
                 "SiCKRAGE :: STARTED")
             sickrage.app.srLogger.info(
                 "SiCKRAGE :: VERSION:[{}]".format(sickrage.app.VERSIONUPDATER.version))
             sickrage.app.srLogger.info(
-                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.CONFIG_FILE, sickrage.app.srConfig.CONFIG_VERSION))
+                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.CONFIG_FILE, sickrage.app.srConfig.CONFIG_VERSION))
             sickrage.app.srLogger.info(
                 "SiCKRAGE :: URL:[{}://{}:{}/]".format(
                     ('http', 'https')[sickrage.app.srConfig.ENABLE_HTTPS],
                     sickrage.app.srConfig.WEB_HOST, sickrage.app.srConfig.WEB_PORT))
 
             # launch browser window
-            if all([not sickrage.NOLAUNCH, sickrage.app.srConfig.LAUNCH_BROWSER]):
+            if all([not sickrage.app.NOLAUNCH, sickrage.app.srConfig.LAUNCH_BROWSER]):
                 threading.Thread(None,
                                  lambda: launch_browser(
                                      ('http', 'https')[sickrage.app.srConfig.ENABLE_HTTPS],
@@ -191,7 +191,7 @@ class srWebServer(threading.Thread):
                                      sickrage.app.srConfig.WEB_PORT
                                  ), name="LAUNCH-BROWSER").start()
 
-            sickrage.io_loop.start()
+            sickrage.app.io_loop.start()
         except socket.error as e:
             sickrage.app.srLogger.warning(e.strerror)
             raise SystemExit
@@ -201,4 +201,4 @@ class srWebServer(threading.Thread):
             self.started = False
             self.server.close_all_connections()
             self.server.stop()
-            sickrage.io_loop.stop()
+            sickrage.app.io_loop.stop()

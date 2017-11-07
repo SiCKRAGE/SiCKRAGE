@@ -93,7 +93,7 @@ class BaseHandler(RequestHandler):
         # template settings
         self.mako_lookup = TemplateLookup(
             directories=[sickrage.app.srConfig.GUI_VIEWS_DIR],
-            module_directory=os.path.join(sickrage.CACHE_DIR, 'mako'),
+            module_directory=os.path.join(sickrage.app.CACHE_DIR, 'mako'),
             filesystem_checks=True,
             strict_undefined=True,
             input_encoding='utf-8',
@@ -887,7 +887,7 @@ class Home(WebHandler):
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
             curResult = sickrage.app.notifiersDict['kodi'].test_notify(urllib.unquote_plus(curHost), username,
-                                                                          password)
+                                                                       password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
                 finalResult += _('Test KODI notice sent successfully to ') + urllib.unquote_plus(curHost)
             else:
@@ -905,8 +905,8 @@ class Home(WebHandler):
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
             curResult = sickrage.app.notifiersDict['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
-                                                                              username,
-                                                                              password)
+                                                                           username,
+                                                                           password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
                 finalResult += _('Successful test notice sent to Plex client ... ') + urllib.unquote_plus(curHost)
             else:
@@ -914,7 +914,7 @@ class Home(WebHandler):
             finalResult += '<br>' + '\n'
 
         sickrage.app.srNotifications.message(_('Tested Plex client(s): '),
-                                                urllib.unquote_plus(host.replace(',', ', ')))
+                                             urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -927,8 +927,8 @@ class Home(WebHandler):
         finalResult = ''
 
         curResult = sickrage.app.notifiersDict['plex'].test_notify_pms(urllib.unquote_plus(host), username,
-                                                                          password,
-                                                                          plex_server_token)
+                                                                       password,
+                                                                       plex_server_token)
         if curResult is None:
             finalResult += _('Successful test of Plex server(s) ... ') + \
                            urllib.unquote_plus(host.replace(',', ', '))
@@ -940,7 +940,7 @@ class Home(WebHandler):
         finalResult += '<br>' + '\n'
 
         sickrage.app.srNotifications.message(_('Tested Plex Media Server host(s): '),
-                                                urllib.unquote_plus(host.replace(',', ', ')))
+                                             urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -997,7 +997,7 @@ class Home(WebHandler):
     def settingsNMJv2(host=None, dbloc=None, instance=None):
         host = clean_host(host)
         result = sickrage.app.notifiersDict['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
-                                                                        instance)
+                                                                     instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
                                                                                                    "database": sickrage.app.srConfig.NMJv2_DATABASE}
@@ -1117,7 +1117,7 @@ class Home(WebHandler):
         self.current_user = None
 
         if not force: self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
-        sickrage.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
+        sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
         return self.render(
             "/home/restart.mako",
@@ -1164,7 +1164,6 @@ class Home(WebHandler):
             sickrage.app.srNotifications.message(_('Installed SiCKRAGE requirements successfully!'))
 
         return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
-
 
     def branchCheckout(self, branch):
         if branch and sickrage.app.VERSIONUPDATER.updater.current_branch != branch:
@@ -1876,13 +1875,13 @@ class Home(WebHandler):
                         "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
                     sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
-                                                                            update="add")
+                                                                         update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.app.srLogger.debug(
                         "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
                     sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
-                                                                            update="remove")
+                                                                         update="remove")
 
         if int(status) == WANTED and not showObj.paused:
             msg = _(
@@ -2179,7 +2178,7 @@ class Home(WebHandler):
             result['errorMessage'] = ep_obj
         elif showObj.is_anime:
             sickrage.app.srLogger.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
-                                           (show, forAbsolute, sceneAbsolute))
+                                        (show, forAbsolute, sceneAbsolute))
 
             show = int(show)
             indexer = int(indexer)
@@ -2190,7 +2189,7 @@ class Home(WebHandler):
             set_scene_numbering(show, indexer, absolute_number=forAbsolute, sceneAbsolute=sceneAbsolute)
         else:
             sickrage.app.srLogger.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
-                                           (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
+                                        (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
 
             show = int(show)
             indexer = int(indexer)
@@ -2611,16 +2610,16 @@ class HomeAddShows(Home):
             chmodAsParent(show_dir)
 
             sickrage.app.SHOWQUEUE.addShow(indexer=1,
-                                              indexer_id=int(indexer_id),
-                                              showDir=show_dir,
-                                              default_status=sickrage.app.srConfig.STATUS_DEFAULT,
-                                              quality=sickrage.app.srConfig.QUALITY_DEFAULT,
-                                              flatten_folders=sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT,
-                                              subtitles=sickrage.app.srConfig.SUBTITLES_DEFAULT,
-                                              anime=sickrage.app.srConfig.ANIME_DEFAULT,
-                                              scene=sickrage.app.srConfig.SCENE_DEFAULT,
-                                              default_status_after=sickrage.app.srConfig.STATUS_DEFAULT_AFTER,
-                                              archive=sickrage.app.srConfig.ARCHIVE_DEFAULT)
+                                           indexer_id=int(indexer_id),
+                                           showDir=show_dir,
+                                           default_status=sickrage.app.srConfig.STATUS_DEFAULT,
+                                           quality=sickrage.app.srConfig.QUALITY_DEFAULT,
+                                           flatten_folders=sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT,
+                                           subtitles=sickrage.app.srConfig.SUBTITLES_DEFAULT,
+                                           anime=sickrage.app.srConfig.ANIME_DEFAULT,
+                                           scene=sickrage.app.srConfig.SCENE_DEFAULT,
+                                           default_status_after=sickrage.app.srConfig.STATUS_DEFAULT_AFTER,
+                                           archive=sickrage.app.srConfig.ARCHIVE_DEFAULT)
 
             sickrage.app.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
@@ -2699,7 +2698,7 @@ class HomeAddShows(Home):
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
         if os.path.isdir(show_dir) and not fullShowPath:
             sickrage.app.srNotifications.error(_("Unable to add show"),
-                                                  _("Folder ") + show_dir + _(" exists already"))
+                                               _("Folder ") + show_dir + _(" exists already"))
             return self.redirect('/home/addShows/existingShows/')
 
         # don't create show dir if config says not to
@@ -2711,8 +2710,8 @@ class HomeAddShows(Home):
             if not dir_exists:
                 sickrage.app.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
                 sickrage.app.srNotifications.error(_("Unable to add show"),
-                                                      _("Unable to create the folder " +
-                                                        show_dir + ", can't add the show"))
+                                                   _("Unable to create the folder " +
+                                                     show_dir + ", can't add the show"))
 
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")
@@ -2747,21 +2746,21 @@ class HomeAddShows(Home):
 
         # add the show
         sickrage.app.SHOWQUEUE.addShow(indexer=indexer,
-                                          indexer_id=indexer_id,
-                                          showDir=show_dir,
-                                          default_status=int(defaultStatus),
-                                          quality=newQuality,
-                                          flatten_folders=flatten_folders,
-                                          lang=indexerLang,
-                                          subtitles=subtitles,
-                                          subtitles_sr_metadata=subtitles_sr_metadata,
-                                          anime=anime,
-                                          scene=scene,
-                                          paused=None,
-                                          blacklist=blacklist,
-                                          whitelist=whitelist,
-                                          default_status_after=int(defaultStatusAfter),
-                                          archive=archive)
+                                       indexer_id=indexer_id,
+                                       showDir=show_dir,
+                                       default_status=int(defaultStatus),
+                                       quality=newQuality,
+                                       flatten_folders=flatten_folders,
+                                       lang=indexerLang,
+                                       subtitles=subtitles,
+                                       subtitles_sr_metadata=subtitles_sr_metadata,
+                                       anime=anime,
+                                       scene=scene,
+                                       paused=None,
+                                       blacklist=blacklist,
+                                       whitelist=whitelist,
+                                       default_status_after=int(defaultStatusAfter),
+                                       archive=archive)
 
         sickrage.app.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
@@ -2825,22 +2824,22 @@ class HomeAddShows(Home):
             if indexer is not None and indexer_id is not None:
                 # add the show
                 sickrage.app.SHOWQUEUE.addShow(indexer,
-                                                  indexer_id,
-                                                  show_dir,
-                                                  default_status=sickrage.app.srConfig.STATUS_DEFAULT,
-                                                  quality=sickrage.app.srConfig.QUALITY_DEFAULT,
-                                                  flatten_folders=sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT,
-                                                  subtitles=sickrage.app.srConfig.SUBTITLES_DEFAULT,
-                                                  anime=sickrage.app.srConfig.ANIME_DEFAULT,
-                                                  scene=sickrage.app.srConfig.SCENE_DEFAULT,
-                                                  default_status_after=sickrage.app.srConfig.STATUS_DEFAULT_AFTER,
-                                                  archive=sickrage.app.srConfig.ARCHIVE_DEFAULT)
+                                               indexer_id,
+                                               show_dir,
+                                               default_status=sickrage.app.srConfig.STATUS_DEFAULT,
+                                               quality=sickrage.app.srConfig.QUALITY_DEFAULT,
+                                               flatten_folders=sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT,
+                                               subtitles=sickrage.app.srConfig.SUBTITLES_DEFAULT,
+                                               anime=sickrage.app.srConfig.ANIME_DEFAULT,
+                                               scene=sickrage.app.srConfig.SCENE_DEFAULT,
+                                               default_status_after=sickrage.app.srConfig.STATUS_DEFAULT_AFTER,
+                                               archive=sickrage.app.srConfig.ARCHIVE_DEFAULT)
                 num_added += 1
 
         if num_added:
             sickrage.app.srNotifications.message(_("Shows Added"),
-                                                    _("Automatically added ") + str(
-                                                        num_added) + _(" from their existing metadata files"))
+                                                 _("Automatically added ") + str(
+                                                     num_added) + _(" from their existing metadata files"))
 
         # if we're done then go home
         if not dirs_only:
@@ -2894,7 +2893,7 @@ class Manage(Home, WebRoot):
         if len(status_list):
             status_results = sorted([s['doc'] for s in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)
                                      for e in sickrage.app.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'],
-                                                                                 with_doc=True)
+                                                                              with_doc=True)
                                      if e['doc']['status'] in status_list and e['doc']['season'] != 0],
                                     key=lambda d: d['show_name'])
 
@@ -3473,7 +3472,7 @@ class Manage(Home, WebRoot):
 
         if errors:
             sickrage.app.srNotifications.error(_("Errors encountered"),
-                                                  '<br >\n'.join(errors))
+                                               '<br >\n'.join(errors))
 
         messageDetail = ""
 
@@ -3499,7 +3498,7 @@ class Manage(Home, WebRoot):
 
         if updates + refreshes + renames + subtitles:
             sickrage.app.srNotifications.message(_("The following actions were queued:"),
-                                                    messageDetail)
+                                                 messageDetail)
 
         return self.render(
             '/manage/mass_update.mako',
@@ -3733,7 +3732,7 @@ class Config(WebHandler):
     def reset(self):
         sickrage.app.srConfig.load(True)
         sickrage.app.srNotifications.message(_('Configuration Reset to Defaults'),
-                                                os.path.join(sickrage.CONFIG_FILE))
+                                             os.path.join(sickrage.app.CONFIG_FILE))
         return self.redirect("/config/general")
 
 
@@ -3905,7 +3904,7 @@ class ConfigGeneral(Config):
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[GENERAL] Configuration Saved'),
-                                                    os.path.join(sickrage.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/general/")
 
@@ -3948,7 +3947,7 @@ class ConfigBackupRestore(Config):
 
         if backupFile:
             source = backupFile
-            target_dir = os.path.join(sickrage.DATA_DIR, 'restore')
+            target_dir = os.path.join(sickrage.app.DATA_DIR, 'restore')
 
             restore_database = checkbox_to_value(restore_database)
             restore_config = checkbox_to_value(restore_config)
@@ -4078,7 +4077,7 @@ class ConfigSearch(Config):
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[SEARCH] Configuration Saved'),
-                                                    os.path.join(sickrage.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/search/")
 
@@ -4202,7 +4201,7 @@ class ConfigPostProcessing(Config):
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[POST-PROCESSING] Configuration Saved'),
-                                                    os.path.join(sickrage.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/postProcessing/")
 
@@ -4264,7 +4263,7 @@ class ConfigPostProcessing(Config):
         """
 
         check = sickrage.app.srConfig.change_unrar_tool(sickrage.app.srConfig.UNRAR_TOOL,
-                                                           sickrage.app.srConfig.UNRAR_ALT_TOOL)
+                                                        sickrage.app.srConfig.UNRAR_ALT_TOOL)
 
         if not check:
             sickrage.app.srLogger.warning('Looks like unrar is not installed, check failed')
@@ -4423,7 +4422,7 @@ class ConfigProviders(Config):
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[PROVIDERS] Configuration Saved'),
-                                                    os.path.join(sickrage.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/providers/")
 
@@ -4750,7 +4749,7 @@ class ConfigNotifications(Config):
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[NOTIFICATIONS] Configuration Saved'),
-                                                    os.path.join(sickrage.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/notifications/")
 
@@ -4792,7 +4791,7 @@ class ConfigSubtitles(Config):
         sickrage.app.srConfig.change_use_subtitles(use_subtitles)
 
         sickrage.app.srConfig.SUBTITLES_LANGUAGES = [code.strip() for code in subtitles_languages.split(',') if
-                                                        code.strip() in sickrage.subtitles.subtitle_code_filter()] if subtitles_languages else []
+                                                     code.strip() in sickrage.subtitles.subtitle_code_filter()] if subtitles_languages else []
         sickrage.app.srConfig.SUBTITLES_DIR = subtitles_dir
         sickrage.app.srConfig.SUBTITLES_HISTORY = checkbox_to_value(subtitles_history)
         sickrage.app.srConfig.EMBEDDED_SUBTITLES_ALL = checkbox_to_value(
@@ -4801,7 +4800,7 @@ class ConfigSubtitles(Config):
             subtitles_hearing_impaired)
         sickrage.app.srConfig.SUBTITLES_MULTI = checkbox_to_value(subtitles_multi)
         sickrage.app.srConfig.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in subtitles_extra_scripts.split('|') if
-                                                            x.strip()]
+                                                         x.strip()]
 
         # Subtitles services
         services_str_list = service_order.split()
@@ -4831,7 +4830,7 @@ class ConfigSubtitles(Config):
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[SUBTITLES] Configuration Saved'),
-                                                    os.path.join(sickrage.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/subtitles/")
 
@@ -4870,7 +4869,7 @@ class ConfigAnime(Config):
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[ANIME] Configuration Saved'),
-                                                    os.path.join(sickrage.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
 
@@ -4897,7 +4896,7 @@ class ConfigQualitySettings(Config):
         sickrage.app.srConfig.save()
 
         sickrage.app.srNotifications.message(_('[QUALITY SETTINGS] Configuration Saved'),
-                                                os.path.join(sickrage.CONFIG_FILE))
+                                             os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/qualitySettings/")
 
